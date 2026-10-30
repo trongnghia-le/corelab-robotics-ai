@@ -1,3 +1,4 @@
+import { lessonMediaRegistry } from "./media";
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
@@ -39,7 +40,13 @@ export function getLesson(id: string): Lesson | null {
   const file = path.join(root, "lessons", `${id}.md`);
   if (!fs.existsSync(file)) return null;
   const parsed = matter(fs.readFileSync(file, "utf8"));
-  return { meta: metaSchema.parse(parsed.data), body: parsed.content };
+  return {
+    meta: {
+      ...metaSchema.parse(parsed.data),
+      ...lessonMediaRegistry.lessons[id],
+    },
+    body: parsed.content,
+  };
 }
 export function getAssessment(id: string, version = 1): Assessment | null {
   if (!topicMap[id]) return null;

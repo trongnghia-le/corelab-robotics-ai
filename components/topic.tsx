@@ -18,6 +18,7 @@ import type { TopicPayload, Attempt, Assistance, Answers } from "@/lib/types";
 import { useCore, Loading, copyText } from "./provider";
 import { TopicChips, Status, Matrix, Time, dateText } from "./ui";
 import { headingId } from "./markdown";
+import { LessonMedia } from "./lesson-media";
 import { LearningVisual } from "./learning-visual";
 import { AssessmentQuestion, AssistanceSelect } from "./assessment-question";
 import { AssessmentMethods } from "./assessment-methods";
@@ -189,10 +190,20 @@ export function TopicPage({
                 ))}
               </ul>
             </div>
+            {data.media && <LessonMedia key={id} media={data.media} />}
+            <LearningVisual
+              key={`visual-${id}`}
+              topicId={id}
+              ids={data.media?.visualizations}
+            />
             {lesson ? (
               <>
-                <LearningVisual topicId={id} />
-                <LessonMarkdown body={lesson.body} />
+                <div id="lesson-theory">
+                  <LessonMarkdown
+                    body={lesson.body}
+                    illustrations={data.media?.illustrations}
+                  />
+                </div>
                 <div className="reading-complete">
                   <div>
                     <strong>
@@ -230,7 +241,9 @@ export function TopicPage({
                 </Link>
               </>
             ) : (
-              <OverviewBody data={data} domain={topic.domain} />
+              <div id="lesson-theory">
+                <OverviewBody data={data} domain={topic.domain} />
+              </div>
             )}
             <Notebook id={id} />
             <div className="lesson-nav">
@@ -262,6 +275,12 @@ export function TopicPage({
           </article>
           <aside className="lesson-toc">
             <div className="eyebrow">IN THIS LESSON</div>
+            {data.media && <a href="#lesson-media">Recommended video</a>}
+            {!!data.media?.visualizations.length && (
+              <a href={`#explore-${data.media.visualizations[0]}`}>
+                Interactive exploration
+              </a>
+            )}
             {lesson ? (
               lesson.body
                 .split("\n")

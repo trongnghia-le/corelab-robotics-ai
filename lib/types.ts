@@ -131,6 +131,9 @@ export const emptyProgress = (): Progress => ({
   focusReason: "",
 });
 export type LessonMeta = {
+  videos?: string[];
+  visualizations?: import("./media").VisualizationId[];
+  illustrations?: import("./media").LessonMedia["illustrations"];
   id: string;
   module_id: string;
   title: string;
@@ -159,6 +162,7 @@ export type PracticeSkill = {
   questionCount: number;
 };
 export type TopicPayload = {
+  media?: import("./media").ResolvedMedia;
   practiceSkills?: PracticeSkill[];
   lesson: Lesson | null;
   overview: Overview;

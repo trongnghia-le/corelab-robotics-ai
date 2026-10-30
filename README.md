@@ -20,7 +20,34 @@ npm run build
 npm start
 ```
 
-Lessons, graph, assessments, notes, and progress work without Internet after dependencies are installed. Reference links need Internet. No analytics, telemetry, remote fonts, AI requests, or cloud synchronization are included. Next.js telemetry is disabled by the run/build scripts.
+Lessons, graph, assessments, notes, and progress work without Internet after dependencies are installed. Reference links and optional videos need Internet. CoreLab includes no analytics, telemetry, remote fonts, AI requests, or cloud synchronization. A third-party video player connects to YouTube only after you choose **Load video player**. Next.js telemetry is disabled by the run/build scripts.
+
+## Watch, explore, then verify
+
+Lessons now begin with objectives, an optional curated lecture, and a relevant interactive demo before the existing theory, worked examples, independent practice, diagnostic and references. **Watch & explore** / **Continue theory** keep the iframe mounted and restore your current theory heading/offset within the lesson. Selecting another lecture also keeps previously loaded players mounted. Leaving or reloading the lesson resets this temporary player/bookmark state; CoreLab does not access or persist a third-party playback history.
+
+The registry contains **28 verified video resources**, covering **25 of the 31 authored lessons**, plus selected overview topics. Sources include 3Blue1Brown, MIT OpenCourseWare, Northwestern Modern Robotics, Stanford CS231n, David Silver / Google DeepMind, Enthought and CppCon. M01, M08, R01, ML01, RS01 and CPP01 currently have no curated video; the UI says so. Individual descriptions explain partial coverage and extensions beyond a lesson. No durations, timestamps or captions are claimed without verification.
+
+Players use `youtube-nocookie.com`, load only on a click, and explicitly disable autoplay. CoreLab does not download thumbnails or redistribute videos. Attribution and **Open original video** remain available if embedding fails, is blocked, or is disabled by the publisher. Internet is required for playback; all lesson text, equations, demos, assessments and notes run locally with the local server running. No new service or account is required.
+
+Eight bounded, offline teaching models are available:
+
+| Model                     | Example topics | Controls and limits                                                                                |
+| ------------------------- | -------------- | -------------------------------------------------------------------------------------------------- |
+| Vector geometry           | M02            | Two vectors, sum, norm, dot product and projection; zero direction is undefined.                   |
+| Matrix transformation     | M03            | Four matrix entries, rotation/shear presets, basis and determinant.                                |
+| Gradient descent          | M06, M10       | Scalar quadratic, step size and starting point; explicit divergence and iteration limits.          |
+| Planar forward kinematics | R04            | Relative two-joint angles, fixed link lengths and world coordinates.                               |
+| Jacobian                  | R06            | Joint rates, local velocity, finite-step comparison and singularity.                               |
+| PID                       | C01, C03       | Ideal first-order plant, unit step, derivative on measurement; no saturation, delay or hardware.   |
+| CNN convolution           | V01, V02, V06  | Editable 5×5 input and 3×3 kernel, highlighted receptive field; valid cross-correlation, stride 1. |
+| Q-learning                | RL02, RL06     | Seeded 4×4 world, learning/discount/exploration controls, terminal targets and policy values.      |
+
+Every demo provides Reset, equations, a worked example and an accessible diagram or numerical readout. Original SVG diagrams beside the relevant theory explain projection, coordinate frames, backpropagation, feedback and the agent–environment loop. Watching or interacting does **not** save competency evidence or change mastery.
+
+Media lives in versioned sidecars: `content/media/videos.v1.json` records original sources, learning objectives, verification date and checked YouTube title/channel; `lesson-media.v1.json` maps topics to videos, visualization IDs and illustrations at named headings. Original Markdown lessons and historical assessment contracts are unchanged. New optional lesson metadata fields remain compatible with existing content and backups; no progress migration is needed.
+
+`npm run validate:content` checks registry schemas, IDs, mappings and illustration anchors without Internet. `npm run verify:media` optionally rechecks source URLs and YouTube oEmbed titles/channels online. A changed title/channel requires a human content review; availability and permission to embed can change after verification. Browser tests mock the external player to check loading/fallback behavior deterministically; they do not certify third-party streaming in every region.
 
 ## Start studying
 
@@ -60,12 +87,12 @@ The same 1/3/7/21-day topic scheduler is used for diagnostics and focused object
 
 Assessment questions display four complementary knowledge types:
 
-| Knowledge type | Assessment method | Evidence limit |
-| --- | --- | --- |
-| Concept | Identify misconceptions, explain principles and assumptions | Objective checks can contribute only through the full diagnostic gates. |
-| Procedure | Numerical calculations, derivations, independent verification | Open derivations use rubrics; keywords do not verify reasoning. |
-| Implementation | Build, debug, run local tests | Only supported signed A0 lab reports satisfy I gates; a written plan is unverified. |
-| Design & Decision | Compare scenarios, assumptions, alternatives and trade-offs | Open engineering judgments remain rubric-guided and unverified. |
+| Knowledge type    | Assessment method                                             | Evidence limit                                                                      |
+| ----------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Concept           | Identify misconceptions, explain principles and assumptions   | Objective checks can contribute only through the full diagnostic gates.             |
+| Procedure         | Numerical calculations, derivations, independent verification | Open derivations use rubrics; keywords do not verify reasoning.                     |
+| Implementation    | Build, debug, run local tests                                 | Only supported signed A0 lab reports satisfy I gates; a written plan is unverified. |
+| Design & Decision | Compare scenarios, assumptions, alternatives and trade-offs   | Open engineering judgments remain rubric-guided and unverified.                     |
 
 Knowledge type chooses **how** to assess; C/M/I/T still describes **which competence** is evidenced. Focused attempts are explicitly marked `purpose: targeted`, retain their selected question IDs and practice contract version, and **never satisfy diagnostic C/M, L1/L2, or retention gates**, even with a perfect score. Repairing a mistake is not global mastery. The existing signed lab workflow and historical full-diagnostic evidence retain their original rules.
 

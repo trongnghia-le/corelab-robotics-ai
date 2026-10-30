@@ -166,3 +166,29 @@ for (const [key, a] of Object.entries(catalog)) {
 console.log(
   `Validated metadata and ${variantCount} authored targeted questions across ${Object.keys(catalog).filter((k) => k.startsWith("targeted:")).length} topic banks.`,
 );
+
+const { videoRegistry, lessonMediaRegistry, mediaFor } =
+  await import("../lib/media");
+const mediaIds = videoRegistry.videos.map((v) => v.id);
+assert.equal(new Set(mediaIds).size, mediaIds.length, "Duplicate video IDs");
+for (const [id, media] of Object.entries(lessonMediaRegistry.lessons)) {
+  assert(topicMap[id], `Unknown media topic ${id}`);
+  assert.equal(new Set(media.visualizations).size, media.visualizations.length);
+  for (const ref of media.videos)
+    assert(mediaIds.includes(ref), `Unknown video ${ref}`);
+  const lesson = getLesson(id);
+  for (const illustration of media.illustrations) {
+    assert(lesson, `Illustration needs an authored lesson: ${id}`);
+    assert(
+      lesson.body
+        .toLowerCase()
+        .replaceAll(" ", "-")
+        .includes(`##-${illustration.heading}`),
+      `Missing illustration heading ${id}/${illustration.heading}`,
+    );
+  }
+  mediaFor(id);
+}
+console.log(
+  `Validated ${mediaIds.length} source-verified video resources; ${ids.filter((id) => mediaFor(id).videos.length).length}/${ids.length} authored lessons have curated video. Unmapped topics retain their local lesson/overview.`,
+);

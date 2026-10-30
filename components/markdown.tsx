@@ -1,4 +1,6 @@
 "use client";
+import { ConceptIllustration } from "./concept-illustration";
+import type { LessonMedia } from "@/lib/media";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -49,7 +51,13 @@ function CodeBlock({ children }: { children?: ReactNode }) {
     </div>
   );
 }
-export function LessonMarkdown({ body }: { body: string }) {
+export function LessonMarkdown({
+  body,
+  illustrations = [],
+}: {
+  body: string;
+  illustrations?: LessonMedia["illustrations"];
+}) {
   return (
     <div className="prose">
       <Markdown
@@ -58,7 +66,16 @@ export function LessonMarkdown({ body }: { body: string }) {
         skipHtml
         components={{
           h2: ({ children }) => (
-            <h2 id={headingId(textFromChildren(children))}>{children}</h2>
+            <>
+              <h2 id={headingId(textFromChildren(children))}>{children}</h2>
+              {illustrations
+                .filter(
+                  (i) => i.heading === headingId(textFromChildren(children)),
+                )
+                .map((i) => (
+                  <ConceptIllustration key={i.id} illustration={i} />
+                ))}
+            </>
           ),
           pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
           a: ({ href, children }) => (

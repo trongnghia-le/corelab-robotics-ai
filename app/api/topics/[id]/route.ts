@@ -1,3 +1,4 @@
+import { mediaFor } from "@/lib/media";
 import {
   getLesson,
   getOverview,
@@ -18,6 +19,7 @@ export async function GET(
       return Response.json({ error: "Unknown topic" }, { status: 404 });
     return Response.json({
       lesson: getLesson(id),
+      media: mediaFor(id),
       overview: getOverview(id),
       assessment: publicAssessment(getAssessment(id)),
       practiceSkills: practiceSkills(id),
