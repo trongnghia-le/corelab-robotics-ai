@@ -5,6 +5,8 @@ import { spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { createHash, generateKeyPairSync, sign } from "node:crypto";
+import { fileURLToPath } from "node:url";
+import { findPython } from "./runtime.mjs";
 try {
   const { values } = parseArgs({
     options: {
@@ -24,12 +26,26 @@ try {
     );
   const file = resolve(values.file);
   const source = readFileSync(file);
+  const python = findPython();
   const result = spawnSync(
-    "python3",
-    [resolve("scripts/lab-tests.py"), file, values.topic],
-    { encoding: "utf8", timeout: 30000, maxBuffer: 1024 * 1024 },
+    python.executable,
+    [
+      fileURLToPath(new URL("./lab-tests.py", import.meta.url)),
+      file,
+      values.topic,
+    ],
+    {
+      encoding: "utf8",
+      timeout: 30000,
+      maxBuffer: 1024 * 1024,
+      windowsHide: true,
+      shell: false,
+    },
   );
-  if (result.error) throw result.error;
+  if (result.error)
+    throw new Error(
+      `Unable to run the local Python tests (${python.launcher}): ${result.error.message}. No evidence created.`,
+    );
   if (result.status !== 0)
     throw new Error(
       `Fixed tests failed. No evidence created.\n${result.stderr || result.stdout}`,
