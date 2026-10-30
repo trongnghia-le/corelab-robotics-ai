@@ -1,3 +1,4 @@
+import { isObjective } from "./assessment";
 import { ancestors, topicMap, topics } from "./curriculum";
 import {
   dimensions,
@@ -7,18 +8,19 @@ import {
   type Mastery,
   type Progress,
   type Recommendation,
+  type Weakness,
 } from "./types";
 export function gradeAssessment(
   assessment: Assessment,
   answers: Answers,
 ): Grade {
-  const objective = assessment.questions.filter((q) => q.kind !== "short");
+  const objective = assessment.questions.filter(isObjective);
   const items = assessment.questions.map((q) => {
-    if (q.kind === "short")
+    if (!isObjective(q))
       return {
         id: q.id,
         correct: null,
-        feedback: `Review against the rubric; unverified. ${q.rubric?.join(" • ")}`,
+        feedback: `Review against the rubric; unverified. ${q.rubric?.join(" • ") ?? "No automatic verifier is supported for this knowledge type."}`,
       };
     const raw = (answers[q.id] ?? "").trim();
     const numeric = Number(raw);
@@ -64,7 +66,8 @@ export function masteryFor(
   p: Progress,
   now = new Date(),
 ): Mastery {
-  const attempts = p.attempts.filter((a) => a.topicId === topicId),
+  const allAttempts = p.attempts.filter((a) => a.topicId === topicId),
+    attempts = allAttempts.filter((a) => a.purpose !== "targeted"),
     sessions = p.sessions.filter((s) => s.topicId === topicId);
   const dims: Mastery["dimensions"] = { C: 0, M: 0, I: 0, T: 0 };
   // A1+ is useful practice; only a fresh A0 attempt satisfies independent gates.
@@ -101,13 +104,13 @@ export function masteryFor(
       ? "verified"
       : provisionalLevel
         ? "provisional"
-        : attempts.length || sessions.length || labs.length
+        : allAttempts.length || sessions.length || labs.length
           ? "in_progress"
           : "unassessed",
     reviewDue: p.reviews.some(
       (r) => r.topicId === topicId && Date.parse(r.due) <= now.getTime(),
     ),
-    gap: !!latest && !latest.grade.passed,
+    gap: !!latest && latest.grade.items.some((i) => i.correct === false),
   };
 }
 export function allMastery(p: Progress, now = new Date()) {
@@ -119,6 +122,7 @@ export function recommend(
   p: Progress,
   available: string[],
   now = new Date(),
+  weaknesses: Weakness[] = [],
 ): Recommendation[] {
   const m = allMastery(p, now),
     availableSet = new Set(available);
@@ -133,29 +137,36 @@ export function recommend(
       const missing = t.prerequisites.filter((id) => m[id].level < 1);
       if (missing.length) return [];
       const state = m[t.id];
+      const weak = weaknesses.find(
+        (w) => w.topicId === t.id && w.status !== "independently_corrected",
+      );
       if (
         state.level >= 1 &&
         !state.reviewDue &&
         !state.gap &&
-        state.dimensions.I >= 2
+        state.dimensions.I >= 2 &&
+        !weak
       )
         return [];
       const read = p.sessions.some(
         (s) => s.topicId === t.id && s.kind === "reading",
       );
-      const kind: Recommendation["kind"] = state.reviewDue
-        ? "review"
-        : state.gap
-          ? "assess"
-          : state.level >= 1
-            ? "practice"
-            : read
-              ? "assess"
-              : "learn";
+      const kind: Recommendation["kind"] = weak
+        ? "practice"
+        : state.reviewDue
+          ? "review"
+          : state.gap
+            ? "assess"
+            : state.level >= 1
+              ? "practice"
+              : read
+                ? "assess"
+                : "learn";
       const dependents = topics.filter((x) =>
         x.prerequisites.includes(t.id),
       ).length;
       let rank =
+        (weak ? 60 : 0) +
         (t.priority === "P0" ? 30 : 0) +
         Math.min(dependents, 10) +
         (relevant.has(t.id) ? 25 : 0) +
@@ -167,27 +178,32 @@ export function recommend(
         (["M02", "M03"].includes(t.id) ? 20 : 0) +
         (t.id === "M05" ? 8 : 0);
       // Give the next missing foundation priority over repeating a passed quiz.
-      if (state.level >= 1 && !state.reviewDue && !state.gap) rank -= 55;
-      const reason = state.reviewDue
-        ? "Review due: check retention without viewing the solution."
-        : state.gap
-          ? "The latest attempt revealed a gap; read the feedback and try again independently."
-          : state.level >= 1
-            ? "Conceptual evidence is available; next, implement independently and test your work."
-            : pinned.has(t.id)
-              ? `A foundation needed for your pinned goal ${p.focusTopic}; its prerequisites now have L1 evidence.`
-              : t.prerequisites.length
-                ? "Prerequisites have L1 evidence. This is the next step in building your foundations."
-                : "No evidence yet. Start with a foundation that has no prerequisites.";
+      if (state.level >= 1 && !state.reviewDue && !state.gap && !weak)
+        rank -= 55;
+      const reason = weak
+        ? `Practice ${weak.skillLabel}: ${weak.failureCount} recorded mistakes. Focus on this skill rather than repeating the lesson.`
+        : state.reviewDue
+          ? "Review due: check retention without viewing the solution."
+          : state.gap
+            ? "The latest attempt revealed a gap; read the feedback and try again independently."
+            : state.level >= 1
+              ? "Conceptual evidence is available; next, implement independently and test your work."
+              : pinned.has(t.id)
+                ? `A foundation needed for your pinned goal ${p.focusTopic}; its prerequisites now have L1 evidence.`
+                : t.prerequisites.length
+                  ? "Prerequisites have L1 evidence. This is the next step in building your foundations."
+                  : "No evidence yet. Start with a foundation that has no prerequisites.";
       return [
         {
           topicId: t.id,
           kind,
           rank,
+          weaknessKey: weak?.key,
           reason,
           prerequisites: t.prerequisites,
-          exercise:
-            kind === "practice"
+          exercise: weak
+            ? "Review the linked reasoning and solve a fresh focused A0 set. Focused correction is separate from full diagnostic mastery."
+            : kind === "practice"
               ? "Implement the assignment independently, run local tests, and import the report."
               : "Try an A0 diagnostic first; study and address gaps after your attempt.",
         },
@@ -218,6 +234,9 @@ export function contextFor(
       passed: a.grade.passed,
       assistance: a.assistance,
       assessmentVersion: a.assessmentVersion,
+      purpose: a.purpose ?? "diagnostic",
+      skillTag: a.skillTag,
+      questionIds: a.questionIds,
     }));
   return JSON.stringify(
     {

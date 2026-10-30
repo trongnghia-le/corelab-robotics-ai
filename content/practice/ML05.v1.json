@@ -1,0 +1,183 @@
+{
+  "id": "ML05-targeted",
+  "topicId": "ML05",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gradient-accumulation"
+      ],
+      "skillLabel": "Accumulate gradients through multiple paths",
+      "relatedPrerequisites": [
+        "ML04",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/ML05#theory-and-derivation"
+        }
+      ],
+      "id": "shared-gradient-1",
+      "kind": "choice",
+      "prompt": "A shared parameter contributes to loss through three graph paths. How do you combine its derivative contributions?",
+      "options": [
+        "Keep only the contribution from the last path.",
+        "Sum all three contributions."
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "The total differential adds the effect of each dependency path.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gradient-accumulation"
+      ],
+      "skillLabel": "Accumulate gradients through multiple paths",
+      "relatedPrerequisites": [
+        "ML04",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/ML05#theory-and-derivation"
+        }
+      ],
+      "id": "shared-gradient-2",
+      "kind": "choice",
+      "prompt": "For L(w)=w²+w, which derivative accounts for both uses of w?",
+      "options": [
+        "2w+1",
+        "2w"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "The square path contributes 2w and the direct path contributes 1.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "neuron-gradients"
+      ],
+      "skillLabel": "Backpropagate through a scalar neuron",
+      "relatedPrerequisites": [
+        "ML04",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/ML05#theory-and-derivation"
+        }
+      ],
+      "id": "neuron-values-1",
+      "kind": "number",
+      "prompt": "Identity neuron x=3,w=2,b=0,y=4, L=½(wx+b−y)². Give dL/dw.",
+      "answer": "6",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Residual is 2; multiply by x=3 to get 6.",
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "neuron-gradients"
+      ],
+      "skillLabel": "Backpropagate through a scalar neuron",
+      "relatedPrerequisites": [
+        "ML04",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/ML05#theory-and-derivation"
+        }
+      ],
+      "id": "neuron-values-2",
+      "kind": "number",
+      "prompt": "Identity neuron x=2,w=1,b=1,y=5, L=½(wx+b−y)². Give dL/db.",
+      "answer": "-2",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Prediction is 3, residual is −2, and dz/db=1.",
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "id": "design-scenario-1",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "design-decisions"
+      ],
+      "skillLabel": "Analyze assumptions and justify a decision",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "ML04",
+        "M06"
+      ],
+      "prompt": "Choose finite differences, forward-mode, or reverse-mode differentiation for a scalar loss with many parameters. Discuss cost, numerical error, and how you would validate the implementation.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Open engineering judgment; rubric-guided and unverified.",
+      "rubric": [
+        "State the number of inputs and outputs.",
+        "Compare directional products and full parameter gradients.",
+        "Use a tiny double-precision gradient check away from nonsmooth points."
+      ],
+      "remediationRefs": [
+        {
+          "label": "Compare alternatives in the lesson",
+          "href": "/lessons/ML05"
+        }
+      ]
+    },
+    {
+      "id": "implementation-plan-1",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "independent-implementation"
+      ],
+      "skillLabel": "Implement and verify a minimal algorithm",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "ML04",
+        "M06"
+      ],
+      "prompt": "Implement a minimal calculation from this topic, write independent tests and a failing mutation, and record the exact local command. No signed verifier currently certifies this assignment. Describe the input/output contract and verification plan here; writing the plan alone never establishes I evidence.",
+      "dimension": "I",
+      "critical": false,
+      "explanation": "A written plan is unverified. Only a supported signed A0 local test report can satisfy an implementation gate.",
+      "rubric": [
+        "Define inputs, outputs, invalid inputs, and assistance.",
+        "Give a reference result, boundary tests, and a mutation that your tests reject.",
+        "Record source version and exact commands; import a supported report separately."
+      ]
+    }
+  ]
+}

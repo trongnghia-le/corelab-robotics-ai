@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { useCore, Loading } from "./provider";
 import { PageHeading, Status, dateText, TopicChips } from "./ui";
+import { weaknessUrl } from "@/lib/weaknesses";
+import { WeaknessStatus } from "./weakness-practice";
 import { domains, topics, topicMap } from "@/lib/curriculum";
 export function Dashboard() {
   const { state } = useCore();
@@ -22,14 +24,16 @@ export function Dashboard() {
   const topic = rec ? topicMap[rec.topicId] : null;
   const verified = topics.filter((t) => mastery[t.id].level > 0),
     attempted = new Set(progress.attempts.map((a) => a.topicId));
-  const gaps = topics.filter((t) => mastery[t.id].gap),
-    due = progress.reviews.filter((r) => mastery[r.topicId].reviewDue);
+  const weaknesses = state.weaknesses.filter(
+    (w) => w.status !== "independently_corrected",
+  );
+  const due = progress.reviews.filter((r) => mastery[r.topicId].reviewDue);
   const recent = [
     ...progress.attempts.map((a) => ({
       id: a.id,
       topicId: a.topicId,
       at: a.at,
-      text: `Diagnostic · ${a.grade.score}% · ${a.assistance}`,
+      text: `${a.purpose === "targeted" ? "Focused practice" : "Diagnostic"} · ${a.grade.items.some((i) => i.correct !== null) ? `${a.grade.score}%` : "Rubric only"} · ${a.assistance}`,
       kind: "assessment",
     })),
     ...progress.sessions.map((s) => ({
@@ -86,18 +90,25 @@ export function Dashboard() {
                 <Link
                   className="button primary"
                   href={
-                    rec.kind === "assess" || rec.kind === "review"
-                      ? `/assessments/${topic.id}`
-                      : rec.kind === "practice"
-                        ? `/practice?topic=${topic.id}`
-                        : `/lessons/${topic.id}`
+                    rec.weaknessKey
+                      ? weaknessUrl(
+                          rec.topicId,
+                          rec.weaknessKey.split(":")[1],
+                        ) + "#targeted-practice"
+                      : rec.kind === "assess" || rec.kind === "review"
+                        ? `/assessments/${topic.id}`
+                        : rec.kind === "practice"
+                          ? `/practice?topic=${topic.id}`
+                          : `/lessons/${topic.id}`
                   }
                 >
-                  {rec.kind === "review"
-                    ? "Review now"
-                    : rec.kind === "assess"
-                      ? "Start diagnostic"
-                      : "Continue learning"}
+                  {rec.weaknessKey
+                    ? "Practice weak skill"
+                    : rec.kind === "review"
+                      ? "Review now"
+                      : rec.kind === "assess"
+                        ? "Start diagnostic"
+                        : "Continue learning"}
                   <ArrowRight size={17} />
                 </Link>
                 <span className="muted small">
@@ -140,7 +151,7 @@ export function Dashboard() {
             </span>
           </div>
           <div className="aside-stat">
-            <span>Topics assessed</span>
+            <span>Topics attempted</span>
             <strong>
               {attempted.size} {attempted.size === 1 ? "topic" : "topics"}
             </strong>
@@ -202,40 +213,38 @@ export function Dashboard() {
       <div className="two-columns">
         <section className="panel">
           <div className="panel-heading">
-            <h2>Needs attention</h2>
+            <h2>Weaknesses to Review</h2>
             <GitBranch size={18} />
           </div>
-          {gaps.length ? (
+          {weaknesses.length ? (
             <div className="stack">
-              {gaps.slice(0, 3).map((t) => (
-                <Link
-                  className="attention-row"
-                  href={`/assessments/${t.id}`}
-                  key={t.id}
-                >
-                  <span className="mono">{t.id}</span>
-                  <span>
-                    {t.title}
-                    <small>The latest attempt has areas to revisit</small>
+              {weaknesses.slice(0, 3).map((w) => (
+                <div className="dashboard-weakness" key={w.key}>
+                  <strong>
+                    {w.topicId} · {w.skillLabel}
+                  </strong>
+                  <span className="small muted">
+                    {w.failureCount} mistakes · {w.failedAttempts} failed
+                    attempts
                   </span>
-                  <ArrowRight size={15} />
-                </Link>
+                  <WeaknessStatus weakness={w} />
+                </div>
               ))}
             </div>
           ) : (
-            <div className="empty-inline">
-              <ShieldCheck size={23} />
-              <p>
-                {progress.attempts.length
-                  ? "No gaps identified in your attempts so far."
-                  : "There is not enough evidence yet to identify strengths or gaps."}
-              </p>
-              <Link href="/assessments/M01">
-                Start M01 diagnostic
-                <ArrowRight size={14} />
-              </Link>
-            </div>
+            <p className="small muted">
+              {progress.attempts.length
+                ? "No active objective weaknesses. Historical mistakes remain available in Practice."
+                : "Not enough evidence yet. Objective assessment mistakes will appear here; ungraded responses never count as errors."}
+            </p>
           )}
+          <Link
+            className="text-link weakness-dashboard-action"
+            href={weaknessUrl(weaknesses[0]?.topicId, weaknesses[0]?.skillTag)}
+          >
+            Practice Weaknesses
+            <ArrowRight size={14} />
+          </Link>
           {due.length > 0 && (
             <div className="review-block">
               <strong className="warning-text">Review due</strong>

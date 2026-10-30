@@ -6,7 +6,14 @@ import { z } from "zod";
 import { topics, topicMap } from "./curriculum";
 import { emptyProgress, type Progress, type Attempt } from "./types";
 import { gradeAssessment } from "./engine";
-import { getAssessment } from "./content";
+import { getAssessment, getAssessmentCatalog } from "./content";
+import { resolveAttempt } from "./assessment";
+import {
+  deriveWeaknesses,
+  selectTargetedPlan,
+  assertTargetedSubmission,
+} from "./weaknesses";
+import { scheduleReview } from "./reviews";
 import { validateLab } from "./labs";
 const id = z.string().min(1).max(100);
 const topicId = z.string().refine((v) => !!topicMap[v], "Unknown topic");
@@ -25,6 +32,12 @@ const grade = z.object({
   ),
 });
 const attemptSchema = z.object({
+  purpose: z.literal("targeted").optional(),
+  skillTag: z
+    .string()
+    .regex(/^[a-z0-9][a-z0-9-]*$/)
+    .optional(),
+  questionIds: z.array(z.string().min(1).max(100)).min(1).max(3).optional(),
   id,
   topicId,
   assessmentVersion: z.number().int().positive(),
@@ -81,14 +94,21 @@ export const progressSchema = z
   .strict();
 export const backupSchema = z
   .object({
-    schema: z.literal("corelab-backup/1"),
+    schema: z.enum(["corelab-backup/1", "corelab-backup/2"]),
     curriculumVersion: z.literal("1.0"),
     exportedAt: date,
     progress: progressSchema,
   })
   .strict();
 export function validateBackup(input: unknown): Progress {
-  const p = backupSchema.parse(input).progress as Progress;
+  const backup = backupSchema.parse(input);
+  const p = backup.progress as Progress;
+  if (
+    backup.schema === "corelab-backup/1" &&
+    p.attempts.some((a) => a.purpose === "targeted")
+  )
+    throw new Error("Targeted attempts require backup schema v2");
+  const catalog = getAssessmentCatalog();
   for (const collection of [p.attempts, p.sessions, p.labs]) {
     const seen = new Set<string>();
     for (const item of collection) {
@@ -99,7 +119,9 @@ export function validateBackup(input: unknown): Progress {
     }
   }
   for (const a of p.attempts) {
-    const contract = getAssessment(a.topicId, a.assessmentVersion);
+    if (a.purpose !== "targeted" && (a.skillTag || a.questionIds))
+      throw new Error("Practice fields require targeted purpose");
+    const contract = resolveAttempt(a, catalog);
     if (!contract)
       throw new Error(
         `Missing assessment contract ${a.topicId} v${a.assessmentVersion}`,
@@ -195,7 +217,7 @@ export class Store {
   }
   export() {
     return {
-      schema: "corelab-backup/1" as const,
+      schema: "corelab-backup/2" as const,
       curriculumVersion: "1.0" as const,
       exportedAt: new Date().toISOString(),
       progress: this.read(),
@@ -230,27 +252,48 @@ export class Store {
     };
     this.update((p) => {
       p.attempts.push(attempt);
-      const old = p.reviews.find((r) => r.topicId === topic);
-      const independentPass = attempt.grade.passed && help === "A0";
-      const isDue = old && Date.parse(old.due) <= Date.parse(attempt.at);
-      const stage = independentPass
-        ? Math.min(3, old && isDue ? old.stage + 1 : (old?.stage ?? 0))
-        : 0;
-      const days = independentPass ? [1, 3, 7, 21][stage] : 1;
-      const due = new Date(
-        Date.parse(attempt.at) + days * 86400000,
-      ).toISOString();
-      if (!old || !independentPass || isDue) {
-        p.reviews = p.reviews.filter((r) => r.topicId !== topic);
-        p.reviews.push({
-          topicId: topic,
-          due,
-          stage,
-          lastAttemptId: attempt.id,
-        });
-      }
+      scheduleReview(p, attempt);
     });
     return attempt;
+  }
+  targetedAttempt(
+    topicId: string,
+    skillTag: string,
+    questionIds: string[],
+    answers: Record<string, string>,
+    assistance: Attempt["assistance"],
+    version: number,
+  ) {
+    const catalog = getAssessmentCatalog();
+    let saved: Attempt | undefined;
+    this.update((p) => {
+      const plan = selectTargetedPlan(p, catalog, topicId, skillTag);
+      assertTargetedSubmission(plan, questionIds);
+      if (version !== plan.assessment.version)
+        throw new Error("Practice contract version mismatch");
+      if (Object.keys(answers).some((id) => !questionIds.includes(id)))
+        throw new Error("Answer references a question outside this set");
+      if (plan.assessment.questions.some((q) => !answers[q.id]?.trim()))
+        throw new Error("Complete every question before submitting");
+      saved = {
+        id: randomUUID(),
+        topicId,
+        assessmentVersion: version,
+        at: new Date().toISOString(),
+        assistance,
+        answers,
+        grade: gradeAssessment(plan.assessment, answers),
+        purpose: "targeted",
+        skillTag,
+        questionIds,
+      };
+      p.attempts.push(saved);
+      const remaining = deriveWeaknesses(p, catalog).some(
+        (w) => w.topicId === topicId && w.status !== "independently_corrected",
+      );
+      scheduleReview(p, saved, remaining);
+    });
+    return saved!;
   }
   close() {
     this.db.close();

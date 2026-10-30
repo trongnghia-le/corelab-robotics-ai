@@ -3,6 +3,7 @@ import {
   getOverview,
   getAssessment,
   publicAssessment,
+  practiceSkills,
 } from "@/lib/content";
 import { topicMap } from "@/lib/curriculum";
 import { failure, checkLocalRequest } from "@/lib/http";
@@ -19,6 +20,7 @@ export async function GET(
       lesson: getLesson(id),
       overview: getOverview(id),
       assessment: publicAssessment(getAssessment(id)),
+      practiceSkills: practiceSkills(id),
     });
   } catch (e) {
     return failure(e);

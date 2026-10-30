@@ -12,6 +12,15 @@ const actionSchema = z.discriminatedUnion("type", [
     assistance: z.enum(["A0", "A1", "A2", "A3"]),
   }),
   z.object({
+    type: z.literal("targeted_attempt"),
+    topicId,
+    skillTag: z.string().regex(/^[a-z0-9][a-z0-9-]*$/),
+    questionIds: z.array(z.string().min(1).max(100)).min(1).max(3),
+    answers: z.record(z.string().max(100), z.string().max(10000)),
+    assistance: z.enum(["A0", "A1", "A2", "A3"]),
+    assessmentVersion: z.number().int().positive(),
+  }),
+  z.object({
     type: z.literal("session"),
     topicId,
     kind: z.enum([
@@ -54,6 +63,15 @@ export function applyAction(store: Store, input: unknown) {
   const a = actionSchema.parse(input);
   if (a.type === "attempt")
     return store.attempt(a.topicId, a.answers, a.assistance);
+  if (a.type === "targeted_attempt")
+    return store.targetedAttempt(
+      a.topicId,
+      a.skillTag,
+      a.questionIds,
+      a.answers,
+      a.assistance,
+      a.assessmentVersion,
+    );
   if (a.type === "restore") return store.restore(a.backup, a.confirm);
   const at = new Date().toISOString();
   if (a.type === "session") {

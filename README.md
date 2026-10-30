@@ -48,6 +48,31 @@ Passing A0 retests separated by at least seven days record **retention evidence 
 
 Recommendations are deterministic: consider missing prerequisites, essential foundation order, priority, selected goal and project ancestors, actual failed attempts, due reviews, and already verified evidence. At most three recommendations include a reason and suggested exercise. A diagnostic L1 is sufficient to proceed with the next introductory activity; it is not a claim that the topic's lifetime target level has been achieved.
 
+## Mistake-driven practice and knowledge types
+
+Open **Practice → My Weaknesses**, or use **Practice Weaknesses** on the Dashboard. Incorrect objective answers are derived from the original attempt history and grouped by topic and skill. You can inspect question IDs, immutable contract versions, error counts, failed submissions, categories, timestamps, prerequisites, and review status. Ungraded short answers are never counted as mistakes. Categories come from authored metadata; legacy questions use a visibly labeled, conservative format-based fallback.
+
+Use **Review Concept** for the relevant lesson section, **Practice Weak Skill** for a focused set, or **Retry Assessment** for the complete diagnostic. The selector deterministically prioritizes authored equivalents for the failed skill, due recall checks, and fresh examples. Repeated failures also suggest checking actual unverified prerequisites. Selection never invents curriculum edges or random questions. The initial library contains **42 focused questions across M02, M05, PY01, R04, ML05, V01, and RL02**; missing coverage is stated explicitly.
+
+A skill remains **Active** until new evidence corrects it. Assisted correctness records **Practiced with assistance**. A fresh correct A0 equivalent can record **Independently corrected**; explicitly mapped, newer signed A0 labs can repair the relevant skill as well. Correct answers do not cancel an error in the same skill within the same submission. History is retained, and a later error reopens the weakness. When the existing topic review becomes due, a repaired skill is labeled **Due for retention review**. A delayed A0 failure after prior independent correctness can be categorized as a retention failure; this is separate from mastery.
+
+The same 1/3/7/21-day topic scheduler is used for diagnostics and focused objective attempts. Open rubric responses do not create review failures. A correct partial set does not postpone other skills still due on the shared schedule. An already-seen variant can be reused once when review is due and at least seven days have passed; immediate retries and further automatic recycling are refused. When the authored bank is exhausted, review feedback or explicitly retry the full diagnostic. More variants must be authored.
+
+Assessment questions display four complementary knowledge types:
+
+| Knowledge type | Assessment method | Evidence limit |
+| --- | --- | --- |
+| Concept | Identify misconceptions, explain principles and assumptions | Objective checks can contribute only through the full diagnostic gates. |
+| Procedure | Numerical calculations, derivations, independent verification | Open derivations use rubrics; keywords do not verify reasoning. |
+| Implementation | Build, debug, run local tests | Only supported signed A0 lab reports satisfy I gates; a written plan is unverified. |
+| Design & Decision | Compare scenarios, assumptions, alternatives and trade-offs | Open engineering judgments remain rubric-guided and unverified. |
+
+Knowledge type chooses **how** to assess; C/M/I/T still describes **which competence** is evidenced. Focused attempts are explicitly marked `purpose: targeted`, retain their selected question IDs and practice contract version, and **never satisfy diagnostic C/M, L1/L2, or retention gates**, even with a perfect score. Repairing a mistake is not global mastery. The existing signed lab workflow and historical full-diagnostic evidence retain their original rules.
+
+New metadata lives in `content/assessment-metadata.v1.json`, outside the unchanged diagnostic v1 answer contracts. Fixed variants and rubrics live in `content/practice/TOPIC.v1.json`. Metadata includes `knowledgeType`, skill tags/labels, categories, related prerequisites, optional method/remediation references, and explicit equivalent-question mappings. Freeze published metadata and practice versions alongside their answer contracts. Content validation checks their references, prerequisite ancestry, lesson headings, answer contracts, and public answer-key redaction. Legacy question formats have deterministic defaults.
+
+The SQLite layout and existing records need no destructive migration: additional attempt fields are optional. New exports use **`corelab-backup/2`**; both old v1 backups and v2 backups are accepted. A v1 envelope cannot disguise targeted attempts. Restore validates selected questions and skills against the retained practice version and recomputes scores; histories, assistance, signatures, and the one topic review schedule survive the round trip.
+
 ## Local practice verification
 
 Download a starter from Practice and write your implementation in a separate file. The server **never executes submitted code**. You intentionally run the local verifier in your terminal:
@@ -144,7 +169,7 @@ npx playwright install chromium  # once, for browser tests
 npm run test:e2e           # production server on port 3217, isolated test database
 ```
 
-Browser tests cover empty progress, lesson/math rendering, reading separation, assessment submission, reload persistence, evidence, recommendation changes, clipboard context, provisional AI feedback, export/confirmed restore, graph navigation, overview honesty, invalid import, local-origin protection, and mobile layout. Unit/integration tests cover graph errors, grading/critical items/tolerances, assistance, mastery gates, retention, recommendations, SQLite transactions, backup integrity, and signed reports. Test data and screenshots stay under ignored `.local/` and test-results directories.
+Browser tests cover empty progress, lesson/math rendering, reading separation, assessment submission, reload persistence, evidence, recommendation changes, clipboard context, provisional AI feedback, export/confirmed restore, graph navigation, overview honesty, invalid import, local-origin protection, mobile layout, typed assessment guidance, mistake-driven practice, A3-to-A0 repair, and v2 backup restoration. Unit/integration tests cover graph errors, grading/critical items/tolerances, assistance, mastery gates, retention, recommendations, SQLite transactions, backup integrity, signed reports, targeted selection and exhaustion, mistake repair, type-aware grading, and v1/v2 backup compatibility. Test data and screenshots stay under ignored `.local/` and test-results directories.
 
 ## Troubleshooting
 
@@ -156,4 +181,4 @@ Browser tests cover empty progress, lesson/math rendering, reading separation, a
 - **Browser dependency missing**: install Playwright's Ubuntu dependencies with `npx playwright install --with-deps chromium` if the test runner reports missing system libraries.
 - **Setup referenced missing ChatGPT files**: use the handoff workflow above; automatic Project creation and chat synchronization are not implemented.
 
-Repository: https://github.com/trongnghia-le/core-lab
+Repository: https://github.com/trongnghia-le/core-lab-cognitive-robotics

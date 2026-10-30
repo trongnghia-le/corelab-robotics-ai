@@ -1,0 +1,179 @@
+{
+  "id": "M05-targeted",
+  "topicId": "M05",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "chain-rule"
+      ],
+      "skillLabel": "Differentiating composite functions",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M05#theory-and-derivation"
+        }
+      ],
+      "id": "chain-sensor-1",
+      "kind": "choice",
+      "prompt": "A sensor computes y=f(g(t)). To find sensitivity to t, what must be propagated?",
+      "options": [
+        "Only f′(t); the inner conversion is irrelevant.",
+        "The local derivative of f at g(t), multiplied by g′(t)."
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "A change in t first changes g, then f; both local sensitivities multiply.",
+      "equivalentTo": [
+        "q1",
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "chain-rule"
+      ],
+      "skillLabel": "Differentiating composite functions",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M05#theory-and-derivation"
+        }
+      ],
+      "id": "chain-sensor-2",
+      "kind": "choice",
+      "prompt": "For y=sin(2x), which reasoning identifies the missing factor in a derivative written as cos(2x)?",
+      "options": [
+        "The inner quantity 2x changes at rate 2, so multiply by 2.",
+        "No factor is missing because the sine already contains 2x."
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "The outer derivative is cos(2x) and the inner derivative is 2.",
+      "equivalentTo": [
+        "q1",
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "chain-rule"
+      ],
+      "skillLabel": "Differentiating composite functions",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M05#theory-and-derivation"
+        }
+      ],
+      "id": "chain-values-1",
+      "kind": "number",
+      "prompt": "For f(x)=(2x−1)³, give f′(1).",
+      "answer": "6",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Let u=2x−1. Then f′=3u²×2; at x=1 the result is 6.",
+      "equivalentTo": [
+        "q1",
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "chain-rule"
+      ],
+      "skillLabel": "Differentiating composite functions",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M05#theory-and-derivation"
+        }
+      ],
+      "id": "chain-values-2",
+      "kind": "number",
+      "prompt": "For f(x)=(4x+2)², give f′(0).",
+      "answer": "16",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "f′=2(4x+2)×4, giving 16 at zero.",
+      "equivalentTo": [
+        "q1",
+        "q3"
+      ]
+    },
+    {
+      "id": "design-scenario-1",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "design-decisions"
+      ],
+      "skillLabel": "Analyze assumptions and justify a decision",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "prompt": "Choose analytical derivatives or central differences for a noisy black-box sensor calibration. Explain assumptions, step-size trade-offs, and how to distinguish a bad derivative from numerical cancellation.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Open engineering judgment; rubric-guided and unverified.",
+      "rubric": [
+        "State smoothness and measurement-noise assumptions.",
+        "Compare truncation error, cancellation, and evaluation cost.",
+        "Propose a step-size experiment and an independent check."
+      ],
+      "remediationRefs": [
+        {
+          "label": "Compare alternatives in the lesson",
+          "href": "/lessons/M05"
+        }
+      ]
+    },
+    {
+      "id": "implementation-plan-1",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "independent-implementation"
+      ],
+      "skillLabel": "Implement and verify a minimal algorithm",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "prompt": "Implement a minimal calculation from this topic, write independent tests and a failing mutation, and record the exact local command. No signed verifier currently certifies this assignment. Describe the input/output contract and verification plan here; writing the plan alone never establishes I evidence.",
+      "dimension": "I",
+      "critical": false,
+      "explanation": "A written plan is unverified. Only a supported signed A0 local test report can satisfy an implementation gate.",
+      "rubric": [
+        "Define inputs, outputs, invalid inputs, and assistance.",
+        "Give a reference result, boundary tests, and a mutation that your tests reject.",
+        "Record source version and exact commands; import a supported report separately."
+      ]
+    }
+  ]
+}

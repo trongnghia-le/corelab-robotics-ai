@@ -8,7 +8,27 @@ export const dimensionNames = {
 };
 export type Assistance = "A0" | "A1" | "A2" | "A3";
 export type Answers = Record<string, string>;
-export type Question = {
+export type KnowledgeType =
+  "concept" | "procedure" | "implementation" | "design";
+export type MistakeCategory =
+  | "conceptual"
+  | "mathematical"
+  | "procedural"
+  | "implementation"
+  | "method_selection"
+  | "retention";
+export type QuestionMetadata = {
+  knowledgeType?: KnowledgeType;
+  skillTags?: string[];
+  skillLabel?: string;
+  relatedPrerequisites?: string[];
+  mistakeCategory?: MistakeCategory;
+  recommendedMethod?: string;
+  remediationRefs?: { label: string; href: string }[];
+  verifiedLabTopicId?: "M02" | "PY01";
+  equivalentTo?: string[];
+};
+export type Question = QuestionMetadata & {
   id: string;
   prompt: string;
   kind: "choice" | "number" | "short";
@@ -33,6 +53,9 @@ export type Grade = {
   items: { id: string; correct: boolean | null; feedback: string }[];
 };
 export type Attempt = {
+  purpose?: "targeted";
+  skillTag?: string;
+  questionIds?: string[];
   id: string;
   topicId: string;
   assessmentVersion: number;
@@ -96,6 +119,7 @@ export type Recommendation = {
   prerequisites: string[];
   exercise: string;
   rank: number;
+  weaknessKey?: string;
 };
 export const emptyProgress = (): Progress => ({
   attempts: [],
@@ -128,12 +152,60 @@ export type Overview = {
   application: string;
   task: string;
 };
+export type PracticeSkill = {
+  tag: string;
+  label: string;
+  knowledgeTypes: KnowledgeType[];
+  questionCount: number;
+};
 export type TopicPayload = {
+  practiceSkills?: PracticeSkill[];
   lesson: Lesson | null;
   overview: Overview;
   assessment: Assessment | null;
 };
+export type WeaknessStatus =
+  | "active"
+  | "practiced_with_assistance"
+  | "independently_corrected"
+  | "due_for_retention_review";
+export type Weakness = {
+  key: string;
+  topicId: string;
+  skillTag: string;
+  skillLabel: string;
+  knowledgeType: KnowledgeType;
+  failedAttempts: number;
+  failureCount: number;
+  questionRefs: {
+    questionId: string;
+    version: number;
+    purpose: "diagnostic" | "targeted";
+  }[];
+  categories: MistakeCategory[];
+  classificationSource: "authored" | "legacy-inferred";
+  lastAttemptAt: string;
+  lastFailedAt: string;
+  lastCorrectedAt: string | null;
+  latestResult:
+    "incorrect" | "assisted_correct" | "independent_correct" | "verified_lab";
+  status: WeaknessStatus;
+  reviewDueAt: string | null;
+  prerequisites: string[];
+  remediation: { label: string; href: string }[];
+  priority: number;
+};
+export type TargetedPlan = {
+  topicId: string;
+  skillTag: string;
+  skillLabel: string;
+  assessment: Assessment;
+  weakness: Weakness | null;
+  message: string;
+  prerequisiteActivities: { topicId: string; reason: string; href: string }[];
+};
 export type AppState = {
+  weaknesses: Weakness[];
   progress: Progress;
   mastery: Record<string, Mastery>;
   recommendations: Recommendation[];

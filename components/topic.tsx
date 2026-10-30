@@ -19,6 +19,9 @@ import { useCore, Loading, copyText } from "./provider";
 import { TopicChips, Status, Matrix, Time, dateText } from "./ui";
 import { headingId } from "./markdown";
 import { LearningVisual } from "./learning-visual";
+import { AssessmentQuestion, AssistanceSelect } from "./assessment-question";
+import { AssessmentMethods } from "./assessment-methods";
+import { weaknessUrl } from "@/lib/weaknesses";
 const LessonMarkdown = dynamic(
   () => import("./markdown").then((m) => m.LessonMarkdown),
   { loading: () => <p>Rendering lesson…</p> },
@@ -512,6 +515,7 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
   return (
     <div className="assessment-layout">
       <section>
+        <AssessmentMethods id={id} data={data} />
         <div className="panel gates">
           <h2>Required evidence</h2>
           <ul>
@@ -555,101 +559,18 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                 Try before viewing solutions. Short responses are saved with a
                 rubric and are not automatically graded.
               </p>
-              <label>
-                Assistance level
-                <select
-                  aria-label="Assistance level"
-                  value={assistance}
-                  onChange={(e) => setAssistance(e.target.value as Assistance)}
-                >
-                  <option value="A0">A0 · Independent, no assistance</option>
-                  <option value="A1">A1 · Conceptual hint</option>
-                  <option value="A2">A2 · Specific hint / example</option>
-                  <option value="A3">A3 · Solution from AI / reference</option>
-                </select>
-              </label>
+              <AssistanceSelect value={assistance} onChange={setAssistance} />
             </div>
             {assessment.questions.map((q, i) => (
-              <fieldset className="question panel" key={q.id}>
-                <legend>
-                  <span className="question-number">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span>{q.prompt}</span>
-                </legend>
-                <div className="question-tags">
-                  <span>{q.dimension}</span>
-                  {q.critical && <span>CRITICAL</span>}
-                  <span>
-                    {q.kind === "short"
-                      ? "RUBRIC · UNVERIFIED"
-                      : q.kind === "number"
-                        ? "NUMERICAL"
-                        : "CONCEPT"}
-                  </span>
-                </div>
-                {q.kind === "choice" ? (
-                  <div className="choices">
-                    {q.options?.map((o, j) => (
-                      <label
-                        className={
-                          answers[q.id] === String(j)
-                            ? "choice chosen"
-                            : "choice"
-                        }
-                        key={o}
-                      >
-                        <input
-                          required
-                          type="radio"
-                          name={q.id}
-                          value={j}
-                          checked={answers[q.id] === String(j)}
-                          onChange={(e) =>
-                            setAnswers((a) => ({
-                              ...a,
-                              [q.id]: e.target.value,
-                            }))
-                          }
-                        />
-                        <span>{o}</span>
-                      </label>
-                    ))}
-                  </div>
-                ) : q.kind === "number" ? (
-                  <label className="number-answer">
-                    Answer (use a decimal point)
-                    <input
-                      aria-label={`Answer ${q.id}`}
-                      required
-                      type="text"
-                      inputMode="decimal"
-                      placeholder="Enter a number…"
-                      value={answers[q.id] ?? ""}
-                      onChange={(e) =>
-                        setAnswers((a) => ({ ...a, [q.id]: e.target.value }))
-                      }
-                    />
-                  </label>
-                ) : (
-                  <>
-                    <textarea
-                      aria-label="Rubric response"
-                      rows={5}
-                      maxLength={10000}
-                      value={answers[q.id] ?? ""}
-                      onChange={(e) =>
-                        setAnswers((a) => ({ ...a, [q.id]: e.target.value }))
-                      }
-                    />
-                    <ul className="rubric">
-                      {q.rubric?.map((r) => (
-                        <li key={r}>{r}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </fieldset>
+              <AssessmentQuestion
+                key={q.id}
+                question={q}
+                index={i}
+                answers={answers}
+                onAnswer={(id, value) =>
+                  setAnswers((a) => ({ ...a, [id]: value }))
+                }
+              />
             ))}
             <button className="button primary" type="submit" disabled={busy}>
               {busy ? "Saving…" : "Submit and save diagnostic"}
@@ -712,6 +633,12 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
               Revisit the theory
               <BookOpen size={15} />
             </Link>
+            {result.grade.items.some((i) => i.correct === false) && (
+              <Link className="button" href={weaknessUrl(id)}>
+                Practice Weaknesses
+                <ArrowRight size={15} />
+              </Link>
+            )}
           </div>
         )}
         <Notebook id={id} />
@@ -724,12 +651,16 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
               <details key={a.id}>
                 <summary>
                   <strong>
-                    {a.grade.score}% · {a.assistance}
+                    {a.grade.items.some((i) => i.correct !== null)
+                      ? `${a.grade.score}%`
+                      : "Rubric only"}{" "}
+                    · {a.assistance}
                   </strong>
                   <small>{dateText(a.at)}</small>
                 </summary>
                 <p className="small muted">
-                  Assessment v{a.assessmentVersion} · {a.id}
+                  {a.purpose === "targeted" ? "Focused practice" : "Assessment"}{" "}
+                  v{a.assessmentVersion} · {a.id}
                 </p>
                 {a.grade.items.map((i) => (
                   <p className="small" key={i.id}>

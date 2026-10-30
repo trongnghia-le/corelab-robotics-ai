@@ -3,7 +3,15 @@ import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
 import { topicMap } from "./curriculum";
-import type { Assessment, Lesson, Overview } from "./types";
+import type { Assessment, Lesson, Overview, PracticeSkill } from "./types";
+import {
+  assessmentSchema,
+  questionMetadataSchema,
+  knowledgeTypeFor,
+  skillTagsFor,
+  contractKey,
+  type ContractIndex,
+} from "./assessment";
 const root = path.join(process.cwd(), "content");
 const metaSchema = z.object({
   id: z.string(),
@@ -36,9 +44,68 @@ export function getLesson(id: string): Lesson | null {
 export function getAssessment(id: string, version = 1): Assessment | null {
   if (!topicMap[id]) return null;
   const file = path.join(root, "assessments", `${id}.v${version}.json`);
+  if (!fs.existsSync(file)) return null;
+  const raw = assessmentSchema.parse(JSON.parse(fs.readFileSync(file, "utf8")));
+  const metadata = JSON.parse(
+    fs.readFileSync(path.join(root, "assessment-metadata.v1.json"), "utf8"),
+  ).contracts as Record<string, Record<string, unknown>>;
+  return {
+    ...raw,
+    questions: raw.questions.map((q) => ({
+      ...q,
+      ...questionMetadataSchema.parse(
+        metadata[`${id}.v${version}`]?.[q.id] ?? {},
+      ),
+    })),
+  };
+}
+export function getPracticeAssessment(
+  id: string,
+  version = 1,
+): Assessment | null {
+  if (!topicMap[id]) return null;
+  const file = path.join(root, "practice", `${id}.v${version}.json`);
   return fs.existsSync(file)
-    ? (JSON.parse(fs.readFileSync(file, "utf8")) as Assessment)
+    ? assessmentSchema.parse(JSON.parse(fs.readFileSync(file, "utf8")))
     : null;
+}
+export function getAssessmentCatalog(): ContractIndex {
+  const catalog: ContractIndex = {};
+  for (const purpose of ["diagnostic", "targeted"] as const) {
+    const directory = path.join(
+      root,
+      purpose === "diagnostic" ? "assessments" : "practice",
+    );
+    for (const file of fs.readdirSync(directory)) {
+      const match = file.match(/^([A-Z]+\d+)\.v(\d+)\.json$/);
+      if (!match) continue;
+      const contract =
+        purpose === "diagnostic"
+          ? getAssessment(match[1], Number(match[2]))
+          : getPracticeAssessment(match[1], Number(match[2]));
+      if (contract)
+        catalog[contractKey(contract.topicId, contract.version, purpose)] =
+          contract;
+    }
+  }
+  return catalog;
+}
+export function practiceSkills(id: string): PracticeSkill[] {
+  const map = new Map<string, PracticeSkill>();
+  for (const q of getPracticeAssessment(id)?.questions ?? [])
+    for (const tag of skillTagsFor(id, q)) {
+      const entry = map.get(tag) ?? {
+        tag,
+        label: q.skillLabel ?? tag,
+        knowledgeTypes: [],
+        questionCount: 0,
+      };
+      const type = knowledgeTypeFor(q);
+      if (!entry.knowledgeTypes.includes(type)) entry.knowledgeTypes.push(type);
+      entry.questionCount++;
+      map.set(tag, entry);
+    }
+  return [...map.values()];
 }
 export function publicAssessment(a: Assessment | null): Assessment | null {
   return a

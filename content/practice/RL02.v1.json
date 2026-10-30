@@ -1,0 +1,181 @@
+{
+  "id": "RL02-targeted",
+  "topicId": "RL02",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mdp-transitions"
+      ],
+      "skillLabel": "Normalize transition probabilities",
+      "relatedPrerequisites": [
+        "RL01",
+        "M08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL02#reasoning-and-assumptions"
+        }
+      ],
+      "id": "transition-scenario-1",
+      "kind": "choice",
+      "prompt": "An action has next-state probabilities 0.2, 0.3, and 0.5. Is this a valid transition distribution?",
+      "options": [
+        "Yes: all are nonnegative and they sum to one.",
+        "No: probabilities must be equal."
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "A probability row must normalize, not be uniform.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mdp-transitions"
+      ],
+      "skillLabel": "Normalize transition probabilities",
+      "relatedPrerequisites": [
+        "RL01",
+        "M08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL02#reasoning-and-assumptions"
+        }
+      ],
+      "id": "transition-scenario-2",
+      "kind": "choice",
+      "prompt": "A transition row contains −0.1,0.4,0.7. Is a sum of one sufficient?",
+      "options": [
+        "Yes: normalization is the only condition.",
+        "No: a negative probability is invalid."
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Nonnegativity and normalization are both necessary.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bellman-self-loop"
+      ],
+      "skillLabel": "Solve a self-loop Bellman equation",
+      "relatedPrerequisites": [
+        "RL01",
+        "M08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL02#reasoning-and-assumptions"
+        }
+      ],
+      "id": "bellman-values-1",
+      "kind": "number",
+      "prompt": "A state self-loops with reward 2 and γ=.5. Solve V=2+.5V.",
+      "answer": "4",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Move .5V to the left: .5V=2, hence V=4.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bellman-self-loop"
+      ],
+      "skillLabel": "Solve a self-loop Bellman equation",
+      "relatedPrerequisites": [
+        "RL01",
+        "M08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL02#reasoning-and-assumptions"
+        }
+      ],
+      "id": "bellman-values-2",
+      "kind": "number",
+      "prompt": "A state self-loops with reward 1 and γ=.75. Solve its discounted value.",
+      "answer": "4",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "V=1+.75V gives .25V=1 and V=4.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "design-scenario-1",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "design-decisions"
+      ],
+      "skillLabel": "Analyze assumptions and justify a decision",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "RL01",
+        "M08"
+      ],
+      "prompt": "A balancing task observes tilt but not angular velocity and stops after a time limit. Discuss the Markov assumption, a better state, and terminal-versus-truncation handling.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Open engineering judgment; rubric-guided and unverified.",
+      "rubric": [
+        "Explain two histories with equal tilt and different futures.",
+        "Propose additional state information or a belief/history representation.",
+        "Distinguish a task terminal event from an artificial rollout limit."
+      ],
+      "remediationRefs": [
+        {
+          "label": "Compare alternatives in the lesson",
+          "href": "/lessons/RL02"
+        }
+      ]
+    },
+    {
+      "id": "implementation-plan-1",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "independent-implementation"
+      ],
+      "skillLabel": "Implement and verify a minimal algorithm",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "RL01",
+        "M08"
+      ],
+      "prompt": "Implement a minimal calculation from this topic, write independent tests and a failing mutation, and record the exact local command. No signed verifier currently certifies this assignment. Describe the input/output contract and verification plan here; writing the plan alone never establishes I evidence.",
+      "dimension": "I",
+      "critical": false,
+      "explanation": "A written plan is unverified. Only a supported signed A0 local test report can satisfy an implementation gate.",
+      "rubric": [
+        "Define inputs, outputs, invalid inputs, and assistance.",
+        "Give a reference result, boundary tests, and a mutation that your tests reject.",
+        "Record source version and exact commands; import a supported report separately."
+      ]
+    }
+  ]
+}

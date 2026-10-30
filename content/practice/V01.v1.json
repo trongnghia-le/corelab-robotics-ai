@@ -1,0 +1,175 @@
+{
+  "id": "V01-targeted",
+  "topicId": "V01",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "image-indexing"
+      ],
+      "skillLabel": "Image axes and pixel indexing",
+      "relatedPrerequisites": [
+        "PY04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/V01#reasoning-and-assumptions"
+        }
+      ],
+      "id": "pixel-scenario-1",
+      "kind": "choice",
+      "prompt": "For an image stored as H×W×C, where is pixel column 4, row 2?",
+      "options": [
+        "image[2,4,:]",
+        "image[4,2,:]"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "The first spatial axis is row, the second column; : retains all channels.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "image-indexing"
+      ],
+      "skillLabel": "Image axes and pixel indexing",
+      "relatedPrerequisites": [
+        "PY04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/V01#reasoning-and-assumptions"
+        }
+      ],
+      "id": "pixel-scenario-2",
+      "kind": "choice",
+      "prompt": "An H×W image is not square. Swapping row and column indices can…",
+      "options": [
+        "Preserve the same geometric pixel for every input.",
+        "Address another pixel or go out of bounds."
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Axis semantics do not follow from array size; non-square examples reveal the swap.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "image-shapes"
+      ],
+      "skillLabel": "Spatial pixels versus channel entries",
+      "relatedPrerequisites": [
+        "PY04"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/V01#reasoning-and-assumptions"
+        }
+      ],
+      "id": "pixel-count-1",
+      "kind": "number",
+      "prompt": "A color image has shape (3,5,3). How many spatial pixels does it have?",
+      "answer": "15",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Spatial pixels are H×W=3×5=15; channels are values per pixel.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "image-shapes"
+      ],
+      "skillLabel": "Spatial pixels versus channel entries",
+      "relatedPrerequisites": [
+        "PY04"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/V01#reasoning-and-assumptions"
+        }
+      ],
+      "id": "pixel-count-2",
+      "kind": "number",
+      "prompt": "A batch contains 2 images, each shaped (4,6,3). How many spatial pixels are there across the batch?",
+      "answer": "48",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "N×H×W=2×4×6=48; do not multiply by channels.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "design-scenario-1",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "design-decisions"
+      ],
+      "skillLabel": "Analyze assumptions and justify a decision",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "PY04"
+      ],
+      "prompt": "Choose nearest-neighbor or bilinear interpolation for a segmentation label mask and a photograph. Explain why the same preprocessing policy is not appropriate for both.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Open engineering judgment; rubric-guided and unverified.",
+      "rubric": [
+        "Distinguish discrete category IDs from intensity measurements.",
+        "Explain which interpolation can invent invalid mask labels.",
+        "Test a two-label synthetic boundary and a non-square image."
+      ],
+      "remediationRefs": [
+        {
+          "label": "Compare alternatives in the lesson",
+          "href": "/lessons/V01"
+        }
+      ]
+    },
+    {
+      "id": "implementation-plan-1",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "independent-implementation"
+      ],
+      "skillLabel": "Implement and verify a minimal algorithm",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "PY04"
+      ],
+      "prompt": "Implement a minimal calculation from this topic, write independent tests and a failing mutation, and record the exact local command. No signed verifier currently certifies this assignment. Describe the input/output contract and verification plan here; writing the plan alone never establishes I evidence.",
+      "dimension": "I",
+      "critical": false,
+      "explanation": "A written plan is unverified. Only a supported signed A0 local test report can satisfy an implementation gate.",
+      "rubric": [
+        "Define inputs, outputs, invalid inputs, and assistance.",
+        "Give a reference result, boundary tests, and a mutation that your tests reject.",
+        "Record source version and exact commands; import a supported report separately."
+      ]
+    }
+  ]
+}

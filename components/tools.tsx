@@ -20,12 +20,14 @@ import { sources } from "@/lib/resources";
 import { useCore, Loading, copyText } from "./provider";
 import { useTopic, Notebook } from "./topic";
 import { PageHeading, Status, TopicChips, dateText } from "./ui";
+import { PracticeTabs, WeaknessPractice } from "./weakness-practice";
 export function Practice() {
   const { state, act, busy, notify } = useCore();
   const params = useSearchParams();
   const [topic, setTopic] = useState(params.get("topic") ?? ""),
     [report, setReport] = useState("");
   if (!state) return <Loading />;
+  if (params.get("tab") === "weaknesses") return <WeaknessPractice />;
   const shown = practices.filter((p) => !topic || p.topicId === topic);
   const exact = topic && topicMap[topic];
   async function importReport(e: FormEvent) {
@@ -46,6 +48,7 @@ export function Practice() {
         title="Implement independently. Verify your work."
         description="Write code in VS Code and run tests in your own terminal. CoreLab does not execute code submitted through the browser."
       />
+      <PracticeTabs />
       <div className="info-banner">
         <ShieldCheck size={19} />
         <span>

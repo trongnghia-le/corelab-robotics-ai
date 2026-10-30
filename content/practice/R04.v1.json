@@ -1,0 +1,183 @@
+{
+  "id": "R04-targeted",
+  "topicId": "R04",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "relative-joint-angles"
+      ],
+      "skillLabel": "Relative joint-angle conventions",
+      "relatedPrerequisites": [
+        "R03",
+        "M04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R04#theory-and-derivation"
+        }
+      ],
+      "id": "relative-angle-1",
+      "kind": "choice",
+      "prompt": "A planar serial arm has q₁=30° and relative q₂=40°. What is link 2 orientation in the base frame?",
+      "options": [
+        "70°",
+        "40°"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "The second orientation accumulates both relative joint rotations.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "relative-joint-angles"
+      ],
+      "skillLabel": "Relative joint-angle conventions",
+      "relatedPrerequisites": [
+        "R03",
+        "M04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R04#theory-and-derivation"
+        }
+      ],
+      "id": "relative-angle-2",
+      "kind": "choice",
+      "prompt": "If joint 1 rotates while relative joint 2 stays fixed, does link 2 base orientation change?",
+      "options": [
+        "No, q₂ alone determines its base orientation.",
+        "Yes, the upstream rotation also rotates link 2."
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Link 2 is attached to link 1, so its base orientation is q₁+q₂.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "planar-forward-kinematics"
+      ],
+      "skillLabel": "Calculate a planar endpoint",
+      "relatedPrerequisites": [
+        "R03",
+        "M04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R04#theory-and-derivation"
+        }
+      ],
+      "id": "fk-values-1",
+      "kind": "number",
+      "prompt": "l₁=2,l₂=1, q₁=0,q₂=π/2. Give endpoint x.",
+      "answer": "2",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "x=2cos(0)+cos(π/2)=2.",
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "planar-forward-kinematics"
+      ],
+      "skillLabel": "Calculate a planar endpoint",
+      "relatedPrerequisites": [
+        "R03",
+        "M04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R04#theory-and-derivation"
+        }
+      ],
+      "id": "fk-values-2",
+      "kind": "number",
+      "prompt": "l₁=2,l₂=1, q₁=π/2,q₂=0. Give endpoint y.",
+      "answer": "3",
+      "tolerance": 1e-06,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Both links point up: y=2sin(π/2)+sin(π/2)=3.",
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "id": "design-scenario-1",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "design-decisions"
+      ],
+      "skillLabel": "Analyze assumptions and justify a decision",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "R03",
+        "M04"
+      ],
+      "prompt": "Choose direct trigonometry or transform composition for a wrist camera mounted beyond a two-link arm. Explain relative angles, calibration, and a test that catches a frame-order error.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Open engineering judgment; rubric-guided and unverified.",
+      "rubric": [
+        "Declare each frame mapping and angle convention.",
+        "Compare transparency with scalability to additional links.",
+        "Use a tool-offset example and an independent round trip."
+      ],
+      "remediationRefs": [
+        {
+          "label": "Compare alternatives in the lesson",
+          "href": "/lessons/R04"
+        }
+      ]
+    },
+    {
+      "id": "implementation-plan-1",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "independent-implementation"
+      ],
+      "skillLabel": "Implement and verify a minimal algorithm",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "R03",
+        "M04"
+      ],
+      "prompt": "Implement a minimal calculation from this topic, write independent tests and a failing mutation, and record the exact local command. No signed verifier currently certifies this assignment. Describe the input/output contract and verification plan here; writing the plan alone never establishes I evidence.",
+      "dimension": "I",
+      "critical": false,
+      "explanation": "A written plan is unverified. Only a supported signed A0 local test report can satisfy an implementation gate.",
+      "rubric": [
+        "Define inputs, outputs, invalid inputs, and assistance.",
+        "Give a reference result, boundary tests, and a mutation that your tests reject.",
+        "Record source version and exact commands; import a supported report separately."
+      ]
+    }
+  ]
+}
