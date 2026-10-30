@@ -1,0 +1,26 @@
+import {
+  getLesson,
+  getOverview,
+  getAssessment,
+  publicAssessment,
+} from "@/lib/content";
+import { topicMap } from "@/lib/curriculum";
+import { failure, checkLocalRequest } from "@/lib/http";
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    checkLocalRequest(request);
+    const { id } = await params;
+    if (!topicMap[id])
+      return Response.json({ error: "Unknown topic" }, { status: 404 });
+    return Response.json({
+      lesson: getLesson(id),
+      overview: getOverview(id),
+      assessment: publicAssessment(getAssessment(id)),
+    });
+  } catch (e) {
+    return failure(e);
+  }
+}

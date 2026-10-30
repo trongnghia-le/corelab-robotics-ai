@@ -1,0 +1,63 @@
+{
+  "id": "T04-diagnostic",
+  "topicId": "T04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "What makes a numerical test oracle independent?",
+      "options": [
+        "It obtains expected behavior through a different derivation or reference.",
+        "It calls the exact implementation being tested to create the expected answer."
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Reusing the same calculation can reproduce the same defect in both actual and expected outputs."
+    },
+    {
+      "id": "q2",
+      "kind": "number",
+      "prompt": "Norm of [−3,4]?",
+      "answer": "5",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1e-05,
+      "explanation": "Use the declared convention and the worked derivation above; compare the units and boundary case."
+    },
+    {
+      "id": "q3",
+      "kind": "number",
+      "prompt": "Expected norm of a zero vector?",
+      "answer": "0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1e-05,
+      "explanation": "Use the declared convention and the worked derivation above; compare the units and boundary case."
+    },
+    {
+      "id": "q4",
+      "kind": "number",
+      "prompt": "Absolute error between 2.01 and 2?",
+      "answer": "0.01",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1e-05,
+      "explanation": "Use the declared convention and the worked derivation above; compare the units and boundary case."
+    },
+    {
+      "id": "explain",
+      "kind": "short",
+      "prompt": "Build a unittest suite for dot, norm, and projection in a separate file. Include invalid dimensions, zero direction, negative coordinates, and orthogonal inputs. Document exactly how to run it from a fresh directory. Add a small integration test that reads a saved vector fixture and checks the output type and value. Record one mutation that was caught and one gap you discovered. A self-reported test run remains practice; a supported fixed local verifier can create signed implementation evidence.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice only.",
+      "rubric": [
+        "Declare assumptions.",
+        "Show reasoning and an independent check.",
+        "Explain a failure case and an alternative."
+      ]
+    }
+  ]
+}

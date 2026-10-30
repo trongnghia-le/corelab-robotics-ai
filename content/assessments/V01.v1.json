@@ -1,0 +1,63 @@
+{
+  "id": "V01-diagnostic",
+  "topicId": "V01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "A pixel is given as column u, row v. For an H×W image, indexing is…",
+      "options": [
+        "image[v,u]",
+        "image[u,v]"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Rows index the first spatial axis and columns the second under this convention."
+    },
+    {
+      "id": "q2",
+      "kind": "number",
+      "prompt": "Number of representable values in an 8-bit channel?",
+      "answer": "256",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1e-05,
+      "explanation": "Use the declared convention and the worked derivation above; compare the units and boundary case."
+    },
+    {
+      "id": "q3",
+      "kind": "number",
+      "prompt": "Image shape (2,3,3): number of spatial pixels?",
+      "answer": "6",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1e-05,
+      "explanation": "Use the declared convention and the worked derivation above; compare the units and boundary case."
+    },
+    {
+      "id": "q4",
+      "kind": "number",
+      "prompt": "255 normalized by 255?",
+      "answer": "1",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1e-05,
+      "explanation": "Use the declared convention and the worked derivation above; compare the units and boundary case."
+    },
+    {
+      "id": "explain",
+      "kind": "short",
+      "prompt": "Build an image inspection script that prints shape, dtype, min, max, and per-channel means. Test RGB-to-BGR conversion by explicit indexing and a round trip. Use synthetic images before downloading data, and record color convention and normalization parameters in the experiment configuration. Explain how camera exposure or lighting shift affects intensity without changing object identity. This is an initial authored lesson; later calibration and vision algorithms depend on additional graph topics.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice only.",
+      "rubric": [
+        "Declare assumptions.",
+        "Show reasoning and an independent check.",
+        "Explain a failure case and an alternative."
+      ]
+    }
+  ]
+}
