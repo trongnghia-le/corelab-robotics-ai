@@ -194,7 +194,7 @@ test("remaining pages, honest overview, keyboard/mobile layout, invalid import a
     mimeType: "application/json",
     buffer: Buffer.from('{"schema":"unknown"}'),
   });
-  await expect(page.getByRole("alert")).toBeVisible();
+  await expect(page.locator('.error-text[role="alert"]')).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Restore and replace" }),
   ).toHaveCount(0);

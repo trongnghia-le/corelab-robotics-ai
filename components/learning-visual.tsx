@@ -95,10 +95,10 @@ export function LearningVisual({ topicId }: { topicId: string }) {
           ))}
           <line x1="25" y1="145" x2="320" y2="145" stroke="#778598" />
           <line x1="170" y1="15" x2="170" y2="275" stroke="#778598" />
-          <text x="320" y="139" fill="#a7afbd" fontSize="10">
+          <text x="320" y="139" fill="#a7afbd" fontSize="13">
             x
           </text>
-          <text x="178" y="18" fill="#a7afbd" fontSize="10">
+          <text x="178" y="18" fill="#a7afbd" fontSize="13">
             y
           </text>
           {vector ? (
@@ -136,7 +136,7 @@ export function LearningVisual({ topicId }: { topicId: string }) {
                 strokeWidth="3"
                 markerEnd={`url(#${marker})`}
               />
-              <text x={sx(x) + 8} y={sy(y) - 8} fill="#fb923c" fontSize="12">
+              <text x={sx(x) + 8} y={sy(y) - 8} fill="#fb923c" fontSize="15">
                 u
               </text>
             </>

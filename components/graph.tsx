@@ -60,7 +60,7 @@ export function Graph({
       rows[l] = row + 1;
       return {
         id,
-        position: { x: l * 270, y: row * 110 },
+        position: { x: l * 300, y: row * 140 },
         data: {
           label: (
             <div>
@@ -78,7 +78,7 @@ export function Graph({
           background: mastery[id].level ? "#15281f" : "#1b1f26",
           border: `1px solid ${mastery[id].level ? "#36714d" : "#3f4652"}`,
           color: "#f3f4f6",
-          width: 220,
+          width: 240,
           borderRadius: 10,
         },
         ariaLabel: `${id} ${topicMap[id].title}`,
