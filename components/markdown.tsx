@@ -31,19 +31,19 @@ function CodeBlock({ children }: { children?: ReactNode }) {
   return (
     <div className="code-block">
       <button
-        aria-label="Sao chép code"
+        aria-label="Copy code"
         className="code-copy"
         onClick={async () => {
           try {
             await copyText(textFromChildren(children));
             setCopied(true);
           } catch (e) {
-            notify(e instanceof Error ? e.message : "Không thể sao chép.");
+            notify(e instanceof Error ? e.message : "Unable to copy.");
           }
         }}
       >
         {copied ? <Check size={14} /> : <Copy size={14} />}{" "}
-        {copied ? "Đã sao chép" : "Copy"}
+        {copied ? "Copied" : "Copy"}
       </button>
       <pre>{children}</pre>
     </div>

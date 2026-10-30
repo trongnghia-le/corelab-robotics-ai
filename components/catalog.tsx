@@ -16,7 +16,7 @@ import { useCore, Loading } from "./provider";
 import { PageHeading, Status } from "./ui";
 const Graph = dynamic(() => import("./graph").then((m) => m.Graph), {
   ssr: false,
-  loading: () => <div className="graph-loading">Đang mở đồ thị…</div>,
+  loading: () => <div className="graph-loading">Loading graph…</div>,
 });
 export function Catalog({
   mode,
@@ -54,25 +54,26 @@ export function Catalog({
         }
         title={
           isRoad
-            ? "Roadmap tri thức"
+            ? "Knowledge roadmap"
             : mode === "lessons"
-              ? "Không chỉ đọc. Hiểu sâu."
-              : "Kiểm chứng điều bạn hiểu."
+              ? "Go beyond reading. Understand deeply."
+              : "Verify what you understand."
         }
         description={
           isRoad
-            ? `${topics.length} chủ đề liên kết bởi tiền đề. Một bản đồ dài hạn, không phải danh sách bắt buộc.`
+            ? `${topics.length} topics connected by prerequisites. A long-term map, not a mandatory checklist.`
             : mode === "lessons"
-              ? `${state.lessonIds.length} bài học đã biên soạn. Bắt đầu từ nền tảng, tiến lên bằng bằng chứng.`
-              : "Diagnostic ngắn, phản hồi rõ ràng, bằng chứng có thể truy vết."
+              ? `${state.lessonIds.length} authored lessons. Start with foundations and progress through evidence.`
+              : "Short diagnostics, clear feedback, and traceable evidence."
         }
       />
       {mode === "assessments" && (
         <div className="info-banner">
           <BookOpen size={18} />
           <span>
-            Quiz A0 đạt ≥80% và không sai câu critical mới kiểm chứng. Câu trả
-            lời mở được đối chiếu rubric, không tự động tăng mastery.
+            An A0 quiz verifies evidence only with a score of at least 80% and
+            no failed critical items. Open responses use a rubric and never
+            automatically increase mastery.
           </span>
         </div>
       )}
@@ -80,22 +81,22 @@ export function Catalog({
         <label className="search-field">
           <Search size={17} />
           <input
-            aria-label="Tìm chủ đề"
-            placeholder="Tìm theo tên hoặc mã chủ đề…"
+            aria-label="Search topics"
+            placeholder="Search by topic name or ID…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <kbd>/</kbd>
         </label>
         {isRoad && (
-          <div className="segmented" aria-label="Chế độ hiển thị">
+          <div className="segmented" aria-label="View mode">
             <button
               aria-pressed={view === "list"}
               className={view === "list" ? "selected" : ""}
               onClick={() => setView("list")}
             >
               <List size={16} />
-              Danh sách
+              List
             </button>
             <button
               aria-pressed={view === "graph"}
@@ -103,44 +104,46 @@ export function Catalog({
               onClick={() => setView("graph")}
             >
               <Network size={16} />
-              Đồ thị
+              Graph
             </button>
           </div>
         )}
       </div>
       <div className="filters">
         <select
-          aria-label="Lọc lĩnh vực"
+          aria-label="Filter by domain"
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
         >
-          <option value="">Tất cả lĩnh vực</option>
+          <option value="">All domains</option>
           {domains.map((d) => (
             <option key={d}>{d}</option>
           ))}
         </select>
         <select
-          aria-label="Lọc ưu tiên"
+          aria-label="Filter by priority"
           value={priority}
           onChange={(e) => setPriority(e.target.value)}
         >
-          <option value="">Mọi mức ưu tiên</option>
+          <option value="">All priorities</option>
           <option value="P0">P0 · Core</option>
           <option value="P1">P1 · Applied</option>
           <option value="P2">P2 · Extension</option>
         </select>
         <select
-          aria-label="Lọc trạng thái"
+          aria-label="Filter by status"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         >
-          <option value="">Mọi trạng thái</option>
-          <option value="unassessed">Chưa đánh giá</option>
-          <option value="in_progress">Đang học</option>
-          <option value="provisional">Tự đánh giá</option>
-          <option value="verified">Đã kiểm chứng</option>
+          <option value="">All statuses</option>
+          <option value="unassessed">Unassessed</option>
+          <option value="in_progress">In progress</option>
+          <option value="provisional">Self-assessed</option>
+          <option value="verified">Verified</option>
         </select>
-        <span className="result-count">{visible.length} chủ đề</span>
+        <span className="result-count">
+          {visible.length} {visible.length === 1 ? "topic" : "topics"}
+        </span>
       </div>
       {view === "graph" && isRoad ? (
         <Graph
@@ -153,8 +156,8 @@ export function Catalog({
       ) : visible.length === 0 ? (
         <div className="empty-state">
           <Search size={25} />
-          <h2>Không tìm thấy chủ đề</h2>
-          <p>Thử từ khóa ngắn hơn hoặc bỏ bộ lọc.</p>
+          <h2>No topics found</h2>
+          <p>Try a shorter search or remove a filter.</p>
           <button
             onClick={() => {
               setQuery("");
@@ -163,7 +166,7 @@ export function Catalog({
               setStatus("");
             }}
           >
-            Xóa bộ lọc
+            Clear filters
           </button>
         </div>
       ) : isRoad ? (
@@ -175,7 +178,7 @@ export function Catalog({
                 <div className="domain-heading">
                   <h2>{d}</h2>
                   <span>
-                    {visible.filter((t) => t.domain === d).length} chủ đề
+                    {visible.filter((t) => t.domain === d).length} topics
                   </span>
                 </div>
                 <div className="panel topic-list">
@@ -189,8 +192,8 @@ export function Catalog({
                             <strong>{t.title}</strong>
                             <small>
                               {state.lessonIds.includes(t.id)
-                                ? "Bài học đầy đủ + diagnostic"
-                                : "Overview · chưa có bài học đầy đủ"}
+                                ? "Complete lesson + diagnostic"
+                                : "Overview · full lesson not yet available"}
                             </small>
                           </div>
                         </Link>
@@ -199,14 +202,14 @@ export function Catalog({
                         </span>
                         <span className="prereq-count">
                           {t.prerequisites.length
-                            ? `${t.prerequisites.length} tiền đề`
-                            : "Nền tảng"}
+                            ? `${t.prerequisites.length} prerequisites`
+                            : "Foundation"}
                         </span>
                         <Status mastery={state.mastery[t.id]} />
                         <Link
                           className="icon-button"
                           href={`/lessons/${t.id}`}
-                          aria-label={`Mở ${t.id}`}
+                          aria-label={`Open ${t.id}`}
                         >
                           <ChevronRight size={17} />
                         </Link>
@@ -230,7 +233,7 @@ export function Catalog({
               <div className="lesson-card-bottom">
                 <span>
                   {mode === "lessons"
-                    ? "Lý thuyết · Ví dụ · Thực hành"
+                    ? "Theory · Examples · Practice"
                     : "Concept · Math · Rubric"}
                 </span>
                 <ArrowUpRight size={17} />
@@ -240,10 +243,10 @@ export function Catalog({
         </div>
       )}
       <div className="catalog-note">
-        <strong>P0</strong> Nền tảng cốt lõi <span>·</span>
-        <strong>P1</strong> Ứng dụng <span>·</span>
-        <strong>P2</strong> Mở rộng nghiên cứu. Bạn có thể mở mọi chủ đề; tiền
-        đề hướng dẫn việc học, không khóa trang.
+        <strong>P0</strong> Core foundations <span>·</span>
+        <strong>P1</strong> Application <span>·</span>
+        <strong>P2</strong> Research extensions. Every topic is accessible;
+        prerequisites guide learning without locking pages.
       </div>
     </div>
   );

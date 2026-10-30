@@ -24,20 +24,20 @@ const main = [
   ["/assessments", "Assessments", ClipboardCheck],
 ] as const;
 const extra = [
-  ["/paths", "Lộ trình học", Route],
-  ["/practice", "Thực hành", FlaskConical],
+  ["/paths", "Learning paths", Route],
+  ["/practice", "Practice", FlaskConical],
   ["/tutor", "AI Tutor handoff", MessageSquare],
-  ["/sources", "Tài liệu tham khảo", Library],
+  ["/sources", "References", Library],
 ] as const;
 const labels: Record<string, string> = {
   roadmap: "Roadmap",
   lessons: "Lessons",
   assessments: "Assessments",
-  paths: "Lộ trình học",
-  practice: "Thực hành",
+  paths: "Learning paths",
+  practice: "Practice",
   tutor: "AI Tutor handoff",
-  settings: "Dữ liệu & cài đặt",
-  sources: "Tài liệu tham khảo",
+  settings: "Data & settings",
+  sources: "References",
 };
 export function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname(),
@@ -56,18 +56,18 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
-        Bỏ qua điều hướng
+        Skip navigation
       </a>
       {open && (
         <button
           className="drawer-scrim"
-          aria-label="Đóng menu"
+          aria-label="Close menu"
           onClick={close}
         />
       )}
       <aside
         className={`sidebar ${open ? "is-open" : ""}`}
-        aria-label="Điều hướng chính"
+        aria-label="Main navigation"
         role={open ? "dialog" : undefined}
         aria-modal={open || undefined}
         onKeyDown={(e) => {
@@ -102,7 +102,7 @@ export function Shell({ children }: { children: ReactNode }) {
           ref={closeRef}
           className="icon-button drawer-close"
           onClick={close}
-          aria-label="Đóng menu"
+          aria-label="Close menu"
         >
           <PanelLeftClose size={20} />
         </button>
@@ -155,9 +155,9 @@ export function Shell({ children }: { children: ReactNode }) {
             <span className="local-dot" />
             <strong>Local-first. Yours.</strong>
             <p>
-              Dữ liệu ở trên máy bạn.
+              Your data stays on your machine.
               <br />
-              Không cloud, không API.
+              No cloud, no API.
             </p>
           </div>
           <Link
@@ -166,7 +166,7 @@ export function Shell({ children }: { children: ReactNode }) {
             onClick={() => setOpen(false)}
           >
             <Settings size={18} />
-            Dữ liệu & cài đặt
+            Data & settings
           </Link>
           <div className="version">
             CORELAB <span>v1.0</span>
@@ -180,7 +180,7 @@ export function Shell({ children }: { children: ReactNode }) {
               ref={menuRef}
               className="icon-button mobile-menu"
               onClick={() => setOpen(true)}
-              aria-label="Mở menu"
+              aria-label="Open menu"
               aria-expanded={open}
             >
               <Menu size={20} />
@@ -202,7 +202,7 @@ export function Shell({ children }: { children: ReactNode }) {
           {children}
         </main>
         <footer className="footer">
-          <span>Hiểu nguyên lý. Tự triển khai. Kiểm chứng.</span>
+          <span>Understand principles. Implement independently. Verify.</span>
           <span>
             Diagnostic → Learn → Derive → Implement → Verify → Transfer
           </span>

@@ -21,7 +21,7 @@ import { headingId } from "./markdown";
 import { LearningVisual } from "./learning-visual";
 const LessonMarkdown = dynamic(
   () => import("./markdown").then((m) => m.LessonMarkdown),
-  { loading: () => <p>Đang hiển thị bài học…</p> },
+  { loading: () => <p>Rendering lesson…</p> },
 );
 export function useTopic(id: string) {
   const [data, setData] = useState<TopicPayload | null>(null),
@@ -38,7 +38,7 @@ export function useTopic(id: string) {
       })
       .catch((e) => {
         if (!controller.signal.aborted)
-          setError(e instanceof Error ? e.message : "Không thể mở chủ đề.");
+          setError(e instanceof Error ? e.message : "Unable to open topic.");
       });
     return () => controller.abort();
   }, [id]);
@@ -57,9 +57,9 @@ export function TopicPage({
   if (error)
     return (
       <div className="page empty-state" role="alert">
-        <h1>Không thể mở chủ đề</h1>
+        <h1>Unable to open topic</h1>
         <p>{error}</p>
-        <Link href="/roadmap">Quay lại Roadmap</Link>
+        <Link href="/roadmap">Back to Roadmap</Link>
       </div>
     );
   if (!state || !data) return <Loading />;
@@ -69,7 +69,7 @@ export function TopicPage({
     overview = data.overview;
   const objectives =
     lesson?.meta.objectives ??
-    overview.concepts.map((c) => `Giải thích và kiểm chứng: ${c}.`);
+    overview.concepts.map((c) => `Explain and verify: ${c}.`);
   const successors = topics.filter((t) => t.prerequisites.includes(id));
   const authored = topics.filter((t) => state.lessonIds.includes(t.id));
   const pos = authored.findIndex((t) => t.id === id);
@@ -80,9 +80,9 @@ export function TopicPage({
     setContext(text);
     try {
       await copyText(text);
-      notify("Đã sao chép Learning Context.");
+      notify("Learning Context copied.");
     } catch (e) {
-      notify(e instanceof Error ? e.message : "Không thể sao chép.");
+      notify(e instanceof Error ? e.message : "Unable to copy.");
     }
   }
   return (
@@ -117,7 +117,7 @@ export function TopicPage({
             href={`/assessments/${id}`}
           >
             <ClipboardCheck size={16} />
-            Kiểm tra năng lực
+            Assess competence
           </Link>
           <button className="button" onClick={() => void copyContext()}>
             <Copy size={15} />
@@ -131,28 +131,26 @@ export function TopicPage({
                 type: "goal",
                 goal: state.progress.goal,
                 focusTopic: id,
-                focusReason: "Chủ đề được ghim từ workspace.",
+                focusReason: "Topic pinned from the workspace.",
               })
-                .then(() => notify(`Đã ghim ${id} làm trọng tâm.`))
+                .then(() => notify(`Pinned ${id} as the current focus.`))
                 .catch(() => {})
             }
           >
             <Pin size={15} />
-            {state.progress.focusTopic === id
-              ? "Đã ghim trọng tâm"
-              : "Ghim trọng tâm"}
+            {state.progress.focusTopic === id ? "Focus pinned" : "Pin focus"}
           </button>
           {assessment && (
             <Link className="button" href={`/lessons/${id}`}>
               <BookOpen size={15} />
-              Đọc bài học
+              Read lesson
             </Link>
           )}
         </div>
       </div>
       {context && (
         <details className="context-preview">
-          <summary>Xem Learning Context vừa tạo</summary>
+          <summary>View generated Learning Context</summary>
           <textarea
             aria-label="Learning Context"
             readOnly
@@ -162,12 +160,12 @@ export function TopicPage({
         </details>
       )}
       <section className="topic-prereqs">
-        <h2>Tiền đề đề xuất</h2>
+        <h2>Suggested prerequisites</h2>
         <TopicChips ids={topic.prerequisites} />
         {topic.prerequisites.some((p) => state.mastery[p].level < 1) && (
           <p className="small warning-text">
-            Một số tiền đề chưa được kiểm chứng. Bạn vẫn có thể học bài này; nên
-            kiểm tra nền tảng trước.
+            Some prerequisites are not verified yet. You can still study this
+            topic; consider checking the foundations first.
           </p>
         )}
       </section>
@@ -178,7 +176,7 @@ export function TopicPage({
         <div className="reading-layout">
           <article className="lesson-article">
             <div className="objectives-box">
-              <div className="eyebrow">SAU BÀI HỌC NÀY</div>
+              <div className="eyebrow">AFTER THIS LESSON</div>
               <ul>
                 {objectives.map((o) => (
                   <li key={o}>
@@ -194,9 +192,12 @@ export function TopicPage({
                 <LessonMarkdown body={lesson.body} />
                 <div className="reading-complete">
                   <div>
-                    <strong>Đọc xong? Chuyển từ hiểu sang kiểm chứng.</strong>
+                    <strong>
+                      Finished reading? Move from understanding to verification.
+                    </strong>
                     <p>
-                      Ghi nhận việc đọc chỉ lưu hoạt động, không tăng mastery.
+                      Recording a read only saves an activity; it does not
+                      increase mastery.
                     </p>
                   </div>
                   <button
@@ -206,22 +207,22 @@ export function TopicPage({
                         type: "session",
                         topicId: id,
                         kind: "reading",
-                        text: `Đã đọc ${lesson.meta.title}`,
+                        text: `Read ${lesson.meta.title}`,
                         minutes: 0,
                       })
                         .then(() =>
                           notify(
-                            "Đã lưu hoạt động đọc. Mastery không thay đổi.",
+                            "Reading activity saved. Mastery is unchanged.",
                           ),
                         )
                         .catch(() => {})
                     }
                   >
-                    Đánh dấu đã đọc
+                    Mark as read
                   </button>
                 </div>
                 <Link className="button primary" href={`/assessments/${id}`}>
-                  Bắt đầu diagnostic
+                  Start diagnostic
                   <ArrowRight size={16} />
                 </Link>
               </>
@@ -234,7 +235,7 @@ export function TopicPage({
                 <Link href={`/lessons/${prev.id}`}>
                   <ArrowLeft size={16} />
                   <span>
-                    <small>Bài trước trong thư viện</small>
+                    <small>Previous lesson in the library</small>
                     {prev.id} · {prev.title}
                   </span>
                 </Link>
@@ -244,7 +245,7 @@ export function TopicPage({
               {next && (
                 <Link href={`/lessons/${next.id}`}>
                   <span>
-                    <small>Bài tiếp theo trong thư viện</small>
+                    <small>Next lesson in the library</small>
                     {next.id} · {next.title}
                   </span>
                   <ArrowRight size={16} />
@@ -252,12 +253,12 @@ export function TopicPage({
               )}
             </div>
             <section className="related-topics">
-              <h2>Chủ đề dùng nền tảng này</h2>
+              <h2>Topics that build on this foundation</h2>
               <TopicChips ids={successors.map((t) => t.id)} />
             </section>
           </article>
           <aside className="lesson-toc">
-            <div className="eyebrow">TRONG BÀI HỌC</div>
+            <div className="eyebrow">IN THIS LESSON</div>
             {lesson ? (
               lesson.body
                 .split("\n")
@@ -269,9 +270,9 @@ export function TopicPage({
                 ))
             ) : (
               <>
-                <a href="#overview">Tổng quan</a>
-                <a href="#application">Ứng dụng</a>
-                <a href="#practice">Thực hành</a>
+                <a href="#overview">Overview</a>
+                <a href="#application">Application</a>
+                <a href="#practice">Practice</a>
               </>
             )}
             <div className="toc-note">
@@ -333,28 +334,28 @@ function OverviewBody({
   return (
     <div className="prose">
       <div className="info-banner">
-        Overview · Chủ đề này chưa có bài học hoặc diagnostic đầy đủ. Không có
-        tiến độ giả định.
+        Overview · This topic does not yet have a complete lesson or diagnostic.
+        No progress is assumed.
       </div>
-      <h2 id="overview">Tổng quan</h2>
+      <h2 id="overview">Overview</h2>
       <p>{data.overview.overview}</p>
-      <h2 id="application">Ứng dụng thực tế</h2>
+      <h2 id="application">Practical application</h2>
       <p>{data.overview.application}</p>
-      <h2 id="practice">Định hướng tự học</h2>
+      <h2 id="practice">Self-study guidance</h2>
       <p>{data.overview.task}</p>
       <p>
-        Học từ nguồn bên dưới, tự viết suy luận và kiểm thử. Ghi chú hoặc tự
-        đánh giá vẫn là bằng chứng chưa kiểm chứng.
+        Study the sources below and write your own reasoning and tests. Notes
+        and self-assessments remain unverified evidence.
       </p>
-      <h2>Tài liệu liên quan</h2>
+      <h2>Related resources</h2>
       <ul>
         {(resourceMap[domain] ?? resourceMap.Robotics).map((s) => (
           <li key={s.url}>
             <a href={s.url} rel="noreferrer">
               {s.title}
             </a>{" "}
-            · nguồn cấp lĩnh vực; chọn chương phù hợp với mục tiêu, không phải
-            một bài học tương đương.
+            · a domain-level resource; choose a chapter that matches your
+            objectives, rather than treating it as an equivalent lesson.
           </li>
         ))}
       </ul>
@@ -380,7 +381,7 @@ export function Notebook({ id }: { id: string }) {
         provisionalLevel: kind === "self_assessment" ? level : undefined,
       });
       setText("");
-      notify("Đã lưu ghi chép cục bộ.");
+      notify("Notebook entry saved locally.");
     } catch {}
   }
   const notes =
@@ -395,22 +396,24 @@ export function Notebook({ id }: { id: string }) {
         <FileText size={18} />
       </div>
       <p className="small muted">
-        Lưu suy luận, kết quả thử nghiệm và điểm chưa rõ. Tự đánh giá tách biệt
-        với năng lực kiểm chứng.
+        Record reasoning, experimental results, and open questions.
+        Self-assessments remain separate from verified competence.
       </p>
       <form onSubmit={submit}>
         <div className="form-row">
           <label>
-            Loại ghi chép
+            Entry type
             <select value={kind} onChange={(e) => setKind(e.target.value)}>
-              <option value="note">Ghi chú</option>
-              <option value="difficulty">Knowledge debt · khó khăn</option>
-              <option value="practice">Kết quả thực hành</option>
-              <option value="self_assessment">Tự đánh giá · provisional</option>
+              <option value="note">Note</option>
+              <option value="difficulty">Knowledge debt · difficulty</option>
+              <option value="practice">Practice results</option>
+              <option value="self_assessment">
+                Self-assessment · provisional
+              </option>
             </select>
           </label>
           <label>
-            Thời gian (phút)
+            Time (minutes)
             <input
               type="number"
               min="0"
@@ -421,7 +424,7 @@ export function Notebook({ id }: { id: string }) {
           </label>
           {kind === "self_assessment" && (
             <label>
-              Mức tự đánh giá
+              Self-assessed level
               <select
                 value={level}
                 onChange={(e) => setLevel(Number(e.target.value))}
@@ -436,14 +439,14 @@ export function Notebook({ id }: { id: string }) {
           )}
         </div>
         <label className="sr-only" htmlFor={`note-${id}`}>
-          Nội dung ghi chép
+          Notebook entry
         </label>
         <textarea
           id={`note-${id}`}
           required
           maxLength={20000}
           rows={4}
-          placeholder="Tôi đã thử điều gì? Kết quả nào chưa giải thích được?"
+          placeholder="What did I try? Which results can I not explain yet?"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
@@ -452,7 +455,7 @@ export function Notebook({ id }: { id: string }) {
           disabled={busy || !text.trim()}
           type="submit"
         >
-          Lưu ghi chép
+          Save entry
         </button>
       </form>
       {notes.length > 0 && (
@@ -501,39 +504,41 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
       })) as Attempt;
       setResult(attempt);
     } catch (e) {
-      setSubmitError(e instanceof Error ? e.message : "Không thể lưu lần thử.");
+      setSubmitError(
+        e instanceof Error ? e.message : "Unable to save attempt.",
+      );
     }
   }
   return (
     <div className="assessment-layout">
       <section>
         <div className="panel gates">
-          <h2>Bằng chứng cần có</h2>
+          <h2>Required evidence</h2>
           <ul>
             <li className={m.dimensions.C ? "verified-text" : ""}>
-              {m.dimensions.C ? "✓" : "○"} L1 · Diagnostic A0 ≥80%, không sai
-              câu critical.
+              {m.dimensions.C ? "✓" : "○"} L1 · A0 diagnostic ≥80%, with no
+              failed critical items.
             </li>
             <li className={m.dimensions.M ? "verified-text" : ""}>
-              {m.dimensions.M ? "✓" : "○"} M · Các phép tính đạt tiêu chí của
-              assessment.
+              {m.dimensions.M ? "✓" : "○"} M · Numerical answers meet the
+              assessment criteria.
             </li>
             <li className={m.dimensions.I ? "verified-text" : ""}>
-              {m.dimensions.I ? "✓" : "○"} I · Tự triển khai và nhập báo cáo
-              kiểm thử cục bộ hợp lệ.
+              {m.dimensions.I ? "✓" : "○"} I · Independently implement and
+              import a valid local test report.
             </li>
             <li className={m.dimensions.T ? "verified-text" : ""}>
-              {m.dimensions.T ? "✓" : "○"} Retention · Làm lại A0 sau ít nhất 7
-              ngày.
+              {m.dimensions.T ? "✓" : "○"} Retention · Repeat A0 after at least
+              7 days.
             </li>
           </ul>
           <p className="small muted">
-            L2 cần bằng chứng khái niệm, toán và triển khai. L3/L4 cần bài
-            chuyển giao mới hoặc đóng góp nghiên cứu được review độc lập; quiz
-            này không chứng nhận các mức đó.
+            L2 requires conceptual, numerical, and implementation evidence.
+            L3/L4 require unfamiliar transfer tasks or independently reviewed
+            research contributions; this quiz does not certify those levels.
           </p>
           <Link href={`/practice?topic=${id}`} className="text-link">
-            Mở hướng dẫn thực hành
+            Open practice instructions
             <ArrowRight size={14} />
           </Link>
         </div>
@@ -547,20 +552,20 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                 </span>
               </div>
               <p className="muted small">
-                Thử trước khi xem lời giải. Câu ngắn theo rubric được lưu, không
-                chấm tự động.
+                Try before viewing solutions. Short responses are saved with a
+                rubric and are not automatically graded.
               </p>
               <label>
-                Mức trợ giúp
+                Assistance level
                 <select
-                  aria-label="Mức trợ giúp"
+                  aria-label="Assistance level"
                   value={assistance}
                   onChange={(e) => setAssistance(e.target.value as Assistance)}
                 >
-                  <option value="A0">A0 · Tự làm, không trợ giúp</option>
-                  <option value="A1">A1 · Gợi ý khái niệm</option>
-                  <option value="A2">A2 · Gợi ý cụ thể / ví dụ</option>
-                  <option value="A3">A3 · Có lời giải từ AI / tài liệu</option>
+                  <option value="A0">A0 · Independent, no assistance</option>
+                  <option value="A1">A1 · Conceptual hint</option>
+                  <option value="A2">A2 · Specific hint / example</option>
+                  <option value="A3">A3 · Solution from AI / reference</option>
                 </select>
               </label>
             </div>
@@ -577,7 +582,7 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                   {q.critical && <span>CRITICAL</span>}
                   <span>
                     {q.kind === "short"
-                      ? "RUBRIC · CHƯA KIỂM CHỨNG"
+                      ? "RUBRIC · UNVERIFIED"
                       : q.kind === "number"
                         ? "NUMERICAL"
                         : "CONCEPT"}
@@ -613,13 +618,13 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                   </div>
                 ) : q.kind === "number" ? (
                   <label className="number-answer">
-                    Đáp án (dùng dấu chấm thập phân)
+                    Answer (use a decimal point)
                     <input
-                      aria-label={`Đáp án ${q.id}`}
+                      aria-label={`Answer ${q.id}`}
                       required
                       type="text"
                       inputMode="decimal"
-                      placeholder="Nhập một số…"
+                      placeholder="Enter a number…"
                       value={answers[q.id] ?? ""}
                       onChange={(e) =>
                         setAnswers((a) => ({ ...a, [q.id]: e.target.value }))
@@ -629,7 +634,7 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                 ) : (
                   <>
                     <textarea
-                      aria-label="Câu trả lời theo rubric"
+                      aria-label="Rubric response"
                       rows={5}
                       maxLength={10000}
                       value={answers[q.id] ?? ""}
@@ -647,7 +652,7 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
               </fieldset>
             ))}
             <button className="button primary" type="submit" disabled={busy}>
-              {busy ? "Đang lưu…" : "Nộp và lưu diagnostic"}
+              {busy ? "Saving…" : "Submit and save diagnostic"}
               <ArrowRight size={16} />
             </button>
             {submitError && (
@@ -658,29 +663,29 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
           </form>
         ) : (
           <div className="panel empty-state">
-            <h2>Chưa có diagnostic cho chủ đề này</h2>
+            <h2>No diagnostic available for this topic yet</h2>
             <p>
-              Lưu ghi chú và kết quả tự học vào notebook. Chúng vẫn là dữ liệu
-              chưa kiểm chứng.
+              Record notes and self-study results in the notebook. They remain
+              unverified.
             </p>
           </div>
         )}
         {result && (
           <div className="panel assessment-result" role="status">
             <div className="between">
-              <h2>Kết quả · {result.grade.score}%</h2>
+              <h2>Result · {result.grade.score}%</h2>
               <span
                 className={`status ${result.grade.passed && result.assistance === "A0" ? "verified" : ""}`}
               >
                 {result.grade.passed
                   ? result.assistance === "A0"
-                    ? "Đạt diagnostic A0"
-                    : "Đạt có trợ giúp · chưa kiểm chứng"
-                  : "Cần học và thử lại"}
+                    ? "A0 diagnostic passed"
+                    : "Passed with assistance · unverified"
+                  : "Study and try again"}
               </span>
             </div>
             <p className="muted small">
-              {dateText(result.at)} · {result.assistance} · Đã lưu vào SQLite
+              {dateText(result.at)} · {result.assistance} · Saved in SQLite
             </p>
             {result.grade.items.map((item) => (
               <div className="feedback-item" key={item.id}>
@@ -695,16 +700,16 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                 >
                   {item.id} ·{" "}
                   {item.correct === null
-                    ? "Đối chiếu rubric"
+                    ? "Review against rubric"
                     : item.correct
-                      ? "Đúng"
-                      : "Chưa đúng"}
+                      ? "Correct"
+                      : "Not yet correct"}
                 </strong>
                 <p>{item.feedback}</p>
               </div>
             ))}
             <Link className="button" href={`/lessons/${id}`}>
-              Xem lại lý thuyết
+              Revisit the theory
               <BookOpen size={15} />
             </Link>
           </div>
@@ -713,7 +718,7 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
       </section>
       <aside className="evidence-history">
         <div className="panel">
-          <h2>Lịch sử bằng chứng</h2>
+          <h2>Evidence history</h2>
           {attempts.length ? (
             attempts.map((a) => (
               <details key={a.id}>
@@ -732,8 +737,8 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                     {i.correct === null
                       ? "Rubric"
                       : i.correct
-                        ? "Đúng"
-                        : "Chưa đúng"}{" "}
+                        ? "Correct"
+                        : "Not yet correct"}{" "}
                     · {i.feedback}
                   </p>
                 ))}
@@ -741,8 +746,7 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
             ))
           ) : (
             <p className="muted small">
-              Chưa có lần thử nào. Không có bằng chứng không đồng nghĩa với
-              không có năng lực.
+              No attempts yet. Missing evidence does not mean missing ability.
             </p>
           )}
           {state.progress.labs
@@ -750,21 +754,21 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
             .map((l) => (
               <div className="lab-evidence" key={l.id}>
                 <strong className="verified-text">
-                  Báo cáo fixed-tests · {l.assistance}
+                  Fixed-test report · {l.assistance}
                 </strong>
                 <small>{dateText(l.at)}</small>
                 <code>SHA256 {l.sourceHash.slice(0, 16)}…</code>
                 <p className="small">
                   {l.assistance === "A0"
-                    ? "Có bằng chứng triển khai độc lập theo tự khai mức trợ giúp."
-                    : "Có trợ giúp · chỉ tính thực hành."}
+                    ? "Independent implementation evidence with self-declared assistance."
+                    : "Assisted · practice only."}
                 </p>
               </div>
             ))}
         </div>
         <div className="quiet-note">
-          Bằng chứng là lịch sử, không bị xóa khi lần ôn tập chưa đạt. Lần thử
-          sai tạo điểm cần ôn.
+          Evidence is historical and remains after an unsuccessful review. A
+          failed attempt creates a review gap.
         </div>
       </aside>
     </div>

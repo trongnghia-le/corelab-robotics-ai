@@ -30,7 +30,7 @@ export function Provider({ children }: { children: ReactNode }) {
       setState(data);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Không thể đọc dữ liệu.");
+      setError(e instanceof Error ? e.message : "Unable to read data.");
       throw e;
     }
   }, []);
@@ -56,7 +56,7 @@ export function Provider({ children }: { children: ReactNode }) {
         await refresh();
         return data;
       } catch (e) {
-        setToast(e instanceof Error ? e.message : "Không thể lưu dữ liệu.");
+        setToast(e instanceof Error ? e.message : "Unable to save data.");
         throw e;
       } finally {
         setPending((n) => n - 1);
@@ -91,10 +91,12 @@ export function Loading() {
   const { error, refresh } = useCore();
   return (
     <div className="empty-state" role={error ? "alert" : "status"}>
-      <h2>{error ? "Không thể mở workspace" : "Đang mở workspace…"}</h2>
-      <p>{error || "Đọc dữ liệu cục bộ."}</p>
+      <h2>{error ? "Unable to open workspace" : "Opening workspace…"}</h2>
+      <p>{error || "Reading local data."}</p>
       {error && (
-        <button onClick={() => void refresh().catch(() => {})}>Thử lại</button>
+        <button onClick={() => void refresh().catch(() => {})}>
+          Try again
+        </button>
       )}
     </div>
   );
@@ -105,6 +107,6 @@ export async function copyText(value: string) {
     return;
   }
   throw new Error(
-    "Clipboard chưa sẵn sàng. Hãy chọn và sao chép nội dung bên dưới.",
+    "Clipboard is unavailable. Select and copy the content below.",
   );
 }

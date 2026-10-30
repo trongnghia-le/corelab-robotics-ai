@@ -35,15 +35,15 @@
 }
 ---
 
-## Vì sao học bài này?
+## Why this matters
 
 Write a small compiled program and understand its arithmetic. This lesson develops the core calculation before asking you to apply it in a new setting. Start with the diagnostic if you think you already know it; prior tool use is not evidence of understanding.
 
-## Trực giác · Intuition
+## Intuition
 
 C++ makes representation and lifetime visible. A type tells the compiler which operations are valid, but also controls arithmetic and memory layout. Compilation catches some mistakes before execution; tests must catch incorrect behavior that is still legal C++.
 
-## Định nghĩa và suy luận · Theory & derivation
+## Theory and derivation
 
 A variable declaration introduces a typed object: `int count{3};` stores an integer, while `double dt{0.01};` stores an approximate real value. Initialize every local scalar before reading it. Integer division truncates toward zero: `5/2` is 2, whereas `5.0/2` is 2.5. Converting the truncated result to double afterward does not recover the lost fraction.
 
@@ -51,11 +51,11 @@ Functions declare a return type and typed parameters. Passing a vector by value 
 
 Use `std::vector` for a runtime-sized sequence. Its `size()` is a count, while valid indices run from zero through size minus one. `operator[]` does not check bounds; `.at()` does. Prefer range-based loops when the index has no separate meaning. Compile with warnings enabled and treat a warning as a question to resolve, not decoration.
 
-## Ví dụ có lời giải · Worked example
+## Worked example
 
 If int steps=5 and total=2, `double ratio=steps/total;` produces 2.0 because division happened as integers. `double ratio=static_cast<double>(steps)/total;` produces 2.5. For an empty vector, a mean function must reject input before division.
 
-## Triển khai tham khảo · Reference implementation
+## Reference implementation
 
 Read the contract first. Predict the output before running the code locally. This reference is for studying; a submission copied from it is assisted practice, not independent evidence.
 
@@ -73,30 +73,30 @@ int main() { assert(mean({2.,4.,6.}) == 4.); }
 // g++ -std=c++17 -Wall -Wextra -Wpedantic main.cpp -o demo
 ```
 
-## Tự thực hành · Independent practice
+## Independent practice
 
 Create main.cpp, compile it with the command above, and add singleton, mixed-sign, and empty-input cases. Predict each result before execution. Change one operand in a division from int to double and explain the result.
 
 Record the problem, your derivation, implementation, exact command, and observed output. State assistance A0–A3 honestly. If you used a solution, repeat a new task without it before claiming independence.
 
-## Kiểm chứng · Verification
+## Verification
 
 Check the worked numerical example independently, then test a boundary case and an invariant from the derivation. Keep the expected result separate from the implementation. Change a sign or remove one term deliberately: your tests should reject that broken version. Use the diagnostic to check concepts and numerical reasoning; short answers remain rubric-guided practice.
 
-## Hiểu lầm thường gặp · Failure modes
+## Failure modes
 
 An uninitialized local integer has no valid predictable value to rely on. An out-of-range vector access is not a safe way to detect the end of data. A reference does not extend an arbitrary object lifetime.
 
-## So sánh và lựa chọn · Alternatives
+## Alternatives and trade-offs
 
 Python is convenient for rapid inspection; C++ offers explicit types and control over resources. Start with standard containers and clear ownership before optimizing or introducing raw pointers.
 
-## Chuyển giao và ôn tập · Transfer
+## Transfer and retention
 
 Compute a moving average for sampled motor velocity. State your numeric type, input contract, boundary behavior, and one test that catches integer truncation.
 
 Close the reference before trying. Explain your assumptions and one way your answer could fail. Return after at least a week and reconstruct the key argument from a blank page. A quiz alone does not verify unfamiliar transfer or research-level competence.
 
-## Đọc thêm · Sources
+## Further reading
 
 [LearnCpp](https://www.learncpp.com/) — primary course, documentation, or the supplied reference collection. Follow the relevant subject heading; these are further reading links, not reproduced book chapters.

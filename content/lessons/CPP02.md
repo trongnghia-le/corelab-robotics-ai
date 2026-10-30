@@ -37,15 +37,15 @@
 }
 ---
 
-## Vì sao học bài này?
+## Why this matters
 
 Explain who owns an object and how long a reference stays valid. This lesson develops the core calculation before asking you to apply it in a new setting. Start with the diagnostic if you think you already know it; prior tool use is not evidence of understanding.
 
-## Trực giác · Intuition
+## Intuition
 
 A pointer is a value that can refer to an object in memory; it is not ownership by itself. A reference is an alias. Correctness depends on whether the object still exists and whether an operation moved its storage. Drawing object lifetimes is often more useful than staring at addresses.
 
-## Định nghĩa và suy luận · Theory & derivation
+## Theory and derivation
 
 An automatic local object is destroyed when its scope ends. Returning a pointer or reference to it leaves a dangling handle. Copying a value creates another object with its own lifetime; copying a pointer only creates another address value.
 
@@ -55,11 +55,11 @@ RAII associates resource release with object destruction. `std::unique_ptr<T>` o
 
 To inspect suspected memory errors, compile your own code with `-fsanitize=address,undefined -g`. Sanitizers detect many executed invalid operations; passing one run is not proof that every lifetime is correct.
 
-## Ví dụ có lời giải · Worked example
+## Worked example
 
 A function `const int& bad(){ int x=3; return x; }` returns a reference after x has been destroyed. In contrast, `int good(){ int x=3; return x; }` returns a value. With vector v, taking &v[0] and then causing a reallocation can invalidate that pointer even though v still exists.
 
-## Triển khai tham khảo · Reference implementation
+## Reference implementation
 
 Read the contract first. Predict the output before running the code locally. This reference is for studying; a submission copied from it is assisted practice, not independent evidence.
 
@@ -74,30 +74,30 @@ int main() {
 } // b releases the object here
 ```
 
-## Tự thực hành · Independent practice
+## Independent practice
 
 Draw lifetimes for a value, reference, and unique_ptr across nested scopes. Write a safe function returning a vector by value. In a separate intentional experiment, use a sanitizer to identify a dangling reference; do not run undefined behavior in robot control code.
 
 Record the problem, your derivation, implementation, exact command, and observed output. State assistance A0–A3 honestly. If you used a solution, repeat a new task without it before claiming independence.
 
-## Kiểm chứng · Verification
+## Verification
 
 Check the worked numerical example independently, then test a boundary case and an invariant from the derivation. Keep the expected result separate from the implementation. Change a sign or remove one term deliberately: your tests should reject that broken version. Use the diagnostic to check concepts and numerical reasoning; short answers remain rubric-guided practice.
 
-## Hiểu lầm thường gặp · Failure modes
+## Failure modes
 
 “The address still contains 3” does not make a destroyed object valid. Shared ownership prevents some premature destruction but can introduce cycles and does not fix data races.
 
-## So sánh và lựa chọn · Alternatives
+## Alternatives and trade-offs
 
 Value semantics simplify lifetime reasoning. unique_ptr expresses exclusive ownership. shared_ptr is useful for genuinely shared lifetimes but adds coupling and overhead; nonowning references remain appropriate when lifetime is guaranteed elsewhere.
 
-## Chuyển giao và ôn tập · Transfer
+## Transfer and retention
 
 A callback stores a pointer to a temporary sensor buffer. Describe a failure scenario and redesign the ownership contract so the callback can safely outlive the producer call.
 
 Close the reference before trying. Explain your assumptions and one way your answer could fail. Return after at least a week and reconstruct the key argument from a blank page. A quiz alone does not verify unfamiliar transfer or research-level competence.
 
-## Đọc thêm · Sources
+## Further reading
 
 [LearnCpp](https://www.learncpp.com/) — primary course, documentation, or the supplied reference collection. Follow the relevant subject heading; these are further reading links, not reproduced book chapters.

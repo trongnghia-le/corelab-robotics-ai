@@ -18,7 +18,7 @@ export function gradeAssessment(
       return {
         id: q.id,
         correct: null,
-        feedback: `Cần tự đối chiếu rubric; chưa kiểm chứng. ${q.rubric?.join(" • ")}`,
+        feedback: `Review against the rubric; unverified. ${q.rubric?.join(" • ")}`,
       };
     const raw = (answers[q.id] ?? "").trim();
     const numeric = Number(raw);
@@ -169,16 +169,16 @@ export function recommend(
       // Give the next missing foundation priority over repeating a passed quiz.
       if (state.level >= 1 && !state.reviewDue && !state.gap) rank -= 55;
       const reason = state.reviewDue
-        ? "Đến lịch ôn tập: kiểm tra lại khả năng nhớ mà không xem lời giải."
+        ? "Review due: check retention without viewing the solution."
         : state.gap
-          ? "Lần thử gần nhất còn điểm chưa vững; xem phản hồi rồi làm lại độc lập."
+          ? "The latest attempt revealed a gap; read the feedback and try again independently."
           : state.level >= 1
-            ? "Đã có bằng chứng khái niệm; tiếp theo cần triển khai độc lập và kiểm thử."
+            ? "Conceptual evidence is available; next, implement independently and test your work."
             : pinned.has(t.id)
-              ? `Nền tảng cần cho mục tiêu ghim ${p.focusTopic}; tiền đề hiện đã có bằng chứng L1.`
+              ? `A foundation needed for your pinned goal ${p.focusTopic}; its prerequisites now have L1 evidence.`
               : t.prerequisites.length
-                ? "Tiền đề đã có bằng chứng L1. Đây là bước tiếp theo để mở rộng nền tảng."
-                : "Chưa có bằng chứng. Bắt đầu từ nền tảng không cần tiền đề.";
+                ? "Prerequisites have L1 evidence. This is the next step in building your foundations."
+                : "No evidence yet. Start with a foundation that has no prerequisites.";
       return [
         {
           topicId: t.id,
@@ -188,8 +188,8 @@ export function recommend(
           prerequisites: t.prerequisites,
           exercise:
             kind === "practice"
-              ? "Tự triển khai bài thực hành, chạy kiểm thử cục bộ, rồi nhập báo cáo."
-              : "Làm diagnostic A0 trước; đọc và sửa điểm chưa hiểu sau khi thử.",
+              ? "Implement the assignment independently, run local tests, and import the report."
+              : "Try an A0 diagnostic first; study and address gaps after your attempt.",
         },
       ];
     })

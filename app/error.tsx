@@ -2,9 +2,11 @@
 export default function ErrorPage({ reset }: { reset: () => void }) {
   return (
     <div className="page empty-state">
-      <h1>Không thể mở workspace.</h1>
-      <p>Tiến độ vẫn được giữ trong SQLite. Hãy thử mở lại trang.</p>
-      <button onClick={reset}>Thử lại</button>
+      <h1>Unable to open workspace.</h1>
+      <p>
+        Your progress is still stored in SQLite. Try opening the page again.
+      </p>
+      <button onClick={reset}>Try again</button>
     </div>
   );
 }

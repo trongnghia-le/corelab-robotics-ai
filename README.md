@@ -2,7 +2,7 @@
 
 A local, single-user learning workspace for Robotics, Computer Vision, Reinforcement Learning, and Cognitive Robotics. Start with **zero verified knowledge**, study first principles, implement algorithms, and keep reproducible evidence of what you can do.
 
-The interface is Vietnamese with English technical terminology. Authored lessons use English explanations and bilingual section headings. There are **169 original curriculum topics**, **31 complete lessons with versioned diagnostics**, structured overviews for every topic, and eight practical assignments. The supplied curriculum IDs and prerequisites are unchanged.
+The interface, lesson headings, practice instructions, and diagnostics are entirely in English. There are **169 original curriculum topics**, **31 complete lessons with versioned diagnostics**, structured overviews for every topic, and eight practical assignments. The supplied curriculum IDs and prerequisites are unchanged.
 
 ## Run locally on Ubuntu
 
@@ -24,7 +24,7 @@ Lessons, graph, assessments, notes, and progress work without Internet after dep
 
 ## Start studying
 
-1. Open the Dashboard. All topics begin **Chưa đánh giá**, not at a fictitious progress percentage.
+1. Open the Dashboard. All topics begin **Unassessed**, not at a fictitious progress percentage.
 2. Open M01 and try its diagnostic before consulting the worked examples. Select assistance A0–A3 honestly.
 3. Study the derivation, implement the exercise independently, and record tests and uncertainties in the notebook.
 4. Return to Assessments. Your answers, score, item feedback, assistance, contract version, and timestamp persist in SQLite.
@@ -86,7 +86,7 @@ Paste this JSON into the feedback form. It becomes AI-reported notes and knowled
 
 Progress lives in **`.local/corelab.sqlite`**, created automatically. Routine builds, dependency updates, curriculum re-imports, and app restarts do not replace it. For a separate instance, set `CORELAB_DB_PATH` to a different file before starting the server.
 
-In **Dữ liệu & cài đặt**, export a versioned JSON backup. Restore first validates its schema, topic references, duplicate IDs, assessment versions, review references, timestamps, and signed lab provenance. Imported scores are recomputed from the immutable assessment contract instead of trusted. Preview the record counts and explicitly confirm replacement. Invalid input leaves the database unchanged; replacement is transactional.
+In **Data & settings**, export a versioned JSON backup. Restore first validates its schema, topic references, duplicate IDs, assessment versions, review references, timestamps, and signed lab provenance. Imported scores are recomputed from the immutable assessment contract instead of trusted. Preview the record counts and explicitly confirm replacement. Invalid input leaves the database unchanged; replacement is transactional.
 
 A pre-restore snapshot is retained in the local `restore_snapshots` table. To recover one, stop the app and use the SQLite CLI to inspect and retrieve a snapshot into a backup envelope, then import that envelope through Settings. For an exact whole-machine backup, stop the app and copy the entire `.local/` directory, including signing keys. Do not copy a live SQLite file without its WAL or SQLite's backup API.
 
@@ -134,7 +134,7 @@ Run `npm run validate:content` after changes. Validation checks the full DAG, me
 
 ### Specification decisions
 
-The current implementation request supersedes the older spec's Phase 1-only and “not requested now” scope. The approved dark theme supersedes the questionnaire's earlier light-mode suggestion. The curriculum actually contains **169** topics across **8** domain labels (RL and Robot Learning share a domain; Simulation topics share the Robotics domain); these source definitions are preserved. Original setup instructions refer to `chatgpt_project/` files that were not present in the supplied workspace; CoreLab provides its own manual handoff and does not pretend those files exist. Overviews use subject-level references when a precise chapter mapping has not been authored.
+The current implementation request supersedes the older spec's Phase 1-only and “not requested now” scope. The approved dark theme supersedes the questionnaire's earlier light-mode suggestion. The English-only interface requested by the learner supersedes the original Vietnamese microcopy preference. The curriculum actually contains **169** topics across **8** domain labels (RL and Robot Learning share a domain; Simulation topics share the Robotics domain); these source definitions are preserved. Original setup instructions refer to `chatgpt_project/` files that were not present in the supplied workspace; CoreLab provides its own manual handoff and does not pretend those files exist. Overviews use subject-level references when a precise chapter mapping has not been authored.
 
 ## Checks
 

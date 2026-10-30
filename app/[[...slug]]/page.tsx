@@ -26,7 +26,7 @@ export default async function Page({
   )
     notFound();
   return (
-    <Suspense fallback={<div className="page">Đang mở CoreLab…</div>}>
+    <Suspense fallback={<div className="page">Loading CoreLab…</div>}>
       <Workspace route={slug} />
     </Suspense>
   );

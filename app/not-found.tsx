@@ -2,11 +2,11 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div className="page empty-state">
-      <span className="eyebrow">404 · KHÔNG TÌM THẤY</span>
-      <h1>Chủ đề này chưa có trong workspace.</h1>
-      <p>Quay lại bản đồ để tìm một chủ đề hợp lệ.</p>
+      <span className="eyebrow">404 · NOT FOUND</span>
+      <h1>This topic is not in the workspace.</h1>
+      <p>Return to the roadmap to find an available topic.</p>
       <Link className="button primary" href="/roadmap">
-        Mở Roadmap
+        Open Roadmap
       </Link>
     </div>
   );

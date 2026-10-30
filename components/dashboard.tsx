@@ -37,12 +37,12 @@ export function Dashboard() {
       topicId: s.topicId,
       at: s.at,
       text: {
-        reading: "Đã đọc bài",
-        practice: "Thực hành",
-        note: "Ghi chú",
-        difficulty: "Ghi nhận khó khăn",
-        self_assessment: "Tự đánh giá",
-        ai_feedback: "Phản hồi AI · chưa kiểm chứng",
+        reading: "Lesson read",
+        practice: "Practice",
+        note: "Note",
+        difficulty: "Difficulty recorded",
+        self_assessment: "Self-assessed",
+        ai_feedback: "AI feedback · unverified",
       }[s.kind],
       kind: s.kind,
     })),
@@ -54,20 +54,19 @@ export function Dashboard() {
     <div className="page dashboard">
       <PageHeading
         eyebrow="YOUR RESEARCH WORKSPACE"
-        title="Xây nền tảng. Đi xa hơn."
-        description="Mỗi bước tiến đều bắt đầu từ một điều bạn thực sự hiểu."
+        title="Build foundations. Go further."
+        description="Every step forward starts with something you truly understand."
       >
         <Link className="button" href="/paths">
           <GitBranch size={16} />
-          Lộ trình của tôi
+          My learning path
         </Link>
       </PageHeading>
       <div className="dashboard-grid">
         <section className="focus-card">
           <div className="section-kicker">
             <span className="accent-dot" />
-            BƯỚC TIẾP THEO{" "}
-            <span className="priority-pill">FOUNDATION FIRST</span>
+            NEXT ACTION <span className="priority-pill">FOUNDATION FIRST</span>
           </div>
           {topic && rec ? (
             <>
@@ -79,7 +78,7 @@ export function Dashboard() {
               <div className="reason-box">
                 <Target size={17} />
                 <div>
-                  <strong>Vì sao học bài này?</strong>
+                  <strong>Why this lesson?</strong>
                   <p>{rec.exercise}</p>
                 </div>
               </div>
@@ -95,27 +94,28 @@ export function Dashboard() {
                   }
                 >
                   {rec.kind === "review"
-                    ? "Ôn tập ngay"
+                    ? "Review now"
                     : rec.kind === "assess"
-                      ? "Bắt đầu diagnostic"
-                      : "Tiếp tục học"}
+                      ? "Start diagnostic"
+                      : "Continue learning"}
                   <ArrowRight size={17} />
                 </Link>
                 <span className="muted small">
                   <Clock3 size={14} />
-                  Học theo năng lực, không theo lịch
+                  Progress by competence, at your own pace
                 </span>
               </div>
             </>
           ) : (
             <>
-              <h2>Nền tảng tiếp theo của bạn</h2>
+              <h2>Your next foundation</h2>
               <p>
-                Chưa có bài phù hợp với các tiền đề đã kiểm chứng. Xem Roadmap
-                và chọn chủ đề cần bổ sung.
+                No authored lesson currently matches your verified
+                prerequisites. Open the Roadmap to choose a foundation to work
+                on.
               </p>
               <Link className="button primary" href="/roadmap">
-                Mở Roadmap
+                Open Roadmap
                 <ArrowRight size={16} />
               </Link>
             </>
@@ -123,45 +123,53 @@ export function Dashboard() {
         </section>
         <section className="panel focus-aside">
           <div className="panel-heading">
-            <h2>Điểm xuất phát</h2>
+            <h2>Your starting point</h2>
             <ShieldCheck size={18} />
           </div>
-          <p className="muted small">Năng lực được ghi nhận bằng bằng chứng.</p>
+          <p className="muted small">
+            Competence is recorded through evidence.
+          </p>
           <div className="evidence-stat">
             <strong>{verified.length}</strong>
             <span>
-              chủ đề có bằng chứng
+              {verified.length === 1
+                ? "topic with evidence"
+                : "topics with evidence"}
               <br />
-              <small>trong {topics.length} chủ đề</small>
+              <small>across {topics.length} topics</small>
             </span>
           </div>
           <div className="aside-stat">
-            <span>Đã thử đánh giá</span>
-            <strong>{attempted.size} chủ đề</strong>
+            <span>Topics assessed</span>
+            <strong>
+              {attempted.size} {attempted.size === 1 ? "topic" : "topics"}
+            </strong>
           </div>
           <div className="aside-stat">
-            <span>Đến hạn ôn tập</span>
-            <strong>{due.length} chủ đề</strong>
+            <span>Reviews due</span>
+            <strong>
+              {due.length} {due.length === 1 ? "topic" : "topics"}
+            </strong>
           </div>
           <div className="quiet-note">
             {verified.length
-              ? "Xem C/M/I/T để biết chính xác bằng chứng hiện có."
-              : "Chưa đánh giá là một điểm bắt đầu, không phải điểm 0."}
+              ? "Check C/M/I/T to see exactly which evidence you have."
+              : "Unassessed is a starting point, not a score of zero."}
           </div>
         </section>
       </div>
       <div className="section-title">
-        <h2>Bản đồ năng lực</h2>
+        <h2>Competency map</h2>
         <Link href="/roadmap">
-          Xem toàn bộ Roadmap
+          View full Roadmap
           <ArrowUpRight size={15} />
         </Link>
       </div>
       <section className="panel domain-table">
         <div className="table-head">
-          <span>LĨNH VỰC</span>
-          <span>BẰNG CHỨNG</span>
-          <span>TRẠNG THÁI</span>
+          <span>DOMAIN</span>
+          <span>EVIDENCE</span>
+          <span>STATUS</span>
         </div>
         {domains.map((d, i) => {
           const ts = topics.filter((t) => t.domain === d),
@@ -180,11 +188,11 @@ export function Dashboard() {
               </span>
               <span className="muted small">
                 {vs.length
-                  ? `${vs.length} chủ đề đã kiểm chứng`
-                  : "Chưa có bằng chứng"}
+                  ? `${vs.length} verified ${vs.length === 1 ? "topic" : "topics"}`
+                  : "No evidence yet"}
               </span>
               <span className={vs.length ? "verified-text small" : "status"}>
-                {vs.length ? "Có bằng chứng" : "Chưa đánh giá"}
+                {vs.length ? "Evidence available" : "Unassessed"}
                 <ChevronRight size={14} />
               </span>
             </Link>
@@ -194,7 +202,7 @@ export function Dashboard() {
       <div className="two-columns">
         <section className="panel">
           <div className="panel-heading">
-            <h2>Cần chú ý</h2>
+            <h2>Needs attention</h2>
             <GitBranch size={18} />
           </div>
           {gaps.length ? (
@@ -208,7 +216,7 @@ export function Dashboard() {
                   <span className="mono">{t.id}</span>
                   <span>
                     {t.title}
-                    <small>Lần thử gần nhất còn điểm cần sửa</small>
+                    <small>The latest attempt has areas to revisit</small>
                   </span>
                   <ArrowRight size={15} />
                 </Link>
@@ -219,18 +227,18 @@ export function Dashboard() {
               <ShieldCheck size={23} />
               <p>
                 {progress.attempts.length
-                  ? "Chưa phát hiện điểm hổng qua các lần thử."
-                  : "Chưa đủ bằng chứng để xác định điểm mạnh hoặc điểm hổng."}
+                  ? "No gaps identified in your attempts so far."
+                  : "There is not enough evidence yet to identify strengths or gaps."}
               </p>
               <Link href="/assessments/M01">
-                Bắt đầu diagnostic M01
+                Start M01 diagnostic
                 <ArrowRight size={14} />
               </Link>
             </div>
           )}
           {due.length > 0 && (
             <div className="review-block">
-              <strong className="warning-text">Cần ôn tập</strong>
+              <strong className="warning-text">Review due</strong>
               {due.slice(0, 3).map((r) => (
                 <Link href={`/assessments/${r.topicId}`} key={r.topicId}>
                   {r.topicId} · {topicMap[r.topicId].title}
@@ -242,7 +250,7 @@ export function Dashboard() {
         </section>
         <section className="panel">
           <div className="panel-heading">
-            <h2>Hoạt động gần đây</h2>
+            <h2>Recent activity</h2>
             <Clock3 size={18} />
           </div>
           {recent.length ? (
@@ -264,12 +272,12 @@ export function Dashboard() {
             <div className="empty-inline">
               <BookOpen size={23} />
               <p>
-                Workspace của bạn đang sẵn sàng.
+                Your workspace is ready.
                 <br />
-                Bắt đầu từ một câu hỏi nhỏ.
+                Start with one small question.
               </p>
               <Link href="/lessons/M01">
-                Mở bài học đầu tiên
+                Open your first lesson
                 <ArrowRight size={14} />
               </Link>
             </div>
@@ -281,21 +289,21 @@ export function Dashboard() {
           <BookOpen size={18} />
           <div>
             <strong>
-              Quay lại {last.topicId} · {topicMap[last.topicId].title}
+              Return to {last.topicId} · {topicMap[last.topicId].title}
             </strong>
             <span>
-              Đã đọc · {dateText(last.at)} · đọc bài không tăng mastery
+              Read · {dateText(last.at)} · reading does not increase mastery
             </span>
           </div>
           <Link className="button" href={`/lessons/${last.topicId}`}>
-            Tiếp tục
+            Continue
             <ArrowRight size={15} />
           </Link>
         </section>
       )}
       {verified.length > 0 && (
         <section className="panel">
-          <h2>Điểm mạnh có bằng chứng</h2>
+          <h2>Evidence-backed strengths</h2>
           <div className="stack">
             {verified.slice(0, 4).map((t) => (
               <div className="between" key={t.id}>
@@ -312,16 +320,16 @@ export function Dashboard() {
         <Link href="/practice">
           <FlaskConical size={20} />
           <div>
-            <strong>Tự triển khai & kiểm thử</strong>
-            <span>Thực hành ngoài trình duyệt, theo tốc độ của bạn.</span>
+            <strong>Implement & test independently</strong>
+            <span>Practice outside the browser, at your own pace.</span>
           </div>
           <ArrowUpRight size={18} />
         </Link>
         <Link href="/tutor">
           <Target size={20} />
           <div>
-            <strong>Mang câu hỏi đến AI Tutor</strong>
-            <span>Sao chép ngữ cảnh, giữ bằng chứng ở CoreLab.</span>
+            <strong>Take your questions to AI Tutor</strong>
+            <span>Copy the context; keep the evidence in CoreLab.</span>
           </div>
           <ArrowUpRight size={18} />
         </Link>
@@ -329,7 +337,7 @@ export function Dashboard() {
       {recommendations.length > 1 && (
         <details className="secondary-recs">
           <summary>
-            Nhánh học song song phù hợp ({recommendations.length - 1})
+            Suitable parallel learning branches ({recommendations.length - 1})
           </summary>
           {recommendations.slice(1).map((r) => (
             <div key={r.topicId}>

@@ -33,39 +33,41 @@ export function Practice() {
     try {
       await act({ type: "lab", report: JSON.parse(report) });
       setReport("");
-      notify("Đã nhập báo cáo kiểm thử. Xem bằng chứng trong Assessments.");
+      notify("Test report imported. View the evidence in Assessments.");
     } catch (e) {
-      if (e instanceof SyntaxError) notify("Báo cáo phải là JSON hợp lệ.");
+      if (e instanceof SyntaxError)
+        notify("The report must contain valid JSON.");
     }
   }
   return (
     <div className="page">
       <PageHeading
         eyebrow="IMPLEMENT → VERIFY → TRANSFER"
-        title="Tự triển khai. Tự kiểm chứng."
-        description="Viết code trong VS Code và chạy kiểm thử từ terminal của bạn. CoreLab không chạy code gửi qua trình duyệt."
+        title="Implement independently. Verify your work."
+        description="Write code in VS Code and run tests in your own terminal. CoreLab does not execute code submitted through the browser."
       />
       <div className="info-banner">
         <ShieldCheck size={19} />
         <span>
-          Fixed-tests hiện hỗ trợ M02 và PY01. Các bài khác có hướng dẫn và
-          notebook; kết quả tự báo cáo không tăng năng lực kiểm chứng.
+          Fixed tests currently support M02 and PY01. Other assignments include
+          instructions and a notebook; self-reported results do not increase
+          verified competence.
         </span>
       </div>
       <div className="filters">
         <select
-          aria-label="Chọn chủ đề thực hành"
+          aria-label="Choose practice topic"
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
         >
-          <option value="">Tất cả bài thực hành</option>
+          <option value="">All assignments</option>
           {topics.map((t) => (
             <option key={t.id} value={t.id}>
               {t.id} · {t.title}
             </option>
           ))}
         </select>
-        {topic && <button onClick={() => setTopic("")}>Xem tất cả</button>}
+        {topic && <button onClick={() => setTopic("")}>View all</button>}
       </div>
       <div className="practice-list">
         {shown.map((p, i) => (
@@ -82,7 +84,9 @@ export function Practice() {
                   <span className="muted small">{p.kind}</span>
                 </div>
                 <span className={`status ${p.verified ? "verified" : ""}`}>
-                  {p.verified ? "Có fixed verifier" : "Practice · tự báo cáo"}
+                  {p.verified
+                    ? "Fixed verifier available"
+                    : "Practice · self-reported"}
                 </span>
               </div>
               <h2>{p.title}</h2>
@@ -94,14 +98,14 @@ export function Practice() {
               <div className="topic-actions">
                 <a className="button" download href={p.starter}>
                   <Download size={15} />
-                  Tải starter
+                  Download starter
                 </a>
                 <Link className="button" href={`/lessons/${p.topicId}`}>
-                  Lý thuyết
+                  Theory
                   <ArrowRight size={15} />
                 </Link>
                 <Link className="button" href={`/assessments/${p.topicId}`}>
-                  Xem bằng chứng
+                  View evidence
                   <ArrowRight size={15} />
                 </Link>
               </div>
@@ -111,37 +115,38 @@ export function Practice() {
       </div>
       {shown.length === 0 && exact && (
         <div className="panel">
-          <h2>Thực hành theo mục tiêu của {exact.title}</h2>
+          <h2>Practice the objectives for {exact.title}</h2>
           <p>
-            Chưa có fixed verifier riêng cho chủ đề này. Dùng phần Independent
-            practice trong bài học hoặc định hướng ở overview, rồi ghi giả định,
-            suy luận và kết quả vào notebook.
+            This topic has no fixed verifier yet. Follow the independent
+            practice section or overview guidance, then record your assumptions,
+            reasoning, and results in the notebook.
           </p>
           <Link className="button" href={`/lessons/${topic}`}>
-            Mở chủ đề
+            Open topic
             <ArrowRight size={16} />
           </Link>
         </div>
       )}
       <section className="panel import-report">
-        <h2>Nhập báo cáo kiểm thử cục bộ</h2>
+        <h2>Import a local test report</h2>
         <p className="muted small">
-          Runner lưu hash source, thời gian, contract v1, mức trợ giúp và chữ ký
-          cục bộ. A3 chỉ ghi nhận thực hành; một lần A0 mới có thể tạo bằng
-          chứng I. Đây là bằng chứng học cá nhân, không phải thi có giám sát.
+          The runner records the source hash, timestamp, v1 contract,
+          assistance, and local signature. A3 records practice only; a fresh A0
+          run can establish I evidence. This is personal study evidence, not
+          proctored certification.
         </p>
         <label className="file-label">
           <Upload size={16} />
-          Chọn report JSON
+          Choose report JSON
           <input
-            aria-label="Chọn báo cáo lab"
+            aria-label="Choose lab report"
             type="file"
             accept="application/json,.json"
             onChange={async (e) => {
               const f = e.target.files?.[0];
               if (f) {
                 if (f.size > 10000) {
-                  notify("Báo cáo quá lớn.");
+                  notify("The report is too large.");
                   return;
                 }
                 setReport(await f.text());
@@ -151,8 +156,8 @@ export function Practice() {
         </label>
         <form onSubmit={importReport}>
           <textarea
-            aria-label="Báo cáo kiểm thử JSON"
-            placeholder="Dán nội dung .local/M02-report.json…"
+            aria-label="Test report JSON"
+            placeholder="Paste the contents of .local/M02-report.json…"
             value={report}
             onChange={(e) => setReport(e.target.value)}
             rows={6}
@@ -164,13 +169,13 @@ export function Practice() {
             type="submit"
             disabled={busy || !report}
           >
-            Nhập báo cáo
+            Import report
             <Upload size={16} />
           </button>
         </form>
         <p className="small muted">
-          Chỉ CLI trong terminal mới thực thi file Python. Nút này chỉ kiểm tra
-          và lưu báo cáo.
+          Only the CLI in your terminal executes Python files. This button only
+          validates and saves a report.
         </p>
       </section>
       {topic && <Notebook key={topic} id={topic} />}
@@ -179,35 +184,37 @@ export function Practice() {
 }
 const milestones = [
   {
-    name: "01 · Nền tảng toán & lập trình",
-    description: "Ký hiệu → vector → ma trận, song song với Python và C++.",
+    name: "01 · Mathematics & programming foundations",
+    description: "Notation → vectors → matrices, alongside Python and C++.",
     ids: ["M01", "PY01", "CPP01", "M02", "M03", "PY07", "CPP02", "T04"],
   },
   {
-    name: "02 · Suy luận và tính toán",
-    description: "Đạo hàm, xác suất, linear algebra và NumPy.",
+    name: "02 · Reasoning and computation",
+    description: "Derivatives, probability, linear algebra, and NumPy.",
     ids: ["M04", "M05", "M06", "M07", "M08", "PY04", "M10"],
   },
   {
-    name: "03 · Machine Learning từ đầu",
+    name: "03 · Machine Learning from first principles",
     description:
-      "Bài toán, baseline, gradient, neural networks và backpropagation.",
+      "Problem formulation, baselines, gradients, neural networks, and backpropagation.",
     ids: ["ML01", "ML02", "ML04", "ML05"],
   },
   {
     name: "04 · Robot geometry & control",
-    description: "Cơ học, cơ cấu, frame, kinematics, dynamics và feedback.",
+    description:
+      "Mechanics, mechanisms, frames, kinematics, dynamics, and feedback.",
     ids: ["R01", "R02", "M12", "R03", "R04", "R06", "R07", "C01"],
   },
   {
     name: "05 · Vision & sequential decisions",
-    description: "Ảnh số và MDP; mở các nhánh tiếp theo theo tiền đề.",
+    description:
+      "Digital images and MDPs; open later branches through their prerequisites.",
     ids: ["V01", "RL01", "RL02", "V02", "V03", "RL03"],
   },
   {
     name: "06 · Robot Learning & Cognitive Robotics",
     description:
-      "Bản đồ dài hạn: học từ tương tác, biểu diễn, planning và research.",
+      "The long-term map: interaction, representations, planning, and research.",
     ids: ["RL17", "E01", "E02", "E07", "E08", "E10", "E12", "RS01", "RS02"],
   },
 ];
@@ -228,14 +235,15 @@ export function Paths() {
     <div className="page">
       <PageHeading
         eyebrow="ZERO VERIFIED KNOWLEDGE → INDEPENDENT RESEARCH"
-        title="Một lộ trình, nhiều nhánh mở."
-        description="Đi theo tiền đề và bằng chứng. Không cần hoàn thành cả lĩnh vực để bắt đầu một nhánh phù hợp."
+        title="One path, many open branches."
+        description="Follow prerequisites and evidence. You do not need to finish an entire domain to start a suitable branch."
       />
       <section className="panel goal-panel">
-        <h2>Trọng tâm học hiện tại</h2>
+        <h2>Current learning focus</h2>
         <p className="muted small">
-          Mặc định bắt đầu từ nền tảng. Ghim chủ đề dự án để học just-in-time
-          song song; đề xuất sẽ ưu tiên chuỗi tiền đề còn thiếu.
+          Begin with foundations by default. Pin a project topic for parallel,
+          just-in-time learning; recommendations prioritize its missing
+          prerequisites.
         </p>
         <form
           onSubmit={(e) => {
@@ -246,15 +254,15 @@ export function Paths() {
               focusTopic: selectedFocus || null,
               focusReason: selectedReason,
             })
-              .then(() => notify("Đã cập nhật mục tiêu và đề xuất."))
+              .then(() => notify("Goal and recommendations updated."))
               .catch(() => {});
           }}
         >
           <div className="form-row">
             <label>
-              Định hướng
+              Direction
               <select
-                aria-label="Định hướng học"
+                aria-label="Learning direction"
                 value={selectedGoal}
                 onChange={(e) => setGoal(e.target.value)}
               >
@@ -265,13 +273,13 @@ export function Paths() {
               </select>
             </label>
             <label>
-              Chủ đề dự án / focus
+              Project topic / focus
               <select
-                aria-label="Chủ đề dự án"
+                aria-label="Project topic"
                 value={selectedFocus}
                 onChange={(e) => setFocus(e.target.value)}
               >
-                <option value="">Không ghim chủ đề</option>
+                <option value="">No pinned topic</option>
                 {topics.map((t) => (
                   <option value={t.id} key={t.id}>
                     {t.id} · {t.title}
@@ -281,22 +289,22 @@ export function Paths() {
             </label>
           </div>
           <label>
-            Vì sao chọn mục tiêu này?
+            Why choose this goal?
             <input
               value={selectedReason}
               onChange={(e) => setReason(e.target.value)}
               maxLength={1000}
-              placeholder="Ví dụ: cần hiểu coordinate frames cho dự án camera…"
+              placeholder="For example: understand coordinate frames for a camera project…"
             />
           </label>
           <button disabled={busy} className="button" type="submit">
-            Lưu mục tiêu
+            Save goal
             <Route size={16} />
           </button>
         </form>
         {state.progress.focusTopic && (
           <p className="small">
-            Đang ghim:{" "}
+            Pinned:{" "}
             <Link href={`/lessons/${state.progress.focusTopic}`}>
               {state.progress.focusTopic} ·{" "}
               {topicMap[state.progress.focusTopic].title}
@@ -325,8 +333,8 @@ export function Paths() {
                         <strong>{t.title}</strong>
                         <small>
                           {missing.length
-                            ? `Tiền đề cần bằng chứng: ${missing.join(", ")}`
-                            : "Có thể bắt đầu diagnostic"}
+                            ? `Prerequisites needing evidence: ${missing.join(", ")}`
+                            : "Ready to start a diagnostic"}
                           {!state.lessonIds.includes(id) ? " · Overview" : ""}
                         </small>
                       </div>
@@ -342,7 +350,7 @@ export function Paths() {
       <section className="panel">
         <h2>Knowledge debt</h2>
         <p className="muted small">
-          Khó khăn do bạn ghi nhận, tách biệt với lỗi phát hiện qua assessment.
+          Difficulties you recorded, separate from gaps detected by assessments.
         </p>
         {debt.length ? (
           debt.slice(0, 12).map((d) => (
@@ -354,8 +362,8 @@ export function Paths() {
           ))
         ) : (
           <p className="muted">
-            Chưa có khó khăn được ghi nhận. Dùng notebook trong mỗi chủ đề để
-            lưu câu hỏi còn mở.
+            No difficulties recorded yet. Use the notebook for each topic to
+            capture open questions.
           </p>
         )}
       </section>
@@ -385,30 +393,30 @@ export function Tutor() {
   const fullContext =
     context +
     (kind === "exercise"
-      ? `\nExercise:\n${ex || data?.lesson?.meta.labs.join("\n") || data?.overview.task || "Chọn bài tập phù hợp mục tiêu."}`
+      ? `\nExercise:\n${ex || data?.lesson?.meta.labs.join("\n") || data?.overview.task || "Choose an exercise that matches the objectives."}`
       : "");
   async function copy() {
     try {
       await copyText(fullContext);
-      notify("Đã sao chép ngữ cảnh. Bạn tự dán vào ChatGPT Project.");
+      notify("Context copied. Paste it into your ChatGPT Project yourself.");
     } catch (e) {
-      notify(e instanceof Error ? e.message : "Không thể sao chép.");
+      notify(e instanceof Error ? e.message : "Unable to copy.");
     }
   }
   return (
     <div className="page">
       <PageHeading
         eyebrow="CHATGPT PROJECT · MANUAL HANDOFF"
-        title="Một tutor. Một nguồn sự thật."
-        description="Mang đúng ngữ cảnh vào cuộc trò chuyện. CoreLab vẫn giữ tiến độ và bằng chứng trên máy bạn."
+        title="One tutor. One source of truth."
+        description="Bring the right context into your conversation. CoreLab keeps your progress and evidence on your machine."
       />
       <div className="two-columns tutor-columns">
         <section className="panel">
-          <h2>Chuẩn bị ngữ cảnh</h2>
+          <h2>Prepare context</h2>
           <label>
-            Chủ đề
+            Topic
             <select
-              aria-label="Chủ đề handoff"
+              aria-label="Handoff topic"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
             >
@@ -420,9 +428,9 @@ export function Tutor() {
             </select>
           </label>
           <label>
-            Loại ngữ cảnh
+            Context type
             <select
-              aria-label="Loại handoff"
+              aria-label="Handoff type"
               value={kind}
               onChange={(e) => setKind(e.target.value)}
             >
@@ -433,14 +441,14 @@ export function Tutor() {
             </select>
           </label>
           <label>
-            Câu hỏi / code lỗi / kết quả quan sát
+            Question / failing code / observed result
             <textarea
-              aria-label="Câu hỏi cho AI Tutor"
+              aria-label="Question for AI Tutor"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               rows={5}
               maxLength={20000}
-              placeholder="Tôi đã thử…, kỳ vọng…, nhưng quan sát thấy…"
+              placeholder="I tried…, expected…, but observed…"
             />
           </label>
           <button
@@ -449,15 +457,15 @@ export function Tutor() {
             className="button primary"
           >
             <Copy size={16} />
-            Sao chép ngữ cảnh
+            Copy context
           </button>
           <p className="small muted">
-            Không có dữ liệu được gửi đi qua API. Bạn xem và chủ động sao chép
-            nội dung.
+            No data is sent through an API. Preview the content and choose what
+            to copy.
           </p>
         </section>
         <section className="panel">
-          <h2>Xem trước nội dung</h2>
+          <h2>Content preview</h2>
           <textarea
             className="context-output"
             aria-label="Handoff context"
@@ -468,21 +476,21 @@ export function Tutor() {
         </section>
       </div>
       <section className="panel">
-        <h2>Dán phản hồi học tập</h2>
+        <h2>Paste study feedback</h2>
         <p className="muted">
-          Phản hồi từ ChatGPT được lưu như AI-reported notes. Không thay đổi
+          ChatGPT feedback is stored as AI-reported notes. It does not change
           verified mastery.
         </p>
         <details>
-          <summary>Định dạng JSON cần dùng</summary>
+          <summary>Required JSON format</summary>
           <pre>
             {JSON.stringify(
               {
                 schema: "corelab-feedback/1",
                 topicId: topic,
-                summary: "Tóm tắt phiên học",
-                difficulties: ["Điểm còn khó"],
-                nextSteps: ["Bước tiếp theo"],
+                summary: "Session summary",
+                difficulties: ["Remaining difficulty"],
+                nextSteps: ["Next step"],
               },
               null,
               2,
@@ -497,16 +505,16 @@ export function Tutor() {
               void act({ type: "feedback", feedback: parsed })
                 .then(() => {
                   setFeedback("");
-                  notify("Đã lưu phản hồi AI như ghi chú chưa kiểm chứng.");
+                  notify("AI feedback saved as unverified notes.");
                 })
                 .catch(() => {});
             } catch {
-              notify("JSON chưa hợp lệ. Xem định dạng mẫu.");
+              notify("Invalid JSON. Check the example format.");
             }
           }}
         >
           <textarea
-            aria-label="Phản hồi AI dạng JSON"
+            aria-label="AI feedback JSON"
             rows={6}
             required
             maxLength={50000}
@@ -514,7 +522,7 @@ export function Tutor() {
             onChange={(e) => setFeedback(e.target.value)}
           />
           <button className="button" disabled={busy || !feedback} type="submit">
-            Lưu phản hồi
+            Save feedback
             <Upload size={15} />
           </button>
         </form>
@@ -541,7 +549,7 @@ export function Settings() {
     setError("");
     if (!file) return;
     if (file.size > 8_000_000) {
-      setError("Giới hạn backup: 8 MB.");
+      setError("Backup limit: 8 MB.");
       return;
     }
     setValidating(true);
@@ -558,7 +566,7 @@ export function Settings() {
       setBackup(parsed);
       setPreview(result);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Backup chưa hợp lệ.");
+      setError(e instanceof Error ? e.message : "Invalid backup.");
     } finally {
       setValidating(false);
     }
@@ -567,8 +575,8 @@ export function Settings() {
     <div className="page settings-page">
       <PageHeading
         eyebrow="YOUR DATA, ON YOUR MACHINE"
-        title="Dữ liệu & cài đặt"
-        description="Sao lưu tiến độ, giữ nguyên lịch sử bằng chứng và chủ động kiểm soát dữ liệu cá nhân."
+        title="Data & settings"
+        description="Back up progress, preserve evidence history, and control your personal data."
       />
       <section className="panel">
         <div className="panel-heading">
@@ -578,21 +586,21 @@ export function Settings() {
         <div className="settings-stats">
           <div>
             <strong>{state.progress.attempts.length}</strong>
-            <span>Lần đánh giá</span>
+            <span>Assessment attempts</span>
           </div>
           <div>
             <strong>{state.progress.sessions.length}</strong>
-            <span>Phiên học / ghi chú</span>
+            <span>Sessions / notes</span>
           </div>
           <div>
             <strong>{state.progress.labs.length}</strong>
-            <span>Báo cáo thực hành</span>
+            <span>Practice reports</span>
           </div>
         </div>
         <p className="muted small">
-          SQLite tại <code>.local/corelab.sqlite</code>, tự tạo khi mở ứng dụng.
-          Dữ liệu cá nhân và local keys được loại khỏi Git. Ứng dụng không dùng
-          analytics hoặc dịch vụ AI.
+          SQLite at <code>.local/corelab.sqlite</code>, created automatically
+          when you open the app. Personal data and local keys are excluded from
+          Git. The app uses no analytics or AI services.
         </p>
       </section>
       <div className="two-columns">
@@ -600,44 +608,45 @@ export function Settings() {
           <div className="tool-icon">
             <Download size={23} />
           </div>
-          <h2>Sao lưu tiến độ</h2>
+          <h2>Back up progress</h2>
           <p>
-            Xuất attempts, rubric versions, learning sessions, notes, knowledge
-            debt, review schedules và bằng chứng lab thành JSON có schema.
+            Export attempts, rubric versions, learning sessions, notes,
+            knowledge debt, review schedules, and lab evidence as
+            schema-versioned JSON.
           </p>
           <a
             className="button primary"
             href="/api/export"
             download="corelab-backup.json"
           >
-            Xuất backup JSON
+            Export backup JSON
             <Download size={16} />
           </a>
           <p className="small muted">
-            Backup có dữ liệu học tập cá nhân. Lưu bên ngoài repo; không đưa lên
-            GitHub.
+            Backups contain personal learning data. Store them outside the
+            repository; do not upload them to GitHub.
           </p>
         </section>
         <section className="panel">
           <div className="tool-icon">
             <Upload size={23} />
           </div>
-          <h2>Khôi phục từ backup</h2>
+          <h2>Restore from backup</h2>
           <p>
-            Kiểm tra schema và bằng chứng trước khi thay thế. Một snapshot trước
-            khôi phục được giữ trong SQLite để hỗ trợ phục hồi.
+            Validate the schema and evidence before replacement. A pre-restore
+            snapshot is retained in SQLite to support recovery.
           </p>
           <label className="file-label">
             <FileJson size={17} />
-            Chọn backup JSON
+            Choose backup JSON
             <input
-              aria-label="Chọn backup để khôi phục"
+              aria-label="Choose backup to restore"
               type="file"
               accept=".json,application/json"
               onChange={(e) => void choose(e.target.files?.[0])}
             />
           </label>
-          {validating && <p role="status">Đang kiểm tra…</p>}
+          {validating && <p role="status">Validating…</p>}
           {error && (
             <p className="error-text" role="alert">
               {error}
@@ -647,7 +656,7 @@ export function Settings() {
             <div className="restore-preview">
               <p className="verified-text">
                 <Check size={15} />
-                Schema hợp lệ
+                Valid schema
               </p>
               <p>
                 {preview.attempts} attempts · {preview.sessions} sessions ·{" "}
@@ -659,8 +668,8 @@ export function Settings() {
                   checked={confirm}
                   onChange={(e) => setConfirm(e.target.checked)}
                 />
-                Tôi xác nhận thay thế toàn bộ tiến độ hiện tại bằng backup đã
-                chọn.
+                I confirm replacing all current progress with the selected
+                backup.
               </label>
               <button
                 className="button danger"
@@ -671,34 +680,34 @@ export function Settings() {
                       setBackup(null);
                       setPreview(null);
                       setConfirm(false);
-                      notify("Đã khôi phục tiến độ từ backup.");
+                      notify("Progress restored from backup.");
                     })
                     .catch(() => {})
                 }
               >
-                Khôi phục và thay thế
+                Restore and replace
               </button>
             </div>
           )}
         </section>
       </div>
       <section className="panel">
-        <h2>Quy tắc năng lực</h2>
+        <h2>Mastery rules</h2>
         <div className="level-table">
           {[
-            ["L0", "Chưa có bằng chứng kiểm chứng."],
-            ["L1", "Diagnostic độc lập đạt tiêu chí khái niệm."],
+            ["L0", "No verified evidence."],
+            ["L1", "An independent diagnostic meets the conceptual criteria."],
             [
               "L2",
-              "Bằng chứng khái niệm, toán và triển khai độc lập qua fixed-tests.",
+              "Conceptual, numerical, and independent implementation evidence through fixed tests.",
             ],
             [
               "L3",
-              "Áp dụng vào bài toán mới và có retention; cần review độc lập.",
+              "Apply skills to unfamiliar problems and demonstrate retention; independent review required.",
             ],
             [
               "L4",
-              "Phê bình, mở rộng phương pháp với bằng chứng nghiên cứu được review.",
+              "Critically evaluate or extend methods with reviewed research evidence.",
             ],
           ].map(([level, text]) => (
             <div key={level}>
@@ -708,10 +717,11 @@ export function Settings() {
           ))}
         </div>
         <p className="small muted">
-          Quy trình hiện tại tự kiểm chứng L1, và L2 cho M02/PY01 khi đủ gates.
-          Retention qua retest được ghi riêng; không tuyên bố transfer từ việc
-          lặp lại quiz. L3/L4 có thể tự đánh giá provisional, chưa có contract
-          chứng nhận trong bộ nội dung ban đầu.
+          The current workflow verifies L1, and L2 for M02/PY01 when all gates
+          are met. Retention retests are recorded separately; repeated quizzes
+          do not establish novel transfer. L3/L4 can be provisionally
+          self-assessed, but the initial content has no certification contracts
+          for them.
         </p>
       </section>
     </div>
@@ -722,8 +732,8 @@ export function Sources() {
     <div className="page">
       <PageHeading
         eyebrow="STUDY THE ORIGINALS"
-        title="Tài liệu tham khảo"
-        description="Ưu tiên giáo trình gốc, khóa học và tài liệu chính thức. Các liên kết cần Internet; bài học và tiến độ hoạt động cục bộ."
+        title="References"
+        description="Study original courses, texts, and official documentation. External links require Internet; lessons and progress work locally."
       />
       <div className="panel source-list">
         {sources.map((s) => (
@@ -738,8 +748,8 @@ export function Sources() {
         ))}
       </div>
       <p className="catalog-note">
-        Nội dung CoreLab được biên soạn riêng. Không phân phối sách, PDF hoặc dữ
-        liệu có bản quyền. Danh mục nguồn được giữ tại
+        CoreLab content is independently authored. Copyrighted books, PDFs, and
+        datasets are not redistributed. The source collection is maintained at
         reference/LEARNING_SOURCES.md.
       </p>
     </div>

@@ -279,7 +279,7 @@ describe("deterministic recommendations", () => {
     });
     const r = recommend(p, lessonIds(), new Date("2026-01-03"));
     expect(r[0]).toMatchObject({ topicId: "M01", kind: "review" });
-    expect(r[0].reason).toContain("ôn tập");
+    expect(r[0].reason).toContain("Review due");
   });
   it("lets a project focus prioritize missing foundational ancestors", () => {
     const p = emptyProgress();

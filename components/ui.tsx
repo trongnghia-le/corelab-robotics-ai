@@ -32,16 +32,16 @@ export function Status({ mastery }: { mastery: Mastery }) {
       {mastery.level > 0 ? (
         <>
           <CheckCircle2 size={13} />
-          Đã kiểm chứng L{mastery.level}
+          Verified L{mastery.level}
         </>
       ) : mastery.provisionalLevel > 0 ? (
-        `Tự đánh giá L${mastery.provisionalLevel}`
+        `Self-assessed L${mastery.provisionalLevel}`
       ) : mastery.status === "in_progress" ? (
-        "Đang học"
+        "In progress"
       ) : (
-        "Chưa đánh giá"
+        "Unassessed"
       )}
-      {mastery.reviewDue ? " · Cần ôn" : ""}
+      {mastery.reviewDue ? " · Review due" : ""}
     </span>
   );
 }
@@ -55,7 +55,7 @@ export function TopicChips({ ids }: { ids: string[] }) {
           </Link>
         ))
       ) : (
-        <span className="muted small">Không có tiền đề.</span>
+        <span className="muted small">No prerequisites.</span>
       )}
     </div>
   );
@@ -69,8 +69,8 @@ export function Matrix({ mastery }: { mastery: Mastery }) {
           <strong>{dimensionNames[d]}</strong>
           <span className={mastery.dimensions[d] ? "verified-text" : "muted"}>
             {mastery.dimensions[d]
-              ? `Có bằng chứng L${mastery.dimensions[d]}`
-              : "Chưa có bằng chứng"}
+              ? `Evidence L${mastery.dimensions[d]}`
+              : "No evidence yet"}
           </span>
         </div>
       ))}
@@ -97,12 +97,12 @@ export function Time({ minutes }: { minutes: number }) {
   return (
     <span className="time">
       <Clock3 size={14} />
-      {minutes} phút
+      {minutes} min
     </span>
   );
 }
 export function dateText(value: string) {
-  return new Intl.DateTimeFormat("vi-VN", {
+  return new Intl.DateTimeFormat("en-GB", {
     dateStyle: "medium",
     timeStyle: "short",
     timeZone: "Asia/Ho_Chi_Minh",

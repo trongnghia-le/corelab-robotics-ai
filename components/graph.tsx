@@ -68,8 +68,8 @@ export function Graph({
               <strong>{topicMap[id].title}</strong>
               <small>
                 {mastery[id].level
-                  ? `Đã kiểm chứng L${mastery[id].level}`
-                  : "Chưa đánh giá"}
+                  ? `Verified L${mastery[id].level}`
+                  : "Unassessed"}
               </small>
             </div>
           ),
@@ -101,18 +101,18 @@ export function Graph({
     <section className="graph-section">
       <div className="between">
         <p className="small muted">
-          {focus ? "Chuỗi tiền đề đã chọn" : `Phạm vi: ${domain}`} ·{" "}
-          {nodes.length} nodes · kéo để di chuyển, cuộn để zoom.
+          {focus ? "Selected prerequisite chain" : `Scope: ${domain}`} ·{" "}
+          {nodes.length} nodes · drag to pan, scroll to zoom.
         </p>
         <select
-          aria-label="Tập trung chuỗi tiền đề"
+          aria-label="Focus prerequisite chain"
           value={focus}
           onChange={(e) => {
             setFocus(e.target.value);
             setSelected("");
           }}
         >
-          <option value="">Theo lĩnh vực hiện tại</option>
+          <option value="">Current domain</option>
           {topics.map((t) => (
             <option value={t.id} key={t.id}>
               {t.id} · {t.title}
@@ -150,17 +150,17 @@ export function Graph({
             </h2>
             <Status mastery={mastery[selected]} />
           </div>
-          <p>Tiền đề</p>
+          <p>Prerequisites</p>
           <TopicChips ids={topicMap[selected].prerequisites} />
           <Link className="button" href={`/lessons/${selected}`}>
-            Mở chi tiết chủ đề
+            Open topic details
           </Link>
         </div>
       )}
       <p className="small muted">
-        Chọn node để xem chi tiết. Các tiền đề ngoài lĩnh vực được giữ lại để
-        không làm mất quan hệ. Danh sách là cách điều hướng tương đương bằng bàn
-        phím.
+        Select a node to inspect it. Prerequisites outside the domain remain
+        visible to preserve relationships. The list provides equivalent keyboard
+        navigation.
       </p>
     </section>
   );

@@ -17,21 +17,21 @@ export function LearningVisual({ topicId }: { topicId: string }) {
   return (
     <section className="learning-visual panel">
       <div>
-        <div className="eyebrow">THỬ THAY ĐỔI · DỰ ĐOÁN TRƯỚC KHI KÉO</div>
+        <div className="eyebrow">EXPLORE · PREDICT BEFORE MOVING A SLIDER</div>
         <h2>
           {vector
-            ? "Vector và hình chiếu"
-            : "Một cấu hình, một vị trí endpoint"}
+            ? "Vectors and projections"
+            : "One configuration, one endpoint position"}
         </h2>
         <p>
           {vector
-            ? "Đổi u, giữ v=(1,1). Hình chiếu nằm trên đường của v; phần dư vuông góc với v."
-            : "Hai góc khớp là góc tương đối. Dự đoán endpoint rồi kiểm tra trên hình. Chỉ là mô hình hình học, không điều khiển robot."}
+            ? "Change u while keeping v=(1,1). The projection lies along v; the residual is perpendicular to v."
+            : "Both joint angles are relative. Predict the endpoint, then check the diagram. This is a geometry model only; it does not control a robot."}
         </p>
         <label>
-          {vector ? "uₓ" : "q₁ (độ)"}
+          {vector ? "uₓ" : "q₁ (degrees)"}
           <input
-            aria-label={vector ? "Tọa độ x của vector" : "Góc khớp 1"}
+            aria-label={vector ? "Vector x coordinate" : "Joint 1 angle"}
             type="range"
             min={vector ? -4 : -180}
             max={vector ? 4 : 180}
@@ -42,9 +42,9 @@ export function LearningVisual({ topicId }: { topicId: string }) {
           <output>{first}</output>
         </label>
         <label>
-          {vector ? "uᵧ" : "q₂ (độ)"}
+          {vector ? "uᵧ" : "q₂ (degrees)"}
           <input
-            aria-label={vector ? "Tọa độ y của vector" : "Góc khớp 2"}
+            aria-label={vector ? "Vector y coordinate" : "Joint 2 angle"}
             type="range"
             min={vector ? -4 : -180}
             max={vector ? 4 : 180}
@@ -62,7 +62,7 @@ export function LearningVisual({ topicId }: { topicId: string }) {
         <p className="small muted">
           {vector
             ? `‖u‖₂ = ${Math.hypot(x, y).toFixed(3)} · u·v = ${(x + y).toFixed(2)}`
-            : "l₁=2 m, l₂=1.5 m. Code sử dụng radian: q_rad=q_deg×π/180."}
+            : "l₁=2 m, l₂=1.5 m. Calculations use radians: q_rad=q_deg×π/180."}
         </p>
       </div>
       <figure>
@@ -71,8 +71,8 @@ export function LearningVisual({ topicId }: { topicId: string }) {
           role="img"
           aria-label={
             vector
-              ? `Vector u=(${x},${y}), hình chiếu (${proj},${proj}) lên v=(1,1).`
-              : `Cánh tay hai khớp với endpoint (${x.toFixed(2)},${y.toFixed(2)}) mét.`
+              ? `Vector u=(${x},${y}), projection (${proj},${proj}) onto v=(1,1).`
+              : `Two-link arm with endpoint (${x.toFixed(2)},${y.toFixed(2)}) metres.`
           }
         >
           <defs>
@@ -173,8 +173,8 @@ export function LearningVisual({ topicId }: { topicId: string }) {
         </svg>
         <figcaption>
           {vector
-            ? "Cam: u · Xanh: projection và phần dư · nét đứt: span(v)"
-            : "Khớp 1 → khớp 2 → endpoint · lưới 1 m"}
+            ? "Orange: u · Green: projection and residual · Dashed: span(v)"
+            : "Joint 1 → joint 2 → endpoint · 1 m grid"}
         </figcaption>
       </figure>
     </section>
