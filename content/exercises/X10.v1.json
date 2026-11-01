@@ -1,0 +1,689 @@
+{
+  "id": "X10",
+  "version": 1,
+  "title": "Work with coordinate frames",
+  "domain": "Robotics",
+  "topicId": "R03",
+  "objectiveId": "R03.compose-invert-se2",
+  "routes": [
+    "camera-marker",
+    "warehouse-waypoint"
+  ],
+  "scope": "SE(2), labelled transforms and point/direction semantics",
+  "labIds": [
+    "L01",
+    "L12"
+  ],
+  "items": [
+    {
+      "id": "X10.camera-marker.1",
+      "route": "camera-marker",
+      "difficulty": 1,
+      "structure": "X10.M12.frame-labels.1@1",
+      "inputs": {
+        "mapping": "B-to-A",
+        "query": "forward"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "Column vectors: T_AB maps B coordinates into A. Which transform maps B into A? Return T_AB or T_BA.",
+      "fields": [
+        {
+          "label": "Transform",
+          "kind": "choice",
+          "answer": "T_AB",
+          "tolerance": 0.001,
+          "options": [
+            "T_AB",
+            "T_BA"
+          ]
+        }
+      ],
+      "solution": "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.2",
+      "route": "camera-marker",
+      "difficulty": 2,
+      "structure": "X10.M12.point-vs-direction.2@1",
+      "inputs": {
+        "theta": "pi/2",
+        "translation": [
+          2,
+          2
+        ],
+        "point": [
+          2,
+          0
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "A transform rotates +π/2 then translates (2,2). Compute the transformed point p=(2,0) and direction v=(2,0), in that order. Return four coordinates.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Both rotate to (0,2). Only the point receives translation.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Both rotate to (0,2). Only the point receives translation."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.3",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.compose-invert-se2.0@1",
+      "inputs": {
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            1,
+            2
+          ]
+        },
+        "B": {
+          "translation": [
+            3,
+            -1
+          ]
+        }
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "Column vectors, T_AB maps B→A: T_AB is +π/2 rotation with translation (1,2); T_BC is pure translation (3,−1). Find the translation of T_AC=T_AB T_BC.",
+      "fields": [
+        {
+          "label": "Translation x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Translation y",
+          "kind": "number",
+          "answer": "5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotate (3,−1) to (1,3) then add (1,2): (2,5). Reversing order is not equivalent.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Rotate (3,−1) to (1,3) then add (1,2): (2,5). Reversing order is not equivalent."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.4",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.rotation-validity.1@1",
+      "inputs": {
+        "R": [
+          [
+            1,
+            4
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "Is R=[[1,4],[0,1]] a proper 2D rotation? Return yes or no. Check both orthogonality and determinant.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "det R=1, but columns are not orthonormal. Determinant alone is insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "det R=1, but columns are not orthonormal. Determinant alone is insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.5",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.M12.frame-labels.2@1",
+      "inputs": {
+        "mapping": "B-to-A",
+        "query": "inverse"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "Column vectors: T_AB maps B coordinates into A. Which transform maps A into B? Return T_AB or T_BA.",
+      "fields": [
+        {
+          "label": "Transform",
+          "kind": "choice",
+          "answer": "T_BA",
+          "tolerance": 0.001,
+          "options": [
+            "T_AB",
+            "T_BA"
+          ]
+        }
+      ],
+      "solution": "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.6",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.M12.point-vs-direction.0@1",
+      "inputs": {
+        "theta": "pi/2",
+        "translation": [
+          6,
+          2
+        ],
+        "point": [
+          2,
+          0
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "A transform rotates +π/2 then translates (6,2). Compute the transformed point p=(2,0) and direction v=(2,0), in that order. Return four coordinates.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Both rotate to (0,2). Only the point receives translation.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Both rotate to (0,2). Only the point receives translation."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.7",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.compose-invert-se2.1@1",
+      "inputs": {
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            1,
+            2
+          ]
+        },
+        "B": {
+          "translation": [
+            7,
+            -1
+          ]
+        }
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "Column vectors, T_AB maps B→A: T_AB is +π/2 rotation with translation (1,2); T_BC is pure translation (7,−1). Find the translation of T_AC=T_AB T_BC.",
+      "fields": [
+        {
+          "label": "Translation x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Translation y",
+          "kind": "number",
+          "answer": "9",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotate (7,−1) to (1,7) then add (1,2): (2,9). Reversing order is not equivalent.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Rotate (7,−1) to (1,7) then add (1,2): (2,9). Reversing order is not equivalent."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.8",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.rotation-validity.2@1",
+      "inputs": {
+        "R": [
+          [
+            1,
+            8
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "Is R=[[1,8],[0,1]] a proper 2D rotation? Return yes or no. Check both orthogonality and determinant.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "det R=1, but columns are not orthonormal. Determinant alone is insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "det R=1, but columns are not orthonormal. Determinant alone is insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.1",
+      "route": "warehouse-waypoint",
+      "difficulty": 1,
+      "structure": "X10.M12.frame-labels.1@1",
+      "inputs": {
+        "mapping": "B-to-A",
+        "query": "forward"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "Column vectors: T_AB maps B coordinates into A. Which transform maps B into A? Return T_AB or T_BA.",
+      "fields": [
+        {
+          "label": "Transform",
+          "kind": "choice",
+          "answer": "T_AB",
+          "tolerance": 0.001,
+          "options": [
+            "T_AB",
+            "T_BA"
+          ]
+        }
+      ],
+      "solution": "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.2",
+      "route": "warehouse-waypoint",
+      "difficulty": 2,
+      "structure": "X10.M12.point-vs-direction.2@1",
+      "inputs": {
+        "theta": "pi/2",
+        "translation": [
+          2,
+          2
+        ],
+        "point": [
+          2,
+          0
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "A transform rotates +π/2 then translates (2,2). Compute the transformed point p=(2,0) and direction v=(2,0), in that order. Return four coordinates.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Both rotate to (0,2). Only the point receives translation.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Both rotate to (0,2). Only the point receives translation."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.3",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "X10.R03.compose-invert-se2.0@1",
+      "inputs": {
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            1,
+            2
+          ]
+        },
+        "B": {
+          "translation": [
+            3,
+            -1
+          ]
+        }
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "Column vectors, T_AB maps B→A: T_AB is +π/2 rotation with translation (1,2); T_BC is pure translation (3,−1). Find the translation of T_AC=T_AB T_BC.",
+      "fields": [
+        {
+          "label": "Translation x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Translation y",
+          "kind": "number",
+          "answer": "5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotate (3,−1) to (1,3) then add (1,2): (2,5). Reversing order is not equivalent.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Rotate (3,−1) to (1,3) then add (1,2): (2,5). Reversing order is not equivalent."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.4",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "X10.R03.rotation-validity.1@1",
+      "inputs": {
+        "R": [
+          [
+            1,
+            4
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "Is R=[[1,4],[0,1]] a proper 2D rotation? Return yes or no. Check both orthogonality and determinant.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "det R=1, but columns are not orthonormal. Determinant alone is insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "det R=1, but columns are not orthonormal. Determinant alone is insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.5",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "X10.M12.frame-labels.2@1",
+      "inputs": {
+        "mapping": "B-to-A",
+        "query": "inverse"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "Column vectors: T_AB maps B coordinates into A. Which transform maps A into B? Return T_AB or T_BA.",
+      "fields": [
+        {
+          "label": "Transform",
+          "kind": "choice",
+          "answer": "T_BA",
+          "tolerance": 0.001,
+          "options": [
+            "T_AB",
+            "T_BA"
+          ]
+        }
+      ],
+      "solution": "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.6",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "X10.M12.point-vs-direction.0@1",
+      "inputs": {
+        "theta": "pi/2",
+        "translation": [
+          6,
+          2
+        ],
+        "point": [
+          2,
+          0
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "A transform rotates +π/2 then translates (6,2). Compute the transformed point p=(2,0) and direction v=(2,0), in that order. Return four coordinates.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Both rotate to (0,2). Only the point receives translation.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Both rotate to (0,2). Only the point receives translation."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.7",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "X10.R03.compose-invert-se2.1@1",
+      "inputs": {
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            1,
+            2
+          ]
+        },
+        "B": {
+          "translation": [
+            7,
+            -1
+          ]
+        }
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "Column vectors, T_AB maps B→A: T_AB is +π/2 rotation with translation (1,2); T_BC is pure translation (7,−1). Find the translation of T_AC=T_AB T_BC.",
+      "fields": [
+        {
+          "label": "Translation x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Translation y",
+          "kind": "number",
+          "answer": "9",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotate (7,−1) to (1,7) then add (1,2): (2,9). Reversing order is not equivalent.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Rotate (7,−1) to (1,7) then add (1,2): (2,9). Reversing order is not equivalent."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.8",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "X10.R03.rotation-validity.2@1",
+      "inputs": {
+        "R": [
+          [
+            1,
+            8
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "Is R=[[1,8],[0,1]] a proper 2D rotation? Return yes or no. Check both orthogonality and determinant.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "det R=1, but columns are not orthonormal. Determinant alone is insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "det R=1, but columns are not orthonormal. Determinant alone is insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  }
+}

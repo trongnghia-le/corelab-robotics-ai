@@ -1,0 +1,271 @@
+{
+  "id": "X12",
+  "version": 1,
+  "title": "Integrate differential-drive odometry",
+  "domain": "Robotics",
+  "topicId": "R02",
+  "objectiveId": "R02.exact-arc",
+  "routes": [
+    "cart",
+    "inspection-rover"
+  ],
+  "scope": "Exact constant-wheel arc on a planar model",
+  "labIds": [
+    "L03",
+    "L05"
+  ],
+  "items": [
+    {
+      "id": "X12.cart.1",
+      "route": "cart",
+      "difficulty": 1,
+      "structure": "X12.R02.exact-arc.1@1",
+      "inputs": {
+        "vl": "1/10",
+        "vr": "1/5",
+        "b": "1/2",
+        "dt": "1"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "Robot starts at (0,0), heading 0. Left/right wheel LINEAR speeds are 0.1,0.2 m/s; track width b=0.5 m. Integrate their constant speeds exactly for 1 s. Return x,y,heading. No slip assumed.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.14900199809629588",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.014950066619068779",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "number",
+          "answer": "0.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v=(vl+vr)/2=0.15; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "v=(vl+vr)/2=0.15; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R02 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X12.cart.2",
+      "route": "cart",
+      "difficulty": 2,
+      "structure": "X12.R02.exact-arc.2@1",
+      "inputs": {
+        "vl": "1/5",
+        "vr": "3/10",
+        "b": "1/2",
+        "dt": "1"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "Robot starts at (0,0), heading 0. Left/right wheel LINEAR speeds are 0.2,0.3 m/s; track width b=0.5 m. Integrate their constant speeds exactly for 1 s. Return x,y,heading. No slip assumed.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.24833666349382652",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.024916777698447967",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "number",
+          "answer": "0.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v=(vl+vr)/2=0.25; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "v=(vl+vr)/2=0.25; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R02 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X12.cart.3",
+      "route": "cart",
+      "difficulty": 3,
+      "structure": "X12.R02.exact-arc.0@1",
+      "inputs": {
+        "vl": "3/10",
+        "vr": "2/5",
+        "b": "1/2",
+        "dt": "1"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "Robot starts at (0,0), heading 0. Left/right wheel LINEAR speeds are 0.3,0.4 m/s; track width b=0.5 m. Integrate their constant speeds exactly for 1 s. Return x,y,heading. No slip assumed.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.34767132889135705",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.03488348877782715",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "number",
+          "answer": "0.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v=(vl+vr)/2=0.35; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "v=(vl+vr)/2=0.35; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R02 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X12.inspection-rover.1",
+      "route": "inspection-rover",
+      "difficulty": 1,
+      "structure": "X12.R02.exact-arc.1@1",
+      "inputs": {
+        "vl": "1/10",
+        "vr": "1/5",
+        "b": "1/2",
+        "dt": "1"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "Robot starts at (0,0), heading 0. Left/right wheel LINEAR speeds are 0.1,0.2 m/s; track width b=0.5 m. Integrate their constant speeds exactly for 1 s. Return x,y,heading. No slip assumed.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.14900199809629588",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.014950066619068779",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "number",
+          "answer": "0.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v=(vl+vr)/2=0.15; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "v=(vl+vr)/2=0.15; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R02 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X12.inspection-rover.2",
+      "route": "inspection-rover",
+      "difficulty": 2,
+      "structure": "X12.R02.exact-arc.2@1",
+      "inputs": {
+        "vl": "1/5",
+        "vr": "3/10",
+        "b": "1/2",
+        "dt": "1"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "Robot starts at (0,0), heading 0. Left/right wheel LINEAR speeds are 0.2,0.3 m/s; track width b=0.5 m. Integrate their constant speeds exactly for 1 s. Return x,y,heading. No slip assumed.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.24833666349382652",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.024916777698447967",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "number",
+          "answer": "0.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v=(vl+vr)/2=0.25; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "v=(vl+vr)/2=0.25; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R02 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X12.inspection-rover.3",
+      "route": "inspection-rover",
+      "difficulty": 3,
+      "structure": "X12.R02.exact-arc.0@1",
+      "inputs": {
+        "vl": "3/10",
+        "vr": "2/5",
+        "b": "1/2",
+        "dt": "1"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "Robot starts at (0,0), heading 0. Left/right wheel LINEAR speeds are 0.3,0.4 m/s; track width b=0.5 m. Integrate their constant speeds exactly for 1 s. Return x,y,heading. No slip assumed.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.34767132889135705",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.03488348877782715",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "number",
+          "answer": "0.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v=(vl+vr)/2=0.35; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "v=(vl+vr)/2=0.35; ω=(vr−vl)/b=0.2. x=v sin(ωt)/ω, y=v(1−cos(ωt))/ω. This is odometry, not localization."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R02 or try the other scenario. This is a suggestion, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  }
+}

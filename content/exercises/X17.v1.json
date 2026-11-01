@@ -1,0 +1,193 @@
+{
+  "id": "X17",
+  "version": 1,
+  "title": "Accumulate a shared gradient",
+  "domain": "ML",
+  "topicId": "ML05",
+  "objectiveId": "ML05.shared-gradient",
+  "routes": [
+    "shared-graph",
+    "shared-time-weight"
+  ],
+  "scope": "Specified shared scalar computation and loss",
+  "labIds": [
+    "L19",
+    "L20"
+  ],
+  "items": [
+    {
+      "id": "X17.shared-graph.1",
+      "route": "shared-graph",
+      "difficulty": 1,
+      "structure": "X17.ML05.shared-gradient.1@1",
+      "inputs": {
+        "w": 1,
+        "x": 2,
+        "loss": "0.5*b*b"
+      },
+      "objectiveId": "ML05.shared-gradient",
+      "prompt": "Shared parameter w=1: a=w·2, b=w+a, loss L=0.5 b². Compute dL/dw, accumulating BOTH uses of w.",
+      "fields": [
+        {
+          "label": "dL/dw",
+          "kind": "number",
+          "answer": "9",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "b=3w; db/dw=1+2=3. dL/dw=b·3=9. Dropping either path loses a contribution.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "b=3w; db/dw=1+2=3. dL/dw=b·3=9. Dropping either path loses a contribution."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML05 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X17.shared-graph.2",
+      "route": "shared-graph",
+      "difficulty": 2,
+      "structure": "X17.ML05.shared-gradient.2@1",
+      "inputs": {
+        "w": 2,
+        "x": 2,
+        "loss": "0.5*b*b"
+      },
+      "objectiveId": "ML05.shared-gradient",
+      "prompt": "Shared parameter w=2: a=w·2, b=w+a, loss L=0.5 b². Compute dL/dw, accumulating BOTH uses of w.",
+      "fields": [
+        {
+          "label": "dL/dw",
+          "kind": "number",
+          "answer": "18",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "b=3w; db/dw=1+2=3. dL/dw=b·3=18. Dropping either path loses a contribution.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "b=3w; db/dw=1+2=3. dL/dw=b·3=18. Dropping either path loses a contribution."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML05 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X17.shared-graph.3",
+      "route": "shared-graph",
+      "difficulty": 3,
+      "structure": "X17.ML05.shared-gradient.0@1",
+      "inputs": {
+        "w": 3,
+        "x": 2,
+        "loss": "0.5*b*b"
+      },
+      "objectiveId": "ML05.shared-gradient",
+      "prompt": "Shared parameter w=3: a=w·2, b=w+a, loss L=0.5 b². Compute dL/dw, accumulating BOTH uses of w.",
+      "fields": [
+        {
+          "label": "dL/dw",
+          "kind": "number",
+          "answer": "27",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "b=3w; db/dw=1+2=3. dL/dw=b·3=27. Dropping either path loses a contribution.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "b=3w; db/dw=1+2=3. dL/dw=b·3=27. Dropping either path loses a contribution."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML05 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X17.shared-time-weight.1",
+      "route": "shared-time-weight",
+      "difficulty": 1,
+      "structure": "X17.ML05.shared-gradient.1@1",
+      "inputs": {
+        "w": 1,
+        "x": 2,
+        "loss": "0.5*b*b"
+      },
+      "objectiveId": "ML05.shared-gradient",
+      "prompt": "Shared parameter w=1: a=w·2, b=w+a, loss L=0.5 b². Compute dL/dw, accumulating BOTH uses of w.",
+      "fields": [
+        {
+          "label": "dL/dw",
+          "kind": "number",
+          "answer": "9",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "b=3w; db/dw=1+2=3. dL/dw=b·3=9. Dropping either path loses a contribution.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "b=3w; db/dw=1+2=3. dL/dw=b·3=9. Dropping either path loses a contribution."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML05 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X17.shared-time-weight.2",
+      "route": "shared-time-weight",
+      "difficulty": 2,
+      "structure": "X17.ML05.shared-gradient.2@1",
+      "inputs": {
+        "w": 2,
+        "x": 2,
+        "loss": "0.5*b*b"
+      },
+      "objectiveId": "ML05.shared-gradient",
+      "prompt": "Shared parameter w=2: a=w·2, b=w+a, loss L=0.5 b². Compute dL/dw, accumulating BOTH uses of w.",
+      "fields": [
+        {
+          "label": "dL/dw",
+          "kind": "number",
+          "answer": "18",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "b=3w; db/dw=1+2=3. dL/dw=b·3=18. Dropping either path loses a contribution.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "b=3w; db/dw=1+2=3. dL/dw=b·3=18. Dropping either path loses a contribution."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML05 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X17.shared-time-weight.3",
+      "route": "shared-time-weight",
+      "difficulty": 3,
+      "structure": "X17.ML05.shared-gradient.0@1",
+      "inputs": {
+        "w": 3,
+        "x": 2,
+        "loss": "0.5*b*b"
+      },
+      "objectiveId": "ML05.shared-gradient",
+      "prompt": "Shared parameter w=3: a=w·2, b=w+a, loss L=0.5 b². Compute dL/dw, accumulating BOTH uses of w.",
+      "fields": [
+        {
+          "label": "dL/dw",
+          "kind": "number",
+          "answer": "27",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "b=3w; db/dw=1+2=3. dL/dw=b·3=27. Dropping either path loses a contribution.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "b=3w; db/dw=1+2=3. dL/dw=b·3=27. Dropping either path loses a contribution."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML05 or try the other scenario. This is a suggestion, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  }
+}

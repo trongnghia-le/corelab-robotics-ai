@@ -15,6 +15,8 @@ import {
 } from "./weaknesses";
 import { scheduleReview } from "./reviews";
 import { validateLab } from "./labs";
+import { enabled as v2Enabled, V2Error } from "./v2/contracts";
+import { checkpoint, legacyPrecommit, status as v2Status } from "./v2/db";
 const id = z.string().min(1).max(100);
 const topicId = z.string().refine((v) => !!topicMap[v], "Unknown topic");
 const date = z.iso.datetime();
@@ -203,11 +205,16 @@ export class Store {
   update(fn: (p: Progress) => void) {
     this.db.exec("BEGIN IMMEDIATE");
     try {
+      const before =
+        v2Enabled() && v2Status(this.db) === "supported"
+          ? checkpoint(this.db)
+          : null;
       const p = this.read();
       fn(p);
       this.db
         .prepare("UPDATE state SET json=? WHERE id=1")
         .run(JSON.stringify(p));
+      if (before) legacyPrecommit(this.db, before);
       this.db.exec("COMMIT");
       return p;
     } catch (e) {
@@ -225,6 +232,12 @@ export class Store {
   }
   restore(input: unknown, confirm: boolean) {
     if (!confirm) throw new Error("Explicit replacement confirmation required");
+    if (v2Enabled() && v2Status(this.db) === "supported")
+      throw new V2Error(
+        "use_v2_restore",
+        "Use the V2 backup preview and confirmation flow to preserve objective history.",
+        409,
+      );
     const p = validateBackup(input);
     this.update((current) => {
       this.db
