@@ -28,9 +28,15 @@ jobs:
           python-version: "3.13"
       - run: npm ci
       - run: npm run check
+      - run: npm run validate:v2
       - name: Install Chromium (Linux browser coverage)
         if: runner.os == 'Linux'
         run: npx playwright install --with-deps chromium
       - name: Desktop and mobile browser tests
         if: runner.os == 'Linux'
         run: npm run test:e2e
+      - name: Build optional V2 workspace
+        run: npm run build:v2
+      - name: V2 desktop, mobile and recovery flows
+        if: runner.os == 'Linux'
+        run: npm run test:v2:e2e

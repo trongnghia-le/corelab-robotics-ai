@@ -146,7 +146,8 @@ export function canonical(v: unknown): string {
     );
   throw new Error("Unsupported JSON value");
 }
-export const hash = (v: string) => createHash("sha256").update(v).digest("hex");
+export const hash = (v: string | Uint8Array) =>
+  createHash("sha256").update(v).digest("hex");
 export const digest = (v: unknown) => hash(canonical(v));
 export const bytes = (v: unknown) => Buffer.byteLength(canonical(v), "utf8");
 export const fingerprint = (structure: string, inputs: unknown) =>

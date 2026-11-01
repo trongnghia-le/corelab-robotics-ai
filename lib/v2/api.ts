@@ -3,6 +3,7 @@ import { getStore } from "../storage";
 import { checkLocalRequest } from "../http";
 import { enabled, BACKUP_LIMIT, readJSON, V2Error } from "./contracts";
 import { initialize, write } from "./db";
+import { downloadKit, selfReportKit } from "./kits";
 import {
   issue,
   assist,
@@ -53,7 +54,7 @@ export async function dispatch(
           key,
         )) ||
       (method === "POST" &&
-        /^(attempts|attempts\/[^/]+\/(assist|submit)|backup\/(preview|restore)|backup\/snapshots\/[^/]+\/(preview|restore)|history\/acknowledge)$/.test(
+        /^(attempts|attempts\/[^/]+\/(assist|submit)|kits\/[^/]+\/(download|self-report)|backup\/(preview|restore)|backup\/snapshots\/[^/]+\/(preview|restore)|history\/acknowledge)$/.test(
           key,
         )) ||
       (method === "PATCH" && key === "preferences");
@@ -88,10 +89,14 @@ export async function dispatch(
               .string()
               .regex(/^\d{1,16}$/)
               .optional(),
+            objective: z
+              .string()
+              .regex(/^[A-Za-z0-9][A-Za-z0-9._@-]{0,119}$/)
+              .optional(),
           })
           .strict()
           .parse(Object.fromEntries(params));
-        return replies(history(store, p.limit, p.cursor));
+        return replies(history(store, p.limit, p.cursor, p.objective));
       }
       if (parts[0] === "attempts")
         return replies(publicAttempt(store.db, parts[1]));
@@ -108,6 +113,20 @@ export async function dispatch(
         });
     }
     if (key === "attempts") return replies(issue(store, body), 201);
+    if (parts[0] === "kits" && parts[2] === "download") {
+      z.object({}).strict().parse(body);
+      const kit = downloadKit(store, parts[1]);
+      return new Response(kit.content, {
+        headers: {
+          "Content-Type": "text/x-python; charset=utf-8",
+          "Content-Disposition": 'attachment; filename="' + kit.filename + '"',
+          "Cache-Control": "no-store",
+          "X-CoreLab-Attempt": kit.attemptId,
+        },
+      });
+    }
+    if (parts[0] === "kits" && parts[2] === "self-report")
+      return replies(selfReportKit(store, parts[1], body));
     if (parts[0] === "attempts" && parts[2] === "assist")
       return replies(assist(store, parts[1], body));
     if (parts[0] === "attempts" && parts[2] === "submit")

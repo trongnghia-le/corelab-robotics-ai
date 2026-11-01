@@ -132,6 +132,18 @@ Reading, watching videos, clicking checkoffs and AI-generated solutions do **not
 
 There are **31 complete lessons with versioned diagnostics** and structured overviews for every topic. The initial focused practice bank contains **42 questions across seven topics**; unavailable video, lesson, assessment and practice coverage is stated explicitly. The [curriculum data](corelab/curriculum_graph_v1.json) is the source of truth for topic IDs and prerequisites.
 
+## CoreLab V2 development preview
+
+The optional V2 workspace adds objective-based practice alongside the existing curriculum. It currently includes **24 authored objectives, 20 exercise families plus a readiness bridge, 152 practice instances, and two manual numerical lab kits**. Choose Recommended, Explore or More Practice; prerequisites suggest preparation and never lock ordinary study.
+
+```bash
+npm run dev:v2
+```
+
+Open `http://127.0.0.1:3000/objectives`. The default `npm run dev` keeps V2 off. V2 uses additive SQLite tables and preserves existing topic mastery, progress and signed reports. Use the full V2 backup in Settings to retain both histories.
+
+**Release review is pending.** C/M forms and review scheduling have an implemented, tested engine, but their authored content and release activation require independent review. Verified I and human-reviewed transfer remain unavailable. Manual kits never grant implementation evidence. The Curriculum V2 projection is advisory; the existing 169-topic graph remains authoritative. See the [implementation report](implementation-plan/IMPLEMENTATION_REPORT.md) and [V2 operating guide](docs/guide.md#corelab-v2-development-preview) for exact coverage, recovery and limitations.
+
 ## Technology stack
 
 | Layer                  | Technology                                                                         |

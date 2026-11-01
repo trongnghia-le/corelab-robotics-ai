@@ -23,6 +23,8 @@ import { type Attempt } from "./state";
 import { CM_RELEASED } from "./release";
 import { assistCM, issueCM, publicCM, submitCM } from "./verification";
 import { attemptById, expose } from "./records";
+import { publicKitAttempt } from "./kits";
+import { samePresentation, shuffled } from "./presentation";
 export { attemptById, expose } from "./records";
 import {
   checkpoint,
@@ -67,7 +69,7 @@ function sourceItem(a: Attempt) {
     a.source_version !== f.version ||
     familyHash(f) !== a.source_hash ||
     !original ||
-    digest(original) !== digest(item)
+    !samePresentation(original, item)
   )
     throw new V2Error(
       "source_unavailable",
@@ -97,6 +99,7 @@ function result(a: Attempt) {
     return {
       ...gradeItem(item, saved.answers),
       artifact: saved.artifact,
+      answers: saved.answers,
       effectiveAssistance: Math.max(a.observed_level, a.declared_level ?? 0),
       claim: "Practice only; independent content review pending",
     };
@@ -109,6 +112,7 @@ function result(a: Attempt) {
 }
 export function publicAttempt(db: DB, id: string) {
   const a = attemptById(db, id);
+  if (a.source_kind === "kit") return publicKitAttempt(db, a);
   if (a.source_kind === "form" || a.source_kind === "review_pool")
     return publicCM(db, a);
   const item = itemSchema.parse(strictJSON(a.instance_json));
@@ -138,7 +142,7 @@ export function publicAttempt(db: DB, id: string) {
 }
 
 export function issue(store: Store, input: unknown) {
-  const request = issueSchema.parse(input);
+  let request = issueSchema.parse(input);
   if (request.resumeAttemptId)
     return publicAttempt(store.db, request.resumeAttemptId);
   if (request.purpose === "verify" || request.purpose === "review") {
@@ -148,7 +152,27 @@ export function issue(store: Store, input: unknown) {
         "C/M verification and retention require independently reviewed forms. Verified I and transfer are unavailable.",
         503,
       );
-    return issueCM(store, { ...request, purpose: request.purpose });
+    if (request.purpose === "review" && request.objectiveId) {
+      const due = store.db
+        .prepare(
+          "SELECT due,state FROM v2_objective_reviews WHERE objective_id=? AND objective_version=1 AND dimension=?",
+        )
+        .get(request.objectiveId, request.dimension ?? "") as
+        { due: string; state: string } | undefined;
+      if (!due || due.state !== "active" || Date.parse(due.due) > Date.now()) {
+        const f = family(
+          request.objectiveId === "R04.planar-fk" ? "X11" : "X10",
+        );
+        if (f?.items.some((i) => i.objectiveId === request.objectiveId))
+          request = {
+            purpose: "practice",
+            source: f.id,
+            objectiveId: request.objectiveId,
+          };
+      }
+    }
+    if (request.purpose === "verify" || request.purpose === "review")
+      return issueCM(store, { ...request, purpose: request.purpose });
   }
   const f = family(request.source ?? "");
   if (!f)
@@ -173,8 +197,9 @@ export function issue(store: Store, input: unknown) {
           .all() as { fingerprint: string }[]
       ).map((e) => e.fingerprint),
     );
-    const item =
-      available.find((i) => !exposures.has(itemFingerprint(i))) ?? available[0];
+    const item = shuffled(
+      available.find((i) => !exposures.has(itemFingerprint(i))) ?? available[0],
+    );
     const at = new Date().toISOString();
     const a: Attempt = {
       id: randomUUID(),
@@ -211,6 +236,12 @@ export function assist(store: Store, id: string, input: unknown) {
     .strict()
     .parse(input);
   const existing = attemptById(store.db, id);
+  if (existing.source_kind === "kit")
+    throw new V2Error(
+      "manual_only",
+      "Manual kits do not have server-graded hints",
+      409,
+    );
   if (existing.source_kind === "form" || existing.source_kind === "review_pool")
     return assistCM(store, id, req.level);
   return write(store.db, () => {
@@ -237,6 +268,12 @@ export function assist(store: Store, id: string, input: unknown) {
 export function submit(store: Store, id: string, input: unknown) {
   const req = submitSchema.parse(input);
   const existing = attemptById(store.db, id);
+  if (existing.source_kind === "kit")
+    throw new V2Error(
+      "manual_only",
+      "Use the kit self-report; it creates no verified result",
+      409,
+    );
   if (
     existing.source_kind === "form" ||
     existing.source_kind === "review_pool"
@@ -292,18 +329,39 @@ export function submit(store: Store, id: string, input: unknown) {
     return publicAttempt(store.db, id);
   });
 }
-export function history(store: Store, limit = 25, cursor?: string) {
+export function history(
+  store: Store,
+  limit = 25,
+  cursor?: string,
+  objective?: string,
+) {
   const n = Math.min(50, Math.max(1, limit));
   const list = store.db
     .prepare(
-      "SELECT id,issued_seq FROM v2_attempts WHERE issued_seq<? ORDER BY issued_seq DESC LIMIT ?",
+      "SELECT a.id,a.issued_seq FROM v2_attempts a WHERE issued_seq<? AND (? IS NULL OR EXISTS(SELECT 1 FROM json_each(a.objective_refs) j WHERE json_extract(j.value,'$.id')=?)) ORDER BY issued_seq DESC LIMIT ?",
     )
-    .all(cursor ? Number(cursor) : Number.MAX_SAFE_INTEGER, n) as {
+    .all(
+      cursor ? Number(cursor) : Number.MAX_SAFE_INTEGER,
+      objective ?? null,
+      objective ?? null,
+      n,
+    ) as {
     id: string;
     issued_seq: number;
   }[];
   return {
-    items: list.map((a) => publicAttempt(store.db, a.id)),
+    items: list.map(({ id }) => {
+      const a = attemptById(store.db, id);
+      return {
+        id,
+        source: a.source_id,
+        purpose: a.purpose,
+        status: a.status,
+        route: a.route,
+        issuedAt: a.issued_at,
+        submittedAt: a.submitted_at,
+      };
+    }),
     nextCursor: list.length === n ? String(list.at(-1)!.issued_seq) : null,
   };
 }

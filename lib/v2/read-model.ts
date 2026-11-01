@@ -3,6 +3,11 @@ import type { Store } from "../storage";
 import { catalog } from "./content";
 import { checkCapacity, meta, needsAcknowledgement, revisionToken } from "./db";
 import { canonical, V2Error } from "./contracts";
+import { objectives, bridgeText } from "./objectives";
+import { kits } from "./kits";
+import { cmSources, independentlyReviewed, resolveCM } from "./assessments";
+import { CM_RELEASED } from "./release";
+import { videoRegistry } from "../media";
 const names: Record<string, string> = {
   "M12.frame-labels": "Identify source and destination frames",
   "M12.point-vs-direction": "Distinguish points from directions",
@@ -11,6 +16,7 @@ const names: Record<string, string> = {
   "R04.planar-fk": "Compute a planar 2R arm pose",
 };
 export function summaries(store: Store) {
+  const registry = objectives();
   const counts = new Map(
     (
       store.db
@@ -63,6 +69,70 @@ export function summaries(store: Store) {
     reviewStatus:
       "Development preview. Original content is author-tested; independent review and release gates remain pending.",
     workspace: { revision: meta(store.db, "data_revision") },
+    objectives: registry.objectives.map((o) => ({
+      ...o,
+      learn: o.learn.map((ref) => ({
+        ...ref,
+        href:
+          ref.type === "video"
+            ? videoRegistry.videos.find((v) => v.id === ref.id)!.watchUrl
+            : ref.type === "bridge"
+              ? "/objectives/M01.radians-trig"
+              : "/lessons/" + ref.topic,
+      })),
+    })),
+    paths: registry.paths,
+    kits: kits(),
+    forms: cmSources()
+      .filter((s) => s.kind === "form")
+      .map((s) => ({
+        id: s.id,
+        available: CM_RELEASED && independentlyReviewed(s),
+        objectives: [
+          ...new Set(
+            s.variants.flatMap((v) => v.items.map((c) => c.task.objectiveId)),
+          ),
+        ],
+        reason: "Requires independent content review and S2 release activation",
+      })),
+    reviews: (
+      store.db
+        .prepare(
+          "SELECT r.* FROM v2_objective_reviews r JOIN v2_evidence e ON e.id=r.basis_evidence_id WHERE r.state='active' AND e.outcome='admitted' ORDER BY r.due,r.objective_id,r.dimension LIMIT 50",
+        )
+        .all() as {
+        objective_id: string;
+        dimension: "C" | "M";
+        due: string;
+        stage: number;
+        basis_evidence_id: string;
+      }[]
+    ).map((r) => ({
+      objective: r.objective_id,
+      dimension: r.dimension,
+      due: r.due,
+      stage: r.stage,
+      dueNow: Date.parse(r.due) <= Date.now(),
+      available: CM_RELEASED,
+    })),
+    evidence: (
+      store.db
+        .prepare(
+          "SELECT objective_id,dimension,source_id,source_version,source_hash FROM v2_evidence WHERE outcome='admitted' AND objective_version=1 AND dimension IN ('C','M') GROUP BY objective_id,dimension,source_id,source_version,source_hash",
+        )
+        .all() as {
+        objective_id: string;
+        dimension: "C" | "M";
+        source_id: string;
+        source_version: number;
+        source_hash: string;
+      }[]
+    )
+      .filter((e) => {
+        const s = resolveCM(e.source_id, e.source_version);
+        return s && independentlyReviewed(s) && s.hash === e.source_hash;
+      })
+      .map((e) => ({ objective: e.objective_id, dimension: e.dimension })),
   };
 }
 export function select(store: Store, params: URLSearchParams) {
@@ -71,29 +141,123 @@ export function select(store: Store, params: URLSearchParams) {
       mode: z.enum(["recommended", "explore", "more"]).default("recommended"),
       objective: z.string().max(120).optional(),
       domain: z.string().max(100).optional(),
+      goal: z.string().max(120).optional(),
       limit: z.coerce.number().int().min(1).max(10).default(5),
     })
     .strict()
     .parse(Object.fromEntries(params));
-  let list = summaries(store).families.filter(
+  const summary = summaries(store),
+    registry = objectives();
+  const goal = registry.paths.find((p) => p.id === req.goal);
+  if (req.goal && !goal)
+    throw new V2Error("unknown_goal", "Choose an authored optional goal");
+  let list = summary.families.filter(
     (f) =>
       (!req.objective || f.objectives.some((o) => o.id === req.objective)) &&
       (!req.domain || f.domain === req.domain),
   );
-  if (req.mode !== "explore")
-    list = list.sort(
-      (a, b) => a.attempts - b.attempts || a.id.localeCompare(b.id),
+  const latest = store.db
+    .prepare(
+      "SELECT a.source_id,a.grade_json,a.observed_level,a.declared_level FROM v2_attempts a JOIN (SELECT source_id,max(closed_seq) closed_seq FROM v2_attempts WHERE status='submitted' AND source_kind='family' AND observed_level=0 AND declared_level=0 GROUP BY source_id) last ON a.source_id=last.source_id AND a.closed_seq=last.closed_seq",
+    )
+    .all() as {
+    source_id: string;
+    grade_json: string;
+    observed_level: number;
+    declared_level: number;
+  }[];
+  const failures = new Set(
+    latest
+      .filter((a) => {
+        try {
+          return (
+            a.observed_level === 0 &&
+            a.declared_level === 0 &&
+            JSON.parse(a.grade_json).passed === false
+          );
+        } catch {
+          return false;
+        }
+      })
+      .map((a) => a.source_id),
+  );
+  const readiness = new Set(
+    goal?.objectives.flatMap(
+      (id) =>
+        registry.objectives
+          .find((o) => o.id === id)
+          ?.readiness.map((r) => r.objective) ?? [],
+    ) ?? [],
+  );
+  const attained = new Set(summary.evidence.map((e) => e.objective));
+  const rank = (f: (typeof list)[number]) => {
+    const due = summary.reviews.filter(
+      (r) => r.dueNow && f.objectives.some((o) => o.id === r.objective),
     );
-  return {
-    items: list
-      .slice(0, req.limit)
-      .map((f) => ({
-        ...f,
+    if (
+      failures.has(f.id) &&
+      (!goal || f.objectives.some((o) => readiness.has(o.id)))
+    )
+      return {
+        priority: 0,
+        due: "",
         reason:
-          f.attempts === 0
-            ? "Not yet practiced in this workspace"
-            : "Choose a new route or review a previous mistake; recommendations are optional.",
-      })),
+          "Your latest independent practice exposed a gap. Try a smaller example, another route or an optional prerequisite.",
+      };
+    if (due.length)
+      return {
+        priority: 1,
+        due: due.map((r) => r.due).sort()[0],
+        reason:
+          "An objective review is due. Early/repeated practice never substitutes for fresh delayed retention.",
+      };
+    const next =
+      goal &&
+      goal.objectives.find(
+        (id) =>
+          !attained.has(id) &&
+          (registry.objectives
+            .find((o) => o.id === id)
+            ?.readiness.every((r) => attained.has(r.objective)) ??
+            false),
+      );
+    if (next && f.objectives.some((o) => o.id === next))
+      return {
+        priority: 3,
+        due: "",
+        reason:
+          "Next readiness-aligned objective on your optional goal. You can choose any other activity.",
+      };
+    if (f.attempts > 0)
+      return {
+        priority: 4,
+        due: "",
+        reason:
+          "Mix in an earlier activity, choose another route or revisit an observed gap.",
+      };
+    return {
+      priority: 5,
+      due: "",
+      reason: "Optional application you have not practiced in this workspace.",
+    };
+  };
+  if (req.mode !== "explore")
+    list = [...list].sort((a, b) => {
+      const x = rank(a),
+        y = rank(b);
+      return (
+        x.priority - y.priority ||
+        x.due.localeCompare(y.due) ||
+        a.attempts - b.attempts ||
+        a.objectiveId.localeCompare(b.objectiveId) ||
+        a.id.localeCompare(b.id)
+      );
+    });
+  return {
+    items: list.slice(0, req.limit).map((f) => ({
+      ...f,
+      reason: rank(f).reason,
+    })),
   };
 }
 export function objectiveDetail(store: Store, id: string) {
@@ -107,7 +271,11 @@ export function objectiveDetail(store: Store, id: string) {
       "No authored objective exists with this ID",
       404,
     );
-  return { ...result, families };
+  return {
+    ...result,
+    families,
+    bridge: id === "M01.radians-trig" ? bridgeText() : null,
+  };
 }
 export function savePreference(store: Store, input: unknown) {
   const req = z

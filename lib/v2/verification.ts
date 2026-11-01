@@ -30,6 +30,7 @@ import {
   type Variant,
 } from "./assessments";
 import { itemFingerprint } from "./content";
+import { samePresentation, shuffled } from "./presentation";
 import {
   admitCM,
   fresh,
@@ -57,7 +58,7 @@ export function knownCM(a: Attempt, resolve: SourceResolver = resolveCM) {
       503,
     );
   const { basis: _basis, ...base } = frozen;
-  if (canonical(base) !== canonical(freezeVariant(variant, source.kind)))
+  if (!samePresentation(base, freezeVariant(variant, source.kind)))
     throw new V2Error(
       "instance_mismatch",
       "Frozen instance does not match its immutable source",
@@ -108,6 +109,7 @@ export function publicCM(
     | { unverifiable: true; claim: string }
     | (ReturnType<typeof gradeCM> & {
         artifact: string;
+        answers: Record<string, string>;
         effectiveAssistance: number;
         claim: string;
         scopes: {
@@ -142,6 +144,7 @@ export function publicCM(
       result = {
         ...grade,
         artifact: saved.artifact,
+        answers: saved.answers,
         effectiveAssistance: Math.max(a.observed_level, a.declared_level ?? 0),
         claim:
           a.purpose === "verify"
@@ -297,6 +300,9 @@ export function issueCM(
       );
     const frozen = {
       ...freezeVariant(variant, source.kind),
+      items: freezeVariant(variant, source.kind).items.map((item) =>
+        shuffled(item),
+      ),
       ...(basis ? { basis } : {}),
     };
     if (Buffer.byteLength(canonical(frozen)) > 16384)

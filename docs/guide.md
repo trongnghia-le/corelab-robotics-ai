@@ -214,3 +214,42 @@ Browser tests cover empty progress, lesson/math rendering, reading separation, a
 - **Setup referenced missing ChatGPT files**: use the handoff workflow above; automatic Project creation and chat synchronization are not implemented.
 
 Repository: https://github.com/trongnghia-le/corelab-robotics-ai
+## CoreLab V2 development preview
+
+V2 is an optional development workspace alongside existing topic learning. Run `npm run dev:v2` and open `/objectives`; for a local production-mode preview use `npm run build:v2`, then `npm run start:v2`. All three commands use the same localhost-only launcher on Windows, macOS and Linux. The default commands leave V2 off. Only Linux has been exercised locally; configured CI is not evidence of Windows/macOS success.
+
+Choose any objective or optional path. Readiness warnings and the radians/trigonometry bridge are advisory. Explore offers every authored family; Recommended uses recorded independent gaps and optional goal readiness. More Practice lets you stay with a chosen family. Format errors do not close an attempt. Issued problems, opened hints and solutions are recorded durably; reloading does not reset assistance or exposure. Closed attempts accept only an identical resubmission. Coding notes are saved as text and never executed.
+
+The two numerical lab downloads are Python 3 starter files with original self-check fixtures. Edit and run your own trusted file outside CoreLab: `py -3 filename.py` on Windows, or `python3 filename.py` / `python filename.py` on macOS/Linux. A downloaded starter intentionally fails until you implement its functions. The optional “I ran my own tests” action records a self-report, never a verified result or signature. The web server never executes these files.
+
+C/M verification and delayed review have a tested backend, but their original form drafts remain pending independent technical/adversarial/pedagogical review and S2 release activation. No client request or uploaded report can override this gate. Synthetic approvals used by tests are not independent review. Verified I requires a separately approved, independently reviewed isolated runner; it is unavailable on every OS. Transfer and L3/L4 still require qualified human review. Existing topic evidence and levels are separate.
+
+### V2 backup and recovery
+
+Once V2 data exists, use **Settings → full V2 backup**. Backup `/3` includes attempts, exposures, objective evidence, preferences and reviews together with legacy progress. Preview shows replacement scope and foreign origin; confirmation must match the exact document and unchanged local revision. Restore validates before live writes and replaces learning rows atomically. It retains local identity/issuer configuration, signed report strings and original claims; recognized C/M results and review dates are recomputed from their retained sources and history. Unknown or unreviewed claims stay inert. Legacy `/1` and `/2` imports replace topic history only and preserve V2 rows explicitly.
+
+Every successful restore keeps a nonrecursive pre-restore local snapshot; recovery through Settings uses the same preview/confirmation rules. At most five snapshots and 512 MiB total are retained. Full logical backups have a conservative 128 MiB UTF-8 byte budget. Writes that would exceed supported capacity roll back; history is never automatically deleted. These are initial development limits, not a measured cross-platform capacity guarantee.
+
+If logical export is unavailable, create a **current** SQLite recovery copy:
+
+1. Stop CoreLab and keep the original database and any `-wal`/`-shm` files together.
+2. Run `npm run recovery:v2 -- --db /absolute/path/to/corelab.sqlite --server-stopped` (on Windows, use a quoted absolute Windows path).
+3. The command creates a new private, integrity-checked copy beside the configured database in `v2-recovery/`. It never overwrites the original. Keep that printed path.
+4. Reopen the copy as an alternate database, then export a validated full learning backup. Inspect history before any replacement. Do not copy an active SQLite database file alone or move unrelated signing keys between installations.
+
+Linux/macOS terminal:
+
+```sh
+CORELAB_DB_PATH="/absolute/path/to/v2-recovery/copy.sqlite" npm run dev:v2
+```
+
+Windows PowerShell:
+
+```powershell
+$env:CORELAB_DB_PATH = "C:\absolute\path\v2-recovery\copy.sqlite"
+npm run dev:v2
+```
+
+Turning V2 off opens the legacy view; sidecar rows remain. Legacy edits/restores while V2 is off are detected through a state hash and restore-snapshot count when V2 returns. Acknowledge the preserved mixed histories before ordinary V2 writes resume. This checkpoint is not an adversarial audit log.
+
+Validation commands: `npm run validate:v2`, `npm test`, and `npm run test:v2:e2e` (Chromium must be installed). The implementation report lists actual results and release blockers. Keep this local preview and its database private; a hosted website has no access to your local progress or signing keys and does not provide synchronization.

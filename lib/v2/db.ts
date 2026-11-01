@@ -1,6 +1,6 @@
 import { DatabaseSync, type SQLInputValue } from "node:sqlite";
 import { randomUUID } from "node:crypto";
-import { mkdirSync, rmSync } from "node:fs";
+import { mkdirSync, rmSync, statfsSync, statSync } from "node:fs";
 import path from "node:path";
 import {
   BACKUP_LIMIT,
@@ -237,6 +237,7 @@ export function copyDatabase(db: DB) {
     db.prepare("PRAGMA database_list").all() as { name: string; file: string }[]
   ).find((x) => x.name === "main")?.file;
   if (!file) return null; // Explicit in-memory test databases have no durable file.
+  ensureHeadroom(db, statSync(file).size * 2 + 1048576);
   const dir = path.join(path.dirname(file), "v2-recovery");
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   const target = path.join(
@@ -312,6 +313,21 @@ export function initialize(db: DB) {
     db.exec("ROLLBACK");
     throw e;
   }
+}
+export function ensureHeadroom(db: DB, required: number) {
+  const file = (
+    db.prepare("PRAGMA database_list").all() as { name: string; file: string }[]
+  ).find((r) => r.name === "main")?.file;
+  if (!file) return;
+  if (!Number.isSafeInteger(required) || required < 0)
+    throw new Error("Invalid recovery space budget");
+  const disk = statfsSync(path.dirname(file), { bigint: true });
+  if (disk.bavail * disk.bsize < BigInt(required))
+    throw new V2Error(
+      "disk_headroom",
+      "Insufficient free disk space for safe recovery; no learning history was replaced",
+      503,
+    );
 }
 export function write<T>(db: DB, fn: () => T, allowPending = false): T {
   db.exec("BEGIN IMMEDIATE");

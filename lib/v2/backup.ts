@@ -25,6 +25,7 @@ import {
   write,
   type DB,
   type Row,
+  ensureHeadroom,
 } from "./db";
 
 const mapping = {
@@ -358,6 +359,12 @@ export function restore(
         throw new Error(
           "Insufficient supported snapshot capacity; create a recovery copy first",
         );
+      // Conservative preflight for snapshot, replacement and journal pages.
+      // SQLite's own disk-full errors still roll back the entire transaction.
+      ensureHeadroom(
+        store.db,
+        Buffer.byteLength(snapshot) * 3 + bytes(input) * 2 + 1048576,
+      );
       insert(store.db, "v2_restore_snapshots", {
         id: randomUUID(),
         at: new Date().toISOString(),

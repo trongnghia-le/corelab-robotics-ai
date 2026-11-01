@@ -192,3 +192,7 @@ for (const [id, media] of Object.entries(lessonMediaRegistry.lessons)) {
 console.log(
   `Validated ${mediaIds.length} source-verified video resources; ${ids.filter((id) => mediaFor(id).videos.length).length}/${ids.length} authored lessons have curated video. Unmapped topics retain their local lesson/overview.`,
 );
+if (process.env.CORELAB_V2 === "1") {
+  const { validateV2 } = await import("../lib/v2/validate");
+  console.log("Validated authored V2 contracts:", validateV2());
+}

@@ -75,3 +75,33 @@ it("serves redacted content, strict actions and inert import", async () => {
   );
   expect(fake.status).toBe(400);
 });
+it("delivers a manual kit only after durable exposure and rejects forged self-report fields", async () => {
+  const store = new Store(":memory:");
+  stores.push(store);
+  vi.stubEnv("CORELAB_V2", "1");
+  const r = await dispatch(
+    request("kits/L01-SE2/download", "POST", {}),
+    ["kits", "L01-SE2", "download"],
+    () => store,
+  );
+  expect(r.status).toBe(200);
+  expect(r.headers.get("Content-Disposition")).toContain("attachment");
+  const id = r.headers.get("X-CoreLab-Attempt");
+  expect(id).toBeTruthy();
+  expect(await r.text()).toContain("NotImplementedError");
+  const forged = await dispatch(
+    request("kits/L01-SE2/self-report", "POST", {
+      attemptId: id,
+      ran: true,
+      declaredAssistance: 0,
+      passed: true,
+    }),
+    ["kits", "L01-SE2", "self-report"],
+    () => store,
+  );
+  expect(forged.status).toBe(400);
+  const h = await dispatch(request("history"), ["history"], () => store);
+  const summary = await h.json();
+  expect(summary.items[0].id).toBe(id);
+  expect(summary.items[0].item).toBeUndefined();
+});

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -9,11 +9,16 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { PageHeading } from "../ui";
-import type { summaries } from "@/lib/v2/read-model";
-import type { publicAttempt } from "@/lib/v2/attempts";
+import type { objectiveDetail } from "@/lib/v2/read-model";
+import type {
+  publicAttempt,
+  history as learningHistory,
+} from "@/lib/v2/attempts";
 import { v2 } from "./client";
-type Data = ReturnType<typeof summaries>;
+import { LearningPanel } from "./learning-panel";
+type Data = ReturnType<typeof objectiveDetail>;
 type Attempt = ReturnType<typeof publicAttempt>;
+type History = ReturnType<typeof learningHistory>["items"];
 type Mode = "recommended" | "explore" | "more";
 export function V2Explorer({ objective }: { objective?: string }) {
   const [data, setData] = useState<Data | null>(null),
@@ -29,8 +34,13 @@ export function V2Explorer({ objective }: { objective?: string }) {
     [declared, setDeclared] = useState(0),
     [hint, setHint] = useState(""),
     [artifact, setArtifact] = useState("");
-  const [history, setHistory] = useState<Attempt[]>([]),
+  const [history, setHistory] = useState<History>([]),
     [cursor, setCursor] = useState<string | null>(null);
+  const [goal, setGoal] = useState(""),
+    [recommendations, setRecommendations] = useState<
+      { id: string; reason: string }[]
+    >([]);
+  const [pendingHelp, setPendingHelp] = useState<number | null>(null);
   const refresh = useCallback(async () => {
     const value = await v2<Data>(
       objective ? "objectives/" + encodeURIComponent(objective) : "objectives",
@@ -39,7 +49,7 @@ export function V2Explorer({ objective }: { objective?: string }) {
     return value;
   }, [objective]);
   const loadHistory = useCallback(async (next?: string) => {
-    const value = await v2<{ items: Attempt[]; nextCursor: string | null }>(
+    const value = await v2<{ items: History; nextCursor: string | null }>(
       "history?limit=10" + (next ? "&cursor=" + next : ""),
     );
     setHistory((old) => (next ? [...old, ...value.items] : value.items));
@@ -53,7 +63,7 @@ export function V2Explorer({ objective }: { objective?: string }) {
           ? "objectives/" + encodeURIComponent(objective)
           : "objectives",
       ),
-      v2<{ items: Attempt[]; nextCursor: string | null }>("history?limit=10"),
+      v2<{ items: History; nextCursor: string | null }>("history?limit=10"),
     ])
       .then(([value, events]) => {
         if (active) {
@@ -82,9 +92,10 @@ export function V2Explorer({ objective }: { objective?: string }) {
   };
   function open(a: Attempt) {
     setAttempt(a);
-    setAnswers({});
+    setAnswers(a.result && "answers" in a.result ? a.result.answers : {});
     setDeclared(0);
     setHint("");
+    setPendingHelp(null);
     setArtifact(a.result && "artifact" in a.result ? a.result.artifact : "");
   }
   async function issue(familyId: string, chosenRoute?: string) {
@@ -97,18 +108,54 @@ export function V2Explorer({ objective }: { objective?: string }) {
     });
     open(a);
     setSource(familyId);
+    setRoute(a.item.route);
     await Promise.all([refresh(), loadHistory()]);
   }
   const selected = data?.families.find((f) => f.id === source);
   let families =
     data?.families.filter((f) => !domain || f.domain === domain) ?? [];
-  if (mode === "recommended")
-    families = [...families]
-      .sort((a, b) => a.attempts - b.attempts || a.id.localeCompare(b.id))
-      .slice(0, 5);
+  if (mode === "recommended") {
+    const byId = new Map(families.map((f) => [f.id, f]));
+    families = recommendations
+      .map((r) => byId.get(r.id))
+      .filter((f): f is Data["families"][number] => !!f);
+  }
   if (mode === "more" && source)
     families = families.filter((f) => f.id === source);
   const domains = [...new Set(data?.families.map((f) => f.domain) ?? [])];
+  const attemptPanel = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (attempt?.id) attemptPanel.current?.focus();
+  }, [attempt?.id]);
+  const revision = data?.workspace.revision;
+  useEffect(() => {
+    if (mode !== "recommended") return;
+    let active = true;
+    const p = new URLSearchParams({ mode: "recommended", limit: "5" });
+    if (objective) p.set("objective", objective);
+    if (domain) p.set("domain", domain);
+    if (goal) p.set("goal", goal);
+    v2<{ items: { id: string; reason: string }[] }>("select?" + p)
+      .then((r) => {
+        if (active) setRecommendations(r.items);
+      })
+      .catch((e) => {
+        if (active) setError(e.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, [mode, objective, domain, goal, revision]);
+  async function loadHelp(level: number) {
+    if (!attempt) return;
+    const h = await v2<{ level: number; content: string }>(
+      "attempts/" + attempt.id + "/assist",
+      { level },
+    );
+    setHint(h.content);
+    setAttempt({ ...attempt, observedAssistance: h.level });
+    setPendingHelp(null);
+  }
   return (
     <div className="page v2-page">
       <PageHeading
@@ -178,6 +225,28 @@ export function V2Explorer({ objective }: { objective?: string }) {
               <span>Durable practice attempts</span>
             </div>
           </div>
+          <LearningPanel
+            data={data}
+            objective={objective}
+            busy={busy}
+            onGoal={setGoal}
+            onCheck={(source, scope) =>
+              void run(async () => {
+                const a = await v2<Attempt>("attempts", {
+                  purpose: scope ? "review" : "verify",
+                  source,
+                  ...(scope
+                    ? {
+                        objectiveId: scope.objective,
+                        dimension: scope.dimension,
+                      }
+                    : {}),
+                });
+                open(a);
+                await Promise.all([refresh(), loadHistory()]);
+              })
+            }
+          />
           <nav className="v2-modes" aria-label="Objective practice mode">
             {(
               [
@@ -235,9 +304,11 @@ export function V2Explorer({ objective }: { objective?: string }) {
                   <span>{f.completed} completed practice</span>
                 </div>
                 <p className="muted">
-                  {f.attempts === 0
-                    ? "Not practiced yet. Choose any route to begin."
-                    : "Try another route or revisit a specific mistake."}
+                  {mode === "recommended"
+                    ? recommendations.find((r) => r.id === f.id)?.reason
+                    : f.attempts === 0
+                      ? "Not practiced yet. Choose any route to begin."
+                      : "Try another route or revisit a specific mistake."}
                 </p>
                 <label>
                   Application choice
@@ -291,6 +362,8 @@ export function V2Explorer({ objective }: { objective?: string }) {
           )}
           {attempt && (
             <section
+              ref={attemptPanel}
+              tabIndex={-1}
               className="panel v2-attempt"
               aria-labelledby="v2-task-title"
             >
@@ -306,50 +379,31 @@ export function V2Explorer({ objective }: { objective?: string }) {
                 Scope: <strong>{attempt.item.objectiveId}</strong>.{" "}
                 {selected?.scope}
               </p>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void run(async () => {
-                    const result = await v2<Attempt>(
-                      "attempts/" + attempt.id + "/submit",
-                      { answers, declaredAssistance: declared, artifact },
-                    );
-                    setAttempt(result);
-                    await Promise.all([refresh(), loadHistory()]);
-                  });
-                }}
-              >
-                <fieldset disabled={busy || attempt.status === "submitted"}>
-                  <legend>
-                    Your answer · precision and units are part of the task
-                  </legend>
-                  <div className="v2-input-grid">
-                    {attempt.item.fields.map((field) => (
-                      <label key={field.id}>
-                        {field.label}
-                        {field.kind === "choice" ? (
-                          <select
-                            required
-                            aria-label={field.label}
-                            value={answers[field.id] ?? ""}
-                            onChange={(e) =>
-                              setAnswers((a) => ({
-                                ...a,
-                                [field.id]: e.target.value,
-                              }))
-                            }
-                          >
-                            <option value="">Choose an option</option>
-                            {field.options?.map((o) => (
-                              <option key={o}>{o}</option>
-                            ))}
-                          </select>
-                        ) : (
-                          <>
-                            <input
+              {attempt.item.fields.length > 0 && (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    void run(async () => {
+                      const result = await v2<Attempt>(
+                        "attempts/" + attempt.id + "/submit",
+                        { answers, declaredAssistance: declared, artifact },
+                      );
+                      setAttempt(result);
+                      await Promise.all([refresh(), loadHistory()]);
+                    });
+                  }}
+                >
+                  <fieldset disabled={busy || attempt.status === "submitted"}>
+                    <legend>
+                      Your answer · precision and units are part of the task
+                    </legend>
+                    <div className="v2-input-grid">
+                      {attempt.item.fields.map((field) => (
+                        <label key={field.id}>
+                          {field.label}
+                          {field.kind === "choice" ? (
+                            <select
                               required
-                              autoComplete="off"
-                              inputMode="text"
                               aria-label={field.label}
                               value={answers[field.id] ?? ""}
                               onChange={(e) =>
@@ -358,62 +412,84 @@ export function V2Explorer({ objective }: { objective?: string }) {
                                   [field.id]: e.target.value,
                                 }))
                               }
-                            />
-                            <small>
-                              Decimal or fraction · tolerance ±{field.tolerance}
-                              {field.kind === "angle" ? " rad modulo 2π" : ""}
-                            </small>
-                          </>
-                        )}
-                      </label>
-                    ))}
-                  </div>
-                  <label>
-                    Implementation scratchpad (optional, never executed)
-                    <textarea
-                      spellCheck={false}
-                      rows={5}
-                      maxLength={8000}
-                      value={artifact}
-                      onChange={(e) => setArtifact(e.target.value)}
-                      placeholder="Write code or explain your method. Save it with your practice answer; it is not implementation evidence."
-                    />
-                  </label>
-                  <label>
-                    Outside assistance
-                    <select
-                      value={declared}
-                      onChange={(e) => setDeclared(Number(e.target.value))}
-                    >
-                      <option value={0}>A0 · I worked independently</option>
-                      <option value={1}>A1 · Conceptual hint</option>
-                      <option value={2}>A2 · Guided steps</option>
-                      <option value={3}>
-                        A3 · Solution or equivalent AI assistance
-                      </option>
-                    </select>
-                  </label>
-                  <button className="button primary" type="submit">
-                    Check practice answer <ArrowRight size={17} />
-                  </button>
-                </fieldset>
-              </form>
+                            >
+                              <option value="">Choose an option</option>
+                              {field.options?.map((o) => (
+                                <option key={o}>{o}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <>
+                              <input
+                                required
+                                autoComplete="off"
+                                inputMode="text"
+                                aria-label={field.label}
+                                value={answers[field.id] ?? ""}
+                                onChange={(e) =>
+                                  setAnswers((a) => ({
+                                    ...a,
+                                    [field.id]: e.target.value,
+                                  }))
+                                }
+                              />
+                              <small>
+                                Decimal or fraction · tolerance ±
+                                {field.tolerance}
+                                {field.kind === "angle" ? " rad modulo 2π" : ""}
+                              </small>
+                            </>
+                          )}
+                        </label>
+                      ))}
+                    </div>
+                    <label>
+                      Implementation scratchpad (optional, never executed)
+                      <textarea
+                        spellCheck={false}
+                        rows={5}
+                        maxLength={8000}
+                        value={artifact}
+                        onChange={(e) => setArtifact(e.target.value)}
+                        placeholder="Write code or explain your method. Save it with your practice answer; it is not implementation evidence."
+                      />
+                    </label>
+                    <label>
+                      Outside assistance
+                      <select
+                        value={declared}
+                        onChange={(e) => setDeclared(Number(e.target.value))}
+                      >
+                        <option value={0}>A0 · I worked independently</option>
+                        <option value={1}>A1 · Conceptual hint</option>
+                        <option value={2}>A2 · Guided steps</option>
+                        <option value={3}>
+                          A3 · Solution or equivalent AI assistance
+                        </option>
+                      </select>
+                    </label>
+                    <button className="button primary" type="submit">
+                      Check practice answer <ArrowRight size={17} />
+                    </button>
+                  </fieldset>
+                </form>
+              )}
               <div className="v2-actions">
                 {[1, 2, 3].map((level) => (
                   <button
                     type="button"
                     key={level}
                     className="button"
-                    disabled={busy || attempt.status === "submitted"}
+                    disabled={
+                      busy ||
+                      attempt.status === "submitted" ||
+                      attempt.item.fields.length === 0
+                    }
                     onClick={() =>
-                      void run(async () => {
-                        const h = await v2<{ level: number; content: string }>(
-                          "attempts/" + attempt.id + "/assist",
-                          { level },
-                        );
-                        setHint(h.content);
-                        setAttempt({ ...attempt, observedAssistance: h.level });
-                      })
+                      attempt.purpose === "verify" &&
+                      attempt.observedAssistance === 0
+                        ? setPendingHelp(level)
+                        : void run(() => loadHelp(level))
                     }
                   >
                     {level === 1
@@ -428,6 +504,28 @@ export function V2Explorer({ objective }: { objective?: string }) {
                 Highest observed assistance: A{attempt.observedAssistance}.
                 Reloading or changing tabs cannot erase recorded help.
               </p>
+              {pendingHelp !== null && (
+                <div className="v2-notice" role="status">
+                  <p>
+                    Opening help makes this verification attempt assisted and
+                    ineligible for independent evidence. You can continue
+                    learning and request another fresh check later.
+                  </p>
+                  <button
+                    className="button"
+                    disabled={busy}
+                    onClick={() => void run(() => loadHelp(pendingHelp))}
+                  >
+                    Continue with assisted attempt
+                  </button>
+                  <button
+                    className="button"
+                    onClick={() => setPendingHelp(null)}
+                  >
+                    Keep working independently
+                  </button>
+                </div>
+              )}
               {hint && (
                 <div className="v2-feedback" role="status">
                   {hint}
@@ -459,6 +557,16 @@ export function V2Explorer({ objective }: { objective?: string }) {
                     </ul>
                     <p>{attempt.result.solution}</p>
                     <p>{attempt.result.remediation}</p>
+                    {"scopes" in attempt.result && (
+                      <ul>
+                        {attempt.result.scopes.map((s) => (
+                          <li key={s.objective + s.dimension}>
+                            {s.objective} · {s.dimension}: {s.outcome} (
+                            {s.reason})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                     {attempt.result.artifact && (
                       <details>
                         <summary>
@@ -469,17 +577,19 @@ export function V2Explorer({ objective }: { objective?: string }) {
                     )}
                   </div>
                 ))}
-              {attempt.status === "submitted" && (
-                <button
-                  className="button primary"
-                  disabled={busy}
-                  onClick={() =>
-                    void run(() => issue(attempt.source, attempt.item.route))
-                  }
-                >
-                  Choose the next available task <RotateCcw size={17} />
-                </button>
-              )}
+              {attempt.status === "submitted" &&
+                attempt.purpose === "practice" &&
+                attempt.item.fields.length > 0 && (
+                  <button
+                    className="button primary"
+                    disabled={busy}
+                    onClick={() =>
+                      void run(() => issue(attempt.source, attempt.item.route))
+                    }
+                  >
+                    Choose the next available task <RotateCcw size={17} />
+                  </button>
+                )}
             </section>
           )}
           <section className="panel">
@@ -524,9 +634,13 @@ export function V2Explorer({ objective }: { objective?: string }) {
                   <button
                     className="button"
                     disabled={busy}
-                    onClick={() => open(a)}
+                    onClick={() =>
+                      void run(async () =>
+                        open(await v2<Attempt>("attempts/" + a.id)),
+                      )
+                    }
                   >
-                    {a.source} · {a.item.route.replaceAll("-", " ")} ·{" "}
+                    {a.source} · {(a.route ?? "default").replaceAll("-", " ")} ·{" "}
                     {a.status === "issued"
                       ? "Resume open attempt"
                       : "View saved practice"}

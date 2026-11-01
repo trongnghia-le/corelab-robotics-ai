@@ -27,3 +27,12 @@ Baseline: 38b6a1d. Implementation authorized by the owner on 2026-10-31; local c
 ## Resume
 
 Read this file, git log/status, the Master Plan and IMPLEMENTATION_REPORT.md when present. Work only on temporary databases during tests. Never use default getStore() against learner data in test scripts. Keep verified I disabled.
+
+## 2026-11-01: integrated objective workflow milestone
+
+- Added a validated 24-objective registry, advisory readiness DAG, four optional goal paths and a 176-node/319-edge curriculum planning projection. The 169-topic live graph and legacy mastery are unchanged.
+- Added optional original radians/trigonometry text and 12 practice instances (152 total). Added two downloadable, standard-library-only Python starter/self-check kits with durable sample/download exposure and idempotent practice-only self-reports. Web code executes nothing.
+- Integrated Learn/bridge/readiness, manual Apply, gated C/M scopes/reviews and optional goals. Recommended uses server-side independent gaps/readiness; history is paginated summaries with on-demand detail. Choice order is shuffled and frozen; source validation permits only the authored option permutation.
+- Added immutable content validation, source hashes and a current SQLite recovery-copy CLI with disk-headroom preflight. Existing CI now includes V2 validation/build and Linux V2 browser checks; these remote jobs have NOT been run.
+- Actual Linux checks: 159 tests in 21 files passed; types/lint/content and V2 contract validation passed; latest V2 production build passed; three Chromium flows passed, including manual-kit download/self-report, bridge and phone-width keyboard use. The manual kit author fixtures accepted four valid alternatives and rejected 16 injected bugs; NOT independent sign-off.
+- Next: strengthen all-family alternative routes and independent numeric oracle coverage using new immutable versions, complete optional lab-roadmap/resource presentation, rehearse legacy browser regression in a disposable checkout, and expand recovery/capacity/concurrency acceptance checks.

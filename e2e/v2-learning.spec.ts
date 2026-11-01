@@ -8,13 +8,11 @@ test("objective choice → help → independent declaration → practice → rel
     page.getByRole("heading", { name: "Your next independent step." }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Explore", exact: true }).click();
-  const family = page
-    .locator(".v2-family")
-    .filter({
-      has: page.getByRole("heading", {
-        name: "Project onto an allowed direction",
-      }),
-    });
+  const family = page.locator(".v2-family").filter({
+    has: page.getByRole("heading", {
+      name: "Project onto an allowed direction",
+    }),
+  });
   await family.getByRole("button", { name: "Practice", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Work the problem." }),
@@ -22,7 +20,10 @@ test("objective choice → help → independent declaration → practice → rel
   const events = await (
     await page.request.get("/api/v2/history?limit=1")
   ).json();
-  const itemId = events.items[0].item.id;
+  const detail = await (
+    await page.request.get("/api/v2/attempts/" + events.items[0].id)
+  ).json();
+  const itemId = detail.item.id;
   const source = JSON.parse(
     readFileSync("content/exercises/X01.v1.json", "utf8"),
   );
@@ -59,13 +60,11 @@ test("objective choice → help → independent declaration → practice → rel
   expect(backup.schema).toBe("corelab-backup/3");
   expect(backup.v2.evidence).toHaveLength(0);
   await page.goto("/settings");
-  await page
-    .getByLabel("Choose full V2 backup")
-    .setInputFiles({
-      name: "backup.json",
-      mimeType: "application/json",
-      buffer: Buffer.from(JSON.stringify(backup)),
-    });
+  await page.getByLabel("Choose full V2 backup").setInputFiles({
+    name: "backup.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(backup)),
+  });
   await page
     .getByRole("button", { name: "Preview backup replacement" })
     .click();
@@ -86,6 +85,48 @@ test("objective choice → help → independent declaration → practice → rel
   ).toBeVisible();
   const after = await (await page.request.get("/api/state")).json();
   expect(after.progress).toEqual(before.progress);
+});
+test("optional bridge, manual kit download and practice-only self-report", async ({
+  page,
+}) => {
+  await page.goto("/objectives/M01.radians-trig");
+  await expect(
+    page
+      .getByRole("heading", {
+        name: "Radians, trigonometry and coordinates",
+        exact: true,
+      })
+      .first(),
+  ).toBeVisible();
+  await expect(
+    page.getByText("A full turn is 2π radians", { exact: false }),
+  ).toBeVisible();
+  await page.goto("/objectives/R04.planar-fk");
+  await expect(
+    page.getByText("Optional readiness suggestions", { exact: false }),
+  ).toBeVisible();
+  const download = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Download Planar FK self-check kit" })
+    .click();
+  expect((await download).suggestedFilename()).toBe("L02-planar.v1.py");
+  await page
+    .getByRole("button", { name: "Record that I ran my own tests" })
+    .click();
+  await expect(
+    page.getByText(
+      "Manual self-report only. No verification, signature or mastery evidence.",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  const backup = await (await page.request.get("/api/v2/backup/export")).json();
+  expect(
+    backup.v2.attempts.some(
+      (a: { source_kind: string; status: string }) =>
+        a.source_kind === "kit" && a.status === "submitted",
+    ),
+  ).toBe(true);
+  expect(backup.v2.evidence).toHaveLength(0);
 });
 test("mobile keyboard, source redaction and gated verification", async ({
   page,

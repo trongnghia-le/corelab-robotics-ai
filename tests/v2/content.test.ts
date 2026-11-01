@@ -7,8 +7,9 @@ import {
 } from "../../lib/v2/content";
 it("loads original static contracts for twenty families and redacts answers/help", () => {
   const c = catalog();
-  expect(c.families).toHaveLength(20);
-  expect(c.families.reduce((n, f) => n + f.items.length, 0)).toBe(140);
+  expect(c.families.filter((f) => /^X\d+$/.test(f.id))).toHaveLength(20);
+  expect(c.families.find((f) => f.id === "XB1")?.items).toHaveLength(12);
+  expect(c.families.reduce((n, f) => n + f.items.length, 0)).toBe(152);
   for (const f of c.families)
     for (const item of f.items) {
       expect(

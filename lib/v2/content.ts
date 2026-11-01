@@ -8,6 +8,7 @@ import {
   hash,
   id,
   numberAnswer,
+  strictJSON,
   V2Error,
 } from "./contracts";
 
@@ -43,7 +44,7 @@ const familySchema = z
     domain: z.string().max(100),
     topicId: id,
     objectiveId: id,
-    routes: z.array(id).min(2).max(6),
+    routes: z.array(id).min(1).max(6),
     scope: z.string().max(1000),
     labIds: z.array(id),
     items: z.array(itemSchema).min(2).max(200),
@@ -110,7 +111,7 @@ export function catalog() {
     path.join(process.cwd(), "content/v2/catalog.v1.json"),
     "utf8",
   );
-  const parsed = catalogSchema.parse(JSON.parse(raw));
+  const parsed = catalogSchema.parse(strictJSON(raw));
   const sourceHashes: Record<string, string> = {};
   const families = parsed.families.map((entry) => {
     const source = readFileSync(
@@ -120,7 +121,7 @@ export function catalog() {
     sourceHashes[entry.id] = hash(source);
     const contract = familySchema
       .omit({ review: true })
-      .parse(JSON.parse(source));
+      .parse(strictJSON(source));
     if (contract.id !== entry.id || contract.version !== entry.version)
       throw new Error("Source identity mismatch");
     return { ...contract, review: entry.review };
