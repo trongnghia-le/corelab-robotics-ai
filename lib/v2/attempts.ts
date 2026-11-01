@@ -46,6 +46,7 @@ export const submitSchema = z
   .object({
     answers: z.record(z.string().regex(/^\d{1,2}$/), z.string().max(200)),
     declaredAssistance: level,
+    artifact: z.string().max(8000).optional(),
   })
   .strict();
 export function attemptById(db: DB, id: string): Attempt {
@@ -74,12 +75,24 @@ function sourceItem(a: Attempt) {
 function result(a: Attempt) {
   if (a.status !== "submitted" || !a.submission_json) return null;
   try {
-    const { item } = sourceItem(a),
-      answers = z
-        .record(z.string(), z.string())
-        .parse(strictJSON(a.submission_json));
+    const { item } = sourceItem(a);
+    const raw = strictJSON(a.submission_json);
+    const saved =
+      raw && typeof raw === "object" && "answers" in raw
+        ? z
+            .object({
+              answers: z.record(z.string(), z.string()),
+              artifact: z.string().max(8000),
+            })
+            .strict()
+            .parse(raw)
+        : {
+            answers: z.record(z.string(), z.string()).parse(raw),
+            artifact: "",
+          };
     return {
-      ...gradeItem(item, answers),
+      ...gradeItem(item, saved.answers),
+      artifact: saved.artifact,
       effectiveAssistance: Math.max(a.observed_level, a.declared_level ?? 0),
       claim: "Practice only; independent content review pending",
     };
@@ -240,6 +253,7 @@ export function submit(store: Store, id: string, input: unknown) {
     const submissionHash = digest({
       answers: normalized,
       declaredAssistance: req.declaredAssistance,
+      artifact: req.artifact ?? "",
     });
     if (a.status === "submitted") {
       if (a.submission_hash !== submissionHash)
@@ -266,7 +280,7 @@ export function submit(store: Store, id: string, input: unknown) {
         at,
         nextSequence(store.db),
         req.declaredAssistance,
-        canonical(req.answers),
+        canonical({ answers: req.answers, artifact: req.artifact ?? "" }),
         submissionHash,
         canonical(grade),
         id,

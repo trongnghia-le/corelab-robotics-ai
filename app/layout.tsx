@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Provider } from "@/components/provider";
 import { Shell } from "@/components/shell";
+import { enabled } from "@/lib/v2/contracts";
 import "./globals.css";
 import "katex/dist/katex.min.css";
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Provider>
-          <Shell>{children}</Shell>
+          <Shell v2Enabled={enabled()}>{children}</Shell>
         </Provider>
       </body>
     </html>

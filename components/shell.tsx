@@ -30,6 +30,7 @@ const extra = [
   ["/sources", "References", Library],
 ] as const;
 const labels: Record<string, string> = {
+  objectives: "Objective learning",
   roadmap: "Roadmap",
   lessons: "Lessons",
   assessments: "Assessments",
@@ -39,7 +40,13 @@ const labels: Record<string, string> = {
   settings: "Data & settings",
   sources: "References",
 };
-export function Shell({ children }: { children: ReactNode }) {
+export function Shell({
+  children,
+  v2Enabled = false,
+}: {
+  children: ReactNode;
+  v2Enabled?: boolean;
+}) {
   const pathname = usePathname(),
     [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -115,6 +122,16 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
         <div className="nav-caption">WORKSPACE</div>
         <nav>
+          {v2Enabled && (
+            <Link
+              href="/objectives"
+              className="nav-link"
+              onClick={() => setOpen(false)}
+            >
+              <FlaskConical size={18} />
+              Objective learning · V2
+            </Link>
+          )}
           {main.map(([href, label, Icon]) => (
             <Link
               key={href}

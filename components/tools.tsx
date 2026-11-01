@@ -533,7 +533,7 @@ export function Tutor() {
     </div>
   );
 }
-export function Settings() {
+export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
   const { state, act, busy, notify } = useCore();
   const [backup, setBackup] = useState<unknown>(null),
     [preview, setPreview] = useState<{
@@ -606,94 +606,97 @@ export function Settings() {
           Git. The app uses no analytics or AI services.
         </p>
       </section>
-      <div className="two-columns">
-        <section className="panel">
-          <div className="tool-icon">
-            <Download size={23} />
-          </div>
-          <h2>Back up progress</h2>
-          <p>
-            Export attempts, rubric versions, learning sessions, notes,
-            knowledge debt, review schedules, and lab evidence as
-            schema-versioned JSON.
-          </p>
-          <a
-            className="button primary"
-            href="/api/export"
-            download="corelab-backup.json"
-          >
-            Export backup JSON
-            <Download size={16} />
-          </a>
-          <p className="small muted">
-            Backups contain personal learning data. Store them outside the
-            repository; do not upload them to GitHub.
-          </p>
-        </section>
-        <section className="panel">
-          <div className="tool-icon">
-            <Upload size={23} />
-          </div>
-          <h2>Restore from backup</h2>
-          <p>
-            Validate the schema and evidence before replacement. A pre-restore
-            snapshot is retained in SQLite to support recovery.
-          </p>
-          <label className="file-label">
-            <FileJson size={17} />
-            Choose backup JSON
-            <input
-              aria-label="Choose backup to restore"
-              type="file"
-              accept=".json,application/json"
-              onChange={(e) => void choose(e.target.files?.[0])}
-            />
-          </label>
-          {validating && <p role="status">Validating…</p>}
-          {error && (
-            <p className="error-text" role="alert">
-              {error}
-            </p>
-          )}
-          {preview && (
-            <div className="restore-preview">
-              <p className="verified-text">
-                <Check size={15} />
-                Valid schema
-              </p>
-              <p>
-                {preview.attempts} attempts · {preview.sessions} sessions ·{" "}
-                {preview.labs} labs
-              </p>
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={confirm}
-                  onChange={(e) => setConfirm(e.target.checked)}
-                />
-                I confirm replacing all current progress with the selected
-                backup.
-              </label>
-              <button
-                className="button danger"
-                disabled={!confirm || busy}
-                onClick={() =>
-                  void act({ type: "restore", backup, confirm: true })
-                    .then(() => {
-                      setBackup(null);
-                      setPreview(null);
-                      setConfirm(false);
-                      notify("Progress restored from backup.");
-                    })
-                    .catch(() => {})
-                }
-              >
-                Restore and replace
-              </button>
+      {v2Panel}
+      {!v2Panel && (
+        <div className="two-columns">
+          <section className="panel">
+            <div className="tool-icon">
+              <Download size={23} />
             </div>
-          )}
-        </section>
-      </div>
+            <h2>Back up progress</h2>
+            <p>
+              Export attempts, rubric versions, learning sessions, notes,
+              knowledge debt, review schedules, and lab evidence as
+              schema-versioned JSON.
+            </p>
+            <a
+              className="button primary"
+              href="/api/export"
+              download="corelab-backup.json"
+            >
+              Export backup JSON
+              <Download size={16} />
+            </a>
+            <p className="small muted">
+              Backups contain personal learning data. Store them outside the
+              repository; do not upload them to GitHub.
+            </p>
+          </section>
+          <section className="panel">
+            <div className="tool-icon">
+              <Upload size={23} />
+            </div>
+            <h2>Restore from backup</h2>
+            <p>
+              Validate the schema and evidence before replacement. A pre-restore
+              snapshot is retained in SQLite to support recovery.
+            </p>
+            <label className="file-label">
+              <FileJson size={17} />
+              Choose backup JSON
+              <input
+                aria-label="Choose backup to restore"
+                type="file"
+                accept=".json,application/json"
+                onChange={(e) => void choose(e.target.files?.[0])}
+              />
+            </label>
+            {validating && <p role="status">Validating…</p>}
+            {error && (
+              <p className="error-text" role="alert">
+                {error}
+              </p>
+            )}
+            {preview && (
+              <div className="restore-preview">
+                <p className="verified-text">
+                  <Check size={15} />
+                  Valid schema
+                </p>
+                <p>
+                  {preview.attempts} attempts · {preview.sessions} sessions ·{" "}
+                  {preview.labs} labs
+                </p>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={confirm}
+                    onChange={(e) => setConfirm(e.target.checked)}
+                  />
+                  I confirm replacing all current progress with the selected
+                  backup.
+                </label>
+                <button
+                  className="button danger"
+                  disabled={!confirm || busy}
+                  onClick={() =>
+                    void act({ type: "restore", backup, confirm: true })
+                      .then(() => {
+                        setBackup(null);
+                        setPreview(null);
+                        setConfirm(false);
+                        notify("Progress restored from backup.");
+                      })
+                      .catch(() => {})
+                  }
+                >
+                  Restore and replace
+                </button>
+              </div>
+            )}
+          </section>
+        </div>
+      )}
       <section className="panel">
         <h2>Mastery rules</h2>
         <div className="level-table">

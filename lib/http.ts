@@ -9,7 +9,10 @@ export function failure(error: unknown) {
         : "Unexpected error";
   return NextResponse.json({ error: message }, { status: 400 });
 }
-export function checkLocalRequest(request: Request) {
+export function checkLocalRequest(
+  request: Request,
+  options: { maxBytes?: number } = {},
+) {
   const url = new URL(request.url);
   const header = request.headers.get("host");
   const host = header ? new URL(`http://${header}`).hostname : undefined;
@@ -18,6 +21,9 @@ export function checkLocalRequest(request: Request) {
   const origin = request.headers.get("origin");
   if (origin && origin !== new URL(`${url.protocol}//${header}`).origin)
     throw new Error("Cross-origin request blocked");
-  if (Number(request.headers.get("content-length") ?? 0) > 8_000_000)
+  if (
+    Number(request.headers.get("content-length") ?? 0) >
+    (options.maxBytes ?? 8_000_000)
+  )
     throw new Error("Request too large");
 }
