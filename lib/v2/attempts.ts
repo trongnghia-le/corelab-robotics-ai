@@ -25,6 +25,7 @@ import { assistCM, issueCM, publicCM, submitCM } from "./verification";
 import { attemptById, expose } from "./records";
 import { publicKitAttempt } from "./kits";
 import { samePresentation, shuffled } from "./presentation";
+import { fingerprintCandidates } from "./assessments";
 export { attemptById, expose } from "./records";
 import {
   checkpoint,
@@ -62,7 +63,7 @@ export const submitSchema = z
 
 function sourceItem(a: Attempt) {
   const item = itemSchema.parse(strictJSON(a.instance_json)),
-    f = family(a.source_id);
+    f = family(a.source_id, a.source_version);
   const original = f?.items.find((i) => i.id === item.id);
   if (
     !f ||
@@ -116,13 +117,16 @@ export function publicAttempt(db: DB, id: string) {
   if (a.source_kind === "form" || a.source_kind === "review_pool")
     return publicCM(db, a);
   const item = itemSchema.parse(strictJSON(a.instance_json));
+  const candidates = fingerprintCandidates(item);
   const repeat =
     (
       db
         .prepare(
-          "SELECT count(*) n FROM v2_exposures WHERE fingerprint=? AND event_seq<?",
+          "SELECT count(*) n FROM v2_exposures WHERE fingerprint IN (" +
+            candidates.map(() => "?").join(",") +
+            ") AND event_seq<?",
         )
-        .get(itemFingerprint(item), a.issued_seq) as { n: number }
+        .get(...candidates, a.issued_seq) as { n: number }
     ).n > 0;
   return {
     id: a.id,
@@ -198,7 +202,9 @@ export function issue(store: Store, input: unknown) {
       ).map((e) => e.fingerprint),
     );
     const item = shuffled(
-      available.find((i) => !exposures.has(itemFingerprint(i))) ?? available[0],
+      available.find(
+        (i) => !fingerprintCandidates(i).some((fp) => exposures.has(fp)),
+      ) ?? available[0],
     );
     const at = new Date().toISOString();
     const a: Attempt = {

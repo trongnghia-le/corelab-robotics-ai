@@ -2,10 +2,16 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import { hash, strictJSON } from "./contracts";
-import { catalog, gradeItem, itemFingerprint } from "./content";
+import {
+  catalog,
+  gradeItem,
+  itemFingerprint,
+  archivedFamilies,
+} from "./content";
 import { objectives, curriculumPreview } from "./objectives";
 import { cmSources, fingerprintCandidates } from "./assessments";
 import { kitFingerprints } from "./kits";
+import { labRoadmap } from "./roadmap";
 export function validateV2() {
   const c = catalog(),
     o = objectives(),
@@ -36,6 +42,8 @@ export function validateV2() {
       throw new Error("Immutable content manifest mismatch: " + file);
   }
   const required = [
+    "content/labs/roadmap.v1.json",
+    "content/v2/archive.v1.json",
     "content/v2/catalog.v1.json",
     "content/v2/objectives.v1.json",
     "content/v2/assessments.v1.json",
@@ -50,6 +58,8 @@ export function validateV2() {
     ),
     ...["L01-SE2", "L02-planar"].map((id) => "content/labs/" + id + ".v1.py"),
   ];
+  for (const f of archivedFamilies())
+    required.push("content/exercises/" + f.id + ".v" + f.version + ".json");
   if (required.some((file) => !manifest.files[file]))
     throw new Error("Incomplete content manifest");
   const practiced = new Set(
@@ -85,6 +95,7 @@ export function validateV2() {
         throw new Error("Invalid stored item oracle: " + item.id);
     }
   return {
+    roadmapLabs: labRoadmap().labs.length,
     objectives: o.objectives.length,
     families: c.families.filter((f) => /^X\d+$/.test(f.id)).length,
     practiceItems: c.families.reduce((n, f) => n + f.items.length, 0),

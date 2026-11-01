@@ -17,6 +17,7 @@ it("canonicalizes ECMAScript primitives and sorted UTF-16 keys", () => {
   expect(() => canonical(NaN)).toThrow();
   expect(() => canonical("\ud800")).toThrow();
   expect(() => canonical({ x: undefined })).toThrow();
+  expect(() => canonical(new Array(2))).toThrow("Sparse");
 });
 it("rejects duplicate decoded keys, malformed JSON, overflow and deep nesting", () => {
   for (const s of [

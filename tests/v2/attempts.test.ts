@@ -2,7 +2,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { Store } from "../../lib/storage";
 import { initialize, learningData, meta } from "../../lib/v2/db";
 import { issue, assist, submit, attemptById } from "../../lib/v2/attempts";
-import { family } from "../../lib/v2/content";
+import { family, familyHash } from "../../lib/v2/content";
 const stores: Store[] = [];
 function fresh() {
   const s = new Store(":memory:");
@@ -13,6 +13,25 @@ function fresh() {
 afterEach(() => {
   stores.splice(0).forEach((s) => s.close());
   vi.unstubAllEnvs();
+});
+it("resumes and grades the exact immutable v1 source after the active catalog advances to v2", () => {
+  const s = fresh(),
+    a = issue(s, { purpose: "practice", source: "X01" }),
+    old = family("X01", 1)!;
+  expect(a.sourceVersion).toBe(2);
+  const item = old.items.find((i) => i.id === a.item.id)!;
+  s.db
+    .prepare(
+      "UPDATE v2_attempts SET source_version=1,source_hash=?,instance_json=? WHERE id=?",
+    )
+    .run(familyHash(old), JSON.stringify(item), a.id);
+  const r = submit(s, a.id, {
+    answers: answers(item.id),
+    declaredAssistance: 0,
+  });
+  expect(r.sourceVersion).toBe(1);
+  expect(r.result).toHaveProperty("passed", true);
+  expect(s.read().attempts).toHaveLength(0);
 });
 function answers(id: string) {
   const item = family("X01")!.items.find((i) => i.id === id)!;

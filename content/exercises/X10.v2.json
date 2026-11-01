@@ -1,0 +1,763 @@
+{
+  "id": "X10",
+  "version": 2,
+  "title": "Work with coordinate frames",
+  "domain": "Robotics",
+  "topicId": "R03",
+  "objectiveId": "R03.compose-invert-se2",
+  "routes": [
+    "camera-marker",
+    "warehouse-waypoint"
+  ],
+  "scope": "SE(2), labelled transforms and point/direction semantics",
+  "labIds": [
+    "L01",
+    "L12"
+  ],
+  "items": [
+    {
+      "id": "X10.camera-marker.1",
+      "route": "camera-marker",
+      "difficulty": 1,
+      "structure": "X10.M12.frame-labels.1@1",
+      "inputs": {
+        "mapping": "B-to-A",
+        "query": "forward"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "Column vectors: T_AB maps B coordinates into A. Which transform maps B into A? Return T_AB or T_BA.",
+      "fields": [
+        {
+          "label": "Transform",
+          "kind": "choice",
+          "answer": "T_AB",
+          "tolerance": 0.001,
+          "options": [
+            "T_AB",
+            "T_BA"
+          ]
+        }
+      ],
+      "solution": "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.2",
+      "route": "camera-marker",
+      "difficulty": 2,
+      "structure": "X10.M12.point-vs-direction.2@1",
+      "inputs": {
+        "theta": "pi/2",
+        "translation": [
+          2,
+          2
+        ],
+        "point": [
+          2,
+          0
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "A transform rotates +π/2 then translates (2,2). Compute the transformed point p=(2,0) and direction v=(2,0), in that order. Return four coordinates.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Both rotate to (0,2). Only the point receives translation.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Both rotate to (0,2). Only the point receives translation."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.3",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.compose-invert-se2.0@1",
+      "inputs": {
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            1,
+            2
+          ]
+        },
+        "B": {
+          "translation": [
+            3,
+            -1
+          ]
+        }
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "Column vectors, T_AB maps B→A: T_AB is +π/2 rotation with translation (1,2); T_BC is pure translation (3,−1). Find the translation of T_AC=T_AB T_BC.",
+      "fields": [
+        {
+          "label": "Translation x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Translation y",
+          "kind": "number",
+          "answer": "5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotate (3,−1) to (1,3) then add (1,2): (2,5). Reversing order is not equivalent.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Rotate (3,−1) to (1,3) then add (1,2): (2,5). Reversing order is not equivalent."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.4",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.rotation-validity.1@1",
+      "inputs": {
+        "R": [
+          [
+            1,
+            4
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "Is R=[[1,4],[0,1]] a proper 2D rotation? Return yes or no. Check both orthogonality and determinant.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "det R=1, but columns are not orthonormal. Determinant alone is insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "det R=1, but columns are not orthonormal. Determinant alone is insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.5",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.M12.frame-labels.2@1",
+      "inputs": {
+        "mapping": "B-to-A",
+        "query": "inverse"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "Column vectors: T_AB maps B coordinates into A. Which transform maps A into B? Return T_AB or T_BA.",
+      "fields": [
+        {
+          "label": "Transform",
+          "kind": "choice",
+          "answer": "T_BA",
+          "tolerance": 0.001,
+          "options": [
+            "T_AB",
+            "T_BA"
+          ]
+        }
+      ],
+      "solution": "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The first subscript is the destination frame; the second is the source. Reverse direction uses the inverse."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.6",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.M12.point-vs-direction.0@1",
+      "inputs": {
+        "theta": "pi/2",
+        "translation": [
+          6,
+          2
+        ],
+        "point": [
+          2,
+          0
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "A transform rotates +π/2 then translates (6,2). Compute the transformed point p=(2,0) and direction v=(2,0), in that order. Return four coordinates.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Both rotate to (0,2). Only the point receives translation.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Both rotate to (0,2). Only the point receives translation."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.7",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.compose-invert-se2.1@1",
+      "inputs": {
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            1,
+            2
+          ]
+        },
+        "B": {
+          "translation": [
+            7,
+            -1
+          ]
+        }
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "Column vectors, T_AB maps B→A: T_AB is +π/2 rotation with translation (1,2); T_BC is pure translation (7,−1). Find the translation of T_AC=T_AB T_BC.",
+      "fields": [
+        {
+          "label": "Translation x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Translation y",
+          "kind": "number",
+          "answer": "9",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotate (7,−1) to (1,7) then add (1,2): (2,9). Reversing order is not equivalent.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Rotate (7,−1) to (1,7) then add (1,2): (2,9). Reversing order is not equivalent."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.camera-marker.8",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.rotation-validity.2@1",
+      "inputs": {
+        "R": [
+          [
+            1,
+            8
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "Is R=[[1,8],[0,1]] a proper 2D rotation? Return yes or no. Check both orthogonality and determinant.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "det R=1, but columns are not orthonormal. Determinant alone is insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "det R=1, but columns are not orthonormal. Determinant alone is insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.1",
+      "route": "warehouse-waypoint",
+      "difficulty": 1,
+      "structure": "frame.labels.warehouse-inverse@1",
+      "inputs": {
+        "from": "warehouse",
+        "to": "shelf",
+        "query": "inverse"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "T_WS maps shelf coordinates S into warehouse W. To express a warehouse point in shelf coordinates, choose T_WS or inverse(T_WS). Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Map",
+          "kind": "choice",
+          "answer": "inverse(T_WS)",
+          "tolerance": 0.001,
+          "options": [
+            "T_WS",
+            "inverse(T_WS)"
+          ]
+        }
+      ],
+      "solution": "The coordinate destination is shelf S. Reverse the map using its inverse; do not merely rename the point.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "The coordinate destination is shelf S.",
+        "The coordinate destination is shelf S. Reverse the map using its inverse; do not merely rename the point."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.2",
+      "route": "warehouse-waypoint",
+      "difficulty": 2,
+      "structure": "point-direction.warehouse@1",
+      "inputs": {
+        "theta": "-1.5707963267948966",
+        "translation": [
+          5,
+          -2
+        ],
+        "vector": [
+          1,
+          2
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "A shelf transform rotates −π/2 and then translates (5,-2) m. Map point (1,2) and direction (1,2), returning point x,y then direction x,y. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "7",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "-3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "-1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "A clockwise quarter-turn maps (1,2) to (2,−1). Add the offset to the point only.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "A clockwise quarter-turn maps (1,2) to (2,−1).",
+        "A clockwise quarter-turn maps (1,2) to (2,−1). Add the offset to the point only."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.3",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "se2.inverse.matrix@1",
+      "inputs": {
+        "theta": "0.6000000000000001",
+        "translation": [
+          3,
+          -2
+        ]
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "T_WS=[[cos θ,−sin θ,3],[sin θ,cos θ,-2],[0,0,1]], θ=0.6000000000000001 rad. Return the complete 3×3 inverse T_SW, row by row. Units: metres and radians. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Inverse row 1, column 1",
+          "kind": "number",
+          "answer": "0.8253356149096782",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 1, column 2",
+          "kind": "number",
+          "answer": "0.5646424733950355",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 1, column 3",
+          "kind": "number",
+          "answer": "-1.3467218979389637",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 1",
+          "kind": "number",
+          "answer": "-0.5646424733950355",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 2",
+          "kind": "number",
+          "answer": "0.8253356149096782",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 3",
+          "kind": "number",
+          "answer": "3.344598650004463",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Transpose R and use inverse offset −R^T p. The bottom row stays (0,0,1). A plain negated translation is generally wrong.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Transpose R and use inverse offset −R^T p.",
+        "Transpose R and use inverse offset −R^T p. The bottom row stays (0,0,1). A plain negated translation is generally wrong."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.4",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "rotation.warehouse-validation@1",
+      "inputs": {
+        "R": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "An estimated 2×2 map is R=[[0, -1], [1, 0]]. Is it a proper planar rotation? Both orthonormal columns and determinant +1 are required. Return yes or no. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "A determinant of +1 alone is insufficient. A shear changes lengths; a quarter-turn preserves lengths and orientation.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "A determinant of +1 alone is insufficient.",
+        "A determinant of +1 alone is insufficient. A shear changes lengths; a quarter-turn preserves lengths and orientation."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.5",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "frame.labels.warehouse-inverse@1",
+      "inputs": {
+        "from": "warehouse",
+        "to": "shelf",
+        "query": "inverse"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "T_WS maps shelf coordinates S into warehouse W. To express a warehouse point in shelf coordinates, choose T_WS or inverse(T_WS). Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Map",
+          "kind": "choice",
+          "answer": "inverse(T_WS)",
+          "tolerance": 0.001,
+          "options": [
+            "T_WS",
+            "inverse(T_WS)"
+          ]
+        }
+      ],
+      "solution": "The coordinate destination is shelf S. Reverse the map using its inverse; do not merely rename the point.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "The coordinate destination is shelf S.",
+        "The coordinate destination is shelf S. Reverse the map using its inverse; do not merely rename the point."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.6",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "point-direction.warehouse@1",
+      "inputs": {
+        "theta": "-1.5707963267948966",
+        "translation": [
+          9,
+          -6
+        ],
+        "vector": [
+          1,
+          2
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "A shelf transform rotates −π/2 and then translates (9,-6) m. Map point (1,2) and direction (1,2), returning point x,y then direction x,y. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "11",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "-7",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "-1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "A clockwise quarter-turn maps (1,2) to (2,−1). Add the offset to the point only.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "A clockwise quarter-turn maps (1,2) to (2,−1).",
+        "A clockwise quarter-turn maps (1,2) to (2,−1). Add the offset to the point only."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.7",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "se2.inverse.matrix@1",
+      "inputs": {
+        "theta": "1.4000000000000001",
+        "translation": [
+          7,
+          -2
+        ]
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "T_WS=[[cos θ,−sin θ,7],[sin θ,cos θ,-2],[0,0,1]], θ=1.4000000000000001 rad. Return the complete 3×3 inverse T_SW, row by row. Units: metres and radians. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Inverse row 1, column 1",
+          "kind": "number",
+          "answer": "0.16996714290024081",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 1, column 2",
+          "kind": "number",
+          "answer": "0.9854497299884603",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 1, column 3",
+          "kind": "number",
+          "answer": "0.7811294596752347",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 1",
+          "kind": "number",
+          "answer": "-0.9854497299884603",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 2",
+          "kind": "number",
+          "answer": "0.16996714290024081",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 3",
+          "kind": "number",
+          "answer": "7.238082395719704",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Transpose R and use inverse offset −R^T p. The bottom row stays (0,0,1). A plain negated translation is generally wrong.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Transpose R and use inverse offset −R^T p.",
+        "Transpose R and use inverse offset −R^T p. The bottom row stays (0,0,1). A plain negated translation is generally wrong."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X10.warehouse-waypoint.8",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "rotation.warehouse-validation@1",
+      "inputs": {
+        "R": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "An estimated 2×2 map is R=[[0, -1], [1, 0]]. Is it a proper planar rotation? Both orthonormal columns and determinant +1 are required. Return yes or no. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "A determinant of +1 alone is insufficient. A shear changes lengths; a quarter-turn preserves lengths and orientation.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "A determinant of +1 alone is insufficient.",
+        "A determinant of +1 alone is insufficient. A shear changes lengths; a quarter-turn preserves lengths and orientation."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "camera-marker": "Map camera points and compose frame chains.",
+    "warehouse-waypoint": "Invert a shelf transform, map directions and reject invalid maps."
+  }
+}

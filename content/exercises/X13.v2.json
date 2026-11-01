@@ -1,0 +1,244 @@
+{
+  "id": "X13",
+  "version": 2,
+  "title": "Analyze bounded feedback",
+  "domain": "Control",
+  "topicId": "C01",
+  "objectiveId": "C01.bounded-step",
+  "routes": [
+    "wheel-speed",
+    "thermal-model"
+  ],
+  "scope": "One bounded P-control integrator step, not general PID",
+  "labIds": [
+    "L04"
+  ],
+  "items": [
+    {
+      "id": "X13.wheel-speed.1",
+      "route": "wheel-speed",
+      "difficulty": 1,
+      "structure": "X13.C01.bounded-step.1@1",
+      "inputs": {
+        "y": "1/2",
+        "r": 2,
+        "kp": 2,
+        "limit": "3/2",
+        "h": "1/10"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy integrator y_next=y+0.1u. P control u=clip(2(r−y),−1.5,1.5), y=0.5,r=2. Compute applied u and next y.",
+      "fields": [
+        {
+          "label": "Applied u",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "0.65",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The raw command is 3, clipped to 1.5; next y=13/20. Saturation changes the closed-loop behavior.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The raw command is 3, clipped to 1.5; next y=13/20. Saturation changes the closed-loop behavior."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/C01 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X13.wheel-speed.2",
+      "route": "wheel-speed",
+      "difficulty": 2,
+      "structure": "X13.C01.bounded-step.2@1",
+      "inputs": {
+        "y": "1/2",
+        "r": 3,
+        "kp": 2,
+        "limit": "3/2",
+        "h": "1/10"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy integrator y_next=y+0.1u. P control u=clip(2(r−y),−1.5,1.5), y=0.5,r=3. Compute applied u and next y.",
+      "fields": [
+        {
+          "label": "Applied u",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "0.65",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The raw command is 5, clipped to 1.5; next y=13/20. Saturation changes the closed-loop behavior.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The raw command is 5, clipped to 1.5; next y=13/20. Saturation changes the closed-loop behavior."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/C01 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X13.wheel-speed.3",
+      "route": "wheel-speed",
+      "difficulty": 3,
+      "structure": "X13.C01.bounded-step.0@1",
+      "inputs": {
+        "y": "1/2",
+        "r": 4,
+        "kp": 2,
+        "limit": "3/2",
+        "h": "1/10"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy integrator y_next=y+0.1u. P control u=clip(2(r−y),−1.5,1.5), y=0.5,r=4. Compute applied u and next y.",
+      "fields": [
+        {
+          "label": "Applied u",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "0.65",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The raw command is 7, clipped to 1.5; next y=13/20. Saturation changes the closed-loop behavior.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The raw command is 7, clipped to 1.5; next y=13/20. Saturation changes the closed-loop behavior."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/C01 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X13.thermal-model.1",
+      "route": "thermal-model",
+      "difficulty": 1,
+      "structure": "control.cooling-integrator@1",
+      "inputs": {
+        "y": "6",
+        "r": "2",
+        "kp": "1.5",
+        "limit": "2",
+        "h": "0.1"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy thermal integrator: temperature y=6, target r=2; applied heating/cooling u=clip(1.5(r−y),−2,2); y_next=y+0.1u. No heat-loss model is included. Compute signed applied u and y_next. Negative input represents cooling. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Applied u",
+          "kind": "number",
+          "answer": "-2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "5.8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Compute error r−y before clipping. The actuator clips the control input, not the state: u=-2, y_next=5.8.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Compute error r−y before clipping.",
+        "Compute error r−y before clipping. The actuator clips the control input, not the state: u=-2, y_next=5.8."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X13.thermal-model.2",
+      "route": "thermal-model",
+      "difficulty": 2,
+      "structure": "control.cooling-integrator@1",
+      "inputs": {
+        "y": "7",
+        "r": "5.9",
+        "kp": "1.5",
+        "limit": "2",
+        "h": "0.1"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy thermal integrator: temperature y=7, target r=5.9; applied heating/cooling u=clip(1.5(r−y),−2,2); y_next=y+0.1u. No heat-loss model is included. Compute signed applied u and y_next. Negative input represents cooling. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Applied u",
+          "kind": "number",
+          "answer": "-1.6499999999999995",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "6.835",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Compute error r−y before clipping. The actuator clips the control input, not the state: u=-1.6499999999999995, y_next=6.835.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Compute error r−y before clipping.",
+        "Compute error r−y before clipping. The actuator clips the control input, not the state: u=-1.6499999999999995, y_next=6.835."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X13.thermal-model.3",
+      "route": "thermal-model",
+      "difficulty": 3,
+      "structure": "control.cooling-integrator@1",
+      "inputs": {
+        "y": "8",
+        "r": "12",
+        "kp": "1.5",
+        "limit": "2",
+        "h": "0.1"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy thermal integrator: temperature y=8, target r=12; applied heating/cooling u=clip(1.5(r−y),−2,2); y_next=y+0.1u. No heat-loss model is included. Compute signed applied u and y_next. Negative input represents cooling. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Applied u",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "8.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Compute error r−y before clipping. The actuator clips the control input, not the state: u=2, y_next=8.2.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Compute error r−y before clipping.",
+        "Compute error r−y before clipping. The actuator clips the control input, not the state: u=2, y_next=8.2."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "wheel-speed": "Apply a bounded wheel-speed integrator command.",
+    "thermal-model": "Handle cooling, saturation and signed error in a toy thermal integrator."
+  }
+}

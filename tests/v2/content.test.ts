@@ -4,6 +4,8 @@ import {
   gradeItem,
   normalizedAnswers,
   publicItem,
+  itemFingerprint,
+  canonicalInputs,
 } from "../../lib/v2/content";
 it("loads original static contracts for twenty families and redacts answers/help", () => {
   const c = catalog();
@@ -29,6 +31,20 @@ it("loads original static contracts for twenty families and redacts answers/help
       expect(() => normalizedAnswers(item, {})).toThrow();
     }
 });
+it("uses canonical decimal input bytes and treats equivalent numeric spellings identically", () => {
+  const item = catalog().families[0].items[0];
+  expect(itemFingerprint(item)).toBe(
+    itemFingerprint({
+      ...item,
+      inputs: canonicalInputs(item.inputs) as Record<string, unknown>,
+    }),
+  );
+  expect(canonicalInputs({ x: "+00.5000", zero: "-0.00", v: 2 })).toEqual({
+    x: "0.5",
+    zero: "0",
+    v: "2",
+  });
+});
 it("handles angle-equivalent answers and rejects wrong shape/unknown choices", () => {
   const fk = catalog().families.find((f) => f.id === "X11")!.items[0];
   const answers = Object.fromEntries(
@@ -41,11 +57,15 @@ it("handles angle-equivalent answers and rejects wrong shape/unknown choices", (
 it("checks Bayes and projection anchors independently of serialized answer text", () => {
   const bayes = catalog().families.find((f) => f.id === "X04")!;
   for (const item of bayes.items) {
-    const p =
-      Number(String(item.inputs.prior).split("/")[0]) /
-      Number(String(item.inputs.prior).split("/")[1] ?? 1);
+    const value = (v: unknown) => {
+      const [n, d = "1"] = String(v).split("/");
+      return Number(n) / Number(d);
+    };
+    const p = value(item.inputs.prior),
+      sensitivity = value(item.inputs.sensitivity),
+      fp = value(item.inputs.falsePositive);
     expect(Number(item.fields[0].answer)).toBeCloseTo(
-      (p * 0.9) / (p * 0.9 + (1 - p) * 0.05),
+      (p * sensitivity) / (p * sensitivity + (1 - p) * fp),
       12,
     );
   }

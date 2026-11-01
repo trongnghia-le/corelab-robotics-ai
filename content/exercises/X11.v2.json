@@ -1,0 +1,973 @@
+{
+  "id": "X11",
+  "version": 2,
+  "title": "Compute a planar arm pose",
+  "domain": "Robotics",
+  "topicId": "R04",
+  "objectiveId": "R04.planar-fk",
+  "routes": [
+    "tabletop",
+    "inspection"
+  ],
+  "scope": "Planar 2R pose, not spatial FK, Jacobian or hardware",
+  "labIds": [
+    "L02",
+    "L06"
+  ],
+  "items": [
+    {
+      "id": "X11.tabletop.1",
+      "route": "tabletop",
+      "difficulty": 1,
+      "structure": "X11.R04.planar-fk.1@1",
+      "inputs": {
+        "q1": "0",
+        "q2": "0",
+        "l1": "1.25",
+        "l2": "0.6"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Planar 2R arm: l1=1.25 m,l2=0.6 m; relative joints q1=0 rad,q2=0 rad. CCW positive. Compute tip x,y and tool orientation modulo 2π. Decimal tolerance 0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "1.85",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "0.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "x=l1 cos q1+l2 cos(q1+q2)=1.850000; y=0.000000; theta=q1+q2 modulo 2π=0.000000.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "x=l1 cos q1+l2 cos(q1+q2)=1.850000; y=0.000000; theta=q1+q2 modulo 2π=0.000000."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R04 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X11.tabletop.2",
+      "route": "tabletop",
+      "difficulty": 2,
+      "structure": "X11.R04.planar-fk.2@1",
+      "inputs": {
+        "q1": "1.5707963267948966",
+        "q2": "-1.5707963267948966",
+        "l1": "1.5",
+        "l2": "0.7"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Planar 2R arm: l1=1.5 m,l2=0.7 m; relative joints q1=1.5707963267948966 rad,q2=-1.5707963267948966 rad. CCW positive. Compute tip x,y and tool orientation modulo 2π. Decimal tolerance 0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.7000000000000001",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "0.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "x=l1 cos q1+l2 cos(q1+q2)=0.700000; y=1.500000; theta=q1+q2 modulo 2π=0.000000.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "x=l1 cos q1+l2 cos(q1+q2)=0.700000; y=1.500000; theta=q1+q2 modulo 2π=0.000000."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R04 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X11.tabletop.3",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.0@1",
+      "inputs": {
+        "q1": "0",
+        "q2": "3.141592653589793",
+        "l1": "1.75",
+        "l2": "0.8"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Planar 2R arm: l1=1.75 m,l2=0.8 m; relative joints q1=0 rad,q2=3.141592653589793 rad. CCW positive. Compute tip x,y and tool orientation modulo 2π. Decimal tolerance 0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.95",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "9.797174393178826e-17",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "3.141592653589793",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "x=l1 cos q1+l2 cos(q1+q2)=0.950000; y=0.000000; theta=q1+q2 modulo 2π=3.141593.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "x=l1 cos q1+l2 cos(q1+q2)=0.950000; y=0.000000; theta=q1+q2 modulo 2π=3.141593."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R04 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X11.tabletop.4",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.1@1",
+      "inputs": {
+        "q1": "0.3",
+        "q2": "0.4",
+        "l1": "2.0",
+        "l2": "0.9"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Planar 2R arm: l1=2.0 m,l2=0.9 m; relative joints q1=0.3 rad,q2=0.4 rad. CCW positive. Compute tip x,y and tool orientation modulo 2π. Decimal tolerance 0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "2.5990309468072517",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "1.170836331836601",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "0.7",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "x=l1 cos q1+l2 cos(q1+q2)=2.599031; y=1.170836; theta=q1+q2 modulo 2π=0.700000.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "x=l1 cos q1+l2 cos(q1+q2)=2.599031; y=1.170836; theta=q1+q2 modulo 2π=0.700000."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R04 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X11.tabletop.5",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.2@1",
+      "inputs": {
+        "q1": "-0.5",
+        "q2": "0.7",
+        "l1": "2.25",
+        "l2": "1.0"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Planar 2R arm: l1=2.25 m,l2=1.0 m; relative joints q1=-0.5 rad,q2=0.7 rad. CCW positive. Compute tip x,y and tool orientation modulo 2π. Decimal tolerance 0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "2.9546273420945806",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-0.8800381310643957",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "0.19999999999999996",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "x=l1 cos q1+l2 cos(q1+q2)=2.954627; y=-0.880038; theta=q1+q2 modulo 2π=0.200000.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "x=l1 cos q1+l2 cos(q1+q2)=2.954627; y=-0.880038; theta=q1+q2 modulo 2π=0.200000."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R04 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X11.tabletop.6",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.0@1",
+      "inputs": {
+        "q1": "3.141592653589793",
+        "q2": "3.141592653589793",
+        "l1": "2.5",
+        "l2": "1.1"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Planar 2R arm: l1=2.5 m,l2=1.1 m; relative joints q1=3.141592653589793 rad,q2=3.141592653589793 rad. CCW positive. Compute tip x,y and tool orientation modulo 2π. Decimal tolerance 0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "-1.4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "3.6739403974420564e-17",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "-2.4492935982947064e-16",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "x=l1 cos q1+l2 cos(q1+q2)=-1.400000; y=0.000000; theta=q1+q2 modulo 2π=-0.000000.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "x=l1 cos q1+l2 cos(q1+q2)=-1.400000; y=0.000000; theta=q1+q2 modulo 2π=-0.000000."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R04 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X11.tabletop.7",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.1@1",
+      "inputs": {
+        "q1": "0.8",
+        "q2": "-0.2",
+        "l1": "2.75",
+        "l2": "1.2"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Planar 2R arm: l1=2.75 m,l2=1.2 m; relative joints q1=0.8 rad,q2=-0.2 rad. CCW positive. Compute tip x,y and tool orientation modulo 2π. Decimal tolerance 0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "2.9063461885963187",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "2.65030021804773",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "0.6000000000000002",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "x=l1 cos q1+l2 cos(q1+q2)=2.906346; y=2.650300; theta=q1+q2 modulo 2π=0.600000.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "x=l1 cos q1+l2 cos(q1+q2)=2.906346; y=2.650300; theta=q1+q2 modulo 2π=0.600000."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R04 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X11.tabletop.8",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.2@1",
+      "inputs": {
+        "q1": "-1.2",
+        "q2": "0.9",
+        "l1": "3.0",
+        "l2": "1.3"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Planar 2R arm: l1=3.0 m,l2=1.3 m; relative joints q1=-1.2 rad,q2=0.9 rad. CCW positive. Compute tip x,y and tool orientation modulo 2π. Decimal tolerance 0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "2.329010699293309",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-3.18029352656142",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "-0.2999999999999999",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "x=l1 cos q1+l2 cos(q1+q2)=2.329011; y=-3.180294; theta=q1+q2 modulo 2π=-0.300000.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "x=l1 cos q1+l2 cos(q1+q2)=2.329011; y=-3.180294; theta=q1+q2 modulo 2π=-0.300000."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R04 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X11.inspection.1",
+      "route": "inspection",
+      "difficulty": 1,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.15",
+        "q2": "-0.24",
+        "l1": "1.1",
+        "l2": "0.43000000000000005"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: relative joints q1=0.15 rad, q2=-0.24 rad, unequal links l1=1.1 m, l2=0.43000000000000005 m. CCW positive, column vectors. Return the complete 3×3 transform from tool to base, row by row, with the tool frame rotated by q1+q2. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.9959527330119943",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "0.08987854919801104",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.515907860924804",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "-0.08987854919801104",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.9959527330119943",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "0.1257341695658144",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Add the two rotated link vectors for translation.",
+        "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X11.inspection.2",
+      "route": "inspection",
+      "difficulty": 2,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.3",
+        "q2": "-0.36",
+        "l1": "1.2",
+        "l2": "0.46"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: relative joints q1=0.3 rad, q2=-0.36 rad, unequal links l1=1.2 m, l2=0.46 m. CCW positive, column vectors. Return the complete 3×3 transform from tool to base, row by row, with the tool frame rotated by q1+q2. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.9982005399352042",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "0.059964006479444595",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.605576035320921",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "-0.059964006479444595",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.9982005399352042",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "0.32704080501306293",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Add the two rotated link vectors for translation.",
+        "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X11.inspection.3",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.44999999999999996",
+        "q2": "-0.48",
+        "l1": "1.3",
+        "l2": "0.49"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: relative joints q1=0.44999999999999996 rad, q2=-0.48 rad, unequal links l1=1.3 m, l2=0.49 m. CCW positive, column vectors. Return the complete 3×3 transform from tool to base, row by row, with the tool frame rotated by q1+q2. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.9995500337489875",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "0.029995500202495688",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.6603607495954837",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "-0.029995500202495688",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.9995500337489875",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "0.5507573992453764",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Add the two rotated link vectors for translation.",
+        "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X11.inspection.4",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.6",
+        "q2": "-0.6",
+        "l1": "1.4",
+        "l2": "0.52"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: relative joints q1=0.6 rad, q2=-0.6 rad, unequal links l1=1.4 m, l2=0.52 m. CCW positive, column vectors. Return the complete 3×3 transform from tool to base, row by row, with the tool frame rotated by q1+q2. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "1.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.6754698608735497",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "1.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "0.7904994627530495",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Add the two rotated link vectors for translation.",
+        "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X11.inspection.5",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.75",
+        "q2": "-0.72",
+        "l1": "1.5",
+        "l2": "0.55"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: relative joints q1=0.75 rad, q2=-0.72 rad, unequal links l1=1.5 m, l2=0.55 m. CCW positive, column vectors. Return the complete 3×3 transform from tool to base, row by row, with the tool frame rotated by q1+q2. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.9995500337489875",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.029995500202495688",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.6472858218726745",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.029995500202495688",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.9995500337489875",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "1.0389556651463738",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Add the two rotated link vectors for translation.",
+        "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X11.inspection.6",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.8999999999999999",
+        "q2": "-0.84",
+        "l1": "1.6",
+        "l2": "0.5800000000000001"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: relative joints q1=0.8999999999999999 rad, q2=-0.84 rad, unequal links l1=1.6 m, l2=0.5800000000000001 m. CCW positive, column vectors. Return the complete 3×3 transform from tool to base, row by row, with the tool frame rotated by q1+q2. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.9982005399352042",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.05996400647944454",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.5735322623954817",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.05996400647944454",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.9982005399352042",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "1.2881021791620513",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Add the two rotated link vectors for translation.",
+        "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X11.inspection.7",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "1.05",
+        "q2": "-0.96",
+        "l1": "1.7000000000000002",
+        "l2": "0.61"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: relative joints q1=1.05 rad, q2=-0.96 rad, unequal links l1=1.7000000000000002 m, l2=0.61 m. CCW positive, column vectors. Return the complete 3×3 transform from tool to base, row by row, with the tool frame rotated by q1+q2. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.9959527330119943",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.08987854919801112",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.4534019485532523",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.08987854919801112",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.9959527330119943",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "1.5294453985206158",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Add the two rotated link vectors for translation.",
+        "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X11.inspection.8",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "1.2",
+        "q2": "-1.08",
+        "l1": "1.8",
+        "l2": "0.64"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: relative joints q1=1.2 rad, q2=-1.08 rad, unequal links l1=1.8 m, l2=0.64 m. CCW positive, column vectors. Return the complete 3×3 transform from tool to base, row by row, with the tool frame rotated by q1+q2. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.9928086358538663",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.11971220728891925",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.287641485004487",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.11971220728891925",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.9928086358538663",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "1.7542861674059158",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Add the two rotated link vectors for translation.",
+        "Add the two rotated link vectors for translation. The rotation block is R(q1+q2), with bottom row (0,0,1). This is the same planar pose represented as a transform, not spatial FK."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "tabletop": "Return planar endpoint and tool angle.",
+    "inspection": "Return the full homogeneous inspection-tool pose."
+  }
+}

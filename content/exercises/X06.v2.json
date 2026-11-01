@@ -1,0 +1,224 @@
+{
+  "id": "X06",
+  "version": 2,
+  "title": "Step a first-order model",
+  "domain": "Mathematics",
+  "topicId": "M07",
+  "objectiveId": "M07.euler-step",
+  "routes": [
+    "decay-state",
+    "driven-response"
+  ],
+  "scope": "Explicit Euler for a supplied toy model",
+  "labIds": [
+    "L04",
+    "L08"
+  ],
+  "items": [
+    {
+      "id": "X06.decay-state.1",
+      "route": "decay-state",
+      "difficulty": 1,
+      "structure": "X06.M07.euler-step.1@1",
+      "inputs": {
+        "y": "2",
+        "k": 1,
+        "u": 0,
+        "h": "1/10"
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "Model dy/dt=−1y+0, initial y=2. Use one explicit Euler step of h=0.1 s. Return the next y; do not use the exact exponential solution.",
+      "fields": [
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "1.8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "y_next=y+h(−ky+u)=9/5. This is a numerical-model step, not a physical-accuracy claim.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "y_next=y+h(−ky+u)=9/5. This is a numerical-model step, not a physical-accuracy claim."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M07 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X06.decay-state.2",
+      "route": "decay-state",
+      "difficulty": 2,
+      "structure": "X06.M07.euler-step.2@1",
+      "inputs": {
+        "y": "3",
+        "k": 2,
+        "u": 0,
+        "h": "1/10"
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "Model dy/dt=−2y+0, initial y=3. Use one explicit Euler step of h=0.1 s. Return the next y; do not use the exact exponential solution.",
+      "fields": [
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "2.4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "y_next=y+h(−ky+u)=12/5. This is a numerical-model step, not a physical-accuracy claim.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "y_next=y+h(−ky+u)=12/5. This is a numerical-model step, not a physical-accuracy claim."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M07 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X06.decay-state.3",
+      "route": "decay-state",
+      "difficulty": 3,
+      "structure": "X06.M07.euler-step.0@1",
+      "inputs": {
+        "y": "4",
+        "k": 3,
+        "u": 0,
+        "h": "1/10"
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "Model dy/dt=−3y+0, initial y=4. Use one explicit Euler step of h=0.1 s. Return the next y; do not use the exact exponential solution.",
+      "fields": [
+        {
+          "label": "Next y",
+          "kind": "number",
+          "answer": "2.8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "y_next=y+h(−ky+u)=14/5. This is a numerical-model step, not a physical-accuracy claim.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "y_next=y+h(−ky+u)=14/5. This is a numerical-model step, not a physical-accuracy claim."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M07 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X06.driven-response.1",
+      "route": "driven-response",
+      "difficulty": 1,
+      "structure": "numerics.euler-two-step@1",
+      "inputs": {
+        "y": "1.5",
+        "k": 1,
+        "u": 3,
+        "h": "0.05",
+        "steps": 2
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "Driven model y′=−1y+3, y0=1.5. Apply TWO explicit Euler steps, each h=0.05 s. Return y1 and y2. Recompute the slope from the updated y1; do not take one step of size 2h. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "y1",
+          "kind": "number",
+          "answer": "1.575",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y2",
+          "kind": "number",
+          "answer": "1.64625",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "y1=y0+h(−k y0+u)=1.575; y2=y1+h(−k y1+u)=1.64625. The numerical scheme is part of the requested model.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "y1=y0+h(−k y0+u)=1.",
+        "y1=y0+h(−k y0+u)=1.575; y2=y1+h(−k y1+u)=1.64625. The numerical scheme is part of the requested model."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X06.driven-response.2",
+      "route": "driven-response",
+      "difficulty": 2,
+      "structure": "numerics.euler-two-step@1",
+      "inputs": {
+        "y": "2.0",
+        "k": 2,
+        "u": 3,
+        "h": "0.05",
+        "steps": 2
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "Driven model y′=−2y+3, y0=2.0. Apply TWO explicit Euler steps, each h=0.05 s. Return y1 and y2. Recompute the slope from the updated y1; do not take one step of size 2h. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "y1",
+          "kind": "number",
+          "answer": "1.95",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y2",
+          "kind": "number",
+          "answer": "1.905",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "y1=y0+h(−k y0+u)=1.95; y2=y1+h(−k y1+u)=1.905. The numerical scheme is part of the requested model.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "y1=y0+h(−k y0+u)=1.",
+        "y1=y0+h(−k y0+u)=1.95; y2=y1+h(−k y1+u)=1.905. The numerical scheme is part of the requested model."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X06.driven-response.3",
+      "route": "driven-response",
+      "difficulty": 3,
+      "structure": "numerics.euler-two-step@1",
+      "inputs": {
+        "y": "2.5",
+        "k": 3,
+        "u": 3,
+        "h": "0.05",
+        "steps": 2
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "Driven model y′=−3y+3, y0=2.5. Apply TWO explicit Euler steps, each h=0.05 s. Return y1 and y2. Recompute the slope from the updated y1; do not take one step of size 2h. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "y1",
+          "kind": "number",
+          "answer": "2.275",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y2",
+          "kind": "number",
+          "answer": "2.0837499999999998",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "y1=y0+h(−k y0+u)=2.275; y2=y1+h(−k y1+u)=2.0837499999999998. The numerical scheme is part of the requested model.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "y1=y0+h(−k y0+u)=2.",
+        "y1=y0+h(−k y0+u)=2.275; y2=y1+h(−k y1+u)=2.0837499999999998. The numerical scheme is part of the requested model."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "decay-state": "Advance one explicit Euler step.",
+    "driven-response": "Advance two driven-response steps with updated slopes."
+  }
+}

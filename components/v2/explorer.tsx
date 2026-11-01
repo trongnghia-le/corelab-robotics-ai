@@ -106,10 +106,10 @@ export function V2Explorer({ objective }: { objective?: string }) {
       ...(chosenRoute ? { route: chosenRoute } : {}),
       ...(difficulty ? { difficulty: Number(difficulty) } : {}),
     });
+    await Promise.all([refresh(), loadHistory()]);
     open(a);
     setSource(familyId);
     setRoute(a.item.route);
-    await Promise.all([refresh(), loadHistory()]);
   }
   const selected = data?.families.find((f) => f.id === source);
   let families =
@@ -327,6 +327,9 @@ export function V2Explorer({ objective }: { objective?: string }) {
                     ))}
                   </select>
                 </label>
+                {f.routeNotes && source === f.id && route && (
+                  <p className="muted">{f.routeNotes[route]}</p>
+                )}
                 <div className="v2-actions">
                   <button
                     className="button primary"

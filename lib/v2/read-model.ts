@@ -1,13 +1,14 @@
 import { z } from "zod";
 import type { Store } from "../storage";
 import { catalog } from "./content";
-import { checkCapacity, meta, needsAcknowledgement, revisionToken } from "./db";
-import { canonical, V2Error } from "./contracts";
+import { meta, needsAcknowledgement, revisionToken } from "./db";
+import { canonical, V2Error, BACKUP_LIMIT } from "./contracts";
 import { objectives, bridgeText } from "./objectives";
 import { kits } from "./kits";
 import { cmSources, independentlyReviewed, resolveCM } from "./assessments";
 import { CM_RELEASED } from "./release";
 import { videoRegistry } from "../media";
+import { labRoadmap } from "./roadmap";
 const names: Record<string, string> = {
   "M12.frame-labels": "Identify source and destination frames",
   "M12.point-vs-direction": "Distinguish points from directions",
@@ -47,7 +48,20 @@ export function summaries(store: Store) {
     | { bytes: number; limit: number; warning: boolean }
     | { warning: boolean; message: string };
   try {
-    capacity = checkCapacity(store.db);
+    const estimated = Number(meta(store.db, "capacity_bytes"));
+    if (
+      !meta(store.db, "capacity_bytes") ||
+      !Number.isSafeInteger(estimated) ||
+      estimated < 0
+    )
+      throw new Error(
+        "Capacity requires a current export check; writes remain bounded.",
+      );
+    capacity = {
+      bytes: estimated,
+      limit: BACKUP_LIMIT,
+      warning: estimated > BACKUP_LIMIT * 0.8,
+    };
   } catch (e) {
     capacity = {
       warning: true,
@@ -82,6 +96,7 @@ export function summaries(store: Store) {
       })),
     })),
     paths: registry.paths,
+    labRoadmap: labRoadmap(),
     kits: kits(),
     forms: cmSources()
       .filter((s) => s.kind === "form")

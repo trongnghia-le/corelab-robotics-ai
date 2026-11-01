@@ -2,14 +2,8 @@ import { DatabaseSync, type SQLInputValue } from "node:sqlite";
 import { randomUUID } from "node:crypto";
 import { mkdirSync, rmSync, statfsSync, statSync } from "node:fs";
 import path from "node:path";
-import {
-  BACKUP_LIMIT,
-  bytes,
-  digest,
-  enabled,
-  hash,
-  V2Error,
-} from "./contracts";
+import { z } from "zod";
+import { BACKUP_LIMIT, digest, enabled, hash, V2Error } from "./contracts";
 
 export type DB = DatabaseSync;
 export type Row = Record<string, SQLInputValue>;
@@ -142,12 +136,41 @@ export function status(db: DB): "absent" | "supported" | "unsupported" {
     "v2_restore_snapshots",
     ...learningTables,
   ];
-  if (expected.some((n) => !tables.some((t) => t.name === n)))
+  if (
+    tables.length !== expected.length ||
+    expected.some((n) => !tables.some((t) => t.name === n))
+  )
     return "unsupported";
   try {
     const record = db
       .prepare("SELECT checksum FROM v2_migrations WHERE version=1")
       .get() as { checksum: string } | undefined;
+    const safeCounter = (key: string, minimum = 0) => {
+      const raw = meta(db, key),
+        n = Number(raw);
+      return (
+        /^(0|[1-9]\d*)$/.test(raw) &&
+        Number.isSafeInteger(n) &&
+        n >= minimum &&
+        n < Number.MAX_SAFE_INTEGER
+      );
+    };
+    if (
+      !z.uuid().safeParse(meta(db, "workspace_id")).success ||
+      !/^[a-f0-9]{64}$/.test(meta(db, "legacy_state_hash")) ||
+      !z.iso.datetime().safeParse(meta(db, "legacy_checkpoint_at")).success ||
+      !["0", "1"].includes(meta(db, "history_pending")) ||
+      !safeCounter("current_history_epoch", 1) ||
+      !safeCounter("next_event_seq", 1) ||
+      !safeCounter("data_revision") ||
+      !safeCounter("legacy_snapshot_count") ||
+      (
+        db.prepare("SELECT count(*) n FROM v2_migrations").get() as {
+          n: number;
+        }
+      ).n !== 1
+    )
+      return "unsupported";
     return meta(db, "sidecar_schema_version") === "1" &&
       record?.checksum === migrationHash
       ? "supported"
@@ -205,16 +228,39 @@ export function learningData(db: DB) {
   ) as Record<(typeof learningTables)[number], Row[]>;
 }
 export function checkCapacity(db: DB) {
-  const legacy = JSON.parse(
-    (db.prepare("SELECT json FROM state WHERE id=1").get() as { json: string })
-      .json,
-  );
-  const data = learningData(db);
-  const count = data.v2_attempts.length;
+  const legacyBytes = (
+    db
+      .prepare("SELECT length(CAST(json AS BLOB)) n FROM state WHERE id=1")
+      .get() as { n: number }
+  ).n;
+  const count = (
+    db.prepare("SELECT count(*) n FROM v2_attempts").get() as { n: number }
+  ).n;
+  let rowBytes = 0,
+    evidenceCount = 0;
+  // Aggregate exact JSON row bytes inside SQLite. Do not materialize every
+  // historical artifact into JavaScript for each small learning mutation.
+  for (const table of learningTables) {
+    const columns = (
+      db.prepare("PRAGMA table_info(" + table + ")").all() as { name: string }[]
+    ).map((r) => r.name);
+    if (columns.some((c) => !/^[a-z_]+$/.test(c)))
+      throw new Error("Unsupported capacity schema");
+    const args = columns.flatMap((c) => ["'" + c + "'", c]).join(",");
+    const totals = db
+      .prepare(
+        "SELECT coalesce(sum(length(CAST(json_object(" +
+          args +
+          ") AS BLOB))),0) n,count(*) count FROM " +
+          table,
+      )
+      .get() as { n: number; count: number };
+    rowBytes += totals.n + totals.count; // comma allowance between rows
+    if (table === "v2_evidence") evidenceCount = totals.count;
+  }
   // Covers envelope, restore epoch, projected provenance and validation overhead.
-  const size =
-    bytes({ legacy, v2: data }) + 32768 + data.v2_evidence.length * 512;
-  if (count > 100000 || size > BACKUP_LIMIT)
+  const size = legacyBytes + rowBytes + 32768 + evidenceCount * 512;
+  if (!Number.isSafeInteger(size) || count > 100000 || size > BACKUP_LIMIT)
     throw new V2Error(
       "capacity_limit",
       "Profile exceeds the supported backup budget. No new data was saved. Make a current local recovery copy.",
@@ -299,6 +345,12 @@ export function initialize(db: DB) {
     }))
       setMeta(db, k, v);
     refreshCheckpoint(db);
+    try {
+      setMeta(db, "capacity_bytes", checkCapacity(db).bytes);
+    } catch (e) {
+      if (!(e instanceof V2Error) || e.code !== "capacity_limit") throw e;
+      setMeta(db, "capacity_bytes", "over_limit");
+    }
     const cp = checkpoint(db);
     insert(db, "v2_history_epochs", {
       id: 1,
@@ -361,7 +413,8 @@ export function write<T>(db: DB, fn: () => T, allowPending = false): T {
       db.exec("COMMIT");
       return result;
     }
-    checkCapacity(db);
+    const capacity = checkCapacity(db);
+    setMeta(db, "capacity_bytes", capacity.bytes);
     refreshCheckpoint(db);
     bump(db);
     db.exec("COMMIT");
@@ -381,7 +434,7 @@ export function legacyPrecommit(
     String(before.count) !== meta(db, "legacy_snapshot_count")
   )
     setMeta(db, "history_pending", "1");
-  checkCapacity(db);
+  setMeta(db, "capacity_bytes", checkCapacity(db).bytes);
   refreshCheckpoint(db);
   bump(db);
 }

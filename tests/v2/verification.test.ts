@@ -20,7 +20,7 @@ import { attemptById } from "../../lib/v2/records";
 import { admitCM } from "../../lib/v2/policy";
 import type { Exposure } from "../../lib/v2/state";
 import { exportBackup, preview, restore } from "../../lib/v2/backup";
-import { canonical, digest } from "../../lib/v2/contracts";
+import { canonical, digest, fingerprint } from "../../lib/v2/contracts";
 
 // Synthetic approvals exercise the engine without modifying release metadata.
 // These fixtures are NOT independent reviewer sign-off.
@@ -445,4 +445,46 @@ it("rejects changed submission hashes and missing known-scope evidence before re
   missing.contentHash = digest(c2);
   expect(() => preview(target, missing, resolve)).toThrow("Missing scoped");
   expect(learningData(target.db)).toEqual(before);
+});
+it("replays early-draft raw-number fingerprint history without relabeling it fresh or rewriting its cuts", () => {
+  const store = fresh(),
+    resolve = resolver(),
+    source = resolve("F-FRAMES", 1)!;
+  const opened = issueCM(
+    store,
+    { purpose: "verify", source: source.id },
+    resolve,
+  );
+  submitCM(
+    store,
+    opened.id,
+    { answers: answers(source, opened.item.route), declaredAssistance: 0 },
+    resolve,
+  );
+  const backup = exportBackup(store),
+    a = backup.v2.attempts[0],
+    { variant } = knownCM(a, resolve);
+  const previous = JSON.parse(a.fingerprints) as string[],
+    raw = variant.items.map((c) =>
+      fingerprint(c.task.structure, c.task.inputs),
+    );
+  a.fingerprints = canonical(raw);
+  backup.v2.exposures.forEach((e) => {
+    e.fingerprint = raw[previous.indexOf(e.fingerprint)];
+  });
+  const { contentHash: _hash, ...core } = backup;
+  backup.contentHash = digest(core);
+  const target = fresh(),
+    p = preview(target, backup, resolve);
+  expect(p.evidence?.admitted).toBe(7);
+  restore(
+    target,
+    backup,
+    { digest: p.digest, token: p.token, confirm: true },
+    undefined,
+    resolve,
+  );
+  const after = exportBackup(target);
+  expect(after.v2.attempts[0].fingerprints).toBe(a.fingerprints);
+  expect(after.v2.exposures).toEqual(backup.v2.exposures);
 });

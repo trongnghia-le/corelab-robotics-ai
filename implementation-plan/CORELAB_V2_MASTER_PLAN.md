@@ -519,3 +519,20 @@ This plan was checked against the actual repository and the finalized spec. The 
 No application build, lint, unit, browser or OS test is claimed by producing this document. The limited research checks in the Unified Spec remain research results. Only this Master Plan is added; existing source, user data, review reports and the specification are preserved.
 
 **Ready to execute when implementation is authorized:** start at M00/M01, work through recovery before enabling learner writes, release S1 before S2, and enter S3 only after its gates. Automatic I, reviewed transfer, graph adoption, D7 and further exercise/lab families remain outside this pilot.
+
+## Execution addendum — 2026-11-01
+
+The owner subsequently authorized production implementation, local milestone commits and expansion beyond the pilot. This authorization supersedes the plan's earlier documentation-only and pilot-only execution boundaries. It does not authorize push, deployment, destructive data operations or bypassing independent review/OS/trial gates. The original milestone definitions remain the acceptance source.
+
+| Milestone group | Current implementation state | Remaining gate |
+| --- | --- | --- |
+| M00–M01 baseline/contracts | Implemented; regression and strict-contract checks run | Broader JCS reference vectors remain useful qualification |
+| M02–M10 content/storage/recovery/practice/UI | Functional preview, 24 objectives and 20 families plus bridge; tests and browser flows run | Full near-limit/disk-failure/rollback and OS qualification; independent content review |
+| M11 manual Apply | Two starter/self-check downloads, exposure and practice-only self-report | Independent kit technical/adversarial review |
+| M12 S1 release | Qualification in progress | D1/D11 capacity/recovery approval, D5 reviewers, D6 support evidence; no release certification |
+| M13–M15 C/M and retention | Authored forms/pools, engine, scoped UI and chronological restore replay implemented | Genuine independent review and S2 release activation; current switch false |
+| M16 S2 release | Synthetic fixtures/races run; live release withheld | Full acceptance/rollback rehearsal with reviewed sources |
+| M17–M18 S3 | Learner protocol prepared | Owner/volunteer authorization and at least 21 days of actual observations |
+| Authorized expansion | Two meaningful versioned routes per core family, original numerical/reasoning checks, 22-lab roadmap/resources | Twenty roadmap lab implementations and any protected execution remain unavailable; no placeholder is counted as implemented |
+
+See PROGRESS.md and IMPLEMENTATION_REPORT.md for commands, actual results, local commits and precise limits. None of these state labels grants an independent-review gate.

@@ -9,8 +9,17 @@ import {
   type Item,
   catalog,
   itemFingerprint,
+  archivedFamilies,
+  canonicalInputs,
 } from "./content";
-import { canonical, hash, id, strictJSON, V2Error } from "./contracts";
+import {
+  canonical,
+  hash,
+  id,
+  strictJSON,
+  V2Error,
+  fingerprint,
+} from "./contracts";
 
 const checkSchema = z
   .object({
@@ -232,29 +241,12 @@ export function gradeCM(variant: Variant, answers: Record<string, string>) {
 // Explicit aliases for the first draft's operator IDs. Cosmetic variant IDs and
 // source names cannot reset exact mathematical exposure.
 let semanticIndex: Map<string, Set<string>> | undefined;
-function normalizedInput(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(normalizedInput);
-  if (value && typeof value === "object")
-    return Object.fromEntries(
-      Object.entries(value).map(([k, v]) => [k, normalizedInput(v)]),
-    );
-  if (typeof value === "number") value = String(value);
-  if (typeof value === "string" && /^[+-]?\d+(\.\d+)?$/.test(value)) {
-    const negative = value.startsWith("-");
-    const [whole, fraction = ""] = value.replace(/^[+-]/, "").split(".");
-    const w = whole.replace(/^0+(?=\d)/, ""),
-      f = fraction.replace(/0+$/, "");
-    return (
-      (w !== "0" || f ? (negative ? "-" : "") : "") + w + (f ? "." + f : "")
-    );
-  }
-  return value;
-}
 function semanticKey(item: Item) {
   let structure = item.structure,
     inputs = item.inputs;
   if (structure.startsWith("X11.R04.planar-fk."))
     structure = "planar-2r.pose@1";
+  if (structure === "planar-2r.transform@1") structure = "planar-2r.pose@1";
   if (structure.startsWith("X10.R03.compose-invert-se2."))
     structure = "se2.compose.translation@1";
   if (structure.startsWith("X10.R03.rotation-validity."))
@@ -274,13 +266,14 @@ function semanticKey(item: Item) {
       vector: inputs.vector ?? inputs.point,
     };
   }
-  return canonical({ structure, inputs: normalizedInput(inputs) });
+  return canonical({ structure, inputs: canonicalInputs(inputs) });
 }
 export function fingerprintCandidates(item: Item) {
   if (!semanticIndex) {
     semanticIndex = new Map();
     const items = [
       ...catalog().families.flatMap((f) => f.items),
+      ...archivedFamilies().flatMap((f) => f.items),
       ...cmSources().flatMap((s) =>
         s.variants.flatMap((v) => v.items.map((c) => c.task)),
       ),
@@ -289,12 +282,14 @@ export function fingerprintCandidates(item: Item) {
       const key = semanticKey(candidate),
         group = semanticIndex.get(key) ?? new Set<string>();
       group.add(itemFingerprint(candidate));
+      group.add(fingerprint(candidate.structure, candidate.inputs));
       semanticIndex.set(key, group);
     }
   }
   return [
     ...new Set([
       itemFingerprint(item),
+      fingerprint(item.structure, item.inputs),
       ...(semanticIndex.get(semanticKey(item)) ?? []),
     ]),
   ];

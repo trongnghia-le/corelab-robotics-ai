@@ -1,0 +1,205 @@
+{
+  "id": "X04",
+  "version": 2,
+  "title": "Interpret a rare positive alarm",
+  "domain": "Mathematics",
+  "topicId": "M08",
+  "objectiveId": "M08.posterior",
+  "routes": [
+    "fault-alarm",
+    "part-screening"
+  ],
+  "scope": "One binary observation with specified sensitivity and false-positive rate",
+  "labIds": [
+    "L09"
+  ],
+  "items": [
+    {
+      "id": "X04.fault-alarm.1",
+      "route": "fault-alarm",
+      "difficulty": 1,
+      "structure": "X04.M08.posterior.1@1",
+      "inputs": {
+        "prior": "1/100",
+        "sensitivity": "9/10",
+        "falsePositive": "1/20"
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "A population has fault prevalence 1%. Sensitivity is 90%; the false-positive rate on nonfaulty cases is 5%. Given ONE positive result, compute P(fault | positive), as a probability, not a percentage.",
+      "fields": [
+        {
+          "label": "Posterior probability",
+          "kind": "number",
+          "answer": "0.15384615384615385",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Use p·0.9/[p·0.9+(1−p)·0.05]=2/13. A count table gives the same ratio; sensitivity alone is not the posterior.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Use p·0.9/[p·0.9+(1−p)·0.05]=2/13. A count table gives the same ratio; sensitivity alone is not the posterior."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M08 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X04.fault-alarm.2",
+      "route": "fault-alarm",
+      "difficulty": 2,
+      "structure": "X04.M08.posterior.2@1",
+      "inputs": {
+        "prior": "1/50",
+        "sensitivity": "9/10",
+        "falsePositive": "1/20"
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "A population has fault prevalence 2%. Sensitivity is 90%; the false-positive rate on nonfaulty cases is 5%. Given ONE positive result, compute P(fault | positive), as a probability, not a percentage.",
+      "fields": [
+        {
+          "label": "Posterior probability",
+          "kind": "number",
+          "answer": "0.26865671641791045",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Use p·0.9/[p·0.9+(1−p)·0.05]=18/67. A count table gives the same ratio; sensitivity alone is not the posterior.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Use p·0.9/[p·0.9+(1−p)·0.05]=18/67. A count table gives the same ratio; sensitivity alone is not the posterior."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M08 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X04.fault-alarm.3",
+      "route": "fault-alarm",
+      "difficulty": 3,
+      "structure": "X04.M08.posterior.0@1",
+      "inputs": {
+        "prior": "3/100",
+        "sensitivity": "9/10",
+        "falsePositive": "1/20"
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "A population has fault prevalence 3%. Sensitivity is 90%; the false-positive rate on nonfaulty cases is 5%. Given ONE positive result, compute P(fault | positive), as a probability, not a percentage.",
+      "fields": [
+        {
+          "label": "Posterior probability",
+          "kind": "number",
+          "answer": "0.3576158940397351",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Use p·0.9/[p·0.9+(1−p)·0.05]=54/151. A count table gives the same ratio; sensitivity alone is not the posterior.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Use p·0.9/[p·0.9+(1−p)·0.05]=54/151. A count table gives the same ratio; sensitivity alone is not the posterior."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M08 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X04.part-screening.1",
+      "route": "part-screening",
+      "difficulty": 1,
+      "structure": "bayes.count-table@1",
+      "inputs": {
+        "population": 10000,
+        "prior": "0.02",
+        "sensitivity": "0.8",
+        "falsePositive": "0.02",
+        "truePositive": 160,
+        "falsePositiveCount": 196
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "Among 10000 parts, prevalence is 2%. One screening test has sensitivity 80% and false-positive rate 2%. The expected-count table has 160 positive defective parts and 196 positive nondefective parts. Given one positive, compute P(defective | positive) as a probability. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Posterior probability",
+          "kind": "number",
+          "answer": "0.449438202247191",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Condition on the positive column: TP/(TP+FP)=160/(160+196)=0.449438202247191. Do not divide by all parts or by the prevalence alone.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Condition on the positive column: TP/(TP+FP)=160/(160+196)=0.",
+        "Condition on the positive column: TP/(TP+FP)=160/(160+196)=0.449438202247191. Do not divide by all parts or by the prevalence alone."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X04.part-screening.2",
+      "route": "part-screening",
+      "difficulty": 2,
+      "structure": "bayes.count-table@1",
+      "inputs": {
+        "population": 10000,
+        "prior": "0.04",
+        "sensitivity": "0.8",
+        "falsePositive": "0.02",
+        "truePositive": 320,
+        "falsePositiveCount": 192
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "Among 10000 parts, prevalence is 4%. One screening test has sensitivity 80% and false-positive rate 2%. The expected-count table has 320 positive defective parts and 192 positive nondefective parts. Given one positive, compute P(defective | positive) as a probability. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Posterior probability",
+          "kind": "number",
+          "answer": "0.625",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Condition on the positive column: TP/(TP+FP)=320/(320+192)=0.625. Do not divide by all parts or by the prevalence alone.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Condition on the positive column: TP/(TP+FP)=320/(320+192)=0.",
+        "Condition on the positive column: TP/(TP+FP)=320/(320+192)=0.625. Do not divide by all parts or by the prevalence alone."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X04.part-screening.3",
+      "route": "part-screening",
+      "difficulty": 3,
+      "structure": "bayes.count-table@1",
+      "inputs": {
+        "population": 10000,
+        "prior": "0.06",
+        "sensitivity": "0.8",
+        "falsePositive": "0.02",
+        "truePositive": 480,
+        "falsePositiveCount": 188
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "Among 10000 parts, prevalence is 6%. One screening test has sensitivity 80% and false-positive rate 2%. The expected-count table has 480 positive defective parts and 188 positive nondefective parts. Given one positive, compute P(defective | positive) as a probability. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Posterior probability",
+          "kind": "number",
+          "answer": "0.718562874251497",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Condition on the positive column: TP/(TP+FP)=480/(480+188)=0.718562874251497. Do not divide by all parts or by the prevalence alone.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Condition on the positive column: TP/(TP+FP)=480/(480+188)=0.",
+        "Condition on the positive column: TP/(TP+FP)=480/(480+188)=0.718562874251497. Do not divide by all parts or by the prevalence alone."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "fault-alarm": "Compute a rare-fault posterior from rates.",
+    "part-screening": "Interpret a positive-column part-screening count table."
+  }
+}

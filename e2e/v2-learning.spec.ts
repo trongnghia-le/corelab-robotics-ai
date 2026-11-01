@@ -25,7 +25,10 @@ test("objective choice → help → independent declaration → practice → rel
   ).json();
   const itemId = detail.item.id;
   const source = JSON.parse(
-    readFileSync("content/exercises/X01.v1.json", "utf8"),
+    readFileSync(
+      "content/exercises/X01.v" + detail.sourceVersion + ".json",
+      "utf8",
+    ),
   );
   const item = source.items.find((i: { id: string }) => i.id === itemId);
   await page
@@ -85,6 +88,38 @@ test("objective choice → help → independent declaration → practice → rel
   ).toBeVisible();
   const after = await (await page.request.get("/api/state")).json();
   expect(after.progress).toEqual(before.progress);
+});
+test("valid non-ASCII backup above 8 MB restores through V2 while the legacy route keeps its limit", async ({
+  page,
+}) => {
+  const legacy = await (await page.request.get("/api/export")).json();
+  legacy.progress.sessions = Array.from({ length: 450 }, (_, i) => ({
+    id: "byte-boundary-" + i,
+    topicId: "M01",
+    at: new Date().toISOString(),
+    kind: "note",
+    text: "é".repeat(9000),
+    minutes: 1,
+  }));
+  const raw = JSON.stringify(legacy);
+  expect(Buffer.byteLength(raw)).toBeGreaterThan(8000000);
+  const refused = await page.request.post("/api/validate", { data: legacy });
+  expect(refused.status()).toBe(400);
+  const p = await page.request.post("/api/v2/backup/preview", { data: legacy });
+  expect(p.status(), await p.text()).toBe(200);
+  const preview = await p.json();
+  const restored = await page.request.post("/api/v2/backup/restore", {
+    data: legacy,
+    headers: {
+      "X-CoreLab-Confirm": "true",
+      "X-CoreLab-BackupHash": preview.digest,
+      "X-CoreLab-ExpectedRevision": preview.token,
+    },
+  });
+  expect(restored.status(), await restored.text()).toBe(200);
+  const full = await (await page.request.get("/api/v2/backup/export")).json();
+  expect(full.legacy.progress.sessions).toHaveLength(450);
+  expect(full.legacy.progress.sessions[0].text).toBe("é".repeat(9000));
 });
 test("optional bridge, manual kit download and practice-only self-report", async ({
   page,
@@ -148,6 +183,9 @@ test("mobile keyboard, source redaction and gated verification", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+  await expect(
+    page.getByRole("textbox", { name: "x (m)", exact: true }),
+  ).toBeEnabled();
   await page.getByRole("textbox", { name: "x (m)", exact: true }).focus();
   await page.keyboard.type("1/2");
   await page.keyboard.press("Tab");

@@ -14,9 +14,11 @@ import {
   meta,
   revisionToken,
   write,
+  checkCapacity,
 } from "../../lib/v2/db";
-import { issue, assist } from "../../lib/v2/attempts";
-import { digest } from "../../lib/v2/contracts";
+import { issue, assist, submit } from "../../lib/v2/attempts";
+import { digest, bytes } from "../../lib/v2/contracts";
+import { family } from "../../lib/v2/content";
 const stores: Store[] = [];
 function fresh() {
   const s = new Store(":memory:");
@@ -51,6 +53,23 @@ it("round-trips frozen attempts/exposure while keeping local identity and a full
   expect(validateFull(exportBackup(to)).backup.v2.historyEpochs).toHaveLength(
     2,
   );
+});
+it("keeps the SQLite row-byte capacity bound above a non-ASCII escaped full export", () => {
+  const s = fresh(),
+    a = issue(s, { purpose: "practice", source: "X01" }),
+    item = family("X01")!.items.find((i) => i.id === a.item.id)!;
+  submit(s, a.id, {
+    answers: Object.fromEntries(
+      item.fields.map((f, i) => [String(i), Number(f.answer).toFixed(9)]),
+    ),
+    declaredAssistance: 0,
+    artifact: '😀\u0000\\"'.repeat(100),
+  });
+  const capacity = checkCapacity(s.db),
+    actual = bytes(exportBackup(s));
+  expect(capacity.bytes).toBeGreaterThan(actual);
+  expect(capacity.bytes - actual).toBeLessThan(32768);
+  expect(Number(meta(s.db, "capacity_bytes"))).toBe(capacity.bytes);
 });
 it("rejects stale preview and rolls back replacement and snapshot on injected failure", () => {
   const s = fresh(),

@@ -1,0 +1,250 @@
+{
+  "id": "X19",
+  "version": 2,
+  "title": "Avoid episode leakage",
+  "domain": "ML & data",
+  "topicId": "ML03",
+  "objectiveId": "ML03.group-split",
+  "routes": [
+    "teleop-episodes",
+    "sensor-sessions"
+  ],
+  "scope": "Group-disjoint split reasoning, not generalization measurement",
+  "labIds": [
+    "L19"
+  ],
+  "items": [
+    {
+      "id": "X19.teleop-episodes.1",
+      "route": "teleop-episodes",
+      "difficulty": 1,
+      "structure": "X19.ML03.group-split.1@1",
+      "inputs": {
+        "train": [
+          "e1",
+          "e2"
+        ],
+        "test": [
+          "e2",
+          "e3"
+        ]
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Frame records retain episode IDs. Training episodes=['e1', 'e2']; held-out episodes=['e2', 'e3']. Does this split have episode overlap? Return yes or no. Statistics must be fitted on training records only.",
+      "fields": [
+        {
+          "label": "Episode overlap",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Intersection=['e2']. Splitting frames from the same episode across sets leaks episode-specific context.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Intersection=['e2']. Splitting frames from the same episode across sets leaks episode-specific context."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X19.teleop-episodes.2",
+      "route": "teleop-episodes",
+      "difficulty": 2,
+      "structure": "X19.ML03.group-split.2@1",
+      "inputs": {
+        "train": [
+          "e1",
+          "e2"
+        ],
+        "test": [
+          "e3",
+          "e4"
+        ]
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Frame records retain episode IDs. Training episodes=['e1', 'e2']; held-out episodes=['e3', 'e4']. Does this split have episode overlap? Return yes or no. Statistics must be fitted on training records only.",
+      "fields": [
+        {
+          "label": "Episode overlap",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Intersection=[]. Splitting frames from the same episode across sets leaks episode-specific context.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Intersection=[]. Splitting frames from the same episode across sets leaks episode-specific context."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X19.teleop-episodes.3",
+      "route": "teleop-episodes",
+      "difficulty": 3,
+      "structure": "X19.ML03.group-split.0@1",
+      "inputs": {
+        "train": [
+          "e1",
+          "e2"
+        ],
+        "test": [
+          "e2",
+          "e3"
+        ]
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Frame records retain episode IDs. Training episodes=['e1', 'e2']; held-out episodes=['e2', 'e3']. Does this split have episode overlap? Return yes or no. Statistics must be fitted on training records only.",
+      "fields": [
+        {
+          "label": "Episode overlap",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Intersection=['e2']. Splitting frames from the same episode across sets leaks episode-specific context.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "Intersection=['e2']. Splitting frames from the same episode across sets leaks episode-specific context."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/ML03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X19.sensor-sessions.1",
+      "route": "sensor-sessions",
+      "difficulty": 1,
+      "structure": "data.subject-group-split@1",
+      "inputs": {
+        "train": [
+          "person-A/session-1",
+          "person-B/session-1"
+        ],
+        "test": [
+          "person-A/session-2"
+        ],
+        "groupBy": "person"
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Sensor records are named person/session. Train=['person-A/session-1', 'person-B/session-1']; held-out=['person-A/session-2']. Evaluation requires PERSON-disjoint groups, not just distinct sessions. Is there person overlap? Return yes or no. Fit any preprocessing only on training records. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Person overlap",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Extract the person group before comparing sets. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Extract the person group before comparing sets.",
+        "Extract the person group before comparing sets. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X19.sensor-sessions.2",
+      "route": "sensor-sessions",
+      "difficulty": 2,
+      "structure": "data.subject-group-split@1",
+      "inputs": {
+        "train": [
+          "person-A/session-1",
+          "person-B/session-1"
+        ],
+        "test": [
+          "person-C/session-1"
+        ],
+        "groupBy": "person"
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Sensor records are named person/session. Train=['person-A/session-1', 'person-B/session-1']; held-out=['person-C/session-1']. Evaluation requires PERSON-disjoint groups, not just distinct sessions. Is there person overlap? Return yes or no. Fit any preprocessing only on training records. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Person overlap",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Extract the person group before comparing sets. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Extract the person group before comparing sets.",
+        "Extract the person group before comparing sets. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X19.sensor-sessions.3",
+      "route": "sensor-sessions",
+      "difficulty": 3,
+      "structure": "data.subject-group-split@1",
+      "inputs": {
+        "train": [
+          "person-A/session-1",
+          "person-B/session-1"
+        ],
+        "test": [
+          "person-B/session-9"
+        ],
+        "groupBy": "person"
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Sensor records are named person/session. Train=['person-A/session-1', 'person-B/session-1']; held-out=['person-B/session-9']. Evaluation requires PERSON-disjoint groups, not just distinct sessions. Is there person overlap? Return yes or no. Fit any preprocessing only on training records. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Person overlap",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Extract the person group before comparing sets. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Extract the person group before comparing sets.",
+        "Extract the person group before comparing sets. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "teleop-episodes": "Check episode group overlap.",
+    "sensor-sessions": "Detect subject leakage across distinct sensor sessions."
+  }
+}

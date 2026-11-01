@@ -1,0 +1,256 @@
+{
+  "id": "X15",
+  "version": 2,
+  "title": "Check swept clearance",
+  "domain": "Robotics",
+  "topicId": "R03",
+  "objectiveId": "R03.segment-clearance",
+  "routes": [
+    "disc-robot",
+    "tool-clearance"
+  ],
+  "scope": "2D point-segment distance after radius inflation",
+  "labIds": [
+    "L11"
+  ],
+  "items": [
+    {
+      "id": "X15.disc-robot.1",
+      "route": "disc-robot",
+      "difficulty": 1,
+      "structure": "X15.R03.segment-clearance.1@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0
+        ],
+        "center": [
+          2,
+          1
+        ],
+        "radius": "0.5"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A point/tool follows segment (0,0)→(4,0). An inflated circular obstacle is centered at (2,1) with radius 0.5 m. Find the minimum center-to-segment distance in metres. Touching counts as collision; infer safety separately.",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The projection is interior at (2,0), so distance=1 m. Compare with inflated radius 0.5. Endpoint-only checks are insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The projection is interior at (2,0), so distance=1 m. Compare with inflated radius 0.5. Endpoint-only checks are insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X15.disc-robot.2",
+      "route": "disc-robot",
+      "difficulty": 2,
+      "structure": "X15.R03.segment-clearance.2@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0
+        ],
+        "center": [
+          2,
+          2
+        ],
+        "radius": "0.5"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A point/tool follows segment (0,0)→(4,0). An inflated circular obstacle is centered at (2,2) with radius 0.5 m. Find the minimum center-to-segment distance in metres. Touching counts as collision; infer safety separately.",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The projection is interior at (2,0), so distance=2 m. Compare with inflated radius 0.5. Endpoint-only checks are insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The projection is interior at (2,0), so distance=2 m. Compare with inflated radius 0.5. Endpoint-only checks are insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X15.disc-robot.3",
+      "route": "disc-robot",
+      "difficulty": 3,
+      "structure": "X15.R03.segment-clearance.0@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0
+        ],
+        "center": [
+          2,
+          3
+        ],
+        "radius": "0.5"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A point/tool follows segment (0,0)→(4,0). An inflated circular obstacle is centered at (2,3) with radius 0.5 m. Find the minimum center-to-segment distance in metres. Touching counts as collision; infer safety separately.",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The projection is interior at (2,0), so distance=3 m. Compare with inflated radius 0.5. Endpoint-only checks are insufficient.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The projection is interior at (2,0), so distance=3 m. Compare with inflated radius 0.5. Endpoint-only checks are insufficient."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/R03 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X15.tool-clearance.1",
+      "route": "tool-clearance",
+      "difficulty": 1,
+      "structure": "geometry.degenerate-segment@1",
+      "inputs": {
+        "start": [
+          1,
+          1
+        ],
+        "end": [
+          1,
+          1
+        ],
+        "center": [
+          4,
+          5
+        ],
+        "radius": "1"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "Tool center follows segment [1, 1]→[1, 1]; inflated circular obstacle center=[4, 5], radius=1 m. Compute minimum center-to-segment distance. A zero-length segment is a point; touching counts as collision. This is geometry, not hardware clearance authorization. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "5.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1]. Distance=5.0. Compare with the inflated radius separately; equality is collision.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1].",
+        "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1]. Distance=5.0. Compare with the inflated radius separately; equality is collision."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X15.tool-clearance.2",
+      "route": "tool-clearance",
+      "difficulty": 2,
+      "structure": "geometry.degenerate-segment@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          2,
+          0
+        ],
+        "center": [
+          1,
+          0.5
+        ],
+        "radius": "0.5"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "Tool center follows segment [0, 0]→[2, 0]; inflated circular obstacle center=[1, 0.5], radius=0.5 m. Compute minimum center-to-segment distance. A zero-length segment is a point; touching counts as collision. This is geometry, not hardware clearance authorization. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1]. Distance=0.5. Compare with the inflated radius separately; equality is collision.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1].",
+        "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1]. Distance=0.5. Compare with the inflated radius separately; equality is collision."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X15.tool-clearance.3",
+      "route": "tool-clearance",
+      "difficulty": 3,
+      "structure": "geometry.degenerate-segment@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          2,
+          2
+        ],
+        "center": [
+          1,
+          1
+        ],
+        "radius": "0.4"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "Tool center follows segment [0, 0]→[2, 2]; inflated circular obstacle center=[1, 1], radius=0.4 m. Compute minimum center-to-segment distance. A zero-length segment is a point; touching counts as collision. This is geometry, not hardware clearance authorization. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "0.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1]. Distance=0.0. Compare with the inflated radius separately; equality is collision.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1].",
+        "If the segment has zero length, use point distance; otherwise clamp the scalar projection to [0,1]. Distance=0.0. Compare with the inflated radius separately; equality is collision."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "disc-robot": "Find clearance geometry for a disc path.",
+    "tool-clearance": "Handle a degenerate segment, tangency and an intersecting tool path."
+  }
+}

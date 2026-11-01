@@ -258,6 +258,74 @@ export function LearningPanel({
           ))}
         </section>
       )}
+      {!objective && (
+        <details className="panel">
+          <summary>
+            Explore the 22-lab roadmap and optional external resources
+          </summary>
+          <p>
+            Two manual numerical kits are available. The other lab
+            implementations are planned. Related practice below is partial
+            preparation, not a completed lab or evidence. Simulator, ROS and
+            hardware integrations are not available.
+          </p>
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Lab</th>
+                  <th>Availability</th>
+                  <th>Related practice</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.labRoadmap.labs.map((lab) => (
+                  <tr key={lab.id}>
+                    <td>
+                      <strong>{lab.title}</strong>
+                      <br />
+                      {lab.outcome}
+                    </td>
+                    <td>
+                      {lab.status === "manual-self-check"
+                        ? "Manual kit · no verified I"
+                        : "Planned · not implemented"}
+                    </td>
+                    <td>
+                      {lab.practiceFamilies.map((id) => {
+                        const f = data.families.find((f) => f.id === id);
+                        return f ? (
+                          <p key={id}>
+                            <Link href={"/objectives/" + f.objectiveId}>
+                              {f.title}
+                            </Link>
+                          </p>
+                        ) : null;
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <h3>Optional reading outside CoreLab</h3>
+          <p>
+            Foundational learning requires none of these tools or devices.
+            External material has its own terms and creates no evidence.
+          </p>
+          <ul>
+            {data.labRoadmap.resources.map((r) => (
+              <li key={r.id}>
+                <a href={r.url} target="_blank" rel="noreferrer">
+                  {r.title}
+                </a>{" "}
+                · {r.pathway}
+                <p>{r.check}</p>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
       <section className="panel">
         <h2>Verify independently · C and M</h2>
         <p>

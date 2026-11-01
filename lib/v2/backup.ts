@@ -9,7 +9,7 @@ import {
   strictJSON,
   V2Error,
 } from "./contracts";
-import { catalog } from "./content";
+import { contentManifestHash } from "./content";
 import { replay } from "./replay";
 import { resolveCM, type SourceResolver } from "./assessments";
 import { backup3, type Backup, type Exposure } from "./state";
@@ -51,7 +51,7 @@ function capture(store: Store): Backup {
     exportedAt: new Date().toISOString(),
     workspaceId: meta(store.db, "workspace_id"),
     sidecarSchemaVersion: 1 as const,
-    contentManifestHash: catalog().hash,
+    contentManifestHash: contentManifestHash(),
     legacy: store.export(),
     v2,
     counts: counts(v2),
@@ -73,6 +73,7 @@ export function exportBackup(store: Store) {
   try {
     const data = capture(store);
     limited(data);
+    validateFull(data);
     store.db.exec("COMMIT");
     return data;
   } catch (e) {

@@ -1,0 +1,224 @@
+{
+  "id": "X09",
+  "version": 2,
+  "title": "Design a test that detects a real bug",
+  "domain": "Programming & C++",
+  "topicId": "PY07",
+  "objectiveId": "PY07.mutation-tests",
+  "routes": [
+    "projection-tests",
+    "kinematic-tests"
+  ],
+  "scope": "Reason about a selected mutant; no submitted-test execution",
+  "labIds": [
+    "L05",
+    "L06"
+  ],
+  "items": [
+    {
+      "id": "X09.projection-tests.1",
+      "route": "projection-tests",
+      "difficulty": 1,
+      "structure": "X09.PY07.mutation-tests.1@1",
+      "inputs": {
+        "case": 1,
+        "scenario": "projection-tests"
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "A projection function incorrectly returns the zero vector for every input. Which test rejects it? A: project [0,1] onto [1,0]. B: project [1,0] onto [1,0]. Return A or B.",
+      "fields": [
+        {
+          "label": "Test",
+          "kind": "choice",
+          "answer": "B",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "A has a correct zero projection; B must return a nonzero vector.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "A has a correct zero projection; B must return a nonzero vector."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/PY07 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X09.projection-tests.2",
+      "route": "projection-tests",
+      "difficulty": 2,
+      "structure": "X09.PY07.mutation-tests.2@1",
+      "inputs": {
+        "case": 2,
+        "scenario": "projection-tests"
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "A projection function incorrectly returns the zero vector for every input. Which test rejects it? A: project [0,2] onto [1,0]. B: project [2,0] onto [1,0]. Return A or B.",
+      "fields": [
+        {
+          "label": "Test",
+          "kind": "choice",
+          "answer": "B",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "A has a correct zero projection; B must return a nonzero vector.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "A has a correct zero projection; B must return a nonzero vector."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/PY07 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X09.projection-tests.3",
+      "route": "projection-tests",
+      "difficulty": 3,
+      "structure": "X09.PY07.mutation-tests.0@1",
+      "inputs": {
+        "case": 3,
+        "scenario": "projection-tests"
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "A projection function incorrectly returns the zero vector for every input. Which test rejects it? A: project [0,3] onto [1,0]. B: project [3,0] onto [1,0]. Return A or B.",
+      "fields": [
+        {
+          "label": "Test",
+          "kind": "choice",
+          "answer": "B",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "A has a correct zero projection; B must return a nonzero vector.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "A has a correct zero projection; B must return a nonzero vector."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/PY07 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X09.kinematic-tests.1",
+      "route": "kinematic-tests",
+      "difficulty": 1,
+      "structure": "testing.kinematic-mutant@1",
+      "inputs": {
+        "case": "orientation",
+        "options": [
+          "A",
+          "B"
+        ]
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "An FK implementation returns the correct x,y but hardcodes orientation to zero. Which discriminating test should you add? A: q1=0,q2=0. B: q1=π/2,q2=0. Validate every returned pose field. Return A or B. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "B",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "Choice B distinguishes the mutated behavior from a valid implementation. Explain both expected outcomes before writing the test locally; submitted tests are not executed.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Choice B distinguishes the mutated behavior from a valid implementation.",
+        "Choice B distinguishes the mutated behavior from a valid implementation. Explain both expected outcomes before writing the test locally; submitted tests are not executed."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X09.kinematic-tests.2",
+      "route": "kinematic-tests",
+      "difficulty": 2,
+      "structure": "testing.kinematic-mutant@1",
+      "inputs": {
+        "case": "direction",
+        "options": [
+          "A",
+          "B"
+        ]
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "A transform function translates directions as if they were points. Which test catches it? A: identity rotation, nonzero translation, zero direction. B: identity rotation, zero translation, any direction. Return A or B. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "A",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "Choice A distinguishes the mutated behavior from a valid implementation. Explain both expected outcomes before writing the test locally; submitted tests are not executed.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Choice A distinguishes the mutated behavior from a valid implementation.",
+        "Choice A distinguishes the mutated behavior from a valid implementation. Explain both expected outcomes before writing the test locally; submitted tests are not executed."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X09.kinematic-tests.3",
+      "route": "kinematic-tests",
+      "difficulty": 3,
+      "structure": "testing.kinematic-mutant@1",
+      "inputs": {
+        "case": "shear",
+        "options": [
+          "A",
+          "B"
+        ]
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "A rotation validator checks determinant +1 only. Which matrix rejects this mutant? A: identity. B: shear [[1,1],[0,1]]. Return A or B. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "B",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "Choice B distinguishes the mutated behavior from a valid implementation. Explain both expected outcomes before writing the test locally; submitted tests are not executed.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Choice B distinguishes the mutated behavior from a valid implementation.",
+        "Choice B distinguishes the mutated behavior from a valid implementation. Explain both expected outcomes before writing the test locally; submitted tests are not executed."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "projection-tests": "Choose tests for projection bugs.",
+    "kinematic-tests": "Probe FK orientation, translated directions and rotation validation."
+  }
+}

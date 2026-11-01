@@ -1,8 +1,8 @@
 import { DatabaseSync } from "node:sqlite";
-import { canonical, digest } from "./contracts";
+import { canonical, digest, strictJSON } from "./contracts";
 import { insert, rows, schemaSQL } from "./db";
-import { itemFingerprint } from "./content";
 import {
+  fingerprintCandidates,
   independentlyReviewed,
   gradeCM,
   normalizeCM,
@@ -18,6 +18,7 @@ import {
   savedSubmission,
 } from "./verification";
 import { evidenceRow, reviewRow, type Backup, type Evidence } from "./state";
+import { CM_RELEASED } from "./release";
 
 // Replay happens in a disposable database, before any active database write.
 // Original claims/answers/IDs are retained; only the effective projection changes.
@@ -66,9 +67,12 @@ export function replay(
       )
         continue;
       const { variant, frozen } = knownCM(a, resolve);
+      const retainedFps = strictJSON(a.fingerprints) as string[];
       if (
-        canonical(variant.items.map((c) => itemFingerprint(c.task))) !==
-        a.fingerprints
+        retainedFps.length !== variant.items.length ||
+        retainedFps.some(
+          (fp, i) => !fingerprintCandidates(variant.items[i].task).includes(fp),
+        )
       )
         throw new Error("Assessment fingerprints contradict the frozen source");
       const saved = savedSubmission(a);
@@ -81,7 +85,14 @@ export function replay(
         }) !== a.submission_hash
       )
         throw new Error("Assessment submission hash mismatch");
-      if (!independentlyReviewed(source) || a.policy_version !== 1) continue;
+      // A resolver injected by conformance tests exercises synthetic approvals.
+      // HTTP callers cannot supply one; real metadata alone cannot activate S2.
+      if (
+        (!CM_RELEASED && resolve === resolveCM) ||
+        !independentlyReviewed(source) ||
+        a.policy_version !== 1
+      )
+        continue;
       const grade = gradeCM(variant, saved.answers),
         matches = sameGrade(a.grade_json, grade);
       const consumed = new Set<string>();

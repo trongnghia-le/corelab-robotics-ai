@@ -2,10 +2,45 @@ import { afterEach, expect, it, vi } from "vitest";
 import { dispatch } from "../../lib/v2/api";
 import { Store } from "../../lib/storage";
 import { status } from "../../lib/v2/db";
+import { BACKUP_LIMIT } from "../../lib/v2/contracts";
 const stores: Store[] = [];
 afterEach(() => {
   stores.splice(0).forEach((s) => s.close());
   vi.unstubAllEnvs();
+});
+it("cancels an actual streamed overflow before opening a database, without trusting Content-Length", async () => {
+  vi.stubEnv("CORELAB_V2", "1");
+  let cancelled = false,
+    opened = false,
+    pulls = 0;
+  const chunk = new Uint8Array(1024 * 1024).fill(32);
+  const body = new ReadableStream<Uint8Array>({
+    pull(controller) {
+      pulls++;
+      controller.enqueue(chunk);
+    },
+    cancel() {
+      cancelled = true;
+    },
+  });
+  const r = new Request("http://127.0.0.1:3000/api/v2/backup/preview", {
+    method: "POST",
+    headers: {
+      host: "127.0.0.1:3000",
+      origin: "http://127.0.0.1:3000",
+      "content-type": "application/json",
+    },
+    body,
+    duplex: "half",
+  } as RequestInit);
+  const response = await dispatch(r, ["backup", "preview"], () => {
+    opened = true;
+    throw new Error("must not open");
+  });
+  expect(response.status).toBe(413);
+  expect(cancelled).toBe(true);
+  expect(opened).toBe(false);
+  expect(pulls * chunk.byteLength).toBeGreaterThan(BACKUP_LIMIT);
 });
 function request(
   path: string,

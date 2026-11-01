@@ -1,0 +1,251 @@
+{
+  "id": "X05",
+  "version": 2,
+  "title": "Compute covariance under a stated convention",
+  "domain": "Mathematics",
+  "topicId": "M09",
+  "objectiveId": "M09.covariance",
+  "routes": [
+    "sensor-residuals",
+    "coordinate-logs"
+  ],
+  "scope": "Two-variable covariance, not independence",
+  "labIds": [
+    "L09",
+    "L10"
+  ],
+  "items": [
+    {
+      "id": "X05.sensor-residuals.1",
+      "route": "sensor-residuals",
+      "difficulty": 1,
+      "structure": "X05.M09.covariance.1@1",
+      "inputs": {
+        "x": [
+          0,
+          1,
+          2
+        ],
+        "y": [
+          1,
+          2,
+          3
+        ],
+        "denominator": 3
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Paired observations x=[0, 1, 2], y=[1, 2, 3]. Compute population (divide by N) covariance cov(x,y). N=3.",
+      "fields": [
+        {
+          "label": "cov(x,y)",
+          "kind": "number",
+          "answer": "0.6666666666666666",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The means are 1 and 2. Sum centered products = 2; divide by 3. A covariance does not by itself establish independence.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The means are 1 and 2. Sum centered products = 2; divide by 3. A covariance does not by itself establish independence."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M09 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X05.sensor-residuals.2",
+      "route": "sensor-residuals",
+      "difficulty": 2,
+      "structure": "X05.M09.covariance.2@1",
+      "inputs": {
+        "x": [
+          0,
+          2,
+          4
+        ],
+        "y": [
+          1,
+          2,
+          3
+        ],
+        "denominator": 3
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Paired observations x=[0, 2, 4], y=[1, 2, 3]. Compute population (divide by N) covariance cov(x,y). N=3.",
+      "fields": [
+        {
+          "label": "cov(x,y)",
+          "kind": "number",
+          "answer": "1.3333333333333333",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The means are 2 and 2. Sum centered products = 4; divide by 3. A covariance does not by itself establish independence.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The means are 2 and 2. Sum centered products = 4; divide by 3. A covariance does not by itself establish independence."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M09 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X05.sensor-residuals.3",
+      "route": "sensor-residuals",
+      "difficulty": 3,
+      "structure": "X05.M09.covariance.0@1",
+      "inputs": {
+        "x": [
+          0,
+          3,
+          6
+        ],
+        "y": [
+          1,
+          2,
+          3
+        ],
+        "denominator": 2
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Paired observations x=[0, 3, 6], y=[1, 2, 3]. Compute sample (divide by N−1) covariance cov(x,y). N=3.",
+      "fields": [
+        {
+          "label": "cov(x,y)",
+          "kind": "number",
+          "answer": "3.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The means are 3 and 2. Sum centered products = 6; divide by 2. A covariance does not by itself establish independence.",
+      "hints": [
+        "Identify the requested quantity and its units before calculating.",
+        "Write the equation using the supplied inputs, then check units and signs.",
+        "The means are 3 and 2. Sum centered products = 6; divide by 2. A covariance does not by itself establish independence."
+      ],
+      "remediation": "Compare one intermediate result with the stated model. Revisit /lessons/M09 or try the other scenario. This is a suggestion, not a diagnosis."
+    },
+    {
+      "id": "X05.coordinate-logs.1",
+      "route": "coordinate-logs",
+      "difficulty": 1,
+      "structure": "statistics.centered-covariance@1",
+      "inputs": {
+        "x": [
+          -1,
+          0,
+          1,
+          2
+        ],
+        "y": [
+          3,
+          1,
+          0,
+          -2
+        ],
+        "denominator": 4
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Paired coordinate-log residuals x=[-1, 0, 1, 2], y=[3, 1, 0, -2]. Compute population covariance cov(x,y), dividing by N=4 after centering each channel. A negative answer is allowed. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "cov(x,y)",
+          "kind": "number",
+          "answer": "-2.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Means are (0.5,0.5). Divide the sum of centered pair-products by 4, giving -2.0. Covariance is not correlation or a proof of independence.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Means are (0.",
+        "Means are (0.5,0.5). Divide the sum of centered pair-products by 4, giving -2.0. Covariance is not correlation or a proof of independence."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X05.coordinate-logs.2",
+      "route": "coordinate-logs",
+      "difficulty": 2,
+      "structure": "statistics.centered-covariance@1",
+      "inputs": {
+        "x": [
+          -2,
+          0,
+          2,
+          4
+        ],
+        "y": [
+          3,
+          1,
+          0,
+          -2
+        ],
+        "denominator": 4
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Paired coordinate-log residuals x=[-2, 0, 2, 4], y=[3, 1, 0, -2]. Compute population covariance cov(x,y), dividing by N=4 after centering each channel. A negative answer is allowed. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "cov(x,y)",
+          "kind": "number",
+          "answer": "-4.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Means are (1.0,0.5). Divide the sum of centered pair-products by 4, giving -4.0. Covariance is not correlation or a proof of independence.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Means are (1.",
+        "Means are (1.0,0.5). Divide the sum of centered pair-products by 4, giving -4.0. Covariance is not correlation or a proof of independence."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    },
+    {
+      "id": "X05.coordinate-logs.3",
+      "route": "coordinate-logs",
+      "difficulty": 3,
+      "structure": "statistics.centered-covariance@1",
+      "inputs": {
+        "x": [
+          -3,
+          0,
+          3,
+          6
+        ],
+        "y": [
+          3,
+          1,
+          0,
+          -2
+        ],
+        "denominator": 4
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Paired coordinate-log residuals x=[-3, 0, 3, 6], y=[3, 1, 0, -2]. Compute population covariance cov(x,y), dividing by N=4 after centering each channel. A negative answer is allowed. Tolerance ±0.001 for numeric fields; follow the stated units.",
+      "fields": [
+        {
+          "label": "cov(x,y)",
+          "kind": "number",
+          "answer": "-6.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Means are (1.5,0.5). Divide the sum of centered pair-products by 4, giving -6.0. Covariance is not correlation or a proof of independence.",
+      "hints": [
+        "Identify the model, requested quantity and units before calculating.",
+        "Means are (1.",
+        "Means are (1.5,0.5). Divide the sum of centered pair-products by 4, giving -6.0. Covariance is not correlation or a proof of independence."
+      ],
+      "remediation": "Compare an intermediate calculation with this model. Explain the mismatch, then choose a smaller example or the other application. This suggests a check, not a diagnosis."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "sensor-residuals": "Center three paired sensor residuals.",
+    "coordinate-logs": "Handle four coordinate-log samples with negative covariance."
+  }
+}

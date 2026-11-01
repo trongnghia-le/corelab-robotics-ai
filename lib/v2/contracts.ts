@@ -123,7 +123,12 @@ export function canonical(v: unknown): string {
     validString(v);
     return JSON.stringify(v);
   }
-  if (Array.isArray(v)) return "[" + v.map(canonical).join(",") + "]";
+  if (Array.isArray(v)) {
+    for (let i = 0; i < v.length; i++)
+      if (!Object.hasOwn(v, i))
+        throw new Error("Sparse arrays are unsupported JSON values");
+    return "[" + v.map(canonical).join(",") + "]";
+  }
   if (
     v &&
     typeof v === "object" &&

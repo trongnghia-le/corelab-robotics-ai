@@ -39,12 +39,13 @@ export const itemSchema = z
 const familySchema = z
   .object({
     id,
-    version: z.literal(1),
+    version: z.number().int().min(1).max(1000),
     title: z.string().max(200),
     domain: z.string().max(100),
     topicId: id,
     objectiveId: id,
     routes: z.array(id).min(1).max(6),
+    routeNotes: z.record(id, z.string().max(500)).optional(),
     scope: z.string().max(1000),
     labIds: z.array(id),
     items: z.array(itemSchema).min(2).max(200),
@@ -75,7 +76,7 @@ const catalogSchema = z
         z
           .object({
             id,
-            version: z.literal(1),
+            version: z.number().int().min(1).max(1000),
             review: familySchema.shape.review,
           })
           .strict(),
@@ -97,6 +98,7 @@ const catalogSchema = z
   .strict();
 export type Item = z.infer<typeof itemSchema>;
 export type Family = z.infer<typeof familySchema>;
+const contractHashes = new Map<string, string>();
 let cached:
   | {
       families: Family[];
@@ -115,10 +117,15 @@ export function catalog() {
   const sourceHashes: Record<string, string> = {};
   const families = parsed.families.map((entry) => {
     const source = readFileSync(
-      path.join(process.cwd(), "content/exercises", entry.id + ".v1.json"),
+      path.join(
+        process.cwd(),
+        "content/exercises",
+        entry.id + ".v" + entry.version + ".json",
+      ),
       "utf8",
     );
     sourceHashes[entry.id] = hash(source);
+    contractHashes.set(entry.id + "@" + entry.version, hash(source));
     const contract = familySchema
       .omit({ review: true })
       .parse(strictJSON(source));
@@ -160,14 +167,106 @@ export function catalog() {
   };
   return cached;
 }
-export function family(id: string) {
-  return catalog().families.find((f) => f.id === id);
+let manifestHash: string | undefined;
+export function contentManifestHash() {
+  return (manifestHash ??= hash(
+    readFileSync(path.join(process.cwd(), "content/v2/manifest.v1.json")),
+  ));
+}
+const archived = new Map<string, Family>();
+export function family(sourceId: string, version?: number) {
+  const current = catalog().families.find((f) => f.id === sourceId);
+  if (version === undefined || current?.version === version) return current;
+  if (
+    !id.safeParse(sourceId).success ||
+    !Number.isSafeInteger(version) ||
+    version < 1 ||
+    version > 1000
+  )
+    return undefined;
+  const key = sourceId + "@" + version;
+  if (archived.has(key)) return archived.get(key);
+  const file = path.join(
+    process.cwd(),
+    "content/exercises",
+    sourceId + ".v" + version + ".json",
+  );
+  let raw: string;
+  try {
+    raw = readFileSync(file, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw e;
+  }
+  const contract = familySchema.omit({ review: true }).parse(strictJSON(raw));
+  if (contract.id !== sourceId || contract.version !== version)
+    throw new Error("Archived source identity mismatch");
+  const f = {
+    ...contract,
+    review: { status: "pending" as const, reviewer: null, date: null },
+  };
+  archived.set(key, f);
+  contractHashes.set(key, hash(raw));
+  return f;
 }
 export function familyHash(f: Family) {
-  return catalog().sourceHashes[f.id];
+  if (!contractHashes.has(f.id + "@" + f.version)) family(f.id, f.version);
+  const result = contractHashes.get(f.id + "@" + f.version);
+  if (!result) throw new Error("Unknown immutable family contract");
+  return result;
+}
+export function archivedFamilies() {
+  const index = z
+    .object({
+      schema: z.literal("corelab-exercise-archive/1"),
+      sources: z
+        .array(
+          z
+            .object({ id, version: z.number().int().positive().max(1000) })
+            .strict(),
+        )
+        .max(1000),
+    })
+    .strict()
+    .parse(
+      strictJSON(
+        readFileSync(
+          path.join(process.cwd(), "content/v2/archive.v1.json"),
+          "utf8",
+        ),
+      ),
+    );
+  return index.sources.map((s) => {
+    const f = family(s.id, s.version);
+    if (!f) throw new Error("Archived source missing");
+    return f;
+  });
 }
 export function itemFingerprint(item: Item) {
-  return fingerprint(item.structure, item.inputs);
+  return fingerprint(
+    item.structure,
+    canonicalInputs(item.inputs) as Record<string, unknown>,
+  );
+}
+// Canonical decimal strings for math input bytes. Raw-number hashes from early
+// drafts remain explicit aliases; no historical record is silently rewritten.
+export function canonicalInputs(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalInputs);
+  if (value && typeof value === "object")
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, canonicalInputs(v)]),
+    );
+  if (typeof value === "number") value = String(value);
+  if (typeof value === "string" && /^[+-]?\d+(\.\d+)?$/.test(value)) {
+    const negative = value.startsWith("-");
+    const [whole, fraction = ""] = value.replace(/^[+-]/, "").split(".");
+    const w = whole.replace(/^0+(?=\d)/, ""),
+      f = fraction.replace(/0+$/, "");
+    return (
+      (w !== "0" || f ? (negative ? "-" : "") : "") + w + (f ? "." + f : "")
+    );
+  }
+  return value;
 }
 export function publicItem(item: Item) {
   return {
