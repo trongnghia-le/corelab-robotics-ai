@@ -10,13 +10,13 @@
 - Original drafts for 20 exercise families and 140 static instances; numeric, fraction, angle and choice feedback. Independent content review is pending. Route diversity and independent oracle coverage require further work.
 - Server-gated objective UI with Recommended, Explore and More Practice, route/difficulty choices, scratchpad text that is never executed, history and mobile keyboard support.
 - Backup/3 captures all learning rows with existing progress. Bounded localhost preview/confirmation, revision checks, atomic replacement, nonrecursive pre-restore snapshots and foreign-origin handling preserve local identity.
-- Verified I/report execution and reviewed transfer remain unavailable. Current restored V2 evidence is conservatively inert; the full C/M policy/review replay engine is still being implemented.
+- Verified I/report execution and reviewed transfer remain unavailable. The C/M engine implements objective-scoped thresholds, durable exposure cuts, relative reviews and delayed retention. Restore recomputes recognized, independently reviewed C/M and review transitions in a disposable staging database; unknown/unreviewed sources remain inert. The 48 form questions and 36 retrieval items remain pending independent review, and C/M release activation is disabled.
 
 ## Checks actually executed
 
 Baseline: 119 tests in 8 files; content validation confirmed 169 topics, 31 lessons, 42 targeted questions and 28 video resources.
 
-Current: 140 unit/integration/security tests in 14 files passed; lint and typecheck passed; V2 production build passed. Two Chromium flows passed: practice → help → submission → reload → full backup/restore, and 390px keyboard/layout → gated verification/import. A generated mobile screenshot was inspected.
+Current: 149 unit/integration/security tests in 15 files passed; lint and typecheck passed. The preceding UI milestone passed a V2 production build (before the C/M kernel addition). Two Chromium flows passed: practice → help → submission → reload → full backup/restore, and 390px keyboard/layout → gated verification/import. A generated mobile screenshot was inspected.
 
 These are Linux results in this execution environment. Windows/macOS, screen-reader use, the full 128 MiB boundary, named-machine capacity budgets, independent item review and the 21-day learner pilot are not validated by these results.
 
@@ -24,6 +24,7 @@ These are Linux results in this execution environment. Windows/macOS, screen-rea
 
 - 1a70a20 — execution plan and strict contracts.
 - f100af2 — storage, practice, recovery and original static catalog drafts.
+- 3639c15 — objective practice and recovery interface.
 
 See PROGRESS.md and git log for subsequent milestones. Historical review reports are preserved and are not implementation test results.
 
@@ -42,6 +43,6 @@ The default database remains .local/corelab.sqlite; V2 adds tables and creates a
 
 ## Remaining work / gates
 
-Continue the Master Plan: readiness bridge and manual kits, complete C/M source/admission/replay/review workflow, stronger exercise alternatives/oracles, curriculum and optional-resource integration, boundary/concurrency/browser regressions and final audit.
+Continue the Master Plan: readiness bridge and manual kits, integrated C/M UI and independently reviewed source activation, stronger exercise alternatives/oracles, curriculum and optional-resource integration, boundary/concurrency/browser regressions and final audit.
 
 Independent technical/adversarial/pedagogical reviewers, tested OS support/capacity decisions, reviewed executable isolation and actual learner observations cannot be fabricated. The feature flag remains off by default. No whole-platform completion claim is made.

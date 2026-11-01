@@ -19,7 +19,11 @@ import {
   normalizedAnswers,
   publicItem,
 } from "./content";
-import { attemptRow, type Attempt } from "./state";
+import { type Attempt } from "./state";
+import { CM_RELEASED } from "./release";
+import { assistCM, issueCM, publicCM, submitCM } from "./verification";
+import { attemptById, expose } from "./records";
+export { attemptById, expose } from "./records";
 import {
   checkpoint,
   insert,
@@ -39,21 +43,21 @@ export const issueSchema = z
     objectiveId: id.optional(),
     route: id.optional(),
     difficulty: z.number().int().min(1).max(5).optional(),
+    dimension: z.enum(["C", "M"]).optional(),
     resumeAttemptId: id.optional(),
   })
   .strict();
 export const submitSchema = z
   .object({
-    answers: z.record(z.string().regex(/^\d{1,2}$/), z.string().max(200)),
+    answers: z.record(
+      z.string().regex(/^\d{1,2}(\.\d{1,2})?$/),
+      z.string().max(200),
+    ),
     declaredAssistance: level,
     artifact: z.string().max(8000).optional(),
   })
   .strict();
-export function attemptById(db: DB, id: string): Attempt {
-  const row = db.prepare("SELECT * FROM v2_attempts WHERE id=?").get(id);
-  if (!row) throw new V2Error("not_found", "Attempt not found", 404);
-  return attemptRow.parse(row);
-}
+
 function sourceItem(a: Attempt) {
   const item = itemSchema.parse(strictJSON(a.instance_json)),
     f = family(a.source_id);
@@ -104,8 +108,10 @@ function result(a: Attempt) {
   }
 }
 export function publicAttempt(db: DB, id: string) {
-  const a = attemptById(db, id),
-    item = itemSchema.parse(strictJSON(a.instance_json));
+  const a = attemptById(db, id);
+  if (a.source_kind === "form" || a.source_kind === "review_pool")
+    return publicCM(db, a);
+  const item = itemSchema.parse(strictJSON(a.instance_json));
   const repeat =
     (
       db
@@ -130,39 +136,20 @@ export function publicAttempt(db: DB, id: string) {
     verifiedI: "unavailable",
   };
 }
-export function expose(
-  db: DB,
-  a: Attempt,
-  kind: "issued" | "hint1" | "hint2" | "solution" | "feedback" | "kit_download",
-  at = new Date().toISOString(),
-) {
-  if (Date.parse(at) < Date.parse(a.issued_at))
-    throw new V2Error(
-      "clock_regression",
-      "The local clock moved backwards; no exposure was saved",
-      409,
-    );
-  const fps = z.array(z.string()).parse(strictJSON(a.fingerprints));
-  for (const fp of fps)
-    insert(db, "v2_exposures", {
-      id: randomUUID(),
-      at,
-      event_seq: nextSequence(db),
-      fingerprint: fp,
-      attempt_id: a.id,
-      kind,
-    });
-}
+
 export function issue(store: Store, input: unknown) {
   const request = issueSchema.parse(input);
   if (request.resumeAttemptId)
     return publicAttempt(store.db, request.resumeAttemptId);
-  if (request.purpose !== "practice" && request.purpose !== "placement")
-    throw new V2Error(
-      "review_gate",
-      "C/M verification and retention require independently reviewed forms. Verified I and transfer are unavailable.",
-      503,
-    );
+  if (request.purpose === "verify" || request.purpose === "review") {
+    if (!CM_RELEASED)
+      throw new V2Error(
+        "review_gate",
+        "C/M verification and retention require independently reviewed forms. Verified I and transfer are unavailable.",
+        503,
+      );
+    return issueCM(store, { ...request, purpose: request.purpose });
+  }
   const f = family(request.source ?? "");
   if (!f)
     throw new V2Error("source_required", "Choose an authored exercise family");
@@ -223,6 +210,9 @@ export function assist(store: Store, id: string, input: unknown) {
     .object({ level: level.refine((n) => n > 0) })
     .strict()
     .parse(input);
+  const existing = attemptById(store.db, id);
+  if (existing.source_kind === "form" || existing.source_kind === "review_pool")
+    return assistCM(store, id, req.level);
   return write(store.db, () => {
     const a = attemptById(store.db, id);
     if (a.status !== "issued")
@@ -246,6 +236,19 @@ export function assist(store: Store, id: string, input: unknown) {
 }
 export function submit(store: Store, id: string, input: unknown) {
   const req = submitSchema.parse(input);
+  const existing = attemptById(store.db, id);
+  if (
+    existing.source_kind === "form" ||
+    existing.source_kind === "review_pool"
+  ) {
+    if (!CM_RELEASED)
+      throw new V2Error(
+        "review_gate",
+        "Assessment release is unavailable. The existing attempt is preserved.",
+        503,
+      );
+    return submitCM(store, id, req);
+  }
   return write(store.db, () => {
     const a = attemptById(store.db, id),
       { item } = sourceItem(a);

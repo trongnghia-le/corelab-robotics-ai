@@ -1,0 +1,1193 @@
+{
+  "id": "F-FRAMES",
+  "version": 1,
+  "kind": "form",
+  "variants": [
+    {
+      "id": "A",
+      "items": [
+        {
+          "task": {
+            "id": "F-FRAMES.A.0",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "frame.labels.compose@1",
+            "inputs": {
+              "query": "compose"
+            },
+            "objectiveId": "M12.frame-labels",
+            "prompt": "Given T_AB and T_BC, which transform maps C→A?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "T_AC",
+                "tolerance": 0.001,
+                "options": [
+                  "T_AC",
+                  "T_CA"
+                ]
+              }
+            ],
+            "solution": "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.1",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "frame.labels.derived@1",
+            "inputs": {
+              "query": "derived"
+            },
+            "objectiveId": "M12.frame-labels",
+            "prompt": "Given T_AB and T_AC, choose the expression mapping C→B.",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "inverse-AB-times-AC",
+                "tolerance": 0.001,
+                "options": [
+                  "inverse-AB-times-AC",
+                  "AB-times-AC"
+                ]
+              }
+            ],
+            "solution": "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.2",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.direction-w@1",
+            "inputs": {
+              "quantity": "direction-w"
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "A homogeneous 2D direction has which final coordinate w?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "0",
+                "tolerance": 0.001,
+                "options": [
+                  "0",
+                  "1"
+                ]
+              }
+            ],
+            "solution": "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.3",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.point-w@1",
+            "inputs": {
+              "quantity": "point-w"
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "A homogeneous 2D point has which final coordinate w?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "1",
+                "tolerance": 0.001,
+                "options": [
+                  "0",
+                  "1"
+                ]
+              }
+            ],
+            "solution": "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.4",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.apply@1",
+            "inputs": {
+              "theta": "pi/2",
+              "translation": [
+                12,
+                -1
+              ],
+              "vector": [
+                1,
+                2
+              ]
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Rotate +π/2 then translate (12,−1). Transform point p=(1,2) and direction v=(1,2). Return point x,y then direction x,y.",
+            "fields": [
+              {
+                "label": "Point x",
+                "kind": "number",
+                "answer": "10",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Point y",
+                "kind": "number",
+                "answer": "0",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction x",
+                "kind": "number",
+                "answer": "-2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction y",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Rotation maps (1,2) to (−2,1); only the point receives the offset.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Rotation maps (1,2) to (−2,1); only the point receives the offset."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.5",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.apply@1",
+            "inputs": {
+              "theta": "pi/2",
+              "translation": [
+                13,
+                -1
+              ],
+              "vector": [
+                1,
+                2
+              ]
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Rotate +π/2 then translate (13,−1). Transform point p=(1,2) and direction v=(1,2). Return point x,y then direction x,y.",
+            "fields": [
+              {
+                "label": "Point x",
+                "kind": "number",
+                "answer": "11",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Point y",
+                "kind": "number",
+                "answer": "0",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction x",
+                "kind": "number",
+                "answer": "-2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction y",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Rotation maps (1,2) to (−2,1); only the point receives the offset.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Rotation maps (1,2) to (−2,1); only the point receives the offset."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.6",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.concept.order@1",
+            "inputs": {
+              "query": "order"
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "Column vectors: which composition maps C→A?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "AB-times-BC",
+                "tolerance": 0.001,
+                "options": [
+                  "AB-times-BC",
+                  "BC-times-AB"
+                ]
+              }
+            ],
+            "solution": "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.7",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.concept.inverse-offset@1",
+            "inputs": {
+              "query": "inverse-offset"
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "In inverse (R,p), which translation is correct?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "-R-transpose-p",
+                "tolerance": 0.001,
+                "options": [
+                  "-R-transpose-p",
+                  "-p"
+                ]
+              }
+            ],
+            "solution": "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.8",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.compose.translation@1",
+            "inputs": {
+              "A": {
+                "theta": "pi/2",
+                "translation": [
+                  1,
+                  2
+                ]
+              },
+              "B": {
+                "translation": [
+                  12,
+                  -1
+                ]
+              }
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "T_AB is +π/2 with offset (1,2), T_BC is translation (12,−1). Find the translation of T_AC=T_AB T_BC.",
+            "fields": [
+              {
+                "label": "Translation x",
+                "kind": "number",
+                "answer": "2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Translation y",
+                "kind": "number",
+                "answer": "14",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Rotate the child offset first: (1,n), then add (1,2).",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Rotate the child offset first: (1,n), then add (1,2)."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.9",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.inverse.point@1",
+            "inputs": {
+              "theta": "pi/2",
+              "translation": [
+                1,
+                13
+              ],
+              "point": [
+                3,
+                14
+              ]
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "T_AB is +π/2 with offset (1,13). Given p_A=(3,14), compute p_B=T_AB⁻¹ p_A.",
+            "fields": [
+              {
+                "label": "x in B",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y in B",
+                "kind": "number",
+                "answer": "-2",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Subtract the offset to get (2,1), then rotate −π/2 to (1,−2).",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Subtract the offset to get (2,1), then rotate −π/2 to (1,−2)."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.10",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.proper@1",
+            "inputs": {
+              "R": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Is R=[[1, 1], [0, 1]] a proper 2D rotation? Require orthogonality AND determinant +1.",
+            "fields": [
+              {
+                "label": "Proper rotation",
+                "kind": "choice",
+                "answer": "no",
+                "tolerance": 0.001,
+                "options": [
+                  "yes",
+                  "no"
+                ]
+              }
+            ],
+            "solution": "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.11",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.proper@1",
+            "inputs": {
+              "R": [
+                [
+                  0,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Is R=[[0, -1], [1, 0]] a proper 2D rotation? Require orthogonality AND determinant +1.",
+            "fields": [
+              {
+                "label": "Proper rotation",
+                "kind": "choice",
+                "answer": "yes",
+                "tolerance": 0.001,
+                "options": [
+                  "yes",
+                  "no"
+                ]
+              }
+            ],
+            "solution": "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.12",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.invariants@1",
+            "inputs": {
+              "R": [
+                [
+                  0.7648421872844884,
+                  0.6442176872376911
+                ],
+                [
+                  0.6442176872376911,
+                  -0.7648421872844884
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "For R=[[0.7648421872844884, 0.6442176872376911], [0.6442176872376911, -0.7648421872844884]], compute det R and the squared norm of its SECOND column. These two checks alone are not a complete general orthogonality test.",
+            "fields": [
+              {
+                "label": "Determinant",
+                "kind": "number",
+                "answer": "-1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Second column norm squared",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "The determinant is -1; the second-column squared norm is 1.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "The determinant is -1; the second-column squared norm is 1."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.13",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.invariants@1",
+            "inputs": {
+              "R": [
+                [
+                  1,
+                  13
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "For R=[[1, 13], [0, 1]], compute det R and the squared norm of its SECOND column. These two checks alone are not a complete general orthogonality test.",
+            "fields": [
+              {
+                "label": "Determinant",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Second column norm squared",
+                "kind": "number",
+                "answer": "170",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "The determinant is 1; the second-column squared norm is 170.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "The determinant is 1; the second-column squared norm is 170."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "items": [
+        {
+          "task": {
+            "id": "F-FRAMES.B.0",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "frame.labels.row-transpose@1",
+            "inputs": {
+              "query": "row-transpose"
+            },
+            "objectiveId": "M12.frame-labels",
+            "prompt": "For column-vector p_A=T_AB p_B, is p_Aᵀ=p_Bᵀ T_ABᵀ the equivalent row expression?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "yes",
+                "tolerance": 0.001,
+                "options": [
+                  "yes",
+                  "no"
+                ]
+              }
+            ],
+            "solution": "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.1",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "frame.labels.translation-frame@1",
+            "inputs": {
+              "query": "translation-frame"
+            },
+            "objectiveId": "M12.frame-labels",
+            "prompt": "In T_AB, in which frame is the translation column expressed?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "A",
+                "tolerance": 0.001,
+                "options": [
+                  "A",
+                  "B"
+                ]
+              }
+            ],
+            "solution": "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.2",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.translation@1",
+            "inputs": {
+              "quantity": "translation"
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Which receives a translation offset?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "point",
+                "tolerance": 0.001,
+                "options": [
+                  "point",
+                  "direction",
+                  "both",
+                  "neither"
+                ]
+              }
+            ],
+            "solution": "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.3",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.direction-length@1",
+            "inputs": {
+              "quantity": "direction-length"
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "A proper rigid transform maps a nonzero direction to a direction. Is its norm preserved?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "yes",
+                "tolerance": 0.001,
+                "options": [
+                  "yes",
+                  "no"
+                ]
+              }
+            ],
+            "solution": "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.4",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.apply@1",
+            "inputs": {
+              "theta": "pi/2",
+              "translation": [
+                22,
+                -1
+              ],
+              "vector": [
+                1,
+                2
+              ]
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Rotate +π/2 then translate (22,−1). Transform point p=(1,2) and direction v=(1,2). Return point x,y then direction x,y.",
+            "fields": [
+              {
+                "label": "Point x",
+                "kind": "number",
+                "answer": "20",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Point y",
+                "kind": "number",
+                "answer": "0",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction x",
+                "kind": "number",
+                "answer": "-2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction y",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Rotation maps (1,2) to (−2,1); only the point receives the offset.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Rotation maps (1,2) to (−2,1); only the point receives the offset."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.5",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.apply@1",
+            "inputs": {
+              "theta": "pi/2",
+              "translation": [
+                23,
+                -1
+              ],
+              "vector": [
+                1,
+                2
+              ]
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Rotate +π/2 then translate (23,−1). Transform point p=(1,2) and direction v=(1,2). Return point x,y then direction x,y.",
+            "fields": [
+              {
+                "label": "Point x",
+                "kind": "number",
+                "answer": "21",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Point y",
+                "kind": "number",
+                "answer": "0",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction x",
+                "kind": "number",
+                "answer": "-2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction y",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Rotation maps (1,2) to (−2,1); only the point receives the offset.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Rotation maps (1,2) to (−2,1); only the point receives the offset."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.6",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.concept.noncommute@1",
+            "inputs": {
+              "query": "noncommute"
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "Can general rigid-transform multiplication be reordered without changing the result?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "no",
+                "tolerance": 0.001,
+                "options": [
+                  "yes",
+                  "no"
+                ]
+              }
+            ],
+            "solution": "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.7",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.concept.output-frame@1",
+            "inputs": {
+              "query": "output-frame"
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "For T_AB T_BC, in which frame is the resulting translation expressed?",
+            "fields": [
+              {
+                "label": "Answer",
+                "kind": "choice",
+                "answer": "A",
+                "tolerance": 0.001,
+                "options": [
+                  "A",
+                  "B",
+                  "C"
+                ]
+              }
+            ],
+            "solution": "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.8",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.compose.translation@1",
+            "inputs": {
+              "A": {
+                "theta": "pi/2",
+                "translation": [
+                  1,
+                  2
+                ]
+              },
+              "B": {
+                "translation": [
+                  22,
+                  -1
+                ]
+              }
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "T_AB is +π/2 with offset (1,2), T_BC is translation (22,−1). Find the translation of T_AC=T_AB T_BC.",
+            "fields": [
+              {
+                "label": "Translation x",
+                "kind": "number",
+                "answer": "2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Translation y",
+                "kind": "number",
+                "answer": "24",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Rotate the child offset first: (1,n), then add (1,2).",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Rotate the child offset first: (1,n), then add (1,2)."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.9",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.inverse.point@1",
+            "inputs": {
+              "theta": "pi/2",
+              "translation": [
+                1,
+                23
+              ],
+              "point": [
+                3,
+                24
+              ]
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "T_AB is +π/2 with offset (1,23). Given p_A=(3,24), compute p_B=T_AB⁻¹ p_A.",
+            "fields": [
+              {
+                "label": "x in B",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y in B",
+                "kind": "number",
+                "answer": "-2",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Subtract the offset to get (2,1), then rotate −π/2 to (1,−2).",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "Subtract the offset to get (2,1), then rotate −π/2 to (1,−2)."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.10",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.proper@1",
+            "inputs": {
+              "R": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  -1
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Is R=[[1, 0], [0, -1]] a proper 2D rotation? Require orthogonality AND determinant +1.",
+            "fields": [
+              {
+                "label": "Proper rotation",
+                "kind": "choice",
+                "answer": "no",
+                "tolerance": 0.001,
+                "options": [
+                  "yes",
+                  "no"
+                ]
+              }
+            ],
+            "solution": "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.11",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.proper@1",
+            "inputs": {
+              "R": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  0
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Is R=[[0, 1], [-1, 0]] a proper 2D rotation? Require orthogonality AND determinant +1.",
+            "fields": [
+              {
+                "label": "Proper rotation",
+                "kind": "choice",
+                "answer": "yes",
+                "tolerance": 0.001,
+                "options": [
+                  "yes",
+                  "no"
+                ]
+              }
+            ],
+            "solution": "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.12",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.invariants@1",
+            "inputs": {
+              "R": [
+                [
+                  0.16996714290024081,
+                  0.9854497299884603
+                ],
+                [
+                  0.9854497299884603,
+                  -0.16996714290024081
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "For R=[[0.16996714290024081, 0.9854497299884603], [0.9854497299884603, -0.16996714290024081]], compute det R and the squared norm of its SECOND column. These two checks alone are not a complete general orthogonality test.",
+            "fields": [
+              {
+                "label": "Determinant",
+                "kind": "number",
+                "answer": "-1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Second column norm squared",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "The determinant is -1; the second-column squared norm is 1.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "The determinant is -1; the second-column squared norm is 1."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.13",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.invariants@1",
+            "inputs": {
+              "R": [
+                [
+                  1,
+                  23
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "For R=[[1, 23], [0, 1]], compute det R and the squared norm of its SECOND column. These two checks alone are not a complete general orthogonality test.",
+            "fields": [
+              {
+                "label": "Determinant",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Second column norm squared",
+                "kind": "number",
+                "answer": "530",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "The determinant is 1; the second-column squared norm is 530.",
+            "hints": [
+              "State the convention and identify the requested quantity.",
+              "Work one intermediate step using the stated model.",
+              "The determinant is 1; the second-column squared norm is 530."
+            ],
+            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        }
+      ]
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0"
+  }
+}

@@ -10,6 +10,8 @@ import {
   V2Error,
 } from "./contracts";
 import { catalog } from "./content";
+import { replay } from "./replay";
+import { resolveCM, type SourceResolver } from "./assessments";
 import { backup3, type Backup, type Exposure } from "./state";
 import {
   checkpoint,
@@ -167,6 +169,7 @@ export function validateFull(input: unknown) {
         .object({
           id: z.string().min(1).max(120),
           version: z.number().int().positive(),
+          dimension: z.enum(["C", "M"]).optional(),
         })
         .strict(),
     )
@@ -253,37 +256,20 @@ export function validateFull(input: unknown) {
   limited(b);
   return { backup: b, legacy };
 }
-// Until an approved assessment source/policy is installed, incoming claims stay
-// inert. Numeric grade agreement is deliberately not a trust/admission shortcut.
-function project(db: DB, b: Backup) {
-  const provenance =
+function project(db: DB, b: Backup, resolve: SourceResolver = resolveCM) {
+  return replay(
+    b,
     b.workspaceId === meta(db, "workspace_id")
       ? "restored_same_workspace"
-      : "restored_foreign";
-  const data = structuredClone(b.v2);
-  for (const e of data.evidence) {
-    e.provenance = provenance;
-    e.outcome = "unverifiable";
-    e.reason_code = "source_or_review_unavailable";
-    e.validation_json = canonical({
-      policy: 1,
-      status: "unverifiable",
-      reason: e.reason_code,
-    });
-    if (e.attempt_id !== null) {
-      const a = data.attempts.find((a) => a.id === e.attempt_id);
-      if (
-        !a ||
-        a.status !== "submitted" ||
-        !["verify", "review"].includes(a.purpose)
-      )
-        e.attempt_id = null;
-    }
-  }
-  for (const r of data.objectiveReviews) r.state = "suspended";
-  return data;
+      : "restored_foreign",
+    resolve,
+  );
 }
-export function preview(store: Store, input: unknown) {
+export function preview(
+  store: Store,
+  input: unknown,
+  resolve: SourceResolver = resolveCM,
+) {
   const schema = (input as { schema?: unknown })?.schema;
   if (schema !== "corelab-backup/3") {
     const p = validateBackup(structuredClone(input));
@@ -302,11 +288,23 @@ export function preview(store: Store, input: unknown) {
     };
   }
   const { backup } = validateFull(input);
+  const projection = project(store.db, backup, resolve);
+  limited({ ...backup, v2: projection });
   return {
     digest: digest(input),
     token: revisionToken(store.db),
     scope: "full",
     counts: backup.counts,
+    evidence: {
+      admitted: projection.evidence.filter((e) => e.outcome === "admitted")
+        .length,
+      notAdmitted: projection.evidence.filter(
+        (e) => e.outcome === "not_admitted",
+      ).length,
+      unverifiable: projection.evidence.filter(
+        (e) => e.outcome === "unverifiable",
+      ).length,
+    },
     warnings: [
       ...(backup.workspaceId !== meta(store.db, "workspace_id")
         ? [
@@ -315,7 +313,7 @@ export function preview(store: Store, input: unknown) {
         : []),
       ...(backup.v2.evidence.length
         ? [
-            "Evidence is retained as unverified history until its independent review and policy gates are available.",
+            "Evidence is recomputed from recognized sources, assistance and historical exposure. Unknown or unreviewed claims remain inert.",
           ]
         : []),
     ],
@@ -326,8 +324,9 @@ export function restore(
   input: unknown,
   expected: { digest: string; token: string; confirm: boolean },
   fault?: () => void,
+  resolve: SourceResolver = resolveCM,
 ) {
-  const checked = preview(store, input);
+  const checked = preview(store, input, resolve);
   if (!expected.confirm || expected.digest !== checked.digest)
     throw new V2Error(
       "confirmation_required",
@@ -339,6 +338,7 @@ export function restore(
       ? validateFull(input)
       : null;
   const legacy = full?.legacy ?? validateBackup(structuredClone(input));
+  const projected = full ? project(store.db, full.backup, resolve) : null;
   return write(
     store.db,
     () => {
@@ -366,7 +366,7 @@ export function restore(
         snapshot_json: snapshot,
       });
       if (full) {
-        const data = project(store.db, full.backup);
+        const data = projected!;
         for (const t of [...learningTables].reverse())
           store.db.exec("DELETE FROM " + t);
         for (const key of [
