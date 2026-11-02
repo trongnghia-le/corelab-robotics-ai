@@ -452,6 +452,7 @@ function oracle(familyId: string, item: Item): (number | string)[] {
           const x = n("x"),
             y = n("y"),
             r = Math.hypot(x, y);
+          expect(r).toBeGreaterThan(l1 + l2);
           expect(ik(x, y, l1, l2)).toHaveLength(0);
           const [fx, fy] = fk(Math.atan2(y, x), 0, l1, l2);
           return [
