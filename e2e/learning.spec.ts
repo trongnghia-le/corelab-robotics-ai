@@ -12,7 +12,7 @@ test("empty workspace → lesson → assessment → reload → evidence → hand
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Build foundations. Go further." }),
+    page.getByRole("heading", { name: "Your Robotics & AI journey." }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Mathematical Basics", exact: true }),
@@ -235,7 +235,7 @@ test("remaining pages, honest overview, keyboard/mobile layout, invalid import a
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Build foundations. Go further." }),
+    page.getByRole("heading", { name: "Your Robotics & AI journey." }),
   ).toBeVisible();
   await page.screenshot({
     path: ".local/screenshots/dashboard.png",

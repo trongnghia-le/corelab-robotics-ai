@@ -22,19 +22,7 @@ export function Workspace({
   route: string[];
   v2Enabled?: boolean;
 }) {
-  if (!route.length)
-    return (
-      <>
-        {v2Enabled && (
-          <div className="page v2-home-link">
-            <Link className="button primary" href="/objectives">
-              Open CoreLab V2 · objective learning
-            </Link>
-          </div>
-        )}
-        <Dashboard />
-      </>
-    );
+  if (!route.length) return <Dashboard v2Enabled={v2Enabled} />;
   const [page, id] = route;
   if (page === "objectives" && v2Enabled)
     return <V2Explorer key={id ?? "all"} objective={id} />;

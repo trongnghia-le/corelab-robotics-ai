@@ -66,3 +66,22 @@ Delivered the identity follow-up: explicit Robotics & AI first-principles headin
 Verification: `npm run lint`, `npm run typecheck` and final `npm run build:v2` passed. All **9 V2 Chromium flows** and **7 legacy Chromium flows** passed on Linux/Node 26.8.1. Legacy checks ran in `/tmp/corelab-identity-legacy-elk5jj6n`, with synthetic data and signing keys outside the workspace. The first browser pass caught practice discovery falling below its 1,100px budget; compacting root metadata and spacing fixed it, with the original test budget retained. The new identity test verifies the page title, semantic heading, concept image, four live objective references, actual camera-objective navigation, and root overflow at 320px/390px. Existing help/evidence/backup tests still pass. No new unit suite or OS validation is claimed for this visual/copy follow-up.
 
 Actual final screenshot copies: `/tmp/corelab-ui-dwpd0uqp/robotics-ai-final-desktop.png` and `robotics-ai-final-mobile.png`. Preserved the exact pre-existing next-env.d.ts. No production database, backend file, content contract, external service, dependency, push or deployment was changed. Rollback is a normal revert of this UI-only follow-up commit.
+
+## Dashboard redesign (2026-11-02)
+
+User requested a more engaging Dashboard. Reworked the home screen around a prominent next-learning card, a Robotics & AI concept panel, concise topic-evidence summaries and eight illustrated curriculum direction cards. Kept dark/orange, English and readable text. Domain cards derive their topic and authored-lesson counts from the real graph and `state.lessonIds`; a roadmap topic is not advertised as an authored lesson. Recommendations, prerequisites and legacy mastery logic are unchanged. Badge text reflects the actual recommendation kind.
+
+Integrated the V2 entry into the dashboard concept card instead of a detached banner above the page. Workspace passes the existing server-owned enabled flag; V2-off links to the curriculum, V2-on links to the objective lab with an explicit separate-evidence label. No V2 request is added to the default dashboard. Recent reading/note activity now opens the lesson; assessment activity still opens its assessment. Weaknesses, due reviews, resume, strengths, parallel recommendations and manual tutor links remain available.
+
+Extracted the existing original concept SVG into `components/robotics-concept.tsx` so Dashboard and the objective hero reuse one illustration. Unique ID prefixes separate SVG titles/patterns; semantic name/description retained. The visual remains static and labelled as a concept illustration. No robot/simulator connection is claimed. Existing legacy browser tests only change their two Dashboard heading assertions; backend flows stay intact.
+
+Executed on Linux / Node 26.8.1 / Chromium:
+
+- Final `npm run build:v2`, `npm run lint`, `npm run typecheck`, `git diff --check`: passed.
+- `npm run test:v2:e2e`: **10 passed**, including Dashboard → objective lab and no change to topic progress or V2 attempt history.
+- `npm run test:e2e`: **9 passed**, including two new dashboard checks, in disposable `/tmp/corelab-dashboard-final-y3bhcelj`. Existing seven flows retain real legacy assessment/signature/backup coverage with temporary signing keys/data outside this workspace.
+- New checks cover actual topic evidence/attempt totals, graph/lesson counts, domain-filter navigation, flag-off fallback, primary action/keyboard focus, readable mobile text, no horizontal overflow at 320px/390px, no browser exceptions and no progress mutation from discovery.
+- Inspected actual screenshots at `/tmp/corelab-ui-dwpd0uqp/dashboard-final-desktop.png` and `dashboard-final-mobile.png`. Mobile is a Chromium viewport check, not a native-device/Safari or screen-reader certification. No new unit-suite or OS-support claim is made for these presentation changes.
+- The unrelated next-env.d.ts still matches the saved original. Owned local test servers stopped. No production learner database, backend/content contract, dependency, migration, deployment or push changed.
+
+Rollback: normal revert of this dashboard UI commit; no data rollback is needed. Claude's untracked B1 labs/fixtures and all review directories were preserved. Backend work can continue under the existing file ownership split.

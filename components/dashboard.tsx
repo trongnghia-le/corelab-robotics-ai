@@ -10,13 +10,58 @@ import {
   FlaskConical,
   BookOpen,
   ChevronRight,
+  Sigma,
+  Code2,
+  BrainCircuit,
+  ScanEye,
+  Bot,
+  Workflow,
+  Network,
+  Microscope,
+  Compass,
+  RotateCcw,
 } from "lucide-react";
+import { RoboticsConcept } from "./robotics-concept";
 import { useCore, Loading } from "./provider";
 import { PageHeading, Status, dateText, TopicChips } from "./ui";
 import { weaknessUrl } from "@/lib/weaknesses";
 import { WeaknessStatus } from "./weakness-practice";
 import { domains, topics, topicMap } from "@/lib/curriculum";
-export function Dashboard() {
+const domainDetails = {
+  Mathematics: {
+    Icon: Sigma,
+    description: "The language of motion and uncertainty.",
+  },
+  Programming: {
+    Icon: Code2,
+    description: "Turn ideas into reliable algorithms.",
+  },
+  "Machine Learning": {
+    Icon: BrainCircuit,
+    description: "Patterns, losses and generalization.",
+  },
+  "Computer Vision": {
+    Icon: ScanEye,
+    description: "Connect pixels to geometry.",
+  },
+  Robotics: {
+    Icon: Bot,
+    description: "Frames, motion, estimation and control.",
+  },
+  "Reinforcement & Robot Learning": {
+    Icon: Workflow,
+    description: "Make decisions from rewards and dynamics.",
+  },
+  "Embodied & Cognitive Robotics": {
+    Icon: Network,
+    description: "Connect perception, memory and action.",
+  },
+  "Scientific Research": {
+    Icon: Microscope,
+    description: "Design experiments. Question results.",
+  },
+};
+export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
   const { state } = useCore();
   if (!state) return <Loading />;
   const { progress, mastery, recommendations } = state;
@@ -58,19 +103,29 @@ export function Dashboard() {
     <div className="page dashboard">
       <PageHeading
         eyebrow="YOUR ROBOTICS & AI LEARNING LAB"
-        title="Build foundations. Go further."
-        description="Build the mathematics, programming and intuition behind robots that sense, learn, plan and act."
+        title="Your Robotics & AI journey."
+        description="Understand the foundations. Build the algorithms. Discover what you can do independently."
       >
         <Link className="button" href="/paths">
           <GitBranch size={16} />
           My learning path
         </Link>
       </PageHeading>
-      <div className="dashboard-grid">
+      <div className="dashboard-grid dashboard-launch">
         <section className="focus-card">
           <div className="section-kicker">
             <span className="accent-dot" />
-            NEXT ACTION <span className="priority-pill">FOUNDATION FIRST</span>
+            YOUR NEXT STEP
+            <span className="priority-pill">
+              {rec
+                ? {
+                    learn: "LEARN",
+                    assess: "DIAGNOSTIC",
+                    practice: "PRACTICE",
+                    review: "REVIEW",
+                  }[rec.kind]
+                : "EXPLORE"}
+            </span>
           </div>
           {topic && rec ? (
             <>
@@ -82,7 +137,7 @@ export function Dashboard() {
               <div className="reason-box">
                 <Target size={17} />
                 <div>
-                  <strong>Why this lesson?</strong>
+                  <strong>Try this next</strong>
                   <p>{rec.exercise}</p>
                 </div>
               </div>
@@ -132,80 +187,122 @@ export function Dashboard() {
             </>
           )}
         </section>
-        <section className="panel focus-aside">
-          <div className="panel-heading">
-            <h2>Your starting point</h2>
-            <ShieldCheck size={18} />
-          </div>
-          <p className="muted small">
-            Competence is recorded through evidence.
-          </p>
-          <div className="evidence-stat">
-            <strong>{verified.length}</strong>
-            <span>
-              {verified.length === 1
-                ? "topic with evidence"
-                : "topics with evidence"}
-              <br />
-              <small>across {topics.length} topics</small>
-            </span>
-          </div>
-          <div className="aside-stat">
-            <span>Topics attempted</span>
-            <strong>
-              {attempted.size} {attempted.size === 1 ? "topic" : "topics"}
-            </strong>
-          </div>
-          <div className="aside-stat">
-            <span>Reviews due</span>
-            <strong>
-              {due.length} {due.length === 1 ? "topic" : "topics"}
-            </strong>
-          </div>
-          <div className="quiet-note">
-            {verified.length
-              ? "Check C/M/I/T to see exactly which evidence you have."
-              : "Unassessed is a starting point, not a score of zero."}
+        <section
+          className="dashboard-lab-card"
+          aria-labelledby="dashboard-lab-title"
+        >
+          <div className="eyebrow">FROM FIRST PRINCIPLES TO ROBOT BEHAVIOR</div>
+          <RoboticsConcept idPrefix="dashboard-concept" />
+          <div className="dashboard-lab-caption">
+            <h2 id="dashboard-lab-title">Make the connection.</h2>
+            <Link
+              className="button"
+              href={v2Enabled ? "/objectives" : "/roadmap"}
+            >
+              <Compass size={18} aria-hidden="true" />
+              {v2Enabled
+                ? "Open Robotics & AI lab"
+                : "Explore Robotics & AI curriculum"}
+              <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+            {v2Enabled && (
+              <small>
+                Objective practice and C/M checks have their own evidence
+                record.
+              </small>
+            )}
           </div>
         </section>
       </div>
-      <div className="section-title">
-        <h2>Competency map</h2>
+      <section
+        className="dashboard-evidence"
+        aria-label="Your topic learning evidence"
+      >
+        <dl>
+          <div>
+            <dt>
+              <ShieldCheck size={18} aria-hidden="true" /> Topics with evidence
+            </dt>
+            <dd data-testid="dashboard-evidence-count">
+              {verified.length}
+              <span>of {topics.length} curriculum topics</span>
+            </dd>
+          </div>
+          <div>
+            <dt>
+              <Target size={18} aria-hidden="true" /> Topics attempted
+            </dt>
+            <dd data-testid="dashboard-attempted-count">
+              {attempted.size}
+              <span>through topic assessments</span>
+            </dd>
+          </div>
+          <div>
+            <dt>
+              <RotateCcw size={18} aria-hidden="true" /> Topic reviews due
+            </dt>
+            <dd data-testid="dashboard-due-count">
+              {due.length}
+              <span>return when it is time to retrieve</span>
+            </dd>
+          </div>
+        </dl>
+        <p>
+          {verified.length
+            ? "Topic evidence reflects your recorded C/M/I/T checks; reading and practice do not automatically increase mastery."
+            : "Unassessed is a starting point, not a score of zero."}
+        </p>
+      </section>
+      <div className="section-title dashboard-directions-heading">
+        <div>
+          <div className="eyebrow">EXPLORE YOUR INTERESTS</div>
+          <h2>Where will you go next?</h2>
+        </div>
         <Link href="/roadmap">
-          View full Roadmap
-          <ArrowUpRight size={15} />
+          Full curriculum <ArrowUpRight size={16} />
         </Link>
       </div>
-      <section className="panel domain-table">
-        <div className="table-head">
-          <span>DOMAIN</span>
-          <span>EVIDENCE</span>
-          <span>STATUS</span>
-        </div>
-        {domains.map((d, i) => {
-          const ts = topics.filter((t) => t.domain === d),
-            vs = ts.filter((t) => mastery[t.id].level > 0);
+      <p className="dashboard-directions-note">
+        Start with a foundation or follow your curiosity. The roadmap includes
+        future topics; authored lessons are counted separately.
+      </p>
+      <section className="dashboard-domains" aria-label="Curriculum directions">
+        {domains.map((d) => {
+          const ts = topics.filter((t) => t.domain === d);
+          const vs = ts.filter((t) => mastery[t.id].level > 0);
+          const lessons = ts.filter((t) =>
+            state.lessonIds.includes(t.id),
+          ).length;
+          const detail = domainDetails[d as keyof typeof domainDetails];
+          const Icon = detail?.Icon ?? Compass;
           return (
             <Link
-              className="domain-row"
+              className="dashboard-domain-card"
               href={`/roadmap?domain=${encodeURIComponent(d)}`}
               key={d}
             >
-              <span>
-                <span className="domain-index">
-                  {String(i + 1).padStart(2, "0")}
+              <div className="dashboard-domain-top">
+                <span className="dashboard-domain-icon">
+                  <Icon size={24} aria-hidden="true" />
                 </span>
-                <strong>{d}</strong>
-              </span>
-              <span className="muted small">
-                {vs.length
-                  ? `${vs.length} verified ${vs.length === 1 ? "topic" : "topics"}`
-                  : "No evidence yet"}
-              </span>
-              <span className={vs.length ? "verified-text small" : "status"}>
-                {vs.length ? "Evidence available" : "Unassessed"}
-                <ChevronRight size={14} />
-              </span>
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </div>
+              <h3>{d}</h3>
+              <p>
+                {detail?.description ?? "Explore this part of the curriculum."}
+              </p>
+              <div className="dashboard-domain-meta">
+                <span>{ts.length} curriculum topics</span>
+                <span>
+                  {lessons} authored {lessons === 1 ? "lesson" : "lessons"}
+                </span>
+              </div>
+              {vs.length > 0 && (
+                <span className="dashboard-domain-evidence">
+                  <ShieldCheck size={14} aria-hidden="true" /> {vs.length}{" "}
+                  {vs.length === 1 ? "topic has" : "topics have"} evidence
+                </span>
+              )}
             </Link>
           );
         })}
@@ -265,7 +362,14 @@ export function Dashboard() {
           {recent.length ? (
             <div className="activity-list">
               {recent.map((item) => (
-                <Link href={`/assessments/${item.topicId}`} key={item.id}>
+                <Link
+                  href={
+                    item.kind === "assessment"
+                      ? `/assessments/${item.topicId}`
+                      : `/lessons/${item.topicId}`
+                  }
+                  key={item.id}
+                >
                   <span className="activity-dot" />
                   <div>
                     <strong>

@@ -237,3 +237,36 @@ test("Robotics and AI identity leads to real authored learning activities", asyn
     page.getByRole("heading", { name: "Project a camera-frame point" }),
   ).toBeVisible();
 });
+
+test("V2 dashboard opens the objective lab without changing either learning history", async ({
+  page,
+}) => {
+  const before = await (await page.request.get("/api/state")).json();
+  const attempts = await (
+    await page.request.get("/api/v2/history?limit=50")
+  ).json();
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Your Robotics & AI journey." }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      "Objective practice and C/M checks have their own evidence record.",
+    ),
+  ).toBeVisible();
+  await page
+    .getByRole("link", { name: "Open Robotics & AI lab", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Learn Robotics & AI. From first principles.",
+    }),
+  ).toBeVisible();
+  expect(
+    (await (await page.request.get("/api/state")).json()).progress,
+  ).toEqual(before.progress);
+  expect(
+    await (await page.request.get("/api/v2/history?limit=50")).json(),
+  ).toEqual(attempts);
+});
