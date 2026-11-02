@@ -20,13 +20,15 @@ Baseline: 38b6a1d. Implementation authorized by the owner on 2026-10-31; local c
 - Validation: 140 tests passed in 14 files; lint/typecheck and V2 production build passed; 2 Chromium E2E flows passed (practice/help/reload/restore and 390px keyboard/security gates). A mobile screenshot was inspected. No Windows/macOS/browser-screen-reader result is claimed.
 - C/M kernel and chronological restore replay now implemented: scoped 80%/critical-item admission, cross-tab exposure cuts, immutable variants, independent-review metadata gates, relative due reviews, delayed retention, and replayed effective projections. Original claim bytes are retained. 48 form questions and 36 retrieval items are authored drafts; release activation remains false and actual independent reviews are pending. Synthetic test approvals exercise the kernel only.
 - 2026-11-01: 149 tests passed in 15 files; typecheck and lint passed for the C/M/replay milestone. Restore tests cover foreign provenance, rebuilt review caches, grade tampering, submission hashes and missing scopes. Readiness bridge, manual kits and broader content/UX integration follow next.
-- Next.js regenerates next-env.d.ts during builds. Restore the exact user version from /tmp/corelab-v2-implementation-z6lt9wj8/next-env.original after each build; do not stage it.
+- Next.js regenerates next-env.d.ts during builds. Restore the exact user version from `.local/codex-v2-resume-5_y675c8/next-env.original` after each build; do not stage it. The earlier /tmp copy was lost.
 - Independent content/security reviewers, actual Windows/macOS results, and learner pilot remain external gates. No reviewer approval or trial result will be fabricated.
 - Expansion beyond the Frames/FK pilot is authorized, but only functioning authored activities will be offered. Unsupported execution and integrations remain unavailable.
 
 ## Resume
 
 Read this file, git log/status, the Master Plan and IMPLEMENTATION_REPORT.md when present. Work only on temporary databases during tests. Never use default getStore() against learner data in test scripts. Keep verified I disabled.
+
+Latest code milestone: `3edf307`; final qualification: 210 tests/28 files, four V2 and seven legacy browser flows, Node 24 production builds. Deferred restore epochs are now explicitly owner-approved and implemented. Read ACCEPTANCE_STATUS.md for remaining release/resource/review gates. No known failing test remains in this continuation.
 
 ## 2026-11-01: integrated objective workflow milestone
 
@@ -47,3 +49,31 @@ Read this file, git log/status, the Master Plan and IMPLEMENTATION_REPORT.md whe
 - 50,000 repeated issued bridge attempts, in-memory Linux/Node26.8.1/i5-12500H: selector 9.58–40.62 ms, 4,882-byte response, 8,232-byte history page; 81,888,728 estimated profile bytes, RSS 211,677,184. Not a full disk/restore/capacity qualification.
 - Audit: zero production npm findings; 16 moderate development lint-chain findings rooted in minimatch. No unsafe force update/downgrade.
 - S3 protocol prepared; no outreach or trial. Remaining technical qualification: near-limit valid-profile projection/headroom and disk/migration failure injection, broader cross-process consistent export, exact flag-off behavior, complete acceptance matrix and supported OS evidence. Independent review/release gates remain external and cannot be self-granted.
+
+## 2026-11-02: compatibility and data-safety qualification (work in progress)
+
+- Last committed green milestone: `acf694a` (191 tests). Subsequent hardening is uncommitted; preserve it on resume.
+- Reproduced a supported-budget defect with a reduced 64 KiB test using the production sizing path. SQL write accounting initially omitted part of the complete backup envelope; shared envelope sizing fixes that mismatch. The remaining regression is real: immediate restore-epoch growth makes the last accepted profile fail its restore capacity check. Do not skip this test or claim full acceptance.
+- D11 question sent to the owner: allow allocating an empty post-restore learning epoch on the first subsequent learning write, while recording provenance immediately, or retain immediate epochs with explicit near-limit maintenance. No answer received and no normative epoch change implemented. Continue independent qualification while pending.
+- Added consistent export coverage under a real second process committing paired legacy/V2 updates. Added missing pre-migration disk-headroom and partial/invalid metadata tests. An actual SQLite page-full failure revealed unconditional ROLLBACK could mask the original error after SQLite auto-rollback; transaction-state guards now preserve the original failure and unchanged rows/counters/revision.
+- Strengthened full-backup duplicate evidence-scope and review-reference validation. Added a qualification script running the actual baseline Store from `38b6a1d` against a disposable V2-used database: reopen/edit/legacy restore preserves sidecar rows and user_version=2, detects mixed history and resumes after acknowledgement. Passed on Node 26.8.1 and Node 24.22.2.
+- Latest complete Node 24.22.2 unit run: **196 passed, 1 failed (capacity-boundary), 197 total in 26 files**. All five targeted storage/platform/concurrency suites passed (31 tests). Node 24 V2 build and four Chromium V2 flows passed; lint, typecheck and V2 content validation passed. No Windows/macOS result or external review is claimed.
+- Previous /tmp resume artifacts are no longer available. Restore the user's exact next-env.d.ts after each Next build from **`.local/codex-v2-resume-5_y675c8/next-env.original`** (private ignored recovery copy). Do not stage next-env.d.ts. The baseline extraction for the current probe is `/tmp/corelab-baseline-compat-jfaz_767`; recreate from git archive if absent.
+- `ACCEPTANCE_STATUS.md` maps the specification criteria to actual evidence and remaining gates. Still no push/deployment, real learner-data access/deletion, C/M release activation or verified I.
+
+### D11 answer and capacity repair
+
+- Owner explicitly selected **defer the empty learning epoch until the next write**. The Master Plan records the approved refinement; the historical Unified Spec is unchanged.
+- Implemented strictly validated local pending provenance, first-real-write epoch allocation, no-op/idempotent rollback, enabled legacy pre-commit allocation and acknowledgement handling. Existing epochs are never removed. Repeated restore/export no longer appends unused learning rows.
+- Replaced repeat-charged evidence overhead with stable projection/review-cache floors in the shared envelope budget. Reduced-boundary fixtures now cover unchanged history, inert I claims, and missing C/M review caches rebuilt using explicit synthetic approvals. No real review/release gate is changed.
+- Added failure injection after snapshot, replacement and pruning; previous snapshots/history/revision roll back together. Partial migration DDL rolls back while its validated pre-copy remains openable. Collection-bound help writes refuse atomically.
+- Latest complete Node 24 suite: **209 passed in 28 files**, lint/typecheck and both content validators passed. This supersedes the earlier 196+1 failing run; the reproducer remains present and passing.
+- Before the deferred-epoch refinement, a 133,917,793-byte valid disk-backed non-ASCII profile with a closed practice attempt exported/restored/re-exported successfully on Linux/Node 24.22.2 in 45.307 s; max RSS 4,152,512,512 bytes. Fixture left 256 KiB unused. This is not the exact-boundary or memory-budget release gate. Repeating on final code remains to do.
+
+### Final qualification of this continuation
+
+- The malformed-pending-provenance guard test brings the complete Node 24 suite to **210 passed in 28 files**. Node 26 passed the preceding 209-test revision. No tests skipped.
+- Node 24 V2 build/four Chromium flows passed. Actual production-process restart check passed fresh off → on/practice → non-1 off/legacy edit → on/acknowledge/resume. Default build and seven legacy browser flows passed in `/tmp/corelab-v1-final-y_i6zj73`, with signing activity confined to that disposable copy.
+- Final large-profile mechanism run: 133,917,793-byte export; 133,950,561 supported-budget bytes both before and after restore; 11,060 non-ASCII notes plus a closed V2 practice attempt; 47.585 s; max RSS 4,037,042,176 bytes. Command: `node --import tsx scripts/qualify-v2-backup.ts --full-budget`. This leaves 256 KiB unused and does not replace exact reduced-budget or large reviewed-evidence testing. Release resource-budget approval remains open.
+- Latest production npm audit: zero findings; full development audit: 16 moderate minimatch-chain findings, suggested major ESLint downgrade not applied.
+- Remaining external gates: genuine technical/adversarial/pedagogical reviews, S1/S2 release activation, approved memory/disk budget and tested OS support, actual S3 volunteers/21-day observations. Verified I/transfer and 20 unimplemented roadmap labs remain unavailable/planned. No whole-platform completion claim.
