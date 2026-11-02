@@ -215,24 +215,43 @@
       "id": "L15",
       "title": "Executive and safety",
       "outcome": "Check preconditions, cancellation and fault transitions.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L15-executive",
       "practiceFamilies": [
-        "X09",
-        "X20"
+        "X20",
+        "X32"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical/replay self-check of a deterministic plain state machine for a declared mock pick-and-deliver task: 11 states (a hold state per active phase), 11 events with integer-millisecond timestamps, guarded transitions, a watchdog (observation older than max_age stops motion and enters a hold state; age equal to max_age is fresh), fault and cancel priority, bounded retry and explicit resume with no automatic re-entry, trace replay returning states and emitted commands, and a trace monitor for no motion command while stale, cancelled or faulted. Checked against hand-written tables and exhaustive short event sequences. Simulation only: no hardware, real stop, ROS timing, behaviour-tree library, hazard review or certification.",
+      "unavailable": [
+        "Human hazard-analysis review of the state table and recovery paths",
+        "Safety certification or any claim that the machine is a safety function",
+        "Real emergency stop, actuator, gripper or hardware fault injection",
+        "Behaviour-tree libraries and BT-specific semantics",
+        "ROS nodes, real-time scheduling and timer or clock failure modes",
+        "Concurrent or asynchronous events, message loss and command acknowledgement",
+        "Fault injection on a simulator or real robot"
+      ]
     },
     {
       "id": "L16",
       "title": "Camera and calibration",
       "outcome": "Project and validate synthetic camera geometry.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L16-camera",
       "practiceFamilies": [
-        "X16"
+        "X16",
+        "X33"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical/replay self-check on synthetic geometry only: ideal pinhole intrinsics (fx, fy, cx, cy; no distortion), a declared world-to-camera rotation and translation, projection and deprojection with positive depth and rejection of zero, negative or behind-camera depth, reprojection RMS, and a linear intrinsic fit (two independent least-squares lines from known camera-frame points) evaluated on a stated train/held-out split, checked against exact rational arithmetic. No images, detection, lens model or device calibration; a small error here does not validate a real camera.",
+      "unavailable": [
+        "Real image input, rendered images or replayed camera frames",
+        "Checkerboard or corner detection",
+        "Full Zhang-style calibration with unknown extrinsics per view",
+        "Lens distortion models beyond the ideal pinhole, and undistortion",
+        "PnP and camera pose estimation",
+        "Stereo, depth sensors and rolling-shutter effects",
+        "Device calibration, hand-eye calibration and any hardware evidence"
+      ]
     },
     {
       "id": "L17",
@@ -262,14 +281,22 @@
       "id": "L19",
       "title": "Data QA and imitation",
       "outcome": "Check data alignment, split integrity and evaluation protocol.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L19-imitation",
       "practiceFamilies": [
         "X07",
         "X08",
-        "X19"
+        "X19",
+        "X36"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical self-check on tiny in-memory episode lists: named QA defects (empty, length mismatch, non-increasing timestamps, gaps above a declared maximum, NaN or infinity, out-of-range values), exact duplicate episodes, an action/observation lag search, whole-session train/test splits with an id leakage audit, and a closed-form least-squares line fitted on training episodes only and compared on held-out episodes with a mean-action baseline. Numerical toy only: no neural network, LeRobot or real robot data, closed-loop rollout, multi-dimensional observations or generalization claim.",
+      "unavailable": [
+        "Neural-network or diffusion policies and optimizer training",
+        "LeRobot dataset loading or real robot demonstration data",
+        "Multi-dimensional observations and action chunks",
+        "Closed-loop rollout or simulator evaluation of the cloned policy",
+        "Statistical evidence of generalization beyond the declared tiny held-out set"
+      ]
     },
     {
       "id": "L20",
@@ -287,13 +314,23 @@
       "id": "L21",
       "title": "Identification",
       "outcome": "Separate parameter fit from identifiability.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L21-identification",
       "practiceFamilies": [
         "X02",
-        "X05"
+        "X05",
+        "X38"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical/replay self-check for a declared discrete first-order model y[k+1] = a y[k] + b u[k] on small synthetic logs: simulation, 2x2 normal equations, least-squares fit with exact recovery on noise-free data, held-out one-step residual, Gram-matrix condition number with identifiable/weak/unidentifiable classification (unidentifiable logs raise ValueError), parameter standard deviation, and deterministic bounded uniform or log-uniform randomisation from explicit draws. Conditional on the declared model; synthetic logs only, no robot, no physics backend, not verified sim-to-real.",
+      "unavailable": [
+        "Physics-backend (simulator) system identification",
+        "Real robot logs, sensor calibration or hardware evidence",
+        "Sim-to-real transfer verification or any transfer claim",
+        "Nonlinear, delayed, multi-input, multi-state or closed-loop identification",
+        "Noise-model estimation, regularisation and model-order selection",
+        "Random sampling or Monte-Carlo domain-randomisation statistics beyond explicit deterministic draws",
+        "Friction-like static models (tau = J alpha + c sign(omega)) and other model classes beyond the first-order law"
+      ]
     },
     {
       "id": "L22",

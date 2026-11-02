@@ -88,10 +88,46 @@ const definitions = [
     description:
       "Manual self-check: grid A* with declared costs and corner rule, heuristic, budgeted search with honest failure, exact segment-rectangle and swept-square tests. Exhaustive-Dijkstra oracle on small grids; no RRT/PRM, arms or simulator.",
   },
+  {
+    id: "L21-identification",
+    title: "First-order identification self-check kit",
+    topic: "S08",
+    objectives: ["S08.parameter-fit"],
+    description:
+      "Original numerical self-check for a declared first-order model on synthetic logs: normal equations, least-squares fit, held-out residual, condition number and identifiability, parameter std, bounded randomisation. No robot data or sim-to-real.",
+  },
+  {
+    id: "L16-camera",
+    title: "Pinhole camera and calibration self-check kit",
+    topic: "V04",
+    objectives: ["V04.calibration-residual"],
+    description:
+      "Original numerical self-check for an ideal pinhole with a declared rigid transform: project, deproject, invalid depth, reprojection RMS, two-line intrinsic fit and held-out evaluation. No images, distortion or devices.",
+  },
+  {
+    id: "L19-imitation",
+    title: "Episode QA and imitation baseline self-check kit",
+    topic: "RL17",
+    objectives: ["RL17.bc-qa"],
+    description:
+      "Manual numerical self-check of episode QA (named defects, duplicates, lag), session-grouped splits, leakage audit and a train-only least-squares BC line against a mean-action baseline. Tiny lists only; no neural policy, LeRobot or real robot data.",
+  },
+  {
+    id: "L15-executive",
+    title: "Executive and watchdog self-check kit",
+    topic: "S07",
+    objectives: ["S07.watchdog-executive"],
+    description:
+      "Manual self-check: mock pick-and-deliver state machine with guards, timestamp watchdog, cancel/fault, bounded retry and recovery, trace replay and a no-motion-while-unsafe monitor. Table and exhaustive checks; simulation only, no hardware or certification.",
+  },
 ] as const;
 // Keep the original shared sample bytes unchanged: they are part of both old
 // kit hashes. New kits use separate immutable manifests.
 const sampleFiles: Record<string, string> = {
+  "L15-executive": "L15-executive.samples.v1.json",
+  "L19-imitation": "L19-imitation.samples.v1.json",
+  "L16-camera": "L16-camera.samples.v1.json",
+  "L21-identification": "L21-identification.samples.v1.json",
   "L11-planning": "L11-planning.samples.v1.json",
   "L10-kalman": "L10-kalman.samples.v1.json",
   "L09-localization": "L09-localization.samples.v1.json",

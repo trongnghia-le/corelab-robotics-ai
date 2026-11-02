@@ -1,0 +1,386 @@
+{
+  "id": "X38",
+  "version": 1,
+  "title": "Fit a first-order model and judge what the log can identify",
+  "domain": "Robotics",
+  "topicId": "S08",
+  "objectiveId": "S08.parameter-fit",
+  "routes": [
+    "first-order-fit",
+    "identifiability"
+  ],
+  "scope": "Least-squares fit of a declared discrete first-order model y[k+1] = a y[k] + b u[k] on small synthetic logs: normal equations, recovery, held-out residual, Gram-matrix condition number, unidentifiable and weak logs, parameter standard deviation, uniform and log-uniform bounded randomisation; no real robot data, physics-simulator identification or sim-to-real claim",
+  "labIds": [
+    "L21"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "first-order-fit": "Recover (a, b) from a noise-free log, solve the 2x2 normal equations for a noisy log with the residual RMS, and score a reported fit on a held-out log whose training log could not identify it.",
+    "identifiability": "Read the Gram matrix: determinant and condition number with the identifiable/weak/unidentifiable convention, bounded uniform and log-uniform randomisation, and how a second excited log repairs a weak one."
+  },
+  "items": [
+    {
+      "id": "X38.first-order-fit.1",
+      "route": "first-order-fit",
+      "difficulty": 1,
+      "structure": "identification.fit-exact@1",
+      "inputs": {
+        "y": [
+          "4",
+          "4",
+          "0",
+          "1"
+        ],
+        "u": [
+          "1",
+          "-1",
+          "0.5"
+        ],
+        "u_next": "2"
+      },
+      "objectiveId": "S08.parameter-fit",
+      "prompt": "A bench test logs the speed of a small motor. Model: y[k+1] = a*y[k] + b*u[k], where y is speed in rad/s, u is the applied voltage in V, one sample per step, a is dimensionless and b is in rad/s per V. The log was produced noise-free by exactly this law: speeds y = [4, 4, 0, 1] rad/s (samples y[0] to y[3]) under voltages u = [1, -1, 0.5] V (u[0] to u[2]; the pair u[k] and y[k] together produce y[k+1]). Find a and b, then predict the next speed y[4] if the voltage u[3] = 2 V is applied after y[3]. Tolerance ±0.001 for each answer.",
+      "fields": [
+        {
+          "label": "a (dimensionless)",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "b (rad/s per V)",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Predicted y[4] (rad/s)",
+          "kind": "number",
+          "answer": "4.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The log is noise-free, so every step holds exactly. Step k = 2 has y[2] = 0, so y[3] = a*0 + b*u[2] gives 1 = 0.5 b and b = 2 rad/s per V. Step k = 0: y[1] = a*y[0] + b*u[0] gives 4 = 4a + 2, so a = 0.5. Check step k = 1: 0.5*4 + 2*(-1) = 0 = y[2], consistent. Next sample with u[3] = 2 V: y[4] = a*y[3] + b*u[3] = 0.5*1 + 2*2 = 4.5 rad/s.",
+      "hints": [
+        "Each step gives one equation y[k+1] = a*y[k] + b*u[k] in the two unknowns a and b. Because the log is noise-free, all three equations hold exactly: pick the two that are easiest to solve and use the third as a check. Keep the pairing straight: y[k+1] is explained by y[k] and u[k].",
+        "Look for a step where y[k] = 0: the a-term vanishes there and that equation contains b alone. Put that b into another step to isolate a, test the remaining step, and only then predict y[4] from y[3] and u[3].",
+        "The log is noise-free, so every step holds exactly. Step k = 2 has y[2] = 0, so y[3] = a*0 + b*u[2] gives 1 = 0.5 b and b = 2 rad/s per V. Step k = 0: y[1] = a*y[0] + b*u[0] gives 4 = 4a + 2, so a = 0.5. Check step k = 1: 0.5*4 + 2*(-1) = 0 = y[2], consistent. Next sample with u[3] = 2 V: y[4] = a*y[3] + b*u[3] = 0.5*1 + 2*2 = 4.5 rad/s."
+      ],
+      "remediation": "Common slips on this item: swapping the roles of the parameters (a = 2, b = 0.5) predicts y[4] = 3 rad/s instead of the right value; assuming a = 1 (a pure integrator) gives b = 0 from the first step but b = 4 from the second, so that assumption contradicts the log; pairing y[k+1] with u[k+1] shifts every equation by one sample. Redo the three equations one step at a time in /lessons/S08 or the least-squares bridge, then try a fresh X38 item."
+    },
+    {
+      "id": "X38.first-order-fit.2",
+      "route": "first-order-fit",
+      "difficulty": 2,
+      "structure": "identification.fit-noisy@1",
+      "inputs": {
+        "y": [
+          "1",
+          "2",
+          "2",
+          "4",
+          "3"
+        ],
+        "u": [
+          "1",
+          "0",
+          "2",
+          "0"
+        ]
+      },
+      "objectiveId": "S08.parameter-fit",
+      "prompt": "A drive-speed log now contains measurement noise, so no single (a, b) reproduces every step. Same model y[k+1] = a*y[k] + b*u[k] (y in rad/s, u in V, a dimensionless, b in rad/s per V). Log: y = [1, 2, 2, 4, 3] rad/s for u = [1, 0, 2, 0] V, four step pairs k = 0..3. Find the least-squares (a, b) from the 2x2 normal equations G p = g with p = (a, b), G = [[Σy[k]², Σy[k]u[k]], [Σy[k]u[k], Σu[k]²]] and g = [Σy[k+1]y[k], Σy[k+1]u[k]] (all sums over k = 0..3). Then give the RMS of the one-step residual y[k+1] - (a*y[k] + b*u[k]) over the same four steps. Tolerance ±0.001 for each answer.",
+      "fields": [
+        {
+          "label": "a (dimensionless)",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "b (rad/s per V)",
+          "kind": "number",
+          "answer": "1.2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "One-step residual RMS (rad/s)",
+          "kind": "number",
+          "answer": "0.223607",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Sums over k = 0..3: Syy = 1 + 4 + 4 + 16 = 25, Syu = 1*1 + 2*0 + 2*2 + 4*0 = 5, Suu = 1 + 0 + 4 + 0 = 5, g0 = sum y[k+1]*y[k] = 2*1 + 2*2 + 4*2 + 3*4 = 26, g1 = sum y[k+1]*u[k] = 2*1 + 2*0 + 4*2 + 3*0 = 10. G = [[25, 5], [5, 5]], det G = 125 - 25 = 100. Cramer's rule: a = (26*5 - 5*10)/100 = 0.8 and b = (25*10 - 5*26)/100 = 1.2. Residuals y[k+1] - (0.8 y[k] + 1.2 u[k]) = 0, 0.4, 0, -0.2 rad/s, so RMS = sqrt((0 + 0.16 + 0 + 0.04)/4) = sqrt(0.05) = 0.223607 rad/s. Check: the residuals are orthogonal to both columns, 0.4*2 + (-0.2)*4 = 0 and 0.4*0 + (-0.2)*0 = 0.",
+      "hints": [
+        "Build the five sums first: three for the symmetric matrix G (regressor columns y[k] and u[k]) and two for g (target column y[k+1]). G is small enough to invert by hand with Cramer's rule; the residual RMS comes only after you have a and b.",
+        "With the five sums in hand, det G = Syy*Suu - Syu². Then a is the determinant with the first column replaced by g, divided by det G, and b is the same with the second column replaced. Evaluate the four residuals y[k+1] - (a*y[k] + b*u[k]), square them, average over the four steps and take the root.",
+        "Sums over k = 0..3: Syy = 1 + 4 + 4 + 16 = 25, Syu = 1*1 + 2*0 + 2*2 + 4*0 = 5, Suu = 1 + 0 + 4 + 0 = 5, g0 = sum y[k+1]*y[k] = 2*1 + 2*2 + 4*2 + 3*4 = 26, g1 = sum y[k+1]*u[k] = 2*1 + 2*0 + 4*2 + 3*0 = 10. G = [[25, 5], [5, 5]], det G = 125 - 25 = 100. Cramer's rule: a = (26*5 - 5*10)/100 = 0.8 and b = (25*10 - 5*26)/100 = 1.2. Residuals y[k+1] - (0.8 y[k] + 1.2 u[k]) = 0, 0.4, 0, -0.2 rad/s, so RMS = sqrt((0 + 0.16 + 0 + 0.04)/4) = sqrt(0.05) = 0.223607 rad/s. Check: the residuals are orthogonal to both columns, 0.4*2 + (-0.2)*4 = 0 and 0.4*0 + (-0.2)*0 = 0."
+      ],
+      "remediation": "Common slips on this item: fitting a and b separately (a = Σy[k+1]y[k]/Σy[k]², b = Σy[k+1]u[k]/Σu[k]²) ignores the cross term and gives a = 1.04, b = 2 with an RMS of 1.3; dropping the final mean in the RMS (square root of the summed squares) gives 0.447214 instead; swapping the two answers gives (a, b) = (1.2, 0.8). Recompute the sums and Cramer's rule step by step, then try a fresh X38 item."
+    },
+    {
+      "id": "X38.first-order-fit.3",
+      "route": "first-order-fit",
+      "difficulty": 3,
+      "structure": "identification.heldout-gap@1",
+      "inputs": {
+        "a": "1",
+        "b": "0",
+        "y_train": [
+          "2.5",
+          "2.5",
+          "2.5",
+          "2.5"
+        ],
+        "u_train": [
+          "1",
+          "1",
+          "1"
+        ],
+        "y_test": [
+          "0",
+          "1",
+          "1.6",
+          "1.96"
+        ],
+        "u_test": [
+          "1",
+          "1",
+          "1"
+        ],
+        "tol": "0.05"
+      },
+      "objectiveId": "S08.parameter-fit",
+      "prompt": "Two logs come from the same noise-free plant, which is known to obey y[k+1] = a*y[k] + b*u[k] exactly (y in rad/s, u in V). Training log: y = [2.5, 2.5, 2.5, 2.5], u = [1, 1, 1]. A teammate reports the fit (a, b) = (1, 0), which has a one-step residual of exactly 0 on the training log. Held-out log, never used for the fit: y = [0, 1, 1.6, 1.96], u = [1, 1, 1]. Give (i) det G of the training log, G = [[Σy[k]², Σy[k]u[k]], [Σy[k]u[k], Σu[k]²]] with sums over its 3 steps, and (ii) the RMS one-step residual of (a, b) = (1, 0) on the held-out log. The acceptance threshold on the held-out RMS is tol = 0.05 rad/s. (iii) Choose the best reading of the zero training residual. Tolerance ±0.001 for each number.",
+      "fields": [
+        {
+          "label": "det G of the training log",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Held-out RMS of (a, b) = (1, 0) (rad/s)",
+          "kind": "number",
+          "answer": "0.704651",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Best reading of the zero training residual",
+          "kind": "choice",
+          "answer": "The training log cannot pin (a, b) down, since many pairs fit it exactly, and the held-out log rejects this one",
+          "tolerance": 0.001,
+          "options": [
+            "The fit is trustworthy: a zero training residual on a plant that is exactly first-order means (a, b) is pinned down by the data",
+            "The training log cannot pin (a, b) down, since many pairs fit it exactly, and the held-out log rejects this one",
+            "The first-order law is the wrong model for this plant, because the held-out residual is far above the threshold, so another model class is needed",
+            "The fit only needs a looser threshold, because tol = 0.75 would let the held-out log pass, so keep (1, 0) and report the fit as validated"
+          ]
+        }
+      ],
+      "solution": "Training log: y = 2.5 and u = 1 at every step, so Syy = 3*6.25 = 18.75, Syu = 3*2.5 = 7.5, Suu = 3 and det G = 18.75*3 - 7.5² = 56.25 - 56.25 = 0. G is singular: every pair with 2.5 a + b = 2.5 fits the training log exactly, for example (1, 0) and (0.6, 1.0), so a zero training residual says nothing about which pair is right. Held-out log with (a, b) = (1, 0): the prediction is y[k], so the residuals are y[k+1] - y[k] = 1, 0.6, 0.36 rad/s and RMS = sqrt((1 + 0.36 + 0.1296)/3) = sqrt(0.496533) = 0.704651 rad/s, far above tol = 0.05. The pair (0.6, 1.0) would give zero on both logs. The plant is exactly first-order, so the structure is not at fault and loosening the threshold to 0.75 would only hide the problem: the training log lacked excitation.",
+      "hints": [
+        "Treat the two logs as two different questions. Whether the training log can identify (a, b) at all is a question about its Gram matrix G; how good the reported pair is on new data is a question about the held-out residuals.",
+        "For the training log compute the three sums Σy², Σyu and Σu² and form det G = Syy*Suu - Syu². For the held-out log, the pair (1, 0) predicts y[k+1] = y[k], so each residual is y[k+1] - y[k]; square them, average over the three steps and take the root. Then compare with tol.",
+        "Training log: y = 2.5 and u = 1 at every step, so Syy = 3*6.25 = 18.75, Syu = 3*2.5 = 7.5, Suu = 3 and det G = 18.75*3 - 7.5² = 56.25 - 56.25 = 0. G is singular: every pair with 2.5 a + b = 2.5 fits the training log exactly, for example (1, 0) and (0.6, 1.0), so a zero training residual says nothing about which pair is right. Held-out log with (a, b) = (1, 0): the prediction is y[k], so the residuals are y[k+1] - y[k] = 1, 0.6, 0.36 rad/s and RMS = sqrt((1 + 0.36 + 0.1296)/3) = sqrt(0.496533) = 0.704651 rad/s, far above tol = 0.05. The pair (0.6, 1.0) would give zero on both logs. The plant is exactly first-order, so the structure is not at fault and loosening the threshold to 0.75 would only hide the problem: the training log lacked excitation."
+      ],
+      "remediation": "Common slips on this item: forgetting the cross term gives det G = Syy*Suu = 56.25 instead of the true determinant; leaving out the final square root gives a held-out value of 0.496533; taking the square root of the summed squares without the mean gives 1.220492. Treating the zero training residual as proof (or blaming the model structure for a log that never excited the system) are reading errors: check G first, then the held-out log. Then try a fresh X38 item."
+    },
+    {
+      "id": "X38.identifiability.1",
+      "route": "identifiability",
+      "difficulty": 1,
+      "structure": "identification.gram-status@1",
+      "inputs": {
+        "y": [
+          "0",
+          "4",
+          "6",
+          "7"
+        ],
+        "u": [
+          "4",
+          "4",
+          "4"
+        ]
+      },
+      "objectiveId": "S08.parameter-fit",
+      "prompt": "A heater's temperature rise y (K) follows y[k+1] = a*y[k] + b*u[k], with u the heater setting. An engineer applies a constant setting u = 4 at every step and records y = [0, 4, 6, 7] K (3 steps, k = 0..2) before the temperature has settled. Build G = [[Σy[k]², Σy[k]u[k]], [Σy[k]u[k], Σu[k]²]] over the three steps. Give det G and the 2-norm condition number lambda_max/lambda_min of G, and choose the correct status. Convention: condition number at most 1e4 is identifiable, between 1e4 and infinity is weak (a fit exists but is very noise-sensitive), infinite (singular G) is unidentifiable. Tolerance ±0.001 for each number.",
+      "fields": [
+        {
+          "label": "det G",
+          "kind": "number",
+          "answer": "896",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Condition number of G (lambda_max/lambda_min)",
+          "kind": "number",
+          "answer": "9.05022",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Status of this log",
+          "kind": "choice",
+          "answer": "Identifiable: G is non-singular and well conditioned, because y is still changing even though u is constant",
+          "tolerance": 0.001,
+          "options": [
+            "Identifiable: G is non-singular and well conditioned, because y is still changing even though u is constant",
+            "Unidentifiable: u is constant, so the input column carries no variation and b cannot be separated from a in any log",
+            "Weak: G is non-singular, but its condition number exceeds 1e4, so the parameters are very noise-sensitive",
+            "Unidentifiable: the first sample y[0] = 0 removes a row from the fit, so fewer equations than unknowns remain and no solution exists"
+          ]
+        }
+      ],
+      "solution": "Steps k = 0..2: Syy = 0 + 16 + 36 = 52, Syu = 0*4 + 4*4 + 6*4 = 40, Suu = 3*16 = 48. det G = 52*48 - 40² = 2496 - 1600 = 896. Trace = 100, so lambda = 50 ± sqrt(50² - 896) = 50 ± sqrt(1604) = 50 ± 40.049969, lambda_max = 90.049969, lambda_min = 9.950031 and the condition number is 9.05022. That is far below 1e4 and det G is nonzero, so (a, b) is identifiable. A constant input is not by itself the problem: the speed y is still climbing (0, 4, 6, 7), so the column y[k] is not parallel to the constant column u[k]. It would become so once y settled at a constant level.",
+      "hints": [
+        "Identifiability is a property of the regressor columns y[k] and u[k] over this log, summarised by G. Write the three sums, then ask whether the two columns point in genuinely different directions or are parallel.",
+        "G is 2x2 and symmetric, so det G = Syy*Suu - Syu². For the eigenvalues use the trace t and determinant: lambda = t/2 ± sqrt(t²/4 - det G). The condition number is the larger divided by the smaller. Then compare it with the 1e4 and infinity thresholds in the statement.",
+        "Steps k = 0..2: Syy = 0 + 16 + 36 = 52, Syu = 0*4 + 4*4 + 6*4 = 40, Suu = 3*16 = 48. det G = 52*48 - 40² = 2496 - 1600 = 896. Trace = 100, so lambda = 50 ± sqrt(50² - 896) = 50 ± sqrt(1604) = 50 ± 40.049969, lambda_max = 90.049969, lambda_min = 9.950031 and the condition number is 9.05022. That is far below 1e4 and det G is nonzero, so (a, b) is identifiable. A constant input is not by itself the problem: the speed y is still climbing (0, 4, 6, 7), so the column y[k] is not parallel to the constant column u[k]. It would become so once y settled at a constant level."
+      ],
+      "remediation": "Common slips on this item: dropping the cross term Syu gives det G = 52*48 = 2496 and a diagonal ratio of 1.083333 instead of the eigenvalue ratio; calling a constant input unidentifiable ignores that y still changes here. A settled y (constant) with constant u would be singular, this one is not. Redo the sums and eigenvalues, then try a fresh X38 item."
+    },
+    {
+      "id": "X38.identifiability.2",
+      "route": "identifiability",
+      "difficulty": 2,
+      "structure": "identification.domain-randomization@1",
+      "inputs": {
+        "a_range": [
+          "0.5",
+          "0.9"
+        ],
+        "b_range": [
+          "1",
+          "3"
+        ],
+        "s_range": [
+          "0.01",
+          "1"
+        ],
+        "draws": [
+          "0.25",
+          "0.8",
+          "0.5"
+        ],
+        "a_real": "0.95"
+      },
+      "objectiveId": "S08.parameter-fit",
+      "prompt": "A simulator randomises the plant y[k+1] = a*y[k] + b*u[k] with a fixed pipeline of explicit, deterministic draws d in [0, 1]. Declared ranges: a in [0.5, 0.9] (uniform), b in [1.0, 3.0] rad/s per V (uniform) and a sensor-noise scale s in [0.01, 1] (log-uniform, i.e. uniform in log scale). The draws are d = 0.25 for a, d = 0.8 for b and d = 0.5 for s. Compute the three randomised parameters, then choose what the randomised training set says about a real unit that was later measured at a = 0.95. Tolerance ±0.001 for each number.",
+      "fields": [
+        {
+          "label": "Randomised a",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Randomised b (rad/s per V)",
+          "kind": "number",
+          "answer": "2.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Randomised noise scale s",
+          "kind": "number",
+          "answer": "0.1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "What the randomised set says about a real unit with a = 0.95",
+          "kind": "choice",
+          "answer": "Nothing was sampled near 0.95, so behaviour there is untested; widen the range or re-identify the plant",
+          "tolerance": 0.001,
+          "options": [
+            "Nothing was sampled near 0.95, so behaviour there is untested; widen the range or re-identify the plant",
+            "Randomisation interpolates smoothly between the samples, so behaviour near 0.95 is covered automatically",
+            "Uniform draws eventually reach every value, so enough training samples will include a = 0.95 as well",
+            "Any range with lo = 0.5 as its lower end is suitable, so a = 0.95 is protected by the upper end 0.9"
+          ]
+        }
+      ],
+      "solution": "Uniform draw: lo + d*(hi - lo). a = 0.5 + 0.25*(0.9 - 0.5) = 0.6. b = 1.0 + 0.8*(3.0 - 1.0) = 2.6. Log-uniform draw for s: lo*(hi/lo)^d = 0.01*(1/0.01)^0.5 = 0.01*10 = 0.1, the geometric midpoint. All three values lie inside their declared ranges, which is the only guarantee randomisation gives. A real unit with a = 0.95 lies outside [0.5, 0.9]: no training sample comes near it, so performance there is untested; the honest remedies are to widen the declared range or to identify the real plant (with a log that excites it) and compare.",
+      "hints": [
+        "A uniform draw maps d in [0, 1] linearly onto [lo, hi]; d = 0 gives lo and d = 1 gives hi. A log-uniform draw does the same on the logarithm, so it moves by a constant factor per unit of d instead of a constant amount.",
+        "Uniform: value = lo + d*(hi - lo). Log-uniform: value = lo*(hi/lo)^d. Evaluate the first formula for a and b and the second for s, then compare 0.95 with the declared range of a to answer the last question.",
+        "Uniform draw: lo + d*(hi - lo). a = 0.5 + 0.25*(0.9 - 0.5) = 0.6. b = 1.0 + 0.8*(3.0 - 1.0) = 2.6. Log-uniform draw for s: lo*(hi/lo)^d = 0.01*(1/0.01)^0.5 = 0.01*10 = 0.1, the geometric midpoint. All three values lie inside their declared ranges, which is the only guarantee randomisation gives. A real unit with a = 0.95 lies outside [0.5, 0.9]: no training sample comes near it, so performance there is untested; the honest remedies are to widen the declared range or to identify the real plant (with a log that excites it) and compare."
+      ],
+      "remediation": "Common slips on this item: writing lo + d*hi (forgetting to subtract lo) gives a = 0.725 and b = 3.4, and b = 3.4 even lies outside its range; treating s as uniform gives 0.505 instead of the geometric midpoint. Check each result against its range, then try a fresh X38 item."
+    },
+    {
+      "id": "X38.identifiability.3",
+      "route": "identifiability",
+      "difficulty": 3,
+      "structure": "identification.new-log-gram@1",
+      "inputs": {
+        "G1": [
+          [
+            "50",
+            "49.995"
+          ],
+          [
+            "49.995",
+            "50"
+          ]
+        ],
+        "G2": [
+          [
+            "2",
+            "0"
+          ],
+          [
+            "0",
+            "2"
+          ]
+        ],
+        "sigma": "0.5"
+      },
+      "objectiveId": "S08.parameter-fit",
+      "prompt": "A first experiment on y[k+1] = a*y[k] + b*u[k] (u constant, y nearly settled) has the Gram matrix G1 = [[50, 49.995], [49.995, 50]]. Its fit is suspiciously sensitive. A second experiment with a strongly varying input is recorded and has Gram matrix G2 = [[2, 0], [0, 2]]. The sums in G run over every step of every log, so fitting both logs together uses G = G1 + G2. Measurement noise on the targets has standard deviation sigma = 0.5, so the standard deviation of b's estimate is sigma*sqrt((G^-1)_11), where (G^-1)_11 = G00/det G. Convention: condition number at most 1e4 is identifiable, between 1e4 and infinity is weak, infinite is unidentifiable. Choose the status of the first log alone, give the condition numbers of G1 and of G1 + G2 (lambda_max/lambda_min), and the standard deviation of b after combining both logs. Tolerance ±0.001 for each number.",
+      "fields": [
+        {
+          "label": "Status of the first log alone",
+          "kind": "choice",
+          "answer": "Weak: G1 is non-singular, but its condition number exceeds 1e4, so tiny noise moves the fitted parameters a lot",
+          "tolerance": 0.001,
+          "options": [
+            "Weak: G1 is non-singular, but its condition number exceeds 1e4, so tiny noise moves the fitted parameters a lot",
+            "Identifiable: det G1 = 0.499975 is clearly non-zero, so the fit from the first log alone is already reliable",
+            "Unidentifiable: G1 is singular, so no pair (a, b) can be fitted to the first log at all, whatever the solver",
+            "Identifiable: a condition number below 1e6 counts as fine here, so no further experiment is needed at all"
+          ]
+        },
+        {
+          "label": "Condition number of G1",
+          "kind": "number",
+          "answer": "19999",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Condition number of G1 + G2",
+          "kind": "number",
+          "answer": "50.870324",
+          "tolerance": 0.001
+        },
+        {
+          "label": "std of b after combining both logs (rad/s per V)",
+          "kind": "number",
+          "answer": "0.25213",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Condition number of G1: lambda = 50 ± 49.995, so lambda_max = 99.995, lambda_min = 0.005 and cond = 19999, above 1e4, so the status is weak (det G1 = 2500 - 2499.500025 = 0.499975 is non-zero but tiny). Rows from separate experiments add: G = G1 + G2 = [[52, 49.995], [49.995, 52]], so lambda = 52 ± 49.995 = 101.995 and 2.005 and cond = 50.870324. std of b = sigma*sqrt((G^-1)_11) = 0.5*sqrt(52/det G) with det G = 52² - 49.995² = 204.499975, so std_b = 0.5*sqrt(0.254279) = 0.25213. The first log alone would give std_b = 5.000125, twenty times larger, so the new excited log pays off.",
+      "hints": [
+        "A symmetric matrix of the form [[p, q], [q, p]] has eigenvectors (1, 1) and (1, -1) with eigenvalues p + q and p - q. That makes both Gram matrices easy: do the eigenvalues by hand, and note that adding G2 changes p but not q.",
+        "For G1 use p = 50, q = 49.995. For the combined log add G2 first (p becomes 52), then take p ± q again. For the standard deviation compute det G = p² - q², then sigma*sqrt(p/det G) for the b entry (the matrix has equal diagonals).",
+        "Condition number of G1: lambda = 50 ± 49.995, so lambda_max = 99.995, lambda_min = 0.005 and cond = 19999, above 1e4, so the status is weak (det G1 = 2500 - 2499.500025 = 0.499975 is non-zero but tiny). Rows from separate experiments add: G = G1 + G2 = [[52, 49.995], [49.995, 52]], so lambda = 52 ± 49.995 = 101.995 and 2.005 and cond = 50.870324. std of b = sigma*sqrt((G^-1)_11) = 0.5*sqrt(52/det G) with det G = 52² - 49.995² = 204.499975, so std_b = 0.5*sqrt(0.254279) = 0.25213. The first log alone would give std_b = 5.000125, twenty times larger, so the new excited log pays off."
+      ],
+      "remediation": "Common slips on this item: replacing G1 by G2 instead of adding them gives a condition number of 1 and std_b = 0.353553; reading the nonzero det G1 as proof of a reliable fit ignores the condition number of 19999; using the first log alone gives std_b = 5.000125. Add the matrices first, then redo the eigenvalues, then try a fresh X38 item."
+    }
+  ]
+}

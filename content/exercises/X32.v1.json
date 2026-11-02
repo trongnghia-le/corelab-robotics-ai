@@ -1,0 +1,527 @@
+{
+  "id": "X32",
+  "version": 1,
+  "title": "Trace a pick-and-deliver executive and its watchdog",
+  "domain": "Robotics",
+  "topicId": "S07",
+  "objectiveId": "S07.watchdog-executive",
+  "routes": [
+    "transition-table",
+    "watchdog-trace"
+  ],
+  "scope": "Deterministic mock state machine for a declared pick-and-deliver task: guarded transitions with preconditions, a timestamp watchdog, cancel and fault handling, bounded retry and recovery without blind re-entry, event-trace replay and a no-motion-while-stale/cancelled/faulted trace invariant; simulation only, no behaviour-tree library, ROS timing, hardware, hazard review or safety certification",
+  "labIds": [
+    "L15"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "transition-table": "Apply the stated priority (fault, cancel, watchdog, table) to one event: next state, emitted command and retry counter, the equal-to-max_age boundary and the two guards on resume.",
+    "watchdog-trace": "Replay a timestamped event list with a stale observation, a bounded retry budget and a recovery, then audit a command log against the invariant of no motion command while stale, cancelled or faulted."
+  },
+  "items": [
+    {
+      "id": "X32.transition-table.1",
+      "route": "transition-table",
+      "difficulty": 1,
+      "structure": "executive.next-state@1",
+      "inputs": {
+        "state": "GRASP",
+        "event": "grasp_failed",
+        "age": "2",
+        "retries": "1",
+        "max_age": "4",
+        "max_retries": "2"
+      },
+      "objectiveId": "S07.watchdog-executive",
+      "prompt": "This is a mock pick-and-deliver executive for a simulation exercise, not a safety function. States: IDLE, APPROACH, GRASP, TRANSPORT, RELEASE, DONE, FAULT and, for each active phase x in APPROACH, GRASP, TRANSPORT, RELEASE, a hold state HOLD_x that remembers x. Times are integer milliseconds. The observation age at an event is its time minus the time of the latest obs event (an obs event itself has age 0; before any obs there is no observation). An observation is stale if there is none or its age is greater than max_age; an age equal to max_age is still fresh. Each event is handled by the first rule that applies. (1) fault: every state except FAULT goes to FAULT, emitting stop only if it was an active phase. (2) cancel: an active phase goes to IDLE emitting stop and a hold state goes to IDLE emitting nothing, both with the retry counter set to 0; other states ignore cancel. (3) watchdog: if the state is an active phase and the observation is stale, go to the matching hold state emitting stop, and the event itself is discarded. (4) table: IDLE + start goes to APPROACH emitting move_pick, only if the observation is fresh; APPROACH + reached goes to GRASP emitting close_gripper; GRASP + grasped goes to TRANSPORT emitting move_drop; GRASP + grasp_failed goes back to APPROACH emitting move_pick and adds 1 to the retry counter if retries < max_retries, otherwise goes to FAULT emitting stop; TRANSPORT + reached goes to RELEASE emitting open_gripper; RELEASE + released goes to DONE emitting nothing; HOLD_x + resume returns to x, emits that phase's entry command (APPROACH move_pick, GRASP close_gripper, TRANSPORT move_drop, RELEASE open_gripper) and adds 1 to the retry counter, but only if the observation is fresh and retries < max_retries (otherwise it stays in HOLD_x emitting nothing); FAULT + reset and DONE + reset go to IDLE. Every other combination, including obs and tick, changes nothing and emits nothing. Question: the executive is in GRASP with retry counter 1, max_retries = 2 and max_age = 4 ms, and the latest observation is 2 ms old when a grasp_failed event arrives. Give the next state, the command emitted, and the retry counter after the event.",
+      "fields": [
+        {
+          "label": "Next state",
+          "kind": "choice",
+          "answer": "APPROACH",
+          "tolerance": 0.001,
+          "options": [
+            "APPROACH",
+            "GRASP",
+            "FAULT",
+            "HOLD_GRASP",
+            "IDLE"
+          ]
+        },
+        {
+          "label": "Command emitted",
+          "kind": "choice",
+          "answer": "move_pick",
+          "tolerance": 0.001,
+          "options": [
+            "move_pick",
+            "close_gripper",
+            "stop",
+            "move_drop",
+            "open_gripper"
+          ]
+        },
+        {
+          "label": "Retry counter after the event",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The observation is 2 ms old, below max_age = 4 ms, so it is fresh and the watchdog does not fire. No fault or cancel event arrived, so the table applies: GRASP + grasp_failed with retries = 1 < max_retries = 2 goes back to APPROACH, emits move_pick and adds 1 to the retry counter, giving 2. The next grasp_failed would find retries = 2, which is not below 2, and would go to FAULT with stop.",
+      "hints": [
+        "Work through the four rules in order: is the event a fault or cancel, is the state active with a stale observation, and only then what the table says for GRASP + grasp_failed.",
+        "Compare age 2 ms with max_age 4 ms, then compare the retry counter 1 with max_retries 2. The guard on the retry counter decides between going back to APPROACH and going to FAULT.",
+        "The observation is 2 ms old, below max_age = 4 ms, so it is fresh and the watchdog does not fire. No fault or cancel event arrived, so the table applies: GRASP + grasp_failed with retries = 1 < max_retries = 2 goes back to APPROACH, emits move_pick and adds 1 to the retry counter, giving 2. The next grasp_failed would find retries = 2, which is not below 2, and would go to FAULT with stop."
+      ],
+      "remediation": "Common slips on this item: treating the failed grasp as exhausted (FAULT, stop, counter 1) ignores that retries 1 is still below max_retries 2; closing the gripper again without re-approaching (GRASP, close_gripper, 2) skips the approach; forgetting to count the retry leaves the counter at 1 (APPROACH, move_pick, 1). Re-read rule (4) in the prompt, then try a fresh X32 item."
+    },
+    {
+      "id": "X32.transition-table.2",
+      "route": "transition-table",
+      "difficulty": 2,
+      "structure": "executive.next-state@1",
+      "inputs": {
+        "state": "TRANSPORT",
+        "event": "reached",
+        "age": "7",
+        "retries": "1",
+        "max_age": "6",
+        "max_retries": "2"
+      },
+      "objectiveId": "S07.watchdog-executive",
+      "prompt": "This is a mock pick-and-deliver executive for a simulation exercise, not a safety function. States: IDLE, APPROACH, GRASP, TRANSPORT, RELEASE, DONE, FAULT and, for each active phase x in APPROACH, GRASP, TRANSPORT, RELEASE, a hold state HOLD_x that remembers x. Times are integer milliseconds. The observation age at an event is its time minus the time of the latest obs event (an obs event itself has age 0; before any obs there is no observation). An observation is stale if there is none or its age is greater than max_age; an age equal to max_age is still fresh. Each event is handled by the first rule that applies. (1) fault: every state except FAULT goes to FAULT, emitting stop only if it was an active phase. (2) cancel: an active phase goes to IDLE emitting stop and a hold state goes to IDLE emitting nothing, both with the retry counter set to 0; other states ignore cancel. (3) watchdog: if the state is an active phase and the observation is stale, go to the matching hold state emitting stop, and the event itself is discarded. (4) table: IDLE + start goes to APPROACH emitting move_pick, only if the observation is fresh; APPROACH + reached goes to GRASP emitting close_gripper; GRASP + grasped goes to TRANSPORT emitting move_drop; GRASP + grasp_failed goes back to APPROACH emitting move_pick and adds 1 to the retry counter if retries < max_retries, otherwise goes to FAULT emitting stop; TRANSPORT + reached goes to RELEASE emitting open_gripper; RELEASE + released goes to DONE emitting nothing; HOLD_x + resume returns to x, emits that phase's entry command (APPROACH move_pick, GRASP close_gripper, TRANSPORT move_drop, RELEASE open_gripper) and adds 1 to the retry counter, but only if the observation is fresh and retries < max_retries (otherwise it stays in HOLD_x emitting nothing); FAULT + reset and DONE + reset go to IDLE. Every other combination, including obs and tick, changes nothing and emits nothing. Question: the executive is in TRANSPORT with retry counter 1, max_retries = 2 and max_age = 6 ms. A reached event arrives and the latest observation is 7 ms old. Give the next state, the command emitted and the retry counter after the event. Then give the next state if the observation had been exactly 6 ms old instead.",
+      "fields": [
+        {
+          "label": "Next state (age 7 ms)",
+          "kind": "choice",
+          "answer": "HOLD_TRANSPORT",
+          "tolerance": 0.001,
+          "options": [
+            "HOLD_TRANSPORT",
+            "RELEASE",
+            "TRANSPORT",
+            "FAULT",
+            "IDLE"
+          ]
+        },
+        {
+          "label": "Command emitted (age 7 ms)",
+          "kind": "choice",
+          "answer": "stop",
+          "tolerance": 0.001,
+          "options": [
+            "stop",
+            "open_gripper",
+            "move_drop",
+            "close_gripper",
+            "move_pick"
+          ]
+        },
+        {
+          "label": "Retry counter after the event (age 7 ms)",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next state if the age were exactly 6 ms",
+          "kind": "choice",
+          "answer": "RELEASE",
+          "tolerance": 0.001,
+          "options": [
+            "RELEASE",
+            "HOLD_TRANSPORT",
+            "TRANSPORT",
+            "FAULT",
+            "IDLE"
+          ]
+        }
+      ],
+      "solution": "Age 7 ms is greater than max_age = 6 ms, so the observation is stale. TRANSPORT is an active phase, and the watchdog (rule 3) outranks the table, so the executive goes to HOLD_TRANSPORT, emits stop and discards the reached event; the retry counter stays 1. Reached would have meant arrival at the drop point, but with a stale view of the world the executive must not start releasing. With an age of exactly 6 ms the observation is still fresh (equal to max_age is fresh), so the table applies and TRANSPORT + reached goes to RELEASE emitting open_gripper.",
+      "hints": [
+        "Check the priority order first: fault, cancel, then the watchdog, and only then the table. Decide whether 7 ms is stale before you look at what reached means.",
+        "A stale observation in an active phase sends the executive to the hold state and consumes the event. For the last question compare 6 ms with max_age = 6 ms using the exact rule in the prompt for equal ages.",
+        "Age 7 ms is greater than max_age = 6 ms, so the observation is stale. TRANSPORT is an active phase, and the watchdog (rule 3) outranks the table, so the executive goes to HOLD_TRANSPORT, emits stop and discards the reached event; the retry counter stays 1. Reached would have meant arrival at the drop point, but with a stale view of the world the executive must not start releasing. With an age of exactly 6 ms the observation is still fresh (equal to max_age is fresh), so the table applies and TRANSPORT + reached goes to RELEASE emitting open_gripper."
+      ],
+      "remediation": "Common slips on this item: letting the table run first goes to RELEASE and emits open_gripper although the observation is stale; saying the executive stays in TRANSPORT silently forgets that stale means stop; using a strict rule 'age at least max_age is stale' makes the 6 ms case HOLD_TRANSPORT instead of RELEASE. Re-read rule (3) and the sentence about equal ages, then try a fresh X32 item."
+    },
+    {
+      "id": "X32.transition-table.3",
+      "route": "transition-table",
+      "difficulty": 3,
+      "structure": "executive.resume-guards@1",
+      "inputs": {
+        "state": "HOLD_GRASP",
+        "max_age": "4",
+        "max_retries": "2",
+        "cases": [
+          [
+            "4",
+            "1"
+          ],
+          [
+            "5",
+            "0"
+          ],
+          [
+            "0",
+            "2"
+          ]
+        ]
+      },
+      "objectiveId": "S07.watchdog-executive",
+      "prompt": "This is a mock pick-and-deliver executive for a simulation exercise, not a safety function. States: IDLE, APPROACH, GRASP, TRANSPORT, RELEASE, DONE, FAULT and, for each active phase x in APPROACH, GRASP, TRANSPORT, RELEASE, a hold state HOLD_x that remembers x. Times are integer milliseconds. The observation age at an event is its time minus the time of the latest obs event (an obs event itself has age 0; before any obs there is no observation). An observation is stale if there is none or its age is greater than max_age; an age equal to max_age is still fresh. Each event is handled by the first rule that applies. (1) fault: every state except FAULT goes to FAULT, emitting stop only if it was an active phase. (2) cancel: an active phase goes to IDLE emitting stop and a hold state goes to IDLE emitting nothing, both with the retry counter set to 0; other states ignore cancel. (3) watchdog: if the state is an active phase and the observation is stale, go to the matching hold state emitting stop, and the event itself is discarded. (4) table: IDLE + start goes to APPROACH emitting move_pick, only if the observation is fresh; APPROACH + reached goes to GRASP emitting close_gripper; GRASP + grasped goes to TRANSPORT emitting move_drop; GRASP + grasp_failed goes back to APPROACH emitting move_pick and adds 1 to the retry counter if retries < max_retries, otherwise goes to FAULT emitting stop; TRANSPORT + reached goes to RELEASE emitting open_gripper; RELEASE + released goes to DONE emitting nothing; HOLD_x + resume returns to x, emits that phase's entry command (APPROACH move_pick, GRASP close_gripper, TRANSPORT move_drop, RELEASE open_gripper) and adds 1 to the retry counter, but only if the observation is fresh and retries < max_retries (otherwise it stays in HOLD_x emitting nothing); FAULT + reset and DONE + reset go to IDLE. Every other combination, including obs and tick, changes nothing and emits nothing. Question: the executive is in HOLD_GRASP with max_age = 4 ms and max_retries = 2. Three independent situations each deliver one resume event; each is written as (observation age in ms, retry counter): (a) (4, 1), (b) (5, 0), (c) (0, 2). Give the state after the resume event in each situation, and the retry counter after the resume event in situation (a).",
+      "fields": [
+        {
+          "label": "State after resume in (a)",
+          "kind": "choice",
+          "answer": "GRASP",
+          "tolerance": 0.001,
+          "options": [
+            "GRASP",
+            "HOLD_GRASP",
+            "APPROACH",
+            "FAULT",
+            "IDLE"
+          ]
+        },
+        {
+          "label": "State after resume in (b)",
+          "kind": "choice",
+          "answer": "HOLD_GRASP",
+          "tolerance": 0.001,
+          "options": [
+            "HOLD_GRASP",
+            "GRASP",
+            "APPROACH",
+            "FAULT",
+            "IDLE"
+          ]
+        },
+        {
+          "label": "State after resume in (c)",
+          "kind": "choice",
+          "answer": "HOLD_GRASP",
+          "tolerance": 0.001,
+          "options": [
+            "HOLD_GRASP",
+            "GRASP",
+            "APPROACH",
+            "FAULT",
+            "IDLE"
+          ]
+        },
+        {
+          "label": "Retry counter after resume in (a)",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "HOLD_GRASP is not an active phase, so the watchdog does not apply; the table rule for resume needs both a fresh observation and retries < max_retries. (a) Age 4 equals max_age = 4, so it is fresh, and retries 1 < 2: the executive returns to GRASP, emits close_gripper and the counter becomes 2. (b) Age 5 is greater than 4: stale, so it stays in HOLD_GRASP and emits nothing. (c) The observation is fresh but retries 2 is not below max_retries 2: the recovery budget is used up, so it also stays in HOLD_GRASP and emits nothing (only cancel or fault can leave it).",
+      "hints": [
+        "Resume has two guards that must both hold: a fresh observation (compare the age with max_age, equal is fresh) and an unused retry budget (compare the counter with max_retries). Apply them one situation at a time.",
+        "For (a) both comparisons are borderline in different ways: one is an equality and one is a strict inequality. For (b) and (c) decide which single guard fails and what the executive does when a guard fails.",
+        "HOLD_GRASP is not an active phase, so the watchdog does not apply; the table rule for resume needs both a fresh observation and retries < max_retries. (a) Age 4 equals max_age = 4, so it is fresh, and retries 1 < 2: the executive returns to GRASP, emits close_gripper and the counter becomes 2. (b) Age 5 is greater than 4: stale, so it stays in HOLD_GRASP and emits nothing. (c) The observation is fresh but retries 2 is not below max_retries 2: the recovery budget is used up, so it also stays in HOLD_GRASP and emits nothing (only cancel or fault can leave it)."
+      ],
+      "remediation": "Common slips on this item: calling an age equal to max_age stale makes (a) stay in HOLD_GRASP (counter 1); skipping the retry guard sends (c) back to GRASP; skipping the freshness guard sends (b) back to GRASP; sending every recovery to APPROACH forgets that the hold remembers its phase. Re-read the resume rule, then try a fresh X32 item."
+    },
+    {
+      "id": "X32.watchdog-trace.1",
+      "route": "watchdog-trace",
+      "difficulty": 1,
+      "structure": "executive.trace-replay@1",
+      "inputs": {
+        "events": [
+          [
+            "0",
+            "obs"
+          ],
+          [
+            "1",
+            "start"
+          ],
+          [
+            "2",
+            "reached"
+          ],
+          [
+            "9",
+            "tick"
+          ],
+          [
+            "10",
+            "reached"
+          ]
+        ],
+        "max_age": "5",
+        "max_retries": "1"
+      },
+      "objectiveId": "S07.watchdog-executive",
+      "prompt": "This is a mock pick-and-deliver executive for a simulation exercise, not a safety function. States: IDLE, APPROACH, GRASP, TRANSPORT, RELEASE, DONE, FAULT and, for each active phase x in APPROACH, GRASP, TRANSPORT, RELEASE, a hold state HOLD_x that remembers x. Times are integer milliseconds. The observation age at an event is its time minus the time of the latest obs event (an obs event itself has age 0; before any obs there is no observation). An observation is stale if there is none or its age is greater than max_age; an age equal to max_age is still fresh. Each event is handled by the first rule that applies. (1) fault: every state except FAULT goes to FAULT, emitting stop only if it was an active phase. (2) cancel: an active phase goes to IDLE emitting stop and a hold state goes to IDLE emitting nothing, both with the retry counter set to 0; other states ignore cancel. (3) watchdog: if the state is an active phase and the observation is stale, go to the matching hold state emitting stop, and the event itself is discarded. (4) table: IDLE + start goes to APPROACH emitting move_pick, only if the observation is fresh; APPROACH + reached goes to GRASP emitting close_gripper; GRASP + grasped goes to TRANSPORT emitting move_drop; GRASP + grasp_failed goes back to APPROACH emitting move_pick and adds 1 to the retry counter if retries < max_retries, otherwise goes to FAULT emitting stop; TRANSPORT + reached goes to RELEASE emitting open_gripper; RELEASE + released goes to DONE emitting nothing; HOLD_x + resume returns to x, emits that phase's entry command (APPROACH move_pick, GRASP close_gripper, TRANSPORT move_drop, RELEASE open_gripper) and adds 1 to the retry counter, but only if the observation is fresh and retries < max_retries (otherwise it stays in HOLD_x emitting nothing); FAULT + reset and DONE + reset go to IDLE. Every other combination, including obs and tick, changes nothing and emits nothing. Question: starting in IDLE with no observation yet and retry counter 0, max_age = 5 ms and max_retries = 1, the executive handles these events in order, written as (time in ms, name) and numbered from 0: (0, obs), (1, start), (2, reached), (9, tick), (10, reached). Give the state after the last event, the total number of stop commands emitted over the whole trace, and the zero-based index of the event at which the first stop was emitted.",
+      "fields": [
+        {
+          "label": "State after the last event",
+          "kind": "choice",
+          "answer": "HOLD_GRASP",
+          "tolerance": 0.001,
+          "options": [
+            "HOLD_GRASP",
+            "GRASP",
+            "TRANSPORT",
+            "FAULT",
+            "IDLE"
+          ]
+        },
+        {
+          "label": "Number of stop commands emitted",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Index of the event that first emitted stop",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Event 0 (obs at 0 ms) only records the observation. Event 1: start with age 1 ms is fresh, so IDLE goes to APPROACH emitting move_pick. Event 2: reached at 2 ms (age 2) goes to GRASP emitting close_gripper. Event 3: the tick at 9 ms has age 9 > 5, so the watchdog fires in the active phase GRASP: HOLD_GRASP and stop (even though tick would otherwise do nothing). Event 4: reached at 10 ms arrives in HOLD_GRASP, which is not an active phase and has no rule for reached, so nothing happens and no second stop is emitted. Final state HOLD_GRASP, 1 stop, first emitted at index 3.",
+      "hints": [
+        "Track three things event by event: the state, the time of the latest obs, and the commands. Compute the age at each event as the event time minus the latest obs time.",
+        "Events 0 to 2 are the normal path to GRASP. Compare the age at event 3 (a tick) with max_age, and decide whether a tick can trigger the watchdog. Then ask whether an event in a hold state can emit anything.",
+        "Event 0 (obs at 0 ms) only records the observation. Event 1: start with age 1 ms is fresh, so IDLE goes to APPROACH emitting move_pick. Event 2: reached at 2 ms (age 2) goes to GRASP emitting close_gripper. Event 3: the tick at 9 ms has age 9 > 5, so the watchdog fires in the active phase GRASP: HOLD_GRASP and stop (even though tick would otherwise do nothing). Event 4: reached at 10 ms arrives in HOLD_GRASP, which is not an active phase and has no rule for reached, so nothing happens and no second stop is emitted. Final state HOLD_GRASP, 1 stop, first emitted at index 3."
+      ],
+      "remediation": "Common slips on this item: believing a tick cannot trigger the watchdog leaves the machine in GRASP until the next real event, so the first stop moves to index 4 and the state after event 3 is wrong in your trace (final HOLD_GRASP, 1 stop, index 4); thinking the machine stays in GRASP because nothing refreshed the hold gives final GRASP and 0 stops; counting a stop for every stale event gives 2 stops. Replay it event by event, then try a fresh X32 item."
+    },
+    {
+      "id": "X32.watchdog-trace.2",
+      "route": "watchdog-trace",
+      "difficulty": 2,
+      "structure": "executive.trace-replay@1",
+      "inputs": {
+        "events": [
+          [
+            "0",
+            "obs"
+          ],
+          [
+            "0",
+            "start"
+          ],
+          [
+            "1",
+            "reached"
+          ],
+          [
+            "2",
+            "grasp_failed"
+          ],
+          [
+            "3",
+            "reached"
+          ],
+          [
+            "4",
+            "grasp_failed"
+          ]
+        ],
+        "max_age": "4",
+        "max_retries": "1"
+      },
+      "objectiveId": "S07.watchdog-executive",
+      "prompt": "This is a mock pick-and-deliver executive for a simulation exercise, not a safety function. States: IDLE, APPROACH, GRASP, TRANSPORT, RELEASE, DONE, FAULT and, for each active phase x in APPROACH, GRASP, TRANSPORT, RELEASE, a hold state HOLD_x that remembers x. Times are integer milliseconds. The observation age at an event is its time minus the time of the latest obs event (an obs event itself has age 0; before any obs there is no observation). An observation is stale if there is none or its age is greater than max_age; an age equal to max_age is still fresh. Each event is handled by the first rule that applies. (1) fault: every state except FAULT goes to FAULT, emitting stop only if it was an active phase. (2) cancel: an active phase goes to IDLE emitting stop and a hold state goes to IDLE emitting nothing, both with the retry counter set to 0; other states ignore cancel. (3) watchdog: if the state is an active phase and the observation is stale, go to the matching hold state emitting stop, and the event itself is discarded. (4) table: IDLE + start goes to APPROACH emitting move_pick, only if the observation is fresh; APPROACH + reached goes to GRASP emitting close_gripper; GRASP + grasped goes to TRANSPORT emitting move_drop; GRASP + grasp_failed goes back to APPROACH emitting move_pick and adds 1 to the retry counter if retries < max_retries, otherwise goes to FAULT emitting stop; TRANSPORT + reached goes to RELEASE emitting open_gripper; RELEASE + released goes to DONE emitting nothing; HOLD_x + resume returns to x, emits that phase's entry command (APPROACH move_pick, GRASP close_gripper, TRANSPORT move_drop, RELEASE open_gripper) and adds 1 to the retry counter, but only if the observation is fresh and retries < max_retries (otherwise it stays in HOLD_x emitting nothing); FAULT + reset and DONE + reset go to IDLE. Every other combination, including obs and tick, changes nothing and emits nothing. Question: starting in IDLE with no observation yet and retry counter 0, max_age = 4 ms and max_retries = 1, the executive handles these events in order, written as (time in ms, name): (0, obs), (0, start), (1, reached), (2, grasp_failed), (3, reached), (4, grasp_failed). No further obs event arrives. Give the state after the last event, the total number of motion commands emitted (move_pick, close_gripper, move_drop, open_gripper) and the total number of stop commands emitted.",
+      "fields": [
+        {
+          "label": "State after the last event",
+          "kind": "choice",
+          "answer": "FAULT",
+          "tolerance": 0.001,
+          "options": [
+            "FAULT",
+            "HOLD_GRASP",
+            "APPROACH",
+            "GRASP",
+            "IDLE"
+          ]
+        },
+        {
+          "label": "Motion commands emitted in total",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Stop commands emitted in total",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The only obs is at 0 ms, so the age of event k equals its time. (0, start): age 0, IDLE to APPROACH, move_pick (motion 1). (1, reached): GRASP, close_gripper (motion 2). (2, grasp_failed): age 2, fresh; retries 0 < 1, so back to APPROACH with move_pick (motion 3) and the counter becomes 1. (3, reached): age 3, GRASP, close_gripper (motion 4). (4, grasp_failed): the age is 4, which equals max_age = 4 and is therefore still fresh, so the watchdog does not fire; retries 1 is not below max_retries 1, so the executive goes to FAULT and emits stop. Result: FAULT, 4 motion commands, 1 stop. A watchdog that treated age 4 as stale would have produced HOLD_GRASP instead.",
+      "hints": [
+        "Write the age of each event next to it (event time minus the only obs time) before you apply any rule, and keep a running retry counter.",
+        "The last event is the delicate one: compare its age with max_age using the equal-is-fresh rule, then compare the retry counter with max_retries to choose between another approach and FAULT.",
+        "The only obs is at 0 ms, so the age of event k equals its time. (0, start): age 0, IDLE to APPROACH, move_pick (motion 1). (1, reached): GRASP, close_gripper (motion 2). (2, grasp_failed): age 2, fresh; retries 0 < 1, so back to APPROACH with move_pick (motion 3) and the counter becomes 1. (3, reached): age 3, GRASP, close_gripper (motion 4). (4, grasp_failed): the age is 4, which equals max_age = 4 and is therefore still fresh, so the watchdog does not fire; retries 1 is not below max_retries 1, so the executive goes to FAULT and emits stop. Result: FAULT, 4 motion commands, 1 stop. A watchdog that treated age 4 as stale would have produced HOLD_GRASP instead."
+      ],
+      "remediation": "Common slips on this item: treating age 4 = max_age as stale gives HOLD_GRASP at the last event (4 motion commands, 1 stop, but the wrong state); allowing one retry too many sends the last event back to APPROACH with a fifth motion command and no stop (APPROACH, 5, 0); never reaching FAULT because the retry counter is not tested gives the same APPROACH, 5, 0. Check the equality case first, then try a fresh X32 item."
+    },
+    {
+      "id": "X32.watchdog-trace.3",
+      "route": "watchdog-trace",
+      "difficulty": 3,
+      "structure": "executive.trace-invariant@1",
+      "inputs": {
+        "events": [
+          [
+            "0",
+            "obs"
+          ],
+          [
+            "1",
+            "start"
+          ],
+          [
+            "2",
+            "reached"
+          ],
+          [
+            "3",
+            "grasped"
+          ],
+          [
+            "6",
+            "tick"
+          ],
+          [
+            "7",
+            "obs"
+          ],
+          [
+            "7",
+            "cancel"
+          ],
+          [
+            "8",
+            "tick"
+          ],
+          [
+            "8",
+            "start"
+          ],
+          [
+            "9",
+            "fault"
+          ],
+          [
+            "9",
+            "obs"
+          ],
+          [
+            "10",
+            "tick"
+          ],
+          [
+            "10",
+            "reset"
+          ],
+          [
+            "11",
+            "start"
+          ]
+        ],
+        "commands": [
+          [],
+          [
+            "move_pick"
+          ],
+          [
+            "close_gripper"
+          ],
+          [
+            "move_drop"
+          ],
+          [
+            "move_drop"
+          ],
+          [],
+          [
+            "move_drop",
+            "stop"
+          ],
+          [
+            "move_drop"
+          ],
+          [
+            "move_pick"
+          ],
+          [
+            "stop"
+          ],
+          [],
+          [
+            "open_gripper"
+          ],
+          [],
+          [
+            "move_pick"
+          ]
+        ],
+        "max_age": "4"
+      },
+      "objectiveId": "S07.watchdog-executive",
+      "prompt": "This is a mock trace-checking exercise, not a safety function. A robot executive logged, for each event (time in integer milliseconds, name), the commands it emitted. The motion commands are move_pick, close_gripper, move_drop and open_gripper; stop is not a motion command. The invariant is: no motion command while stale, cancelled or faulted. Event i violates it if it emitted at least one motion command and at least one of these holds: the observation is stale (the age is the time since the latest obs event, counting an obs at event i itself, and is stale if there was no obs yet or the age is greater than max_age); event i is itself a cancel or a fault; a fault event has occurred at or before i with no reset event since (a reset at i clears it); a cancel event has occurred at or before i with no start event since (a start at i counts). Log with max_age = 4 ms, events numbered from 0, each written as (time in ms, name): 0: (0, obs), 1: (1, start), 2: (2, reached), 3: (3, grasped), 4: (6, tick), 5: (7, obs), 6: (7, cancel), 7: (8, tick), 8: (8, start), 9: (9, fault), 10: (9, obs), 11: (10, tick), 12: (10, reset), 13: (11, start). Commands emitted, by event index: 0: [], 1: [move_pick], 2: [close_gripper], 3: [move_drop], 4: [move_drop], 5: [], 6: [move_drop, stop], 7: [move_drop], 8: [move_pick], 9: [stop], 10: [], 11: [open_gripper], 12: [], 13: [move_pick]. Give the index of the first violating event, the number of violating events, and the reason for the violation (or no violation) at event 7 and at event 11.",
+      "fields": [
+        {
+          "label": "Index of the first violating event",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Number of violating events",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Reason at event 7",
+          "kind": "choice",
+          "answer": "Cancelled: a cancel occurred and no start has followed",
+          "tolerance": 0.001,
+          "options": [
+            "Stale: the observation is older than max_age",
+            "Cancelled: a cancel occurred and no start has followed",
+            "Faulted: a fault occurred and no reset has followed",
+            "No violation: motion is allowed whenever the observation is fresh"
+          ]
+        },
+        {
+          "label": "Reason at event 11",
+          "kind": "choice",
+          "answer": "Faulted: a fault occurred and no reset has followed",
+          "tolerance": 0.001,
+          "options": [
+            "Stale: the observation is older than max_age",
+            "Cancelled: a cancel occurred and no start has followed",
+            "Faulted: a fault occurred and no reset has followed",
+            "No violation: motion is allowed whenever the observation is fresh"
+          ]
+        }
+      ],
+      "solution": "Walk the log with the latest obs time, a fault latch and a cancelled flag. Event 4 (tick at 6 ms): the latest obs is at 0 ms, age 6 > 4, so move_drop is emitted on a stale observation: violation. Event 6 (cancel at 7 ms, after a fresh obs at 7): it emits move_drop together with stop, but the cancel event itself must not emit motion: violation. Event 7 (tick at 8 ms, age 1, fresh): move_drop after a cancel with no start since: violation, caused by the cancelled flag although the observation is fresh. Event 8 start clears the cancelled flag, so move_pick is fine; event 9 only stops. Event 11 (tick at 10 ms, fresh obs at 9 ms): open_gripper while the fault of event 9 has not been reset (the reset comes at event 12): violation by the latched fault. Event 13 (start after reset) is fine. Violating events: 4, 6, 7 and 11, so the first is 4 and there are 4.",
+      "hints": [
+        "Walk the log once from index 0, keeping the time of the latest obs, whether a fault is latched, and whether the task is cancelled. At each event with a motion command check the four conditions in the prompt.",
+        "Index 4 is the first event whose age exceeds 4 ms. For the later events, note which of the three flags is set before deciding the reason, and remember that a fresh observation does not clear a cancel or a fault, only start and reset do.",
+        "Walk the log with the latest obs time, a fault latch and a cancelled flag. Event 4 (tick at 6 ms): the latest obs is at 0 ms, age 6 > 4, so move_drop is emitted on a stale observation: violation. Event 6 (cancel at 7 ms, after a fresh obs at 7): it emits move_drop together with stop, but the cancel event itself must not emit motion: violation. Event 7 (tick at 8 ms, age 1, fresh): move_drop after a cancel with no start since: violation, caused by the cancelled flag although the observation is fresh. Event 8 start clears the cancelled flag, so move_pick is fine; event 9 only stops. Event 11 (tick at 10 ms, fresh obs at 9 ms): open_gripper while the fault of event 9 has not been reset (the reset comes at event 12): violation by the latched fault. Event 13 (start after reset) is fine. Violating events: 4, 6, 7 and 11, so the first is 4 and there are 4."
+      ],
+      "remediation": "Common slips on this item: checking only the staleness of the observation finds just event 4 (first 4, count 1, 'No violation' at events 7 and 11); dropping the cancelled rule misses events 6 and 7 (count 2, 'No violation' at event 7); forgetting the latched fault misses event 11 (count 3, 'No violation' at event 11); treating a fresh observation as enough to allow motion finds only events 4 and 6 (count 2, 'No violation' at events 7 and 11). Re-read the invariant, then try a fresh X32 item."
+    }
+  ]
+}

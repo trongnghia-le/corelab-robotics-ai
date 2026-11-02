@@ -1,0 +1,522 @@
+{
+  "id": "X33",
+  "version": 1,
+  "title": "Project, deproject and calibrate a synthetic pinhole camera",
+  "domain": "CV",
+  "topicId": "V04",
+  "objectiveId": "V04.calibration-residual",
+  "routes": [
+    "project-deproject",
+    "intrinsic-fit"
+  ],
+  "scope": "Synthetic ideal-pinhole geometry with a declared world-to-camera rigid transform: projection, deprojection with positive depth, invalid or behind-camera depth, and a two-line least-squares intrinsic fit judged on held-out views; no images, corner detection, distortion, Zhang calibration with unknown poses or device calibration",
+  "labIds": [
+    "L16"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "project-deproject": "Move a world point into the camera frame with a declared R and t, project with the intrinsics, deproject a pixel with a known depth back to the world, and reject points with no valid depth.",
+    "intrinsic-fit": "Fit fx, cx (and fy, cy) by independent least-squares lines from known camera-frame points, report the reprojection RMS, and judge a fit on held-out views instead of the training views."
+  },
+  "items": [
+    {
+      "id": "X33.project-deproject.1",
+      "route": "project-deproject",
+      "difficulty": 1,
+      "structure": "camera.project-world@1",
+      "inputs": {
+        "R": [
+          [
+            "0",
+            "-1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-1"
+          ],
+          [
+            "1",
+            "0",
+            "0"
+          ]
+        ],
+        "t": [
+          "0",
+          "0.5",
+          "-0.2"
+        ],
+        "K": [
+          "480",
+          "480",
+          "320",
+          "240"
+        ],
+        "p": [
+          "1.8",
+          "0.4",
+          "0.2"
+        ]
+      },
+      "objectiveId": "V04.calibration-residual",
+      "prompt": "A bench camera looks along the world +X axis. World frame: X forward, Y left, Z up, in metres. Camera frame: x to the right of the image, y DOWN the image, z forward along the optical axis (the depth), in metres. The extrinsics map a world point to the camera frame as p_cam = R p_world + t, with R given by its rows. Here R = [[0, −1, 0], [0, 0, −1], [1, 0, 0]] (rows) and t = (0, 0.5, −0.2) m. Ideal pinhole, no lens distortion: u = fx x/z + cx and v = fy y/z + cy (pixels), valid only for z > 0. Intrinsics: fx = fy = 480 px, cx = 320 px, cy = 240 px. A bolt sits at p_world = (1.8, 0.4, 0.2) m. Compute the bolt's depth z in the camera frame and its pixel (u, v). Tolerance ±0.01 for each answer.",
+      "fields": [
+        {
+          "label": "z, depth in camera frame (m)",
+          "kind": "number",
+          "answer": "1.6",
+          "tolerance": 0.01
+        },
+        {
+          "label": "u (px)",
+          "kind": "number",
+          "answer": "200",
+          "tolerance": 0.01
+        },
+        {
+          "label": "v (px)",
+          "kind": "number",
+          "answer": "330",
+          "tolerance": 0.01
+        }
+      ],
+      "solution": "Rotate and shift: R p_world = (−0.4, −0.2, 1.8) because the rows of R pick out (−Y, −Z, X); adding t gives p_cam = (−0.4, 0.3, 1.6) m, so the depth is z = 1.6 m (positive, so the bolt is in front). Then u = 480·(−0.4/1.6) + 320 = 200 px and v = 480·(0.3/1.6) + 240 = 330 px.",
+      "hints": [
+        "Two steps: first move the bolt into the camera frame with p_cam = R p_world + t, then project with the pinhole formula. R is applied to the world point first and t is added afterwards; the depth for the pinhole formula is the camera-frame z, not the world X.",
+        "Multiply each row of R by (1.8, 0.4, 0.2) to get the three camera-frame components of R p_world, add the matching entry of t, and check that the third component (the depth) is positive. Then divide the first two components by that depth, multiply by 480 and add the principal point.",
+        "Rotate and shift: R p_world = (−0.4, −0.2, 1.8) because the rows of R pick out (−Y, −Z, X); adding t gives p_cam = (−0.4, 0.3, 1.6) m, so the depth is z = 1.6 m (positive, so the bolt is in front). Then u = 480·(−0.4/1.6) + 320 = 200 px and v = 480·(0.3/1.6) + 240 = 330 px."
+      ],
+      "remediation": "Common slips on this item: using R^T instead of R gives depth −0.6, which is behind the camera, so the \"pixel\" (160, 1280) is meaningless; leaving out t gives depth 1.8, (u, v) = (213.333, 186.667); subtracting t gives depth 2, (u, v) = (224, 72); adding t before rotating, R (p + t), gives depth 1.8, (u, v) = (80, 240). R and t map world coordinates to camera coordinates in that order. See the bridge pinhole-calibration, then try a fresh X33 item."
+    },
+    {
+      "id": "X33.project-deproject.2",
+      "route": "project-deproject",
+      "difficulty": 2,
+      "structure": "camera.pixel-to-world@1",
+      "inputs": {
+        "R": [
+          [
+            "0.8",
+            "-0.6",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-1"
+          ],
+          [
+            "0.6",
+            "0.8",
+            "0"
+          ]
+        ],
+        "t": [
+          "0.4",
+          "1.5",
+          "-2.2"
+        ],
+        "K": [
+          "400",
+          "400",
+          "320",
+          "240"
+        ],
+        "u": "400",
+        "v": "320",
+        "depth": "6"
+      },
+      "objectiveId": "V04.calibration-residual",
+      "prompt": "A mobile robot's camera is mounted at a yaw angle and must place an object seen in the image. World frame: X forward, Y left, Z up, in metres. Camera frame: x to the right of the image, y DOWN the image, z forward along the optical axis (the depth), in metres. The extrinsics map a world point to the camera frame as p_cam = R p_world + t, with R given by its rows. Here R = [[0.8, −0.6, 0], [0, 0, −1], [0.6, 0.8, 0]] (rows) and t = (0.4, 1.5, −2.2) m. Ideal pinhole, no lens distortion: u = fx x/z + cx and v = fy y/z + cy (pixels), valid only for z > 0. Intrinsics: fx = fy = 400 px, cx = 320 px, cy = 240 px. A depth sensor reports that the object seen at pixel (u, v) = (400, 320) has camera-frame depth z = 6 m (the z coordinate, not the distance along the ray). Deproject the pixel to the camera frame, then convert to the world frame with p_world = R^T (p_cam − t). Give the world coordinates X, Y, Z of the object. Tolerance ±0.01 m for each.",
+      "fields": [
+        {
+          "label": "X (m)",
+          "kind": "number",
+          "answer": "5.56",
+          "tolerance": 0.01
+        },
+        {
+          "label": "Y (m)",
+          "kind": "number",
+          "answer": "6.08",
+          "tolerance": 0.01
+        },
+        {
+          "label": "Z (m)",
+          "kind": "number",
+          "answer": "0.3",
+          "tolerance": 0.01
+        }
+      ],
+      "solution": "Deproject: x = (u − cx)/fx = 0.2, y = (v − cy)/fy = 0.2, so p_cam = z·(x, y, 1) = (1.2, 1.2, 6) m. Remove the translation: p_cam − t = (0.8, −0.3, 8.2). Apply R^T, which combines the rows of R: p_world = a·row1 + b·row2 + c·row3 with (a, b, c) = (p_cam − t) = (5.56, 6.08, 0.3) m. Check: sending this point forward with R p_world + t returns the camera point and the same pixel.",
+      "hints": [
+        "Work in two stages. First the pixel and the known depth give the camera-frame point: invert u = fx x/z + cx and v = fy y/z + cy for x and y, then scale by z. Then move that point to the world with the inverse extrinsics R^T (p_cam − t); R^T is the transpose, so it combines the ROWS of R with the components of (p_cam − t).",
+        "Compute x = (400 − 320)/400 and y = (320 − 240)/400, multiply x, y and 1 by the depth 6 to get p_cam, and subtract t. Then form world X = 0.8·a + 0 · b + 0.6·c, world Y = −0.6·a + 0.8·c and world Z = −b, where (a, b, c) is the shifted camera point.",
+        "Deproject: x = (u − cx)/fx = 0.2, y = (v − cy)/fy = 0.2, so p_cam = z·(x, y, 1) = (1.2, 1.2, 6) m. Remove the translation: p_cam − t = (0.8, −0.3, 8.2). Apply R^T, which combines the rows of R: p_world = a·row1 + b·row2 + c·row3 with (a, b, c) = (p_cam − t) = (5.56, 6.08, 0.3) m. Check: sending this point forward with R p_world + t returns the camera point and the same pixel."
+      ],
+      "remediation": "Common slips on this item: applying R instead of R^T gives (0.82, −8.2, 0.24); forgetting to subtract t gives (4.56, 4.08, −1.2); subtracting t after rotating gives (4.16, 2.58, 1); treating the 6 m as the distance along the ray (z = 6/√(x²+y²+1)) gives about (5.387862, 5.925982, 0.345299). A pixel plus a depth is one point; the extrinsics are inverted in the opposite order from how they were applied. See the bridge pinhole-calibration, then try a fresh X33 item."
+    },
+    {
+      "id": "X33.project-deproject.3",
+      "route": "project-deproject",
+      "difficulty": 3,
+      "structure": "camera.depth-validity@1",
+      "inputs": {
+        "R": [
+          [
+            "0",
+            "-1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-1"
+          ],
+          [
+            "1",
+            "0",
+            "0"
+          ]
+        ],
+        "t": [
+          "0",
+          "0.5",
+          "-0.2"
+        ],
+        "K": [
+          "560",
+          "560",
+          "320",
+          "240"
+        ],
+        "points": [
+          [
+            "1.4",
+            "0.3",
+            "0.4"
+          ],
+          [
+            "-0.6",
+            "0.2",
+            "0.3"
+          ],
+          [
+            "0.2",
+            "0.1",
+            "0.5"
+          ],
+          [
+            "3",
+            "-1",
+            "0.2"
+          ]
+        ],
+        "minimum_depth": "0.001"
+      },
+      "objectiveId": "V04.calibration-residual",
+      "prompt": "A tracking module receives four world points and must decide which of them the camera can image. World frame: X forward, Y left, Z up, in metres. Camera frame: x to the right of the image, y DOWN the image, z forward along the optical axis (the depth), in metres. The extrinsics map a world point to the camera frame as p_cam = R p_world + t, with R given by its rows. Here R = [[0, −1, 0], [0, 0, −1], [1, 0, 0]] (rows) and t = (0, 0.5, −0.2) m. Ideal pinhole, no lens distortion: u = fx x/z + cx and v = fy y/z + cy (pixels), valid only for z > 0. A point can be projected only when its camera-frame depth is at least 0.001 m; anything smaller (zero, or negative = behind the camera) has no pixel. Intrinsics: fx = fy = 560 px, cx = 320 px, cy = 240 px. World points: A = (1.4, 0.3, 0.4), B = (−0.6, 0.2, 0.3), C = (0.2, 0.1, 0.5), D = (3.0, −1.0, 0.2), all in metres. Find the camera-frame depth of B and of C, how many of the four points can be projected, and the pixel (u, v) of D. Then choose how a correct projection routine must treat B, given that its contract is to report invalid depth to the caller by raising an error rather than by returning a value. Tolerance ±0.01 for each number.",
+      "fields": [
+        {
+          "label": "Depth of B in the camera frame (m)",
+          "kind": "number",
+          "answer": "-0.8",
+          "tolerance": 0.01
+        },
+        {
+          "label": "Depth of C in the camera frame (m)",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.01
+        },
+        {
+          "label": "Number of the four points that can be projected",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.01
+        },
+        {
+          "label": "u of D (px)",
+          "kind": "number",
+          "answer": "520",
+          "tolerance": 0.01
+        },
+        {
+          "label": "v of D (px)",
+          "kind": "number",
+          "answer": "300",
+          "tolerance": 0.01
+        },
+        {
+          "label": "How a correct projection routine must treat B",
+          "kind": "choice",
+          "answer": "Raise an error: a point behind the camera has no image to report",
+          "tolerance": 0.01,
+          "options": [
+            "Raise an error: a point behind the camera has no image to report",
+            "Return the mirrored pixel that the projection formulas give for it",
+            "Use the absolute value of its depth and project it as if in front",
+            "Clamp it to the principal point and report that pixel as its image",
+            "Return None quietly and let the caller decide what to do next"
+          ]
+        }
+      ],
+      "solution": "With this R the camera depth is z = X_world + t_z = X_world − 0.2. A: z = 1.2; B: z = −0.8 (behind the camera); C: z = 0 (exactly in the camera plane, below the 0.001 m minimum); D: z = 2.8. So only A and D can be projected: 2 points. For D, p_cam = (1, 0.3, 2.8), giving u = 560·1/2.8 + 320 = 520 px and v = 560·0.3/2.8 + 240 = 300 px. A point with z ≤ 0 has no image, so a correct routine rejects B (and C) by raising an error under the stated contract, rather than returning a mirrored, clamped, absolute-value or silent None result that a planner could mistake for a measurement.",
+      "hints": [
+        "Only the camera-frame depth decides whether a point can be imaged, not the sign of the world coordinates. Transform each point with p_cam = R p_world + t and look at the third component; for this R it equals X_world plus the third entry of t.",
+        "Compute z = X_world − 0.2 for A, B, C and D and compare each with the minimum depth 0.001 m, remembering that zero fails. Count the survivors. For D, also get x_cam = −Y_world and y_cam = −Z_world + 0.5, then divide both by its depth and apply fx, fy, cx, cy.",
+        "With this R the camera depth is z = X_world + t_z = X_world − 0.2. A: z = 1.2; B: z = −0.8 (behind the camera); C: z = 0 (exactly in the camera plane, below the 0.001 m minimum); D: z = 2.8. So only A and D can be projected: 2 points. For D, p_cam = (1, 0.3, 2.8), giving u = 560·1/2.8 + 320 = 520 px and v = 560·0.3/2.8 + 240 = 300 px. A point with z ≤ 0 has no image, so a correct routine rejects B (and C) by raising an error under the stated contract, rather than returning a mirrored, clamped, absolute-value or silent None result that a planner could mistake for a measurement."
+      ],
+      "remediation": "Common slips on this item: counting points with positive world X (instead of positive camera depth) gives 3 (A, C, D); counting every nonzero depth gives 3 (A, B, D); counting |z| also gives 3, because B then looks 0.8 m in front; counting all four gives 4. C sits exactly at z = 0, so it has no pixel. A negative depth flips the sign of u − cx and v − cy and produces a mirrored pixel, and a depth of 0 is a division by zero. Reading R as R^T gives a depth of 0.8 for D. See the bridge pinhole-calibration, then try a fresh X33 item."
+    },
+    {
+      "id": "X33.intrinsic-fit.1",
+      "route": "intrinsic-fit",
+      "difficulty": 1,
+      "structure": "camera.fit-u-line@1",
+      "inputs": {
+        "X": [
+          "-0.8",
+          "-0.1",
+          "0.8",
+          "2"
+        ],
+        "Z": [
+          "2",
+          "1",
+          "4",
+          "4"
+        ],
+        "u": [
+          "117",
+          "267",
+          "420",
+          "568"
+        ]
+      },
+      "objectiveId": "V04.calibration-residual",
+      "prompt": "A synthetic calibration target has four markers whose positions are known in the CAMERA frame (metres): X = (−0.8, −0.1, 0.8, 2.0) at depths Z = (2, 1, 4, 4). The measured pixel columns are u = (117, 267, 420, 568) px. Model: u = fx x + cx with x = X/Z (pixels, ideal pinhole, no distortion; only the horizontal axis is fitted here). Fit fx and cx by ordinary least squares: choose the line that minimises the sum of squared differences u_i − (fx x_i + cx). Give fx and cx. Tolerance ±0.01 px.",
+      "fields": [
+        {
+          "label": "fx (px)",
+          "kind": "number",
+          "answer": "502",
+          "tolerance": 0.01
+        },
+        {
+          "label": "cx (px)",
+          "kind": "number",
+          "answer": "317.9",
+          "tolerance": 0.01
+        }
+      ],
+      "solution": "x = X/Z = (−0.4, −0.1, 0.2, 0.5), mean x = 0.05, mean u = 343. Sxx = Σ(x − mean x)² = 0.45 and Sxu = Σ(x − mean x)(u − mean u) = 225.9. fx = Sxu/Sxx = 502 px and cx = mean u − fx·mean x = 317.9 px. Check: the residuals u_i − (fx x_i + cx) sum to 0 and are uncorrelated with x.",
+      "hints": [
+        "First turn each marker into the normalised coordinate x = X/Z: the depths differ, so the raw X values are not on a common scale. Then the fit is an ordinary straight-line fit of u against x, where the slope is fx and the intercept is cx.",
+        "Compute the means of x and u, then Sxx = Σ(x − mean x)² and Sxu = Σ(x − mean x)(u − mean u). The slope is Sxu divided by Sxx. The intercept is the mean of u minus the slope times the mean of x.",
+        "x = X/Z = (−0.4, −0.1, 0.2, 0.5), mean x = 0.05, mean u = 343. Sxx = Σ(x − mean x)² = 0.45 and Sxu = Σ(x − mean x)(u − mean u) = 225.9. fx = Sxu/Sxx = 502 px and cx = mean u − fx·mean x = 317.9 px. Check: the residuals u_i − (fx x_i + cx) sum to 0 and are uncorrelated with x."
+      ],
+      "remediation": "Common slips on this item: fitting u against X without dividing by Z gives fx = 159.54416, cx = 267.216524; using only the first and last marker gives fx = 501.111111, cx = 317.444444; forcing the line through the origin (cx = 0) gives fx = 640.217391; fixing cx = 320 and fitting only fx gives fx = 501.086957; regressing x on u and inverting the slope gives fx = 502.018592, cx = 317.89907. See the bridge pinhole-calibration, then try a fresh X33 item."
+    },
+    {
+      "id": "X33.intrinsic-fit.2",
+      "route": "intrinsic-fit",
+      "difficulty": 2,
+      "structure": "camera.fit-intrinsics-rms@1",
+      "inputs": {
+        "points": [
+          [
+            "-0.45",
+            "0.3",
+            "1.5"
+          ],
+          [
+            "0.2",
+            "-0.2",
+            "2"
+          ],
+          [
+            "1",
+            "-0.75",
+            "2.5"
+          ],
+          [
+            "3",
+            "1.5",
+            "5"
+          ]
+        ],
+        "pixels": [
+          [
+            "196",
+            "321"
+          ],
+          [
+            "359",
+            "198"
+          ],
+          [
+            "481",
+            "116"
+          ],
+          [
+            "560",
+            "362"
+          ]
+        ]
+      },
+      "objectiveId": "V04.calibration-residual",
+      "prompt": "A calibration script has four synthetic correspondences between camera-frame points (X, Y, Z in metres) and measured pixels (u, v): (−0.45, 0.3, 1.5) → (196, 321); (0.2, −0.2, 2) → (359, 198); (1.0, −0.75, 2.5) → (481, 116); (3.0, 1.5, 5) → (560, 362). Ideal pinhole, no distortion, camera frame with x right, y down, z forward: u = fx x + cx and v = fy y + cy with x = X/Z and y = Y/Z. Fit the two lines INDEPENDENTLY by ordinary least squares (u on x gives fx, cx; v on y gives fy, cy). Then compute the reprojection RMS on these same four points: the square root of the mean over the points of (Δu² + Δv²), in pixels, where Δu, Δv are projected minus measured. Tolerance ±0.01 for each answer.",
+      "fields": [
+        {
+          "label": "fx (px)",
+          "kind": "number",
+          "answer": "405",
+          "tolerance": 0.01
+        },
+        {
+          "label": "fy (px)",
+          "kind": "number",
+          "answer": "410",
+          "tolerance": 0.01
+        },
+        {
+          "label": "cx (px)",
+          "kind": "number",
+          "answer": "318",
+          "tolerance": 0.01
+        },
+        {
+          "label": "cy (px)",
+          "kind": "number",
+          "answer": "239",
+          "tolerance": 0.01
+        },
+        {
+          "label": "Reprojection RMS on the four points (px)",
+          "kind": "number",
+          "answer": "0.790569",
+          "tolerance": 0.01
+        }
+      ],
+      "solution": "x = X/Z = (−0.3, 0.1, 0.4, 0.6), y = Y/Z = (0.2, −0.1, −0.3, 0.3). Least squares on the u side gives fx = 405 px and cx = 318 px; on the v side fy = 410 px and cy = 239 px (slope = Sxy/Sxx, intercept = mean − slope·mean). Projecting the points with this K and comparing with the measurements gives pixel distances (0.5, 0.5, 1, 1), so RMS = √((Σ d²)/4) = 0.790569 px. Because the u and v lines are fitted separately, the residuals of each sum to zero.",
+      "hints": [
+        "The u data and the v data are separate problems that share only the points: u depends on x = X/Z and v on y = Y/Z. Compute x and y for all four markers first, then fit each line by least squares (slope = covariance over variance of the normalised coordinate).",
+        "For each axis compute the mean of the normalised coordinate and of the pixel, then Sxx and Sxy about those means, slope = Sxy/Sxx, intercept = mean pixel minus slope times mean coordinate. For the RMS, project every point with the fitted values, take the squared u and v differences, add them, average over the four points and take the square root.",
+        "x = X/Z = (−0.3, 0.1, 0.4, 0.6), y = Y/Z = (0.2, −0.1, −0.3, 0.3). Least squares on the u side gives fx = 405 px and cx = 318 px; on the v side fy = 410 px and cy = 239 px (slope = Sxy/Sxx, intercept = mean − slope·mean). Projecting the points with this K and comparing with the measurements gives pixel distances (0.5, 0.5, 1, 1), so RMS = √((Σ d²)/4) = 0.790569 px. Because the u and v lines are fitted separately, the residuals of each sum to zero."
+      ],
+      "remediation": "Common slips on this item: fitting on X and Y without dividing by Z gives fx, fy, cx, cy = (96.38205, 108.925096, 308.641828, 226.103417); swapping the roles of u and v gives (410, 405, 239, 318); for the RMS, averaging the pixel distances gives 0.75, omitting the mean gives 1.581139, dividing by n − 1 gives 0.912871 and skipping the square root gives 0.625. See the bridge pinhole-calibration, then try a fresh X33 item."
+    },
+    {
+      "id": "X33.intrinsic-fit.3",
+      "route": "intrinsic-fit",
+      "difficulty": 3,
+      "structure": "camera.heldout-eval@1",
+      "inputs": {
+        "points": [
+          [
+            "0.2",
+            "0.1",
+            "2"
+          ],
+          [
+            "-0.3",
+            "0.2",
+            "2"
+          ],
+          [
+            "0.6",
+            "-0.4",
+            "2"
+          ],
+          [
+            "1.5",
+            "1",
+            "2.5"
+          ],
+          [
+            "-1.6",
+            "-1",
+            "2"
+          ]
+        ],
+        "pixels": [
+          [
+            "370",
+            "264"
+          ],
+          [
+            "245",
+            "288"
+          ],
+          [
+            "470",
+            "144"
+          ],
+          [
+            "612",
+            "426"
+          ],
+          [
+            "-68",
+            "8"
+          ]
+        ],
+        "n_train": "3"
+      },
+      "objectiveId": "V04.calibration-residual",
+      "prompt": "A calibration is checked on held-out views. Five synthetic correspondences between camera-frame points (X, Y, Z in metres) and measured pixels (u, v) are listed in order: (0.2, 0.1, 2) → (370, 264); (−0.3, 0.2, 2) → (245, 288); (0.6, −0.4, 2) → (470, 144); (1.5, 1.0, 2.5) → (612, 426); (−1.6, −1.0, 2) → (−68, 8). The FIRST THREE are the training views and the LAST TWO are held-out test views. Ideal pinhole, no distortion, camera frame with x right, y down, z forward: u = fx x + cx and v = fy y + cy with x = X/Z and y = Y/Z. Fit fx and fy by least squares on the three training views only (the lines u on x and v on y are independent). Then compute the reprojection RMS (square root of the mean of Δu² + Δv², in pixels) of that fit on the training views and on the two test views, and choose the procedure that gives a valid held-out error. Tolerance ±0.01 for each number.",
+      "fields": [
+        {
+          "label": "fx (px)",
+          "kind": "number",
+          "answer": "500",
+          "tolerance": 0.01
+        },
+        {
+          "label": "fy (px)",
+          "kind": "number",
+          "answer": "480",
+          "tolerance": 0.01
+        },
+        {
+          "label": "Training RMS (px)",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.01
+        },
+        {
+          "label": "Held-out test RMS (px)",
+          "kind": "number",
+          "answer": "12.409674",
+          "tolerance": 0.01
+        },
+        {
+          "label": "Procedure that gives a valid held-out error",
+          "kind": "choice",
+          "answer": "Fit on the three training points only, then evaluate on the two unseen points",
+          "tolerance": 0.01,
+          "options": [
+            "Fit on the three training points only, then evaluate on the two unseen points",
+            "Fit on all five points together, then evaluate on the two test points",
+            "Fit on the two test points only, then evaluate on those same two points",
+            "Fit on the three training points only, then report their RMS as the new-view error"
+          ]
+        }
+      ],
+      "solution": "Training x = (0.1, −0.15, 0.3) and y = (0.05, 0.1, −0.2); the three points lie exactly on lines, so least squares gives fx = 500, cx = 320, fy = 480, cy = 240 px and a training RMS of 0 px. The test points project to (620, 432) and (−80, 0) but were measured at (612, 426) and (−68, 8): errors 10 and 14.4222 px, so the held-out RMS is 12.409674 px. The perfect training fit says nothing about views far from the image centre; only data the fit never saw can reveal that. Fitting with the test points, or reporting the training RMS, would hide it.",
+      "hints": [
+        "Keep the two groups apart: the fit may look only at the first three correspondences, and the held-out RMS is computed on the last two with the fitted values. Compute x = X/Z and y = Y/Z for the training views and see how well straight lines describe them.",
+        "Fit u on x and v on y using the three training points (they are exactly linear, so any two of them fix the lines), then project all five points with the fitted fx, fy, cx, cy. Take squared pixel differences for the training pair set and for the test pair set separately, average each over its own number of points and take the square roots.",
+        "Training x = (0.1, −0.15, 0.3) and y = (0.05, 0.1, −0.2); the three points lie exactly on lines, so least squares gives fx = 500, cx = 320, fy = 480, cy = 240 px and a training RMS of 0 px. The test points project to (620, 432) and (−80, 0) but were measured at (612, 426) and (−68, 8): errors 10 and 14.4222 px, so the held-out RMS is 12.409674 px. The perfect training fit says nothing about views far from the image centre; only data the fit never saw can reveal that. Fitting with the test points, or reporting the training RMS, would hide it."
+      ],
+      "remediation": "Common slips on this item: fitting on all five points (held-out leakage) gives fx = 487.130125, fy = 466.157205, a training RMS of 2.996732 and a test RMS of only 1.314245; evaluating the test RMS on the training views gives 0; the leaked (all-points) fit evaluated over all five points gives an RMS of 2.465591, which mixes training and test views and is not the held-out error 12.409674. A small training error with a large held-out error means the model (or the data far from the centre) is not captured, not that the code is wrong. See the bridge pinhole-calibration, then try a fresh X33 item."
+    }
+  ]
+}

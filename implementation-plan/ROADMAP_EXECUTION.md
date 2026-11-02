@@ -26,13 +26,13 @@ A lab counts as **foundation implemented** only when it has: a versioned objecti
 | L12 Description/TF | L01, L02 | S04.urdf-chain | X29 | L12-description | B3 | ROS TF2 / robot_state_publisher runtime | planned |
 | L13 Navigation | L03, L11 | C10.path-follow | X30 | L13-navigation | B4 | Nav2/ROS physics runs, changed-layout runs, AMCL | planned |
 | L14 Interfaces/MoveIt | L06, L11, L12 | S10.mock-interface | X31 | L14-interfaces | B5 | ros2_control/MoveIt smoke, real controller, hardware | planned |
-| L15 Executive/safety | none | S07.watchdog-executive | X32 | L15-executive | B2 | Safety certification, real E-stop, BT library runtime | planned |
-| L16 Camera/calibration | L01 | V04.calibration-residual | X33 | L16-camera | B2 | Device calibration, real images | planned |
+| L15 Executive/safety | none | S07.watchdog-executive | X32 | L15-executive | B2 | Safety certification, real E-stop, BT library runtime | foundation implemented (B2) |
+| L16 Camera/calibration | L01 | V04.calibration-residual | X33 | L16-camera | B2 | Device calibration, real images | foundation implemented (B2) |
 | L17 Visual alignment | L04, L06, L16 | V03.visual-servo-step | X34 | L17-alignment | B4 | Rendered/physics simulation, real camera | planned |
 | L18 Contact/grasp | L04 | R08.friction-grasp | X35 | L18-grasp | B3 | Physics-sim contact, hardware grasping | planned |
-| L19 Data QA/imitation | none | RL17.bc-qa | X36 | L19-imitation | B2 | LeRobot datasets, robot data, generalization claims | planned |
+| L19 Data QA/imitation | none | RL17.bc-qa | X36 | L19-imitation | B2 | LeRobot datasets, robot data, generalization claims | foundation implemented (B2) |
 | L20 RL experiment | L04 | RL06.tabular-update | X37 | L20-rl | B3 | Simulator RL training, protocol human review | planned |
-| L21 Identification | none | S08.parameter-fit | X38 | L21-identification | B2 | Physics-backend identification, sim-to-real | planned |
+| L21 Identification | none | S08.parameter-fit | X38 | L21-identification | B2 | Physics-backend identification, sim-to-real | foundation implemented (B2) |
 | L22 Cognitive reasoning | L11, L15 | E03.belief-plan | X39 | L22-reasoning | B4 | Human review of open interpretations, TAMP | planned |
 
 Objective ids above are planning names; the authored registry entry is authoritative.
@@ -53,3 +53,4 @@ Objective ids above are planning names; the authored registry entry is authorita
 - M0 (2026-11-02): baseline lint/typecheck/content/V2/tests all exit 0, 218 tests. Infrastructure milestone in progress.
 - M0 committed as `558420b` (API title/sourceId, bridges, roadmap `unavailable`, oracle registry). Oracle registry later split into `registry.ts` + `index.ts` to fix a circular import.
 - B1 (L07, L09, L10, L11): authors and fresh reviewers on Sonnet; four authors were interrupted by a usage limit and resumed. Reviews: L07 approve-with-minor → minors fixed → approve; L09 kit changes-required (reversed kernel, single wrap) → fixed → approve; L10 approve-with-minor → minors fixed → approve; L11 approve-with-minor → minors fixed (oracle re-run passes). Independent oracles X24/X26/X27/X28. Gates in a clean worktree of the staged commit on top of Codex's UI commits: lint, typecheck, validate:content, validate:v2, tests 229/36 files, V2 build + 10 V2 browser flows, default build + 9 legacy flows — all exit 0.
+- B2 (L15, L16, L19, L21): reviews — L15 approve-with-minor (fixture runtime cut from ~190 s to ~15 s before review; minors fixed); L16 approve-with-minor → minors fixed → approve; L19 approve-with-minor → minors fixed; L21 kit changes-required (cond threshold unpinned, constant-u misconception uncaught) → fixed → approve. Bridges task-executive-watchdog, pinhole-calibration, episode-qa-bc, least-squares-identification. Independent oracles X32/X33/X36/X38. Clean-worktree gates: lint, typecheck, validate:content, validate:v2, tests 237/40 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0. An author accidentally re-ran an old script that rewrote the committed L11 samples file; `git diff` showed no change and the script was quarantined.

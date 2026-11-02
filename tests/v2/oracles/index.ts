@@ -4,3 +4,7 @@ import "./X24";
 import "./X27";
 import "./X26";
 import "./X28";
+import "./X33";
+import "./X38";
+import "./X36";
+import "./X32";

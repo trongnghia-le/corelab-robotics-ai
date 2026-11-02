@@ -907,6 +907,153 @@
         "Robotics",
         "Planning"
       ]
+    },
+    {
+      "id": "S08.parameter-fit",
+      "version": 1,
+      "topicId": "S08",
+      "title": "Fit a declared first-order model and judge identifiability",
+      "statement": "For a declared discrete first-order model y[k+1] = a y[k] + b u[k] on small synthetic logs: form the 2x2 normal equations and fit (a, b) by least squares, recover known parameters from noise-free data, score the fit on a held-out log, read the Gram-matrix condition number to classify a log as identifiable, weak or unidentifiable, estimate parameter standard deviations from the Gram matrix, and draw bounded uniform or log-uniform parameters from explicit draws. Results are judged against Cramer's-rule and residual-orthogonality oracles; low excitation is named and answered with a new log rather than hidden.",
+      "excludes": [
+        "Nonlinear, delayed, multi-input or closed-loop identification, noise estimation and regularisation choices, random sampling statistics, physics-simulator identification, real robot logs, sim-to-real or hardware transfer claims, whole-topic mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "M04.two-equations",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "least-squares-identification"
+        }
+      ],
+      "practice": [
+        "X38"
+      ],
+      "kits": [
+        "L21-identification"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
+    },
+    {
+      "id": "V04.calibration-residual",
+      "version": 1,
+      "topicId": "V04",
+      "title": "Project, deproject and check a synthetic pinhole calibration",
+      "statement": "For a declared ideal pinhole (no distortion) and a declared world-to-camera rigid transform: project and deproject with positive depth, reject zero, negative or behind-camera depth, report reprojection RMS, and fit fx, fy, cx, cy by two independent least-squares lines from known camera-frame points, judged on held-out views rather than the training views. Results are checked against closed-form and exact-rational oracles; a leakage or wrong-axes counterexample is named rather than hidden.",
+      "excludes": [
+        "Real images, checkerboard or corner detection, lens distortion beyond the ideal pinhole, full Zhang calibration with unknown poses, PnP and pose estimation, stereo, rolling shutter, device calibration, hardware and automatic code evidence, whole-topic mastery"
+      ],
+      "readiness": [
+        {
+          "objective": "V03.pinhole",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "R03.rotation-validity",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "M12.frame-labels",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "M04.two-equations",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "pinhole-calibration"
+        }
+      ],
+      "practice": [
+        "X33"
+      ],
+      "kits": [
+        "L16-camera"
+      ],
+      "specializations": [
+        "CV",
+        "Robotics"
+      ]
+    },
+    {
+      "id": "RL17.bc-qa",
+      "version": 1,
+      "topicId": "RL17",
+      "title": "Check episodes and a behaviour-cloning baseline",
+      "statement": "On tiny numerical episode data: name injected defects (non-increasing or gapped timestamps, length mismatch, NaN, out-of-range values, exact duplicates), find an action/observation time lag, split whole sessions with no leakage, fit a least-squares line a = w o + b on training episodes only, and compare its held-out MSE with a mean-action baseline, including how a leak flatters the number. Numerical toy only; no generalization claim.",
+      "excludes": [
+        "Neural policies, LeRobot or real robot datasets, multi-dimensional observations, closed-loop rollout, generalization or statistical claims, whole-topic mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "ML03.group-split",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "episode-qa-bc"
+        }
+      ],
+      "practice": [
+        "X36"
+      ],
+      "kits": [
+        "L19-imitation"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
+    },
+    {
+      "id": "S07.watchdog-executive",
+      "version": 1,
+      "topicId": "S07",
+      "title": "Trace a task state machine with a watchdog",
+      "statement": "A deterministic mock pick-and-deliver state machine: guarded transitions with preconditions, a timestamp watchdog (stale observation stops motion and enters a hold state), cancel and fault handling, bounded retry and explicit recovery without blind re-entry, event-trace replay, and a no-motion-while-stale/cancelled/faulted trace invariant.",
+      "excludes": [
+        "Hazard analysis, human safety review and safety certification",
+        "Real emergency stop, hardware, ROS or real-time timing",
+        "Behaviour-tree libraries and automatic hazard coverage claims",
+        "Whole-topic safety mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "E04.plan-preconditions",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "task-executive-watchdog"
+        }
+      ],
+      "practice": [
+        "X32"
+      ],
+      "kits": [
+        "L15-executive"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
     }
   ],
   "paths": [
