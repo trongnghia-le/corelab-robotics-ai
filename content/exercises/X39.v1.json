@@ -1,0 +1,588 @@
+{
+  "id": "X39",
+  "version": 1,
+  "title": "Update a belief and find the counterexample to a plan",
+  "domain": "Embodied & Cognitive Robotics",
+  "topicId": "E03",
+  "objectiveId": "E03.belief-plan",
+  "routes": [
+    "belief-update",
+    "plan-counterexample"
+  ],
+  "scope": "Exact finite belief and plan checking on a declared symbolic box-fetch toy: filtering possible worlds by observations, weighted posteriors, running a conditional plan in every world, counterexample worlds and a groundedness check; no perception, language or LLM reasoning, continuous planning, simulator or cognition certification",
+  "labIds": [
+    "L22"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "belief-update": "Keep the possible worlds that agree with each observation, renormalise the weights of the survivors, and combine a rule with a second hidden state factor.",
+    "plan-counterexample": "Run a fixed or conditional plan in every possible world, find the counterexample world and its failure reason, and separate an ungrounded object from an infeasible step."
+  },
+  "items": [
+    {
+      "id": "X39.belief-update.1",
+      "route": "belief-update",
+      "difficulty": 1,
+      "structure": "belief.observation-filter@1",
+      "inputs": {
+        "locations": [
+          "drawer",
+          "shelf",
+          "bin",
+          "crate"
+        ],
+        "observations": [
+          [
+            "drawer",
+            "empty"
+          ],
+          [
+            "shelf",
+            "empty"
+          ]
+        ]
+      },
+      "objectiveId": "E03.belief-plan",
+      "prompt": "A tidy-up robot knows that a key lies in exactly one of four closed containers: drawer, shelf, bin and crate. Before looking it has no other information, so it keeps one possible world per container ('the key is in that container') and treats them as equally likely. A look in a container reports only whether the key is in that container. The robot looks in the drawer and the key is not there, then looks in the shelf and the key is not there either. Give the number of possible worlds (a) before any look, (b) after the drawer look, (c) after both looks, and (d) the probability that the key is in the crate after both looks, treating the remaining worlds as equally likely. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "(a) Worlds before any look",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) Worlds after the drawer look",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Worlds after both looks",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(d) Probability the key is in the crate",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Start with one world per container: drawer, shelf, bin, crate, so 4. 'The key is not in the drawer' removes exactly the world in which the key is in the drawer, leaving shelf, bin and crate: 3. 'The key is not on the shelf' is applied to those 3 and removes the shelf world, leaving bin and crate: 2. With equal weights the key is in the crate with probability 1/2 = 0.5. Observations are cumulative: each one filters the belief left by the previous ones.",
+      "hints": [
+        "Each container is one possible world. An observation keeps the worlds that agree with it and discards the others, and a later observation is applied to the worlds that are left, not to the original four.",
+        "'The key is not in the drawer' discards exactly the world in which the key is in the drawer. Apply the same rule for the shelf to the worlds that remain, count what is left after each look, and for (d) share the probability equally among the survivors.",
+        "Start with one world per container: drawer, shelf, bin, crate, so 4. 'The key is not in the drawer' removes exactly the world in which the key is in the drawer, leaving shelf, bin and crate: 3. 'The key is not on the shelf' is applied to those 3 and removes the shelf world, leaving bin and crate: 2. With equal weights the key is in the crate with probability 1/2 = 0.5. Observations are cumulative: each one filters the belief left by the previous ones."
+      ],
+      "remediation": "Common slips on this item: keeping the worlds that match 'the key IS there' instead of discarding them leaves 1 world after the drawer look and 0 after both (and an empty belief means the model is contradicted, not that the answer is zero probability); applying only the latest look and forgetting the first gives 3 worlds after both looks and a crate probability of 0.333333; keeping the prior 1/4 instead of renormalising over the survivors gives 0.25. Redo the filtering one observation at a time, then try a fresh X39 item."
+    },
+    {
+      "id": "X39.belief-update.2",
+      "route": "belief-update",
+      "difficulty": 2,
+      "structure": "belief.weighted-posterior@1",
+      "inputs": {
+        "locations": [
+          "pantry",
+          "cupboard",
+          "fridge",
+          "porch"
+        ],
+        "weights": [
+          "5",
+          "3",
+          "2",
+          "2"
+        ],
+        "observations": [
+          [
+            "pantry",
+            "empty"
+          ],
+          [
+            "porch",
+            "empty"
+          ]
+        ]
+      },
+      "objectiveId": "E03.belief-plan",
+      "prompt": "A kitchen robot believes a dropped key is in exactly one of four places: pantry, cupboard, fridge or porch, with prior weights 5, 3, 2 and 2 respectively (a world's probability is its weight divided by the sum of the weights of all worlds still possible). It looks in the pantry: the key is not there. Then it looks on the porch: the key is not there either. Each look reports only whether the key is in that place. Give (a) the prior probability that the key is in the pantry, (b) the probability that it is in the cupboard after the pantry look only, and, after both looks, (c) the probability that it is in the cupboard and (d) the probability that it is in the fridge. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "(a) Prior probability of the pantry",
+          "kind": "number",
+          "answer": "0.416667",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) Cupboard after the pantry look",
+          "kind": "number",
+          "answer": "0.428571",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Cupboard after both looks",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(d) Fridge after both looks",
+          "kind": "number",
+          "answer": "0.4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Prior: the weights sum to 5 + 3 + 2 + 2 = 12, so the pantry has 5/12 = 0.416667. After 'not in the pantry' the surviving worlds are cupboard (3), fridge (2) and porch (2), with total weight 7: the cupboard is 3/7 = 0.428571. After 'not on the porch' the survivors are cupboard (3) and fridge (2), total 5: cupboard 3/5 = 0.6 and fridge 2/5 = 0.4. Each answer divides a survivor's weight by the total weight of the survivors at that moment, not by the original 12.",
+      "hints": [
+        "The weights are relative sizes of the possible worlds. After an observation, discard the worlds that disagree with it and recompute each survivor's probability from the weights that are left.",
+        "For (a) divide by the sum of all four weights. For (b) list the survivors of the pantry look and divide the cupboard's weight by the sum of the survivors' weights. For (c) and (d) repeat with the survivors of both looks; the denominator shrinks each time.",
+        "Prior: the weights sum to 5 + 3 + 2 + 2 = 12, so the pantry has 5/12 = 0.416667. After 'not in the pantry' the surviving worlds are cupboard (3), fridge (2) and porch (2), with total weight 7: the cupboard is 3/7 = 0.428571. After 'not on the porch' the survivors are cupboard (3) and fridge (2), total 5: cupboard 3/5 = 0.6 and fridge 2/5 = 0.4. Each answer divides a survivor's weight by the total weight of the survivors at that moment, not by the original 12."
+      ],
+      "remediation": "Common slips on this item: dividing by the original total 12 instead of the survivors' total gives 0.25 for (b), 0.25 for (c) and 0.166667 for (d) (the probabilities no longer sum to 1); treating the survivors as equally likely and ignoring the weights gives 0.333333 for (b) and 0.5 for (c) and (d); forgetting to remove the porch after the second look leaves (c) at 0.428571. Recompute the denominator after every observation, then try a fresh X39 item."
+    },
+    {
+      "id": "X39.belief-update.3",
+      "route": "belief-update",
+      "difficulty": 3,
+      "structure": "belief.two-factor-update@1",
+      "inputs": {
+        "locations": [
+          "drawer",
+          "shelf",
+          "bin"
+        ],
+        "lockable": "bin",
+        "observations": [
+          [
+            "look",
+            "shelf",
+            "empty"
+          ],
+          [
+            "lid",
+            "bin",
+            "unlocked"
+          ]
+        ]
+      },
+      "objectiveId": "E03.belief-plan",
+      "prompt": "A storage robot must find a key. The hidden state has two parts: which container holds the key (drawer, shelf or bin) and whether the bin lid is locked or unlocked. A rule is known to hold: the key was never put in the bin while its lid was locked, so that combination is impossible. Every other combination of key container and lid state is one possible world, and all of them are equally likely. Give (a) the number of possible worlds before any observation. The robot looks in the shelf and the key is not there: give (b) the number of worlds left and (c) the probability that the key is in the bin. Next it tries the bin lid and the lid opens (it is unlocked): give (d) the number of worlds left. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "(a) Worlds before any observation",
+          "kind": "number",
+          "answer": "5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) Worlds after the shelf look",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Probability the key is in the bin",
+          "kind": "number",
+          "answer": "0.333333",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(d) Worlds after the lid opens",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Combine the two parts: 3 containers × 2 lid states = 6 combinations, minus the impossible (key in bin, lid locked) leaves 5 worlds: (drawer, locked), (drawer, unlocked), (shelf, locked), (shelf, unlocked), (bin, unlocked). The empty shelf removes both shelf worlds: 3 remain, (drawer, locked), (drawer, unlocked) and (bin, unlocked), so P(key in bin) = 1/3 = 0.333333. An opening lid removes every locked world: (drawer, unlocked) and (bin, unlocked) remain, 2 worlds. An observation of the lid constrains the lid part of the hidden state even though it says nothing directly about the key.",
+      "hints": [
+        "The hidden state has two independent-looking parts, but a rule removes one combination. List all combinations first, cross out the impossible one, and only then apply the observations.",
+        "List the worlds as (container, lid) pairs and delete the impossible pair. 'Key not in the shelf' deletes every pair whose container is the shelf. For (c) count the survivors that have the bin. The lid test deletes every pair whose lid state disagrees with what was observed.",
+        "Combine the two parts: 3 containers × 2 lid states = 6 combinations, minus the impossible (key in bin, lid locked) leaves 5 worlds: (drawer, locked), (drawer, unlocked), (shelf, locked), (shelf, unlocked), (bin, unlocked). The empty shelf removes both shelf worlds: 3 remain, (drawer, locked), (drawer, unlocked) and (bin, unlocked), so P(key in bin) = 1/3 = 0.333333. An opening lid removes every locked world: (drawer, unlocked) and (bin, unlocked) remain, 2 worlds. An observation of the lid constrains the lid part of the hidden state even though it says nothing directly about the key."
+      ],
+      "remediation": "Common slips on this item: forgetting the impossible combination gives 6 worlds, 4 after the shelf look and a bin probability of 0.5; treating the lid test as irrelevant to the key leaves 3 worlds at the end instead of 2; counting only containers (3, 2, 0.5) ignores the lid part of the hidden state entirely. List every (container, lid) pair before filtering, then try a fresh X39 item."
+    },
+    {
+      "id": "X39.plan-counterexample.1",
+      "route": "plan-counterexample",
+      "difficulty": 1,
+      "structure": "plan.blind-fetch@1",
+      "inputs": {
+        "locations": [
+          "drawer",
+          "shelf",
+          "bin"
+        ],
+        "weights": [
+          "1",
+          "6",
+          "3"
+        ],
+        "plan": [
+          "do",
+          "goto_shelf",
+          [
+            "do",
+            "open_shelf",
+            [
+              "do",
+              "grab_shelf",
+              [
+                "do",
+                "goto_home",
+                [
+                  "do",
+                  "deliver",
+                  [
+                    "stop"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      },
+      "objectiveId": "E03.belief-plan",
+      "prompt": "Box-fetch domain (closed world: a fact that is not listed is false). Every possible world starts with at(home) and closed(B) for each box B, and the key is in exactly one box: in(key,B). Actions: goto_B (no precondition; at(B) becomes true and every other at(...) fact false), open_B (needs at(B) and closed(B); open(B) becomes true and closed(B) false), look_B (a sensing action: needs at(B) and open(B); it changes nothing and reports whether in(key,B) is true), grab_B (needs at(B), open(B) and in(key,B); holding(key) becomes true and in(key,B) false), goto_home (no precondition; at(home) becomes true and every at(B) false) and deliver (needs at(home) and holding(key); delivered(key) becomes true and holding(key) false). The goal is delivered(key). A plan fails in a world if an action's precondition is false there (reason 'precondition') or if the goal is false when the plan stops (reason 'goal'); the first failure ends the run. A planner proposes the fixed plan P: goto_shelf; open_shelf; grab_shelf; goto_home; deliver; stop, because 'the key is usually on the shelf'. The robot believes the key is in exactly one of drawer, shelf or bin, with prior weights 1 (drawer), 6 (shelf) and 3 (bin); the probability of a world is its weight divided by the sum of all the weights. Run P in each of the three worlds. Give (a) the number of worlds where P achieves the goal, (b) the number of counterexample worlds (worlds where P fails), (c) the probability that P succeeds, and (d) which action of P is the first whose precondition is false in a counterexample world. Tolerance ±0.001 for the numbers.",
+      "fields": [
+        {
+          "label": "(a) Worlds where P succeeds",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) Counterexample worlds",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Probability that P succeeds",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(d) First action whose precondition fails",
+          "kind": "choice",
+          "answer": "grab_shelf",
+          "tolerance": 0.001,
+          "options": [
+            "open_shelf",
+            "grab_shelf",
+            "goto_home",
+            "deliver",
+            "none: every precondition holds and the plan fails at the goal check"
+          ]
+        }
+      ],
+      "solution": "Key in the shelf: goto_shelf, open_shelf, grab_shelf, goto_home and deliver all have their preconditions, so P succeeds. Key in the drawer or the bin: goto_shelf and open_shelf work (they do not depend on where the key is), but grab_shelf needs in(key,shelf), which is false, so P fails there with reason 'precondition'. So (a) 1 success, (b) 2 counterexample worlds (key in the drawer, key in the bin), (c) the success weight is 6 out of 1 + 6 + 3 = 10, so 0.6, and (d) the first broken precondition is that of grab_shelf. The plan is correct for the single world its author imagined, not for the belief.",
+      "hints": [
+        "A plan is correct for a belief only if it succeeds in every possible world. Run P once per world; the hidden fact that varies between the worlds is where the key is, so look for the action that depends on it.",
+        "Check preconditions one action at a time. goto_shelf has none and open_shelf needs only at(shelf) and closed(shelf), which hold in all three worlds. Find which later action mentions in(key,...), and in which worlds that fact is false. For (c) add the weights of the successful worlds and divide by the total weight.",
+        "Key in the shelf: goto_shelf, open_shelf, grab_shelf, goto_home and deliver all have their preconditions, so P succeeds. Key in the drawer or the bin: goto_shelf and open_shelf work (they do not depend on where the key is), but grab_shelf needs in(key,shelf), which is false, so P fails there with reason 'precondition'. So (a) 1 success, (b) 2 counterexample worlds (key in the drawer, key in the bin), (c) the success weight is 6 out of 1 + 6 + 3 = 10, so 0.6, and (d) the first broken precondition is that of grab_shelf. The plan is correct for the single world its author imagined, not for the belief."
+      ],
+      "remediation": "Common slips on this item: weighting the three worlds equally gives a success probability of 0.333333; reporting the probability of failure instead of success gives 0.4; naming open_shelf as the failing action confuses opening a box with finding the key in it; calling the plan correct because it works in the most likely world ignores the other two worlds. Run P in each world separately, then try a fresh X39 item."
+    },
+    {
+      "id": "X39.plan-counterexample.2",
+      "route": "plan-counterexample",
+      "difficulty": 2,
+      "structure": "plan.sensing-search@1",
+      "inputs": {
+        "locations": [
+          "drawer",
+          "shelf",
+          "bin"
+        ],
+        "weights": [
+          "4",
+          "3",
+          "1"
+        ],
+        "plan": [
+          "do",
+          "goto_drawer",
+          [
+            "do",
+            "open_drawer",
+            [
+              "sense",
+              "look_drawer",
+              [
+                "do",
+                "grab_drawer",
+                [
+                  "do",
+                  "goto_home",
+                  [
+                    "do",
+                    "deliver",
+                    [
+                      "stop"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "do",
+                "goto_shelf",
+                [
+                  "do",
+                  "open_shelf",
+                  [
+                    "sense",
+                    "look_shelf",
+                    [
+                      "do",
+                      "grab_shelf",
+                      [
+                        "do",
+                        "goto_home",
+                        [
+                          "do",
+                          "deliver",
+                          [
+                            "stop"
+                          ]
+                        ]
+                      ]
+                    ],
+                    [
+                      "stop"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      },
+      "objectiveId": "E03.belief-plan",
+      "prompt": "Box-fetch domain (closed world: a fact that is not listed is false). Every possible world starts with at(home) and closed(B) for each box B, and the key is in exactly one box: in(key,B). Actions: goto_B (no precondition; at(B) becomes true and every other at(...) fact false), open_B (needs at(B) and closed(B); open(B) becomes true and closed(B) false), look_B (a sensing action: needs at(B) and open(B); it changes nothing and reports whether in(key,B) is true), grab_B (needs at(B), open(B) and in(key,B); holding(key) becomes true and in(key,B) false), goto_home (no precondition; at(home) becomes true and every at(B) false) and deliver (needs at(home) and holding(key); delivered(key) becomes true and holding(key) false). The goal is delivered(key). A plan fails in a world if an action's precondition is false there (reason 'precondition') or if the goal is false when the plan stops (reason 'goal'); the first failure ends the run. A planner proposes the conditional plan Q: goto_drawer; open_drawer; look_drawer. If the look reports the key: grab_drawer; goto_home; deliver; stop. If it does not: goto_shelf; open_shelf; look_shelf. If that look reports the key: grab_shelf; goto_home; deliver; stop. If it does not: stop. The planner argues that Q 'checks the likely places'. The robot believes the key is in exactly one of drawer, shelf or bin, with prior weights 4 (drawer), 3 (shelf) and 1 (bin); the probability of a world is its weight divided by the sum of all the weights. Run Q in every world. Give (a) the number of counterexample worlds, (b) the probability that Q succeeds, (c) where the key is in the counterexample world, and (d) how many look actions Q executes in that counterexample world. Tolerance ±0.001 for the numbers.",
+      "fields": [
+        {
+          "label": "(a) Counterexample worlds",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) Probability that Q succeeds",
+          "kind": "number",
+          "answer": "0.875",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Key location in the counterexample",
+          "kind": "choice",
+          "answer": "bin",
+          "tolerance": 0.001,
+          "options": [
+            "drawer",
+            "shelf",
+            "bin",
+            "there is no counterexample"
+          ]
+        },
+        {
+          "label": "(d) Look actions executed in that world",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Key in the drawer: the first look reports the key, and grab_drawer, goto_home and deliver succeed. Key on the shelf: the drawer look reports nothing, the plan goes to the shelf, the shelf look reports the key and the fetch succeeds. Key in the bin: both looks report nothing, the plan reaches the final stop with delivered(key) false, so it fails with reason 'goal'. (a) There is 1 counterexample world, (b) the successful weights are 4 + 3 = 7 out of 4 + 3 + 1 = 8, so 0.875, (c) the counterexample is the key in the bin, and (d) Q executed look_drawer and look_shelf in it, 2 looks. The plan only sensed the places it listed; the world it did not list is exactly where it breaks.",
+      "hints": [
+        "Sensing does not change the world; it only decides which branch the plan follows. Trace Q in each world by asking what each look reports there, and find the branch that ends in a stop without delivering.",
+        "Follow the 'does not report the key' branch twice, once per look. Which world takes it both times, and does the plan have any step after the second look in that branch? For (b) add the weights of the worlds where the plan delivers and divide by the total weight; for (d) count look actions on the path of the counterexample world only.",
+        "Key in the drawer: the first look reports the key, and grab_drawer, goto_home and deliver succeed. Key on the shelf: the drawer look reports nothing, the plan goes to the shelf, the shelf look reports the key and the fetch succeeds. Key in the bin: both looks report nothing, the plan reaches the final stop with delivered(key) false, so it fails with reason 'goal'. (a) There is 1 counterexample world, (b) the successful weights are 4 + 3 = 7 out of 4 + 3 + 1 = 8, so 0.875, (c) the counterexample is the key in the bin, and (d) Q executed look_drawer and look_shelf in it, 2 looks. The plan only sensed the places it listed; the world it did not list is exactly where it breaks."
+      ],
+      "remediation": "Common slips on this item: counting the worlds equally gives a success probability of 0.666667; reporting the failing probability 0.125 instead of the success probability answers a different question; saying the key is on the shelf mixes up which branch continues after an empty look; counting 1 look answers for the world where the key is in the drawer, not for the counterexample. Trace the path of one world at a time, then try a fresh X39 item."
+    },
+    {
+      "id": "X39.plan-counterexample.3",
+      "route": "plan-counterexample",
+      "difficulty": 3,
+      "structure": "plan.ungrounded-counterexample@1",
+      "inputs": {
+        "locations": [
+          "drawer",
+          "shelf"
+        ],
+        "lockable": "drawer",
+        "weights": [
+          "4",
+          "1",
+          "3",
+          "2"
+        ],
+        "extra_actions": {
+          "wipe_with_cloth": {
+            "pre": [
+              "holding(key)",
+              "have(cloth)"
+            ],
+            "add": [
+              "clean(key)"
+            ],
+            "del": []
+          }
+        },
+        "plan": [
+          "do",
+          "goto_drawer",
+          [
+            "do",
+            "open_drawer",
+            [
+              "sense",
+              "look_drawer",
+              [
+                "do",
+                "grab_drawer",
+                [
+                  "do",
+                  "wipe_with_cloth",
+                  [
+                    "do",
+                    "goto_home",
+                    [
+                      "do",
+                      "deliver",
+                      [
+                        "stop"
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "do",
+                "goto_shelf",
+                [
+                  "do",
+                  "open_shelf",
+                  [
+                    "do",
+                    "grab_shelf",
+                    [
+                      "do",
+                      "goto_home",
+                      [
+                        "do",
+                        "deliver",
+                        [
+                          "stop"
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ],
+        "repaired_plan": [
+          "do",
+          "goto_drawer",
+          [
+            "do",
+            "open_drawer",
+            [
+              "sense",
+              "look_drawer",
+              [
+                "do",
+                "grab_drawer",
+                [
+                  "do",
+                  "goto_home",
+                  [
+                    "do",
+                    "deliver",
+                    [
+                      "stop"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "do",
+                "goto_shelf",
+                [
+                  "do",
+                  "open_shelf",
+                  [
+                    "do",
+                    "grab_shelf",
+                    [
+                      "do",
+                      "goto_home",
+                      [
+                        "do",
+                        "deliver",
+                        [
+                          "stop"
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      },
+      "objectiveId": "E03.belief-plan",
+      "prompt": "Box-fetch domain (closed world: a fact that is not listed is false). Every possible world starts with at(home) and closed(B) for each box B, and the key is in exactly one box: in(key,B). Actions: goto_B (no precondition; at(B) becomes true and every other at(...) fact false), open_B (needs at(B) and closed(B) (and unlocked(B) for the drawer, which may be locked; the shelf has no lock); open(B) becomes true and closed(B) false), look_B (a sensing action: needs at(B) and open(B); it changes nothing and reports whether in(key,B) is true), grab_B (needs at(B), open(B) and in(key,B); holding(key) becomes true and in(key,B) false), goto_home (no precondition; at(home) becomes true and every at(B) false) and deliver (needs at(home) and holding(key); delivered(key) becomes true and holding(key) false). The goal is delivered(key). A plan fails in a world if an action's precondition is false there (reason 'precondition') or if the goal is false when the plan stops (reason 'goal'); the first failure ends the run. One extra action is available to the planner: wipe_with_cloth (needs holding(key) and have(cloth); clean(key) becomes true). The robot believes the key is in the drawer or on the shelf, and the drawer may be locked. Its four possible worlds, with prior weights, are: key in the drawer and drawer unlocked (weight 4), key in the drawer and drawer locked (weight 1), key on the shelf and drawer unlocked (weight 3), key on the shelf and drawer locked (weight 2); the probability of a world is its weight divided by the sum of all the weights. A planner proposes plan R: goto_drawer; open_drawer; look_drawer. If the look reports the key: grab_drawer; wipe_with_cloth; goto_home; deliver; stop. If not: goto_shelf; open_shelf; grab_shelf; goto_home; deliver; stop. Call an object ungrounded if an action used by R mentions it but no fact of any possible world does. Give (a) the number of ungrounded objects in R, (b) the number of counterexample worlds of R as written, (c) the probability that R as written succeeds, (d) the number of counterexample worlds after the wipe_with_cloth step is deleted from R (everything else unchanged), and (e) the probability that this repaired plan succeeds. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "(a) Ungrounded objects in R",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) Counterexample worlds of R as written",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Probability that R succeeds",
+          "kind": "number",
+          "answer": "0.3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(d) Counterexample worlds of the repaired plan",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(e) Probability that the repaired plan succeeds",
+          "kind": "number",
+          "answer": "0.7",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "(a) The worlds mention home, drawer, shelf and key. The actions R uses mention those and also cloth (have(cloth) in wipe_with_cloth), which appears in no world: 1 ungrounded object. (b) Drawer unlocked, key in the drawer: the look reports the key, but wipe_with_cloth needs have(cloth), which is false, so R fails. Drawer locked (either key location): open_drawer needs unlocked(drawer), so R fails at once. Drawer unlocked, key on the shelf: the look reports nothing and the shelf branch delivers. That is 3 counterexample worlds. (c) Only the world with weight 3 succeeds: 3/(4 + 1 + 3 + 2) = 0.3. (d) Without the wipe step the key-in-unlocked-drawer world now succeeds, but both locked-drawer worlds still fail: 2 counterexamples. (e) The successful weights are 4 + 3 = 7 out of 10: 0.7. Grounding and feasibility are separate checks: removing the invented cloth fixes one failure, but the plan still fails in the hidden state where the drawer is locked, so it is not correct for the belief.",
+      "hints": [
+        "Two different things are checked. Grounding asks whether every object an action talks about exists in the belief. Feasibility asks, world by world, whether every precondition holds and the goal is reached. Do the grounding check first, then run R in each of the four worlds.",
+        "List the objects that appear in the world facts, then the objects used by the actions in R, and compare. For the runs, follow each world's path through R and check every action's preconditions against that world's facts. For (d) and (e) repeat the runs with the wipe step removed. Probability = successful weight / total weight.",
+        "(a) The worlds mention home, drawer, shelf and key. The actions R uses mention those and also cloth (have(cloth) in wipe_with_cloth), which appears in no world: 1 ungrounded object. (b) Drawer unlocked, key in the drawer: the look reports the key, but wipe_with_cloth needs have(cloth), which is false, so R fails. Drawer locked (either key location): open_drawer needs unlocked(drawer), so R fails at once. Drawer unlocked, key on the shelf: the look reports nothing and the shelf branch delivers. That is 3 counterexample worlds. (c) Only the world with weight 3 succeeds: 3/(4 + 1 + 3 + 2) = 0.3. (d) Without the wipe step the key-in-unlocked-drawer world now succeeds, but both locked-drawer worlds still fail: 2 counterexamples. (e) The successful weights are 4 + 3 = 7 out of 10: 0.7. Grounding and feasibility are separate checks: removing the invented cloth fixes one failure, but the plan still fails in the hidden state where the drawer is locked, so it is not correct for the belief."
+      ],
+      "remediation": "Common slips on this item: counting the invented action name wipe_with_cloth as a second ungrounded object gives (a) = 2 (an object is a fact argument such as cloth); assuming the drawer is always unlocked, so that only the two unlocked worlds are considered, gives 1 counterexample for R and 0 after the repair, with success probabilities 0.428571 and 1; believing the plan is fixed once the invented cloth is removed gives (d) = 0 and (e) = 1. Equal weights give 0.25 and 0.5. Ground first, then run every world, then try a fresh X39 item."
+    }
+  ]
+}

@@ -60,6 +60,11 @@ it("serves the odometry kit with its own sample file and per-kit identity", () =
     "L20-rl",
     "L12-description",
     "L05-replay",
+    "L17-alignment",
+    "L13-navigation",
+    "L22-reasoning",
+    "L08-dynamics",
+    "L14-interfaces",
   ]);
   const s = store(),
     kit = downloadKit(s, "L03-odometry");

@@ -1197,6 +1197,218 @@
       "specializations": [
         "Robotics"
       ]
+    },
+    {
+      "id": "V03.visual-servo-step",
+      "version": 1,
+      "topicId": "V03",
+      "title": "Select a target and take a bounded visual-servo step",
+      "statement": "For a declared synthetic pan/tilt pinhole camera and labelled synthetic detections: select the target by label, freshness, depth window and confidence (never by colour alone), compute the observed normalized image error and the exact pan/tilt projection, apply a per-axis saturated proportional command, cancel with zero command when no detection is valid, and count steps over a declared finite convergence suite. Results are checked against exact geometry, hand-computed anchors and independent re-implementations; the limits of a finite suite are named rather than hidden.",
+      "excludes": [
+        "Real or rendered images, feature or object detection, full 6-DOF image-based servoing with an interaction matrix, camera latency, motor dynamics and backlash, physics simulation, real cameras or robots, hardware and automatic code evidence, whole-topic mastery"
+      ],
+      "readiness": [
+        {
+          "objective": "V03.pinhole",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "C01.bounded-step",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "R06.planar-jacobian",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "image-based-servo-step"
+        }
+      ],
+      "practice": [
+        "X34"
+      ],
+      "kits": [
+        "L17-alignment"
+      ],
+      "specializations": [
+        "CV",
+        "Robotics"
+      ]
+    },
+    {
+      "id": "C10.path-follow",
+      "version": 1,
+      "topicId": "C10",
+      "title": "Steer a pure-pursuit follower and judge its trace",
+      "statement": "Pure-pursuit path following on a declared polyline: lookahead point from the circle-segment intersection ahead of the robot (stated tie, goal and lost rules), curvature kappa = 2 y_L / d^2, speed and turn-rate saturation along the same arc, a closed-loop kinematic simulation with a declared step, and offline trace evaluation (cross-track error, strict corridor test, goal tolerance, time-out, corner clearance and verdict order).",
+      "excludes": [
+        "Nav2, ROS controllers, planners or costmaps",
+        "Localization, TF timeouts or clock behaviour in a running system",
+        "Physics-simulator, changed-layout or real-robot runs",
+        "Controller tuning, dynamics, obstacle avoidance and replanning",
+        "Whole-topic nonlinear control mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "R02.exact-arc",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "R03.segment-clearance",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "pure-pursuit-follower"
+        }
+      ],
+      "practice": [
+        "X30"
+      ],
+      "kits": [
+        "L13-navigation"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
+    },
+    {
+      "id": "E03.belief-plan",
+      "version": 1,
+      "topicId": "E03",
+      "title": "Update a belief and check a conditional plan in every possible world",
+      "statement": "On a declared finite symbolic toy: STRIPS-style preconditions and effects, belief updates after sensing, weighted posteriors, running a conditional plan in every possible world to find a counterexample, and a groundedness check. Exact enumeration only; no perception, language or LLM reasoning.",
+      "excludes": [
+        "Perception or language grounding, LLM/VLM reasoning, continuous or geometric task-and-motion planning, simulators, stochastic sensors and POMDP solving, human review of open-ended interpretations, whole-topic mastery, cognition certification and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "E04.plan-preconditions",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "E02.grid-astar",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "S07.watchdog-executive",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "belief-state-planning"
+        }
+      ],
+      "practice": [
+        "X39"
+      ],
+      "kits": [
+        "L22-reasoning"
+      ],
+      "specializations": [
+        "Planning"
+      ]
+    },
+    {
+      "id": "R07.pendulum-model",
+      "version": 1,
+      "topicId": "R07",
+      "title": "Check a one-link pendulum model, its energy and a computed-torque law",
+      "statement": "One rigid link with a declared model (mass, centre-of-mass distance, inertia, damping, gravity): pivot inertia, gravity torque, acceleration, energy, explicit, semi-implicit and RK4 steps with energy drift and step-size sensitivity, a model check from energy samples, and a computed-torque law with a torque limit, holding capability and the offset left by a wrong gravity parameter",
+      "excludes": [
+        "Multi-link or coupled dynamics, contact, friction beyond viscous damping, motor or gearbox models, physics engines, hardware torque control, controller tuning or stability proofs, whole-topic mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "M07.euler-step",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "C01.bounded-step",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "lesson",
+          "topic": "R07"
+        },
+        {
+          "type": "bridge",
+          "id": "pendulum-energy-control"
+        }
+      ],
+      "practice": [
+        "X25"
+      ],
+      "kits": [
+        "L08-dynamics"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
+    },
+    {
+      "id": "S10.mock-joint-interface",
+      "version": 1,
+      "topicId": "S10",
+      "title": "Check a mock joint interface, trajectory validator and action client",
+      "statement": "For a made-up 2-joint arm, entirely MOCK: apply a declared interface lifecycle (unconfigured, inactive, active, finalized; commands only when active) with joint position limits and per-cycle velocity limits and read back state; validate a time-stamped joint trajectory and name every rejection reason (names, order, times, position and velocity limits, start state); trace a follow-trajectory action client through accept, feedback, cancel races, strict timeout and final states from a declared event list; and check a straight joint-space segment against a box obstacle by dense exact subdivision (a sampling check, not a proof). Mock evidence stays mock.",
+      "excludes": [
+        "ros2_control, controller manager, lifecycle nodes and real hardware interfaces",
+        "MoveIt planning, planning-scene services and real planners",
+        "Real controllers, drivers, tracking error, real-time timing guarantees and any hardware",
+        "Link geometry, self-collision, thin-obstacle guarantees, whole-topic mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "R04.planar-fk",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "R03.segment-clearance",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "S04.urdf-chain",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "mock-joint-interface"
+        }
+      ],
+      "practice": [
+        "X31"
+      ],
+      "kits": [
+        "L14-interfaces"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
     }
   ],
   "paths": [

@@ -21,7 +21,7 @@ Grading, admission, exposure and evidence semantics are unchanged.
 
 ## Current milestone
 
-M0 infrastructure committed as `558420b`. B1 (L07 X24/L07-trajectory, L09 X26/L09-localization, L10 X27/L10-kalman, L11 X28/L11-planning) integrated and committed after AI review. B2 (L15 X32, L16 X33, L19 X36, L21 X38) integrated and committed. B3 (L05 X23, L12 X29, L18 X35, L20 X37) integrated and committed. In progress: B4 (L08 X25, L13 X30, L17 X34, L22 X39); remaining after that: L14 (X31). New labs add `unavailable` lists to their roadmap entries and bridges for objectives whose topic has no lesson.
+M0 infrastructure committed as `558420b`. B1 (L07 X24/L07-trajectory, L09 X26/L09-localization, L10 X27/L10-kalman, L11 X28/L11-planning) integrated and committed after AI review. B2 (L15 X32, L16 X33, L19 X36, L21 X38) integrated and committed. B3 (L05 X23, L12 X29, L18 X35, L20 X37) integrated and committed. B4 (L08 X25, L13 X30, L17 X34, L22 X39) and L14 (X31) integrated and committed: all 22 roadmap labs now have a manual kit. In progress: C/M forms/pools for R02 (F-ODOM/RV-ODOM) and R06/R05 (F-JIK/RV-JIK), and an R05 IK bridge; these will be registered as review-pending and only approved after independent review. New labs add `unavailable` lists to their roadmap entries and bridges for objectives whose topic has no lesson.
 
 ## Test results
 
@@ -29,3 +29,4 @@ M0 infrastructure committed as `558420b`. B1 (L07 X24/L07-trajectory, L09 X26/L0
 - B1 commit (on top of Codex `c633774`, clean worktree): lint, typecheck, validate:content, validate:v2, tests 229/36 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.
 - B2 commit (clean worktree): lint, typecheck, validate:content, validate:v2, tests 237/40 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.
 - B3 commit (clean worktree): lint, typecheck, validate:content, validate:v2, tests 245/44 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.
+- B4+L14 commit (clean worktree): typecheck, validate:content, validate:v2, tests 255/49 files, V2 build + 10 V2 flows, default build + 9 legacy flows exit 0; lint exit 0 after one reviewer-oracle fix.

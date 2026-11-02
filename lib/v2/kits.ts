@@ -152,10 +152,55 @@ const definitions = [
     description:
       "Implement a ROS-free odometry node core replayed on a recorded message list (frame, stamp, gap, reset policies), a minimal fault reproducer, and a test suite judged against valid and buggy cores. Replay only; no ROS, DDS, TF2 or robot.",
   },
+  {
+    id: "L17-alignment",
+    title: "Visual alignment self-check kit",
+    topic: "V03",
+    objectives: ["V03.visual-servo-step"],
+    description:
+      "Original numerical self-check on a synthetic pan/tilt pinhole: exact projection, pixel error, label/age/depth target selection, saturated servo step, cancel on stale or lost target, finite convergence suite. No images, devices or physics.",
+  },
+  {
+    id: "L13-navigation",
+    title: "Pure-pursuit path follower self-check kit",
+    topic: "C10",
+    objectives: ["C10.path-follow"],
+    description:
+      "Manual self-check: nearest-point distance, lookahead point on a polyline, curvature 2*y_L/d^2, speed/turn-rate saturation, closed-loop unicycle simulation and trace evaluation. Offline kinematic toy; no Nav2, ROS, TF or costmaps.",
+  },
+  {
+    id: "L22-reasoning",
+    title: "Belief and task-reasoning self-check kit",
+    topic: "E03",
+    objectives: ["E03.belief-plan"],
+    description:
+      "Manual self-check of STRIPS-style steps, belief updates, weighted posteriors, conditional plan checks with counterexample worlds and groundedness on a tiny symbolic toy. Exact enumeration; no perception, LLM or cognition certification.",
+  },
+  {
+    id: "L08-dynamics",
+    title: "Pendulum dynamics and computed-torque self-check kit",
+    topic: "R07",
+    objectives: ["R07.pendulum-model"],
+    description:
+      "Implement a one-link pendulum: acceleration, energy, Euler/semi-implicit/RK4 steps, energy drift, computed torque with a limit, closed-loop hold and an energy-based model check. Numerical toy only; no hardware or multi-link claim.",
+  },
+  {
+    id: "L14-interfaces",
+    title: "Mock interfaces self-check kit",
+    topic: "S10",
+    objectives: ["S10.mock-joint-interface"],
+    description:
+      "Original numerical MOCK self-check: interface lifecycle and limits, trajectory validator with named reasons, action-client state machine, joint-segment box check. No ros2_control, MoveIt, real controller or hardware.",
+  },
 ] as const;
 // Keep the original shared sample bytes unchanged: they are part of both old
 // kit hashes. New kits use separate immutable manifests.
 const sampleFiles: Record<string, string> = {
+  "L14-interfaces": "L14-interfaces.samples.v1.json",
+  "L08-dynamics": "L08-dynamics.samples.v1.json",
+  "L22-reasoning": "L22-reasoning.samples.v1.json",
+  "L13-navigation": "L13-navigation.samples.v1.json",
+  "L17-alignment": "L17-alignment.samples.v1.json",
   "L05-replay": "L05-replay.samples.v1.json",
   "L12-description": "L12-description.samples.v1.json",
   "L20-rl": "L20-rl.samples.v1.json",

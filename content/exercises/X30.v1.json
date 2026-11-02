@@ -1,0 +1,423 @@
+{
+  "id": "X30",
+  "version": 1,
+  "title": "Steer a pure-pursuit follower and judge a trace against its corridor",
+  "domain": "Robotics",
+  "topicId": "C10",
+  "objectiveId": "C10.path-follow",
+  "routes": [
+    "lookahead-geometry",
+    "trace-evaluation"
+  ],
+  "scope": "Pure-pursuit lookahead point on a declared polyline (circle-line root further along the segment, goal as the target near the end), curvature kappa = 2 y_L / d^2, speed and turn-rate saturation along the same arc, and offline trace evaluation: cross-track error, strict corridor test, goal tolerance, polyline clearance at corners and the verdict order; no Nav2, simulator, localization, costmap or hardware run",
+  "labIds": [
+    "L13"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "lookahead-geometry": "Intersect the lookahead circle with each segment in order, keep the root ahead of the robot, handle the goal near the end, then steer with kappa = 2 y_L / d^2 and respect the speed and turn-rate limits.",
+    "trace-evaluation": "Judge a recorded trace: cross-track error to the whole polyline, strict corridor and inclusive goal tests, corner clearance measured to the sample polyline, and the order in which verdicts apply."
+  },
+  "items": [
+    {
+      "id": "X30.lookahead-geometry.1",
+      "route": "lookahead-geometry",
+      "difficulty": 1,
+      "structure": "pure-pursuit.lookahead.circle-line@1",
+      "inputs": {
+        "path": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "12",
+            "0"
+          ]
+        ],
+        "x": "2",
+        "y": "3",
+        "theta": "0",
+        "lookahead": "5"
+      },
+      "objectiveId": "C10.path-follow",
+      "prompt": "A lawn robot follows a straight guide wire with a pure-pursuit rule. Plane coordinates in metres, heading in radians counter-clockwise from the world +x axis. The path is the single segment from (0, 0) to (12, 0). The robot is at (2, 3) with heading 0 rad, and the lookahead distance is L = 5 m. Lookahead rule: scan the path segments in order from the first; on each segment the circle of radius L around the robot meets the segment's line in up to two points, and only the one further along the segment direction counts; the target is that point on the first segment where it lies on the segment itself (end points included). If no segment qualifies and the goal (last vertex) is closer than L, the goal is the target. Steering law: with the target expressed in the robot frame (x forward, y left), y_L its left coordinate and d the straight-line distance from robot to target, the curvature is kappa = 2 y_L / d^2 in 1/m, positive = turn left. Find the lookahead target's x coordinate (its y coordinate is on the path) and the curvature kappa for this pose. Tolerance ±0.001 (x in m, kappa in 1/m).",
+      "fields": [
+        {
+          "label": "Target x (m)",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "kappa (1/m)",
+          "kind": "number",
+          "answer": "-0.24",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The path lies on y = 0 and the robot is 3 m above it, so the circle of radius 5 around (2, 3) meets y = 0 where (x - 2)^2 + 3^2 = 25, so x - 2 = ±4 and x = 6 or x = -2. The point further along the segment direction (+x) is x = 6, so the target is (6, 0) and it lies on the segment (0 <= 6 <= 12). With heading 0 the robot frame is parallel to the world frame: dx = 6 - 2 = 4, dy = 0 - 3 = -3, so y_L = -3 and d^2 = 16 + 9 = 25 (= L^2). kappa = 2 (-3) / 25 = -0.24 1/m, a gentle right turn (negative), as expected for a target below the robot.",
+      "hints": [
+        "The circle around the robot cuts the line y = 0 twice; one cut is ahead of the robot and one is behind it. Decide which, then express the target relative to the robot to get the sign of kappa (a target below the robot's heading line is on its right).",
+        "Solve (x - 2)^2 + 3^2 = 5^2 for x and keep the root with the larger x (further along +x). Then form dx = x_target - 2 and dy = 0 - 3; with heading 0, y_L = dy, and the squared distance d^2 = dx^2 + dy^2 equals L^2 = 25 for a point on the circle.",
+        "The path lies on y = 0 and the robot is 3 m above it, so the circle of radius 5 around (2, 3) meets y = 0 where (x - 2)^2 + 3^2 = 25, so x - 2 = ±4 and x = 6 or x = -2. The point further along the segment direction (+x) is x = 6, so the target is (6, 0) and it lies on the segment (0 <= 6 <= 12). With heading 0 the robot frame is parallel to the world frame: dx = 6 - 2 = 4, dy = 0 - 3 = -3, so y_L = -3 and d^2 = 16 + 9 = 25 (= L^2). kappa = 2 (-3) / 25 = -0.24 1/m, a gentle right turn (negative), as expected for a target below the robot."
+      ],
+      "remediation": "Common slips on this item: taking the intersection behind the robot gives target x = -2 (kappa happens to stay -0.24 here because the heading is 0, so only the x field catches it); steering at the nearest path point (2, 0) instead of the lookahead point gives kappa = -0.666667; forgetting the factor 2 gives kappa = -0.12; reading the target as being on the left flips the sign to +0.24. Draw the circle and the path once, mark the root ahead of the robot, then retry a fresh X30 item."
+    },
+    {
+      "id": "X30.lookahead-geometry.2",
+      "route": "lookahead-geometry",
+      "difficulty": 2,
+      "structure": "pure-pursuit.lookahead.corner@1",
+      "inputs": {
+        "path": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "9",
+            "0"
+          ],
+          [
+            "9",
+            "12"
+          ]
+        ],
+        "x": "6",
+        "y": "0",
+        "theta": "0",
+        "lookahead": "5"
+      },
+      "objectiveId": "C10.path-follow",
+      "prompt": "A tracked inspection robot follows a bent corridor centre line, a polyline with vertices (0, 0), (9, 0) and (9, 12) in metres; segments are numbered from 0, so segment 0 is (0, 0) to (9, 0) and segment 1 is (9, 0) to (9, 12). The robot is at (6, 0) with heading 0 rad (counter-clockwise from the world +x axis) and the lookahead distance is L = 5 m. Lookahead rule: scan the path segments in order from the first; on each segment the circle of radius L around the robot meets the segment's line in up to two points, and only the one further along the segment direction counts; the target is that point on the first segment where it lies on the segment itself (end points included). If no segment qualifies and the goal (last vertex) is closer than L, the goal is the target. Steering law: with the target expressed in the robot frame (x forward, y left), y_L its left coordinate and d the straight-line distance from robot to target, the curvature is kappa = 2 y_L / d^2 in 1/m, positive = turn left. Find the y coordinate of the target, the number of the segment that holds it, and kappa. Tolerance ±0.001 (y in m, kappa in 1/m).",
+      "fields": [
+        {
+          "label": "Target y (m)",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Segment number holding the target (0-based)",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "kappa (1/m)",
+          "kind": "number",
+          "answer": "0.32",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "On segment 0 (the line y = 0) the circle of radius 5 around (6, 0) meets the line at x = 1 and x = 11. The one further along is x = 11, but the segment ends at x = 9, so segment 0 does not qualify (the point at x = 1 is behind the robot and never used). On segment 1 (the line x = 9) the circle gives (9 - 6)^2 + y^2 = 25, so y = ±4; the one further along (+y) is y = 4, which lies on the segment (0 <= 4 <= 12). The target is (9, 4) on segment 1. With heading 0: dx = 3, dy = 4, y_L = 4, d^2 = 25, so kappa = 2 · 4 / 25 = 0.32 1/m (a left turn).",
+      "hints": [
+        "Work segment by segment. For each one find where the circle of radius 5 meets its line, keep only the root further along the segment direction, and check whether that root lies between the segment's end points; the first segment that passes decides the target.",
+        "On segment 0 the roots are x = 6 ± 5. Test the larger one against the end x = 9. If it fails, move to segment 1 (the line x = 9), solve (9 - 6)^2 + y^2 = 25 and keep the root further along +y, then use dx, dy and d^2 for kappa.",
+        "On segment 0 (the line y = 0) the circle of radius 5 around (6, 0) meets the line at x = 1 and x = 11. The one further along is x = 11, but the segment ends at x = 9, so segment 0 does not qualify (the point at x = 1 is behind the robot and never used). On segment 1 (the line x = 9) the circle gives (9 - 6)^2 + y^2 = 25, so y = ±4; the one further along (+y) is y = 4, which lies on the segment (0 <= 4 <= 12). The target is (9, 4) on segment 1. With heading 0: dx = 3, dy = 4, y_L = 4, d^2 = 25, so kappa = 2 · 4 / 25 = 0.32 1/m (a left turn)."
+      ],
+      "remediation": "Common slips on this item: taking segment 0's root behind the robot (target (1, 0)) gives kappa = 0 and segment number 0; clamping segment 0's root to its end (9, 0) gives y = 0, segment 0 and kappa = 0; taking the lower root on segment 1 (9, -4) gives kappa = -0.32; using the wrong d^2 (for example 3^2 = 9) gives kappa = 0.8889. Re-check each segment's root against its end points, then retry a fresh X30 item."
+    },
+    {
+      "id": "X30.lookahead-geometry.3",
+      "route": "lookahead-geometry",
+      "difficulty": 3,
+      "structure": "pure-pursuit.lookahead.end-saturation@1",
+      "inputs": {
+        "path": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "15",
+            "0"
+          ]
+        ],
+        "x": "13",
+        "y": "2.5",
+        "theta": "0.6",
+        "lookahead": "4",
+        "v_cmd": "1.2",
+        "v_max": "1",
+        "w_max": "0.4"
+      },
+      "objectiveId": "C10.path-follow",
+      "prompt": "A line-following cart approaches the end of a straight track from (0, 0) to (15, 0), all in metres. The cart is at (13, 2.5) with heading 0.6 rad (counter-clockwise from the world +x axis) and the lookahead distance is L = 4 m. Lookahead rule: scan the path segments in order from the first; on each segment the circle of radius L around the robot meets the segment's line in up to two points, and only the one further along the segment direction counts; the target is that point on the first segment where it lies on the segment itself (end points included). If no segment qualifies and the goal (last vertex) is closer than L, the goal is the target. Steering law: with the target expressed in the robot frame (x forward, y left), y_L its left coordinate and d the straight-line distance from robot to target, the curvature is kappa = 2 y_L / d^2 in 1/m, positive = turn left. The commanded speed is 1.2 m/s, but the cart's speed limit is 1 m/s and its turn-rate limit is 0.4 rad/s: the speed is first capped at the speed limit, and if |v kappa| would then exceed the turn-rate limit the speed is reduced (the same arc is kept) until |omega| equals the limit, where omega = v kappa. Find kappa, the final speed v and the final turn rate omega. Tolerance ±0.001 (kappa in 1/m, v in m/s, omega in rad/s).",
+      "fields": [
+        {
+          "label": "kappa (1/m)",
+          "kind": "number",
+          "answer": "-0.622951",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Final speed v (m/s)",
+          "kind": "number",
+          "answer": "0.642105",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Final turn rate omega (rad/s)",
+          "kind": "number",
+          "answer": "-0.4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The line is y = 0 and the robot is 2.5 m above it. The circle of radius 4 around (13, 2.5) meets it where (x - 13)^2 + 6.25 = 16, so x = 13 ± 3.1225; the one further along is x = 16.1225, past the segment end 15, so the segment does not qualify. The goal (15, 0) is at distance sqrt(2^2 + 2.5^2) = sqrt(10.25) = 3.2016 < 4, so the goal is the target and d^2 = 10.25, not L^2 = 16. In the world frame dx = 2, dy = -2.5; rotating into the robot frame with heading 0.6 rad, y_L = -sin(0.6) · 2 + cos(0.6) · (-2.5) = -1.129285 - 2.063340 = -3.192624. kappa = 2 y_L / d^2 = -0.622951 1/m. The speed is capped at 1 m/s, giving |v kappa| = 0.622951 > 0.4, so slow down along the same arc: v = 0.4 / |kappa| = 0.642105 m/s and omega = v kappa = -0.4 rad/s.",
+      "hints": [
+        "The goal is closer than L only if no segment gives a target first, so test the segment's far circle root against the segment end before using the goal. Once you know the target, express it in the robot frame by rotating the world offset by the heading, then compute kappa and the two limits in order (speed cap, then turn-rate).",
+        "Check: the root further along the track is x = 13 + sqrt(16 - 2.5^2); compare it with 15. If it is past the end, take the goal (15, 0) as target and use the actual squared distance to it in kappa = 2 y_L / d^2. Then v = min(1.2, 1) and, if |v kappa| > 0.4, v = 0.4 / |kappa|.",
+        "The line is y = 0 and the robot is 2.5 m above it. The circle of radius 4 around (13, 2.5) meets it where (x - 13)^2 + 6.25 = 16, so x = 13 ± 3.1225; the one further along is x = 16.1225, past the segment end 15, so the segment does not qualify. The goal (15, 0) is at distance sqrt(2^2 + 2.5^2) = sqrt(10.25) = 3.2016 < 4, so the goal is the target and d^2 = 10.25, not L^2 = 16. In the world frame dx = 2, dy = -2.5; rotating into the robot frame with heading 0.6 rad, y_L = -sin(0.6) · 2 + cos(0.6) · (-2.5) = -1.129285 - 2.063340 = -3.192624. kappa = 2 y_L / d^2 = -0.622951 1/m. The speed is capped at 1 m/s, giving |v kappa| = 0.622951 > 0.4, so slow down along the same arc: v = 0.4 / |kappa| = 0.642105 m/s and omega = v kappa = -0.4 rad/s."
+      ],
+      "remediation": "Common slips on this item: using L^2 = 16 instead of the actual squared distance 10.25 gives kappa = -0.399078 (the speed stays 1 and omega = -0.399078, not at the limit); forgetting to rotate by the heading (y_L = -2.5) gives kappa = -0.4878; clipping omega alone at -0.4 while keeping v = 1 changes the arc (v = 1, omega = -0.4); capping the speed at 1 m/s without slowing leaves omega = -0.622951 rad/s, above the limit. Rotate first, use the actual distance, then slow down along the arc, and try a fresh X30 item."
+    },
+    {
+      "id": "X30.trace-evaluation.1",
+      "route": "trace-evaluation",
+      "difficulty": 1,
+      "structure": "pure-pursuit.trace.cross-track@1",
+      "inputs": {
+        "path": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "10",
+            "0"
+          ],
+          [
+            "10",
+            "10"
+          ]
+        ],
+        "points": [
+          [
+            "1",
+            "0.4"
+          ],
+          [
+            "4",
+            "-0.8"
+          ],
+          [
+            "8",
+            "0.6"
+          ],
+          [
+            "10.5",
+            "3"
+          ],
+          [
+            "9.7",
+            "7"
+          ]
+        ]
+      },
+      "objectiveId": "C10.path-follow",
+      "prompt": "A tracking log of a mobile robot was recorded at a fixed rate; the planned route is the polyline with vertices (0, 0), (10, 0) and (10, 10) in metres. The logged positions, in order from sample number 0, are (1, 0.4), (4, -0.8), (8, 0.6), (10.5, 3), (9.7, 7). The cross-track error of a sample is its straight-line distance to the nearest point of the whole polyline (both segments, unsigned). Compute the maximum cross-track error, the root-mean-square error sqrt(mean(e^2)) over all five samples, and the number (0-based) of the sample with the maximum error. Tolerance ±0.001 (errors in m).",
+      "fields": [
+        {
+          "label": "Maximum cross-track error (m)",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "RMS error (m)",
+          "kind": "number",
+          "answer": "0.547723",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Sample number with the maximum error",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Distance of each sample to the polyline: (1, 0.4) is 0.4 from segment 0 (the line y = 0); (4, -0.8) is 0.8; (8, 0.6) is 0.6 from segment 0 (it is 2 from segment 1, which is farther); (10.5, 3) is 0.5 from segment 1 (the line x = 10, y between 0 and 10); (9.7, 7) is 0.3. So the errors are 0.4, 0.8, 0.6, 0.5, 0.3. The maximum is 0.8, at sample number 1. RMS = sqrt((0.16 + 0.64 + 0.36 + 0.25 + 0.09) / 5) = sqrt(1.5 / 5) = sqrt(0.3) = 0.547723 m.",
+      "hints": [
+        "For each sample find its distance to each segment separately (clamped to the segment's end points) and keep the smaller one. Then summarise the five errors: largest one, and the square root of the mean of the squares.",
+        "Samples (1, 0.4), (4, -0.8) and (8, 0.6) are closest to segment 0 (y = 0, x between 0 and 10) and (10.5, 3) and (9.7, 7) to segment 1 (x = 10, y between 0 and 10). Write the five distances, square them, add them, divide by 5 and take the square root; count samples from 0.",
+        "Distance of each sample to the polyline: (1, 0.4) is 0.4 from segment 0 (the line y = 0); (4, -0.8) is 0.8; (8, 0.6) is 0.6 from segment 0 (it is 2 from segment 1, which is farther); (10.5, 3) is 0.5 from segment 1 (the line x = 10, y between 0 and 10); (9.7, 7) is 0.3. So the errors are 0.4, 0.8, 0.6, 0.5, 0.3. The maximum is 0.8, at sample number 1. RMS = sqrt((0.16 + 0.64 + 0.36 + 0.25 + 0.09) / 5) = sqrt(1.5 / 5) = sqrt(0.3) = 0.547723 m."
+      ],
+      "remediation": "Common slips on this item: reporting the mean error 0.52 instead of the RMS; dividing by n - 1 = 4 gives RMS 0.612372; counting samples from 1 gives sample number 2; using the distance to the first segment only gives errors 0.4, 0.8, 0.6, 3.041381, 7, so maximum 7 at sample number 4. Clamp to each segment, take the minimum over both, then summarise, and retry a fresh X30 item."
+    },
+    {
+      "id": "X30.trace-evaluation.2",
+      "route": "trace-evaluation",
+      "difficulty": 2,
+      "structure": "pure-pursuit.trace.vertex-clearance@1",
+      "inputs": {
+        "path": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "8",
+            "0"
+          ],
+          [
+            "8",
+            "6"
+          ]
+        ],
+        "points": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "5",
+            "0.2"
+          ],
+          [
+            "8",
+            "3"
+          ],
+          [
+            "8",
+            "6"
+          ]
+        ],
+        "corridor": "0.6",
+        "goal_tol": "0.5"
+      },
+      "objectiveId": "C10.path-follow",
+      "prompt": "A delivery robot's route is the polyline with vertices (0, 0), (8, 0) and (8, 6) in metres. Its logged positions in order are (0, 0), (5, 0.2), (8, 3), (8, 6). The corridor half-width is 0.6 m and the goal tolerance is 0.5 m. The cross-track error of a sample is its distance to the nearest point of the whole route polyline. Verdict rules, first that applies: 'off-corridor' if any sample's cross-track error is greater than the corridor half-width; otherwise 'timeout' if no sample comes within the goal tolerance of the last vertex; otherwise 'corner-cut' if some interior vertex of the route is farther than the corridor half-width from the polyline drawn through the logged samples in order; otherwise 'ok'. Compute the maximum sample cross-track error and the clearance of the interior vertex (8, 0), meaning its distance to the polyline through the samples (straight chords between consecutive samples), then choose the verdict. Tolerance ±0.001 m.",
+      "fields": [
+        {
+          "label": "Maximum sample cross-track error (m)",
+          "kind": "number",
+          "answer": "0.2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Clearance of vertex (8, 0) to the sample polyline (m)",
+          "kind": "number",
+          "answer": "2.193166",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Verdict",
+          "kind": "choice",
+          "answer": "corner-cut",
+          "tolerance": 0.001,
+          "options": [
+            "ok",
+            "off-corridor",
+            "corner-cut",
+            "timeout"
+          ]
+        }
+      ],
+      "solution": "Sample errors: (0, 0) is 0, (5, 0.2) is 0.2 from the line y = 0, (8, 3) and (8, 6) lie on the route, so the maximum is 0.2 m, inside the 0.6 m corridor, and the last sample (8, 6) is at the goal (distance 0 <= 0.5). The sample polyline goes (5, 0.2) to (8, 3) as one chord, which passes near the vertex (8, 0): the projection parameter of (8, 0) on that chord is t = (3 · 3 + (-0.2) · 2.8) / (3^2 + 2.8^2) = 8.44 / 16.84 = 0.5012, inside [0, 1], so the foot is (6.5036, 1.6033) and the distance is 2.193166 m. That is greater than 0.6, so the corner was cut. No sample left the corridor and the goal was reached, so the rules give corner-cut. (Measuring only to the sample points would give 3, which is not the distance to the chords.)",
+      "hints": [
+        "Two different questions: how far each logged sample is from the route (a sample-by-sample test), and how far the route's corner is from the path the robot actually drew between samples. The second needs the chords between consecutive samples, not just the sample points.",
+        "Errors first: (5, 0.2) is the only sample off the route. For the clearance, find the chord of the samples that passes nearest to (8, 0) (it is the one from (5, 0.2) to (8, 3)), project (8, 0) onto it with a parameter clamped to [0, 1] and measure the distance to that foot. Then apply the verdict rules in the order given.",
+        "Sample errors: (0, 0) is 0, (5, 0.2) is 0.2 from the line y = 0, (8, 3) and (8, 6) lie on the route, so the maximum is 0.2 m, inside the 0.6 m corridor, and the last sample (8, 6) is at the goal (distance 0 <= 0.5). The sample polyline goes (5, 0.2) to (8, 3) as one chord, which passes near the vertex (8, 0): the projection parameter of (8, 0) on that chord is t = (3 · 3 + (-0.2) · 2.8) / (3^2 + 2.8^2) = 8.44 / 16.84 = 0.5012, inside [0, 1], so the foot is (6.5036, 1.6033) and the distance is 2.193166 m. That is greater than 0.6, so the corner was cut. No sample left the corridor and the goal was reached, so the rules give corner-cut. (Measuring only to the sample points would give 3, which is not the distance to the chords.)"
+      ],
+      "remediation": "Common slips on this item: measuring the clearance only to the sample points gives 3 instead of 2.193166; reporting the verdict 'ok' because every sample is inside the corridor ignores the chord that skips the corner; reading 'off-corridor' from the corner distance mixes up the two tests; reporting the RMS 0.1 instead of the maximum 0.2 is a different statistic. Test the samples and the chords separately, then retry a fresh X30 item."
+    },
+    {
+      "id": "X30.trace-evaluation.3",
+      "route": "trace-evaluation",
+      "difficulty": 3,
+      "structure": "pure-pursuit.trace.verdict@1",
+      "inputs": {
+        "path": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "12",
+            "0"
+          ]
+        ],
+        "points": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "3",
+            "0.4"
+          ],
+          [
+            "5",
+            "1"
+          ],
+          [
+            "7",
+            "1.2"
+          ],
+          [
+            "9",
+            "0.9"
+          ],
+          [
+            "11",
+            "0.3"
+          ],
+          [
+            "11.8",
+            "0.1"
+          ]
+        ],
+        "corridor": "1",
+        "goal_tol": "0.5"
+      },
+      "objectiveId": "C10.path-follow",
+      "prompt": "A rover drove along a straight route from (0, 0) to (12, 0) in metres. Its logged positions in order, numbered from 0, are (0, 0), (3, 0.4), (5, 1), (7, 1.2), (9, 0.9), (11, 0.3), (11.8, 0.1). The corridor half-width is 1.0 m and the goal tolerance is 0.5 m around the last vertex (12, 0). The cross-track error of a sample is its distance to the route. Verdict rules, first that applies: 'off-corridor' if any sample's cross-track error is greater than the corridor half-width; otherwise 'timeout' if no sample comes within the goal tolerance of the last vertex; otherwise 'corner-cut' if some interior vertex of the route is farther than the corridor half-width from the polyline drawn through the logged samples in order; otherwise 'ok'. A sample whose error equals the half-width exactly is inside the corridor, and a sample exactly one goal tolerance from the goal is within tolerance. Find the number of the first sample outside the corridor, the number of the first sample within the goal tolerance, the maximum cross-track error, and the verdict. Tolerance ±0.001 (error in m).",
+      "fields": [
+        {
+          "label": "First sample outside the corridor (number)",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "First sample within goal tolerance (number)",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Maximum cross-track error (m)",
+          "kind": "number",
+          "answer": "1.2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Verdict",
+          "kind": "choice",
+          "answer": "off-corridor",
+          "tolerance": 0.001,
+          "options": [
+            "ok",
+            "off-corridor",
+            "corner-cut",
+            "timeout"
+          ]
+        }
+      ],
+      "solution": "The route is the line y = 0, so each sample's error is |y|: 0, 0.4, 1.0, 1.2, 0.9, 0.3, 0.1. Sample 2 has error exactly 1.0, which is inside (the rule is strictly greater), so the first sample outside the corridor is sample 3 (1.2 > 1.0). Distances to the goal (12, 0): sample 5 (11, 0.3) is sqrt(1 + 0.09) = 1.044 away, sample 6 (11.8, 0.1) is sqrt(0.04 + 0.01) = 0.2236 <= 0.5, so the first sample within tolerance is 6. The maximum error is 1.2 m. The run did reach the goal, but 'off-corridor' is the first rule that applies, so the verdict is off-corridor.",
+      "hints": [
+        "Two lists on the same trace: the errors (which equal |y| here) against the corridor, and the distances to the goal against the tolerance. Check the boundary words in the statement for equality, and remember the verdict rules are applied in a fixed order, not by counting how many things went well.",
+        "Write the seven errors and compare each with 1.0 using 'greater than', stopping at the first. Then compute sqrt((12 - x)^2 + y^2) for the last few samples, comparing with 0.5 using 'at most'. Finally walk through the verdict rules from the top: stop at the first rule that applies.",
+        "The route is the line y = 0, so each sample's error is |y|: 0, 0.4, 1.0, 1.2, 0.9, 0.3, 0.1. Sample 2 has error exactly 1.0, which is inside (the rule is strictly greater), so the first sample outside the corridor is sample 3 (1.2 > 1.0). Distances to the goal (12, 0): sample 5 (11, 0.3) is sqrt(1 + 0.09) = 1.044 away, sample 6 (11.8, 0.1) is sqrt(0.04 + 0.01) = 0.2236 <= 0.5, so the first sample within tolerance is 6. The maximum error is 1.2 m. The run did reach the goal, but 'off-corridor' is the first rule that applies, so the verdict is off-corridor."
+      ],
+      "remediation": "Common slips on this item: treating the equal error 1.0 at sample 2 as an exit gives first exit 2; stopping the goal search at the first sample with x close to 12 (11, 0.3) gives goal sample 5; numbering from 1 shifts the answers to 4 and 7; answering 'ok' because the goal was reached ignores that the rover left the corridor. Apply 'greater than' and 'at most' exactly, then follow the rules in order, and retry a fresh X30 item."
+    }
+  ]
+}

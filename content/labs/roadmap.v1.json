@@ -112,13 +112,24 @@
       "id": "L08",
       "title": "Dynamics and control",
       "outcome": "Check a declared dynamical model and controller.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L08-dynamics",
       "practiceFamilies": [
         "X06",
-        "X13"
+        "X13",
+        "X25"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Implemented: a single rigid link on a frictionless pivot with optional viscous damping (angle from the downward vertical): pivot inertia, gravity torque, acceleration, energy, small-angle period, explicit Euler, semi-implicit Euler and RK4 steps with energy-drift summaries and step-size sensitivity, a computed-torque law with a torque limit and gravity/damping compensation, a bounded closed-loop hold with a possibly wrong controller model, and a model check from energy samples of a free swing. The kit compares against closed-form anchors and a reference solver. Entirely numerical; no hardware, simulator or physics engine.",
+      "unavailable": [
+        "Multi-link or coupled manipulator dynamics (mass matrix, Coriolis, Jacobian transpose forces)",
+        "Contact, impact and friction models beyond viscous damping",
+        "Motor, gearbox, amplifier, delay and sensor-noise models",
+        "Physics engines such as MuJoCo and integrator or contact settings inside them",
+        "Hardware or real torque control and any safety claim",
+        "Controller tuning, stability proofs and trajectory-tracking design beyond the fixed hold and law",
+        "Automatic diagnosis of which parameter is wrong beyond the kit's energy-spread comparison",
+        "Signed or verified evidence"
+      ]
     },
     {
       "id": "L09",
@@ -208,28 +219,46 @@
       "id": "L13",
       "title": "Navigation",
       "outcome": "Evaluate an explicit path-following and failure protocol.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L13-navigation",
       "practiceFamilies": [
         "X12",
         "X13",
         "X14",
-        "X15"
+        "X15",
+        "X30"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical self-check of a pure-pursuit path follower for a point unicycle on a declared polyline: lookahead point with stated tie, goal and lost rules, curvature 2*y_L/d^2, speed and turn-rate saturation along the same arc, an exact-arc closed-loop simulation with a declared step, and an offline trace evaluation (cross-track error, RMS, strict corridor test, goal tolerance, time-out, corner clearance to the sample polyline, verdict order). Checked against hand anchors, a bisection nearest-point oracle and an independent simulator. Numerical only: no Nav2/ROS, localization, TF, costmaps, simulator, changed layout or hardware.",
+      "unavailable": [
+        "Actual changed-layout runs (simulated or real) and independent logs recorded by a separate observer",
+        "TF timeouts, transform availability and clock behaviour in a running system",
+        "Nav2 or ROS controller/planner integration and the ROS physics-profile run",
+        "AMCL or any localization-in-the-loop, pose-estimate error and its effect on following",
+        "Costmaps, obstacles, recovery behaviours and replanning",
+        "Trace and error plots of a real run and choosing a new route from them (only numeric trace checks are provided)",
+        "Controller tuning beyond a lookahead distance, and actuator, latency or slip models"
+      ]
     },
     {
       "id": "L14",
       "title": "Interfaces and motion planning",
       "outcome": "Test interfaces and scene outcomes with declared execution mode.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L14-interfaces",
       "practiceFamilies": [
-        "X09",
-        "X11",
-        "X15"
+        "X31",
+        "X29",
+        "X32"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical MOCK self-check, stdlib only: a 2-joint hardware-interface contract (lifecycle unconfigured/inactive/active/finalized, commands only when active, position limits, per-cycle velocity limits, state read-back); a joint-trajectory validator returning named rejection reasons (names, order, times, position and velocity limits, start state); a follow-trajectory action-client state machine driven by a declared event list (accept/reject, feedback, cancel, strict timeout, final states); a straight joint-space segment checked against a closed box by dense exact subdivision (200 steps, endpoints included, a sampling check not a proof). All mock; no ros2_control, MoveIt, real controller, timing or hardware.",
+      "unavailable": [
+        "Real ros2_control, lifecycle nodes and controller manager",
+        "MoveIt planning, planning-scene services and a real planner smoke test",
+        "Real controllers, trajectory interpolation and tracking error",
+        "Any real-time or timing guarantee (jitter, deadlines, latency)",
+        "Real hardware or device evidence (separate review required)",
+        "Real scene geometry: meshes, link thickness, self-collision and swept-volume guarantees"
+      ]
     },
     {
       "id": "L15",
@@ -277,13 +306,23 @@
       "id": "L17",
       "title": "Visual alignment",
       "outcome": "Relate visual error to a bounded control action.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L17-alignment",
       "practiceFamilies": [
         "X13",
-        "X16"
+        "X16",
+        "X34"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical self-check on synthetic geometry only: exact projection for a pan/tilt pinhole (x right, y down, z forward, L16 conventions), observed normalized pixel error, selection of the target among labelled synthetic detections by label, age, depth window and confidence (colour is never evidence), a per-axis saturated proportional velocity step, a cycle that cancels with zero command when no detection is valid, and a closed-loop convergence count over a declared finite suite of start offsets. Checked against exact tangent geometry, hand-computed anchors and independent re-implementations of the reference simulation. No images, detectors, 6-DOF image Jacobian, latency, motor limits, physics or hardware; convergence on the suite does not validate a real servo.",
+      "unavailable": [
+        "Real or rendered image input and replayed camera frames",
+        "Feature, colour-mask or learned object detection (detections are given synthetic rows)",
+        "Full 6-DOF image-based visual servoing with an interaction matrix or image Jacobian",
+        "Camera latency, motor dynamics, backlash and actuator saturation beyond a velocity clip",
+        "Physics simulation, sim-profile characterization and independent object monitors",
+        "Shifted-appearance or lighting tests on real images, and any real camera, robot or hardware evidence",
+        "Convergence guarantees beyond the declared finite task distribution"
+      ]
     },
     {
       "id": "L18",
@@ -372,14 +411,22 @@
       "id": "L22",
       "title": "Cognitive task reasoning",
       "outcome": "Check finite beliefs, preconditions and falsifiable task claims.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L22-reasoning",
       "practiceFamilies": [
-        "X04",
-        "X14",
-        "X20"
+        "X20",
+        "X32",
+        "X39"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original symbolic self-check on a declared box-fetch toy, exact by enumeration: one STRIPS-style action step (preconditions, delete then add), belief updates by a sensed fact with original order kept, weighted posteriors, running a conditional plan tree (do, sense, stop) in every possible world with failure reasons and counterexample indices, success probability over weights, and a groundedness check of the action names and objects a plan uses. Finite, deterministic, in-memory symbolic toy only: no perception, natural-language or LLM/VLM reasoning, probabilistic sensors, continuous or geometric planning, simulator, human review or any cognition certification.",
+      "unavailable": [
+        "Human review of unfamiliar or open-ended plan interpretations",
+        "LLM or VLM reasoning, natural-language plans and perception grounding",
+        "Continuous or geometric task-and-motion planning and reachability",
+        "Simulator or robot execution of the checked plan",
+        "Noisy or probabilistic sensing and POMDP policy solving",
+        "Any certification of cognition, safety or task competence"
+      ]
     }
   ],
   "resources": [

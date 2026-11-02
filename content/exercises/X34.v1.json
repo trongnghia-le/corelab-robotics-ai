@@ -1,0 +1,532 @@
+{
+  "id": "X34",
+  "version": 1,
+  "title": "Select a target and take a bounded visual-servo step",
+  "domain": "CV",
+  "topicId": "V03",
+  "objectiveId": "V03.visual-servo-step",
+  "routes": [
+    "target-selection",
+    "servo-step"
+  ],
+  "scope": "Synthetic pan/tilt pinhole geometry and labelled synthetic detections: select the target by label, age, depth and confidence, compute the normalized image error, a per-axis saturated proportional step and a finite convergence suite; no images, feature detection, 6-DOF image Jacobian, latency, physics or hardware",
+  "labIds": [
+    "L17"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "target-selection": "Choose the target among labelled detections by label, freshness, depth window and confidence (never by colour), and cancel with zero command when nothing valid remains.",
+    "servo-step": "Turn a pixel into a normalized error, project a base-frame point exactly for a pan/tilt camera, apply a per-axis saturated proportional command, and count steps over a declared start suite."
+  },
+  "items": [
+    {
+      "id": "X34.target-selection.1",
+      "route": "target-selection",
+      "difficulty": 1,
+      "structure": "alignment.select-target@1",
+      "inputs": {
+        "detections": [
+          [
+            "3",
+            "1",
+            "300",
+            "240",
+            "1.5",
+            "19.9",
+            "0.95"
+          ],
+          [
+            "7",
+            "1",
+            "380",
+            "250",
+            "2",
+            "19.2",
+            "0.9"
+          ],
+          [
+            "7",
+            "2",
+            "350",
+            "230",
+            "1.8",
+            "19.8",
+            "0.7"
+          ],
+          [
+            "7",
+            "1",
+            "200",
+            "100",
+            "0",
+            "19.9",
+            "0.8"
+          ]
+        ],
+        "label": "7",
+        "now": "20",
+        "limits": [
+          "0.5",
+          "0.3",
+          "4",
+          "0.5"
+        ]
+      },
+      "objectiveId": "V03.visual-servo-step",
+      "prompt": "A pan/tilt camera must follow a ball with class label 7. The detector reports rows (label, colour, u, v, depth in m, stamp in s, confidence): row 0 = (3, 1, 300, 240, 1.5, 19.9, 0.95), row 1 = (7, 1, 380, 250, 2, 19.2, 0.9), row 2 = (7, 2, 350, 230, 1.8, 19.8, 0.7), row 3 = (7, 1, 200, 100, 0, 19.9, 0.8). Rows are numbered from 0. The current time is now = 20 s. A detection is valid only if its label equals 7, its age now − stamp is between 0 and 0.5 s inclusive, its depth is between 0.3 m and 4 m inclusive, and its confidence is at least 0.5; the colour is not part of the test. Among the valid rows the highest confidence wins. Give the age of row 1 in seconds, the number of valid rows, and the row number of the selected target. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Age of row 1 (s)",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Number of valid rows",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Selected row number (counting from 0)",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Row 0 has label 3, so it is rejected even though its colour equals that of row 1 and its confidence 0.95 is the highest. Row 1: age = 20 − 19.2 = 0.8 s, more than 0.5 s, so it is stale. Row 2: label 7, age = 20 − 19.8 = 0.2 s, depth 1.8 m inside [0.3, 4], confidence 0.7 ≥ 0.5, so it is valid (its colour 2 does not matter). Row 3: label 7 and fresh (age 0.1 s), but depth 0 is outside [0.3, 4], so it is invalid. One row is valid, so row 2 is selected.",
+      "hints": [
+        "Test every row against the four rules in turn: label, age, depth window, confidence. Colour is not a rule. The age is now − stamp, in seconds.",
+        "Row 0 fails the label rule at once. For each remaining row work out its age and compare it with the age limit, and compare its depth with the window ends. Then see which rows are left and pick the highest confidence among them.",
+        "Row 0 has label 3, so it is rejected even though its colour equals that of row 1 and its confidence 0.95 is the highest. Row 1: age = 20 − 19.2 = 0.8 s, more than 0.5 s, so it is stale. Row 2: label 7, age = 20 − 19.8 = 0.2 s, depth 1.8 m inside [0.3, 4], confidence 0.7 ≥ 0.5, so it is valid (its colour 2 does not matter). Row 3: label 7 and fresh (age 0.1 s), but depth 0 is outside [0.3, 4], so it is invalid. One row is valid, so row 2 is selected."
+      ],
+      "remediation": "Common slips on this item: choosing by colour and confidence picks row 0 (the label-3 distractor with confidence 0.95); skipping the freshness test accepts the stale row 1 and gives 2 valid rows and row 1; skipping the depth test accepts row 3 and selects row 3; ignoring the label gives row 0. Identity comes from the label, and a stale or zero-depth reading is never steered by. See the bridge image-based-servo-step, then try a fresh X34 item."
+    },
+    {
+      "id": "X34.target-selection.2",
+      "route": "target-selection",
+      "difficulty": 2,
+      "structure": "alignment.select-target@1",
+      "inputs": {
+        "detections": [
+          [
+            "4",
+            "0",
+            "310",
+            "235",
+            "3.0",
+            "49.75",
+            "0.6"
+          ],
+          [
+            "4",
+            "0",
+            "320",
+            "240",
+            "1.2",
+            "50.25",
+            "0.99"
+          ],
+          [
+            "4",
+            "0",
+            "330",
+            "250",
+            "3.1",
+            "50.0",
+            "0.95"
+          ],
+          [
+            "4",
+            "0",
+            "340",
+            "260",
+            "1.0",
+            "49.5",
+            "0.9"
+          ],
+          [
+            "4",
+            "1",
+            "350",
+            "270",
+            "0.5",
+            "50.0",
+            "0.6"
+          ],
+          [
+            "9",
+            "0",
+            "360",
+            "280",
+            "1.0",
+            "50.0",
+            "0.99"
+          ]
+        ],
+        "label": "4",
+        "now": "50",
+        "limits": [
+          "0.25",
+          "0.5",
+          "3.0",
+          "0.6"
+        ]
+      },
+      "objectiveId": "V03.visual-servo-step",
+      "prompt": "A tracker follows a part with class label 4. Detections as rows (label, colour, u, v, depth in m, stamp in s, confidence), numbered from 0: row 0 = (4, 0, 310, 235, 3.0, 49.75, 0.6), row 1 = (4, 0, 320, 240, 1.2, 50.25, 0.99), row 2 = (4, 0, 330, 250, 3.1, 50.0, 0.95), row 3 = (4, 0, 340, 260, 1.0, 49.5, 0.9), row 4 = (4, 1, 350, 270, 0.5, 50.0, 0.6), row 5 = (9, 0, 360, 280, 1.0, 50.0, 0.99). The current time is now = 50 s. A detection is valid when its label equals 4, its age now − stamp satisfies 0 ≤ age ≤ 0.25 s, its depth satisfies 0.5 m ≤ depth ≤ 3.0 m, and its confidence is at least 0.6 (all limits inclusive; colour is ignored). Among the valid rows the highest confidence wins, and on equal confidence the lowest row number wins. Give the number of valid rows, the selected row number, and how many rows with label 4 fail only because of the age rule (stale or stamped in the future). Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Number of valid rows",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Selected row number (counting from 0)",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Label-4 rows rejected by the age rule",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Row 0: label 4, age 50 − 49.75 = 0.25 (on the limit, allowed), depth 3.0 (on the limit, allowed), confidence 0.6 (on the limit, allowed): valid. Row 1: stamp 50.25 is in the future, age = −0.25 < 0, invalid. Row 2: depth 3.1 > 3.0, invalid. Row 3: age 0.5 > 0.25, stale. Row 4: label 4, age 0, depth 0.5 (allowed), confidence 0.6: valid. Row 5: label 9, wrong label. So rows 0 and 4 are valid: two rows. Their confidences tie at 0.6, so the lowest row number, 0, wins. The age rule alone rejects rows 1 and 3: two rows (row 2 and row 5 fail other rules).",
+      "hints": [
+        "Check each row against the label, age, depth and confidence rules, remembering that every limit is inclusive. Write the age 50 − stamp next to each row; a negative age is a stamp in the future.",
+        "Rows 0 and 4 sit exactly on limits, so test them with ≤ and ≥, not with < and >. List the rows that survive, compare their confidences, and apply the tie rule. For the last field count only label-4 rows whose age is outside 0 to 0.25.",
+        "Row 0: label 4, age 50 − 49.75 = 0.25 (on the limit, allowed), depth 3.0 (on the limit, allowed), confidence 0.6 (on the limit, allowed): valid. Row 1: stamp 50.25 is in the future, age = −0.25 < 0, invalid. Row 2: depth 3.1 > 3.0, invalid. Row 3: age 0.5 > 0.25, stale. Row 4: label 4, age 0, depth 0.5 (allowed), confidence 0.6: valid. Row 5: label 9, wrong label. So rows 0 and 4 are valid: two rows. Their confidences tie at 0.6, so the lowest row number, 0, wins. The age rule alone rejects rows 1 and 3: two rows (row 2 and row 5 fail other rules)."
+      ],
+      "remediation": "Common slips on this item: strict comparisons at the limits drop rows 0 and 4 and leave 1 valid rows; accepting a stamp in the future adds row 1 and selects row 1 with 3 valid rows; breaking the tie toward the last row selects row 4; ignoring the label adds row 5 and selects row 5. Limits are inclusive and ties go to the lowest index. See the bridge image-based-servo-step, then try a fresh X34 item."
+    },
+    {
+      "id": "X34.target-selection.3",
+      "route": "target-selection",
+      "difficulty": 3,
+      "structure": "alignment.servo-cycle-sequence@1",
+      "inputs": {
+        "K": [
+          "500",
+          "500",
+          "320",
+          "240"
+        ],
+        "label": "5",
+        "limits": [
+          "0.5",
+          "0.5",
+          "5",
+          "0.5"
+        ],
+        "loop": [
+          "2",
+          "0.6",
+          "0.02"
+        ],
+        "cycles": [
+          {
+            "now": "10.0",
+            "detections": [
+              [
+                "5",
+                "2",
+                "350",
+                "260",
+                "2.0",
+                "10.0",
+                "0.8"
+              ],
+              [
+                "9",
+                "2",
+                "100",
+                "100",
+                "1.0",
+                "10.0",
+                "0.95"
+              ]
+            ]
+          },
+          {
+            "now": "10.1",
+            "detections": [
+              [
+                "5",
+                "2",
+                "324",
+                "244",
+                "2.0",
+                "10.1",
+                "0.8"
+              ],
+              [
+                "9",
+                "2",
+                "100",
+                "100",
+                "1.0",
+                "10.1",
+                "0.95"
+              ]
+            ]
+          },
+          {
+            "now": "10.7",
+            "detections": [
+              [
+                "5",
+                "2",
+                "324",
+                "244",
+                "2.0",
+                "10.1",
+                "0.8"
+              ],
+              [
+                "9",
+                "2",
+                "100",
+                "100",
+                "1.0",
+                "10.7",
+                "0.95"
+              ]
+            ]
+          }
+        ]
+      },
+      "objectiveId": "V03.visual-servo-step",
+      "prompt": "A pan/tilt camera tracks an object with class label 5. Intrinsics fx = fy = 500 px, cx = 320 px, cy = 240 px. In each control cycle the controller selects a detection (label equals 5, age now − stamp between 0 and 0.5 s inclusive, depth between 0.5 m and 5 m inclusive, confidence at least 0.5; colour ignored). If none is valid it cancels with zero command. Otherwise it forms the normalized error ex = (u − cx)/fx, ey = (v − cy)/fy from the selected row's centroid; if |ex| ≤ 0.02 and |ey| ≤ 0.02 it reports aligned with zero command, else it commands wpan = clip(2 ex, ±0.6) and wtilt = clip(2 ey, ±0.6) in rad/s. Rows are (label, colour, u, v, depth in m, stamp in s, confidence). Cycle 1 at now = 10.0 s: (5, 2, 350, 260, 2.0, 10.0, 0.8), (9, 2, 100, 100, 1.0, 10.0, 0.95). Cycle 2 at now = 10.1 s: (5, 2, 324, 244, 2.0, 10.1, 0.8), (9, 2, 100, 100, 1.0, 10.1, 0.95). Cycle 3 at now = 10.7 s, when the tracked object produced no new row and the previous cycle's object row is still the newest one for label 5: (5, 2, 324, 244, 2.0, 10.1, 0.8), (9, 2, 100, 100, 1.0, 10.7, 0.95). Give the pan command of cycle 1 in rad/s (tolerance ±0.001), the status of cycle 2, the status of cycle 3, and the age in seconds of the label-5 row in cycle 3 (tolerance ±0.001).",
+      "fields": [
+        {
+          "label": "Cycle 1 pan command wpan (rad/s)",
+          "kind": "number",
+          "answer": "0.12",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Cycle 2 status",
+          "kind": "choice",
+          "answer": "aligned: zero command, the target is inside the tolerance",
+          "tolerance": 0.001,
+          "options": [
+            "track: steer with a proportional command toward the selected target",
+            "aligned: zero command, the target is inside the tolerance",
+            "stop: cancel with zero command because no detection is valid",
+            "hold: repeat the previous command until a new frame arrives"
+          ]
+        },
+        {
+          "label": "Cycle 3 status",
+          "kind": "choice",
+          "answer": "stop: cancel with zero command because no detection is valid",
+          "tolerance": 0.001,
+          "options": [
+            "track: steer with a proportional command toward the selected target",
+            "aligned: zero command, the target is inside the tolerance",
+            "stop: cancel with zero command because no detection is valid",
+            "hold: repeat the previous command until a new frame arrives"
+          ]
+        },
+        {
+          "label": "Cycle 3 age of the label-5 row (s)",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Cycle 1: the label-9 row is rejected by its label despite its higher confidence 0.95; the label-5 row is fresh (age 0), at depth 2.0 and confidence 0.8, so it is selected. ex = (350 − 320)/500 = 0.06 and ey = (260 − 240)/500 = 0.04, outside 0.02, so wpan = 2 × 0.06 = 0.12 rad/s and wtilt = 0.08 rad/s, below the 0.6 limit. Cycle 2: the selected row gives ex = (324 − 320)/500 = 0.008 and ey = (244 − 240)/500 = 0.008, both ≤ 0.02, so the status is aligned with zero command. Cycle 3: the label-5 row has age 10.7 − 10.1 = 0.6 s > 0.5 s, so it is stale; the fresh label-9 row is the wrong label. Nothing is valid, so the cycle cancels: status stop with zero command, instead of holding the last motion or steering toward the distractor.",
+      "hints": [
+        "In every cycle first decide which row, if any, is the target; only then compute an error. Reject by label before looking at confidence, and compute the age as now − stamp for the label-5 row.",
+        "Cycle 1: use the selected row's centroid for ex and ey and apply the gain 2, then compare with the 0.6 limit. Cycle 2: compare both normalized errors with 0.02 before computing any command. Cycle 3: compute the age of the label-5 row and compare it with 0.5.",
+        "Cycle 1: the label-9 row is rejected by its label despite its higher confidence 0.95; the label-5 row is fresh (age 0), at depth 2.0 and confidence 0.8, so it is selected. ex = (350 − 320)/500 = 0.06 and ey = (260 − 240)/500 = 0.04, outside 0.02, so wpan = 2 × 0.06 = 0.12 rad/s and wtilt = 0.08 rad/s, below the 0.6 limit. Cycle 2: the selected row gives ex = (324 − 320)/500 = 0.008 and ey = (244 − 240)/500 = 0.008, both ≤ 0.02, so the status is aligned with zero command. Cycle 3: the label-5 row has age 10.7 − 10.1 = 0.6 s > 0.5 s, so it is stale; the fresh label-9 row is the wrong label. Nothing is valid, so the cycle cancels: status stop with zero command, instead of holding the last motion or steering toward the distractor."
+      ],
+      "remediation": "Common slips on this item: steering toward the more confident label-9 row in cycle 1 gives wpan = −0.6 rad/s (saturated, wrong sign); using the pixel offset 30 instead of the normalized error gives 0.6 rad/s (saturated); in cycle 3 treating the old row as current gives track instead of stop, and holding the last command is not what the cycle contract says. Cancel when nothing valid remains. See the bridge image-based-servo-step, then try a fresh X34 item."
+    },
+    {
+      "id": "X34.servo-step.1",
+      "route": "servo-step",
+      "difficulty": 1,
+      "structure": "alignment.servo-step@1",
+      "inputs": {
+        "K": [
+          "600",
+          "600",
+          "320",
+          "240"
+        ],
+        "u": "470",
+        "v": "150",
+        "gain": "3",
+        "wmax": "0.6"
+      },
+      "objectiveId": "V03.visual-servo-step",
+      "prompt": "A pan/tilt camera has intrinsics fx = fy = 600 px, cx = 320 px, cy = 240 px (u to the right, v down). The target centroid is measured at (u, v) = (470, 150) px. The normalized error is ex = (u − cx)/fx and ey = (v − cy)/fy. The controller commands wpan = clip(gain · ex, ±wmax) and wtilt = clip(gain · ey, ±wmax) in rad/s with gain = 3 1/s and wmax = 0.6 rad/s; positive pan turns right and positive tilt turns down. Compute ex, ey, wpan and wtilt. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "ex",
+          "kind": "number",
+          "answer": "0.25",
+          "tolerance": 0.001
+        },
+        {
+          "label": "ey",
+          "kind": "number",
+          "answer": "-0.15",
+          "tolerance": 0.001
+        },
+        {
+          "label": "wpan (rad/s)",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "wtilt (rad/s)",
+          "kind": "number",
+          "answer": "-0.45",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "ex = (470 − 320)/600 = 0.25 and ey = (150 − 240)/600 = −0.15: the target is right of centre and above it. The raw products are 3 × 0.25 = 0.75 and 3 × (−0.15) = −0.45 rad/s. The pan product exceeds the 0.6 limit, so it saturates to wpan = 0.6; the tilt product is inside the limit, so wtilt = −0.45. Each axis is clipped on its own.",
+      "hints": [
+        "First turn the measured pixel into normalized errors with the principal point and the focal length of its own axis. Then multiply by the gain and compare each product with the limit 0.6 separately; the sign of the error is the sign of the command.",
+        "Divide 470 − 320 by 600 and 150 − 240 by 600. Multiply each by 3, then keep the value if its size is at most 0.6, otherwise replace it by 0.6 with the same sign. Do not rescale one axis because the other saturated.",
+        "ex = (470 − 320)/600 = 0.25 and ey = (150 − 240)/600 = −0.15: the target is right of centre and above it. The raw products are 3 × 0.25 = 0.75 and 3 × (−0.15) = −0.45 rad/s. The pan product exceeds the 0.6 limit, so it saturates to wpan = 0.6; the tilt product is inside the limit, so wtilt = −0.45. Each axis is clipped on its own."
+      ],
+      "remediation": "Common slips on this item: skipping the saturation gives wpan = 0.75 and wtilt = −0.45; scaling both axes together to respect the limit gives (0.514496, −0.308697); flipping the sign convention gives (−0.6, 0.45); forgetting the principal point gives ex = 0.783333 and ey = 0.25. Clip each axis separately. See the bridge image-based-servo-step, then try a fresh X34 item."
+    },
+    {
+      "id": "X34.servo-step.2",
+      "route": "servo-step",
+      "difficulty": 2,
+      "structure": "alignment.project-target@1",
+      "inputs": {
+        "pan": "0.3",
+        "tilt": "0.2",
+        "point": [
+          "0.6",
+          "-0.3",
+          "2.5"
+        ]
+      },
+      "objectiveId": "V03.visual-servo-step",
+      "prompt": "A camera sits at the origin of a base frame with x to the right, y down and z forward (metres). Positive pan turns the optical axis to the right (+x) and positive tilt turns it down (+y). At pan = 0.3 rad and tilt = 0.2 rad the camera axes in the base frame are forward f = (sin p cos t, sin t, cos p cos t), right = (cos p, 0, −sin p) and down = (−sin p sin t, cos t, −cos p sin t). A target is at P = (0.6, −0.3, 2.5) m in the base frame. Its camera coordinates are (P · right, P · down, P · f) and the third one is the depth Zc. The normalized image coordinates are x = Xc/Zc and y = Yc/Zc. Compute Zc, x and y (tolerance ±0.001), and say in which directions the pan and tilt axes must turn to bring the target to the image centre.",
+      "fields": [
+        {
+          "label": "Depth Zc (m)",
+          "kind": "number",
+          "answer": "2.45491",
+          "tolerance": 0.001
+        },
+        {
+          "label": "x",
+          "kind": "number",
+          "answer": "-0.067456",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y",
+          "kind": "number",
+          "answer": "-0.3274",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction to turn",
+          "kind": "choice",
+          "answer": "Pan negative (left), tilt negative (up)",
+          "tolerance": 0.001,
+          "options": [
+            "Pan positive (right), tilt positive (down)",
+            "Pan positive (right), tilt negative (up)",
+            "Pan negative (left), tilt positive (down)",
+            "Pan negative (left), tilt negative (up)"
+          ]
+        }
+      ],
+      "solution": "sin 0.3 = 0.29552, cos 0.3 = 0.955336, sin 0.2 = 0.198669, cos 0.2 = 0.980067. Xc = P · right = 0.6 cos p − 2.5 sin p = −0.165599. Yc = P · down = −0.6 sin p sin t − 0.3 cos t − 2.5 cos p sin t = −0.803737. Zc = P · f = 0.6 sin p cos t − 0.3 sin t + 2.5 cos p cos t = 2.45491 m. Then x = −0.165599/2.45491 = −0.067456 and y = −0.803737/2.45491 = −0.3274. x is negative: the target is left of the centre, so pan negative (left). y is negative: the target is above the centre (y points down), so tilt negative (up).",
+      "hints": [
+        "Compute the three dot products with the two angles in radians, keeping the signs of P (its y is negative). The depth is the dot product with the forward axis, and both image coordinates divide by it. Remember y points down.",
+        "Evaluate sin and cos of 0.3 and of 0.2, then write Xc, Yc and Zc as sums of three terms each, one per component of P. Divide Xc and Yc by Zc. A positive x means the target is right of the centre; a positive y means it is below.",
+        "sin 0.3 = 0.29552, cos 0.3 = 0.955336, sin 0.2 = 0.198669, cos 0.2 = 0.980067. Xc = P · right = 0.6 cos p − 2.5 sin p = −0.165599. Yc = P · down = −0.6 sin p sin t − 0.3 cos t − 2.5 cos p sin t = −0.803737. Zc = P · f = 0.6 sin p cos t − 0.3 sin t + 2.5 cos p cos t = 2.45491 m. Then x = −0.165599/2.45491 = −0.067456 and y = −0.803737/2.45491 = −0.3274. x is negative: the target is left of the centre, so pan negative (left). y is negative: the target is above the centre (y points down), so tilt negative (up)."
+      ],
+      "remediation": "Common slips on this item: treating tilt as positive up (tilt = −0.2) gives Zc = 2.574112, x = −0.064332, y = 0.083795; ignoring the tilt gives Zc = 2.565653, x = −0.064544, y = −0.116929; subtracting bearing angles separately gives x = −0.064544, y = −0.330756; dividing by the base z = 2.5 instead of Zc gives x = −0.066239, y = −0.321495. Pan and tilt are coupled, so use the full dot products. See the bridge image-based-servo-step, then try a fresh X34 item."
+    },
+    {
+      "id": "X34.servo-step.3",
+      "route": "servo-step",
+      "difficulty": 3,
+      "structure": "alignment.run-suite@1",
+      "inputs": {
+        "target": [
+          "0",
+          "0",
+          "2"
+        ],
+        "starts": [
+          [
+            "0.5",
+            "0"
+          ],
+          [
+            "0",
+            "0.3"
+          ],
+          [
+            "0.9",
+            "0.9"
+          ]
+        ],
+        "gain": "2",
+        "wmax": "0.4",
+        "dt": "0.25",
+        "tol": "0.03",
+        "max_steps": "8"
+      },
+      "objectiveId": "V03.visual-servo-step",
+      "prompt": "A pan/tilt camera starts at rest and must align with a fixed target straight ahead at (0, 0, 2) m (base frame: x right, y down, z forward). The exact normalized error at pan p and tilt t (positive pan turns right, positive tilt turns down) is x = Xc/Zc and y = Yc/Zc with Xc = −2 sin p, Yc = −2 cos p sin t and Zc = 2 cos p cos t. Each step applies wpan = clip(2 x, ±0.4) and wtilt = clip(2 y, ±0.4) in rad/s for dt = 0.25 s: p ← p + wpan · dt and t ← t + wtilt · dt, both computed from the same error. A start is converged after k steps when |x| ≤ 0.03 and |y| ≤ 0.03 (k = 0 if it already holds); if that has not happened after 8 steps the result is −1. Starts (pan, tilt) in rad: (0.5, 0), (0, 0.3) and (0.9, 0.9). Give the number of steps for each start (−1 if not converged within 8 steps) and the pan angle after 2 steps for the first start. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Steps for start (0.5, 0)",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Steps for start (0, 0.3)",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Steps for start (0.9, 0.9)",
+          "kind": "number",
+          "answer": "-1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pan after 2 steps, first start (rad)",
+          "kind": "number",
+          "answer": "0.3",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "For the first start t = 0, so x = −tan p and y = 0. Pan 0.5: |x| = 0.5463, 2|x| = 1.0926 exceeds 0.4, so the command saturates at −0.4 rad/s (x is negative, so the pan decreases) and the step is 0.4 × 0.25 = 0.1 rad: pan becomes 0.4, then 0.3 (2 tan 0.4 = 0.846 > 0.4), then 0.2 (2 tan 0.3 = 0.619 > 0.4), then 0.1 (2 tan 0.2 = 0.405 > 0.4). Pan 0.1: 2 tan 0.1 = 0.2007 < 0.4, so the step is 0.2007 × 0.25 = 0.0502 and pan becomes 0.0498 (|x| = 0.0499 > 0.03), the next step is 0.0249 and pan becomes 0.0249 with |x| = 0.0249 ≤ 0.03. That is 6 steps, and pan after 2 steps is 0.3. For the second start p = 0 and the tilt gives y = −tan t, the same recursion from 0.3: 0.3 → 0.2 → 0.1 → 0.0498 → 0.0249, converged after 4 steps. For the third start the errors are large (x = −2.03, y = −1.26), both commands saturate, and each axis moves 0.1 rad per step: 0.9, 0.8, ..., so after 8 steps both angles are 0.1 rad and |x| ≈ |y| ≈ 0.10 > 0.03. It has not converged within 8 steps: −1.",
+      "hints": [
+        "With the target straight ahead, an axis whose other angle is 0 follows the scalar recursion a ← a − clip(2 tan a, ±0.4) × 0.25. Decide at each step whether the command saturates: 2 tan a > 0.4 means a step of exactly 0.1 rad.",
+        "Tabulate the angle k = 0, 1, 2, ... for the first start: a saturated step lowers it by 0.1 while 2 tan a > 0.4, afterwards the step is 0.25 × 2 tan a. Stop when tan a ≤ 0.03. For the third start count how far 8 saturated steps of 0.1 rad can lower 0.9 on each axis, and compare the remaining error with 0.03.",
+        "For the first start t = 0, so x = −tan p and y = 0. Pan 0.5: |x| = 0.5463, 2|x| = 1.0926 exceeds 0.4, so the command saturates at −0.4 rad/s (x is negative, so the pan decreases) and the step is 0.4 × 0.25 = 0.1 rad: pan becomes 0.4, then 0.3 (2 tan 0.4 = 0.846 > 0.4), then 0.2 (2 tan 0.3 = 0.619 > 0.4), then 0.1 (2 tan 0.2 = 0.405 > 0.4). Pan 0.1: 2 tan 0.1 = 0.2007 < 0.4, so the step is 0.2007 × 0.25 = 0.0502 and pan becomes 0.0498 (|x| = 0.0499 > 0.03), the next step is 0.0249 and pan becomes 0.0249 with |x| = 0.0249 ≤ 0.03. That is 6 steps, and pan after 2 steps is 0.3. For the second start p = 0 and the tilt gives y = −tan t, the same recursion from 0.3: 0.3 → 0.2 → 0.1 → 0.0498 → 0.0249, converged after 4 steps. For the third start the errors are large (x = −2.03, y = −1.26), both commands saturate, and each axis moves 0.1 rad per step: 0.9, 0.8, ..., so after 8 steps both angles are 0.1 rad and |x| ≈ |y| ≈ 0.10 > 0.03. It has not converged within 8 steps: −1."
+      ],
+      "remediation": "Common slips on this item: dropping the saturation (a command of 2x) gives step counts [4, 4, 5]; forgetting the dt = 0.25 factor (p ← p + wpan) gives [-1, -1, -1]; counting the starting state as a step gives [7, 5, -1]; reporting the first start with the budget ignored gives counts [6, 4, 10] when 30 steps are allowed, but the budget here is 8. Saturation limits each step to 0.1 rad, which is why the far start cannot finish. See the bridge image-based-servo-step, then try a fresh X34 item."
+    }
+  ]
+}

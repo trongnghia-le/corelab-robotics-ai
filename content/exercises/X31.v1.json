@@ -1,0 +1,486 @@
+{
+  "id": "X31",
+  "version": 1,
+  "title": "Check a mock hardware interface, trajectory and action client",
+  "domain": "Robotics",
+  "topicId": "S10",
+  "objectiveId": "S10.mock-joint-interface",
+  "routes": [
+    "trajectory-validation",
+    "action-lifecycle"
+  ],
+  "scope": "Pure-numerical MOCK models of a 2-joint hardware interface contract, a joint-trajectory validator with named rejection reasons, a follow-trajectory action-client state machine and a planar straight joint-segment collision check; not ros2_control, MoveIt, a controller manager, real timing or hardware",
+  "labIds": [
+    "L14"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "trajectory-validation": "Per-segment joint speeds, the minimum time that satisfies per-joint velocity limits, and a straight joint-space move checked against a box obstacle pose by pose; every statement is about a mock validator.",
+    "action-lifecycle": "Tracing a mock follow-trajectory goal through accept, feedback, cancel races, strict timeouts and final states from a declared event list; no ROS 2 action server is involved."
+  },
+  "items": [
+    {
+      "id": "X31.trajectory-validation.1",
+      "route": "trajectory-validation",
+      "difficulty": 1,
+      "structure": "mock-interface.trajectory-check@1",
+      "inputs": {
+        "joint_names": [
+          "shoulder",
+          "elbow"
+        ],
+        "points": [
+          [
+            "0",
+            [
+              "0",
+              "0.5"
+            ]
+          ],
+          [
+            "0.5",
+            [
+              "0.2",
+              "0.7"
+            ]
+          ],
+          [
+            "1",
+            [
+              "0.8",
+              "0.9"
+            ]
+          ]
+        ],
+        "interface_names": [
+          "shoulder",
+          "elbow"
+        ],
+        "current": [
+          "0",
+          "0.5"
+        ],
+        "lower": [
+          "-1.5",
+          "-1.5"
+        ],
+        "upper": [
+          "1.5",
+          "1.5"
+        ],
+        "max_velocity": [
+          "1",
+          "2"
+        ],
+        "start_tol": "0.05"
+      },
+      "objectiveId": "S10.mock-joint-interface",
+      "prompt": "A MOCK trajectory validator (no ros2_control, no controller manager, no hardware) checks a joint trajectory for a 2-joint arm whose interface joints are, in order, shoulder and elbow. The trajectory is addressed to joints shoulder, elbow and has three waypoints (time in seconds, then shoulder and elbow positions in radians): (0, 0 and 0.5), (0.5, 0.2 and 0.7), (1, 0.8 and 0.9). The current state is shoulder 0, elbow 0.5. Limits: positions in [-1.5, 1.5] rad for both joints; max_velocity 1 rad/s for the shoulder and 2 rad/s for the elbow; start_tol 0.05 rad. Validator rules (mock, in this order, each reason listed at most once): joint-order-mismatch (same names, other order), time-not-increasing (a waypoint time not strictly greater than the previous one), position-limit (a waypoint outside [lower, upper], limits inclusive), velocity-limit (between consecutive waypoints some joint moves more than max_velocity x the time difference), start-state-mismatch (first waypoint differs from the current state by more than start_tol in some joint). Give the shoulder speed on the second segment (between the waypoints at 0.5 s and 1 s) in rad/s, and the validator's verdict: Accepted, or the one reason that applies. Numbers are graded to +/-0.001.",
+      "fields": [
+        {
+          "label": "Shoulder speed on the second segment (rad/s)",
+          "kind": "number",
+          "answer": "1.2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Verdict",
+          "kind": "choice",
+          "answer": "velocity-limit",
+          "tolerance": 0.001,
+          "options": [
+            "Accepted",
+            "velocity-limit",
+            "position-limit",
+            "time-not-increasing",
+            "start-state-mismatch",
+            "joint-order-mismatch"
+          ]
+        }
+      ],
+      "solution": "Segment 2 runs from 0.5 s to 1 s, so the time difference is 0.5 s. The shoulder moves 0.8 - 0.2 = 0.6 rad, so its average speed is 0.6/0.5 = 1.2 rad/s, above the shoulder limit of 1 rad/s: velocity-limit. The elbow moves 0.2 rad in 0.5 s = 0.4 rad/s, within its limit of 2 rad/s, and segment 1 is slow for both joints (0.4 rad/s each). The names match and are in order, the times strictly increase, every position is inside [-1.5, 1.5], and the first waypoint equals the current state. Only velocity-limit applies.",
+      "hints": [
+        "Speed is distance over time on one segment of one joint: take the position change between the two later waypoints and divide by the time difference between them, then compare with that joint's own limit.",
+        "Use the shoulder numbers of the last two waypoints and the time difference of those two waypoints. Then check the other rules one by one: names and order, times, position limits and the start state, before choosing the verdict.",
+        "Segment 2 runs from 0.5 s to 1 s, so the time difference is 0.5 s. The shoulder moves 0.8 - 0.2 = 0.6 rad, so its average speed is 0.6/0.5 = 1.2 rad/s, above the shoulder limit of 1 rad/s: velocity-limit. The elbow moves 0.2 rad in 0.5 s = 0.4 rad/s, within its limit of 2 rad/s, and segment 1 is slow for both joints (0.4 rad/s each). The names match and are in order, the times strictly increase, every position is inside [-1.5, 1.5], and the first waypoint equals the current state. Only velocity-limit applies."
+      ],
+      "remediation": "Common slips on this item: forgetting to divide by the time difference gives 0.6 (that is a distance, rad, not a speed); dividing by the total time 1 s gives 0.8; using segment 1 gives 0.4; taking the elbow limit of 2 rad/s for the shoulder makes the trajectory look Accepted. Re-read which joint has which limit, then try a fresh X31 item."
+    },
+    {
+      "id": "X31.trajectory-validation.2",
+      "route": "trajectory-validation",
+      "difficulty": 2,
+      "structure": "mock-interface.min-time@1",
+      "inputs": {
+        "points": [
+          [
+            "0",
+            [
+              "0",
+              "0.4"
+            ]
+          ],
+          [
+            "1",
+            [
+              "0.4",
+              "1.2"
+            ]
+          ]
+        ],
+        "next_positions": [
+          "1.3",
+          "-0.3"
+        ],
+        "lower": [
+          "-1.5",
+          "-1.5"
+        ],
+        "upper": [
+          "1.5",
+          "1.5"
+        ],
+        "max_velocity": [
+          "0.8",
+          "1.5"
+        ]
+      },
+      "objectiveId": "S10.mock-joint-interface",
+      "prompt": "A MOCK trajectory validator for a 2-joint arm (shoulder, elbow; no ros2_control, no hardware) is given two waypoints (time in seconds, then shoulder and elbow positions in radians): (0, 0 and 0.4) and (1, 0.4 and 1.2). A third waypoint at shoulder 1.3 and elbow -0.3 rad is to be appended; its time stamp t3 is still open. Limits: positions in [-1.5, 1.5] rad for both joints; max_velocity 0.8 rad/s for the shoulder and 1.5 rad/s for the elbow. The velocity-limit rule rejects a segment if some joint moves more than max_velocity x (time difference). Names, order and the start state are fine and every position is inside its limits. Find the smallest t3 (in seconds, after 1 s) for which the validator accepts the trajectory, and say which joint sets that time. Number graded to +/-0.001.",
+      "fields": [
+        {
+          "label": "Smallest accepted t3 (s)",
+          "kind": "number",
+          "answer": "2.125",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Joint that sets the minimum duration",
+          "kind": "choice",
+          "answer": "shoulder",
+          "tolerance": 0.001,
+          "options": [
+            "shoulder",
+            "elbow",
+            "both equally",
+            "neither: a position limit decides"
+          ]
+        }
+      ],
+      "solution": "Segment 2 moves the shoulder 1.3 - 0.4 = 0.9 rad and the elbow |-0.3 - 1.2| = 1.5 rad. Each joint needs at least distance / max_velocity: shoulder 0.9/0.8 = 1.125 s, elbow 1.5/1.5 = 1 s. The segment must satisfy both, so its duration is at least the larger, 1.125 s (shoulder). Then t3 = 1 + 1.125 = 2.125 s. At exactly 2.125 s the shoulder moves 0.8 x 1.125 = 0.9 rad, equal to the limit, which is allowed.",
+      "hints": [
+        "Each joint gives its own minimum duration for the segment from the second to the third waypoint: its distance divided by its own max_velocity. The segment needs the longer of the two, and the time stamp is measured from the start of the trajectory.",
+        "Compute the shoulder distance 1.3 - 0.4 and the elbow distance 1.2 + 0.3, divide each by its own limit, keep the larger quotient, and then add the time of the second waypoint, not zero.",
+        "Segment 2 moves the shoulder 1.3 - 0.4 = 0.9 rad and the elbow |-0.3 - 1.2| = 1.5 rad. Each joint needs at least distance / max_velocity: shoulder 0.9/0.8 = 1.125 s, elbow 1.5/1.5 = 1 s. The segment must satisfy both, so its duration is at least the larger, 1.125 s (shoulder). Then t3 = 1 + 1.125 = 2.125 s. At exactly 2.125 s the shoulder moves 0.8 x 1.125 = 0.9 rad, equal to the limit, which is allowed."
+      ],
+      "remediation": "Common slips on this item: answering the duration 1.125 instead of the time stamp misses the 1 s already elapsed; using the elbow time gives 2 (the faster joint cannot set the limit); adding the two durations gives 3.125; using the same limit 0.8 for both joints gives 2.875 (elbow 1.5/0.8 = 1.875 s). Take the larger per-joint minimum, add 1 s, then try a fresh X31 item."
+    },
+    {
+      "id": "X31.trajectory-validation.3",
+      "route": "trajectory-validation",
+      "difficulty": 3,
+      "structure": "mock-interface.scene-sweep@1",
+      "inputs": {
+        "q_start": [
+          "0",
+          "0"
+        ],
+        "q_end": [
+          "1.5",
+          "0"
+        ],
+        "l1": "0.8",
+        "l2": "0.7",
+        "box": [
+          "0.6",
+          "0.3",
+          "1.2",
+          "0.9"
+        ]
+      },
+      "objectiveId": "S10.mock-joint-interface",
+      "prompt": "A MOCK planning-scene check asks whether a straight joint-space move is collision free in a planar workspace. Planar 2R arm, base at the origin, relative joint angles q1 (from the +x axis) and q2 (from link 1), counter-clockwise positive, radians; link lengths l1 = 0.8 m and l2 = 0.7 m; elbow = l1 (cos q1, sin q1), tip = elbow + l2 (cos(q1 + q2), sin(q1 + q2)); the arm is the two segments base-elbow and elbow-tip. A closed rectangular obstacle occupies x from 0.6 to 1.2 m and y from 0.3 to 0.9 m (touching counts as collision). The move keeps q2 = 0 (the arm stays straight) and sweeps q1 uniformly from 0 to 1.5 rad. Find the smallest and the largest q1 (rad) at which the straight arm touches the rectangle, and decide whether the move is collision free. Angles are graded within +/-0.001 rad modulo 2 pi.",
+      "fields": [
+        {
+          "label": "Smallest colliding q1 (rad)",
+          "kind": "angle",
+          "answer": "0.244979",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Largest colliding q1 (rad)",
+          "kind": "angle",
+          "answer": "0.982794",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Verdict for the whole move",
+          "kind": "choice",
+          "answer": "Blocked: only in the middle of the move, both ends are clear",
+          "tolerance": 0.001,
+          "options": [
+            "Free: the start and end poses are both clear",
+            "Blocked: only in the middle of the move, both ends are clear",
+            "Blocked: the start pose is in collision already",
+            "Blocked: the end pose is in collision already"
+          ]
+        }
+      ],
+      "solution": "With q2 = 0 the arm is one straight segment of length 1.5 m from the origin along the angle q1. A ray from the origin meets the rectangle for the angles between the lowest and the highest corner direction. The lowest is the bottom-right corner (1.2, 0.3): atan2(0.3, 1.2) = 0.244979 rad (its distance 1.2369 m is below the reach 1.5 m, so the arm really touches it). The highest is the top-left corner (0.6, 0.9): atan2(0.9, 0.6) = 0.982794 rad (distance 1.0817 m, also reachable). So the arm collides for q1 from 0.244979 to 0.982794. The start pose q1 = 0 and the end pose q1 = 1.5 are outside that interval and clear, but the sweep passes through it: the move is blocked although both end poses are clear.",
+      "hints": [
+        "With q2 = 0 the arm is a single straight segment from the origin in direction q1. Ask for which directions a ray from the origin meets a rectangle, and check that the arm is long enough to reach the touching corners.",
+        "The first and last touching directions come from corner points of the rectangle: pick the corner with the smallest atan2(y, x) and the one with the largest, check each distance against 1.5 m, and compare the end angles 0 and 1.5 with that interval.",
+        "With q2 = 0 the arm is one straight segment of length 1.5 m from the origin along the angle q1. A ray from the origin meets the rectangle for the angles between the lowest and the highest corner direction. The lowest is the bottom-right corner (1.2, 0.3): atan2(0.3, 1.2) = 0.244979 rad (its distance 1.2369 m is below the reach 1.5 m, so the arm really touches it). The highest is the top-left corner (0.6, 0.9): atan2(0.9, 0.6) = 0.982794 rad (distance 1.0817 m, also reachable). So the arm collides for q1 from 0.244979 to 0.982794. The start pose q1 = 0 and the end pose q1 = 1.5 are outside that interval and clear, but the sweep passes through it: the move is blocked although both end poses are clear."
+      ],
+      "remediation": "Common slips on this item: using the bottom-left corner (0.6, 0.3) for the first angle gives 0.463648; using the top-right corner (1.2, 0.9) for the last angle gives 0.643501; testing only the two end poses concludes Free; reporting the sweep end 1.5 rad as the last colliding angle ignores that the arm clears the top-left corner at 0.982794. Check every pose along the move, not only the ends, then try a fresh X31 item."
+    },
+    {
+      "id": "X31.action-lifecycle.1",
+      "route": "action-lifecycle",
+      "difficulty": 1,
+      "structure": "mock-interface.action-trace@1",
+      "inputs": {
+        "events": [
+          [
+            "0",
+            "send_goal",
+            null
+          ],
+          [
+            "100",
+            "accept",
+            null
+          ],
+          [
+            "300",
+            "feedback",
+            "0.25"
+          ],
+          [
+            "500",
+            "feedback",
+            "0.75"
+          ],
+          [
+            "600",
+            "feedback",
+            "0.5"
+          ],
+          [
+            "800",
+            "result_abort",
+            null
+          ],
+          [
+            "900",
+            "result_ok",
+            null
+          ]
+        ],
+        "timeout": "2000"
+      },
+      "objectiveId": "S10.mock-joint-interface",
+      "prompt": "A MOCK follow-trajectory action client (no ROS 2, no controller) is driven by this event list, each event written as (time in ms, name, value): (0, send_goal), (100, accept), (300, feedback, 0.25), (500, feedback, 0.75), (600, feedback, 0.5), (800, result_abort), (900, result_ok). The timeout is 2000 ms. Mock action-client rules (no ROS 2 involved): the client starts idle with progress 0. send_goal makes it pending and starts the timeout clock; accept makes pending executing; reject makes pending rejected; cancel_request in pending or executing makes it canceling; cancel_done in canceling makes it canceled; result_ok in executing or canceling makes it succeeded with progress 1; result_abort in executing or canceling makes it aborted (progress kept); feedback v in executing or canceling sets progress to v only if v is at least the current progress. Before any of these, if the state is pending, executing or canceling and the time since send_goal is strictly greater than the timeout, the state becomes timed-out and that event is discarded. succeeded, aborted, canceled, rejected and timed-out are final: later events change nothing. Any other (state, event) pair changes nothing. Give the client's final state and its final progress (a fraction between 0 and 1, graded to +/-0.001).",
+      "fields": [
+        {
+          "label": "Final state",
+          "kind": "choice",
+          "answer": "aborted",
+          "tolerance": 0.001,
+          "options": [
+            "succeeded",
+            "aborted",
+            "canceled",
+            "timed-out",
+            "executing",
+            "canceling"
+          ]
+        },
+        {
+          "label": "Final progress",
+          "kind": "number",
+          "answer": "0.75",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "send_goal at 0 ms: pending (clock starts at 0). accept at 100: executing. Feedback 0.25 at 300: progress 0.25. Feedback 0.75 at 500: 0.75. Feedback 0.5 at 600 is lower than the current progress 0.75, so it is dropped and progress stays 0.75. result_abort at 800 (time since send_goal 800 ms, below the 2000 ms timeout): aborted, progress kept at 0.75. result_ok at 900: aborted is final, so nothing changes. Final state aborted, progress 0.75.",
+      "hints": [
+        "Walk the events once in order, keeping three things: the state, the progress, and the time of send_goal. Apply the timeout check first, then the rule for the event, and remember which states are final.",
+        "After each feedback compare the new value with the current progress before copying it. Then handle the two result events: ask yourself what the first one makes the state, and whether the second one can still change a final state.",
+        "send_goal at 0 ms: pending (clock starts at 0). accept at 100: executing. Feedback 0.25 at 300: progress 0.25. Feedback 0.75 at 500: 0.75. Feedback 0.5 at 600 is lower than the current progress 0.75, so it is dropped and progress stays 0.75. result_abort at 800 (time since send_goal 800 ms, below the 2000 ms timeout): aborted, progress kept at 0.75. result_ok at 900: aborted is final, so nothing changes. Final state aborted, progress 0.75."
+      ],
+      "remediation": "Common slips on this item: letting the later result_ok win gives succeeded with progress 1; copying the lower feedback gives progress 0.5; forgetting that result_abort keeps progress gives 0 or 1. Remember final states absorb every later event, then try a fresh X31 item."
+    },
+    {
+      "id": "X31.action-lifecycle.2",
+      "route": "action-lifecycle",
+      "difficulty": 2,
+      "structure": "mock-interface.action-timeout@1",
+      "inputs": {
+        "events": [
+          [
+            "1000",
+            "send_goal",
+            null
+          ],
+          [
+            "1400",
+            "accept",
+            null
+          ],
+          [
+            "3000",
+            "feedback",
+            "0.5"
+          ],
+          [
+            "3001",
+            "feedback",
+            "0.9"
+          ],
+          [
+            "3500",
+            "result_ok",
+            null
+          ]
+        ],
+        "timeout": "2000"
+      },
+      "objectiveId": "S10.mock-joint-interface",
+      "prompt": "A MOCK follow-trajectory action client (no ROS 2, no controller) is driven by this event list, each event written as (time in ms, name, value): (1000, send_goal), (1400, accept), (3000, feedback, 0.5), (3001, feedback, 0.9), (3500, result_ok). The timeout is 2000 ms. Mock action-client rules (no ROS 2 involved): the client starts idle with progress 0. send_goal makes it pending and starts the timeout clock; accept makes pending executing; reject makes pending rejected; cancel_request in pending or executing makes it canceling; cancel_done in canceling makes it canceled; result_ok in executing or canceling makes it succeeded with progress 1; result_abort in executing or canceling makes it aborted (progress kept); feedback v in executing or canceling sets progress to v only if v is at least the current progress. Before any of these, if the state is pending, executing or canceling and the time since send_goal is strictly greater than the timeout, the state becomes timed-out and that event is discarded. succeeded, aborted, canceled, rejected and timed-out are final: later events change nothing. Any other (state, event) pair changes nothing. The events are numbered from 0 in the order listed. Give the number of the first event after which the state is timed-out, the final state, and the final progress (graded to +/-0.001).",
+      "fields": [
+        {
+          "label": "Number of the first event after which the state is timed-out",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Final state",
+          "kind": "choice",
+          "answer": "timed-out",
+          "tolerance": 0.001,
+          "options": [
+            "succeeded",
+            "aborted",
+            "canceled",
+            "timed-out",
+            "executing",
+            "canceling"
+          ]
+        },
+        {
+          "label": "Final progress",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The clock starts at the send_goal time 1000 ms. Event 0 send_goal: pending. Event 1 accept (1400): executing. Event 2 feedback 0.5 at 3000: time since send_goal is 2000 ms, which is not strictly greater than the timeout 2000 ms, so the event is processed: progress 0.5. Event 3 feedback 0.9 at 3001: 2001 ms is greater than 2000 ms, so the state becomes timed-out and this feedback is discarded (progress stays 0.5). Event 4 result_ok at 3500: timed-out is final, so nothing changes. First timed-out event number 3, final state timed-out, final progress 0.5.",
+      "hints": [
+        "The timeout clock starts at the send_goal time, not at time 0 and not at the previous event. Compute the time since send_goal for each later event and compare it with the timeout; equality counts as still in time.",
+        "Event 2 is at 3000 ms and event 3 at 3001 ms: work out 3000 - 1000 and 3001 - 1000 and compare each with 2000 using the strict rule. Then decide what happens to the feedback value of the event that times the client out.",
+        "The clock starts at the send_goal time 1000 ms. Event 0 send_goal: pending. Event 1 accept (1400): executing. Event 2 feedback 0.5 at 3000: time since send_goal is 2000 ms, which is not strictly greater than the timeout 2000 ms, so the event is processed: progress 0.5. Event 3 feedback 0.9 at 3001: 2001 ms is greater than 2000 ms, so the state becomes timed-out and this feedback is discarded (progress stays 0.5). Event 4 result_ok at 3500: timed-out is final, so nothing changes. First timed-out event number 3, final state timed-out, final progress 0.5."
+      ],
+      "remediation": "Common slips on this item: treating a time exactly equal to the timeout as late gives first number 2; measuring from time 0 (3000 > 2000) gives first number 2 as well; applying the discarded feedback gives progress 0.9; letting the late result_ok win gives final state succeeded with progress 1. Use the strict comparison from send_goal and discard the late event, then try a fresh X31 item."
+    },
+    {
+      "id": "X31.action-lifecycle.3",
+      "route": "action-lifecycle",
+      "difficulty": 3,
+      "structure": "mock-interface.action-cancel-race@1",
+      "inputs": {
+        "events": [
+          [
+            "0",
+            "send_goal",
+            null
+          ],
+          [
+            "100",
+            "cancel_request",
+            null
+          ],
+          [
+            "150",
+            "accept",
+            null
+          ],
+          [
+            "200",
+            "feedback",
+            "0.2"
+          ],
+          [
+            "250",
+            "feedback",
+            "0.1"
+          ],
+          [
+            "300",
+            "feedback",
+            "0.6"
+          ],
+          [
+            "450",
+            "result_ok",
+            null
+          ],
+          [
+            "500",
+            "cancel_done",
+            null
+          ],
+          [
+            "1200",
+            "tick",
+            null
+          ]
+        ],
+        "timeout": "1000"
+      },
+      "objectiveId": "S10.mock-joint-interface",
+      "prompt": "A MOCK follow-trajectory action client (no ROS 2, no controller) is driven by this event list, each event written as (time in ms, name, value): (0, send_goal), (100, cancel_request), (150, accept), (200, feedback, 0.2), (250, feedback, 0.1), (300, feedback, 0.6), (450, result_ok), (500, cancel_done), (1200, tick). The timeout is 1000 ms. Mock action-client rules (no ROS 2 involved): the client starts idle with progress 0. send_goal makes it pending and starts the timeout clock; accept makes pending executing; reject makes pending rejected; cancel_request in pending or executing makes it canceling; cancel_done in canceling makes it canceled; result_ok in executing or canceling makes it succeeded with progress 1; result_abort in executing or canceling makes it aborted (progress kept); feedback v in executing or canceling sets progress to v only if v is at least the current progress. Before any of these, if the state is pending, executing or canceling and the time since send_goal is strictly greater than the timeout, the state becomes timed-out and that event is discarded. succeeded, aborted, canceled, rejected and timed-out are final: later events change nothing. Any other (state, event) pair changes nothing. The events are numbered from 0 in the order listed. Give the final state, the progress after event 5 (the feedback at 300 ms), and the number of events after which the state is canceling (graded to +/-0.001).",
+      "fields": [
+        {
+          "label": "Final state",
+          "kind": "choice",
+          "answer": "succeeded",
+          "tolerance": 0.001,
+          "options": [
+            "succeeded",
+            "aborted",
+            "canceled",
+            "timed-out",
+            "executing",
+            "canceling"
+          ]
+        },
+        {
+          "label": "Progress after event 5",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Number of events after which the state is canceling",
+          "kind": "number",
+          "answer": "5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Event 0 send_goal: pending. Event 1 cancel_request (100 ms) in pending: canceling. Event 2 accept: the state is canceling, not pending, so the accept changes nothing. Event 3 feedback 0.2: accepted in canceling, progress 0.2. Event 4 feedback 0.1: lower than 0.2, dropped. Event 5 feedback 0.6: progress 0.6. Event 6 result_ok at 450 ms (450 ms since send_goal, below 1000): the server finished before the cancel took effect, so the goal is succeeded with progress 1. Event 7 cancel_done: succeeded is final, nothing changes. Event 8 tick at 1200 ms is past the timeout, but final states ignore every event, so it does not become timed-out. The state is canceling after events 1 to 5: five events. Final state succeeded, progress after event 5 is 0.6, count 5.",
+      "hints": [
+        "Keep the state, the progress and the send_goal time while walking the events. Decide first what a cancel_request does in pending, what the following accept does in that state, and what each result event does in the canceling state.",
+        "Track progress through events 3 to 5, dropping any feedback below the current value. Mark each event after which the state is canceling, starting from the cancel request, and stop counting once a result event makes the state final.",
+        "Event 0 send_goal: pending. Event 1 cancel_request (100 ms) in pending: canceling. Event 2 accept: the state is canceling, not pending, so the accept changes nothing. Event 3 feedback 0.2: accepted in canceling, progress 0.2. Event 4 feedback 0.1: lower than 0.2, dropped. Event 5 feedback 0.6: progress 0.6. Event 6 result_ok at 450 ms (450 ms since send_goal, below 1000): the server finished before the cancel took effect, so the goal is succeeded with progress 1. Event 7 cancel_done: succeeded is final, nothing changes. Event 8 tick at 1200 ms is past the timeout, but final states ignore every event, so it does not become timed-out. The state is canceling after events 1 to 5: five events. Final state succeeded, progress after event 5 is 0.6, count 5."
+      ],
+      "remediation": "Common slips on this item: letting cancel win over the result gives final state canceled; applying the timeout to the final state at 1200 ms gives timed-out; honouring the accept in canceling (back to executing) gives a count of 1; refusing feedback while canceling gives progress 0; counting the result event 6 as canceling gives 6. Re-read which events each state absorbs, then try a fresh X31 item."
+    }
+  ]
+}

@@ -5,3 +5,8 @@ import type { Item } from "../../../lib/v2/content";
 // from the item's inputs (never from its stored answers).
 export type FamilyOracle = (item: Item) => (number | string)[];
 export const familyOracles: Record<string, FamilyOracle> = {};
+
+// Independent numeric oracles for C/M "M" items added after Frames/FK, keyed
+// by task structure; written by the source's reviewer, not its author.
+export type TaskOracle = (inputs: Record<string, unknown>) => number[];
+export const cmOracles: Record<string, TaskOracle> = {};

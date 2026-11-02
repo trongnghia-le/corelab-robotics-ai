@@ -1,0 +1,336 @@
+{
+  "id": "X25",
+  "version": 1,
+  "title": "Check a one-link pendulum model, its energy and a computed-torque law",
+  "domain": "Robotics",
+  "topicId": "R07",
+  "objectiveId": "R07.pendulum-model",
+  "routes": [
+    "pendulum-energy",
+    "computed-torque"
+  ],
+  "scope": "Single rigid link on a frictionless pivot with optional viscous damping: pivot inertia, gravity torque, acceleration, energy, explicit and semi-implicit Euler steps, energy-based model diagnosis, and a computed-torque law with a torque limit; numerical toy only, no multi-link dynamics, contact, friction models, simulator or hardware torque control",
+  "labIds": [
+    "L08"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "pendulum-energy": "Pivot inertia and the equation of motion, the energy of a state, explicit versus semi-implicit Euler steps, and using energy samples of a free swing to tell a correct model from a wrong inertia. RK4 and step-size sensitivity over many steps are practised in the lab kit only, not in these items.",
+    "computed-torque": "The computed-torque law with gravity and damping compensation and a torque limit, how much torque it takes to hold a pose, and the steady offset a wrong gravity parameter leaves."
+  },
+  "items": [
+    {
+      "id": "X25.pendulum-energy.1",
+      "route": "pendulum-energy",
+      "difficulty": 1,
+      "structure": "pendulum.model.acceleration@1",
+      "inputs": {
+        "m": "1.6",
+        "lc": "0.35",
+        "ic": "0.04",
+        "g": "9.81",
+        "b": "0.08",
+        "q": "0.6",
+        "qd": "1.5",
+        "tau": "1.2"
+      },
+      "objectiveId": "R07.pendulum-model",
+      "prompt": "A lab robot's forearm is modelled as a single link. Model convention: one rigid link on a frictionless pivot in a vertical plane. The angle q (rad) is measured from the downward vertical, counter-clockwise positive, so q = 0 hangs straight down. m is the mass (kg), lc the distance from the pivot to the centre of mass (m), Ic the inertia about the centre of mass (kg·m²), b the viscous damping (N·m·s/rad) and g gravity (m/s²). The pivot inertia is I = Ic + m·lc², the equation of motion is I·q'' + b·q' + m·g·lc·sin q = τ, and the total energy is E = ½·I·q'² + m·g·lc·(1 − cos q). Data: m = 1.6 kg, lc = 0.35 m, Ic = 0.04 kg·m², b = 0.08 N·m·s/rad, g = 9.81 m/s². At this instant q = 0.6 rad, q' = 1.5 rad/s and the motor applies τ = 1.2 N·m. Compute the pivot inertia I, the gravity torque m·g·lc·sin q at this angle, the angular acceleration q'' and the total energy E. Tolerance ±0.001 on every field (radian mode).",
+      "fields": [
+        {
+          "label": "I (kg·m²)",
+          "kind": "number",
+          "answer": "0.236",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Gravity torque m·g·lc·sin q (N·m)",
+          "kind": "number",
+          "answer": "3.10192",
+          "tolerance": 0.001
+        },
+        {
+          "label": "q'' (rad/s²)",
+          "kind": "number",
+          "answer": "-8.567457",
+          "tolerance": 0.001
+        },
+        {
+          "label": "E (J)",
+          "kind": "number",
+          "answer": "1.225036",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "I = Ic + m·lc² = 0.04 + 1.6·0.35² = 0.04 + 0.196 = 0.236 kg·m². Gravity torque = m·g·lc·sin q = 5.4936·sin 0.6 = 5.4936·0.564642 = 3.10192 N·m. q'' = (τ − b·q' − m·g·lc·sin q)/I = (1.2 − 0.12 − 3.10192)/0.236 = -2.02192/0.236 = -8.567457 rad/s². E = ½·I·q'² + m·g·lc·(1 − cos q) = ½·0.236·1.5² + 5.4936·(1 − 0.825336) = 0.2655 + 0.959536 = 1.225036 J. The negative q'' means the gravity and damping torques outweigh the motor torque, so the link is slowing down.",
+      "hints": [
+        "Start with the inertia: the link's own inertia about its centre of mass is not the whole story, because the pivot is not at the centre of mass (parallel-axis term). Everything else divides by that pivot inertia. Keep the calculator in radian mode.",
+        "Find the three torques separately: the motor torque, the damping torque b·q' and the gravity torque m·g·lc·sin q. Sum them with the signs of the equation of motion (motor positive, damping and gravity opposing q) and divide by I. For E, add the kinetic part ½·I·q'² to the potential part m·g·lc·(1 − cos q).",
+        "I = Ic + m·lc² = 0.04 + 1.6·0.35² = 0.04 + 0.196 = 0.236 kg·m². Gravity torque = m·g·lc·sin q = 5.4936·sin 0.6 = 5.4936·0.564642 = 3.10192 N·m. q'' = (τ − b·q' − m·g·lc·sin q)/I = (1.2 − 0.12 − 3.10192)/0.236 = -2.02192/0.236 = -8.567457 rad/s². E = ½·I·q'² + m·g·lc·(1 − cos q) = ½·0.236·1.5² + 5.4936·(1 − 0.825336) = 0.2655 + 0.959536 = 1.225036 J. The negative q'' means the gravity and damping torques outweigh the motor torque, so the link is slowing down."
+      ],
+      "remediation": "Common slips on this item: leaving Ic out of the pivot inertia (point-mass model, I = 0.196) gives q'' = -10.315918 rad/s² instead of -8.567457; adding the gravity torque instead of subtracting it gives q'' = 17.72; adding the damping torque gives -7.550508; using cos q for the gravity torque gives -14.635863; degree mode on sin gives 4.332509; skipping the division by I returns -2.02192; for E, forgetting the ½ gives 1.490536 J and using (1 + cos q) gives 10.293164 J. Review the pendulum derivation in /lessons/R07, then try a fresh X25 item."
+    },
+    {
+      "id": "X25.pendulum-energy.2",
+      "route": "pendulum-energy",
+      "difficulty": 2,
+      "structure": "pendulum.integrators.one-step@1",
+      "inputs": {
+        "m": "0.8",
+        "lc": "0.5",
+        "ic": "0.02",
+        "g": "9.81",
+        "q": "1",
+        "qd": "1.2",
+        "h": "0.1"
+      },
+      "objectiveId": "R07.pendulum-model",
+      "prompt": "A simulation of an undamped, unforced swing takes one step of h seconds. Model convention: one rigid link on a frictionless pivot in a vertical plane. The angle q (rad) is measured from the downward vertical, counter-clockwise positive, so q = 0 hangs straight down. m is the mass (kg), lc the distance from the pivot to the centre of mass (m), Ic the inertia about the centre of mass (kg·m²), b the viscous damping (N·m·s/rad) and g gravity (m/s²). The pivot inertia is I = Ic + m·lc², the equation of motion is I·q'' + b·q' + m·g·lc·sin q = τ, and the total energy is E = ½·I·q'² + m·g·lc·(1 − cos q). Data: m = 0.8 kg, lc = 0.5 m, Ic = 0.02 kg·m², g = 9.81 m/s², b = 0 and τ = 0; the state is q = 1 rad, q' = 1.2 rad/s and the step is h = 0.1 s. Let a be the acceleration q'' at the START state. Explicit Euler: q_next = q + h·q', q'_next = q' + h·a. Semi-implicit (symplectic) Euler: q'_next = q' + h·a first, then q_next = q + h·q'_next. Compute the energy E0 before the step, the explicit-Euler rate q'_next and the energy after the explicit step, then the semi-implicit angle q_next and the energy after that step. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "E0 before the step (J)",
+          "kind": "number",
+          "answer": "1.962254",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Explicit Euler q'_next (rad/s)",
+          "kind": "number",
+          "answer": "-0.300878",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Energy after the explicit Euler step (J)",
+          "kind": "number",
+          "answer": "2.22434",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Semi-implicit q_next (rad)",
+          "kind": "number",
+          "answer": "0.969912",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Energy after the semi-implicit step (J)",
+          "kind": "number",
+          "answer": "1.715438",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "I = 0.02 + 0.8·0.5² = 0.22 kg·m². E0 = ½·0.22·1.2² + 3.924·(1 − cos 1) = 0.1584 + 1.803854 = 1.962254 J. The acceleration at the start is a = −m·g·lc·sin q/I = −3.924·0.841471/0.22 = -15.008782 rad/s². Both methods use the same new rate: q'_next = 1.2 + 0.1·(-15.008782) = -0.300878 rad/s. Explicit Euler moves the angle with the OLD rate: q_next = 1 + 0.1·1.2 = 1.12 rad, so its energy is 2.22434 J (change 0.262086 J). Semi-implicit Euler moves the angle with the NEW rate: q_next = 1 + 0.1·(-0.300878) = 0.969912 rad, so its energy is 1.715438 J (change -0.246815 J). Explicit Euler tends to add energy on every step of an undamped swing, so the numerical swing grows over time, while the semi-implicit step stays close to the true energy over many steps.",
+      "hints": [
+        "Compute the energy and the acceleration at the START state first. Both methods change q' with the same formula using that acceleration; they differ only in which rate moves the angle.",
+        "Explicit Euler uses the old rate q' to advance q; semi-implicit Euler uses the already updated rate. Once you have each pair (q_next, q'_next), compute the energy of the new state with the same energy formula as for E0. Do not reuse the old angle in the energy of a new state.",
+        "I = 0.02 + 0.8·0.5² = 0.22 kg·m². E0 = ½·0.22·1.2² + 3.924·(1 − cos 1) = 0.1584 + 1.803854 = 1.962254 J. The acceleration at the start is a = −m·g·lc·sin q/I = −3.924·0.841471/0.22 = -15.008782 rad/s². Both methods use the same new rate: q'_next = 1.2 + 0.1·(-15.008782) = -0.300878 rad/s. Explicit Euler moves the angle with the OLD rate: q_next = 1 + 0.1·1.2 = 1.12 rad, so its energy is 2.22434 J (change 0.262086 J). Semi-implicit Euler moves the angle with the NEW rate: q_next = 1 + 0.1·(-0.300878) = 0.969912 rad, so its energy is 1.715438 J (change -0.246815 J). Explicit Euler tends to add energy on every step of an undamped swing, so the numerical swing grows over time, while the semi-implicit step stays close to the true energy over many steps."
+      ],
+      "remediation": "Common slips on this item: moving the angle with the new rate in the explicit method gives q_next = 0.969912 and an energy of 1.715438 J instead of 2.22434 J; moving it with the old rate in the semi-implicit method gives 1.12 and 2.22434 J instead of 1.715438 J; computing the energy of the new rate with the old angle gives 1.813812 J; using h·a with the acceleration at the NEW angle mixes the two methods (the rate becomes -0.405452 rad/s). Review the integrator definitions in the pendulum bridge, then try a fresh X25 item."
+    },
+    {
+      "id": "X25.pendulum-energy.3",
+      "route": "pendulum-energy",
+      "difficulty": 3,
+      "structure": "pendulum.diagnose.energy-samples@1",
+      "inputs": {
+        "m": "1.2",
+        "lc": "0.4",
+        "ic": "0.06",
+        "g": "9.81",
+        "qs": [
+          "1.1",
+          "0.9158",
+          "-0.2553",
+          "-0.82"
+        ],
+        "qds": [
+          "0",
+          "-2.411",
+          "-4.3828",
+          "-2.9228"
+        ]
+      },
+      "objectiveId": "R07.pendulum-model",
+      "prompt": "A link is released and swings freely with negligible damping; four snapshots of the same swing were recorded. Model convention: one rigid link on a frictionless pivot in a vertical plane. The angle q (rad) is measured from the downward vertical, counter-clockwise positive, so q = 0 hangs straight down. m is the mass (kg), lc the distance from the pivot to the centre of mass (m), Ic the inertia about the centre of mass (kg·m²), b the viscous damping (N·m·s/rad) and g gravity (m/s²). The pivot inertia is I = Ic + m·lc², the equation of motion is I·q'' + b·q' + m·g·lc·sin q = τ, and the total energy is E = ½·I·q'² + m·g·lc·(1 − cos q). The link has m = 1.2 kg, lc = 0.4 m and g = 9.81 m/s². The snapshots (q in rad, q' in rad/s) are (1.1, 0), (0.9158, -2.411), (-0.2553, -4.3828) and (-0.82, -2.9228). Two candidate models are compared. Model A treats the link as a point mass (Ic = 0). Model B includes Ic = 0.06 kg·m². For each model compute E of all four snapshots and the spread (Emax − Emin)/Emax, a dimensionless fraction. Report both spreads (tolerance ±0.002) and decide which model the data support.",
+      "fields": [
+        {
+          "label": "Spread of model A (point mass)",
+          "kind": "number",
+          "answer": "0.223959",
+          "tolerance": 0.002
+        },
+        {
+          "label": "Spread of model B (Ic included)",
+          "kind": "number",
+          "answer": "0.00008",
+          "tolerance": 0.002
+        },
+        {
+          "label": "Which model do the snapshots support?",
+          "kind": "choice",
+          "answer": "Model B (with Ic) keeps the energy flat, so it is the better description of this link",
+          "tolerance": 0.001,
+          "options": [
+            "Both models keep the energy equally flat, so the data cannot separate them",
+            "Model B (with Ic) keeps the energy flat, so it is the better description of this link",
+            "Neither model keeps the energy flat, so the swing cannot be a free undamped swing",
+            "Model A (point mass) keeps the energy flat, so it is the better description of this link"
+          ]
+        }
+      ],
+      "solution": "Model A has I = 0.192 kg·m²; the snapshot energies are 2.5729, 2.3984, 1.9967, 2.3165 J, so the spread is (2.5729 − 1.9967)/2.5729 = 0.223959. Model B has I = 0.252 kg·m²; the energies are 2.5729, 2.5728, 2.5729, 2.5727 J, flat to the rounding of the data, so its spread is 0.00008. A conservative swing has constant energy, and only model B reproduces that, so B (with Ic) matches the link. Note that energy flatness only detects the ratio m·g·lc/I: a model with both I and m·g·lc scaled by the same factor would look equally flat, and the data cannot reveal the mass on their own.",
+      "hints": [
+        "A free undamped swing conserves energy, so the right model gives the SAME energy for every snapshot, even though q and q' change a lot. Compute the energy of each snapshot with each model's pivot inertia and compare the largest and smallest energy.",
+        "For each model, E = ½·I·q'² + m·g·lc·(1 − cos q) with its own I (A: m·lc², B: Ic + m·lc²). The potential part is the same for both, only the kinetic part changes. List the four energies per model, take the largest and the smallest, and form (Emax − Emin)/Emax. The model with the near-zero spread is the better one.",
+        "Model A has I = 0.192 kg·m²; the snapshot energies are 2.5729, 2.3984, 1.9967, 2.3165 J, so the spread is (2.5729 − 1.9967)/2.5729 = 0.223959. Model B has I = 0.252 kg·m²; the energies are 2.5729, 2.5728, 2.5729, 2.5727 J, flat to the rounding of the data, so its spread is 0.00008. A conservative swing has constant energy, and only model B reproduces that, so B (with Ic) matches the link. Note that energy flatness only detects the ratio m·g·lc/I: a model with both I and m·g·lc scaled by the same factor would look equally flat, and the data cannot reveal the mass on their own."
+      ],
+      "remediation": "Common slips on this item: dividing by the smallest energy gives a spread of 0.288591 for model A instead of 0.223959; reporting the absolute range gives 0.576225 J; comparing only the first and last snapshot gives 0.099671; using the same inertia for both models makes both spreads 0.223959 or both 0.00008. Review the energy check in /lessons/R07, then try a fresh X25 item."
+    },
+    {
+      "id": "X25.computed-torque.1",
+      "route": "computed-torque",
+      "difficulty": 1,
+      "structure": "computed-torque.law@1",
+      "inputs": {
+        "m": "1.5",
+        "lc": "0.4",
+        "ic": "0.05",
+        "b": "0.1",
+        "g": "9.81",
+        "q": "0.5",
+        "qd": "0.2",
+        "q_d": "0.9",
+        "qd_d": "0.1",
+        "qdd_d": "0.5",
+        "kp": "64",
+        "kd": "16",
+        "tau_max": "8"
+      },
+      "objectiveId": "R07.pendulum-model",
+      "prompt": "A joint controller uses computed torque on a single link. Model convention: one rigid link on a frictionless pivot in a vertical plane. The angle q (rad) is measured from the downward vertical, counter-clockwise positive, so q = 0 hangs straight down. m is the mass (kg), lc the distance from the pivot to the centre of mass (m), Ic the inertia about the centre of mass (kg·m²), b the viscous damping (N·m·s/rad) and g gravity (m/s²). The pivot inertia is I = Ic + m·lc², the equation of motion is I·q'' + b·q' + m·g·lc·sin q = τ, and the total energy is E = ½·I·q'² + m·g·lc·(1 − cos q). Model and measurement: m = 1.5 kg, lc = 0.4 m, Ic = 0.05 kg·m², b = 0.1 N·m·s/rad, g = 9.81 m/s²; the joint is at q = 0.5 rad moving at q' = 0.2 rad/s. The desired motion at this instant is q_d = 0.9 rad, q_d' = 0.1 rad/s and q_d'' = 0.5 rad/s². Gains kp = 64 1/s² and kd = 16 1/s. The controller computes the commanded acceleration a_cmd = q_d'' + kd·(q_d' − q') + kp·(q_d − q), then τ_raw = I·a_cmd + b·q' + m·g·lc·sin q, and the actuator applies τ_raw clipped to ±8 N·m. Compute a_cmd, τ_raw and the applied torque τ. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "a_cmd (rad/s²)",
+          "kind": "number",
+          "answer": "24.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "τ_raw (N·m)",
+          "kind": "number",
+          "answer": "9.946899",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Applied torque τ (N·m)",
+          "kind": "number",
+          "answer": "8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "I = 0.05 + 1.5·0.4² = 0.29 kg·m². Errors: q_d − q = 0.4 rad and q_d' − q' = -0.1 rad/s. a_cmd = 0.5 + 16·(-0.1) + 64·0.4 = 0.5 − 1.6 + 25.6 = 24.5 rad/s². τ_raw = I·a_cmd + b·q' + m·g·lc·sin q = 7.105 + 0.02 + 2.821899 = 9.946899 N·m (inertia part + damping compensation + gravity compensation). That exceeds the limit of 8 N·m, so the applied torque is clipped to τ = 8 N·m; the clip happens after the whole sum, and with it the closed loop no longer behaves like the linear error equation.",
+      "hints": [
+        "The law has two stages: first the acceleration you WANT from the errors (feedforward plus the two feedback terms), then the torque that makes the model produce it. Evaluate the three error terms with the signs written in the prompt before multiplying by gains.",
+        "Compute the pivot inertia I = Ic + m·lc², multiply it by a_cmd, then add the damping compensation b·q' and the gravity compensation m·g·lc·sin q, which uses the measured angle (not the desired one). Finally compare the sum with the limit; the clip acts on the whole torque.",
+        "I = 0.05 + 1.5·0.4² = 0.29 kg·m². Errors: q_d − q = 0.4 rad and q_d' − q' = -0.1 rad/s. a_cmd = 0.5 + 16·(-0.1) + 64·0.4 = 0.5 − 1.6 + 25.6 = 24.5 rad/s². τ_raw = I·a_cmd + b·q' + m·g·lc·sin q = 7.105 + 0.02 + 2.821899 = 9.946899 N·m (inertia part + damping compensation + gravity compensation). That exceeds the limit of 8 N·m, so the applied torque is clipped to τ = 8 N·m; the clip happens after the whole sum, and with it the closed loop no longer behaves like the linear error equation."
+      ],
+      "remediation": "Common slips on this item: forgetting the gravity compensation gives τ_raw = 7.125; leaving out the pivot inertia (τ_raw = a_cmd + b·q' + gravity) gives 27.341899; reversing the rate error (q' − q_d') gives a_cmd = 27.7; dropping the feedforward q_d'' gives a_cmd = 24; dropping the damping compensation gives 9.926899; subtracting gravity gives 4.303101; reporting τ_raw as the applied torque ignores the 8 N·m limit. Review the computed-torque bridge, then try a fresh X25 item."
+    },
+    {
+      "id": "X25.computed-torque.2",
+      "route": "computed-torque",
+      "difficulty": 2,
+      "structure": "computed-torque.hold-limit@1",
+      "inputs": {
+        "m": "2",
+        "lc": "0.3",
+        "g": "9.81",
+        "tau_max": "4",
+        "q_ref": "1"
+      },
+      "objectiveId": "R07.pendulum-model",
+      "prompt": "A computed-torque controller with an exact gravity model drives a single link to a target. Model convention: one rigid link on a frictionless pivot in a vertical plane. The angle q (rad) is measured from the downward vertical, counter-clockwise positive, so q = 0 hangs straight down. m is the mass (kg), lc the distance from the pivot to the centre of mass (m), Ic the inertia about the centre of mass (kg·m²), b the viscous damping (N·m·s/rad) and g gravity (m/s²). The pivot inertia is I = Ic + m·lc², the equation of motion is I·q'' + b·q' + m·g·lc·sin q = τ, and the total energy is E = ½·I·q'² + m·g·lc·(1 − cos q). Data: m = 2 kg, lc = 0.3 m, g = 9.81 m/s², and the actuator limit is |τ| ≤ 4 N·m. Friction and damping are negligible. The target is q_ref = 1 rad and the link starts hanging at q = 0 at rest. Compute the torque needed to hold the link still at q_ref (answer to ±0.001 N·m), the largest angle in (0, π/2) at which the actuator can still hold the link (±0.001 rad), and decide where the link finally comes to rest.",
+      "fields": [
+        {
+          "label": "Holding torque at q_ref (N·m)",
+          "kind": "number",
+          "answer": "4.952898",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Highest angle the actuator can hold (rad)",
+          "kind": "number",
+          "answer": "0.747188",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Where does the link end up?",
+          "kind": "choice",
+          "answer": "It stops short of q_ref, with the actuator saturated and gravity balancing the limit torque",
+          "tolerance": 0.001,
+          "options": [
+            "It stops at q_ref, because the gravity term supplies exactly the torque needed",
+            "It keeps swinging up and over the top, because the limit cannot stop it",
+            "It stops short of q_ref, with the actuator saturated and gravity balancing the limit torque",
+            "It reaches q_ref, overshoots it, and then settles back onto q_ref"
+          ]
+        }
+      ],
+      "solution": "To hold the link still the actuator must cancel gravity: τ_hold = m·g·lc·sin q_ref = 5.886·sin 1 = 5.886·0.841471 = 4.952898 N·m. That is more than the limit 4 N·m, so q_ref cannot be held. The largest holdable angle satisfies m·g·lc·sin q = τ_max: sin q = 4/5.886 = 0.679579, so q = asin(0.679579) = 0.747188 rad. The controller asks for more torque than the limit, so the clipped torque stays at the limit and the link climbs only until gravity balances it: it settles at 0.747188 rad with the torque pinned at 4 N·m, short of the target. A better gravity model or smaller gains do not help; only a stronger actuator or a lower target does.",
+      "hints": [
+        "Holding a link still means the actuator torque equals the gravity torque at that angle. Compute that torque at the target and compare it with the limit before thinking about the controller.",
+        "The largest holdable angle is where the gravity torque has grown to the limit, m·g·lc·sin q = τ_max, so q = asin(τ_max/(m·g·lc)) (valid while this ratio is at most 1). Beyond that angle the limit torque is smaller than gravity, so the link cannot rest there. Ask what a controller that keeps demanding more than the limit does when the link reaches the angle where torque and gravity balance.",
+        "To hold the link still the actuator must cancel gravity: τ_hold = m·g·lc·sin q_ref = 5.886·sin 1 = 5.886·0.841471 = 4.952898 N·m. That is more than the limit 4 N·m, so q_ref cannot be held. The largest holdable angle satisfies m·g·lc·sin q = τ_max: sin q = 4/5.886 = 0.679579, so q = asin(0.679579) = 0.747188 rad. The controller asks for more torque than the limit, so the clipped torque stays at the limit and the link climbs only until gravity balances it: it settles at 0.747188 rad with the torque pinned at 4 N·m, short of the target. A better gravity model or smaller gains do not help; only a stronger actuator or a lower target does."
+      ],
+      "remediation": "Common slips on this item: using cos q for the gravity torque gives 3.180219 N·m instead of 4.952898; degree mode gives 0.102725 N·m; dividing the limit by m·g instead of m·g·lc gives a holdable angle of 0.205313 rad; using acos instead of asin gives 0.823608 rad; and believing that the gravity term guarantees reaching q_ref ignores the torque limit (the link rests at 0.747188 rad, not at 1 rad). Review the computed-torque bridge, then try a fresh X25 item."
+    },
+    {
+      "id": "X25.computed-torque.3",
+      "route": "computed-torque",
+      "difficulty": 3,
+      "structure": "computed-torque.wrong-gravity-offset@1",
+      "inputs": {
+        "m": "1.2",
+        "lc": "0.45",
+        "ic": "0.03",
+        "g": "9.81",
+        "g_model": "7.5",
+        "kp": "40",
+        "q_ref": "0.9"
+      },
+      "objectiveId": "R07.pendulum-model",
+      "prompt": "A computed-torque controller holds a single link at a fixed target, but its gravity model uses a wrong value. Model convention: one rigid link on a frictionless pivot in a vertical plane. The angle q (rad) is measured from the downward vertical, counter-clockwise positive, so q = 0 hangs straight down. m is the mass (kg), lc the distance from the pivot to the centre of mass (m), Ic the inertia about the centre of mass (kg·m²), b the viscous damping (N·m·s/rad) and g gravity (m/s²). The pivot inertia is I = Ic + m·lc², the equation of motion is I·q'' + b·q' + m·g·lc·sin q = τ, and the total energy is E = ½·I·q'² + m·g·lc·(1 − cos q). The link has m = 1.2 kg, lc = 0.45 m, Ic = 0.03 kg·m² and no damping (b = 0); the real gravity is g = 9.81 m/s² while the controller's model uses g_model = 7.5 m/s² (all other model values exact). The controller holds q_ref = 0.9 rad with q_d' = q_d'' = 0, kp = 40 1/s² and a large kd, and it has no torque limit and no integral term. Once the link has come to rest the torque is τ = I·kp·(q_ref − q) + m·g_model·lc·sin q. Find the rest angle q_ss (solve the equilibrium equation numerically, ±0.001 rad), the offset q_ref − q_ss (±0.001 rad) and the torque the actuator applies at rest (±0.001 N·m).",
+      "fields": [
+        {
+          "label": "Rest angle q_ss (rad)",
+          "kind": "number",
+          "answer": "0.816735",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Offset q_ref − q_ss (rad)",
+          "kind": "number",
+          "answer": "0.083265",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Torque at rest (N·m)",
+          "kind": "number",
+          "answer": "3.861353",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "At rest the real gravity torque m·g·lc·sin q_ss must equal the applied torque: m·g·lc·sin q = I·kp·(q_ref − q) + m·g_model·lc·sin q. Collecting the gravity terms gives I·kp·(q_ref − q) = m·lc·(g − g_model)·sin q with I = 0.03 + 1.2·0.45² = 0.273 kg·m². Numerically I·kp = 10.92 and m·lc·(g − g_model) = 1.2474, so 10.92·(0.9 − q) = 1.2474·sin q. The left side falls and the right side rises with q, so there is one root: q_ss = 0.816735 rad (check: 0.909248 = 0.909248). The offset is q_ref − q_ss = 0.083265 rad. The torque at rest is the real gravity torque there: m·g·lc·sin q_ss = 5.2974·0.728915 = 3.861353 N·m. The wrong g leaves a permanent offset that only an integral term, a better model or a higher kp reduces (the offset scales with 1/kp).",
+      "hints": [
+        "At rest the plant needs a torque equal to the REAL gravity torque, while the controller supplies a P-term plus a gravity term built from the WRONG g. Set those two equal and see which terms remain.",
+        "After cancelling the common part you get a balance between the P-torque I·kp·(q_ref − q) and the leftover gravity torque m·lc·(g − g_model)·sin q. This has no closed form: iterate q ← q_ref − m·lc·(g − g_model)·sin(q)/(I·kp) starting at q_ref, or bisect on the difference, until q stops changing in the fourth decimal.",
+        "At rest the real gravity torque m·g·lc·sin q_ss must equal the applied torque: m·g·lc·sin q = I·kp·(q_ref − q) + m·g_model·lc·sin q. Collecting the gravity terms gives I·kp·(q_ref − q) = m·lc·(g − g_model)·sin q with I = 0.03 + 1.2·0.45² = 0.273 kg·m². Numerically I·kp = 10.92 and m·lc·(g − g_model) = 1.2474, so 10.92·(0.9 − q) = 1.2474·sin q. The left side falls and the right side rises with q, so there is one root: q_ss = 0.816735 rad (check: 0.909248 = 0.909248). The offset is q_ref − q_ss = 0.083265 rad. The torque at rest is the real gravity torque there: m·g·lc·sin q_ss = 5.2974·0.728915 = 3.861353 N·m. The wrong g leaves a permanent offset that only an integral term, a better model or a higher kp reduces (the offset scales with 1/kp)."
+      ],
+      "remediation": "Common slips on this item: evaluating the leftover gravity at q_ref instead of q_ss gives an offset of 0.08948 rad instead of 0.083265; linearising sin q ≈ q gives q_ss = 0.807732 rad; forgetting the pivot inertia in the P-torque gives an offset of 0.023957 rad; reporting the torque from the model's gravity m·g_model·lc·sin q_ss gives 2.952105 N·m instead of the real gravity torque 3.861353 N·m; and assuming gravity compensation removes all offset gives 0. Solve the equilibrium equation numerically, review the computed-torque bridge, then try a fresh X25 item."
+    }
+  ]
+}

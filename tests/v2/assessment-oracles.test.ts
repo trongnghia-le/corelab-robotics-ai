@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import { cmSources } from "../../lib/v2/assessments";
 import { gradeItem } from "../../lib/v2/content";
+import { cmOracles } from "./oracles/index";
 // Parse the authored angle text independently, check the stored cos/sin
 // against it, then derive everything from the angle.
 function rotation(p: Record<string, unknown>): [number, number] {
@@ -84,10 +85,14 @@ for (const source of cmSources())
               ];
               break;
             }
-            default:
-              throw new Error(
-                "No independent numerical check for " + task.structure,
-              );
+            default: {
+              const registered = cmOracles[task.structure];
+              if (!registered)
+                throw new Error(
+                  "No independent numerical check for " + task.structure,
+                );
+              expected = registered(p);
+            }
           }
           expect(expected).toHaveLength(task.fields.length);
           const answers = Object.fromEntries(
