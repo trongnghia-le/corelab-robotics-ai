@@ -1,4 +1,5 @@
 "use client";
+import { CodeBlock } from "./code-block";
 import { useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -95,9 +96,7 @@ export function Practice() {
               <h2>{p.title}</h2>
               <p>{p.task}</p>
               <TopicChips ids={topicMap[p.topicId].prerequisites} />
-              <div className="command-block">
-                <code>{p.command}</code>
-              </div>
+              <CodeBlock code={p.command} language="bash" />
               <div className="topic-actions">
                 <a className="button" download href={p.starter}>
                   <Download size={15} />
@@ -486,8 +485,9 @@ export function Tutor() {
         </p>
         <details>
           <summary>Required JSON format</summary>
-          <pre>
-            {JSON.stringify(
+          <CodeBlock
+            language="json"
+            code={JSON.stringify(
               {
                 schema: "corelab-feedback/1",
                 topicId: topic,
@@ -498,7 +498,7 @@ export function Tutor() {
               null,
               2,
             )}
-          </pre>
+          />
         </details>
         <form
           onSubmit={(e) => {

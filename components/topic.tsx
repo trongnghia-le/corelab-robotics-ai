@@ -6,7 +6,7 @@ import {
   ArrowRight,
   ArrowLeft,
   BookOpen,
-  Check,
+  Target,
   Copy,
   ClipboardCheck,
   Pin,
@@ -188,7 +188,7 @@ export function TopicPage({
               <ul>
                 {objectives.map((o) => (
                   <li key={o}>
-                    <Check size={15} />
+                    <Target size={16} aria-hidden="true" />
                     {o}
                   </li>
                 ))}

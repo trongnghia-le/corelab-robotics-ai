@@ -12,6 +12,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { domainTone } from "../domain-theme";
+import { CodeBlock } from "../code-block";
 import { PageHeading } from "../ui";
 import type { objectiveDetail } from "@/lib/v2/read-model";
 import type {
@@ -668,7 +669,7 @@ export function V2Explorer({ objective }: { objective?: string }) {
                           <summary>
                             Saved implementation notes · unverified
                           </summary>
-                          <pre>{attempt.result.artifact}</pre>
+                          <CodeBlock code={attempt.result.artifact} />
                         </details>
                       )}
                     </div>

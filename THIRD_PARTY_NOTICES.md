@@ -22,6 +22,7 @@ Dependencies are installed through npm and are not vendored in the Git source tr
 | gray-matter; Zod                                      | MIT                                                  |
 | react-markdown; remark-gfm; remark-math; rehype-katex | MIT                                                  |
 | KaTeX                                                 | MIT                                                  |
+| Shiki core, JavaScript regex engine, grammars and themes (`@shikijs/*`) | MIT |
 | Lucide React                                          | ISC, with Feather-derived portions identified as MIT |
 
 This table is not a complete notice bundle for a prebuilt distribution. Transitive packages have separate terms, including MPL-2.0 (Lightning CSS), LGPL-3.0-or-later (optional Sharp/libvips platform packages), and CC BY 4.0 (caniuse-lite data). CoreLab does not relicense these components. A future binary, container or packaged build must retain the notices and satisfy the applicable source/redistribution obligations of everything it includes. This release publishes source, not a bundled executable.
@@ -81,3 +82,34 @@ SOFTWARE.
 ```
 
 Upstream license texts and other package notices remain authoritative. Do not remove notices from installed dependencies when producing a distributable build.
+
+## Shiki notice
+
+Syntax highlighting uses selected locally bundled Shiki TextMate grammars and its Dark+ theme. These remain third-party work; CoreLab does not relicense them as original educational content. Preserve the installed packages’ license files and upstream notices when distributing a build.
+
+The following is retained from `@shikijs/core` 4.6.0:
+
+```text
+MIT License
+
+Copyright (c) 2021 Pine Wu
+Copyright (c) 2023 Anthony Fu <https://github.com/antfu>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
