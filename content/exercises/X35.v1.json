@@ -1,0 +1,340 @@
+{
+  "id": "X35",
+  "version": 1,
+  "title": "Check a parallel-jaw friction grasp and read its contact trace",
+  "domain": "Robotics",
+  "topicId": "R08",
+  "objectiveId": "R08.friction-grasp",
+  "routes": [
+    "lift-feasibility",
+    "retention-trace"
+  ],
+  "scope": "Analytic quasi-static Coulomb-friction hold condition for a two-pad parallel-jaw grasp (minimum squeeze, safety factor, friction cone) and a threshold retention observer over a declared synthetic force trace; no physics engine, soft contact, torsional friction, multi-finger grasp or hardware",
+  "labIds": [
+    "L18"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "lift-feasibility": "2μN ≥ m(g + a) with g = 9.81: per-pad friction share, minimum squeeze, safety factor, largest holding acceleration and mass, with unit conversion.",
+    "retention-trace": "Friction-cone test on pad readings, then contact/slip/release events from a synthetic (cmd, fn, ft) trace with the closed cone edge inside, and inferring mass or friction change from the hold and slip samples."
+  },
+  "items": [
+    {
+      "id": "X35.lift-feasibility.1",
+      "route": "lift-feasibility",
+      "difficulty": 1,
+      "structure": "parallel-jaw.min-squeeze@1",
+      "inputs": {
+        "m": "0.8",
+        "mu": "0.6",
+        "a": "0"
+      },
+      "objectiveId": "R08.friction-grasp",
+      "prompt": "Two flat parallel pads squeeze a rigid box from opposite sides. Each pad presses with normal force N and has Coulomb friction coefficient μ, so one pad can carry a tangential (friction) force of at most μN; the two pads share the load equally. Use g = 9.81 m/s² and treat the model as quasi-static: the box is lifted straight up with upward acceleration a (positive up), so the two pads together must supply a total friction force of m(g + a). A bench gripper lifts a 0.8 kg box at constant speed (a = 0), with μ = 0.6 on both pads. Find the friction force each pad must carry and the smallest normal force N per pad at which the box just holds. Tolerance ±0.001 N for both.",
+      "fields": [
+        {
+          "label": "Friction force each pad must carry (N)",
+          "kind": "number",
+          "answer": "3.924",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Smallest holding normal force N per pad (N)",
+          "kind": "number",
+          "answer": "6.54",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "At constant speed the total friction must equal the weight: m(g + a) = 0.8 · 9.81 = 7.848 N. The two pads share it, so each carries 3.924 N. A pad carries at most μN, so just holding means μN = 3.924 and N = 3.924 / 0.6 = 6.54 N per pad. Check: 2 · 0.6 · 6.54 = 7.848 N.",
+      "hints": [
+        "Start from the vertical force balance on the box: the friction from both pads must cancel the weight. Decide first how that total is shared between the two pads, then relate one pad's share to μN.",
+        "Compute the weight m·g in newtons, halve it for the per-pad friction (your first answer), and then set that per-pad friction equal to the largest a pad can carry, μN, and solve for N.",
+        "At constant speed the total friction must equal the weight: m(g + a) = 0.8 · 9.81 = 7.848 N. The two pads share it, so each carries 3.924 N. A pad carries at most μN, so just holding means μN = 3.924 and N = 3.924 / 0.6 = 6.54 N per pad. Check: 2 · 0.6 · 6.54 = 7.848 N."
+      ],
+      "remediation": "Common slips on this item: letting one pad carry the whole weight gives friction 7.848 N and N = 13.08 N; using g = 10 gives 4 N and N = 6.6667 N; multiplying by μ instead of dividing gives N = 2.3544 N. See the bridge parallel-jaw-friction (force balance), then try a fresh X35 item."
+    },
+    {
+      "id": "X35.lift-feasibility.2",
+      "route": "lift-feasibility",
+      "difficulty": 2,
+      "structure": "parallel-jaw.hold-limits@1",
+      "inputs": {
+        "m": "1.5",
+        "mu": "0.4",
+        "n": "12",
+        "a": "2"
+      },
+      "objectiveId": "R08.friction-grasp",
+      "prompt": "Two flat parallel pads squeeze a rigid box from opposite sides. Each pad presses with normal force N and has Coulomb friction coefficient μ, so one pad can carry a tangential (friction) force of at most μN; the two pads share the load equally. Use g = 9.81 m/s² and treat the model as quasi-static: the box is lifted straight up with upward acceleration a (positive up), so the two pads together must supply a total friction force of m(g + a). A pick-and-place cell squeezes a 1.5 kg box with N = 12 N per pad and μ = 0.4, and plans to lift it with a = 2 m/s². Define the safety factor S as the friction the two pads can supply, 2μN, divided by the friction needed, m(g + a); S ≥ 1 means the grasp holds. Compute S for the planned lift, and the largest upward acceleration a_max (m/s²) at which this same squeeze still holds; a negative a_max would mean the box cannot even be held still. Tolerance ±0.001 for both.",
+      "fields": [
+        {
+          "label": "Safety factor S (dimensionless)",
+          "kind": "number",
+          "answer": "0.541914",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Largest holding acceleration a_max (m/s²)",
+          "kind": "number",
+          "answer": "-3.41",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Capacity: 2μN = 2 · 0.4 · 12 = 9.6 N. Demand at a = 2: m(g + a) = 1.5 · 11.81 = 17.715 N. S = 9.6 / 17.715 = 0.541914 < 1, so the planned lift slips. The limit solves 2μN = m(g + a_max): a_max = 2μN/m − g = 6.4 − 9.81 = -3.41 m/s². It is negative: this squeeze cannot hold the box even at rest.",
+      "hints": [
+        "Both quantities compare the same two forces: the friction capacity 2μN and the friction demand m(g + a). S is their ratio at the planned a; a_max is the a that makes them equal.",
+        "Evaluate the capacity 2μN first. Divide it by m(g + a) with a = 2 for S. For a_max rearrange 2μN = m(g + a) to isolate a, and keep the sign when the result is below zero.",
+        "Capacity: 2μN = 2 · 0.4 · 12 = 9.6 N. Demand at a = 2: m(g + a) = 1.5 · 11.81 = 17.715 N. S = 9.6 / 17.715 = 0.541914 < 1, so the planned lift slips. The limit solves 2μN = m(g + a_max): a_max = 2μN/m − g = 6.4 − 9.81 = -3.41 m/s². It is negative: this squeeze cannot hold the box even at rest."
+      ],
+      "remediation": "Common slips on this item: counting only one pad gives S = 0.271 and a_max = −6.61; dropping a from S and g from a_max gives S = 0.6524 and a_max = 6.4; reporting g − 2μN/m gives a_max = 3.41. See the bridge parallel-jaw-friction (hold condition), then try a fresh X35 item."
+    },
+    {
+      "id": "X35.lift-feasibility.3",
+      "route": "lift-feasibility",
+      "difficulty": 3,
+      "structure": "parallel-jaw.mass-squeeze@1",
+      "inputs": {
+        "n": "12",
+        "mu": "0.35",
+        "a": "2.2",
+        "m_new_g": "900"
+      },
+      "objectiveId": "R08.friction-grasp",
+      "prompt": "Two flat parallel pads squeeze a rigid box from opposite sides. Each pad presses with normal force N and has Coulomb friction coefficient μ, so one pad can carry a tangential (friction) force of at most μN; the two pads share the load equally. Use g = 9.81 m/s² and treat the model as quasi-static: the box is lifted straight up with upward acceleration a (positive up), so the two pads together must supply a total friction force of m(g + a). A gripper squeezes with N = 12 N per pad on pads with μ = 0.35 and lifts at a = 2.2 m/s². (a) What is the largest box mass (kg) this squeeze can lift without slipping? (b) A new part weighs 900 g (its mass is 900 grams, not kilograms) and the same lift is planned with the same μ: what is the smallest normal force N per pad (N) that holds it? Tolerance ±0.001 for each.",
+      "fields": [
+        {
+          "label": "Largest liftable mass (kg)",
+          "kind": "number",
+          "answer": "0.699417",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Smallest holding N per pad for the 900 g part (N)",
+          "kind": "number",
+          "answer": "15.441429",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The hold limit 2μN = m(g + a) gives m_max = 2μN/(g + a) = 2 · 0.35 · 12 / 12.01 = 8.4 / 12.01 = 0.699417 kg. For the 900 g part, convert to 0.9 kg and solve for N: N = m(g + a)/(2μ) = 0.9 · 12.01 / 0.7 = 10.809 / 0.7 = 15.441429 N per pad.",
+      "hints": [
+        "Both parts use the same hold equation 2μN = m(g + a), with g + a = 12.01 m/s² here; part (a) solves it for the mass, part (b) for the squeeze force. Convert grams to kilograms before using it.",
+        "For (a) divide the capacity 2μN by g + a. For (b) turn 900 g into kilograms, multiply by g + a to get the friction needed, and divide by 2μ.",
+        "The hold limit 2μN = m(g + a) gives m_max = 2μN/(g + a) = 2 · 0.35 · 12 / 12.01 = 8.4 / 12.01 = 0.699417 kg. For the 900 g part, convert to 0.9 kg and solve for N: N = m(g + a)/(2μ) = 0.9 · 12.01 / 0.7 = 10.809 / 0.7 = 15.441429 N per pad."
+      ],
+      "remediation": "Common slips on this item: using g instead of g + a gives 0.8563 kg and N = 12.6129 N; counting one pad only gives 0.3497 kg and N = 30.8829 N; using 900 as if it were kilograms gives N = 15441.43 N. See the bridge parallel-jaw-friction (units and hold equation), then try a fresh X35 item."
+    },
+    {
+      "id": "X35.retention-trace.1",
+      "route": "retention-trace",
+      "difficulty": 1,
+      "structure": "parallel-jaw.cone-check@1",
+      "inputs": {
+        "fn": "6",
+        "ft": "4.2",
+        "mu": "0.6"
+      },
+      "objectiveId": "R08.friction-grasp",
+      "prompt": "A force sensor on one gripper pad of a simulated pick reads a normal force of 6.0 N (pressing on the box) and a tangential force of 4.2 N along the pad. The pad has Coulomb friction coefficient μ = 0.6. The friction cone is the set of pad forces with |ft| ≤ μ·fn. Compute the largest tangential force this pad can carry at fn = 6.0 N, the friction coefficient the reading demands (ft/fn), and by how much (N) the reading exceeds the pad's capacity (use a negative number if it is below). Tolerance ±0.001 for each.",
+      "fields": [
+        {
+          "label": "Largest tangential force μ·fn (N)",
+          "kind": "number",
+          "answer": "3.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Demanded coefficient ft/fn (dimensionless)",
+          "kind": "number",
+          "answer": "0.7",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Reading minus capacity, ft − μ·fn (N)",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The capacity is μ·fn = 0.6 · 6.0 = 3.6 N. The reading demands ft/fn = 4.2 / 6.0 = 0.7, larger than μ = 0.6, so the force is outside the cone and the pad slips. The excess is 4.2 − 3.6 = 0.6 N.",
+      "hints": [
+        "Friction on one pad is limited by the normal force pressing on it: the cone compares |ft| with μ times fn. Only this one pad is involved, not the pair.",
+        "Multiply μ by fn for the capacity, divide the tangential reading by the normal reading for the demanded coefficient, and subtract the capacity from the reading for the excess.",
+        "The capacity is μ·fn = 0.6 · 6.0 = 3.6 N. The reading demands ft/fn = 4.2 / 6.0 = 0.7, larger than μ = 0.6, so the force is outside the cone and the pad slips. The excess is 4.2 − 3.6 = 0.6 N."
+      ],
+      "remediation": "Common slips on this item: doubling the capacity for two pads gives 7.2 N and an excess of −3 N (wrongly inside the cone); multiplying μ by ft gives 2.52 N; inverting the ratio gives 1.4286. See the bridge parallel-jaw-friction (friction cone), then try a fresh X35 item."
+    },
+    {
+      "id": "X35.retention-trace.2",
+      "route": "retention-trace",
+      "difficulty": 2,
+      "structure": "parallel-jaw.trace-events@1",
+      "inputs": {
+        "samples": [
+          [
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0.4",
+            "0"
+          ],
+          [
+            "0",
+            "1",
+            "0.4"
+          ],
+          [
+            "0",
+            "3",
+            "1"
+          ],
+          [
+            "0",
+            "3",
+            "1.5"
+          ],
+          [
+            "0",
+            "3",
+            "1.8"
+          ],
+          [
+            "0",
+            "3",
+            "1.2"
+          ],
+          [
+            "1",
+            "2",
+            "0.5"
+          ]
+        ],
+        "mu": "0.5",
+        "contact": "1",
+        "window": "3"
+      },
+      "objectiveId": "R08.friction-grasp",
+      "prompt": "A retention observer reads a synthetic gripper trace. Each sample is (cmd, fn, ft): cmd = 0 means the gripper is commanded closed and 1 commanded open; fn and ft are the measured normal and tangential force per pad in newtons. Samples are numbered from 0. The pads have μ = 0.5 and the contact threshold is 1.0 N. Rules: while closed and not yet in contact, the first sample with fn ≥ 1.0 N is the event \"contact\". While in contact, the first sample with |ft| > μ·fn (strictly greater) is the event \"slip\". The first sample with cmd = 1 while in contact is the event \"release\". (If no contact has happened after 3 consecutive closed samples the observer reports \"empty\"; a contact on the third sample counts as contact, not empty.) Trace, sample index: (cmd, fn, ft): 0: (0, 0, 0); 1: (0, 0.4, 0); 2: (0, 1, 0.4); 3: (0, 3, 1); 4: (0, 3, 1.5); 5: (0, 3, 1.8); 6: (0, 3, 1.2); 7: (1, 2, 0.5). Give the sample index of the first contact, the first slip and the release.",
+      "fields": [
+        {
+          "label": "Index of the \"contact\" event",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Index of the first \"slip\" event",
+          "kind": "number",
+          "answer": "5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Index of the \"release\" event",
+          "kind": "number",
+          "answer": "7",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Contact: sample 1 has fn = 0.4 N < 1.0 N, sample 2 has fn = 1.0 N ≥ 1.0 N, so contact is at index 2 (and it is the third closed sample, so not empty). Slip: μ·fn = 0.5 · 3.0 = 1.5 N from sample 3 on. Sample 3 has ft = 1.0 and sample 4 has ft = 1.5, equal to the capacity, which is not strictly greater, so no slip. Sample 5 has ft = 1.8 > 1.5: slip at index 5 (sample 6 returns inside the cone). Release: sample 7 is the first with cmd = 1 while in contact: index 7.",
+      "hints": [
+        "Walk the samples in order and keep two things: whether you are in contact, and the cone limit μ·fn for the current fn. Each event is the first sample where its own rule becomes true.",
+        "Find the first sample with fn at least the threshold (apply the comparison exactly as the rule states it), then compare |ft| with μ·fn = 0.5·fn after that sample, and finally look for the first open command.",
+        "Contact: sample 1 has fn = 0.4 N < 1.0 N, sample 2 has fn = 1.0 N ≥ 1.0 N, so contact is at index 2 (and it is the third closed sample, so not empty). Slip: μ·fn = 0.5 · 3.0 = 1.5 N from sample 3 on. Sample 3 has ft = 1.0 and sample 4 has ft = 1.5, equal to the capacity, which is not strictly greater, so no slip. Sample 5 has ft = 1.8 > 1.5: slip at index 5 (sample 6 returns inside the cone). Release: sample 7 is the first with cmd = 1 while in contact: index 7."
+      ],
+      "remediation": "Common slips on this item: requiring fn strictly above 1.0 N gives (contact, slip, release) = (3, 5, 7); calling ft = μ·fn a slip gives (2, 4, 7); numbering samples from 1 gives (3, 6, 8). The cone edge is inside the closed cone; see the observer rules in the bridge parallel-jaw-friction, then try a fresh X35 item."
+    },
+    {
+      "id": "X35.retention-trace.3",
+      "route": "retention-trace",
+      "difficulty": 3,
+      "structure": "parallel-jaw.trace-diagnosis@1",
+      "inputs": {
+        "samples": [
+          [
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "9",
+            "0"
+          ],
+          [
+            "0",
+            "9",
+            "3.924"
+          ],
+          [
+            "0",
+            "9",
+            "3.924"
+          ],
+          [
+            "0",
+            "9",
+            "5.124"
+          ],
+          [
+            "0",
+            "9",
+            "5.124"
+          ],
+          [
+            "1",
+            "0",
+            "0"
+          ]
+        ],
+        "mu": "0.5",
+        "contact": "1",
+        "window": "3",
+        "a_hold": "0",
+        "a_lift": "3",
+        "mu_wet": "0.4"
+      },
+      "objectiveId": "R08.friction-grasp",
+      "prompt": "Two flat parallel pads squeeze a rigid box from opposite sides. Each pad presses with normal force N and has Coulomb friction coefficient μ, so one pad can carry a tangential (friction) force of at most μN; the two pads share the load equally. Use g = 9.81 m/s² and treat the model as quasi-static: the box is lifted straight up with upward acceleration a (positive up), so the two pads together must supply a total friction force of m(g + a). A simulated pick squeezes an unknown box with N = 9.0 N per pad on dry pads (μ = 0.5). The observer trace is (cmd, fn, ft) per sample, forces per pad in newtons, samples numbered from 0, contact threshold 1.0 N, slip when |ft| > μ·fn: 0: (0, 0, 0); 1: (0, 9, 0); 2: (0, 9, 3.924); 3: (0, 9, 3.924); 4: (0, 9, 5.124); 5: (0, 9, 5.124); 6: (1, 0, 0). Samples 2 and 3 are the hold phase with the box stationary (a = 0); the lift at a = 3 m/s² starts at sample 4. (a) Give the index of the \"slip\" event. (b) Treat the hold-phase tangential reading as the true load share of each pad and find the box mass (kg). (c) With that mass and the lift at a = 3 m/s², what is the smallest normal force N per pad (N) that holds on dry pads (μ = 0.5), and (d) if the pads become oily with μ = 0.4? Tolerance ±0.001 for each.",
+      "fields": [
+        {
+          "label": "Index of the \"slip\" event",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Box mass from the hold phase (kg)",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Smallest holding N per pad, μ = 0.5 (N)",
+          "kind": "number",
+          "answer": "10.248",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Smallest holding N per pad, μ = 0.4 (N)",
+          "kind": "number",
+          "answer": "12.81",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "(a) μ·fn = 0.5 · 9.0 = 4.5 N. Samples 2 and 3 read ft = 3.924 N ≤ 4.5 N, inside the cone, but sample 4 reads 5.124 N > 4.5 N: slip at index 4 (contact was at index 1). (b) Two pads carry the weight at a = 0, so m g = 2 · 3.924 = 7.848 N and m = 7.848 / 9.81 = 0.8 kg. (c) Demand at the lift: m(g + a) = 0.8 · 12.81 = 10.248 N; N = 10.248 / (2 · 0.5) = 10.248 N per pad, more than the 9.0 N used, consistent with the slip. (d) With μ = 0.4: N = 10.248 / (2 · 0.4) = 12.81 N per pad.",
+      "hints": [
+        "The trace itself answers (a) by the cone test on each closed sample after contact; the hold-phase reading then turns into a mass through the weight, and that mass feeds the hold equation 2μN = m(g + a) for the two squeeze forces.",
+        "Compare each ft with 0.5·9.0 to find the slip sample. For the mass, double the per-pad hold reading (two pads) and divide by g. Then multiply the mass by g + 3 to get the lift demand and divide by 2μ for each coefficient.",
+        "(a) μ·fn = 0.5 · 9.0 = 4.5 N. Samples 2 and 3 read ft = 3.924 N ≤ 4.5 N, inside the cone, but sample 4 reads 5.124 N > 4.5 N: slip at index 4 (contact was at index 1). (b) Two pads carry the weight at a = 0, so m g = 2 · 3.924 = 7.848 N and m = 7.848 / 9.81 = 0.8 kg. (c) Demand at the lift: m(g + a) = 0.8 · 12.81 = 10.248 N; N = 10.248 / (2 · 0.5) = 10.248 N per pad, more than the 9.0 N used, consistent with the slip. (d) With μ = 0.4: N = 10.248 / (2 · 0.4) = 12.81 N per pad."
+      ],
+      "remediation": "Common slips on this item: letting one pad carry the weight gives m = 0.4 kg; using the lift acceleration in the hold phase gives m = 0.6126 kg; ignoring the friction change gives the same N = 10.248 N for both coefficients; forgetting the lift acceleration gives N = 7.848 N and 9.81 N. See the slip-to-mass reasoning in the bridge parallel-jaw-friction, then try a fresh X35 item."
+    }
+  ]
+}

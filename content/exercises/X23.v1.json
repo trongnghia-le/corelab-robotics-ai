@@ -1,0 +1,600 @@
+{
+  "id": "X23",
+  "version": 1,
+  "title": "Replay a recorded odometry log through a node core and find the smallest fault reproducer",
+  "domain": "Robotics",
+  "topicId": "S03",
+  "objectiveId": "S03.replay-node",
+  "routes": [
+    "stamp-policy",
+    "fault-reproducer"
+  ],
+  "scope": "Hand replay of a short recorded wheel-odometry message list through a declared ROS-free node policy (frame ids, duplicate and out-of-order stamps, maximum gap with reset or flag, explicit reset, intermediate poses) and the smallest message subset that separates a named faulty node from the correct one; no ROS runtime, DDS, QoS, TF2, ROS time or hardware",
+  "labIds": [
+    "L05"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "stamp-policy": "Classify each message (drop reasons, clock), apply the maximum-gap and reset rules, integrate the accepted intervals with the exact arc and read the published poses.",
+    "fault-reproducer": "For a named fault, find the smallest set of log messages, kept in order, on which the faulty and the correct node disagree, and count how many such sets exist."
+  },
+  "items": [
+    {
+      "id": "X23.stamp-policy.1",
+      "route": "stamp-policy",
+      "difficulty": 1,
+      "structure": "replay.stamp-policy@1",
+      "inputs": {
+        "frame_id": "odom",
+        "child_frame_id": "base_link",
+        "track": "0.5",
+        "max_gap_ms": "1000",
+        "gap_policy": "reset",
+        "initial_pose": [
+          "0",
+          "0",
+          "0"
+        ],
+        "messages": [
+          [
+            "odom",
+            "1000",
+            "odom",
+            "base_link",
+            "0",
+            "0"
+          ],
+          [
+            "odom",
+            "1500",
+            "odom",
+            "base_link",
+            "0.4",
+            "0.4"
+          ],
+          [
+            "odom",
+            "1500",
+            "odom",
+            "base_link",
+            "0.8",
+            "0.8"
+          ],
+          [
+            "odom",
+            "2000",
+            "map",
+            "base_link",
+            "0.9",
+            "0.9"
+          ],
+          [
+            "odom",
+            "2500",
+            "odom",
+            "base_link",
+            "0.6",
+            "0.6"
+          ]
+        ]
+      },
+      "objectiveId": "S03.replay-node",
+      "prompt": "A recorded wheel-odometry log is replayed through a ROS-free odometry node core. Node policy. Messages are processed in arrival order. A reset message sets the pose to its values and the clock to its stamp, publishes one pose and is never dropped. An odom message is dropped (nothing is published and the clock does not change) if its frame_id differs from the configured frame_id, else if its child_frame_id differs from the configured child_frame_id, else if a clock exists and its stamp is equal to the clock (duplicate) or smaller than the clock (out of order). Any other odom message is accepted and publishes exactly one pose with its own stamp. When no clock exists yet, the accepted message publishes the initial pose and only starts the clock. Otherwise it covers the interval from the clock to its own stamp, during which the wheels turned at the message's constant vl and vr (linear rim speeds in m/s). If that interval is longer than the maximum gap (an interval equal to the maximum gap is not longer) the message is a gap: under policy reset the pose becomes the initial pose and nothing is integrated, under policy flag the interval is integrated anyway. A normal interval is integrated as the exact constant-curvature arc of an ideal differential drive (theta counter-clockwise, left and right wheel travel dl = vl * dt and dr = vr * dt, track = full wheel separation). After every accepted message the clock becomes its stamp. Configuration: frame_id \"odom\", child_frame_id \"base_link\", track 0.5 m, maximum gap 1000 ms, gap policy \"reset\", initial pose (x, y, theta) = (0, 0, 0) in metres and radians. All stamps are in milliseconds. Messages in arrival order, numbered from 1: 1: odom, stamp 1000, frame_id \"odom\", child_frame_id \"base_link\", vl 0, vr 0; 2: odom, stamp 1500, frame_id \"odom\", child_frame_id \"base_link\", vl 0.4, vr 0.4; 3: odom, stamp 1500, frame_id \"odom\", child_frame_id \"base_link\", vl 0.8, vr 0.8; 4: odom, stamp 2000, frame_id \"map\", child_frame_id \"base_link\", vl 0.9, vr 0.9; 5: odom, stamp 2500, frame_id \"odom\", child_frame_id \"base_link\", vl 0.6, vr 0.6. Work out which messages the node accepts. Give the number of poses the node publishes, the number of messages it drops, and the x coordinate of the last published pose (tolerance ±0.001 m).",
+      "fields": [
+        {
+          "label": "Poses published",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Messages dropped",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "x of the last published pose (m)",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Classify first. Message 1 is the first accepted message, so it publishes the initial pose (0, 0, 0) and starts the clock at 1000. Message 2 (stamp 1500) is accepted: interval 0.5 s at 0.4 m/s straight gives x = 0.2. Message 3 has stamp 1500, equal to the clock, so it is a duplicate and is dropped. Message 4 has frame_id map, so it is dropped and the clock stays at 1500. Message 5 (stamp 2500) covers 1000 ms, which equals the maximum gap and is not longer, so it is integrated: 0.6 m/s for 1.0 s adds 0.6, x = 0.8. Result: 3 poses published, 2 messages dropped, last x = 0.8 m. message 1 publishes (0, 0, 0) flag init; message 2 publishes (0.2, 0, 0) flag ok; message 3 dropped (duplicate); message 4 dropped (frame); message 5 publishes (0.8, 0, 0) flag ok.",
+      "hints": [
+        "Go through the messages in order and decide for each whether it is dropped (frame, child frame, duplicate, out of order) or accepted, keeping track of the clock after each one. Only accepted messages publish a pose.",
+        "Dropped messages change nothing, not even the clock. For each accepted message after the first, take the interval from the previous accepted stamp, check it against the maximum gap with 'longer than', and add speed times interval along the heading (the heading stays 0 here).",
+        "Classify first. Message 1 is the first accepted message, so it publishes the initial pose (0, 0, 0) and starts the clock at 1000. Message 2 (stamp 1500) is accepted: interval 0.5 s at 0.4 m/s straight gives x = 0.2. Message 3 has stamp 1500, equal to the clock, so it is a duplicate and is dropped. Message 4 has frame_id map, so it is dropped and the clock stays at 1500. Message 5 (stamp 2500) covers 1000 ms, which equals the maximum gap and is not longer, so it is integrated: 0.6 m/s for 1.0 s adds 0.6, x = 0.8. Result: 3 poses published, 2 messages dropped, last x = 0.8 m. message 1 publishes (0, 0, 0) flag init; message 2 publishes (0.2, 0, 0) flag ok; message 3 dropped (duplicate); message 4 dropped (frame); message 5 publishes (0.8, 0, 0) flag ok."
+      ],
+      "remediation": "Common slips on this item: accepting the frame-mismatched message 4 gives 4 poses and last x = 0.95; letting a dropped message move the clock to 2000 gives last x = 0.5; treating an interval equal to the maximum gap as a gap resets the pose to the initial pose and gives last x = 0; accepting the duplicate gives 4 poses but the same x. Re-read the drop rules in the policy and try a fresh X23 item."
+    },
+    {
+      "id": "X23.stamp-policy.2",
+      "route": "stamp-policy",
+      "difficulty": 2,
+      "structure": "replay.stamp-policy@1",
+      "inputs": {
+        "frame_id": "odom",
+        "child_frame_id": "base_link",
+        "track": "0.4",
+        "max_gap_ms": "1000",
+        "gap_policy": "reset",
+        "initial_pose": [
+          "0",
+          "0",
+          "0"
+        ],
+        "messages": [
+          [
+            "odom",
+            "0",
+            "odom",
+            "base_link",
+            "0",
+            "0"
+          ],
+          [
+            "odom",
+            "500",
+            "odom",
+            "base_link",
+            "-0.2",
+            "0.2"
+          ],
+          [
+            "odom",
+            "400",
+            "odom",
+            "base_link",
+            "0.5",
+            "0.5"
+          ],
+          [
+            "odom",
+            "1000",
+            "odom",
+            "tool0",
+            "0.3",
+            "0.3"
+          ],
+          [
+            "odom",
+            "1200",
+            "odom",
+            "base_link",
+            "0.5",
+            "0.5"
+          ]
+        ]
+      },
+      "objectiveId": "S03.replay-node",
+      "prompt": "A recorded wheel-odometry log is replayed through a ROS-free odometry node core. Node policy. Messages are processed in arrival order. A reset message sets the pose to its values and the clock to its stamp, publishes one pose and is never dropped. An odom message is dropped (nothing is published and the clock does not change) if its frame_id differs from the configured frame_id, else if its child_frame_id differs from the configured child_frame_id, else if a clock exists and its stamp is equal to the clock (duplicate) or smaller than the clock (out of order). Any other odom message is accepted and publishes exactly one pose with its own stamp. When no clock exists yet, the accepted message publishes the initial pose and only starts the clock. Otherwise it covers the interval from the clock to its own stamp, during which the wheels turned at the message's constant vl and vr (linear rim speeds in m/s). If that interval is longer than the maximum gap (an interval equal to the maximum gap is not longer) the message is a gap: under policy reset the pose becomes the initial pose and nothing is integrated, under policy flag the interval is integrated anyway. A normal interval is integrated as the exact constant-curvature arc of an ideal differential drive (theta counter-clockwise, left and right wheel travel dl = vl * dt and dr = vr * dt, track = full wheel separation). After every accepted message the clock becomes its stamp. Configuration: frame_id \"odom\", child_frame_id \"base_link\", track 0.4 m, maximum gap 1000 ms, gap policy \"reset\", initial pose (x, y, theta) = (0, 0, 0) in metres and radians. All stamps are in milliseconds. Messages in arrival order, numbered from 1: 1: odom, stamp 0, frame_id \"odom\", child_frame_id \"base_link\", vl 0, vr 0; 2: odom, stamp 500, frame_id \"odom\", child_frame_id \"base_link\", vl -0.2, vr 0.2; 3: odom, stamp 400, frame_id \"odom\", child_frame_id \"base_link\", vl 0.5, vr 0.5; 4: odom, stamp 1000, frame_id \"odom\", child_frame_id \"tool0\", vl 0.3, vr 0.3; 5: odom, stamp 1200, frame_id \"odom\", child_frame_id \"base_link\", vl 0.5, vr 0.5. Give the last published pose: x and y in metres and theta in radians (tolerance ±0.001 for each).",
+      "fields": [
+        {
+          "label": "x of the last published pose (m)",
+          "kind": "number",
+          "answer": "0.307154",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y of the last published pose (m)",
+          "kind": "number",
+          "answer": "0.167799",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta of the last published pose (rad)",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Message 1 starts the clock at 0 with the initial pose. Message 2 (stamp 500): vl = -0.2, vr = 0.2, track 0.4, so omega = (0.2 - (-0.2)) / 0.4 = 1 rad/s and the pure spin over 0.5 s gives theta = 0.5 with no translation. Message 3 has stamp 400, smaller than the clock 500, so it is out of order and dropped. Message 4 has child_frame_id tool0 and is dropped. Message 5 (stamp 1200) covers 700 ms at 0.5 m/s straight: distance 0.35 m along theta = 0.5, so x = 0.35 cos 0.5 = 0.307154 and y = 0.35 sin 0.5 = 0.167799, theta = 0.5. message 1 publishes (0, 0, 0) flag init; message 2 publishes (0, 0, 0.5) flag ok; message 3 dropped (out of order); message 4 dropped (child frame); message 5 publishes (0.307154, 0.167799, 0.5) flag ok.",
+      "hints": [
+        "Decide which of messages 3, 4 and 5 survive the drop rules, and what the clock is after message 2. Each speed pair applies to the interval that ends at its own message.",
+        "Message 2 is an in-place spin because vl = -vr: get omega from (vr - vl) / track and multiply by the interval. Message 5 then drives straight for the interval since the clock, in the direction of the heading reached by the spin.",
+        "Message 1 starts the clock at 0 with the initial pose. Message 2 (stamp 500): vl = -0.2, vr = 0.2, track 0.4, so omega = (0.2 - (-0.2)) / 0.4 = 1 rad/s and the pure spin over 0.5 s gives theta = 0.5 with no translation. Message 3 has stamp 400, smaller than the clock 500, so it is out of order and dropped. Message 4 has child_frame_id tool0 and is dropped. Message 5 (stamp 1200) covers 700 ms at 0.5 m/s straight: distance 0.35 m along theta = 0.5, so x = 0.35 cos 0.5 = 0.307154 and y = 0.35 sin 0.5 = 0.167799, theta = 0.5. message 1 publishes (0, 0, 0) flag init; message 2 publishes (0, 0, 0.5) flag ok; message 3 dropped (out of order); message 4 dropped (child frame); message 5 publishes (0.307154, 0.167799, 0.5) flag ok."
+      ],
+      "remediation": "Common slips on this item: letting the dropped stale message 3 move the clock back to 400 makes message 5 cover 800 ms and gives (0.351033, 0.19177); accepting the child-frame mismatch of message 4 gives (0.219396, 0.119856); using the stamp difference in the wrong unit (ms instead of s) puts the point 1000 times too far; forgetting the spin and driving along theta = 0 gives (0.35, 0, 0). Redo the trace message by message and try a fresh X23 item."
+    },
+    {
+      "id": "X23.stamp-policy.3",
+      "route": "stamp-policy",
+      "difficulty": 3,
+      "structure": "replay.stamp-policy@1",
+      "inputs": {
+        "frame_id": "odom",
+        "child_frame_id": "base_link",
+        "track": "0.5",
+        "max_gap_ms": "800",
+        "gap_policy": "reset",
+        "initial_pose": [
+          "1",
+          "2",
+          "0"
+        ],
+        "messages": [
+          [
+            "odom",
+            "0",
+            "odom",
+            "base_link",
+            "0.3",
+            "0.3"
+          ],
+          [
+            "odom",
+            "600",
+            "odom",
+            "base_link",
+            "0.5",
+            "0.5"
+          ],
+          [
+            "odom",
+            "1500",
+            "odom",
+            "base_link",
+            "0.4",
+            "0.4"
+          ],
+          [
+            "reset",
+            "1200",
+            "0",
+            "0",
+            "1.5708"
+          ],
+          [
+            "odom",
+            "1700",
+            "odom",
+            "base_link",
+            "0.6",
+            "0.6"
+          ],
+          [
+            "odom",
+            "1700",
+            "odom",
+            "base_link",
+            "0.9",
+            "0.9"
+          ],
+          [
+            "odom",
+            "2100",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.4"
+          ]
+        ]
+      },
+      "objectiveId": "S03.replay-node",
+      "prompt": "A recorded wheel-odometry log is replayed through a ROS-free odometry node core. Node policy. Messages are processed in arrival order. A reset message sets the pose to its values and the clock to its stamp, publishes one pose and is never dropped. An odom message is dropped (nothing is published and the clock does not change) if its frame_id differs from the configured frame_id, else if its child_frame_id differs from the configured child_frame_id, else if a clock exists and its stamp is equal to the clock (duplicate) or smaller than the clock (out of order). Any other odom message is accepted and publishes exactly one pose with its own stamp. When no clock exists yet, the accepted message publishes the initial pose and only starts the clock. Otherwise it covers the interval from the clock to its own stamp, during which the wheels turned at the message's constant vl and vr (linear rim speeds in m/s). If that interval is longer than the maximum gap (an interval equal to the maximum gap is not longer) the message is a gap: under policy reset the pose becomes the initial pose and nothing is integrated, under policy flag the interval is integrated anyway. A normal interval is integrated as the exact constant-curvature arc of an ideal differential drive (theta counter-clockwise, left and right wheel travel dl = vl * dt and dr = vr * dt, track = full wheel separation). After every accepted message the clock becomes its stamp. Configuration: frame_id \"odom\", child_frame_id \"base_link\", track 0.5 m, maximum gap 800 ms, gap policy \"reset\", initial pose (x, y, theta) = (1, 2, 0) in metres and radians. All stamps are in milliseconds. Messages in arrival order, numbered from 1: 1: odom, stamp 0, frame_id \"odom\", child_frame_id \"base_link\", vl 0.3, vr 0.3; 2: odom, stamp 600, frame_id \"odom\", child_frame_id \"base_link\", vl 0.5, vr 0.5; 3: odom, stamp 1500, frame_id \"odom\", child_frame_id \"base_link\", vl 0.4, vr 0.4; 4: reset, stamp 1200, x 0, y 0, theta 1.5708; 5: odom, stamp 1700, frame_id \"odom\", child_frame_id \"base_link\", vl 0.6, vr 0.6; 6: odom, stamp 1700, frame_id \"odom\", child_frame_id \"base_link\", vl 0.9, vr 0.9; 7: odom, stamp 2100, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.4. Give the number of published poses whose flag is gap, and the last published pose: x and y in metres and theta in radians (tolerance ±0.001 for each).",
+      "fields": [
+        {
+          "label": "Published poses flagged gap",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "x of the last published pose (m)",
+          "kind": "number",
+          "answer": "-0.009581",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y of the last published pose (m)",
+          "kind": "number",
+          "answer": "0.419489",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta of the last published pose (rad)",
+          "kind": "number",
+          "answer": "1.7308",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Message 1 publishes the initial pose (1, 2, 0) and starts the clock at 0. Message 2 (600 ms, not longer than 800) moves 0.5 * 0.6 = 0.3 m, x = 1.3. Message 3 (stamp 1500) covers 900 ms, longer than 800, so it is a gap: policy reset puts the pose back to (1, 2, 0), nothing is integrated, flag gap, clock 1500. Message 4 is a reset message: it is never dropped even though its stamp 1200 is earlier than the clock; the pose becomes (0, 0, 1.5708) and the clock moves back to 1200. Message 5 (stamp 1700) covers 500 ms at 0.6 m/s straight along theta = 1.5708: 0.3 m, pose (-0.000001, 0.3). Message 6 has stamp 1700 equal to the clock, so it is a duplicate and is dropped. Message 7 (stamp 2100) covers 400 ms with vl = 0.2, vr = 0.4: dl = 0.08, dr = 0.16, omega * dt = 0.08 / 0.5 = 0.16 rad, mean distance 0.12 m; the exact arc ends at (-0.009581, 0.419489) with theta = 1.5708 + 0.16 = 1.7308. One gap-flagged pose. message 1 publishes (1, 2, 0) flag init; message 2 publishes (1.3, 2, 0) flag ok; message 3 publishes (1, 2, 0) flag gap; message 4 publishes (0, 0, 1.5708) flag reset; message 5 publishes (-0.000001, 0.3, 1.5708) flag ok; message 6 dropped (duplicate); message 7 publishes (-0.009581, 0.419489, 1.7308) flag ok.",
+      "hints": [
+        "Walk the clock through the log: note which interval is longer than 800 ms, what the reset message does to the clock (it can move it backwards), and which later message then repeats a stamp.",
+        "Message 7 is the only arc: compute dl = vl * dt and dr = vr * dt, the turn (dr - dl) / track and the mean distance (dl + dr) / 2, then advance along the half-turn heading with chord = distance * sin(turn/2) / (turn/2).",
+        "Message 1 publishes the initial pose (1, 2, 0) and starts the clock at 0. Message 2 (600 ms, not longer than 800) moves 0.5 * 0.6 = 0.3 m, x = 1.3. Message 3 (stamp 1500) covers 900 ms, longer than 800, so it is a gap: policy reset puts the pose back to (1, 2, 0), nothing is integrated, flag gap, clock 1500. Message 4 is a reset message: it is never dropped even though its stamp 1200 is earlier than the clock; the pose becomes (0, 0, 1.5708) and the clock moves back to 1200. Message 5 (stamp 1700) covers 500 ms at 0.6 m/s straight along theta = 1.5708: 0.3 m, pose (-0.000001, 0.3). Message 6 has stamp 1700 equal to the clock, so it is a duplicate and is dropped. Message 7 (stamp 2100) covers 400 ms with vl = 0.2, vr = 0.4: dl = 0.08, dr = 0.16, omega * dt = 0.08 / 0.5 = 0.16 rad, mean distance 0.12 m; the exact arc ends at (-0.009581, 0.419489) with theta = 1.5708 + 0.16 = 1.7308. One gap-flagged pose. message 1 publishes (1, 2, 0) flag init; message 2 publishes (1.3, 2, 0) flag ok; message 3 publishes (1, 2, 0) flag gap; message 4 publishes (0, 0, 1.5708) flag reset; message 5 publishes (-0.000001, 0.3, 1.5708) flag ok; message 6 dropped (duplicate); message 7 publishes (-0.009581, 0.419489, 1.7308) flag ok."
+      ],
+      "remediation": "Common slips on this item: ignoring the reset message (it is not out of order and is never dropped) gives last pose (1.239489, 2.00958, 0.16); a reset that leaves the clock at 1500 makes message 5 cover only 200 ms and gives last y = 0.239489; reading the 900 ms interval of message 3 as acceptable reports 0 gap-flagged poses instead of 1; forgetting that the duplicate message 6 is dropped publishes an extra pose at 1700. Retrace the clock and try a fresh X23 item."
+    },
+    {
+      "id": "X23.fault-reproducer.1",
+      "route": "fault-reproducer",
+      "difficulty": 1,
+      "structure": "replay.fault-reproducer@1",
+      "inputs": {
+        "fault": "child-ignored",
+        "frame_id": "odom",
+        "child_frame_id": "base_link",
+        "track": "0.5",
+        "max_gap_ms": "1000",
+        "gap_policy": "reset",
+        "initial_pose": [
+          "0",
+          "0",
+          "0"
+        ],
+        "messages": [
+          [
+            "odom",
+            "0",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.2"
+          ],
+          [
+            "odom",
+            "300",
+            "map",
+            "base_link",
+            "0.2",
+            "0.2"
+          ],
+          [
+            "odom",
+            "500",
+            "odom",
+            "base_link",
+            "0.3",
+            "0.3"
+          ],
+          [
+            "odom",
+            "700",
+            "odom",
+            "laser",
+            "0.1",
+            "0.1"
+          ],
+          [
+            "odom",
+            "900",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.2"
+          ],
+          [
+            "odom",
+            "1100",
+            "odom",
+            "tool0",
+            "0.3",
+            "0.3"
+          ]
+        ]
+      },
+      "objectiveId": "S03.replay-node",
+      "prompt": "A recorded wheel-odometry log is replayed through a ROS-free odometry node core, and you are hunting for a fault in a copy of it. Node policy. Messages are processed in arrival order. A reset message sets the pose to its values and the clock to its stamp, publishes one pose and is never dropped. An odom message is dropped (nothing is published and the clock does not change) if its frame_id differs from the configured frame_id, else if its child_frame_id differs from the configured child_frame_id, else if a clock exists and its stamp is equal to the clock (duplicate) or smaller than the clock (out of order). Any other odom message is accepted and publishes exactly one pose with its own stamp. When no clock exists yet, the accepted message publishes the initial pose and only starts the clock. Otherwise it covers the interval from the clock to its own stamp, during which the wheels turned at the message's constant vl and vr (linear rim speeds in m/s). If that interval is longer than the maximum gap (an interval equal to the maximum gap is not longer) the message is a gap: under policy reset the pose becomes the initial pose and nothing is integrated, under policy flag the interval is integrated anyway. A normal interval is integrated as the exact constant-curvature arc of an ideal differential drive (theta counter-clockwise, left and right wheel travel dl = vl * dt and dr = vr * dt, track = full wheel separation). After every accepted message the clock becomes its stamp. Faulty node F (fault name child-ignored) is identical except that it never compares child_frame_id (it still compares frame_id and applies every other rule correctly). A set of messages taken from the log, kept in their original order with their original stamps, exposes the fault when feeding exactly that set to the correct node and to the faulty node F gives different results: a different number of published poses, a pose that differs in stamp, flag or by more than 1e-9 in x, y or theta, or a different drop list (positions within the fed set). Two sets are different when they select different messages. Configuration: frame_id \"odom\", child_frame_id \"base_link\", track 0.5 m, maximum gap 1000 ms, gap policy \"reset\", initial pose (x, y, theta) = (0, 0, 0) in metres and radians. All stamps are in milliseconds. The recorded log has 6 messages, numbered from 1: 1: odom, stamp 0, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.2; 2: odom, stamp 300, frame_id \"map\", child_frame_id \"base_link\", vl 0.2, vr 0.2; 3: odom, stamp 500, frame_id \"odom\", child_frame_id \"base_link\", vl 0.3, vr 0.3; 4: odom, stamp 700, frame_id \"odom\", child_frame_id \"laser\", vl 0.1, vr 0.1; 5: odom, stamp 900, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.2; 6: odom, stamp 1100, frame_id \"odom\", child_frame_id \"tool0\", vl 0.3, vr 0.3. Find the smallest number of messages in a set that exposes the fault, and how many different sets of that smallest size expose it.",
+      "fields": [
+        {
+          "label": "Smallest number of messages in an exposing set",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Number of different exposing sets of that size",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "F differs from the correct node only on a message whose child_frame_id is not base_link. Messages 4 (laser) and 6 (tool0) have that: the correct node drops each one, while F accepts it. Fed alone, message 4 makes the correct node publish nothing and F publish one pose (the initial pose, flag init), so one message already exposes the fault; the same holds for message 6. Message 2 has the wrong frame_id (map), which F also checks, so both nodes drop it and it exposes nothing. Smallest size 1, and exactly 2 sets: {4} and {6}.",
+      "hints": [
+        "Ask which messages the two nodes treat differently when each is considered on its own, and whether a good message before it is needed for the difference to show.",
+        "A message only separates the nodes if its child_frame_id is wrong. Check what each node publishes when that single message is fed alone to a fresh node (the clock is empty).",
+        "F differs from the correct node only on a message whose child_frame_id is not base_link. Messages 4 (laser) and 6 (tool0) have that: the correct node drops each one, while F accepts it. Fed alone, message 4 makes the correct node publish nothing and F publish one pose (the initial pose, flag init), so one message already exposes the fault; the same holds for message 6. Message 2 has the wrong frame_id (map), which F also checks, so both nodes drop it and it exposes nothing. Smallest size 1, and exactly 2 sets: {4} and {6}."
+      ],
+      "remediation": "Common slips on this item: believing an earlier good message must be included answers 2 for the size, but a single wrong-child message already exposes the fault; counting the wrong-frame message 2 as well gives 3 sets, but message 2 is dropped by both nodes alone, so it does not expose F; counting messages after the first wrong one only gives 1 set. Test each message alone and try a fresh X23 item."
+    },
+    {
+      "id": "X23.fault-reproducer.2",
+      "route": "fault-reproducer",
+      "difficulty": 2,
+      "structure": "replay.fault-reproducer@1",
+      "inputs": {
+        "fault": "gap-inclusive",
+        "frame_id": "odom",
+        "child_frame_id": "base_link",
+        "track": "0.5",
+        "max_gap_ms": "500",
+        "gap_policy": "flag",
+        "initial_pose": [
+          "0",
+          "0",
+          "0"
+        ],
+        "messages": [
+          [
+            "odom",
+            "0",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.2"
+          ],
+          [
+            "odom",
+            "200",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.2"
+          ],
+          [
+            "odom",
+            "500",
+            "odom",
+            "base_link",
+            "0.3",
+            "0.3"
+          ],
+          [
+            "odom",
+            "700",
+            "map",
+            "base_link",
+            "0.3",
+            "0.3"
+          ],
+          [
+            "odom",
+            "1000",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.4"
+          ],
+          [
+            "odom",
+            "1200",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.2"
+          ],
+          [
+            "odom",
+            "1500",
+            "odom",
+            "base_link",
+            "0.3",
+            "0.3"
+          ],
+          [
+            "odom",
+            "1700",
+            "odom",
+            "base_link",
+            "0.1",
+            "0.1"
+          ]
+        ]
+      },
+      "objectiveId": "S03.replay-node",
+      "prompt": "A recorded wheel-odometry log is replayed through a ROS-free odometry node core, and you are hunting for a fault in a copy of it. Node policy. Messages are processed in arrival order. A reset message sets the pose to its values and the clock to its stamp, publishes one pose and is never dropped. An odom message is dropped (nothing is published and the clock does not change) if its frame_id differs from the configured frame_id, else if its child_frame_id differs from the configured child_frame_id, else if a clock exists and its stamp is equal to the clock (duplicate) or smaller than the clock (out of order). Any other odom message is accepted and publishes exactly one pose with its own stamp. When no clock exists yet, the accepted message publishes the initial pose and only starts the clock. Otherwise it covers the interval from the clock to its own stamp, during which the wheels turned at the message's constant vl and vr (linear rim speeds in m/s). If that interval is longer than the maximum gap (an interval equal to the maximum gap is not longer) the message is a gap: under policy reset the pose becomes the initial pose and nothing is integrated, under policy flag the interval is integrated anyway. A normal interval is integrated as the exact constant-curvature arc of an ideal differential drive (theta counter-clockwise, left and right wheel travel dl = vl * dt and dr = vr * dt, track = full wheel separation). After every accepted message the clock becomes its stamp. Faulty node F (fault name gap-inclusive) is identical except that it treats an interval equal to the maximum gap as a gap (it tests 'at least the maximum gap' where the policy says 'longer than the maximum gap'). A set of messages taken from the log, kept in their original order with their original stamps, exposes the fault when feeding exactly that set to the correct node and to the faulty node F gives different results: a different number of published poses, a pose that differs in stamp, flag or by more than 1e-9 in x, y or theta, or a different drop list (positions within the fed set). Two sets are different when they select different messages. Configuration: frame_id \"odom\", child_frame_id \"base_link\", track 0.5 m, maximum gap 500 ms, gap policy \"flag\", initial pose (x, y, theta) = (0, 0, 0) in metres and radians. All stamps are in milliseconds. The recorded log has 8 messages, numbered from 1: 1: odom, stamp 0, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.2; 2: odom, stamp 200, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.2; 3: odom, stamp 500, frame_id \"odom\", child_frame_id \"base_link\", vl 0.3, vr 0.3; 4: odom, stamp 700, frame_id \"map\", child_frame_id \"base_link\", vl 0.3, vr 0.3; 5: odom, stamp 1000, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.4; 6: odom, stamp 1200, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.2; 7: odom, stamp 1500, frame_id \"odom\", child_frame_id \"base_link\", vl 0.3, vr 0.3; 8: odom, stamp 1700, frame_id \"odom\", child_frame_id \"base_link\", vl 0.1, vr 0.1. Find the smallest number of messages in a set that exposes the fault, and how many different sets of that smallest size expose it.",
+      "fields": [
+        {
+          "label": "Smallest number of messages in an exposing set",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Number of different exposing sets of that size",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "F differs only when an accepted message arrives exactly 500 ms after the clock; then the correct node publishes flag ok and F publishes flag gap. A single message never has an interval, so at least 2 messages are needed. A pair works when both are accepted by the correct node, the second is exactly 500 ms after the first, and nothing else in the set moves the clock in between. Stamps 0, 200, 500, 700, 1000, 1200, 1500, 1700; message 4 (stamp 700) has frame_id map and is dropped by both nodes, so pairs that use it, such as {2, 4} (200 to 700) or {4, 6} (700 to 1200), expose nothing. Pairs of accepted messages 500 ms apart: {1, 3} (0 to 500), {3, 5} (500 to 1000), {5, 7} (1000 to 1500) and {6, 8} (1200 to 1700). Pairs need not be neighbours in the log, because other messages can be left out of the set. Answer: size 2 and 4 sets.",
+      "hints": [
+        "Find what kind of interval separates F from the correct node, then list every pair of accepted messages with exactly that stamp difference. Remember that a message the node drops cannot form a pair.",
+        "Write the stamps of the accepted messages only, then look for every pair whose difference is exactly the maximum gap. The messages between the two do not have to be in the set.",
+        "F differs only when an accepted message arrives exactly 500 ms after the clock; then the correct node publishes flag ok and F publishes flag gap. A single message never has an interval, so at least 2 messages are needed. A pair works when both are accepted by the correct node, the second is exactly 500 ms after the first, and nothing else in the set moves the clock in between. Stamps 0, 200, 500, 700, 1000, 1200, 1500, 1700; message 4 (stamp 700) has frame_id map and is dropped by both nodes, so pairs that use it, such as {2, 4} (200 to 700) or {4, 6} (700 to 1200), expose nothing. Pairs of accepted messages 500 ms apart: {1, 3} (0 to 500), {3, 5} (500 to 1000), {5, 7} (1000 to 1500) and {6, 8} (1200 to 1700). Pairs need not be neighbours in the log, because other messages can be left out of the set. Answer: size 2 and 4 sets."
+      ],
+      "remediation": "Common slips on this item: counting the wrong-frame message 4 in pairs such as {2, 4} and {4, 6} gives 6 sets, but both nodes drop message 4, so these pairs expose nothing; counting only pairs that are neighbours in the log finds 0 pairs, but sets may skip messages; answering 3 for the size confuses 'set' with 'all three messages that share an interval'. List the accepted stamps and try a fresh X23 item."
+    },
+    {
+      "id": "X23.fault-reproducer.3",
+      "route": "fault-reproducer",
+      "difficulty": 3,
+      "structure": "replay.fault-reproducer@1",
+      "inputs": {
+        "fault": "ooo-rewinds-clock",
+        "frame_id": "odom",
+        "child_frame_id": "base_link",
+        "track": "0.5",
+        "max_gap_ms": "1000",
+        "gap_policy": "reset",
+        "initial_pose": [
+          "0",
+          "0",
+          "0"
+        ],
+        "messages": [
+          [
+            "odom",
+            "1000",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.2"
+          ],
+          [
+            "odom",
+            "800",
+            "odom",
+            "base_link",
+            "0.4",
+            "0.4"
+          ],
+          [
+            "odom",
+            "1500",
+            "odom",
+            "base_link",
+            "0.3",
+            "0.3"
+          ],
+          [
+            "odom",
+            "1900",
+            "odom",
+            "base_link",
+            "0.3",
+            "0.3"
+          ],
+          [
+            "odom",
+            "2300",
+            "odom",
+            "base_link",
+            "0.2",
+            "0.2"
+          ]
+        ]
+      },
+      "objectiveId": "S03.replay-node",
+      "prompt": "A recorded wheel-odometry log is replayed through a ROS-free odometry node core, and you are hunting for a fault in a copy of it. Node policy. Messages are processed in arrival order. A reset message sets the pose to its values and the clock to its stamp, publishes one pose and is never dropped. An odom message is dropped (nothing is published and the clock does not change) if its frame_id differs from the configured frame_id, else if its child_frame_id differs from the configured child_frame_id, else if a clock exists and its stamp is equal to the clock (duplicate) or smaller than the clock (out of order). Any other odom message is accepted and publishes exactly one pose with its own stamp. When no clock exists yet, the accepted message publishes the initial pose and only starts the clock. Otherwise it covers the interval from the clock to its own stamp, during which the wheels turned at the message's constant vl and vr (linear rim speeds in m/s). If that interval is longer than the maximum gap (an interval equal to the maximum gap is not longer) the message is a gap: under policy reset the pose becomes the initial pose and nothing is integrated, under policy flag the interval is integrated anyway. A normal interval is integrated as the exact constant-curvature arc of an ideal differential drive (theta counter-clockwise, left and right wheel travel dl = vl * dt and dr = vr * dt, track = full wheel separation). After every accepted message the clock becomes its stamp. Faulty node F (fault name ooo-rewinds-clock) is identical except that when it drops an out-of-order message it still sets its clock to that message's stamp (every other rule is correct). A set of messages taken from the log, kept in their original order with their original stamps, exposes the fault when feeding exactly that set to the correct node and to the faulty node F gives different results: a different number of published poses, a pose that differs in stamp, flag or by more than 1e-9 in x, y or theta, or a different drop list (positions within the fed set). Two sets are different when they select different messages. Configuration: frame_id \"odom\", child_frame_id \"base_link\", track 0.5 m, maximum gap 1000 ms, gap policy \"reset\", initial pose (x, y, theta) = (0, 0, 0) in metres and radians. All stamps are in milliseconds. The recorded log has 5 messages, numbered from 1: 1: odom, stamp 1000, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.2; 2: odom, stamp 800, frame_id \"odom\", child_frame_id \"base_link\", vl 0.4, vr 0.4; 3: odom, stamp 1500, frame_id \"odom\", child_frame_id \"base_link\", vl 0.3, vr 0.3; 4: odom, stamp 1900, frame_id \"odom\", child_frame_id \"base_link\", vl 0.3, vr 0.3; 5: odom, stamp 2300, frame_id \"odom\", child_frame_id \"base_link\", vl 0.2, vr 0.2. Find the smallest number of messages in a set that exposes the fault, and how many different sets of that smallest size expose it.",
+      "fields": [
+        {
+          "label": "Smallest number of messages in an exposing set",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Number of different exposing sets of that size",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Only message 2 (stamp 800, earlier than the clock 1000) is out of order. Both nodes drop it, but F moves its clock back to 800. The difference shows only in the next accepted message: the correct node measures its interval from 1000, F from 800. So a set needs message 1 (to start the clock and make message 2 stale), message 2, and a later accepted message with non-zero speed. Without message 1, message 2 would simply start the clock in both nodes; without a later message nothing differs. Message 3 (stamp 1500): intervals 500 and 700 ms, both within the 1000 ms limit, so the poses differ. Message 4 (stamp 1900): intervals 900 and 1100 ms; F sees a gap (1100 > 1000) and the correct node does not, so they differ. Message 5 (stamp 2300): intervals 1300 and 1500 ms are both gaps under policy reset, so both nodes reset to the initial pose and look the same. Exposing sets of size 3: {1, 2, 3} and {1, 2, 4}. Smaller sets cannot work: pairs and singles lack the stale message or the following message. Answer: 3 and 2.",
+      "hints": [
+        "Which single message makes F and the correct node disagree about the clock, and what must come before it so that the message really is out of order? Then ask which later message is the first to use the wrong clock.",
+        "Check each later message: compute its interval from the clock of the correct node and from the clock of F, and see whether the two nodes still publish the same pose or flag. Remember the maximum gap and the reset policy: an interval above it hides the difference.",
+        "Only message 2 (stamp 800, earlier than the clock 1000) is out of order. Both nodes drop it, but F moves its clock back to 800. The difference shows only in the next accepted message: the correct node measures its interval from 1000, F from 800. So a set needs message 1 (to start the clock and make message 2 stale), message 2, and a later accepted message with non-zero speed. Without message 1, message 2 would simply start the clock in both nodes; without a later message nothing differs. Message 3 (stamp 1500): intervals 500 and 700 ms, both within the 1000 ms limit, so the poses differ. Message 4 (stamp 1900): intervals 900 and 1100 ms; F sees a gap (1100 > 1000) and the correct node does not, so they differ. Message 5 (stamp 2300): intervals 1300 and 1500 ms are both gaps under policy reset, so both nodes reset to the initial pose and look the same. Exposing sets of size 3: {1, 2, 3} and {1, 2, 4}. Smaller sets cannot work: pairs and singles lack the stale message or the following message. Answer: 3 and 2."
+      ],
+      "remediation": "Common slips on this item: answering 2 (the stale message and the one after it) fails because message 2 then simply starts the clock in both nodes; answering 2 sets because messages 3, 4 and 5 all follow the fault wrongly counts message 5, where both intervals exceed the 1000 ms limit and both nodes reset the pose; answering 4 or 5 uses more messages than needed, since only one later message is required. Try each candidate set by hand and a fresh X23 item."
+    }
+  ]
+}

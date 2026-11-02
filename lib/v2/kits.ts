@@ -120,10 +120,46 @@ const definitions = [
     description:
       "Manual self-check: mock pick-and-deliver state machine with guards, timestamp watchdog, cancel/fault, bounded retry and recovery, trace replay and a no-motion-while-unsafe monitor. Table and exhaustive checks; simulation only, no hardware or certification.",
   },
+  {
+    id: "L18-grasp",
+    title: "Parallel-jaw friction grasp self-check kit",
+    topic: "R08",
+    objectives: ["R08.friction-grasp"],
+    description:
+      "Original analytic self-check for a two-pad Coulomb grasp: safety factor, minimum squeeze, friction cone and a threshold retention observer over synthetic traces. No physics engine or hardware.",
+  },
+  {
+    id: "L20-rl",
+    title: "RL experiment core self-check kit",
+    topic: "RL06",
+    objectives: ["RL06.tabular-update"],
+    description:
+      "Manual numerical self-check of Q-learning/SARSA updates with terminal vs time-limit bootstrapping, epsilon-greedy probabilities, returns, value iteration, per-seed statistics and a reward-loophole check. Tiny tables; no simulator or training.",
+  },
+  {
+    id: "L12-description",
+    title: "Robot description and TF self-check kit",
+    topic: "S04",
+    objectives: ["S04.urdf-chain"],
+    description:
+      "Original numerical self-check: parse a serial URDF-like string, validate its structure, compute base-to-link and link-to-link transforms and joint axes in the base frame. No meshes, xacro, ROS or TF2 runtime, no hardware.",
+  },
+  {
+    id: "L05-replay",
+    title: "Replay node core self-check kit",
+    topic: "S03",
+    objectives: ["S03.replay-node"],
+    description:
+      "Implement a ROS-free odometry node core replayed on a recorded message list (frame, stamp, gap, reset policies), a minimal fault reproducer, and a test suite judged against valid and buggy cores. Replay only; no ROS, DDS, TF2 or robot.",
+  },
 ] as const;
 // Keep the original shared sample bytes unchanged: they are part of both old
 // kit hashes. New kits use separate immutable manifests.
 const sampleFiles: Record<string, string> = {
+  "L05-replay": "L05-replay.samples.v1.json",
+  "L12-description": "L12-description.samples.v1.json",
+  "L20-rl": "L20-rl.samples.v1.json",
+  "L18-grasp": "L18-grasp.samples.v1.json",
   "L15-executive": "L15-executive.samples.v1.json",
   "L19-imitation": "L19-imitation.samples.v1.json",
   "L16-camera": "L16-camera.samples.v1.json",

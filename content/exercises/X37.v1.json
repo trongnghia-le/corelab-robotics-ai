@@ -1,0 +1,417 @@
+{
+  "id": "X37",
+  "version": 1,
+  "title": "Update a tabular Q table and report seed results honestly",
+  "domain": "Reinforcement & Robot Learning",
+  "topicId": "RL06",
+  "objectiveId": "RL06.tabular-update",
+  "routes": [
+    "update-rules",
+    "evaluation-protocol"
+  ],
+  "scope": "Tabular Q-learning and SARSA single updates with terminal versus time-limit bootstrapping, epsilon-greedy probabilities, per-seed return statistics with sample standard deviation and standard error, and a reward-loophole check on a declared deterministic toy; no simulator training, deep RL or significance test",
+  "labIds": [
+    "L20"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "update-rules": "One-step Q-learning and SARSA targets, epsilon-greedy action probabilities with ties, and the difference between a task that ended and an episode cut off by a time limit.",
+    "evaluation-protocol": "Report every declared seed: mean, sample standard deviation and standard error, why a best seed misleads, and a time-limited reward-loophole check on a tiny deterministic environment."
+  },
+  "items": [
+    {
+      "id": "X37.update-rules.1",
+      "route": "update-rules",
+      "difficulty": 1,
+      "structure": "rl.tabular-q-step@1",
+      "inputs": {
+        "q": "2.5",
+        "reward": "1",
+        "qNext": [
+          "4",
+          "6",
+          "3"
+        ],
+        "alpha": "0.2",
+        "gamma": "0.9",
+        "terminated": false,
+        "truncated": false
+      },
+      "objectiveId": "RL06.tabular-update",
+      "prompt": "A warehouse robot learns a tabular action-value function Q with one-step Q-learning. In state S it took the action 'forward', received reward r = 1, and landed in state S', where the table reads Q(S', left) = 4, Q(S', forward) = 6 and Q(S', wait) = 3. The task continues from S' (the episode did not end). The current entry is Q(S, forward) = 2.5, the step size is α = 0.2 and the discount is γ = 0.9. Compute the TD target and the updated Q(S, forward) after this single update. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "TD target",
+          "kind": "number",
+          "answer": "6.4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Updated Q(S, forward)",
+          "kind": "number",
+          "answer": "3.28",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Q-learning bootstraps from the best next action regardless of what the robot does next: max Q(S', ·) = max(4, 6, 3) = 6. TD target = r + γ·6 = 1 + 0.9·6 = 6.4. The update moves the entry a fraction α of the way to the target: Q_new = 2.5 + 0.2·(6.4 - 2.5) = 2.5 + 0.78 = 3.28.",
+      "hints": [
+        "Q-learning is off-policy: the target looks at the best action value in the next state, not at the action the robot will actually take. Then the entry moves part of the way from its old value to that target.",
+        "Read off max Q(S', a) over the three actions, then form r + γ times that value; the update is Q + α (target - Q), so the old entry appears twice (once to subtract, once to add back).",
+        "Q-learning bootstraps from the best next action regardless of what the robot does next: max Q(S', ·) = max(4, 6, 3) = 6. TD target = r + γ·6 = 1 + 0.9·6 = 6.4. The update moves the entry a fraction α of the way to the target: Q_new = 2.5 + 0.2·(6.4 - 2.5) = 2.5 + 0.78 = 3.28."
+      ],
+      "remediation": "Common slips on this item: averaging the next-state values gives target 4.9 and Q = 2.98; taking the first listed action (left) gives target 4.6 and Q = 2.92; forgetting γ gives target 7.0 and Q = 3.4; adding α·target without subtracting the old Q gives Q = 3.78; replacing Q by the target (α ignored) gives 6.4. Re-read the one-step rule in the tabular-q-protocol bridge, then try a fresh X37 item."
+    },
+    {
+      "id": "X37.update-rules.2",
+      "route": "update-rules",
+      "difficulty": 2,
+      "structure": "rl.q-learning-vs-sarsa@1",
+      "inputs": {
+        "q": "3",
+        "reward": "-1",
+        "qNext": [
+          "2",
+          "6",
+          "6",
+          "1"
+        ],
+        "aNext": "3",
+        "alpha": "0.5",
+        "gamma": "0.8",
+        "epsilon": "0.5",
+        "terminated": false,
+        "truncated": false
+      },
+      "objectiveId": "RL06.tabular-update",
+      "prompt": "A delivery robot is trained with an ε-greedy behaviour policy over four actions numbered 0 to 3, ε = 0.5: with probability ε it picks one of the four actions uniformly at random (greedy ones included), otherwise it picks a greedy action, and exactly tied greedy actions share that probability equally. It took an action in state S, received reward r = -1 and arrived in S', where Q(S', ·) = (2, 6, 6, 1) for actions 0, 1, 2, 3. In S' the behaviour policy then happened to choose action 3 (an exploratory pick). The task continues. Current Q(S, ·) entry: 3, step size α = 0.5, discount γ = 0.8. Compute: (a) the Q-learning TD target, (b) the SARSA TD target for the action actually chosen, (c) the updated entry under SARSA, and (d) the probability that this ε-greedy behaviour picks action 1 in S'. Give (d) as a decimal between 0 and 1. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "(a) Q-learning TD target",
+          "kind": "number",
+          "answer": "3.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) SARSA TD target",
+          "kind": "number",
+          "answer": "-0.2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Updated entry under SARSA",
+          "kind": "number",
+          "answer": "1.4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(d) Probability of picking action 1",
+          "kind": "number",
+          "answer": "0.375",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "(a) Q-learning uses the best next value, max(2, 6, 6, 1) = 6: target = -1 + 0.8·6 = 3.8. (b) SARSA uses the value of the action actually chosen, Q(S', 3) = 1: target = -1 + 0.8·1 = -0.2. (c) Q_new = 3 + 0.5·(-0.2 - 3) = 3 - 1.6 = 1.4. (d) Each of the 4 actions gets ε/4 = 0.125 from the random pick; the greedy probability 1 - ε = 0.5 is split equally between the two tied maxima (actions 1 and 2), 0.25 each, so P(action 1) = 0.125 + 0.25 = 0.375. Check: 0.125 + 0.375 + 0.375 + 0.125 = 1.",
+      "hints": [
+        "Q-learning and SARSA differ only in which next-state value they use: the best one, or the one belonging to the action the behaviour actually chose. For the probability, split the random part ε over all four actions first, then share the greedy part among the exact ties.",
+        "List the two targets as r + γ times a different next-state value (the maximum for Q-learning, Q(S', 3) for SARSA). For (c) move the old entry a fraction α toward the SARSA target. For (d) action 1 is one of two tied maxima, so it receives ε/4 plus half of 1 - ε.",
+        "(a) Q-learning uses the best next value, max(2, 6, 6, 1) = 6: target = -1 + 0.8·6 = 3.8. (b) SARSA uses the value of the action actually chosen, Q(S', 3) = 1: target = -1 + 0.8·1 = -0.2. (c) Q_new = 3 + 0.5·(-0.2 - 3) = 3 - 1.6 = 1.4. (d) Each of the 4 actions gets ε/4 = 0.125 from the random pick; the greedy probability 1 - ε = 0.5 is split equally between the two tied maxima (actions 1 and 2), 0.25 each, so P(action 1) = 0.125 + 0.25 = 0.375. Check: 0.125 + 0.375 + 0.375 + 0.125 = 1."
+      ],
+      "remediation": "Common slips on this item: using the greedy value for SARSA gives target 3.8 (and entry 3.4 after the update); using the exploratory value for Q-learning gives target -0.2; applying the Q-learning target in (c) gives 3.4; in (d) forgetting the ε/4 share gives 0.25, and giving all of 1 - ε to one tied action gives 0.625. Revisit on-policy versus off-policy targets in the tabular-q-protocol bridge, then try a fresh X37 item."
+    },
+    {
+      "id": "X37.update-rules.3",
+      "route": "update-rules",
+      "difficulty": 3,
+      "structure": "rl.update-trace@1",
+      "inputs": {
+        "q": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "1",
+            "2"
+          ],
+          [
+            "3",
+            "3"
+          ]
+        ],
+        "transitions": [
+          [
+            "0",
+            "1",
+            "-1",
+            "1",
+            false,
+            false
+          ],
+          [
+            "1",
+            "0",
+            "10",
+            "2",
+            true,
+            false
+          ],
+          [
+            "0",
+            "0",
+            "-1",
+            "1",
+            false,
+            true
+          ]
+        ],
+        "alpha": "0.5",
+        "gamma": "0.9"
+      },
+      "objectiveId": "RL06.tabular-update",
+      "prompt": "A docking robot keeps a Q table with rows for states 0 (far), 1 (near) and 2 (docked) and two actions per state, numbered 0 and 1. It starts as Q = [[0, 0], [1, 2], [3, 3]] (rows are states, columns are actions; the row of the docked state 2 just holds its initial contents). One-step Q-learning with α = 0.5 and γ = 0.9 is applied to three transitions in this order, each update using the table as left by the previous ones. Written (state, action, reward, next state): T1 = (0, 1, -1, 1), nothing ends. T2 = (1, 0, +10, 2): the robot docks, which ends the task. T3 = (0, 0, -1, 1): this one is cut off by the 50-step recording limit while the robot is still far from the dock, so the episode was truncated but the task itself would continue. Compute: (a) Q(0, 1) after T1, (b) Q(1, 0) after T2, (c) Q(0, 0) after T3, and (d) what Q(0, 0) would be after T3 if that same transition had instead ended the task (a true terminal). Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "(a) Q(0, 1) after T1",
+          "kind": "number",
+          "answer": "0.4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) Q(1, 0) after T2",
+          "kind": "number",
+          "answer": "5.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Q(0, 0) after T3 (truncated)",
+          "kind": "number",
+          "answer": "1.975",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(d) Q(0, 0) after T3 if it had terminated",
+          "kind": "number",
+          "answer": "-0.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "(a) T1 bootstraps from row 1 = (1, 2): target = -1 + 0.9·2 = 0.8, so Q(0, 1) = 0 + 0.5·0.8 = 0.4. (b) T2 enters the docked state, so the task ended: the target is just r = 10 and the row of state 2 is never read. Q(1, 0) = 1 + 0.5·(10 - 1) = 5.5, and row 1 is now (5.5, 2). (c) T3 was only cut off by the time limit, so it still bootstraps, from the CURRENT row 1: max(5.5, 2) = 5.5. Target = -1 + 0.9·5.5 = 3.95 and Q(0, 0) = 0 + 0.5·3.95 = 1.975. (d) If T3 had ended the task, the target would be -1 and Q(0, 0) = 0.5·(-1) = -0.5.",
+      "hints": [
+        "Process the transitions strictly in order, because T2 changes row 1, which T3 later reads. Decide for each transition whether the task ended (no bootstrap) or was merely cut off by a limit (bootstrap as usual).",
+        "T1 and T3 bootstrap from the maximum of the next row; T2 does not bootstrap at all. For T3 use row 1 as it stands after T2, not as it started. For (d) remove the bootstrap term from T3 and keep everything else, including α.",
+        "(a) T1 bootstraps from row 1 = (1, 2): target = -1 + 0.9·2 = 0.8, so Q(0, 1) = 0 + 0.5·0.8 = 0.4. (b) T2 enters the docked state, so the task ended: the target is just r = 10 and the row of state 2 is never read. Q(1, 0) = 1 + 0.5·(10 - 1) = 5.5, and row 1 is now (5.5, 2). (c) T3 was only cut off by the time limit, so it still bootstraps, from the CURRENT row 1: max(5.5, 2) = 5.5. Target = -1 + 0.9·5.5 = 3.95 and Q(0, 0) = 0 + 0.5·3.95 = 1.975. (d) If T3 had ended the task, the target would be -1 and Q(0, 0) = 0.5·(-1) = -0.5."
+      ],
+      "remediation": "Common slips on this item: treating the time-limit cut as terminal (a 'done' flag) gives Q(0, 0) = -0.5 in (c); bootstrapping T2 from the row of the docked state gives Q(1, 0) = 6.85; reading the stale row (1, 2) for T3 gives Q(0, 0) = 0.4; and in (d) bootstrapping despite the true terminal gives 1.975. Redo the three updates in order using the tabular-q-protocol bridge, then try a fresh X37 item."
+    },
+    {
+      "id": "X37.evaluation-protocol.1",
+      "route": "evaluation-protocol",
+      "difficulty": 1,
+      "structure": "rl.seed-statistics@1",
+      "inputs": {
+        "seeds": [
+          "11",
+          "12",
+          "13",
+          "14",
+          "15"
+        ],
+        "returns": [
+          "210",
+          "190",
+          "250",
+          "230",
+          "170"
+        ]
+      },
+      "objectiveId": "RL06.tabular-update",
+      "prompt": "A quadruped-gait experiment in a physics simulator declared its protocol in advance: train the same method with five seeds 11, 12, 13, 14 and 15 and report all of them. The final evaluation returns (one number per seed, in seed order) are 210, 190, 250, 230 and 170. Compute the mean return, the SAMPLE standard deviation (divide by n - 1), the standard error of the mean (sample standard deviation divided by √n), and by how much the best single seed exceeds the mean. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Mean return",
+          "kind": "number",
+          "answer": "210.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Sample standard deviation",
+          "kind": "number",
+          "answer": "31.622777",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Standard error of the mean",
+          "kind": "number",
+          "answer": "14.142136",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Best seed minus mean",
+          "kind": "number",
+          "answer": "40.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Mean = (210 + 190 + 250 + 230 + 170)/5 = 1050/5 = 210. Deviations from the mean: 0, -20, 40, 20, -40; squares 0, 400, 1600, 400, 1600 sum to 4000. Sample variance = 4000/(5 - 1) = 1000, so the sample standard deviation is √1000 = 31.622777. Standard error = 31.622777/√5 = 14.142136 (= √200). The best seed (250) exceeds the mean by 40; quoting 250 alone would overstate the typical outcome by that much.",
+      "hints": [
+        "Report all declared seeds, not a selected one. Start with the mean, then the squared deviations from it; the sample version divides their sum by n - 1 because the mean was estimated from the same data.",
+        "Sum the squared deviations from the mean, divide by n - 1 = 4 for the variance, and take the square root for the standard deviation. Divide that standard deviation by √5 for the standard error. The last field is just max(returns) minus the mean.",
+        "Mean = (210 + 190 + 250 + 230 + 170)/5 = 1050/5 = 210. Deviations from the mean: 0, -20, 40, 20, -40; squares 0, 400, 1600, 400, 1600 sum to 4000. Sample variance = 4000/(5 - 1) = 1000, so the sample standard deviation is √1000 = 31.622777. Standard error = 31.622777/√5 = 14.142136 (= √200). The best seed (250) exceeds the mean by 40; quoting 250 alone would overstate the typical outcome by that much."
+      ],
+      "remediation": "Common slips on this item: dividing by n instead of n - 1 gives a standard deviation of 28.284271; using the standard deviation as the standard error gives 31.622777; dividing the standard deviation by n instead of √n gives 6.324555; reporting the best seed (250) as the 'result' hides the spread. Review the mean and uncertainty rules in the tabular-q-protocol bridge, then try a fresh X37 item."
+    },
+    {
+      "id": "X37.evaluation-protocol.2",
+      "route": "evaluation-protocol",
+      "difficulty": 2,
+      "structure": "rl.method-comparison@1",
+      "inputs": {
+        "seeds": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "returnsA": [
+          "118",
+          "41",
+          "36",
+          "56",
+          "39"
+        ],
+        "returnsB": [
+          "60",
+          "57",
+          "63",
+          "55",
+          "65"
+        ]
+      },
+      "objectiveId": "RL06.tabular-update",
+      "prompt": "Two methods, A and B, were each trained on the same five declared seeds 1, 2, 3, 4 and 5 in a simulated pushing task. Final returns by seed: method A = 118, 41, 36, 56, 39; method B = 60, 57, 63, 55, 65. A slide claims 'A beats B' because A's best run (118) is far above B's best run (65). Compute: the mean return of A, the mean return of B, the sample standard deviation of A (divide by n - 1), the number of the five seeds on which A's return is strictly higher than B's return on the same seed, and the best-run gap (A's best minus B's best) that the slide relies on. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Mean of A",
+          "kind": "number",
+          "answer": "58.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Mean of B",
+          "kind": "number",
+          "answer": "60.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Sample standard deviation of A",
+          "kind": "number",
+          "answer": "34.416566",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Seeds on which A > B",
+          "kind": "number",
+          "answer": "2.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Best A minus best B",
+          "kind": "number",
+          "answer": "53.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Mean A = (118 + 41 + 36 + 56 + 39)/5 = 290/5 = 58. Mean B = (60 + 57 + 63 + 55 + 65)/5 = 300/5 = 60. Deviations of A from 58: 60, -17, -22, -2, -19; squares 3600, 289, 484, 4, 361 sum to 4738; sample variance 4738/4 = 1184.5 and standard deviation √1184.5 = 34.416566. Per seed: 118 > 60 and 56 > 55; 41 < 57, 36 < 63, 39 < 65, so A wins on 2 of 5 seeds. Best-run gap = 118 - 65 = 53. The slide's number is real, but it is the maximum of five draws: A's mean is below B's, A wins on only two seeds, and A's spread is huge, so the data do not support 'A beats B'.",
+      "hints": [
+        "Compute each method's mean over all five declared seeds first, and compare seed by seed using the same seed index for both methods. The slide's gap uses only the maximum of each list.",
+        "For the standard deviation of A, subtract A's mean from each return, square, add, divide by n - 1 = 4 and take the square root. For the win count, compare A and B pairwise at each seed (seed 1 with seed 1, and so on).",
+        "Mean A = (118 + 41 + 36 + 56 + 39)/5 = 290/5 = 58. Mean B = (60 + 57 + 63 + 55 + 65)/5 = 300/5 = 60. Deviations of A from 58: 60, -17, -22, -2, -19; squares 3600, 289, 484, 4, 361 sum to 4738; sample variance 4738/4 = 1184.5 and standard deviation √1184.5 = 34.416566. Per seed: 118 > 60 and 56 > 55; 41 < 57, 36 < 63, 39 < 65, so A wins on 2 of 5 seeds. Best-run gap = 118 - 65 = 53. The slide's number is real, but it is the maximum of five draws: A's mean is below B's, A wins on only two seeds, and A's spread is huge, so the data do not support 'A beats B'."
+      ],
+      "remediation": "Common slips on this item: quoting best runs instead of means gives 118 and 65 for the two means; dividing by n gives a standard deviation of A of 30.783112; counting seeds where A is above its own mean instead of above B gives 1.0; comparing each A seed with B's best run (65) gives 1.0 wins. Compute every declared seed, then try a fresh X37 item."
+    },
+    {
+      "id": "X37.evaluation-protocol.3",
+      "route": "evaluation-protocol",
+      "difficulty": 3,
+      "structure": "rl.reward-loophole-check@1",
+      "inputs": {
+        "nextState": [
+          [
+            "2",
+            "1"
+          ],
+          [
+            "1",
+            "1"
+          ],
+          [
+            "2",
+            "2"
+          ]
+        ],
+        "reward": [
+          [
+            "9",
+            "0"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "terminal": [
+          false,
+          false,
+          true
+        ],
+        "start": "0",
+        "horizon": "10"
+      },
+      "objectiveId": "RL06.tabular-update",
+      "prompt": "A docking robot is trained in a tiny deterministic simulation with states 0 (start), 1 (sensor tile) and 2 (dock, terminal), each with two actions numbered 0 and 1. From state 0: action 0 enters the dock with reward +9 and ends the episode; action 1 moves to the sensor tile with reward 0. On the tile, action 0 stays on the tile with reward +2 (a sensor bonus) and action 1 stays with reward 0; the robot can never leave the tile. Every episode lasts at most 10 steps and rewards are not discounted. Compute: (a) the best total return among sequences that enter the dock within the 10 steps, (b) the best total return among 10-step sequences that never enter the dock, (c) the smallest time limit (in steps, whole number) at which never docking strictly beats docking, and (d) the largest sensor bonus on the tile, in 0.25 steps, for which, at the 10-step limit, never docking does NOT strictly beat docking. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "(a) Best return that docks",
+          "kind": "number",
+          "answer": "9.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(b) Best return that never docks (10 steps)",
+          "kind": "number",
+          "answer": "18.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(c) Smallest time limit where never docking wins",
+          "kind": "number",
+          "answer": "6.0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "(d) Largest bonus with no loophole at 10 steps",
+          "kind": "number",
+          "answer": "1.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "(a) Docking is only possible on step 1 (action 0 from state 0), so the best docking return is 9. (b) A 10-step episode that never docks must take action 1 first (reward 0) and then spend 9 steps on the tile earning 2 each: 9·2 = 18. Since 18 > 9, farming the sensor bonus beats finishing: a reward loophole. (c) With limit h the farm return is 2·(h - 1) against 9: h = 5 gives 8 < 9, h = 6 gives 10 > 9, so the loophole first appears at 6 steps. (d) With bonus b the farm return at 10 steps is 9b, which does not strictly exceed 9 when b ≤ 1; at b = 1.25 it is 11.25 > 9. So the largest bonus in 0.25 steps is 1 (a tie, not a strict win). The fix: remove or cap the bonus, or make finishing worth more than any farmable total at the time limit.",
+      "hints": [
+        "A loophole means a path that never reaches the goal can collect more total reward within the time limit than the best path that does. Find the best docking return, then the best 'never dock' return for the whole 10 steps.",
+        "The tile cannot be left, so a never-dock sequence is: one step to the tile, then 9 steps of the best tile action. Count how many steps such a sequence spends on the tile and what the best tile action pays per step, then compare the resulting total with the docking return. A tie is not a strict win.",
+        "(a) Docking is only possible on step 1 (action 0 from state 0), so the best docking return is 9. (b) A 10-step episode that never docks must take action 1 first (reward 0) and then spend 9 steps on the tile earning 2 each: 9·2 = 18. Since 18 > 9, farming the sensor bonus beats finishing: a reward loophole. (c) With limit h the farm return is 2·(h - 1) against 9: h = 5 gives 8 < 9, h = 6 gives 10 > 9, so the loophole first appears at 6 steps. (d) With bonus b the farm return at 10 steps is 9b, which does not strictly exceed 9 when b ≤ 1; at b = 1.25 it is 11.25 > 9. So the largest bonus in 0.25 steps is 1 (a tie, not a strict win). The fix: remove or cap the bonus, or make finishing worth more than any farmable total at the time limit."
+      ],
+      "remediation": "Common slips on this item: counting 10 tile steps instead of 9 (forgetting the step that gets onto the tile) gives a farm return of 20, a smallest limit of 5 and a bonus of 0.75 in (d); reporting 9 for (b) (the docking value) misses the loophole altogether; counting a tie as a loophole also gives 0.75 in (d) instead of 1. Enumerate the paths for a short limit first, then try a fresh X37 item."
+    }
+  ]
+}

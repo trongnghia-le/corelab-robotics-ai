@@ -1,0 +1,350 @@
+{
+  "id": "X29",
+  "version": 1,
+  "title": "Read a URDF chain and look up transforms between its frames",
+  "domain": "Robotics",
+  "topicId": "S04",
+  "objectiveId": "S04.urdf-chain",
+  "routes": [
+    "chain-parse",
+    "tf-lookup"
+  ],
+  "scope": "Serial-chain URDF-like fragments (links; revolute, prismatic and fixed joints with origin xyz/rpy and axis): structure questions, normalised axes, defaults, defect diagnosis, base-to-link transforms with rpy = Rz Ry Rx and origin-then-motion, and TF lookups between two links; no meshes, inertia, xacro, ROS TF2 runtime, branching trees or hardware",
+  "labIds": [
+    "L12"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "chain-parse": "Find the root and the joint order independently of file order, read defaults and normalised axes, and diagnose a structural defect with a reachability walk.",
+    "tf-lookup": "Compute numeric transform entries at fresh joint values: planar tip, an rpy-rotated joint origin with its axis, and lookups between two frames that need an inverse."
+  },
+  "items": [
+    {
+      "id": "X29.chain-parse.1",
+      "route": "chain-parse",
+      "difficulty": 1,
+      "structure": "urdf-chain.parse.facts@1",
+      "inputs": {
+        "urdf": "<robot name=\"inspector\">\n  <link name=\"mast\"/>\n  <link name=\"gimbal\"/>\n  <link name=\"probe\"/>\n  <link name=\"base_plate\"/>\n  <joint name=\"mount\" type=\"fixed\">\n    <parent link=\"gimbal\"/>\n    <child link=\"probe\"/>\n    <origin xyz=\"0 0 0.12\"/>\n  </joint>\n  <joint name=\"spin\" type=\"revolute\">\n    <parent link=\"base_plate\"/>\n    <child link=\"mast\"/>\n    <origin xyz=\"0 0 0.3\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"tilt\" type=\"revolute\">\n    <parent link=\"mast\"/>\n    <child link=\"gimbal\"/>\n    <origin xyz=\"0 0 0.5\"/>\n    <axis xyz=\"0 1 0\"/>\n  </joint>\n</robot>"
+      },
+      "objectiveId": "S04.urdf-chain",
+      "prompt": "A teammate pastes this serial-chain description into a checker. Read the structure from the text, not from the order of the lines.\n\n<robot name=\"inspector\">\n  <link name=\"mast\"/>\n  <link name=\"gimbal\"/>\n  <link name=\"probe\"/>\n  <link name=\"base_plate\"/>\n  <joint name=\"mount\" type=\"fixed\">\n    <parent link=\"gimbal\"/>\n    <child link=\"probe\"/>\n    <origin xyz=\"0 0 0.12\"/>\n  </joint>\n  <joint name=\"spin\" type=\"revolute\">\n    <parent link=\"base_plate\"/>\n    <child link=\"mast\"/>\n    <origin xyz=\"0 0 0.3\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"tilt\" type=\"revolute\">\n    <parent link=\"mast\"/>\n    <child link=\"gimbal\"/>\n    <origin xyz=\"0 0 0.5\"/>\n    <axis xyz=\"0 1 0\"/>\n  </joint>\n</robot>\n\nAnswer: (a) which link is the root (the base frame); (b) the order of the three joints when you follow the chain from the root to the tip; (c) how many joint values a q dictionary must contain for this robot, counting only revolute and prismatic joints.",
+      "fields": [
+        {
+          "label": "Root link",
+          "kind": "choice",
+          "answer": "base_plate",
+          "tolerance": 0.001,
+          "options": [
+            "mast",
+            "gimbal",
+            "probe",
+            "base_plate"
+          ]
+        },
+        {
+          "label": "Joint order from the root to the tip",
+          "kind": "choice",
+          "answer": "spin, tilt, mount",
+          "tolerance": 0.001,
+          "options": [
+            "mount, spin, tilt",
+            "mount, tilt, spin",
+            "tilt, spin, mount",
+            "spin, tilt, mount"
+          ]
+        },
+        {
+          "label": "Number of entries a q dictionary needs",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Collect every child: probe, mast and gimbal. The only link that is nobody's child is base_plate, so it is the root, even though mast is listed first. Follow parent to child: spin joins base_plate to mast, tilt joins mast to gimbal, mount joins gimbal to probe, so the chain order is spin, tilt, mount (the file lists mount first). Only spin (revolute) and tilt (revolute) move; mount is fixed and takes no entry, so q needs 2 values.",
+      "hints": [
+        "Do not read the joints in file order. A joint's child cannot be the root, so the root is the link that appears as a child in no joint.",
+        "List every child link (probe, mast, gimbal) and cross them off the four link names; the survivor is the root. Then start at the root and repeatedly ask which joint has the current link as its parent, writing the joint down each time.",
+        "Collect every child: probe, mast and gimbal. The only link that is nobody's child is base_plate, so it is the root, even though mast is listed first. Follow parent to child: spin joins base_plate to mast, tilt joins mast to gimbal, mount joins gimbal to probe, so the chain order is spin, tilt, mount (the file lists mount first). Only spin (revolute) and tilt (revolute) move; mount is fixed and takes no entry, so q needs 2 values."
+      ],
+      "remediation": "Common slips on this item: taking the first link in the file (mast) as the root; reading the joints in file order, giving mount, spin, tilt; listing the chain from the tip upward (mount, tilt, spin); counting the fixed joint as a degree of freedom, giving 3 instead of 2. See the structure checks in the urdf-chain-tf bridge, then try a fresh X29 item."
+    },
+    {
+      "id": "X29.chain-parse.2",
+      "route": "chain-parse",
+      "difficulty": 2,
+      "structure": "urdf-chain.parse.defaults@1",
+      "inputs": {
+        "urdf": "<robot name=\"feeder\">\n  <link name=\"tool\"/>\n  <link name=\"carriage\"/>\n  <link name=\"turntable\"/>\n  <link name=\"frame\"/>\n  <joint name=\"clamp\" type=\"fixed\">\n    <parent link=\"carriage\"/>\n    <child link=\"tool\"/>\n    <origin xyz=\"0.1 0 0.05\"/>\n  </joint>\n  <joint name=\"feed\" type=\"prismatic\">\n    <parent link=\"turntable\"/>\n    <child link=\"carriage\"/>\n    <origin xyz=\"0.35 0 0.2\"/>\n    <axis xyz=\"0 3 4\"/>\n  </joint>\n  <joint name=\"turn\" type=\"revolute\">\n    <parent link=\"frame\"/>\n    <child link=\"turntable\"/>\n    <origin xyz=\"0 0 0.15\"/>\n  </joint>\n</robot>",
+        "axis_joint": "feed",
+        "default_joint": "turn",
+        "tip": "tool"
+      },
+      "objectiveId": "S04.urdf-chain",
+      "prompt": "A parser must return each joint's unit axis and origin. Use the following description, whose joints are listed tip first.\n\n<robot name=\"feeder\">\n  <link name=\"tool\"/>\n  <link name=\"carriage\"/>\n  <link name=\"turntable\"/>\n  <link name=\"frame\"/>\n  <joint name=\"clamp\" type=\"fixed\">\n    <parent link=\"carriage\"/>\n    <child link=\"tool\"/>\n    <origin xyz=\"0.1 0 0.05\"/>\n  </joint>\n  <joint name=\"feed\" type=\"prismatic\">\n    <parent link=\"turntable\"/>\n    <child link=\"carriage\"/>\n    <origin xyz=\"0.35 0 0.2\"/>\n    <axis xyz=\"0 3 4\"/>\n  </joint>\n  <joint name=\"turn\" type=\"revolute\">\n    <parent link=\"frame\"/>\n    <child link=\"turntable\"/>\n    <origin xyz=\"0 0 0.15\"/>\n  </joint>\n</robot>\n\nConventions: the BASE frame is the frame of the root link (the one link that is no joint's child); a joint's frame is its child link's frame; rpy is fixed-axis roll-pitch-yaw with R = Rz(yaw) Ry(pitch) Rx(roll), angles in radians, lengths in metres; the joint origin is applied first and the joint motion second, T_parent_child = T_origin T_motion(q); a lookup from target to source returns T_target_source, which maps coordinates in the source frame to coordinates in the target frame. A joint with no <axis> element has the default axis (1, 0, 0), a joint with no <origin> has xyz = (0, 0, 0) and rpy = (0, 0, 0), and the parser must return every revolute and prismatic axis normalised to length 1. Give (a) the y and z components of the normalised axis of joint feed, (b) the x component of the axis the parser returns for joint turn, and (c) the x and z coordinates of the origin of link tool in the base frame when every joint value is 0. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "feed axis, y component",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "feed axis, z component",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "turn axis, x component",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "tool origin in the base frame, x (m)",
+          "kind": "number",
+          "answer": "0.45",
+          "tolerance": 0.001
+        },
+        {
+          "label": "tool origin in the base frame, z (m)",
+          "kind": "number",
+          "answer": "0.4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The text axis of feed is (0, 3, 4) with length sqrt(0 + 9 + 16) = 5, so the unit axis is (0, 0.6, 0.8). Joint turn has no <axis>, so its axis is the default (1, 0, 0) and the x component is 1 (not z, even though a turntable usually turns about z). The chain order is turn, feed, clamp. With every joint value 0 each motion is the identity and every rpy is 0, so the origins just add: x = 0 + 0.35 + 0.1 = 0.45 m and z = 0.15 + 0.2 + 0.05 = 0.4 m.",
+      "hints": [
+        "Normalising divides a vector by its length. For the tool position at zero joint values, first put the joints in chain order (frame to turntable, turntable to carriage, carriage to tool); with no rotation and zero motion the origins just add.",
+        "The length of (0, 3, 4) is 5; divide each component by it. A joint with no <axis> tag falls back to (1, 0, 0). For the tool, sum the x entries of the three origins, then the z entries, treating a missing component as 0.",
+        "The text axis of feed is (0, 3, 4) with length sqrt(0 + 9 + 16) = 5, so the unit axis is (0, 0.6, 0.8). Joint turn has no <axis>, so its axis is the default (1, 0, 0) and the x component is 1 (not z, even though a turntable usually turns about z). The chain order is turn, feed, clamp. With every joint value 0 each motion is the identity and every rpy is 0, so the origins just add: x = 0 + 0.35 + 0.1 = 0.45 m and z = 0.15 + 0.2 + 0.05 = 0.4 m."
+      ],
+      "remediation": "Common slips on this item: leaving the axis as (0, 3, 4) gives 3 and 4; dividing by 7 (the sum of the components) gives 0.4286 and 0.5714; assuming a default axis of (0, 0, 1) gives 0 for the turn x component; ignoring the 0.15 m origin of turn gives a tool z of 0.25; swapping the x and z answers gives 0.4 and 0.45; reading only the first joint gives 0 for x and 0.15 for z. See the urdf-chain-tf bridge, then try a fresh X29 item."
+    },
+    {
+      "id": "X29.chain-parse.3",
+      "route": "chain-parse",
+      "difficulty": 3,
+      "structure": "urdf-chain.parse.defect@1",
+      "inputs": {
+        "urdf": "<robot name=\"cell\">\n  <link name=\"pedestal\"/>\n  <link name=\"a\"/>\n  <link name=\"b\"/>\n  <link name=\"c\"/>\n  <joint name=\"j1\" type=\"revolute\">\n    <parent link=\"pedestal\"/>\n    <child link=\"a\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"j2\" type=\"revolute\">\n    <parent link=\"b\"/>\n    <child link=\"c\"/>\n    <origin xyz=\"0.2 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"j3\" type=\"fixed\">\n    <parent link=\"c\"/>\n    <child link=\"b\"/>\n    <origin xyz=\"0.2 0 0\"/>\n  </joint>\n</robot>"
+      },
+      "objectiveId": "S04.urdf-chain",
+      "prompt": "A structure checker must decide whether this description is a valid serial chain.\n\n<robot name=\"cell\">\n  <link name=\"pedestal\"/>\n  <link name=\"a\"/>\n  <link name=\"b\"/>\n  <link name=\"c\"/>\n  <joint name=\"j1\" type=\"revolute\">\n    <parent link=\"pedestal\"/>\n    <child link=\"a\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"j2\" type=\"revolute\">\n    <parent link=\"b\"/>\n    <child link=\"c\"/>\n    <origin xyz=\"0.2 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"j3\" type=\"fixed\">\n    <parent link=\"c\"/>\n    <child link=\"b\"/>\n    <origin xyz=\"0.2 0 0\"/>\n  </joint>\n</robot>\n\nAnswer: (a) which defect makes the description invalid; (b) how many links are the child of no joint (root candidates); (c) how many links can be reached from the pedestal by following parent to child.",
+      "fields": [
+        {
+          "label": "Defect",
+          "kind": "choice",
+          "answer": "Cycle: two links are each other's parent and are cut off from the root",
+          "tolerance": 0.001,
+          "options": [
+            "Two roots: two links have no parent joint, so the base is ambiguous",
+            "Double parent: one link is the child of two different joints",
+            "Cycle: two links are each other's parent and are cut off from the root",
+            "Branching: one link is the parent of two different joints"
+          ]
+        },
+        {
+          "label": "Links that are no joint's child",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Links reachable from pedestal",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The children are a (j1), c (j2) and b (j3), so the only link that is nobody's child is pedestal: one root candidate, which is why a root count of one passes. Following parent to child from pedestal reaches a through j1 and then stops (no joint has a as parent), so 2 links are reachable. Links b and c are each the other's parent (j2 goes from b to c and j3 goes from c back to b): a cycle detached from the root. No link is the child of two joints and every name is defined, so the defect is the cycle. A root count and a joint count (3 joints for 4 links, which looks like a tree) do not catch it; a reachability walk from the root does.",
+      "hints": [
+        "Check the four rules one at a time against the file: unique roots, one parent per link, defined names, and then whether every link can actually be reached from the root. Count which links appear as a child.",
+        "The children are a, c and b, so list which link is not a child. Then walk from that link: which joint has it as parent, and which joint has that joint's child as parent? Stop when no joint continues, and count the links you visited.",
+        "The children are a (j1), c (j2) and b (j3), so the only link that is nobody's child is pedestal: one root candidate, which is why a root count of one passes. Following parent to child from pedestal reaches a through j1 and then stops (no joint has a as parent), so 2 links are reachable. Links b and c are each the other's parent (j2 goes from b to c and j3 goes from c back to b): a cycle detached from the root. No link is the child of two joints and every name is defined, so the defect is the cycle. A root count and a joint count (3 joints for 4 links, which looks like a tree) do not catch it; a reachability walk from the root does."
+      ],
+      "remediation": "Common slips on this item: answering that there are two roots (the cycle makes b and c look disconnected, but each of them has a parent, so only pedestal is a root); answering that a link has two parents (b and c have one each); counting 4 reachable links by trusting 'one joint per link'; or counting 3 joints for 4 links and deciding the file is a tree. See the structure checks in the urdf-chain-tf bridge, then try a fresh X29 item."
+    },
+    {
+      "id": "X29.tf-lookup.1",
+      "route": "tf-lookup",
+      "difficulty": 1,
+      "structure": "urdf-chain.tf.planar-tip@1",
+      "inputs": {
+        "urdf": "<robot name=\"camera_arm\">\n  <link name=\"base\"/>\n  <link name=\"upper\"/>\n  <link name=\"fore\"/>\n  <link name=\"tool\"/>\n  <joint name=\"shoulder\" type=\"revolute\">\n    <parent link=\"base\"/>\n    <child link=\"upper\"/>\n    <origin xyz=\"0 0 0\" rpy=\"0 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"elbow\" type=\"revolute\">\n    <parent link=\"upper\"/>\n    <child link=\"fore\"/>\n    <origin xyz=\"0.55 0 0\" rpy=\"0 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"tool_mount\" type=\"fixed\">\n    <parent link=\"fore\"/>\n    <child link=\"tool\"/>\n    <origin xyz=\"0.3 0 0.05\" rpy=\"0 0 0\"/>\n  </joint>\n</robot>",
+        "link": "tool",
+        "q": {
+          "shoulder": "0.4",
+          "elbow": "0.9"
+        }
+      },
+      "objectiveId": "S04.urdf-chain",
+      "prompt": "A planar camera arm is described below; both revolute joints turn about +z. Conventions: the BASE frame is the frame of the root link (the one link that is no joint's child); a joint's frame is its child link's frame; rpy is fixed-axis roll-pitch-yaw with R = Rz(yaw) Ry(pitch) Rx(roll), angles in radians, lengths in metres; the joint origin is applied first and the joint motion second, T_parent_child = T_origin T_motion(q); a lookup from target to source returns T_target_source, which maps coordinates in the source frame to coordinates in the target frame.\n\n<robot name=\"camera_arm\">\n  <link name=\"base\"/>\n  <link name=\"upper\"/>\n  <link name=\"fore\"/>\n  <link name=\"tool\"/>\n  <joint name=\"shoulder\" type=\"revolute\">\n    <parent link=\"base\"/>\n    <child link=\"upper\"/>\n    <origin xyz=\"0 0 0\" rpy=\"0 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"elbow\" type=\"revolute\">\n    <parent link=\"upper\"/>\n    <child link=\"fore\"/>\n    <origin xyz=\"0.55 0 0\" rpy=\"0 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"tool_mount\" type=\"fixed\">\n    <parent link=\"fore\"/>\n    <child link=\"tool\"/>\n    <origin xyz=\"0.3 0 0.05\" rpy=\"0 0 0\"/>\n  </joint>\n</robot>\n\nAt joint values shoulder = 0.4 rad and elbow = 0.9 rad, compute T_base_tool, the transform of link tool in the base frame: the position (x, y, z) in metres, and the rotation entries R11 and R21 (the first column). Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.586833",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.503248",
+          "tolerance": 0.001
+        },
+        {
+          "label": "z (m)",
+          "kind": "number",
+          "answer": "0.05",
+          "tolerance": 0.001
+        },
+        {
+          "label": "R11",
+          "kind": "number",
+          "answer": "0.267499",
+          "tolerance": 0.001
+        },
+        {
+          "label": "R21",
+          "kind": "number",
+          "answer": "0.963558",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Both joints turn about z and every rpy is 0, so the tool heading is the sum of the joint values: 0.4 + 0.9 = 1.3 rad. T_base_upper = Rz(0.4); the elbow origin sits 0.55 m along the upper link; the tool_mount origin sits 0.3 m along the forearm and 0.05 m up. x = 0.55 cos 0.4 + 0.3 cos 1.3 = 0.506584 + 0.08025 = 0.586833 m; y = 0.55 sin 0.4 + 0.3 sin 1.3 = 0.21418 + 0.289067 = 0.503248 m; z = 0.05 m (nothing rotates about x or y). R11 = cos 1.3 = 0.267499 and R21 = sin 1.3 = 0.963558. This is the planar forward kinematics of L02 with l1 = 0.55 and l2 = 0.3, lifted by the 0.05 m offset.",
+      "hints": [
+        "Write the transform as the product origin1, motion1, origin2, motion2, origin3 from the base outward. The z axes are parallel, so the rotations simply add; remember the second link points at the SUM of the two joint values, not at the elbow value alone.",
+        "The tool heading is 0.4 + 0.9 = 1.3 rad. The elbow origin is 0.55 m along the upper link (heading 0.4 rad) and the tool_mount origin is 0.3 m along the forearm (heading 1.3 rad): add those two vectors for x and y. The z entry comes only from the 0.05 m origin offset.",
+        "Both joints turn about z and every rpy is 0, so the tool heading is the sum of the joint values: 0.4 + 0.9 = 1.3 rad. T_base_upper = Rz(0.4); the elbow origin sits 0.55 m along the upper link; the tool_mount origin sits 0.3 m along the forearm and 0.05 m up. x = 0.55 cos 0.4 + 0.3 cos 1.3 = 0.506584 + 0.08025 = 0.586833 m; y = 0.55 sin 0.4 + 0.3 sin 1.3 = 0.21418 + 0.289067 = 0.503248 m; z = 0.05 m (nothing rotates about x or y). R11 = cos 1.3 = 0.267499 and R21 = sin 1.3 = 0.963558. This is the planar forward kinematics of L02 with l1 = 0.55 and l2 = 0.3, lifted by the 0.05 m offset."
+      ],
+      "remediation": "Common slips on this item: using the elbow value 0.9 rad alone as the forearm heading gives (x, y) = (0.693067, 0.449178) and R11 = 0.62161; applying each joint motion before its origin (T_motion T_origin) gives x = 0.227374 with the heading unchanged (R11 = 0.267499, R21 = 0.963558); degree mode gives x = 0.849909; entering R12 instead of R21 flips the sign of the last field (-0.963558 instead of 0.963558). See the urdf-chain-tf bridge, then try a fresh X29 item."
+    },
+    {
+      "id": "X29.tf-lookup.2",
+      "route": "tf-lookup",
+      "difficulty": 2,
+      "structure": "urdf-chain.tf.rpy-offset@1",
+      "inputs": {
+        "urdf": "<robot name=\"lift_arm\">\n  <link name=\"base\"/>\n  <link name=\"arm\"/>\n  <link name=\"tip\"/>\n  <joint name=\"raise\" type=\"revolute\">\n    <parent link=\"base\"/>\n    <child link=\"arm\"/>\n    <origin xyz=\"0.2 0.1 0.3\" rpy=\"1.5708 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"end\" type=\"fixed\">\n    <parent link=\"arm\"/>\n    <child link=\"tip\"/>\n    <origin xyz=\"0.4 0 0\" rpy=\"0 0 0\"/>\n  </joint>\n</robot>",
+        "link": "tip",
+        "q": {
+          "raise": "0.6"
+        },
+        "axis_joint": "raise"
+      },
+      "objectiveId": "S04.urdf-chain",
+      "prompt": "A lift arm is mounted on its side: the joint origin is rotated by a roll of 1.5708 rad (approximately pi/2; use the number as written), and the declared axis (0, 0, 1) belongs to the joint frame. Conventions: the BASE frame is the frame of the root link (the one link that is no joint's child); a joint's frame is its child link's frame; rpy is fixed-axis roll-pitch-yaw with R = Rz(yaw) Ry(pitch) Rx(roll), angles in radians, lengths in metres; the joint origin is applied first and the joint motion second, T_parent_child = T_origin T_motion(q); a lookup from target to source returns T_target_source, which maps coordinates in the source frame to coordinates in the target frame.\n\n<robot name=\"lift_arm\">\n  <link name=\"base\"/>\n  <link name=\"arm\"/>\n  <link name=\"tip\"/>\n  <joint name=\"raise\" type=\"revolute\">\n    <parent link=\"base\"/>\n    <child link=\"arm\"/>\n    <origin xyz=\"0.2 0.1 0.3\" rpy=\"1.5708 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"end\" type=\"fixed\">\n    <parent link=\"arm\"/>\n    <child link=\"tip\"/>\n    <origin xyz=\"0.4 0 0\" rpy=\"0 0 0\"/>\n  </joint>\n</robot>\n\nAt raise = 0.6 rad compute the position of link tip in the base frame (x, y, z in metres, tolerance ±0.001), and choose the direction of the joint axis in the base frame.",
+      "fields": [
+        {
+          "label": "tip x (m)",
+          "kind": "number",
+          "answer": "0.530134",
+          "tolerance": 0.001
+        },
+        {
+          "label": "tip y (m)",
+          "kind": "number",
+          "answer": "0.099999",
+          "tolerance": 0.001
+        },
+        {
+          "label": "tip z (m)",
+          "kind": "number",
+          "answer": "0.525857",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction of the raise axis in the base frame",
+          "kind": "choice",
+          "answer": "-y (0, -1, 0)",
+          "tolerance": 0.001,
+          "options": [
+            "+x (1, 0, 0)",
+            "+y (0, 1, 0)",
+            "-y (0, -1, 0)",
+            "+z (0, 0, 1)",
+            "-z (0, 0, -1)"
+          ]
+        }
+      ],
+      "solution": "T_base_tip = Trans(0.2, 0.1, 0.3) Rx(1.5708) Rz(0.6) Trans(0.4, 0, 0). Inside the joint frame the tip sits at 0.4 (cos 0.6, sin 0.6, 0) = (0.330134, 0.225857, 0). Rx(1.5708) maps (a, b, c) to (a, b cos 1.5708 - c sin 1.5708, b sin 1.5708 + c cos 1.5708) = (a, -c, b) up to 4e-6, so the point becomes (0.330134, 0, 0.225857) and the position is (0.2 + 0.330134, 0.1, 0.3 + 0.225857) = (0.530134, 0.099999, 0.525857) m. The joint axis (0, 0, 1) goes through the same rotation: Rx(1.5708) (0, 0, 1) = (0, -sin 1.5708, cos 1.5708) = (0, -1, 0), so the arm rotates about the base -y direction and the tip rises in z.",
+      "hints": [
+        "The motion Rz(q) happens in the joint frame, which is already rotated by the origin. So rotate the tip offset by q about the joint's z axis first, then rotate the result by the origin rpy, then add the origin translation. The same rotation carries the axis into the base frame.",
+        "In the joint frame the tip is at 0.4 (cos 0.6, sin 0.6, 0). A roll of 90 degrees maps a joint-frame vector (a, b, c) to roughly (a, -c, b). Apply that, then add (0.2, 0.1, 0.3). For the axis, apply the same roll to (0, 0, 1).",
+        "T_base_tip = Trans(0.2, 0.1, 0.3) Rx(1.5708) Rz(0.6) Trans(0.4, 0, 0). Inside the joint frame the tip sits at 0.4 (cos 0.6, sin 0.6, 0) = (0.330134, 0.225857, 0). Rx(1.5708) maps (a, b, c) to (a, b cos 1.5708 - c sin 1.5708, b sin 1.5708 + c cos 1.5708) = (a, -c, b) up to 4e-6, so the point becomes (0.330134, 0, 0.225857) and the position is (0.2 + 0.330134, 0.1, 0.3 + 0.225857) = (0.530134, 0.099999, 0.525857) m. The joint axis (0, 0, 1) goes through the same rotation: Rx(1.5708) (0, 0, 1) = (0, -sin 1.5708, cos 1.5708) = (0, -1, 0), so the arm rotates about the base -y direction and the tip rises in z."
+      ],
+      "remediation": "Common slips on this item: applying the joint motion before the origin (T_motion T_origin) gives (0.438737, 0.421319, 0.3); ignoring the rpy (treating the arm as planar) gives (0.530134, 0.325857, 0.3); a roll of -1.5708 gives (0.530134, 0.099999, 0.074143) and the axis +y; choosing +z reads the declared axis without rotating it into the base frame. See the urdf-chain-tf bridge, then try a fresh X29 item."
+    },
+    {
+      "id": "X29.tf-lookup.3",
+      "route": "tf-lookup",
+      "difficulty": 3,
+      "structure": "urdf-chain.tf.lookup-between@1",
+      "inputs": {
+        "urdf": "<robot name=\"wrist_cam\">\n  <link name=\"base\"/>\n  <link name=\"upper\"/>\n  <link name=\"fore\"/>\n  <link name=\"tool\"/>\n  <joint name=\"shoulder\" type=\"revolute\">\n    <parent link=\"base\"/>\n    <child link=\"upper\"/>\n    <origin xyz=\"0 0 0.1\" rpy=\"0 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"elbow\" type=\"revolute\">\n    <parent link=\"upper\"/>\n    <child link=\"fore\"/>\n    <origin xyz=\"0.5 0 0\" rpy=\"0 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"cam_mount\" type=\"fixed\">\n    <parent link=\"fore\"/>\n    <child link=\"tool\"/>\n    <origin xyz=\"0.3 0.1 0\" rpy=\"0 0 0\"/>\n  </joint>\n</robot>",
+        "lookups": [
+          {
+            "target": "upper",
+            "source": "tool"
+          },
+          {
+            "target": "tool",
+            "source": "base"
+          }
+        ],
+        "q": {
+          "shoulder": "0.7",
+          "elbow": "-0.4"
+        }
+      },
+      "objectiveId": "S04.urdf-chain",
+      "prompt": "A wrist camera frame must be expressed relative to two other frames. Conventions: the BASE frame is the frame of the root link (the one link that is no joint's child); a joint's frame is its child link's frame; rpy is fixed-axis roll-pitch-yaw with R = Rz(yaw) Ry(pitch) Rx(roll), angles in radians, lengths in metres; the joint origin is applied first and the joint motion second, T_parent_child = T_origin T_motion(q); a lookup from target to source returns T_target_source, which maps coordinates in the source frame to coordinates in the target frame.\n\n<robot name=\"wrist_cam\">\n  <link name=\"base\"/>\n  <link name=\"upper\"/>\n  <link name=\"fore\"/>\n  <link name=\"tool\"/>\n  <joint name=\"shoulder\" type=\"revolute\">\n    <parent link=\"base\"/>\n    <child link=\"upper\"/>\n    <origin xyz=\"0 0 0.1\" rpy=\"0 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"elbow\" type=\"revolute\">\n    <parent link=\"upper\"/>\n    <child link=\"fore\"/>\n    <origin xyz=\"0.5 0 0\" rpy=\"0 0 0\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n  <joint name=\"cam_mount\" type=\"fixed\">\n    <parent link=\"fore\"/>\n    <child link=\"tool\"/>\n    <origin xyz=\"0.3 0.1 0\" rpy=\"0 0 0\"/>\n  </joint>\n</robot>\n\nAt shoulder = 0.7 rad and elbow = -0.4 rad evaluate two lookups. (1) lookup(target = upper, source = tool) = T_upper_tool: give the translation x and y (metres). (2) lookup(target = tool, source = base) = T_tool_base: give the translation x, y and z, that is, where the base frame's origin lies in the tool frame. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "T_upper_tool translation, x (m)",
+          "kind": "number",
+          "answer": "0.81526",
+          "tolerance": 0.001
+        },
+        {
+          "label": "T_upper_tool translation, y (m)",
+          "kind": "number",
+          "answer": "-0.024719",
+          "tolerance": 0.001
+        },
+        {
+          "label": "T_tool_base translation, x (m)",
+          "kind": "number",
+          "answer": "-0.76053",
+          "tolerance": 0.001
+        },
+        {
+          "label": "T_tool_base translation, y (m)",
+          "kind": "number",
+          "answer": "-0.294709",
+          "tolerance": 0.001
+        },
+        {
+          "label": "T_tool_base translation, z (m)",
+          "kind": "number",
+          "answer": "-0.1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "(1) T_upper_tool = inverse(T_base_upper) T_base_tool = T_upper_fore T_fore_tool = Trans(0.5, 0, 0) Rz(-0.4) Trans(0.3, 0.1, 0): the shoulder cancels, so it does not matter. x = 0.5 + 0.3 cos(-0.4) - 0.1 sin(-0.4) = 0.81526 m and y = 0.3 sin(-0.4) + 0.1 cos(-0.4) = -0.024719 m. (2) T_base_tool has heading 0.7 + (-0.4) = 0.3 rad and position p = (0.63947, 0.506299, 0.1) m. T_tool_base = inverse(T_base_tool) = [R^T | -R^T p], so the translation is -R^T p with R = Rz(0.3): x = -(cos 0.3 px + sin 0.3 py) = -0.76053 m, y = -(-sin 0.3 px + cos 0.3 py) = -0.294709 m, z = -pz = -0.1 m.",
+      "hints": [
+        "Lookup(target, source) answers where the SOURCE frame sits in the TARGET frame: T_target_source = inverse(T_base_target) T_base_source. For the first lookup the shared part of the chain (here the shoulder) cancels; for the second the target is the tool, so the base-to-tool transform must be inverted.",
+        "Lookup 1 only involves the joints between upper and tool: Trans(0.5, 0, 0) Rz(elbow) Trans(0.3, 0.1, 0), so take the origin of that product. Lookup 2: first get T_base_tool (heading shoulder + elbow = 0.3 rad), then use [R^T | -R^T p]; the z entry only changes sign.",
+        "(1) T_upper_tool = inverse(T_base_upper) T_base_tool = T_upper_fore T_fore_tool = Trans(0.5, 0, 0) Rz(-0.4) Trans(0.3, 0.1, 0): the shoulder cancels, so it does not matter. x = 0.5 + 0.3 cos(-0.4) - 0.1 sin(-0.4) = 0.81526 m and y = 0.3 sin(-0.4) + 0.1 cos(-0.4) = -0.024719 m. (2) T_base_tool has heading 0.7 + (-0.4) = 0.3 rad and position p = (0.63947, 0.506299, 0.1) m. T_tool_base = inverse(T_base_tool) = [R^T | -R^T p], so the translation is -R^T p with R = Rz(0.3): x = -(cos 0.3 px + sin 0.3 py) = -0.76053 m, y = -(-sin 0.3 px + cos 0.3 py) = -0.294709 m, z = -pz = -0.1 m."
+      ],
+      "remediation": "Common slips on this item: reporting the position of the tool in the BASE frame for lookup 2 (no inversion) gives (0.63947, 0.506299, 0.1); swapping target and source in lookup 1 gives (-0.76053, -0.294709); subtracting the positions of tool and upper in the base frame for lookup 1 gives (0.63947, 0.506299); negating p without rotating it for lookup 2 gives (-0.63947, -0.506299, -0.1). See the urdf-chain-tf bridge, then try a fresh X29 item."
+    }
+  ]
+}

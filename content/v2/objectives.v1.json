@@ -1054,6 +1054,149 @@
       "specializations": [
         "Robotics"
       ]
+    },
+    {
+      "id": "R08.friction-grasp",
+      "version": 1,
+      "topicId": "R08",
+      "title": "Check a two-pad friction grasp and read its contact trace",
+      "statement": "For a rigid box held by two parallel pads with the same Coulomb friction, using g = 9.81 m/s^2 and a quasi-static vertical lift: decide the hold condition 2*mu*N >= m*(g + a), compute the safety factor, the minimum squeeze per pad, the largest holding acceleration or mass, and friction-cone membership of a pad force (closed cone, pulling pads outside). Run a threshold retention observer over a declared synthetic (cmd, fn, ft) trace and name its contact, slip, lost, empty and release events, then reason from a slip or hold reading to a changed mass or friction. Checked against closed-form and exact-rational oracles.",
+      "excludes": [
+        "Physics-engine contact simulation, soft or deformable contacts, torsional or rolling friction, multi-finger or form-closure grasps, grasp planning, force-sensor noise and delay, real grippers, any claim that the observer works on hardware, whole-topic mastery"
+      ],
+      "readiness": [
+        {
+          "objective": "M04.two-equations",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "C01.bounded-step",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "parallel-jaw-friction"
+        }
+      ],
+      "practice": [
+        "X35"
+      ],
+      "kits": [
+        "L18-grasp"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
+    },
+    {
+      "id": "RL06.tabular-update",
+      "version": 1,
+      "topicId": "RL06",
+      "title": "Apply tabular updates and report seed results",
+      "statement": "On tiny numerical toys: one-step tabular Q-learning and SARSA updates with correct terminal versus time-limit bootstrapping, epsilon-greedy probabilities, discounted returns, an exact value-iteration reference on a declared deterministic MDP, a per-seed raw-result report (mean, sample standard deviation, standard error) and a declared reward-loophole check. Numerical toy only; no simulator training or significance claim.",
+      "excludes": [
+        "Simulator training, deep or continuous-control RL, PPO or SAC, stochastic transitions, significance tests, human protocol review, whole-topic mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "RL02.bellman-value",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "tabular-q-protocol"
+        }
+      ],
+      "practice": [
+        "X37"
+      ],
+      "kits": [
+        "L20-rl"
+      ],
+      "specializations": [
+        "RL"
+      ]
+    },
+    {
+      "id": "S04.urdf-chain",
+      "version": 1,
+      "topicId": "S04",
+      "title": "Read a URDF chain and look up transforms between frames",
+      "statement": "For a small serial-chain URDF-like fragment given as text (revolute, prismatic and fixed joints with origin xyz/rpy and axis): find the root and the chain order independently of file order, validate the structure (single root, no cycles, defined links, one parent per link, non-zero axis), compute the base-to-link transform at given joint values with rpy = Rz Ry Rx and origin-then-motion, and the transform between two links (TF-style lookup). Results are judged against an independent hand-composed fixture chain and the planar L02 forward kinematics, and a joint-origin or frame error is traced through the joint axis in the base frame.",
+      "excludes": [
+        "Meshes, inertial and collision tags, xacro, mimic and continuous joints, joint limits, branching trees, ROS 2 TF2 runtime, timestamps and interpolation, robot_state_publisher, visualisation, calibration of a real robot, whole-topic mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "R03.compose-invert-se2",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "R04.planar-fk",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "urdf-chain-tf"
+        }
+      ],
+      "practice": [
+        "X29"
+      ],
+      "kits": [
+        "L12-description"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
+    },
+    {
+      "id": "S03.replay-node",
+      "version": 1,
+      "topicId": "S03",
+      "title": "Specify and test a replay node core",
+      "statement": "Frame, duplicate/out-of-order stamp, maximum-gap and reset policies of a ROS-free odometry node core replayed on a recorded message list: which messages are used, the intermediate poses, and the smallest message set that exposes a named fault",
+      "excludes": [
+        "ROS 2 runtime, DDS, QoS, TF2, ROS or simulated clocks, launch files, a real robot, whole-topic mastery and automatic code evidence"
+      ],
+      "readiness": [
+        {
+          "objective": "R02.exact-arc",
+          "version": 1,
+          "strength": "recommended"
+        },
+        {
+          "objective": "PY07.mutation-tests",
+          "version": 1,
+          "strength": "recommended"
+        }
+      ],
+      "learn": [
+        {
+          "type": "bridge",
+          "id": "replay-node-policies"
+        }
+      ],
+      "practice": [
+        "X23"
+      ],
+      "kits": [
+        "L05-replay"
+      ],
+      "specializations": [
+        "Robotics"
+      ]
     }
   ],
   "paths": [

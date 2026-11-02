@@ -9,7 +9,7 @@ import { topics } from "../../lib/curriculum";
 it("resolves typed authored objectives, readiness, media and advisory curriculum identities", () => {
   const r = objectives(),
     p = curriculumPreview();
-  expect(r.objectives).toHaveLength(34);
+  expect(r.objectives).toHaveLength(38);
   expect(topics).toHaveLength(169);
   expect(p.nodes).toHaveLength(176);
   expect(p.nodes.reduce((n, x) => n + x.prerequisites.length, 0)).toBe(319);

@@ -21,10 +21,11 @@ Grading, admission, exposure and evidence semantics are unchanged.
 
 ## Current milestone
 
-M0 infrastructure committed as `558420b`. B1 (L07 X24/L07-trajectory, L09 X26/L09-localization, L10 X27/L10-kalman, L11 X28/L11-planning) integrated and committed after AI review. B2 (L15 X32, L16 X33, L19 X36, L21 X38) integrated and committed. In progress: B3 (L05 X23, L12 X29, L18 X35, L20 X37). New labs add `unavailable` lists to their roadmap entries and bridges for objectives whose topic has no lesson.
+M0 infrastructure committed as `558420b`. B1 (L07 X24/L07-trajectory, L09 X26/L09-localization, L10 X27/L10-kalman, L11 X28/L11-planning) integrated and committed after AI review. B2 (L15 X32, L16 X33, L19 X36, L21 X38) integrated and committed. B3 (L05 X23, L12 X29, L18 X35, L20 X37) integrated and committed. In progress: B4 (L08 X25, L13 X30, L17 X34, L22 X39); remaining after that: L14 (X31). New labs add `unavailable` lists to their roadmap entries and bridges for objectives whose topic has no lesson.
 
 ## Test results
 
 - Baseline `3c0793b`: lint, typecheck, validate:content, validate:v2, tests (218/31 files) — all exit 0.
 - B1 commit (on top of Codex `c633774`, clean worktree): lint, typecheck, validate:content, validate:v2, tests 229/36 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.
 - B2 commit (clean worktree): lint, typecheck, validate:content, validate:v2, tests 237/40 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.
+- B3 commit (clean worktree): lint, typecheck, validate:content, validate:v2, tests 245/44 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.

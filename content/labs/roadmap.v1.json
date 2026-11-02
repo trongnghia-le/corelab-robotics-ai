@@ -54,14 +54,25 @@
       "id": "L05",
       "title": "ROS replay node",
       "outcome": "Build a replay-tested node with explicit time and frame policies.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L05-replay",
       "practiceFamilies": [
+        "X23",
         "X07",
         "X09",
         "X12"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Implemented: a pure-Python, stdlib-only, ROS-free node core that consumes a recorded list of wheel-odometry dicts (integer-nanosecond stamps) and emits intermediate pose dicts under declared frame (including near-miss ids), duplicate and out-of-order, maximum-gap (reset or flag) and explicit-reset policies using the exact arc; a shortest-message-subset fault reproducer; and a learner test suite judged against two valid cores and 35 buggy cores (practised in the kit only; the X23 family covers stamp-policy and fault-reproducer, not test-suite writing). Replay of plain Python data only: no ROS runtime, DDS, QoS, TF2, ROS clock, launch files, simulation or hardware. The self-check is a fixed fixture and can be gamed.",
+      "unavailable": [
+        "Real DDS or rosbag replay, message serialisation and any ROS 2 runtime or rclpy node (executors, callbacks, lifecycle)",
+        "QoS profiles (reliability, durability, history, deadline) and their faults, and transport latency or loss",
+        "TF2 broadcasting, buffering and transform lookup, and static transforms",
+        "ROS clock, simulated time, use_sim_time and clock-jump handling beyond integer stamps in a list",
+        "Launch files, parameters, packaging, containers and multi-node systems",
+        "Full simulation or hardware wheel encoders, slip, calibration and covariance",
+        "Automatic QoS, frame or clock fault capture from a live system into a reproducer; only the shortest subset of a given list is searched",
+        "Signed or verified evidence"
+      ]
     },
     {
       "id": "L06",
@@ -176,13 +187,22 @@
       "id": "L12",
       "title": "Description and transforms",
       "outcome": "Check description-frame conventions against independent poses.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L12-description",
       "practiceFamilies": [
+        "X29",
         "X10",
         "X11"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical/replay self-check on learner-supplied XML strings only (no file access; DOCTYPE and entities rejected): a serial-chain URDF-like subset with revolute, prismatic and fixed joints, origin xyz/rpy (R = Rz Ry Rx) and axis; structural validation (single root, no cycles, defined and unique names, one parent per link, no branching, non-zero axis); base-to-link transforms with origin-then-motion; TF-style lookup between two links; joint axis in the base frame. Judged against an independent quaternion/closed-form reference, a hand-multiplied fixture chain at fresh joint values, and planar L02 forward kinematics. No meshes, no TF2 runtime, no hardware.",
+      "unavailable": [
+        "Mesh, inertial and collision tags and geometry",
+        "xacro macros and parameter expressions",
+        "ROS 2 TF2 runtime, timestamps, interpolation and static/dynamic broadcasters",
+        "robot_state_publisher and visualisation",
+        "Branching trees, continuous, floating and planar joints, mimic joints and joint limits",
+        "Calibration of a real robot model and any hardware evidence"
+      ]
     },
     {
       "id": "L13",
@@ -269,13 +289,22 @@
       "id": "L18",
       "title": "Contact and grasp",
       "outcome": "Evaluate explicit geometric and physical assumptions.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L18-grasp",
       "practiceFamilies": [
-        "X01",
-        "X15"
+        "X35"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original analytic/replay self-check on a declared toy: a rigid box held by two parallel Coulomb-friction pads with g = 9.81 m/s^2, quasi-static vertical lift. Implements the hold condition 2*mu*N >= m*(g + a), safety factor, minimum squeeze, largest holding acceleration, friction-cone membership, and a threshold retention observer (contact, slip, lost, empty, release monitors) over declared synthetic force traces (fixed author-chosen cases). Claims are limited to this toy on made-up numbers; no physics engine, no hardware, and no claim that the observer works on a real gripper.",
+      "unavailable": [
+        "Physics-engine contact simulation (rigid-body or soft) and a sim-profile characterization of pads",
+        "Soft or deformable contacts, torsional and rolling friction, and non-Coulomb friction models",
+        "Multi-finger, form-closure or force-closure grasps and grasp planning",
+        "Independent transport and object-pose monitors on a simulated object (only a threshold force-trace observer is provided)",
+        "Force-sensor noise, offset and delay models, and gripper force-build dynamics",
+        "Empty or slipping grasp diagnosis from a simulator trace to a changed object mass or friction in a closed loop",
+        "Symbolic weld or attach-constraint grasps (excluded by scope)",
+        "Real gripper hardware and any evidence that the observer works on hardware"
+      ]
     },
     {
       "id": "L19",
@@ -302,13 +331,20 @@
       "id": "L20",
       "title": "RL experiment",
       "outcome": "Check updates, termination and finite evaluation assumptions.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L20-rl",
       "practiceFamilies": [
-        "X17",
-        "X18"
+        "X18",
+        "X37"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical self-check on tiny in-memory tables: one-step Q-learning and SARSA updates with terminated versus truncated bootstrapping, epsilon-greedy probabilities with ties, discounted returns with a bootstrap value, synchronous value iteration on a declared deterministic MDP as an exact reference, a per-seed report (mean, sample standard deviation, standard error, worst and best) over a declared seed list, and an exact reward-loophole check comparing the best goal-reaching and best never-finishing returns. Numerical toy only: no simulator or environment interaction, training, deep RL, stochastic transitions, significance test or protocol review.",
+      "unavailable": [
+        "Training on simulators or any environment interaction",
+        "Deep RL, PPO, SAC and function approximation",
+        "Statistical significance claims beyond the declared mean, standard deviation and standard error",
+        "Human review of an experiment protocol and design",
+        "Stochastic-transition MDPs and policy-gradient methods"
+      ]
     },
     {
       "id": "L21",
