@@ -1,0 +1,305 @@
+{
+  "id": "X24",
+  "version": 1,
+  "title": "Plan a rest-to-rest triangular or trapezoidal time law",
+  "domain": "Robotics",
+  "topicId": "M05",
+  "objectiveId": "M05.trapezoid-profile",
+  "routes": [
+    "single-axis",
+    "joint-sync"
+  ],
+  "scope": "One-axis rest-to-rest triangular/trapezoidal time law under |v| <= vmax and |a| <= amax: phase times, sampling, reversed and zero moves, scaled durations and impossible requests, plus a common duration for two independent joints; numerical only, no jerk limit, torque, dynamics or robot execution",
+  "labIds": [
+    "L07"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "single-axis": "Choose triangular or trapezoidal with d*amax versus vmax^2, get the phase times, and sample position, velocity and acceleration, including reversed moves and a slower scaled duration.",
+    "joint-sync": "Minimum duration of each joint, the common duration of two independent joints, the lowered cruise speed of the faster joint, a zero-displacement joint, and an impossible requested duration with the vmax it would need."
+  },
+  "items": [
+    {
+      "id": "X24.single-axis.1",
+      "route": "single-axis",
+      "difficulty": 1,
+      "structure": "trapezoid.profile.phases@1",
+      "inputs": {
+        "distance": "2.4",
+        "vmax": "0.8",
+        "amax": "0.5"
+      },
+      "objectiveId": "M05.trapezoid-profile",
+      "prompt": "A linear stage must slide a sample tray 2.4 m from rest to rest in the shortest possible time, with speed limit vmax = 0.8 m/s and acceleration limit amax = 0.5 m/s^2. Convention: one axis moves from rest to rest with constant acceleration +amax, then (if it reaches vmax) a constant-speed cruise, then constant deceleration -amax; the acceleration and braking phases last equally long; the minimum-time profile is triangular if |D| amax < vmax^2 and trapezoidal otherwise. Decide the type of the minimum-time profile, then give the duration ta of each of the two ramps (acceleration and braking), the cruise duration tc (0 if there is none) and the total duration T, all in seconds. Tolerance ±0.001 s.",
+      "fields": [
+        {
+          "label": "Type of the minimum-time profile",
+          "kind": "choice",
+          "answer": "Trapezoidal - the axis reaches vmax, cruises, then brakes",
+          "tolerance": 0.001,
+          "options": [
+            "Triangular - the axis reaches vmax and then brakes at once",
+            "Trapezoidal - the axis reaches vmax, cruises, then brakes",
+            "Trapezoidal - the axis cruises most of the way below vmax",
+            "Triangular - the axis brakes before it ever reaches vmax"
+          ]
+        },
+        {
+          "label": "ta, duration of each ramp (s)",
+          "kind": "number",
+          "answer": "1.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "tc, cruise duration (s)",
+          "kind": "number",
+          "answer": "1.4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "T, total duration (s)",
+          "kind": "number",
+          "answer": "4.6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Compare |D| amax = 2.4·0.5 = 1.2 with vmax^2 = 0.64. Since 1.2 > 0.64 the axis reaches vmax, so the profile is trapezoidal. Each ramp takes ta = vmax/amax = 0.8/0.5 = 1.6 s and covers vmax·ta/2 = 0.64 m. Two ramps cover 1.28 m, leaving 1.12 m at 0.8 m/s: tc = 1.4 s (equivalently tc = |D|/vmax - ta = 3 - 1.6). T = 2 ta + tc = 4.6 s. Check: area under the speed curve = 0.8·(T - ta) = 0.8·3 = 2.4 m.",
+      "hints": [
+        "Before computing, decide whether the axis can reach vmax within the distance: a triangular move has a peak speed below vmax, and the number that decides it is |D| amax compared with vmax^2 (equivalently |D| compared with vmax^2/amax, the distance two ramps need).",
+        "For the trapezoidal case the ramp time is vmax divided by amax, and the ramps together cover vmax times that time. Subtract that distance from |D|, divide what remains by vmax to get the cruise time, then add the three phase times.",
+        "Compare |D| amax = 2.4·0.5 = 1.2 with vmax^2 = 0.64. Since 1.2 > 0.64 the axis reaches vmax, so the profile is trapezoidal. Each ramp takes ta = vmax/amax = 0.8/0.5 = 1.6 s and covers vmax·ta/2 = 0.64 m. Two ramps cover 1.28 m, leaving 1.12 m at 0.8 m/s: tc = 1.4 s (equivalently tc = |D|/vmax - ta = 3 - 1.6). T = 2 ta + tc = 4.6 s. Check: area under the speed curve = 0.8·(T - ta) = 0.8·3 = 2.4 m."
+      ],
+      "remediation": "Common slips on this item: taking the cruise time as |D|/vmax = 3 s (ramp distance not subtracted) gives T = 6.2 s; using the triangular formulas ta = sqrt(|D|/amax) = 2.19089 s gives T = 4.38178 s with no cruise although vmax is reached; T = |D|/vmax = 3 s ignores the ramps. Compare |D| amax with vmax^2 first, in the time-law bridge, then try a fresh X24 item."
+    },
+    {
+      "id": "X24.single-axis.2",
+      "route": "single-axis",
+      "difficulty": 2,
+      "structure": "trapezoid.profile.sample-reversed@1",
+      "inputs": {
+        "distance": "-0.81",
+        "vmax": "2",
+        "amax": "1",
+        "t": "1.2"
+      },
+      "objectiveId": "M05.trapezoid-profile",
+      "prompt": "A pan joint must turn 0.81 rad clockwise (a displacement D = -0.81 rad, counter-clockwise positive), from rest to rest in the shortest possible time, with speed limit vmax = 2.0 rad/s and acceleration limit amax = 1.0 rad/s^2, starting at q = 0 at time t = 0. Convention: one axis moves from rest to rest with constant acceleration +amax, then (if it reaches vmax) a constant-speed cruise, then constant deceleration -amax; the acceleration and braking phases last equally long; the minimum-time profile is triangular if |D| amax < vmax^2 and trapezoidal otherwise. Give the signed peak velocity (rad/s), the total duration T (s), and the joint position q at t = 1.2 s (rad, signed). Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Peak velocity, signed (rad/s)",
+          "kind": "number",
+          "answer": "-0.9",
+          "tolerance": 0.001
+        },
+        {
+          "label": "T, total duration (s)",
+          "kind": "number",
+          "answer": "1.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "q at t = 1.2 s (rad)",
+          "kind": "number",
+          "answer": "-0.63",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "|D| amax = 0.81 is below vmax^2 = 4, so the profile is triangular and the joint never reaches vmax. The ramp time is ta = sqrt(|D|/amax) = sqrt(0.81) = 0.9 s, T = 2 ta = 1.8 s, and the peak speed is amax·ta = 0.9 rad/s; the move is clockwise, so the signed peak velocity is -0.9 rad/s. At t = 1.2 s the joint is in the braking phase (ta = 0.9 s < 1.2 s < T), and the time left is T - t = 0.6 s, so by symmetry the joint is still 0.18 rad short of the target: q = D + 0.5·amax·(T - t)^2 = -0.81 + 0.18 = -0.63 rad.",
+      "hints": [
+        "Decide the type first: the target is close compared with the distance vmax^2/amax that two ramps up to vmax would need. Keep the sign of D for the velocity and position, but work with |D| for the times; at t = 1.2 s find out which phase the joint is in before using any formula.",
+        "For a triangular move the ramp time follows from |D| = amax·ta^2 (two ramps of area amax·ta^2/2 each). The peak speed is amax·ta and T = 2 ta. For the position in the braking phase, measure the time left until T, which gives how far the joint still has to go.",
+        "|D| amax = 0.81 is below vmax^2 = 4, so the profile is triangular and the joint never reaches vmax. The ramp time is ta = sqrt(|D|/amax) = sqrt(0.81) = 0.9 s, T = 2 ta = 1.8 s, and the peak speed is amax·ta = 0.9 rad/s; the move is clockwise, so the signed peak velocity is -0.9 rad/s. At t = 1.2 s the joint is in the braking phase (ta = 0.9 s < 1.2 s < T), and the time left is T - t = 0.6 s, so by symmetry the joint is still 0.18 rad short of the target: q = D + 0.5·amax·(T - t)^2 = -0.81 + 0.18 = -0.63 rad."
+      ],
+      "remediation": "Common slips on this item: dropping the sign gives a peak velocity of +0.9 rad/s; taking T = ta = 0.9 s forgets the braking ramp; using the trapezoid peak vmax = 2 rad/s ignores that the joint never reaches it; never braking, i.e. q = -0.5·amax·t^2 as if the joint were still accelerating, gives -0.72 rad instead of -0.63 rad. Re-derive the phase times in the time-law bridge, then try a fresh X24 item."
+    },
+    {
+      "id": "X24.single-axis.3",
+      "route": "single-axis",
+      "difficulty": 3,
+      "structure": "trapezoid.profile.scaled-sample@1",
+      "inputs": {
+        "distance": "3.2",
+        "vmax": "1",
+        "amax": "0.8",
+        "duration": "5",
+        "t": "4.25"
+      },
+      "objectiveId": "M05.trapezoid-profile",
+      "prompt": "A gantry axis must move 3.2 m from rest to rest with speed limit vmax = 1.0 m/s and acceleration limit amax = 0.8 m/s^2. Convention: one axis moves from rest to rest with constant acceleration +amax, then (if it reaches vmax) a constant-speed cruise, then constant deceleration -amax; the acceleration and braking phases last equally long; the minimum-time profile is triangular if |D| amax < vmax^2 and trapezoidal otherwise. The planner first asks for the shortest possible time Tmin. The job is then scheduled for exactly T = 5.0 s: the same move is slowed by keeping the acceleration and braking magnitude at amax = 0.8 m/s^2 and lowering the cruise speed (so the ramps are shorter in speed, not in acceleration). Give Tmin (s), the lowered cruise speed (m/s), and the position q (m) and velocity v (m/s) at t = 4.25 s of the 5.0 s move. Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Tmin (s)",
+          "kind": "number",
+          "answer": "4.45",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Lowered cruise speed (m/s)",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "q at t = 4.25 s (m)",
+          "kind": "number",
+          "answer": "2.975",
+          "tolerance": 0.001
+        },
+        {
+          "label": "v at t = 4.25 s (m/s)",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tmin: |D| amax = 2.56 > vmax^2 = 1, so trapezoidal with ta = 1/0.8 = 1.25 s and tc = 3.2/1 - 1.25 = 1.95 s: Tmin = 4.45 s. For T = 5 s with acceleration kept at 0.8, the cruise speed v solves v·(T - v/amax) = |D|, i.e. v^2/amax - T v + |D| = 0, which times amax = 0.8 is v^2 - 4 v + 2.56 = 0; the smaller root is v = (4 - sqrt(16 - 10.24))/2 = (4 - 2.4)/2 = 0.8 m/s. So ta = v/amax = 1 s, tc = 5 - 2 ta = 3 s, braking starts at ta + tc = 4 s. At t = 4.25 s the time left is T - t = 0.75 s: v = amax·0.75 = 0.6 m/s and q = |D| - 0.5·amax·0.75^2 = 3.2 - 0.225 = 2.975 m.",
+      "hints": [
+        "Tmin comes from the minimum-time profile (check which type it is). For the 5 s version the area under the speed curve must still equal |D|, but the cruise speed is now an unknown: write that area as a function of the speed v, the time T and amax, with the ramps lasting v/amax.",
+        "The area condition is v·(T - v/amax) = |D|, a quadratic in v. Take the smaller root (the larger one would need ramps longer than T/2). Then find which phase t = 4.25 s falls in by comparing it with ta + tc, and use the time left until T for v and for how far q is from the target.",
+        "Tmin: |D| amax = 2.56 > vmax^2 = 1, so trapezoidal with ta = 1/0.8 = 1.25 s and tc = 3.2/1 - 1.25 = 1.95 s: Tmin = 4.45 s. For T = 5 s with acceleration kept at 0.8, the cruise speed v solves v·(T - v/amax) = |D|, i.e. v^2/amax - T v + |D| = 0, which times amax = 0.8 is v^2 - 4 v + 2.56 = 0; the smaller root is v = (4 - sqrt(16 - 10.24))/2 = (4 - 2.4)/2 = 0.8 m/s. So ta = v/amax = 1 s, tc = 5 - 2 ta = 3 s, braking starts at ta + tc = 4 s. At t = 4.25 s the time left is T - t = 0.75 s: v = amax·0.75 = 0.6 m/s and q = |D| - 0.5·amax·0.75^2 = 3.2 - 0.225 = 2.975 m."
+      ],
+      "remediation": "Common slips on this item: stretching the whole minimum profile in time by 5/4.45 lowers the acceleration and gives a cruise speed of 0.89 m/s and q = 3.021778 m at 4.25 s; using the average speed |D|/T = 0.64 m/s ignores the ramps; taking Tmin = |D|/vmax = 3.2 s ignores them too. Keep amax fixed and solve the area equation, see the time-law bridge, then try a fresh X24 item."
+    },
+    {
+      "id": "X24.joint-sync.1",
+      "route": "joint-sync",
+      "difficulty": 1,
+      "structure": "trapezoid.sync.common-time@1",
+      "inputs": {
+        "d1": "0.18",
+        "v1": "1",
+        "a1": "2",
+        "d2": "1.5",
+        "v2": "1",
+        "a2": "1"
+      },
+      "objectiveId": "M05.trapezoid-profile",
+      "prompt": "A two-joint wrist must start and stop both joints together. Joint 1 must turn 0.18 rad with limits vmax = 1.0 rad/s and amax = 2.0 rad/s^2; joint 2 must turn 1.5 rad with vmax = 1.0 rad/s and amax = 1.0 rad/s^2. Each joint moves rest to rest. Convention: one axis moves from rest to rest with constant acceleration +amax, then (if it reaches vmax) a constant-speed cruise, then constant deceleration -amax; the acceleration and braking phases last equally long; the minimum-time profile is triangular if |D| amax < vmax^2 and trapezoidal otherwise. Give the minimum duration of joint 1 alone, the minimum duration of joint 2 alone, and the shortest common duration in which both can finish together (seconds). Tolerance ±0.001 s.",
+      "fields": [
+        {
+          "label": "Minimum duration, joint 1 (s)",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Minimum duration, joint 2 (s)",
+          "kind": "number",
+          "answer": "2.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Shortest common duration (s)",
+          "kind": "number",
+          "answer": "2.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Joint 1: |D| amax = 0.36 < vmax^2 = 1, triangular: ta = sqrt(0.18/2) = 0.3 s, T1 = 0.6 s. Joint 2: |D| amax = 1.5 > 1, trapezoidal: ta = 1/1 = 1 s, tc = 1.5/1 - 1 = 0.5 s, T2 = 2 + 0.5 = 2.5 s. Both must finish at the same moment, so the common duration cannot be shorter than either minimum: it is the larger one, 2.5 s (joint 2). Joint 1 will then be slowed to fit.",
+      "hints": [
+        "Each joint has its own limits, so find each joint's minimum duration separately, deciding triangular or trapezoidal for each. The common duration must be long enough for both joints.",
+        "For joint 1 the ramp time is sqrt(|D|/amax) and T1 = 2 ta. For joint 2 the ramps reach vmax, so tc = |D|/vmax - vmax/amax and T2 = 2 vmax/amax + tc. Then compare T1 and T2.",
+        "Joint 1: |D| amax = 0.36 < vmax^2 = 1, triangular: ta = sqrt(0.18/2) = 0.3 s, T1 = 0.6 s. Joint 2: |D| amax = 1.5 > 1, trapezoidal: ta = 1/1 = 1 s, tc = 1.5/1 - 1 = 0.5 s, T2 = 2 + 0.5 = 2.5 s. Both must finish at the same moment, so the common duration cannot be shorter than either minimum: it is the larger one, 2.5 s (joint 2). Joint 1 will then be slowed to fit."
+      ],
+      "remediation": "Common slips on this item: adding the two minimum durations gives 3.1 s; taking the smaller one gives 0.6 s, which joint 2 cannot meet; using |D|/vmax = 1.5 s for joint 2 (ramps ignored) gives a common time of 1.5 s, too short. Review the phase formulas in the time-law bridge, then try a fresh X24 item."
+    },
+    {
+      "id": "X24.joint-sync.2",
+      "route": "joint-sync",
+      "difficulty": 2,
+      "structure": "trapezoid.sync.scale-peak@1",
+      "inputs": {
+        "d1": "2",
+        "v1": "1",
+        "a1": "1",
+        "d2": "-2.5",
+        "v2": "2",
+        "a2": "2"
+      },
+      "objectiveId": "M05.trapezoid-profile",
+      "prompt": "Two joints of an arm must start and stop together. Joint 1 must turn +2.0 rad with vmax = 1.0 rad/s and amax = 1.0 rad/s^2. Joint 2 must turn -2.5 rad (clockwise) with vmax = 2.0 rad/s and amax = 2.0 rad/s^2. Each moves rest to rest. Convention: one axis moves from rest to rest with constant acceleration +amax, then (if it reaches vmax) a constant-speed cruise, then constant deceleration -amax; the acceleration and braking phases last equally long; the minimum-time profile is triangular if |D| amax < vmax^2 and trapezoidal otherwise. Both joints run for the shortest common duration. Joint 1 uses its minimum-time profile. Joint 2 is slowed to the same duration by keeping its acceleration magnitude at 2.0 rad/s^2 and lowering its cruise speed. Give the common duration (s), joint 2's signed cruise velocity (rad/s) and joint 2's cruise duration (s). Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Common duration (s)",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Joint 2 cruise velocity, signed (rad/s)",
+          "kind": "number",
+          "answer": "-1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Joint 2 cruise duration (s)",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Joint 1: |D| amax = 2 > vmax^2 = 1, trapezoidal: ta = 1 s, tc = 2 - 1 = 1 s, T1 = 3 s. Joint 2 alone: |D| amax = 5 > 4, ta = 1 s, tc = 2.5/2 - 1 = 0.25 s, T2 = 2.25 s. The common duration is the larger, 3 s (joint 1). For joint 2 at T = 3 s with amax = 2: v·(3 - v/2) = 2.5, so v^2 - 6 v + 5 = 0 and the smaller root is v = 1 rad/s. Its ramps last v/amax = 0.5 s each, the cruise lasts 3 - 2·0.5 = 2 s, and the move is clockwise, so the signed cruise velocity is -1 rad/s. Check: area = 1·(3 - 0.5) = 2.5 rad.",
+      "hints": [
+        "Find both minimum durations first (decide triangular or trapezoidal for each joint) and take the larger as the common duration. Joint 2 then has more time than it needs, so its cruise speed must drop below vmax, while its acceleration stays at amax.",
+        "For joint 2 write the area under its speed curve with cruise speed v: the ramps last v/amax each, so the area is v·(T - v/amax) and must equal |D|. Solve the quadratic, take the smaller root, then get the cruise time as T - 2 v/amax and attach the sign of D to the velocity.",
+        "Joint 1: |D| amax = 2 > vmax^2 = 1, trapezoidal: ta = 1 s, tc = 2 - 1 = 1 s, T1 = 3 s. Joint 2 alone: |D| amax = 5 > 4, ta = 1 s, tc = 2.5/2 - 1 = 0.25 s, T2 = 2.25 s. The common duration is the larger, 3 s (joint 1). For joint 2 at T = 3 s with amax = 2: v·(3 - v/2) = 2.5, so v^2 - 6 v + 5 = 0 and the smaller root is v = 1 rad/s. Its ramps last v/amax = 0.5 s each, the cruise lasts 3 - 2·0.5 = 2 s, and the move is clockwise, so the signed cruise velocity is -1 rad/s. Check: area = 1·(3 - 0.5) = 2.5 rad."
+      ],
+      "remediation": "Common slips on this item: taking the average speed |D|/T = 0.833333 rad/s as the cruise speed ignores the ramps; stretching joint 2's minimum profile uniformly gives a cruise speed of 1.5 rad/s and a cruise duration of 0.333333 s (the acceleration drops below amax); dropping the sign reports +1 rad/s. Review the area equation, see the time-law bridge, then try a fresh X24 item."
+    },
+    {
+      "id": "X24.joint-sync.3",
+      "route": "joint-sync",
+      "difficulty": 3,
+      "structure": "trapezoid.sync.request-check@1",
+      "inputs": {
+        "d1": "2",
+        "v1": "0.8",
+        "a1": "2",
+        "d2": "0",
+        "v2": "1",
+        "a2": "1",
+        "request": "2.5"
+      },
+      "objectiveId": "M05.trapezoid-profile",
+      "prompt": "A scheduler requests that two joints start and stop together within 2.5 s. Joint 1 must turn 2.0 rad with vmax = 0.8 rad/s and amax = 2.0 rad/s^2. Joint 2 has a zero displacement (it stays at rest) with vmax = 1.0 rad/s and amax = 1.0 rad/s^2. Each moves rest to rest. Convention: one axis moves from rest to rest with constant acceleration +amax, then (if it reaches vmax) a constant-speed cruise, then constant deceleration -amax; the acceleration and braking phases last equally long; the minimum-time profile is triangular if |D| amax < vmax^2 and trapezoidal otherwise. Give the shortest feasible common duration (s). Then decide whether the 2.5 s request is possible with these limits. Finally, keeping amax = 2.0 rad/s^2, give the smallest vmax for joint 1 that would let it finish in exactly 2.5 s (rad/s). Tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Shortest feasible common duration (s)",
+          "kind": "number",
+          "answer": "2.9",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Is the 2.5 s request possible with these limits?",
+          "kind": "choice",
+          "answer": "Impossible - even the fastest move of joint 1 takes longer than 2.5 s",
+          "tolerance": 0.001,
+          "options": [
+            "Possible - joint 1 can be slowed down until it fits the 2.5 s window",
+            "Impossible - even the fastest move of joint 1 takes longer than 2.5 s",
+            "Possible - joint 1 only has to cruise at vmax for a shorter time",
+            "Impossible - joint 2 limits the common duration although it stays still"
+          ]
+        },
+        {
+          "label": "Smallest vmax of joint 1 for a 2.5 s move (rad/s)",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Joint 2 does not move, so its minimum duration is 0 and only joint 1 matters. Joint 1: |D| amax = 4 > vmax^2 = 0.64, trapezoidal: ta = 0.8/2 = 0.4 s, tc = 2/0.8 - 0.4 = 2.1 s, T = 2.9 s. Since 2.5 s < 2.9 s the request is impossible: no profile within vmax and amax is that fast, and slowing down only makes the move longer. To finish in 2.5 s the cruise speed must satisfy v·(2.5 - v/2) = 2, i.e. v^2 - 5 v + 4 = 0; the smaller root is v = (5 - 3)/2 = 1 rad/s. With that vmax the minimum duration is 2/1 + 1/2 = 2.5 s.",
+      "hints": [
+        "Joint 2 does not move, so think about what its minimum duration is and which joint therefore sets the limit. Compute joint 1's minimum duration at its stated limits before deciding about the request.",
+        "For the last part, ask which cruise speed v makes a trapezoid with acceleration amax cover |D| in exactly the requested time: the ramps last v/amax each, so the area is v·(T - v/amax) = |D|. Solve the quadratic and take the smaller root.",
+        "Joint 2 does not move, so its minimum duration is 0 and only joint 1 matters. Joint 1: |D| amax = 4 > vmax^2 = 0.64, trapezoidal: ta = 0.8/2 = 0.4 s, tc = 2/0.8 - 0.4 = 2.1 s, T = 2.9 s. Since 2.5 s < 2.9 s the request is impossible: no profile within vmax and amax is that fast, and slowing down only makes the move longer. To finish in 2.5 s the cruise speed must satisfy v·(2.5 - v/2) = 2, i.e. v^2 - 5 v + 4 = 0; the smaller root is v = (5 - 3)/2 = 1 rad/s. With that vmax the minimum duration is 2/1 + 1/2 = 2.5 s."
+      ],
+      "remediation": "Common slips on this item: using |D|/vmax = 2.5 s as the minimum (ramps ignored) makes the request look just feasible; taking |D|/T = 0.8 rad/s as the speed needed ignores the ramps (the true requirement is 1 rad/s). Compare with the area equation, see the time-law bridge, then try a fresh X24 item."
+    }
+  ]
+}

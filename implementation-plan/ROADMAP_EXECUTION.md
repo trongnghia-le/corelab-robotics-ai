@@ -18,11 +18,11 @@ A lab counts as **foundation implemented** only when it has: a versioned objecti
 | Lab | Prior labs | Objective (topic) | Family | Kit | Group | Environment-dependent subcontracts (not claimed) | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | L05 ROS replay node | L03 | S03.replay-node | X23 | L05-replay | B3 | Real DDS/rosbag replay, QoS, TF2 runtime | planned |
-| L07 Trajectories | L02 | M05.trapezoid-profile | X24 | L07-trajectory | B1 | Jerk/torque limits, robot execution | planned |
+| L07 Trajectories | L02 | M05.trapezoid-profile | X24 | L07-trajectory | B1 | Jerk/torque limits, robot execution | foundation implemented (B1) |
 | L08 Dynamics/control | L04, L06, L07 | R07.pendulum-model | X25 | L08-dynamics | B4 | Physics-engine cross-check, torque hardware | planned |
-| L09 Localization | L03 | C06.grid-bayes | X26 | L09-localization | B1 | SLAM, real sensor logs, simulator runs | planned |
-| L10 Kalman/fusion | L03 | C07.linear-kalman | X27 | L10-kalman | B1 | EKF/UKF variants, real sensor fusion | planned |
-| L11 Search/planning | L01 | E02.grid-astar | X28 | L11-planning | B1 | Sampling-planner completeness, arm C-space variant | planned |
+| L09 Localization | L03 | C06.grid-bayes | X26 | L09-localization | B1 | SLAM, real sensor logs, simulator runs | foundation implemented (B1) |
+| L10 Kalman/fusion | L03 | C07.linear-kalman | X27 | L10-kalman | B1 | EKF/UKF variants, real sensor fusion | foundation implemented (B1) |
+| L11 Search/planning | L01 | E02.grid-astar | X28 | L11-planning | B1 | Sampling-planner completeness, arm C-space variant | foundation implemented (B1) |
 | L12 Description/TF | L01, L02 | S04.urdf-chain | X29 | L12-description | B3 | ROS TF2 / robot_state_publisher runtime | planned |
 | L13 Navigation | L03, L11 | C10.path-follow | X30 | L13-navigation | B4 | Nav2/ROS physics runs, changed-layout runs, AMCL | planned |
 | L14 Interfaces/MoveIt | L06, L11, L12 | S10.mock-interface | X31 | L14-interfaces | B5 | ros2_control/MoveIt smoke, real controller, hardware | planned |
@@ -45,9 +45,11 @@ Objective ids above are planning names; the authored registry entry is authorita
 | Generalized V2 bridges (`content/v2/bridges/<id>.v1.md`) | done in M0 |
 | Roadmap `unavailable` subcontract list (additive, optional) | done in M0 |
 | Per-family independent oracle registry `tests/v2/oracles/` | done in M0 |
-| Lesson/bridge coverage for new objectives (e.g. R05 IK) | planned (with each group) |
+| Lesson/bridge coverage for new objectives (e.g. R05 IK) | B1: bridges trapezoid-time-law, grid-bayes-localization, linear-kalman, grid-astar; R05 still pending |
 | C/M forms and disjoint review pools beyond Frames/FK | planned (after lab groups) |
 
 ## Log
 
 - M0 (2026-11-02): baseline lint/typecheck/content/V2/tests all exit 0, 218 tests. Infrastructure milestone in progress.
+- M0 committed as `558420b` (API title/sourceId, bridges, roadmap `unavailable`, oracle registry). Oracle registry later split into `registry.ts` + `index.ts` to fix a circular import.
+- B1 (L07, L09, L10, L11): authors and fresh reviewers on Sonnet; four authors were interrupted by a usage limit and resumed. Reviews: L07 approve-with-minor → minors fixed → approve; L09 kit changes-required (reversed kernel, single wrap) → fixed → approve; L10 approve-with-minor → minors fixed → approve; L11 approve-with-minor → minors fixed (oracle re-run passes). Independent oracles X24/X26/X27/X28. Gates in a clean worktree of the staged commit on top of Codex's UI commits: lint, typecheck, validate:content, validate:v2, tests 229/36 files, V2 build + 10 V2 browser flows, default build + 9 legacy flows — all exit 0.

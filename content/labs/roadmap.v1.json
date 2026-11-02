@@ -82,13 +82,20 @@
       "id": "L07",
       "title": "Trajectories",
       "outcome": "Construct a time law with endpoint and derivative bounds.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L07-trajectory",
       "practiceFamilies": [
-        "X03",
-        "X06"
+        "X24"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Implemented: a one-axis rest-to-rest triangular/trapezoidal time law under |v| <= vmax and |a| <= amax, with type choice, phase times, minimum duration, position/velocity/acceleration sampling, reversed and zero-displacement moves, slower profiles of a requested duration, honest rejection of impossible durations, and the common duration of two independent joints. The kit checks endpoints, continuity and limit bounds numerically. Entirely numerical; no hardware, simulator or robot execution.",
+      "unavailable": [
+        "Jerk-limited (S-curve) or higher-order profiles and any jerk claim",
+        "Torque, motor, payload or dynamics limits",
+        "Multi-segment, via-point or Cartesian/path trajectories and path geometry",
+        "Controller tracking, sample-time effects and execution on a real robot or simulator",
+        "Automatic phase-boundary error diagnosis beyond the kit's named endpoint, continuity and bound messages",
+        "Signed or verified evidence"
+      ]
     },
     {
       "id": "L08",
@@ -106,37 +113,64 @@
       "id": "L09",
       "title": "Localization",
       "outcome": "Update a finite belief under explicit measurement assumptions.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L09-localization",
       "practiceFamilies": [
         "X04",
-        "X05"
+        "X05",
+        "X26"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical self-check for a declared 1-D corridor of n cells: exact Bayes sensor update with normalization and an explicit error on an impossible reading, noisy motion kernel with ring or wall rules, sense-then-move loop and ambiguity from symmetric layouts, plus deterministic particle weights, effective sample size and systematic resampling from an explicit draw u0. Numerical toy only: no SLAM, no continuous state, no random-draw convergence statistics, no real sensor, simulator or hardware evidence.",
+      "unavailable": [
+        "Particle-filter convergence statistics on random draws",
+        "SLAM or map building",
+        "Continuous-state, 2-D/3-D or heading localization",
+        "Real sensor data, calibrated likelihoods or simulator integration",
+        "Automatic recovery or kidnapped-robot evaluation beyond the declared finite suite"
+      ]
     },
     {
       "id": "L10",
       "title": "Kalman and fusion",
       "outcome": "Check prediction, update and covariance assumptions.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L10-kalman",
       "practiceFamilies": [
         "X02",
-        "X05"
+        "X05",
+        "X27"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical/replay self-check for a declared scalar or 2-state constant-velocity linear-Gaussian model with one scalar measurement: predict, innovation and gain, Joseph/standard update inside a symmetric-PSD band, sequential fusion checked against the batch information form, covariance validity and NIS on a replay with dropouts. Conditional on the declared F, Q, H, R; no blanket covariance guarantee, no hardware or real sensor data.",
+      "unavailable": [
+        "Ensemble consistency statistics (Monte-Carlo NIS/NEES) over random draws with an explicit false-failure policy",
+        "EKF, UKF and other nonlinear estimators",
+        "Vector measurements and models beyond two states",
+        "Correlated-noise handling beyond a declared counterexample in practice",
+        "Estimating or tuning Q and R from data",
+        "Time-offset and out-of-order measurement handling",
+        "Real sensor data, calibration or hardware evidence"
+      ]
     },
     {
       "id": "L11",
       "title": "Search and planning",
       "outcome": "Find paths and check swept collision geometry.",
-      "status": "planned-not-implemented",
-      "kit": null,
+      "status": "manual-self-check",
+      "kit": "L11-planning",
       "practiceFamilies": [
         "X14",
-        "X15"
+        "X15",
+        "X28"
       ],
-      "scopeNote": "Related numerical practice covers a bounded part of this roadmap; it is not a completed lab or implementation evidence."
+      "scopeNote": "Original numerical self-check of 2D occupancy-grid A* (4- or 8-connected, costs 1 and sqrt(2), explicit no-corner-cutting rule), a tight admissible heuristic, a deterministic expansion-budget search that reports budget_exhausted separately from unreachable, and exact closed segment-vs-rectangle and swept-square tests, compared with an exhaustive Dijkstra and exact rational geometry on small cases. Numerical only: no simulator, hardware, RRT/PRM or arm planning.",
+      "unavailable": [
+        "RRT, RRT* or PRM sampling planners and any completeness or probabilistic-completeness claim from a run",
+        "Arm or configuration-space (C-space) planning and joint-space collision checking",
+        "Continuous-space or any-angle planning beyond a single straight-segment check",
+        "Robot footprints other than an axis-aligned square, heading, kinematic or dynamic constraints",
+        "Moving or unknown obstacles, costmaps, replanning and localisation error",
+        "Simulator runs, ROS integration and real-robot evidence"
+      ]
     },
     {
       "id": "L12",

@@ -21,8 +21,9 @@ Grading, admission, exposure and evidence semantics are unchanged.
 
 ## Current milestone
 
-M0 infrastructure (see `ROADMAP_EXECUTION.md`). Next: lab group B1 (L07, L09, L10, L11).
+M0 infrastructure committed as `558420b`. B1 (L07 X24/L07-trajectory, L09 X26/L09-localization, L10 X27/L10-kalman, L11 X28/L11-planning) integrated and committed after AI review. In progress: B2 (L15 X32, L16 X33, L19 X36, L21 X38). New labs add `unavailable` lists to their roadmap entries and bridges for objectives whose topic has no lesson.
 
 ## Test results
 
 - Baseline `3c0793b`: lint, typecheck, validate:content, validate:v2, tests (218/31 files) — all exit 0.
+- B1 commit (on top of Codex `c633774`, clean worktree): lint, typecheck, validate:content, validate:v2, tests 229/36 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.

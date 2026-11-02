@@ -1,0 +1,455 @@
+{
+  "id": "X28",
+  "version": 1,
+  "title": "Plan on a grid and check a shortcut",
+  "domain": "Algorithms",
+  "topicId": "E02",
+  "objectiveId": "E02.grid-astar",
+  "routes": [
+    "warehouse-grid",
+    "shortcut-check"
+  ],
+  "scope": "Declared 2D occupancy-grid A* (4- or 8-connected, costs 1 and sqrt(2), no corner cutting), admissible versus inadmissible heuristics, honest budget failure, and exact segment-versus-rectangle shortcut checks; no RRT/PRM completeness, arm planning or simulator claim",
+  "labIds": [
+    "L11"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "warehouse-grid": "Cost-optimal paths on small declared grids with step costs 1 and sqrt(2), the stated corner rule, heuristic values, the cost of an inadmissible heuristic or weight, and the honest meaning of a stopped search.",
+    "shortcut-check": "Exact closed-rectangle tests: touching counts, endpoint-only and sampled tests tunnel through thin walls, and a swept square equals the segment against shelves grown by the half-width."
+  },
+  "items": [
+    {
+      "id": "X28.warehouse-grid.1",
+      "route": "warehouse-grid",
+      "difficulty": 1,
+      "structure": "grid-astar.cost-heuristic@1",
+      "inputs": {
+        "grid": [
+          ".....",
+          ".###.",
+          "...#.",
+          ".#...",
+          "....."
+        ],
+        "start": [
+          2,
+          0
+        ],
+        "goal": [
+          2,
+          4
+        ],
+        "connectivity": 4
+      },
+      "objectiveId": "E02.grid-astar",
+      "prompt": "A warehouse robot plans on an occupancy grid. The grid has rows from row 0 (top) to the last row, listed here as strings whose characters are columns from col 0: [\".....\", \".###.\", \"...#.\", \".#...\", \".....\"]. '#' is a blocked cell and '.' a free cell; cells are written (row, col). The robot moves up, down, left or right (4-connected) and every move costs 1. It starts at (2, 0) and must reach (2, 4). Give the cost of its cheapest path and the Manhattan distance |dr| + |dc| from start to goal that A* would use as its heuristic h(start) (a number each, within ±0.001). A planner is stopped after 3 expansions: the goal is not expanded yet and cells are still waiting in its open set. Choose what it should report.",
+      "fields": [
+        {
+          "label": "Cheapest path cost",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Manhattan heuristic h(start)",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Honest report after the stop",
+          "kind": "choice",
+          "answer": "Budget exhausted: the planner stopped early and has not shown that no path exists",
+          "tolerance": 0.001,
+          "options": [
+            "Unreachable: the planner did not find the goal, so it has shown that no path exists",
+            "Budget exhausted: the planner stopped early and has not shown that no path exists",
+            "Budget exhausted: the planner stopped early, so the cheapest path found so far is optimal",
+            "Found: the path to the most promising expanded cell is returned as the answer"
+          ]
+        }
+      ],
+      "solution": "Blocked cells (1,1), (1,2), (1,3), (2,3) and (3,1) cut the straight route along row 2 at (2,3). The route (2,0), (2,1), (2,2), (3,2), (3,3), (3,4), (2,4) has 6 moves of cost 1. A 4-connected route between these cells always has an even number of moves, and the only 4-move route is the blocked row, so the cheapest cost is 6. The heuristic uses no obstacles: h(start) = |2 - 2| + |0 - 4| = 4, which does not exceed 6 (admissible) but is not exact. A search stopped after 3 expansions with cells still in its open set has only run out of budget: the unexplored cells may still hold a path (here one does), so the honest report is budget exhausted - not unreachable, and not found.",
+      "hints": [
+        "Treat the three questions separately: the true cost needs legal moves around blocked cells, the heuristic ignores blocked cells completely, and the stop question asks what a limited search can prove.",
+        "Look at the blocked cell (2, 3) and the free cells (3, 2), (3, 3) and (3, 4) beside it, then count the moves of a detour from (2, 0) to (2, 4). For h(start) use |dr| + |dc| of the two end cells only.",
+        "Blocked cells (1,1), (1,2), (1,3), (2,3) and (3,1) cut the straight route along row 2 at (2,3). The route (2,0), (2,1), (2,2), (3,2), (3,3), (3,4), (2,4) has 6 moves of cost 1. A 4-connected route between these cells always has an even number of moves, and the only 4-move route is the blocked row, so the cheapest cost is 6. The heuristic uses no obstacles: h(start) = |2 - 2| + |0 - 4| = 4, which does not exceed 6 (admissible) but is not exact. A search stopped after 3 expansions with cells still in its open set has only run out of budget: the unexplored cells may still hold a path (here one does), so the honest report is budget exhausted - not unreachable, and not found."
+      ],
+      "remediation": "Common slips on this item: answering 4 for the cost reports the Manhattan distance and ignores the blocked cell (2, 3); answering 6 for h(start) swaps the heuristic with the true cost; reporting 'unreachable' after a stopped search treats running out of budget as proof that no path exists (a path of cost 6 does exist). Check any route cell by cell, then try a fresh X28 item."
+    },
+    {
+      "id": "X28.warehouse-grid.2",
+      "route": "warehouse-grid",
+      "difficulty": 2,
+      "structure": "grid-astar.corner-rule@1",
+      "inputs": {
+        "grid": [
+          "......",
+          ".##...",
+          ".#.#..",
+          "...#..",
+          ".###..",
+          "......"
+        ],
+        "start": [
+          0,
+          0
+        ],
+        "goal": [
+          5,
+          5
+        ],
+        "connectivity": 8
+      },
+      "objectiveId": "E02.grid-astar",
+      "prompt": "A picking robot plans on an occupancy grid. The grid has rows from row 0 (top) to the last row, listed here as strings whose characters are columns from col 0: [\"......\", \".##...\", \".#.#..\", \"...#..\", \".###..\", \"......\"]. '#' is a blocked cell and '.' a free cell; cells are written (row, col). It moves in 8 directions: an orthogonal move costs 1 and a diagonal move costs sqrt(2) = 1.414214. A diagonal move from (r, c) to (r + dr, c + dc) is allowed only if both (r + dr, c) and (r, c + dc) are free, so the robot never cuts a blocked corner. The robot starts at (0, 0) and must reach (5, 5). Give, each within ±0.001: the cost of the cheapest legal path, the cost the cheapest path would have if corner cutting were (wrongly) allowed, and the octile heuristic h(start) = max(|dr|, |dc|) + (sqrt(2) - 1)*min(|dr|, |dc|).",
+      "fields": [
+        {
+          "label": "Cheapest legal path cost",
+          "kind": "number",
+          "answer": "8.828427",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Cost if corner cutting were allowed",
+          "kind": "number",
+          "answer": "8.242641",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Octile heuristic h(start)",
+          "kind": "number",
+          "answer": "7.071068",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Each diagonal step costs sqrt(2) = 1.414214 and is legal only when both orthogonal neighbours are free. One cheapest legal route is (0,0), (0,1), (0,2), (0,3), (1,4), (2,4), (3,4), (4,4), (5,5): 6 orthogonal and 2 diagonal moves, cost 6 + 2*sqrt(2) = 8.828427. If corner cutting were allowed the cheapest route would be (0,0), (0,1), (0,2), (1,3), (2,4), (3,4), (4,4), (5,5): 4 orthogonal and 3 diagonal moves, cost 8.242641. The octile heuristic is max(|dr|, |dc|) + (sqrt(2) - 1)*min(|dr|, |dc|) = 5 + 0.414214*5 = 7.071068, below the true cost, so it is admissible.",
+      "hints": [
+        "Cost a route as (orthogonal moves) + sqrt(2)*(diagonal moves). The legal route must obey the corner rule at every diagonal; the second question deliberately removes that rule.",
+        "For the legal route, check each candidate diagonal against the two orthogonal neighbours before using it, and count orthogonal and diagonal moves separately. The heuristic needs only |dr| and |dc| between (0, 0) and (5, 5).",
+        "Each diagonal step costs sqrt(2) = 1.414214 and is legal only when both orthogonal neighbours are free. One cheapest legal route is (0,0), (0,1), (0,2), (0,3), (1,4), (2,4), (3,4), (4,4), (5,5): 6 orthogonal and 2 diagonal moves, cost 6 + 2*sqrt(2) = 8.828427. If corner cutting were allowed the cheapest route would be (0,0), (0,1), (0,2), (1,3), (2,4), (3,4), (4,4), (5,5): 4 orthogonal and 3 diagonal moves, cost 8.242641. The octile heuristic is max(|dr|, |dc|) + (sqrt(2) - 1)*min(|dr|, |dc|) = 5 + 0.414214*5 = 7.071068, below the true cost, so it is admissible."
+      ],
+      "remediation": "Common slips on this item: the corner-cutting value 8.242641 given for the legal path allows a diagonal squeeze between blocked corners; the 4-connected cost 10 ignores diagonals; counting every diagonal as cost 1 or 2 gives a different total; answering the octile value 7.071068 for the path cost forgets the obstacles. Re-check each diagonal against its two neighbours, then try a fresh X28 item."
+    },
+    {
+      "id": "X28.warehouse-grid.3",
+      "route": "warehouse-grid",
+      "difficulty": 3,
+      "structure": "grid-astar.heuristic-weight@1",
+      "inputs": {
+        "grid": [
+          "......",
+          "..#...",
+          ".#.#..",
+          "...#..",
+          "....#.",
+          "......"
+        ],
+        "start": [
+          0,
+          0
+        ],
+        "goal": [
+          5,
+          5
+        ],
+        "connectivity": 8,
+        "weight": "1.5"
+      },
+      "objectiveId": "E02.grid-astar",
+      "prompt": "A delivery robot plans on an occupancy grid. The grid has rows from row 0 (top) to the last row, listed here as strings whose characters are columns from col 0: [\"......\", \"..#...\", \".#.#..\", \"...#..\", \"....#.\", \"......\"]. '#' is a blocked cell and '.' a free cell; cells are written (row, col). It moves in 8 directions (orthogonal cost 1, diagonal cost sqrt(2) = 1.414214, no corner cutting: a diagonal move needs both orthogonal neighbours free). It starts at (0, 0) and must reach (5, 5). Give, each within ±0.001: the octile heuristic h(start), the Manhattan distance |dr| + |dc| from start to goal, the cost of the cheapest legal path, and the largest cost a weighted A* with f = g + 1.5*h and the octile h is guaranteed not to exceed. Then choose the correct statement about using the Manhattan distance as the heuristic in this 8-connected search.",
+      "fields": [
+        {
+          "label": "Octile heuristic h(start)",
+          "kind": "number",
+          "answer": "7.071068",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Manhattan distance start to goal",
+          "kind": "number",
+          "answer": "10",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Cheapest legal path cost",
+          "kind": "number",
+          "answer": "8.828427",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Guaranteed upper bound for weighted A* (w = 1.5)",
+          "kind": "number",
+          "answer": "13.242641",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Statement about Manhattan with 8-connectivity",
+          "kind": "choice",
+          "answer": "Manhattan can exceed the true 8-connected cost, so A* using it may return a path that is not optimal",
+          "tolerance": 0.001,
+          "options": [
+            "Manhattan never falls below the octile distance, so it stays admissible and A* keeps returning optimal paths",
+            "Manhattan is admissible on this grid because the blocked cells push the true cost above the Manhattan distance",
+            "Manhattan can exceed the true 8-connected cost, so A* using it may return a path that is not optimal",
+            "Manhattan changes only how many cells A* expands and never changes the cost of the path it returns"
+          ]
+        }
+      ],
+      "solution": "Octile: max(5, 5) + (sqrt(2) - 1)*5 = 5 sqrt(2) = 7.071068. Manhattan: 5 + 5 = 10. One cheapest legal route is (0,0), (0,1), (0,2), (0,3), (1,4), (2,4), (3,5), (4,5), (5,5): 6 orthogonal and 2 diagonal moves, cost 6 + 2*sqrt(2) = 8.828427. Weighted A* with w = 1.5 returns a cost between the optimum and 1.5 times it, so it is guaranteed at most 1.5*8.828427 = 13.242641. Manhattan distance (10) is larger than the true cost 8.828427: a heuristic that overestimates is inadmissible, because a diagonal move covers two Manhattan units at cost sqrt(2). A* with an inadmissible heuristic may expand its closed cells in a misleading order and return a more expensive path, so optimality is no longer guaranteed. (Admissibility does not depend on obstacles: obstacles only make the true cost larger.)",
+      "hints": [
+        "A heuristic is admissible when it never exceeds the true remaining cost. Compare the three numbers h_octile, h_Manhattan and the true cost, and recall what weighted A* promises about its result.",
+        "Find the cheapest legal route by counting orthogonal and diagonal moves with the corner rule, then multiply that cost by the weight 1.5. For the heuristics only |dr| = 5 and |dc| = 5 matter.",
+        "Octile: max(5, 5) + (sqrt(2) - 1)*5 = 5 sqrt(2) = 7.071068. Manhattan: 5 + 5 = 10. One cheapest legal route is (0,0), (0,1), (0,2), (0,3), (1,4), (2,4), (3,5), (4,5), (5,5): 6 orthogonal and 2 diagonal moves, cost 6 + 2*sqrt(2) = 8.828427. Weighted A* with w = 1.5 returns a cost between the optimum and 1.5 times it, so it is guaranteed at most 1.5*8.828427 = 13.242641. Manhattan distance (10) is larger than the true cost 8.828427: a heuristic that overestimates is inadmissible, because a diagonal move covers two Manhattan units at cost sqrt(2). A* with an inadmissible heuristic may expand its closed cells in a misleading order and return a more expensive path, so optimality is no longer guaranteed. (Admissibility does not depend on obstacles: obstacles only make the true cost larger.)"
+      ],
+      "remediation": "Common slips on this item: a bound of 1.5*7.071068 = 10.606602 multiplies the heuristic instead of the true cost; the Manhattan value 10 is larger than the true cost, so it is inadmissible here, not a safe estimate; answering 8 for the path cost counts every diagonal move as cost 1 (a diagonal costs sqrt(2)). Compare each heuristic with the true cost, then try a fresh X28 item."
+    },
+    {
+      "id": "X28.shortcut-check.1",
+      "route": "shortcut-check",
+      "difficulty": 1,
+      "structure": "segment-rect.classify@1",
+      "inputs": {
+        "rect": [
+          "2",
+          "1",
+          "4",
+          "3"
+        ],
+        "segments": [
+          [
+            [
+              "0",
+              "2"
+            ],
+            [
+              "6",
+              "2"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "2",
+              "1"
+            ]
+          ],
+          [
+            [
+              "0",
+              "4"
+            ],
+            [
+              "6",
+              "4"
+            ]
+          ],
+          [
+            [
+              "1",
+              "0"
+            ],
+            [
+              "5",
+              "4"
+            ]
+          ],
+          [
+            [
+              "4",
+              "0"
+            ],
+            [
+              "4",
+              "5"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "1.5",
+              "3.5"
+            ]
+          ]
+        ]
+      },
+      "objectiveId": "E02.grid-astar",
+      "prompt": "A mobile robot checks straight shortcuts against one shelf, the closed axis-aligned rectangle with x from 2 to 4 and y from 1 to 3 (boundary included, so touching counts as a hit). Coordinates are in metres. Segments: A from (0, 2) to (6, 2); B from (0, 0) to (2, 1); C from (0, 4) to (6, 4); D from (1, 0) to (5, 4); E from (4, 0) to (4, 5); F from (0, 0) to (1.5, 3.5). Count, as whole numbers: the segments that hit the shelf; the hits that only touch the boundary without entering the interior; and the hit segments that a test checking only the two endpoints would miss.",
+      "fields": [
+        {
+          "label": "Segments that hit the shelf",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Hits that only touch the boundary",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Hits missed by an endpoint-only test",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Segment A runs along y = 2 through x = 2..4, so it crosses the interior: hit. B ends exactly at the corner (2, 1): a touch, which counts as a hit for a closed rectangle. C stays at y = 4 above the top edge y = 3: miss. D lies on y = x - 1 and crosses the interior between the corners (2, 1) and (4, 3): hit. E runs along the right edge x = 4: a touch, hit. F ends at x = 1.5 < 2: miss. So 4 segments hit (A, B, D, E), 2 of them only touch (B and E). An endpoint-only test sees only B (its end (2, 1) lies on the boundary); it misses A, D and E, so 3 hit segments are missed.",
+      "hints": [
+        "For each segment decide whether any single point of it lies in the closed rectangle; check the boundary cases (a corner or an edge) separately from crossings.",
+        "Compare each segment with the four lines x = 2, x = 4, y = 1 and y = 3 and with the range of x or y it covers. Then list which hit segments have an endpoint inside the closed rectangle.",
+        "Segment A runs along y = 2 through x = 2..4, so it crosses the interior: hit. B ends exactly at the corner (2, 1): a touch, which counts as a hit for a closed rectangle. C stays at y = 4 above the top edge y = 3: miss. D lies on y = x - 1 and crosses the interior between the corners (2, 1) and (4, 3): hit. E runs along the right edge x = 4: a touch, hit. F ends at x = 1.5 < 2: miss. So 4 segments hit (A, B, D, E), 2 of them only touch (B and E). An endpoint-only test sees only B (its end (2, 1) lies on the boundary); it misses A, D and E, so 3 hit segments are missed."
+      ],
+      "remediation": "Common slips on this item: counting only crossings through the interior gives 2 hits (A and D) because touches B and E are forgotten, although the rectangle is closed; a segment that ends at the corner (2, 1) does count as an endpoint inside, so the endpoint-only miss count is 3, not 4. Re-check each segment against the edges, then try a fresh X28 item."
+    },
+    {
+      "id": "X28.shortcut-check.2",
+      "route": "shortcut-check",
+      "difficulty": 2,
+      "structure": "segment-rect.thin-wall@1",
+      "inputs": {
+        "p": [
+          "0",
+          "0.5"
+        ],
+        "q": [
+          "10",
+          "0.5"
+        ],
+        "rect": [
+          "4.9375",
+          "0",
+          "4.96875",
+          "1"
+        ]
+      },
+      "objectiveId": "E02.grid-astar",
+      "prompt": "A planner validates a straight shortcut from p = (0, 0.5) to q = (10, 0.5) (metres) by testing sample points. A thin partition is the closed rectangle with x from 4.9375 to 4.96875 and y from 0 to 1. Write the segment as p + t (q - p) with 0 <= t <= 1 and give the parameters t where it enters and leaves the partition (each within ±0.001). Then give the smallest number of equally spaced sample points along the segment, counting both endpoints, that is guaranteed to put at least one sample inside any such wall of this width (a whole number). Finally choose what a test with 11 equally spaced samples (including both endpoints) reports.",
+      "fields": [
+        {
+          "label": "Entry parameter t_in",
+          "kind": "number",
+          "answer": "0.49375",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Exit parameter t_out",
+          "kind": "number",
+          "answer": "0.496875",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Guaranteed number of samples",
+          "kind": "number",
+          "answer": "321",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Result of the 11-sample test",
+          "kind": "choice",
+          "answer": "No sample lands inside the wall, so the test reports a clear shortcut although the segment crosses it",
+          "tolerance": 0.001,
+          "options": [
+            "Yes: a segment that crosses the wall always has at least one equally spaced sample inside it",
+            "Yes, but only if one of the two endpoints also happens to be one of the samples",
+            "It cannot be decided unless the height of the wall is known as well",
+            "No sample lands inside the wall, so the test reports a clear shortcut although the segment crosses it"
+          ]
+        }
+      ],
+      "solution": "Along the segment x = 10 t, so the wall x in [4.9375, 4.96875] is entered at t = 4.9375/10 = 0.49375 and left at t = 4.96875/10 = 0.496875 (y = 0.5 is inside 0 <= y <= 1). The wall is only 0.03125 m wide. Sampling 11 points spaced 1 m apart tests x = 0, 1, ..., 10; none lies in [4.9375, 4.96875], so the sampling test misses a crossing that exists (tunneling). Equally spaced samples are guaranteed to land in a closed wall of width w only if the spacing is at most w: 10/0.03125 = 320 intervals, so 321 samples including both endpoints. 320 samples give 319 intervals of about 0.03135 m, slightly wider than the wall.",
+      "hints": [
+        "Find where the segment meets the two vertical sides of the wall using its x(t); the wall is far narrower than the sample spacing of an 11-sample test.",
+        "x(t) = 10 t, so t = x/10 at each side. For the sample count, divide the segment length by the wall width to get the largest allowed spacing, then convert intervals to points (points = intervals + 1).",
+        "Along the segment x = 10 t, so the wall x in [4.9375, 4.96875] is entered at t = 4.9375/10 = 0.49375 and left at t = 4.96875/10 = 0.496875 (y = 0.5 is inside 0 <= y <= 1). The wall is only 0.03125 m wide. Sampling 11 points spaced 1 m apart tests x = 0, 1, ..., 10; none lies in [4.9375, 4.96875], so the sampling test misses a crossing that exists (tunneling). Equally spaced samples are guaranteed to land in a closed wall of width w only if the spacing is at most w: 10/0.03125 = 320 intervals, so 321 samples including both endpoints. 320 samples give 319 intervals of about 0.03135 m, slightly wider than the wall."
+      ],
+      "remediation": "Common slips on this item: 320 samples counts intervals instead of points (one more point is needed); 11 samples with spacing 1 m is the number a coarse check uses and misses the wall (tunneling); t values of 4.9375 and 4.96875 forget that t is a fraction of the segment (divide by the length 10). Always test the segment exactly, not at points. Then try a fresh X28 item."
+    },
+    {
+      "id": "X28.shortcut-check.3",
+      "route": "shortcut-check",
+      "difficulty": 3,
+      "structure": "path-sweep.critical@1",
+      "inputs": {
+        "points": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "4",
+            "0"
+          ],
+          [
+            "4",
+            "3"
+          ],
+          [
+            "8",
+            "3"
+          ]
+        ],
+        "rects": [
+          [
+            "1",
+            "1.5",
+            "2",
+            "2"
+          ],
+          [
+            "5.5",
+            "1",
+            "6.5",
+            "2"
+          ]
+        ],
+        "half_widths": [
+          "1.25",
+          "1.5"
+        ]
+      },
+      "objectiveId": "E02.grid-astar",
+      "prompt": "A square robot with half-width h (side 2h, axis-aligned) moves its centre along the polyline with waypoints P0 = (0, 0), P1 = (4, 0), P2 = (4, 3), P3 = (8, 3) (metres); segment k joins Pk to Pk+1 (k = 0, 1, 2). Two shelves are closed rectangles: R1 with x from 1 to 2 and y from 1.5 to 2, and R2 with x from 5.5 to 6.5 and y from 1 to 2. A segment is blocked when the swept square touches or overlaps a shelf anywhere along it (touching counts). Give the smallest half-width h* at which some segment is blocked (within ±0.001 m), and the index k of the first blocked segment (lowest k) for h = 1.25 m and for h = 1.5 m.",
+      "fields": [
+        {
+          "label": "Smallest blocking half-width h* (m)",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "First blocked segment at h = 1.25 m",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "First blocked segment at h = 1.5 m",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Segment k is blocked once h reaches the largest of the horizontal and vertical gaps between the segment and a shelf (the square must overlap it in both directions). Segment 0 (y = 0, x from 0 to 4) to R1: y gap 1.5, x overlap, so h = 1.5; to R2: x gap 1.5, y gap 1, so h = 1.5. Segment 1 (x = 4, y from 0 to 3) to R1: x gap 2; to R2: x gap 1.5. Segment 2 (y = 3, x from 4 to 8) to R2: y gap 3 - 2 = 1 with x overlap, so h = 1; to R1: 2. The smallest is h* = 1 (segment 2). At h = 1.25 only segment 2 is blocked (the others need 1.5 or 2), so the first blocked segment is 2. At h = 1.5 segment 0 touches R1 along its inflated edge, so segment 0 is blocked first (touching counts). Checking only the waypoints would give 1.5 instead of 1, because the shelf R2 is first met in the middle of segment 2, between the waypoints (4, 3) and (8, 3).",
+      "hints": [
+        "Sweeping a square along a segment is the same as growing each shelf by h on all four sides and testing the segment alone. Look at each segment and shelf for the distance the square must close in x and in y.",
+        "For an axis-parallel segment next to a shelf, the blocking h is the larger of the x gap and the y gap between them (zero if they already overlap in that direction). List this for the three segments and both shelves, then take the smallest and compare with 1.25 and 1.5.",
+        "Segment k is blocked once h reaches the largest of the horizontal and vertical gaps between the segment and a shelf (the square must overlap it in both directions). Segment 0 (y = 0, x from 0 to 4) to R1: y gap 1.5, x overlap, so h = 1.5; to R2: x gap 1.5, y gap 1, so h = 1.5. Segment 1 (x = 4, y from 0 to 3) to R1: x gap 2; to R2: x gap 1.5. Segment 2 (y = 3, x from 4 to 8) to R2: y gap 3 - 2 = 1 with x overlap, so h = 1; to R1: 2. The smallest is h* = 1 (segment 2). At h = 1.25 only segment 2 is blocked (the others need 1.5 or 2), so the first blocked segment is 2. At h = 1.5 segment 0 touches R1 along its inflated edge, so segment 0 is blocked first (touching counts). Checking only the waypoints would give 1.5 instead of 1, because the shelf R2 is first met in the middle of segment 2, between the waypoints (4, 3) and (8, 3)."
+      ],
+      "remediation": "Common slips on this item: checking only the waypoints gives h* = 1.5 because the shelf R2 is met between P2 and P3, not at a waypoint; reporting segment 0 for h = 1.25 assumes the first segment is blocked first, but segment 0 needs h = 1.5 while segment 2 already collides; reporting segment 2 for h = 1.5 ignores that touching counts, because segment 0 touches the grown R1 exactly at h = 1.5. Grow the shelves by h, then try a fresh X28 item."
+    }
+  ]
+}

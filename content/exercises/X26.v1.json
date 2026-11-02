@@ -1,0 +1,363 @@
+{
+  "id": "X26",
+  "version": 1,
+  "title": "Update a localization belief on a corridor",
+  "domain": "Robotics",
+  "topicId": "C06",
+  "objectiveId": "C06.grid-bayes",
+  "routes": [
+    "corridor-histogram",
+    "particle-weights"
+  ],
+  "scope": "Exact 1-D discrete Bayes (histogram) localization with a declared sensor table and noisy motion kernel on a ring or walled corridor, ambiguity from symmetric layouts, and deterministic particle weights, effective sample size and systematic resampling given an explicit draw; no SLAM, continuous state, random-draw statistics or hardware",
+  "labIds": [
+    "L09"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "corridor-histogram": "An impossible reading (all-zero posterior) raises ValueError in the L09 kit; it is not practised in these items. Sensor update, noisy motion with walls or a ring, and the sense-then-move loop including symmetric-layout ambiguity; answers are exact probabilities graded within 0.001.",
+    "particle-weights": "Normalised weights, effective sample size, likelihood reweighting of particles in cells, and systematic resampling with one explicit draw u0 positioned at (u0 + k)/N."
+  },
+  "items": [
+    {
+      "id": "X26.corridor-histogram.1",
+      "route": "corridor-histogram",
+      "difficulty": 1,
+      "structure": "grid-bayes.update@1",
+      "inputs": {
+        "belief": [
+          "0.1",
+          "0.1",
+          "0.4",
+          "0.3",
+          "0.1"
+        ],
+        "world": [
+          "0",
+          "1",
+          "1",
+          "0",
+          "0"
+        ],
+        "z": "1",
+        "p_correct": "0.8"
+      },
+      "objectiveId": "C06.grid-bayes",
+      "prompt": "A robot is somewhere in a straight corridor of 5 cells numbered 0 to 4 from left to right. The wall map is world = [0, 1, 1, 0, 0], where 1 means a door and 0 plain wall. Before the next reading its belief (probability of each cell) is [0.1, 0.1, 0.4, 0.3, 0.1]. The door sensor reports z = 1 (\"door\"). It is right with probability 0.8 and wrong with probability 0.2, independently at each reading, so P(z = 1 | cell has a door) = 0.8 and P(z = 1 | plain wall) = 0.2. Apply Bayes' rule to the whole belief and give the posterior probability of cells 1, 2 and 3. Answers as decimals, within ±0.001.",
+      "fields": [
+        {
+          "label": "Posterior of cell 1",
+          "kind": "number",
+          "answer": "0.16",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Posterior of cell 2",
+          "kind": "number",
+          "answer": "0.64",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Posterior of cell 3",
+          "kind": "number",
+          "answer": "0.12",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Likelihood of z = 1 per cell: L = [0.2, 0.8, 0.8, 0.2, 0.2]. Multiply by the prior: [0.02, 0.08, 0.32, 0.06, 0.02]. Their sum is 0.5 (this is P(z = 1), the normalising constant). Divide each product by it: posterior = [0.04, 0.16, 0.64, 0.12, 0.04]. Cell 1 = 0.16, cell 2 = 0.64 and cell 3 = 0.12. The probabilities now sum to 1.",
+      "hints": [
+        "Bayes' rule here is posterior(i) proportional to prior(i) times P(z | cell i). First write down P(z = 1 | cell i) for each of the five cells from the world map, then multiply cell by cell.",
+        "L = [0.2, 0.8, 0.8, 0.2, 0.2]; the products with the prior start 0.02, 0.08, 0.32, ... Add all five products to get the normalising constant, then divide each product by that sum.",
+        "Likelihood of z = 1 per cell: L = [0.2, 0.8, 0.8, 0.2, 0.2]. Multiply by the prior: [0.02, 0.08, 0.32, 0.06, 0.02]. Their sum is 0.5 (this is P(z = 1), the normalising constant). Divide each product by it: posterior = [0.04, 0.16, 0.64, 0.12, 0.04]. Cell 1 = 0.16, cell 2 = 0.64 and cell 3 = 0.12. The probabilities now sum to 1."
+      ],
+      "remediation": "Common slips on this item: stopping after the multiplication leaves cell 1 at 0.08 and cell 2 at 0.32 (the products do not sum to 1; they sum to 0.5); swapping the sensor reliabilities (0.2 for doors, 0.8 for walls) gives cell 2 = 0.16; using only the likelihood and forgetting the prior gives cell 2 = 0.363636 (every door cell gets the same value). Check that your posterior sums to 1, then try a fresh X26 item."
+    },
+    {
+      "id": "X26.corridor-histogram.2",
+      "route": "corridor-histogram",
+      "difficulty": 2,
+      "structure": "grid-bayes.predict@1",
+      "inputs": {
+        "belief": [
+          "0.0",
+          "0.0",
+          "0.0",
+          "0.2",
+          "0.3",
+          "0.5"
+        ],
+        "kernel": [
+          "0.1",
+          "0.8",
+          "0.1"
+        ],
+        "offset0": "0",
+        "motion": "walls"
+      },
+      "objectiveId": "C06.grid-bayes",
+      "prompt": "A robot is in a straight corridor of 6 cells numbered 0 to 5 from left to right, with solid walls at both ends. Its belief is [0, 0, 0, 0.2, 0.3, 0.5]. It is commanded to advance one cell to the right, but its motion is noisy: it ends up displaced by 0 cells with probability 0.1 (stuck), by 1 cell with probability 0.8, and by 2 cells with probability 0.1 (overshoot), independently of where it starts. A robot pushed against an end wall stays in that end cell (its probability does not disappear). Compute the belief after the motion and report cells 3, 4 and 5, and cell 0. Answers as decimals, within ±0.001.",
+      "fields": [
+        {
+          "label": "Belief of cell 3",
+          "kind": "number",
+          "answer": "0.02",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Belief of cell 4",
+          "kind": "number",
+          "answer": "0.19",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Belief of cell 5",
+          "kind": "number",
+          "answer": "0.79",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Belief of cell 0",
+          "kind": "number",
+          "answer": "0.0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Every cell i sends belief(i) times 0.1, 0.8, 0.1 to cells i, i+1, i+2; targets beyond cell 5 pile up in cell 5. Cell 3 receives only its own stuck mass: 0.2 x 0.1 = 0.02. Cell 4 receives 0.2 x 0.8 (from cell 3) + 0.3 x 0.1 (stuck at 4) = 0.19. Cell 5 receives 0.2 x 0.1 (overshoot from 3) + 0.3 x 0.8 + 0.3 x 0.1 (overshoot from 4 hits cell 6 -> wall) + 0.5 x (0.1 + 0.8 + 0.1) (every outcome from cell 5 lands in cell 5) = 0.79. Cell 0 gets nothing: 0.0. The belief is [0.0, 0.0, 0.0, 0.02, 0.19, 0.79] and still sums to 1.",
+      "hints": [
+        "Scatter the belief: each cell i sends belief(i) x kernel to cells i, i+1 and i+2. Decide first what happens to mass whose target would be beyond cell 5, then add the contributions arriving in each cell.",
+        "Nothing arrives in cell 3 from the left, so it only keeps what stayed behind. Cell 4 receives 0.2 x 0.8 from cell 3 and 0.3 x 0.1 from itself. For cell 5 sum the contributions from cells 3, 4 and 5, remembering that targets past the wall land in cell 5.",
+        "Every cell i sends belief(i) times 0.1, 0.8, 0.1 to cells i, i+1, i+2; targets beyond cell 5 pile up in cell 5. Cell 3 receives only its own stuck mass: 0.2 x 0.1 = 0.02. Cell 4 receives 0.2 x 0.8 (from cell 3) + 0.3 x 0.1 (stuck at 4) = 0.19. Cell 5 receives 0.2 x 0.1 (overshoot from 3) + 0.3 x 0.8 + 0.3 x 0.1 (overshoot from 4 hits cell 6 -> wall) + 0.5 x (0.1 + 0.8 + 0.1) (every outcome from cell 5 lands in cell 5) = 0.79. Cell 0 gets nothing: 0.0. The belief is [0.0, 0.0, 0.0, 0.02, 0.19, 0.79] and still sums to 1."
+      ],
+      "remediation": "Common slips on this item: discarding the mass that would leave the corridor gives cell 5 = 0.31 and a total of only 0.52; wrapping the corridor into a ring would put 0.43 in cell 0 although the robot cannot teleport through the wall; treating the commanded move as exact (shift every cell by 1) gives cell 4 = 0.2 and cell 3 = 0. Check that the belief still sums to 1 after the move, then try a fresh X26 item."
+    },
+    {
+      "id": "X26.corridor-histogram.3",
+      "route": "corridor-histogram",
+      "difficulty": 3,
+      "structure": "grid-bayes.cycle@1",
+      "inputs": {
+        "belief": [
+          "0.25",
+          "0.25",
+          "0.25",
+          "0.25"
+        ],
+        "world": [
+          "1",
+          "0",
+          "1",
+          "0"
+        ],
+        "p_correct": "0.9",
+        "kernel": [
+          "0.2",
+          "0.6",
+          "0.2"
+        ],
+        "offset0": "0",
+        "motion": "cyclic",
+        "observations": [
+          "1",
+          "0",
+          "0"
+        ]
+      },
+      "objectiveId": "C06.grid-bayes",
+      "prompt": "A robot drives round a circular track of 4 cells numbered 0 to 3, where cell 3 is followed by cell 0. The wall map is world = [1, 0, 1, 0] (1 = door). The robot starts with no idea where it is: belief [0.25, 0.25, 0.25, 0.25]. Its door sensor is right with probability 0.9 and wrong with probability 0.1. After each reading it drives forward with the noisy motion: displacement 0 with probability 0.2, 1 with probability 0.6, 2 with probability 0.2 (cell numbers wrap around the track). It processes the readings z = 1, 0, 0 in that order, each time sensing first and then moving, including a move after the last reading. Report the final belief of cells 0, 1 and 2, and how many cells are tied for the highest belief (within 1e-9). Probabilities as decimals within ±0.001.",
+      "fields": [
+        {
+          "label": "Final belief of cell 0",
+          "kind": "number",
+          "answer": "0.286453",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Final belief of cell 1",
+          "kind": "number",
+          "answer": "0.213547",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Final belief of cell 2",
+          "kind": "number",
+          "answer": "0.286453",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Number of cells tied for the highest belief",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Belief after each sense-then-move step: z = 1: sensed [0.45, 0.05, 0.45, 0.05], moved [0.21, 0.29, 0.21, 0.29]; z = 0: sensed [0.037234, 0.462766, 0.037234, 0.462766], moved [0.292553, 0.207447, 0.292553, 0.207447]; z = 0: sensed [0.067734, 0.432266, 0.067734, 0.432266], moved [0.286453, 0.213547, 0.286453, 0.213547]. The layout [1, 0, 1, 0] looks the same after a shift of 2 cells, and the prior, the sensor and the motion are all unchanged by that shift, so belief(0) = belief(2) and belief(1) = belief(3) after every step. The final belief is [0.286453, 0.213547, 0.286453, 0.213547]. Cell 0 = 0.286453, cell 1 = 0.213547, cell 2 = 0.286453, and exactly 2 cells tie for the maximum (0 and 2). No reading can ever separate cells that are 2 apart on this track: the ambiguity is a property of the map, not of the sensor noise.",
+      "hints": [
+        "Run the loop reading by reading: multiply by the likelihood of z, normalise, then spread the belief with the motion kernel on the ring. Notice what the symmetry of the map [1, 0, 1, 0] implies for belief(0) versus belief(2) at every step.",
+        "Likelihood of z = 1 is [0.9, 0.1, 0.9, 0.1] and of z = 0 is [0.1, 0.9, 0.1, 0.9]. After the first reading the belief is [0.45, 0.05, 0.45, 0.05]; moving then sends belief(i) to cells i, i+1, i+2 (mod 4) with weights 0.2, 0.6, 0.2. Repeat for z = 0 and z = 0, then read off the answers.",
+        "Belief after each sense-then-move step: z = 1: sensed [0.45, 0.05, 0.45, 0.05], moved [0.21, 0.29, 0.21, 0.29]; z = 0: sensed [0.037234, 0.462766, 0.037234, 0.462766], moved [0.292553, 0.207447, 0.292553, 0.207447]; z = 0: sensed [0.067734, 0.432266, 0.067734, 0.432266], moved [0.286453, 0.213547, 0.286453, 0.213547]. The layout [1, 0, 1, 0] looks the same after a shift of 2 cells, and the prior, the sensor and the motion are all unchanged by that shift, so belief(0) = belief(2) and belief(1) = belief(3) after every step. The final belief is [0.286453, 0.213547, 0.286453, 0.213547]. Cell 0 = 0.286453, cell 1 = 0.213547, cell 2 = 0.286453, and exactly 2 cells tie for the maximum (0 and 2). No reading can ever separate cells that are 2 apart on this track: the ambiguity is a property of the map, not of the sensor noise."
+      ],
+      "remediation": "Common slips on this item: moving first and sensing second (predict, then update) ends with cell 0 = 0.067734 and cell 1 = 0.432266; treating the track as a corridor with end walls (no wrap-around) ends with cell 0 = 0.000077 and cell 1 = 0.021748; and reporting 1 tied cell assumes the readings can break the symmetry, which they cannot on a map that repeats every 2 cells. Check that each belief sums to 1 after every step, then try a fresh X26 item."
+    },
+    {
+      "id": "X26.particle-weights.1",
+      "route": "particle-weights",
+      "difficulty": 1,
+      "structure": "particles.ess@1",
+      "inputs": {
+        "weights": [
+          "2",
+          "6",
+          "1",
+          "1"
+        ]
+      },
+      "objectiveId": "C06.grid-bayes",
+      "prompt": "A localisation filter keeps 4 particles with unnormalised weights [2, 6, 1, 1]. Normalise the weights so they sum to 1, then compute the effective sample size ESS = 1 / (sum of squared normalised weights). Report the normalised weight of the heaviest particle, the ESS, and the ratio ESS / 4. Answers as decimals, within ±0.001.",
+      "fields": [
+        {
+          "label": "Normalised weight of the heaviest particle",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Effective sample size ESS",
+          "kind": "number",
+          "answer": "2.380952",
+          "tolerance": 0.001
+        },
+        {
+          "label": "ESS / 4",
+          "kind": "number",
+          "answer": "0.595238",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The weights sum to 10, so the normalised weights are [0.2, 0.6, 0.1, 0.1] and the heaviest is 0.6. Sum of squares = 0.04 + 0.36 + 0.01 + 0.01 = 0.42, so ESS = 1 / 0.42 = 2.380952. ESS / 4 = 0.595238: the four particles carry about as much information as 2.380952 equally weighted ones. Scaling every weight by the same factor would not change any of this.",
+      "hints": [
+        "ESS is defined on normalised weights, so divide by the total first. Then square each normalised weight, add them up and invert.",
+        "The total of the raw weights is 10, so divide each by 10 first. Square each normalised weight, add the four squares, then take the reciprocal. ESS/4 is that value divided by the number of particles.",
+        "The weights sum to 10, so the normalised weights are [0.2, 0.6, 0.1, 0.1] and the heaviest is 0.6. Sum of squares = 0.04 + 0.36 + 0.01 + 0.01 = 0.42, so ESS = 1 / 0.42 = 2.380952. ESS / 4 = 0.595238: the four particles carry about as much information as 2.380952 equally weighted ones. Scaling every weight by the same factor would not change any of this."
+      ],
+      "remediation": "Common slips on this item: skipping the normalisation and using 1 / (2² + 6² + 1² + 1²) gives 0.02381; taking 1 / max normalised weight gives 1.666667; reporting 4 (the particle count) forgets that unequal weights reduce the effective number. Normalise first, then try a fresh X26 item."
+    },
+    {
+      "id": "X26.particle-weights.2",
+      "route": "particle-weights",
+      "difficulty": 2,
+      "structure": "particles.reweight@1",
+      "inputs": {
+        "cells": [
+          "0",
+          "1",
+          "1",
+          "2",
+          "3",
+          "3"
+        ],
+        "weights": [
+          "0.1",
+          "0.2",
+          "0.3",
+          "0.15",
+          "0.15",
+          "0.1"
+        ],
+        "world": [
+          "1",
+          "0",
+          "1",
+          "0"
+        ],
+        "z": "1",
+        "p_correct": "0.9"
+      },
+      "objectiveId": "C06.grid-bayes",
+      "prompt": "A particle filter localises a robot in a corridor of 4 cells numbered 0 to 3 with world = [1, 0, 1, 0] (1 = door). It has 6 particles, numbered 0 to 5, sitting in cells [0, 1, 1, 2, 3, 3] with prior weights [0.1, 0.2, 0.3, 0.15, 0.15, 0.1] (they sum to 1). The door sensor reports z = 1; it is right with probability 0.9 and wrong with probability 0.1. Multiply each particle's weight by the likelihood of the reading in its cell and renormalise so the weights sum to 1. Report the new weight of particle 2 (cell 1) and particle 3 (cell 2), and the effective sample size ESS of the new weights. Answers as decimals, within ±0.001.",
+      "fields": [
+        {
+          "label": "New weight of particle 2 (in cell 1)",
+          "kind": "number",
+          "answer": "0.1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "New weight of particle 3 (in cell 2)",
+          "kind": "number",
+          "answer": "0.45",
+          "tolerance": 0.001
+        },
+        {
+          "label": "ESS of the new weights",
+          "kind": "number",
+          "answer": "3.220036",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Likelihood of z = 1 by cell: [0.9, 0.1, 0.9, 0.1]. Unnormalised weights = prior x likelihood of the particle's cell: [0.09, 0.02, 0.03, 0.135, 0.015, 0.01]. Their sum is 0.3. Dividing: [0.3, 0.066667, 0.1, 0.45, 0.05, 0.033333]. Particle 2 = 0.1 and particle 3 = 0.45. ESS = (sum w)² / sum of w² = 3.220036.",
+      "hints": [
+        "Each particle takes the likelihood of the cell it sits in, not of its own index. Multiply that into its prior weight, then divide every product by the sum of all six products.",
+        "Likelihoods by cell are [0.9, 0.1, 0.9, 0.1]. Particle 2 is in cell 1, so its product is 0.3 x 0.1 and particle 3 is in cell 2, so 0.15 x 0.9. Compute all six products, sum them, divide, then compute ESS from the new weights.",
+        "Likelihood of z = 1 by cell: [0.9, 0.1, 0.9, 0.1]. Unnormalised weights = prior x likelihood of the particle's cell: [0.09, 0.02, 0.03, 0.135, 0.015, 0.01]. Their sum is 0.3. Dividing: [0.3, 0.066667, 0.1, 0.45, 0.05, 0.033333]. Particle 2 = 0.1 and particle 3 = 0.45. ESS = (sum w)² / sum of w² = 3.220036."
+      ],
+      "remediation": "Common slips on this item: using only the likelihoods and forgetting the prior weights gives particle 3 = 0.409091; leaving the products unnormalised gives particle 3 = 0.135; reading the sensor value backwards (z = 0 instead of 1) gives particle 3 = 0.021429. Check that the six new weights sum to 1, then try a fresh X26 item."
+    },
+    {
+      "id": "X26.particle-weights.3",
+      "route": "particle-weights",
+      "difficulty": 3,
+      "structure": "particles.systematic-resample@1",
+      "inputs": {
+        "weights": [
+          "0.3",
+          "0.05",
+          "0.0",
+          "0.25",
+          "0.3",
+          "0.1"
+        ],
+        "u0": "0.35"
+      },
+      "objectiveId": "C06.grid-bayes",
+      "prompt": "A particle filter has N = 6 particles, numbered 0 to 5, with normalised weights [0.3, 0.05, 0, 0.25, 0.3, 0.1]. Resample them with systematic (low-variance) resampling using the single explicit draw u0 = 0.35. The cumulative weights are cum = [0.3, 0.35, 0.35, 0.6, 0.9, 1.0]. The N sample positions are p_k = (u0 + k) / N for k = 0, 1, ..., 5, and position p_k selects the smallest particle index i with cum[i] > p_k. Report how many copies of particles 0, 3, 4 and 5 appear in the resampled set (the other two particles are not asked). Give whole numbers.",
+      "fields": [
+        {
+          "label": "Copies of particle 0",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Copies of particle 3",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Copies of particle 4",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Copies of particle 5",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Positions p_k = (0.35 + k)/6 = [0.058333, 0.225, 0.391667, 0.558333, 0.725, 0.891667]. Smallest i with cum[i] > p: p_0 = 0.058333 -> particle 0; p_1 = 0.225 -> 0; p_2 = 0.391667 -> 3; p_3 = 0.558333 -> 3; p_4 = 0.725 -> 4; p_5 = 0.891667 -> 4. The resampled index list is [0, 0, 3, 3, 4, 4], so the copies of particles 0..5 are [2, 0, 0, 2, 2, 0]. Particle 0 (N w = 1.8) gets 2 copies, particle 3 (1.5) gets 2, particle 4 (1.8) gets 2, particle 5 (0.6) gets 0, and the weight-0 particle 2 is never chosen.",
+      "hints": [
+        "Only the positions p_k = (u0 + k)/N matter; u0 is divided by N together with k, so the six positions are evenly spaced 1/6 apart and lie in [0, 1). For each one, walk along the cumulative weights until cum[i] exceeds it.",
+        "Compute all six positions (0.35 + k)/6. Compare each with the cumulative weights from the left; note that cum[1] = cum[2] = 0.35, so particle 2 has zero width and can never be selected. Write down the six selected indices, then count the copies of each particle.",
+        "Positions p_k = (0.35 + k)/6 = [0.058333, 0.225, 0.391667, 0.558333, 0.725, 0.891667]. Smallest i with cum[i] > p: p_0 = 0.058333 -> particle 0; p_1 = 0.225 -> 0; p_2 = 0.391667 -> 3; p_3 = 0.558333 -> 3; p_4 = 0.725 -> 4; p_5 = 0.891667 -> 4. The resampled index list is [0, 0, 3, 3, 4, 4], so the copies of particles 0..5 are [2, 0, 0, 2, 2, 0]. Particle 0 (N w = 1.8) gets 2 copies, particle 3 (1.5) gets 2, particle 4 (1.8) gets 2, particle 5 (0.6) gets 0, and the weight-0 particle 2 is never chosen."
+      ],
+      "remediation": "Common slips on this item: using the raw draw as a position (p_k = u0 + k/N, no division of u0 by N; positions past 1 go to the last particle) gives the copy counts [0, 0, 0, 2, 2, 2] for particles 0..5 instead of the correct [2, 0, 0, 2, 2, 0]; using a single position u0 for every sample gives 6 copies of particle 3 and none of the others. Re-check by counting: the copies must sum to 6."
+    }
+  ]
+}

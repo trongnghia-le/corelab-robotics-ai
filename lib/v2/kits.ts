@@ -56,10 +56,46 @@ const definitions = [
     description:
       "Implement a planar 2R endpoint Jacobian, determinant and tip velocity, both analytic IK branches with joint limits, and a bounded numerical solver that reports failure honestly. No 6D/twist Jacobian or hardware claim.",
   },
+  {
+    id: "L07-trajectory",
+    title: "Trajectory time-law self-check kit",
+    topic: "M05",
+    objectives: ["M05.trapezoid-profile"],
+    description:
+      "Implement a one-axis triangular/trapezoidal time law: phases, minimum and slower durations, sampling, impossible requests and a common duration for two joints. Numerical self-check only; no jerk, torque or robot claim.",
+  },
+  {
+    id: "L09-localization",
+    title: "Grid Bayes localization self-check kit",
+    topic: "C06",
+    objectives: ["C06.grid-bayes"],
+    description:
+      "Manual numerical self-check of a 1-D histogram Bayes filter (ring or walls, noisy motion kernel, toy door sensor) and deterministic particle weights, ESS and systematic resampling. No SLAM, real sensor or simulator.",
+  },
+  {
+    id: "L10-kalman",
+    title: "Linear Kalman and fusion self-check kit",
+    topic: "C07",
+    objectives: ["C07.linear-kalman"],
+    description:
+      "Original numerical self-check for declared scalar and 2-state linear Kalman steps: predict, innovation, gain, update, sequential vs information-form fusion, NIS replay. No EKF/UKF, ensembles or sensors.",
+  },
+  {
+    id: "L11-planning",
+    title: "Grid search and swept collision self-check kit",
+    topic: "E02",
+    objectives: ["E02.grid-astar"],
+    description:
+      "Manual self-check: grid A* with declared costs and corner rule, heuristic, budgeted search with honest failure, exact segment-rectangle and swept-square tests. Exhaustive-Dijkstra oracle on small grids; no RRT/PRM, arms or simulator.",
+  },
 ] as const;
 // Keep the original shared sample bytes unchanged: they are part of both old
 // kit hashes. New kits use separate immutable manifests.
 const sampleFiles: Record<string, string> = {
+  "L11-planning": "L11-planning.samples.v1.json",
+  "L10-kalman": "L10-kalman.samples.v1.json",
+  "L09-localization": "L09-localization.samples.v1.json",
+  "L07-trajectory": "L07-trajectory.samples.v1.json",
   "L03-odometry": "L03-odometry.samples.v1.json",
   "L04-pid": "L04-pid.samples.v1.json",
   "L06-jacobian-ik": "L06-jacobian-ik.samples.v1.json",
