@@ -3,6 +3,7 @@ import path from "node:path";
 import { z } from "zod";
 import { catalog } from "./content";
 import { id, strictJSON } from "./contracts";
+import { kits } from "./kits";
 const schema = z
   .object({
     schema: z.literal("corelab-lab-roadmap/1"),
@@ -58,12 +59,14 @@ export function labRoadmap() {
     ),
   );
   const families = new Set(catalog().families.map((f) => f.id));
+  const availableKits = new Set<string>(kits().map((kit) => kit.id));
   if (new Set(data.labs.map((l) => l.id)).size !== 22)
     throw new Error("Duplicate lab roadmap identity");
   for (const lab of data.labs)
     if (
       lab.practiceFamilies.some((id) => !families.has(id)) ||
-      (lab.status === "manual-self-check") !== (lab.kit !== null)
+      (lab.status === "manual-self-check") !== (lab.kit !== null) ||
+      (lab.kit !== null && !availableKits.has(lab.kit))
     )
       throw new Error("Invalid roadmap availability or mapping");
   return (cached = data);

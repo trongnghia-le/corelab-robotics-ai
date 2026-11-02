@@ -32,7 +32,26 @@ const definitions = [
     description:
       "Implement a planar two-link pose, including unequal links, folded and stretched configurations, orientation and invalid inputs.",
   },
+  {
+    id: "L03-odometry",
+    title: "Odometry self-check kit",
+    topic: "R02",
+    objectives: ["R02.exact-arc"],
+    description:
+      "Implement wheel/body velocity conversion and exact planar odometry. Check nonzero initial headings, reverse motion, pure spin, small arcs, units and invalid inputs. No calibration or physical-position claim.",
+  },
 ] as const;
+// Keep the original shared sample bytes unchanged: they are part of both old
+// kit hashes. New kits use separate immutable manifests.
+const sampleFiles: Record<string, string> = {
+  "L03-odometry": "L03-odometry.samples.v1.json",
+};
+export function kitFiles() {
+  return definitions.map((d) => ({
+    code: "content/labs/" + d.id + ".v1.py",
+    samples: "content/labs/" + (sampleFiles[d.id] ?? "samples.v1.json"),
+  }));
+}
 export function kits() {
   return definitions.map((d) => ({
     ...d,
@@ -57,7 +76,11 @@ function source(id: string) {
     "utf8",
   );
   const sampleBytes = readFileSync(
-    path.join(process.cwd(), "content/labs/samples.v1.json"),
+    path.join(
+      process.cwd(),
+      "content/labs",
+      sampleFiles[id] ?? "samples.v1.json",
+    ),
     "utf8",
   );
   const samples = z
@@ -116,7 +139,7 @@ export function kitFingerprints(id: string) {
 }
 const frozenSchema = z
   .object({
-    kit: z.enum(["L01-SE2", "L02-planar"]),
+    kit: z.enum(definitions.map((d) => d.id)),
     version: z.literal(1),
     title: z.string().max(100),
     description: z.string().max(1000),

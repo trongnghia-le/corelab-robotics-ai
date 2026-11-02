@@ -264,8 +264,8 @@ export function LearningPanel({
             Explore the 22-lab roadmap and optional external resources
           </summary>
           <p>
-            Two manual numerical kits are available. The other lab
-            implementations are planned. Related practice below is partial
+            {data.kits.length} manual numerical kits are available. The other
+            lab implementations are planned. Related practice below is partial
             preparation, not a completed lab or evidence. Simulator, ROS and
             hardware integrations are not available.
           </p>

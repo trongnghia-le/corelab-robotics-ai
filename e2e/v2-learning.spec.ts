@@ -162,6 +162,14 @@ test("optional bridge, manual kit download and practice-only self-report", async
     ),
   ).toBe(true);
   expect(backup.v2.evidence).toHaveLength(0);
+  await page.goto("/objectives/R02.exact-arc");
+  const odometryDownload = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Download Odometry self-check kit" })
+    .click();
+  expect((await odometryDownload).suggestedFilename()).toBe(
+    "L03-odometry.v1.py",
+  );
 });
 test("mobile keyboard, source redaction and gated verification", async ({
   page,

@@ -8,7 +8,7 @@
 - Additive, checksummed SQLite sidecar; verified pre-migration WAL copy; supported-version guards and atomic legacy checkpoint hook.
 - Durable practice/placement attempts, frozen source bytes/hash, recorded issue/help/feedback exposures, monotonic assistance, strict answer parsing, idempotent close and no practice evidence.
 - Original drafts for 20 exercise families plus a bridge and 152 static instances; numeric, fraction, angle and choice feedback. Each core family now has two distinct authored application routes, stated route differences and separate calculation/reasoning checks. Immutable V1 sources remain available after V2 source activation. Independent content review is still pending.
-- Validated 24-objective readiness registry, optional paths, original bridge and two manual Python numerical kits. A 176-node/319-edge curriculum projection is advisory only; the live graph is unchanged. Kit self-reports create no evidence.
+- Validated 24-objective readiness registry, optional paths, original bridge and three manual Python numerical kits (frames, planar FK, exact-arc odometry). A 176-node/319-edge curriculum projection is advisory only; the live graph is unchanged. Kit self-reports create no evidence.
 - Server-gated objective UI with Recommended, Explore and More Practice, route/difficulty choices, scratchpad text that is never executed, history and mobile keyboard support.
 - Backup/3 captures all learning rows with existing progress. Bounded localhost preview/confirmation, revision checks, atomic replacement, nonrecursive pre-restore snapshots and foreign-origin handling preserve local identity.
 - Owner-approved deferred restore epochs preserve every existing epoch and immediate local provenance. The first actual learning write allocates the new epoch atomically; idempotent/no-op operations and failed writes leave it deferred. Shared envelope/projection/cache accounting keeps repeated boundary restores within the same logical budget.
@@ -18,7 +18,7 @@
 
 Baseline: 119 tests in 8 files; content validation confirmed 169 topics, 31 lessons, 42 targeted questions and 28 video resources.
 
-2026-11-02: **210 unit/integration/security tests in 28 files passed on Node 24.22.2**. The earlier failing capacity reproducer remains present and now passes, with repeated exact reduced-budget round trips, inert evidence and rebuilt missing C/M review caches. The epoch-policy refinement was explicitly approved by the owner and recorded in the Master Plan; no independent review was inferred. Node 26.8.1 also passed the preceding 209-test revision.
+2026-11-02: **210 unit/integration/security tests in 28 files passed on Node 24.22.2**. The earlier failing capacity reproducer remains present and now passes, with repeated exact reduced-budget round trips, inert evidence and rebuilt missing C/M review caches. The epoch-policy refinement was explicitly approved by the owner and recorded in the Master Plan; no independent review was inferred. Node 26.8.1 also passed the preceding 209-test revision. Adding the L03 odometry kit brought the Node 26.8.1 suite to **212 tests in 29 files**; the V2 build and four Chromium V2 flows (now including the odometry kit download) passed on that revision.
 
 Latest lint/typecheck and V2 contract validation passed. The Node 24.22.2 V2 production build and four Chromium V2 flows passed: practice/help/reload/full restore, a valid non-ASCII backup above 8 MB through preview/restore/export while the default route refused it, bridge/manual kit download/self-report, and 390px keyboard/layout/security gates. A keyboard-focus timing regression found during the larger-backup run was fixed and rerun successfully.
 
@@ -73,7 +73,7 @@ The default database remains .local/corelab.sqlite; V2 adds tables and creates a
 
 ## Remaining work / gates
 
-Release remains gated by independent S1/S2 item review and activation, approved resource budgets and tested support claims. Further qualification should focus on a large reviewed-evidence workload, supported Windows/macOS environments and manual assistive-technology use. The 22-lab roadmap labels two manual kits as working and 20 lab implementations as planned; related exercise links are bounded preparation, not lab completion. Optional MuJoCo/ROBOTIS documentation is link-only; ROS documentation retrieval was provider-blocked. No simulator/ROS/hardware integration has been tested or enabled.
+Release remains gated by independent S1/S2 item review and activation, approved resource budgets and tested support claims. Further qualification should focus on a large reviewed-evidence workload, supported Windows/macOS environments and manual assistive-technology use. The 22-lab roadmap labels three manual kits as working and 19 lab implementations as planned; related exercise links are bounded preparation, not lab completion. Optional MuJoCo/ROBOTIS documentation is link-only; ROS documentation retrieval was provider-blocked. No simulator/ROS/hardware integration has been tested or enabled.
 
 `LEARNER_PILOT_PROTOCOL.md` prepares S3 observations and stop criteria. No participant outreach or 21-day trial has occurred.
 

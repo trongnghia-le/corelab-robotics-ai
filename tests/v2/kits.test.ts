@@ -1,7 +1,12 @@
 import { afterEach, expect, it } from "vitest";
 import { Store } from "../../lib/storage";
 import { initialize, learningData } from "../../lib/v2/db";
-import { downloadKit, selfReportKit, kitFingerprints } from "../../lib/v2/kits";
+import {
+  downloadKit,
+  selfReportKit,
+  kitFingerprints,
+  kits,
+} from "../../lib/v2/kits";
 import { exportBackup, preview, restore } from "../../lib/v2/backup";
 import { submit } from "../../lib/v2/attempts";
 import { cmSources, fingerprintCandidates } from "../../lib/v2/assessments";
@@ -36,8 +41,24 @@ it("records download exposure and idempotent manual self-report without grades o
     before.v2_attempts[0].submission_json,
   );
 });
+it("serves the odometry kit with its own sample file and per-kit identity", () => {
+  expect(kits().map((k) => k.id)).toEqual([
+    "L01-SE2",
+    "L02-planar",
+    "L03-odometry",
+  ]);
+  const s = store(),
+    kit = downloadKit(s, "L03-odometry");
+  expect(kit.filename).toBe("L03-odometry.v1.py");
+  expect(kit.content).toContain("NotImplementedError");
+  expect(kit.samples.length).toBeGreaterThan(20);
+  expect(kit.objectives).toEqual(["R02.exact-arc"]);
+  const odometry = new Set(kitFingerprints("L03-odometry"));
+  for (const other of ["L01-SE2", "L02-planar"])
+    expect(kitFingerprints(other).some((fp) => odometry.has(fp))).toBe(false);
+});
 it("has disjoint authored kit sample exposure and C/M pools", () => {
-  const samples = new Set(["L01-SE2", "L02-planar"].flatMap(kitFingerprints));
+  const samples = new Set(kits().flatMap((k) => kitFingerprints(k.id)));
   for (const s of cmSources())
     for (const v of s.variants)
       for (const c of v.items)

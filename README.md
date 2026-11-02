@@ -134,7 +134,7 @@ There are **31 complete lessons with versioned diagnostics** and structured over
 
 ## CoreLab V2 development preview
 
-The optional V2 workspace adds objective-based practice alongside the existing curriculum. It currently includes **24 authored objectives, 20 exercise families plus a readiness bridge, 152 practice instances, and two manual numerical lab kits**. Choose Recommended, Explore or More Practice; prerequisites suggest preparation and never lock ordinary study.
+The optional V2 workspace adds objective-based practice alongside the existing curriculum. It currently includes **24 authored objectives, 20 exercise families plus a readiness bridge, 152 practice instances, and three manual numerical lab kits**. Choose Recommended, Explore or More Practice; prerequisites suggest preparation and never lock ordinary study.
 
 ```bash
 npm run dev:v2

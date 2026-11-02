@@ -10,7 +10,7 @@ import {
 } from "./content";
 import { objectives, curriculumPreview } from "./objectives";
 import { cmSources, fingerprintCandidates } from "./assessments";
-import { kitFingerprints } from "./kits";
+import { kitFingerprints, kitFiles, kits } from "./kits";
 import { labRoadmap } from "./roadmap";
 export function validateV2() {
   const c = catalog(),
@@ -56,7 +56,7 @@ export function validateV2() {
     ...sources.map(
       (s) => "content/verify/" + s.id + ".v" + s.version + ".json",
     ),
-    ...["L01-SE2", "L02-planar"].map((id) => "content/labs/" + id + ".v1.py"),
+    ...kitFiles().flatMap((files) => [files.code, files.samples]),
   ];
   for (const f of archivedFamilies())
     required.push("content/exercises/" + f.id + ".v" + f.version + ".json");
@@ -65,7 +65,7 @@ export function validateV2() {
   const practiced = new Set(
     c.families.flatMap((f) => f.items.map(itemFingerprint)),
   );
-  const samples = new Set(["L01-SE2", "L02-planar"].flatMap(kitFingerprints));
+  const samples = new Set(kits().flatMap((kit) => kitFingerprints(kit.id)));
   const seen = new Set<string>();
   for (const s of sources)
     for (const v of s.variants)
@@ -95,6 +95,7 @@ export function validateV2() {
         throw new Error("Invalid stored item oracle: " + item.id);
     }
   return {
+    manualKits: kits().length,
     roadmapLabs: labRoadmap().labs.length,
     objectives: o.objectives.length,
     families: c.families.filter((f) => /^X\d+$/.test(f.id)).length,
