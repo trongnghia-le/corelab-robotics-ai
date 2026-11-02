@@ -188,3 +188,52 @@ test("independent checks use clear labels and record help only after consent", a
   expect(after.purpose).toBe("verify");
   expect(after.observedAssistance).toBe(1);
 });
+
+test("Robotics and AI identity leads to real authored learning activities", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/objectives");
+  await expect(page).toHaveTitle("CoreLab · Learn Robotics & AI");
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Learn Robotics & AI. From first principles.",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: "Robotics and AI concept sketch" }),
+  ).toBeVisible();
+  const entries = page.getByRole("navigation", {
+    name: "Robotics and AI starting points",
+  });
+  await expect(entries.getByRole("link")).toHaveCount(4);
+  for (const link of await entries.getByRole("link").all()) {
+    const href = await link.getAttribute("href");
+    const response = await page.request.get("/api/v2" + href);
+    expect(response.status()).toBe(200);
+    const detail = await response.json();
+    expect(
+      detail.objectives.some((o: { id: string }) => href!.endsWith(o.id)),
+    ).toBe(true);
+  }
+  await page.screenshot({ path: "test-results/robotics-ai-desktop.png" });
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.screenshot({
+      path: `test-results/robotics-ai-mobile-${width}.png`,
+      fullPage: false,
+    });
+  }
+  await entries.getByRole("link", { name: /Computer vision/ }).click();
+  await expect(page).toHaveURL(/objectives\/V03.pinhole$/);
+  await expect(
+    page.getByRole("heading", { name: "Project a camera-frame point" }),
+  ).toBeVisible();
+});

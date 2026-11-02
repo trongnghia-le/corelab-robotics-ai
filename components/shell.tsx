@@ -30,7 +30,7 @@ const extra = [
   ["/sources", "References", Library],
 ] as const;
 const labels: Record<string, string> = {
-  objectives: "Objective learning",
+  objectives: "Robotics & AI lab",
   roadmap: "Roadmap",
   lessons: "Lessons",
   assessments: "Assessments",
@@ -116,7 +116,7 @@ export function Shell({
         <div className="workspace-label">
           <span className="workspace-initial">N</span>
           <div>
-            Personal workspace<small>Robotics & AI research</small>
+            Personal workspace<small>Robotics & AI learning</small>
           </div>
           <span className="local-dot" />
         </div>
@@ -132,7 +132,7 @@ export function Shell({
               onClick={() => setOpen(false)}
             >
               <FlaskConical size={18} />
-              Objective learning · V2
+              Robotics & AI lab
             </Link>
           )}
           {main.map(([href, label, Icon]) => (

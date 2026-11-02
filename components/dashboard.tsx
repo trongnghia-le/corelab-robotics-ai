@@ -57,9 +57,9 @@ export function Dashboard() {
   return (
     <div className="page dashboard">
       <PageHeading
-        eyebrow="YOUR RESEARCH WORKSPACE"
+        eyebrow="YOUR ROBOTICS & AI LEARNING LAB"
         title="Build foundations. Go further."
-        description="Every step forward starts with something you truly understand."
+        description="Build the mathematics, programming and intuition behind robots that sense, learn, plan and act."
       >
         <Link className="button" href="/paths">
           <GitBranch size={16} />

@@ -5,7 +5,9 @@ test("objective choice → help → independent declaration → practice → rel
 }) => {
   await page.goto("/objectives");
   await expect(
-    page.getByRole("heading", { name: "Your next independent step." }),
+    page.getByRole("heading", {
+      name: "Learn Robotics & AI. From first principles.",
+    }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Explore", exact: true }).click();
   const family = page.locator(".v2-family").filter({

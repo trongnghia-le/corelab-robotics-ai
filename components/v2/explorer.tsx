@@ -19,6 +19,7 @@ import type {
 } from "@/lib/v2/attempts";
 import { readableAnswer, v2 } from "./client";
 import { LearningPanel } from "./learning-panel";
+import { RoboticsHero } from "./robotics-hero";
 type Data = ReturnType<typeof objectiveDetail>;
 type Attempt = ReturnType<typeof publicAttempt>;
 type History = ReturnType<typeof learningHistory>["items"];
@@ -192,22 +193,24 @@ export function V2Explorer({ objective }: { objective?: string }) {
   }
   return (
     <div className="page v2-page">
-      <PageHeading
-        eyebrow="LEARN · BUILD · PROVE"
-        title={
-          objective ? "Build this objective" : "Your next independent step."
-        }
-        description="Choose a skill, work through a meaningful problem, and keep the evidence honest. Your learning path is yours to choose."
-      >
-        <div className="v2-header-actions">
-          <a className="button primary" href="#v2-practice">
-            Find practice <ArrowRight size={17} />
-          </a>
-          <Link className="button" href="/settings">
-            Back up your learning
-          </Link>
-        </div>
-      </PageHeading>
+      {objective ? (
+        <PageHeading
+          eyebrow="CORELAB · ROBOTICS & AI · OBJECTIVE WORKSPACE"
+          title="Build this objective"
+          description="Connect the mathematics and code to robotics and AI. Learn, practice or verify directly; the path is yours to choose."
+        >
+          <div className="v2-header-actions">
+            <a className="button primary" href="#v2-practice">
+              Find practice <ArrowRight size={17} />
+            </a>
+            <Link className="button" href="/objectives">
+              Explore Robotics & AI
+            </Link>
+          </div>
+        </PageHeading>
+      ) : (
+        <RoboticsHero />
+      )}
       <details className="v2-integrity-note">
         <summary>
           Practice builds skill. Verification records scoped evidence.{" "}
@@ -254,20 +257,22 @@ export function V2Explorer({ objective }: { objective?: string }) {
       )}
       {data && (
         <>
-          <div className="v2-stat-grid">
-            <div className="panel">
-              <strong>{data.totals.families}</strong>
-              <span>Exercise collections, including the bridge</span>
+          {objective && (
+            <div className="v2-stat-grid">
+              <div className="panel">
+                <strong>{data.totals.families}</strong>
+                <span>Exercise collections, including the bridge</span>
+              </div>
+              <div className="panel">
+                <strong>{data.totals.items}</strong>
+                <span>Practice tasks to work through</span>
+              </div>
+              <div className="panel">
+                <strong>{data.totals.attempts}</strong>
+                <span>Your recorded practice attempts</span>
+              </div>
             </div>
-            <div className="panel">
-              <strong>{data.totals.items}</strong>
-              <span>Practice tasks to work through</span>
-            </div>
-            <div className="panel">
-              <strong>{data.totals.attempts}</strong>
-              <span>Your recorded practice attempts</span>
-            </div>
-          </div>
+          )}
           <nav className="v2-workflow-nav" aria-label="Learning activities">
             {(
               [
@@ -348,8 +353,8 @@ export function V2Explorer({ objective }: { objective?: string }) {
                 <div className="eyebrow">PRACTICE</div>
                 <h2 id="v2-practice-title">Find your next practice.</h2>
                 <p>
-                  Choose a useful problem, try a different application or
-                  revisit a gap. You are free to start anywhere.
+                  Practice the mathematics and algorithms behind robot motion,
+                  vision and intelligent decisions.
                 </p>
               </div>
             </header>
@@ -421,6 +426,8 @@ export function V2Explorer({ objective }: { objective?: string }) {
                   : mode === "more"
                     ? "Choose another route or a new instance"
                     : "Browse the authored exercise bank"}
+                {!objective &&
+                  ` · ${data.totals.items} tasks in the bank · ${data.totals.attempts} recorded practice attempts`}
               </span>
               {(query || domain || difficulty) && (
                 <button
