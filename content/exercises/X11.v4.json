@@ -1,0 +1,973 @@
+{
+  "id": "X11",
+  "version": 4,
+  "title": "Compute a planar arm pose",
+  "domain": "Robotics",
+  "topicId": "R04",
+  "objectiveId": "R04.planar-fk",
+  "routes": [
+    "tabletop",
+    "inspection"
+  ],
+  "scope": "Planar 2R pose, not spatial FK, Jacobian or hardware",
+  "labIds": [
+    "L02",
+    "L06"
+  ],
+  "items": [
+    {
+      "id": "X11.tabletop.1",
+      "route": "tabletop",
+      "difficulty": 1,
+      "structure": "X11.R04.planar-fk.1@1",
+      "inputs": {
+        "q1": "0.5",
+        "q2": "-0.5",
+        "l1": "1.25",
+        "l2": "0.6"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "A tabletop pick-and-place arm must line its gripper up over a part lying on the table. Planar 2R arm: l1 = 1.25 m, l2 = 0.6 m; relative joint angles q1 = 0.5 rad, q2 = -0.5 rad (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832. Keep at least 4 decimals in intermediate cos/sin values.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "1.696978",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.599282",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "0",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.25 cos 0.5, 1.25 sin 0.5) = (1.096978, 0.599282) m. Link 2 points at the world angle q1 + q2 = 0.5 + (-0.5) = 0 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.6, 0) m. Tip: x = 1.096978 + 0.6 = 1.696978 m; y = 0.599282 + 0 = 0.599282 m. theta = q1 + q2 = 0 rad (any angle differing by a multiple of 2π is accepted).",
+      "hints": [
+        "The joints are relative: link 1 points at q1 = 0.5 rad from the base +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -0.5 rad alone. q2 is negative, so the elbow bends clockwise relative to link 1. Keep the calculator in radian mode.",
+        "Elbow first: its x-component is l1 cos q1 = 1.25 cos 0.5 = 1.096978 m; get its y-component the same way with sin. Next add a vector of length l2 = 0.6 m pointing at the world angle q1 + q2 (add the two joint angles), component by component.",
+        "Elbow: (l1 cos q1, l1 sin q1) = (1.25 cos 0.5, 1.25 sin 0.5) = (1.096978, 0.599282) m. Link 2 points at the world angle q1 + q2 = 0.5 + (-0.5) = 0 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.6, 0) m. Tip: x = 1.096978 + 0.6 = 1.696978 m; y = 0.599282 + 0 = 0.599282 m. theta = q1 + q2 = 0 rad (any angle differing by a multiple of 2π is accepted)."
+      ],
+      "remediation": "Common slips on this item: treating q2 = -0.5 rad as the world angle of link 2 gives x ≈ 1.6235, y ≈ 0.3116 and theta = -0.5; a calculator in degree mode gives x ≈ 1.85, y ≈ 0.0109; swapping the link lengths (l1 = 0.6 m, l2 = 1.25 m) gives x ≈ 1.7765, y ≈ 0.2877. If your answer matches one of these, the slip is in that step, not in the formula. Revisit the relative-angle convention in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.tabletop.2",
+      "route": "tabletop",
+      "difficulty": 1,
+      "structure": "X11.R04.planar-fk.2@1",
+      "inputs": {
+        "q1": "0.4",
+        "q2": "0.5",
+        "l1": "1.5",
+        "l2": "0.7"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "A tabletop sorting arm reaches toward a bin in front of and to the left of its base. Planar 2R arm: l1 = 1.5 m, l2 = 0.7 m; relative joint angles q1 = 0.4 rad, q2 = 0.5 rad (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832. Keep at least 4 decimals in intermediate cos/sin values.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "1.816718",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "1.132456",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "0.9",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.5 cos 0.4, 1.5 sin 0.4) = (1.381591, 0.584128) m. Link 2 points at the world angle q1 + q2 = 0.4 + 0.5 = 0.9 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.435127, 0.548329) m. Tip: x = 1.381591 + 0.435127 = 1.816718 m; y = 0.584128 + 0.548329 ≈ 1.132456 m. theta = q1 + q2 = 0.9 rad (any angle differing by a multiple of 2π is accepted).",
+      "hints": [
+        "The joints are relative: link 1 points at q1 = 0.4 rad from the base +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 0.5 rad alone. Keep the calculator in radian mode.",
+        "Elbow first: (1.5 cos 0.4, 1.5 sin 0.4) = (1.381591, 0.584128) m. Next add a vector of length l2 = 0.7 m pointing at the world angle q1 + q2 (add the two joint angles), component by component.",
+        "Elbow: (l1 cos q1, l1 sin q1) = (1.5 cos 0.4, 1.5 sin 0.4) = (1.381591, 0.584128) m. Link 2 points at the world angle q1 + q2 = 0.4 + 0.5 = 0.9 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.435127, 0.548329) m. Tip: x = 1.381591 + 0.435127 = 1.816718 m; y = 0.584128 + 0.548329 ≈ 1.132456 m. theta = q1 + q2 = 0.9 rad (any angle differing by a multiple of 2π is accepted)."
+      ],
+      "remediation": "Common slips on this item: treating q2 = 0.5 rad as the world angle of link 2 gives x ≈ 1.9959, y ≈ 0.9197 and theta = 0.5; a calculator in degree mode gives x ≈ 2.1999, y ≈ 0.0215; swapping the link lengths (l1 = 0.7 m, l2 = 1.5 m) gives x ≈ 1.5772, y ≈ 1.4476. If your answer matches one of these, the slip is in that step, not in the formula. Revisit the relative-angle convention in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.tabletop.3",
+      "route": "tabletop",
+      "difficulty": 2,
+      "structure": "X11.R04.planar-fk.0@1",
+      "inputs": {
+        "q1": "0.6",
+        "q2": "1.3",
+        "l1": "1.75",
+        "l2": "0.8"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "A tabletop arm folds its elbow back to reach a tray placed near its base. Planar 2R arm: l1 = 1.75 m, l2 = 0.8 m; relative joint angles q1 = 0.6 rad, q2 = 1.3 rad (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832. Keep at least 4 decimals in intermediate cos/sin values.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "1.185706",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "1.745164",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "1.9",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.75 cos 0.6, 1.75 sin 0.6) = (1.444337, 0.988124) m. Link 2 points at the world angle q1 + q2 = 0.6 + 1.3 = 1.9 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.258632, 0.75704) m. Tip: x = 1.444337 + (-0.258632) ≈ 1.185706 m; y = 0.988124 + 0.75704 = 1.745164 m. theta = q1 + q2 = 1.9 rad (any angle differing by a multiple of 2π is accepted).",
+      "hints": [
+        "The joints are relative: link 1 points at q1 = 0.6 rad from the base +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 1.3 rad alone. Here q1 + q2 is past π/2, so link 2 points back toward -x and its x-contribution is negative. Keep the calculator in radian mode.",
+        "Elbow first: (1.75 cos 0.6, 1.75 sin 0.6) = (1.444337, 0.988124) m. Next add a vector of length l2 = 0.8 m pointing at the world angle q1 + q2 (add the two joint angles), component by component.",
+        "Elbow: (l1 cos q1, l1 sin q1) = (1.75 cos 0.6, 1.75 sin 0.6) = (1.444337, 0.988124) m. Link 2 points at the world angle q1 + q2 = 0.6 + 1.3 = 1.9 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.258632, 0.75704) m. Tip: x = 1.444337 + (-0.258632) ≈ 1.185706 m; y = 0.988124 + 0.75704 = 1.745164 m. theta = q1 + q2 = 1.9 rad (any angle differing by a multiple of 2π is accepted)."
+      ],
+      "remediation": "Common slips on this item: treating q2 = 1.3 rad as the world angle of link 2 gives x ≈ 1.6583, y ≈ 1.759 and theta = 1.3; a calculator in degree mode gives x ≈ 2.5495, y ≈ 0.0448; swapping the link lengths (l1 = 0.8 m, l2 = 1.75 m) gives x ≈ 0.0945, y ≈ 2.1077. If your answer matches one of these, the slip is in that step, not in the formula. Revisit the relative-angle convention in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.tabletop.4",
+      "route": "tabletop",
+      "difficulty": 2,
+      "structure": "X11.R04.planar-fk.1@1",
+      "inputs": {
+        "q1": "1.1",
+        "q2": "-0.7",
+        "l1": "2",
+        "l2": "0.9"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "A tabletop arm reaches up and across the table to place a cup on a coaster. Planar 2R arm: l1 = 2 m, l2 = 0.9 m; relative joint angles q1 = 1.1 rad, q2 = -0.7 rad (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832. Keep at least 4 decimals in intermediate cos/sin values.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "1.736147",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "2.132891",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "0.4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Elbow: (l1 cos q1, l1 sin q1) = (2 cos 1.1, 2 sin 1.1) = (0.907192, 1.782415) m. Link 2 points at the world angle q1 + q2 = 1.1 + (-0.7) = 0.4 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.828955, 0.350477) m. Tip: x = 0.907192 + 0.828955 = 1.736147 m; y = 1.782415 + 0.350477 ≈ 2.132891 m. theta = q1 + q2 = 0.4 rad (any angle differing by a multiple of 2π is accepted).",
+      "hints": [
+        "The joints are relative: link 1 points at q1 = 1.1 rad from the base +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -0.7 rad alone. q2 is negative, so the elbow bends clockwise relative to link 1. Keep the calculator in radian mode.",
+        "Elbow first: (2 cos 1.1, 2 sin 1.1) = (0.907192, 1.782415) m. Next add a vector of length l2 = 0.9 m pointing at the world angle q1 + q2 (add the two joint angles), component by component.",
+        "Elbow: (l1 cos q1, l1 sin q1) = (2 cos 1.1, 2 sin 1.1) = (0.907192, 1.782415) m. Link 2 points at the world angle q1 + q2 = 1.1 + (-0.7) = 0.4 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.828955, 0.350477) m. Tip: x = 0.907192 + 0.828955 = 1.736147 m; y = 1.782415 + 0.350477 ≈ 2.132891 m. theta = q1 + q2 = 0.4 rad (any angle differing by a multiple of 2π is accepted)."
+      ],
+      "remediation": "Common slips on this item: treating q2 = -0.7 rad as the world angle of link 2 gives x ≈ 1.5956, y ≈ 1.2026 and theta = -0.7; a calculator in degree mode gives x ≈ 2.8996, y ≈ 0.0447; swapping the link lengths (l1 = 0.9 m, l2 = 2 m) gives x ≈ 2.2504, y ≈ 1.5809. If your answer matches one of these, the slip is in that step, not in the formula. Revisit the relative-angle convention in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.tabletop.5",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.2@1",
+      "inputs": {
+        "q1": "-0.8",
+        "q2": "2",
+        "l1": "2.25",
+        "l2": "1"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "A tabletop arm starts below the base x-axis and bends its elbow sharply to pick a screw. Planar 2R arm: l1 = 2.25 m, l2 = 1 m; relative joint angles q1 = -0.8 rad, q2 = 2 rad (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832. Keep at least 4 decimals in intermediate cos/sin values.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "1.929948",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-0.682012",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "1.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Elbow: (l1 cos q1, l1 sin q1) = (2.25 cos(-0.8), 2.25 sin(-0.8)) = (1.56759, -1.614051) m. Link 2 points at the world angle q1 + q2 = -0.8 + 2 = 1.2 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.362358, 0.932039) m. Tip: x = 1.56759 + 0.362358 = 1.929948 m; y = -1.614051 + 0.932039 = -0.682012 m. theta = q1 + q2 = 1.2 rad (any angle differing by a multiple of 2π is accepted).",
+      "hints": [
+        "The joints are relative: link 1 points at q1 = -0.8 rad from the base +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 2 rad alone. q1 is negative, so link 1 points clockwise, below the +x axis. Keep the calculator in radian mode.",
+        "Elbow first: (2.25 cos(-0.8), 2.25 sin(-0.8)) = (1.56759, -1.614051) m. Next add a vector of length l2 = 1 m pointing at the world angle q1 + q2 (add the two joint angles), component by component.",
+        "Elbow: (l1 cos q1, l1 sin q1) = (2.25 cos(-0.8), 2.25 sin(-0.8)) = (1.56759, -1.614051) m. Link 2 points at the world angle q1 + q2 = -0.8 + 2 = 1.2 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.362358, 0.932039) m. Tip: x = 1.56759 + 0.362358 = 1.929948 m; y = -1.614051 + 0.932039 = -0.682012 m. theta = q1 + q2 = 1.2 rad (any angle differing by a multiple of 2π is accepted)."
+      ],
+      "remediation": "Common slips on this item: treating q2 = 2 rad as the world angle of link 2 gives x ≈ 1.1514, y ≈ -0.7048 and theta = 2; a calculator in degree mode gives x ≈ 3.2496, y ≈ -0.0105; swapping the link lengths (l1 = 1 m, l2 = 2.25 m) gives x ≈ 1.512, y ≈ 1.3797. If your answer matches one of these, the slip is in that step, not in the formula. Revisit the relative-angle convention in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.tabletop.6",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.0@1",
+      "inputs": {
+        "q1": "2.1",
+        "q2": "1.4",
+        "l1": "2.5",
+        "l2": "1.1"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "A tabletop arm swings over to the far side of the table to drop a part in a bin behind its base. Planar 2R arm: l1 = 2.5 m, l2 = 1.1 m; relative joint angles q1 = 2.1 rad, q2 = 1.4 rad (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832. Keep at least 4 decimals in intermediate cos/sin values.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "-2.292218",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "1.772162",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "-2.783185",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Elbow: (l1 cos q1, l1 sin q1) = (2.5 cos 2.1, 2.5 sin 2.1) = (-1.262115, 2.158023) m. Link 2 points at the world angle q1 + q2 = 2.1 + 1.4 = 3.5 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-1.030102, -0.385862) m. Tip: x = -1.262115 + (-1.030102) ≈ -2.292218 m; y = 2.158023 + (-0.385862) ≈ 1.772162 m. theta = q1 + q2 = 3.5 rad, which is past π; 3.5 - 2π = -2.783185 rad is the same orientation (any angle differing by a multiple of 2π is accepted).",
+      "hints": [
+        "The joints are relative: link 1 points at q1 = 2.1 rad from the base +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 1.4 rad alone. The sum q1 + q2 goes past π, so the tool points into the lower half-plane; any angle differing by 2π is the same orientation. Keep the calculator in radian mode.",
+        "Elbow first: (2.5 cos 2.1, 2.5 sin 2.1) = (-1.262115, 2.158023) m. Next add a vector of length l2 = 1.1 m pointing at the world angle q1 + q2 (add the two joint angles), component by component.",
+        "Elbow: (l1 cos q1, l1 sin q1) = (2.5 cos 2.1, 2.5 sin 2.1) = (-1.262115, 2.158023) m. Link 2 points at the world angle q1 + q2 = 2.1 + 1.4 = 3.5 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-1.030102, -0.385862) m. Tip: x = -1.262115 + (-1.030102) ≈ -2.292218 m; y = 2.158023 + (-0.385862) ≈ 1.772162 m. theta = q1 + q2 = 3.5 rad, which is past π; 3.5 - 2π = -2.783185 rad is the same orientation (any angle differing by a multiple of 2π is accepted)."
+      ],
+      "remediation": "Common slips on this item: treating q2 = 1.4 rad as the world angle of link 2 gives x ≈ -1.0752, y ≈ 3.242 and theta = 1.4; a calculator in degree mode gives x ≈ 3.5963, y ≈ 0.1588; swapping the link lengths (l1 = 1.1 m, l2 = 2.5 m) gives x ≈ -2.8965, y ≈ 0.0726. If your answer matches one of these, the slip is in that step, not in the formula. Revisit the relative-angle convention in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.tabletop.7",
+      "route": "tabletop",
+      "difficulty": 2,
+      "structure": "X11.R04.planar-fk.1@1",
+      "inputs": {
+        "q1": "-0.3",
+        "q2": "-0.6",
+        "l1": "2.75",
+        "l2": "1.2"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "A tabletop arm reaches to the right-hand side of the table, below its base x-axis. Planar 2R arm: l1 = 2.75 m, l2 = 1.2 m; relative joint angles q1 = -0.3 rad, q2 = -0.6 rad (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832. Keep at least 4 decimals in intermediate cos/sin values.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "3.373107",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-1.752673",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "-0.9",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Elbow: (l1 cos q1, l1 sin q1) = (2.75 cos(-0.3), 2.75 sin(-0.3)) = (2.627175, -0.812681) m. Link 2 points at the world angle q1 + q2 = -0.3 + (-0.6) = -0.9 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.745932, -0.939992) m. Tip: x = 2.627175 + 0.745932 = 3.373107 m; y = -0.812681 + (-0.939992) = -1.752673 m. theta = q1 + q2 = -0.9 rad (any angle differing by a multiple of 2π is accepted).",
+      "hints": [
+        "The joints are relative: link 1 points at q1 = -0.3 rad from the base +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -0.6 rad alone. q1 is negative, so link 1 points clockwise, below the +x axis. Keep the calculator in radian mode.",
+        "Elbow first: (2.75 cos(-0.3), 2.75 sin(-0.3)) = (2.627175, -0.812681) m. Next add a vector of length l2 = 1.2 m pointing at the world angle q1 + q2 (add the two joint angles), component by component.",
+        "Elbow: (l1 cos q1, l1 sin q1) = (2.75 cos(-0.3), 2.75 sin(-0.3)) = (2.627175, -0.812681) m. Link 2 points at the world angle q1 + q2 = -0.3 + (-0.6) = -0.9 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.745932, -0.939992) m. Tip: x = 2.627175 + 0.745932 = 3.373107 m; y = -0.812681 + (-0.939992) = -1.752673 m. theta = q1 + q2 = -0.9 rad (any angle differing by a multiple of 2π is accepted)."
+      ],
+      "remediation": "Common slips on this item: treating q2 = -0.6 rad as the world angle of link 2 gives x ≈ 3.6176, y ≈ -1.4903 and theta = -0.6; a calculator in degree mode gives x ≈ 3.9498, y ≈ -0.0332; swapping the link lengths (l1 = 1.2 m, l2 = 2.75 m) gives x ≈ 2.8558, y ≈ -2.5088. If your answer matches one of these, the slip is in that step, not in the formula. Revisit the relative-angle convention in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.tabletop.8",
+      "route": "tabletop",
+      "difficulty": 3,
+      "structure": "X11.R04.planar-fk.2@1",
+      "inputs": {
+        "q1": "-1.9",
+        "q2": "-1.5",
+        "l1": "3",
+        "l2": "1.3"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "A large tabletop arm swings clockwise around to a fixture behind its base. Planar 2R arm: l1 = 3 m, l2 = 1.3 m; relative joint angles q1 = -1.9 rad, q2 = -1.5 rad (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832. Keep at least 4 decimals in intermediate cos/sin values.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "-2.226706",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-2.506697",
+          "tolerance": 0.001
+        },
+        {
+          "label": "theta (rad)",
+          "kind": "angle",
+          "answer": "2.883185",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Elbow: (l1 cos q1, l1 sin q1) = (3 cos(-1.9), 3 sin(-1.9)) = (-0.969869, -2.8389) m. Link 2 points at the world angle q1 + q2 = -1.9 + (-1.5) = -3.4 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-1.256838, 0.332203) m. Tip: x = -0.969869 + (-1.256838) ≈ -2.226706 m; y = -2.8389 + 0.332203 = -2.506697 m. theta = q1 + q2 = -3.4 rad, which is past -π; -3.4 + 2π = 2.883185 rad is the same orientation (any angle differing by a multiple of 2π is accepted).",
+      "hints": [
+        "The joints are relative: link 1 points at q1 = -1.9 rad from the base +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -1.5 rad alone. q1 is negative, so link 1 points clockwise, below the +x axis. The sum q1 + q2 goes past -π, so the tool points into the upper half-plane; any angle differing by 2π is the same orientation. Keep the calculator in radian mode.",
+        "Elbow first: (3 cos(-1.9), 3 sin(-1.9)) = (-0.969869, -2.8389) m. Next add a vector of length l2 = 1.3 m pointing at the world angle q1 + q2 (add the two joint angles), component by component.",
+        "Elbow: (l1 cos q1, l1 sin q1) = (3 cos(-1.9), 3 sin(-1.9)) = (-0.969869, -2.8389) m. Link 2 points at the world angle q1 + q2 = -1.9 + (-1.5) = -3.4 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-1.256838, 0.332203) m. Tip: x = -0.969869 + (-1.256838) ≈ -2.226706 m; y = -2.8389 + 0.332203 = -2.506697 m. theta = q1 + q2 = -3.4 rad, which is past -π; -3.4 + 2π = 2.883185 rad is the same orientation (any angle differing by a multiple of 2π is accepted)."
+      ],
+      "remediation": "Common slips on this item: treating q2 = -1.5 rad as the world angle of link 2 gives x ≈ -0.8779, y ≈ -4.1356 and theta = -1.5; a calculator in degree mode gives x ≈ 4.2961, y ≈ -0.1766; swapping the link lengths (l1 = 1.3 m, l2 = 3 m) gives x ≈ -3.3207, y ≈ -0.4636. If your answer matches one of these, the slip is in that step, not in the formula. Revisit the relative-angle convention in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.inspection.1",
+      "route": "inspection",
+      "difficulty": 1,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.9",
+        "q2": "0.6",
+        "l1": "1.1",
+        "l2": "0.43"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: a camera at the tip must report its pose to the base controller. Relative joints q1 = 0.9 rad, q2 = 0.6 rad; unequal links l1 = 1.1 m, l2 = 0.43 m. CCW positive, column vectors. Return the complete 3×3 homogeneous transform T_BT (maps tool coordinates into base coordinates), row by row, with the tool frame rotated by q1+q2; the translation entries are in metres. Tolerance ±0.001 for every entry.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.070737",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.997495",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "0.714188",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.997495",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.070737",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "1.290582",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tool angle q1 + q2 = 0.9 + 0.6 = 1.5 rad, so c = cos(1.5) = 0.070737 and s = sin(1.5) = 0.997495. Elbow: (l1 cos q1, l1 sin q1) = (1.1 cos 0.9, 1.1 sin 0.9) = (0.683771, 0.86166) m. Link 2 adds (l2 c, l2 s) = (0.030417, 0.428923) m, so the translation is x = 0.683771 + 0.030417 = 0.714188 m and y = 0.86166 + 0.428923 ≈ 1.290582 m. T_BT = [[0.070737, -0.997495, 0.714188], [0.997495, 0.070737, 1.290582], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform.",
+      "hints": [
+        "The joints are relative, so the tool frame is rotated by q1 + q2, not by q2 = 0.6 rad alone. T_BT maps tool coordinates into base coordinates: its rotation block is R(q1 + q2) = [[c, -s], [s, c]] (not the transpose), and its last column is the tip position in the base frame.",
+        "Tool angle q1 + q2 = 0.9 + 0.6 = 1.5 rad. Elbow: (1.1 cos 0.9, 1.1 sin 0.9) = (0.683771, 0.86166) m. Next evaluate c and s of the tool angle, place them as [[c, -s], [s, c]], and add the link-2 vector (l2 c, l2 s) to the elbow for the last column.",
+        "Tool angle q1 + q2 = 0.9 + 0.6 = 1.5 rad, so c = cos(1.5) = 0.070737 and s = sin(1.5) = 0.997495. Elbow: (l1 cos q1, l1 sin q1) = (1.1 cos 0.9, 1.1 sin 0.9) = (0.683771, 0.86166) m. Link 2 adds (l2 c, l2 s) = (0.030417, 0.428923) m, so the translation is x = 0.683771 + 0.030417 = 0.714188 m and y = 0.86166 + 0.428923 ≈ 1.290582 m. T_BT = [[0.070737, -0.997495, 0.714188], [0.997495, 0.070737, 1.290582], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform."
+      ],
+      "remediation": "Common slips on this item: writing Rᵀ instead of R puts 0.9975 in row 1, column 2 and -0.9975 in row 2, column 1 (the sign of s on the wrong off-diagonal); leaving the rotation block as the identity ignores the 1.5 rad tool angle; returning the inverse T_TB (base into tool) gives the last column (-1.3379, 0.6211); rotating the tool by q2 = 0.6 rad alone gives c ≈ 0.8253, s ≈ 0.5646 and translation (1.0387, 1.1045); a calculator in degree mode gives translation (1.5297, 0.0285). If your matrix matches one of these, fix that step. Revisit transform direction in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.inspection.2",
+      "route": "inspection",
+      "difficulty": 2,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.5",
+        "q2": "-1.3",
+        "l1": "1.2",
+        "l2": "0.46"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: a camera at the tip must report its pose to the base controller. Relative joints q1 = 0.5 rad, q2 = -1.3 rad; unequal links l1 = 1.2 m, l2 = 0.46 m. CCW positive, column vectors. Return the complete 3×3 homogeneous transform T_BT (maps tool coordinates into base coordinates), row by row, with the tool frame rotated by q1+q2; the translation entries are in metres. Tolerance ±0.001 for every entry.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.696707",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "0.717356",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.373584",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "-0.717356",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.696707",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "0.245327",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tool angle q1 + q2 = 0.5 + (-1.3) = -0.8 rad, so c = cos(-0.8) = 0.696707 and s = sin(-0.8) = -0.717356. Elbow: (l1 cos q1, l1 sin q1) = (1.2 cos 0.5, 1.2 sin 0.5) = (1.053099, 0.575311) m. Link 2 adds (l2 c, l2 s) = (0.320485, -0.329984) m, so the translation is x = 1.053099 + 0.320485 = 1.373584 m and y = 0.575311 + (-0.329984) = 0.245327 m. T_BT = [[0.696707, 0.717356, 1.373584], [-0.717356, 0.696707, 0.245327], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform.",
+      "hints": [
+        "The joints are relative, so the tool frame is rotated by q1 + q2, not by q2 = -1.3 rad alone. T_BT maps tool coordinates into base coordinates: its rotation block is R(q1 + q2) = [[c, -s], [s, c]] (not the transpose), and its last column is the tip position in the base frame. The tool angle is negative, so s = sin(q1 + q2) is negative and the -s entry is positive.",
+        "Tool angle q1 + q2 = 0.5 + (-1.3) = -0.8 rad. Elbow: (1.2 cos 0.5, 1.2 sin 0.5) = (1.053099, 0.575311) m. Next evaluate c and s of the tool angle, place them as [[c, -s], [s, c]], and add the link-2 vector (l2 c, l2 s) to the elbow for the last column.",
+        "Tool angle q1 + q2 = 0.5 + (-1.3) = -0.8 rad, so c = cos(-0.8) = 0.696707 and s = sin(-0.8) = -0.717356. Elbow: (l1 cos q1, l1 sin q1) = (1.2 cos 0.5, 1.2 sin 0.5) = (1.053099, 0.575311) m. Link 2 adds (l2 c, l2 s) = (0.320485, -0.329984) m, so the translation is x = 1.053099 + 0.320485 = 1.373584 m and y = 0.575311 + (-0.329984) = 0.245327 m. T_BT = [[0.696707, 0.717356, 1.373584], [-0.717356, 0.696707, 0.245327], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform."
+      ],
+      "remediation": "Common slips on this item: writing Rᵀ instead of R puts -0.7174 in row 1, column 2 and 0.7174 in row 2, column 1 (the sign of s on the wrong off-diagonal); leaving the rotation block as the identity ignores the -0.8 rad tool angle; returning the inverse T_TB (base into tool) gives the last column (-0.781, -1.1563); rotating the tool by q2 = -1.3 rad alone gives c ≈ 0.2675, s ≈ -0.9636 and translation (1.1761, 0.1321); a calculator in degree mode gives translation (1.6599, 0.004). If your matrix matches one of these, fix that step. Revisit transform direction in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.inspection.3",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "-1",
+        "q2": "2.4",
+        "l1": "1.3",
+        "l2": "0.49"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: a camera at the tip must report its pose to the base controller. Relative joints q1 = -1 rad, q2 = 2.4 rad; unequal links l1 = 1.3 m, l2 = 0.49 m. CCW positive, column vectors. Return the complete 3×3 homogeneous transform T_BT (maps tool coordinates into base coordinates), row by row, with the tool frame rotated by q1+q2; the translation entries are in metres. Tolerance ±0.001 for every entry.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.169967",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.98545",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "0.785677",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.98545",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.169967",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "-0.611042",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tool angle q1 + q2 = -1 + 2.4 = 1.4 rad, so c = cos(1.4) = 0.169967 and s = sin(1.4) = 0.98545. Elbow: (l1 cos q1, l1 sin q1) = (1.3 cos(-1), 1.3 sin(-1)) = (0.702393, -1.093912) m. Link 2 adds (l2 c, l2 s) = (0.083284, 0.48287) m, so the translation is x = 0.702393 + 0.083284 = 0.785677 m and y = -1.093912 + 0.48287 = -0.611042 m. T_BT = [[0.169967, -0.98545, 0.785677], [0.98545, 0.169967, -0.611042], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform.",
+      "hints": [
+        "The joints are relative, so the tool frame is rotated by q1 + q2, not by q2 = 2.4 rad alone. T_BT maps tool coordinates into base coordinates: its rotation block is R(q1 + q2) = [[c, -s], [s, c]] (not the transpose), and its last column is the tip position in the base frame. q1 is negative, so link 1 points clockwise, below the base +x axis.",
+        "Tool angle q1 + q2 = -1 + 2.4 = 1.4 rad. Elbow: (1.3 cos(-1), 1.3 sin(-1)) = (0.702393, -1.093912) m. Next evaluate c and s of the tool angle, place them as [[c, -s], [s, c]], and add the link-2 vector (l2 c, l2 s) to the elbow for the last column.",
+        "Tool angle q1 + q2 = -1 + 2.4 = 1.4 rad, so c = cos(1.4) = 0.169967 and s = sin(1.4) = 0.98545. Elbow: (l1 cos q1, l1 sin q1) = (1.3 cos(-1), 1.3 sin(-1)) = (0.702393, -1.093912) m. Link 2 adds (l2 c, l2 s) = (0.083284, 0.48287) m, so the translation is x = 0.702393 + 0.083284 = 0.785677 m and y = -1.093912 + 0.48287 = -0.611042 m. T_BT = [[0.169967, -0.98545, 0.785677], [0.98545, 0.169967, -0.611042], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform."
+      ],
+      "remediation": "Common slips on this item: writing Rᵀ instead of R puts 0.9854 in row 1, column 2 and -0.9854 in row 2, column 1 (the sign of s on the wrong off-diagonal); leaving the rotation block as the identity ignores the 1.4 rad tool angle; returning the inverse T_TB (base into tool) gives the last column (0.4686, 0.8781); rotating the tool by q2 = 2.4 rad alone gives c ≈ -0.7374, s ≈ 0.6755 and translation (0.3411, -0.7629); a calculator in degree mode gives translation (1.7897, -0.0107). If your matrix matches one of these, fix that step. Revisit transform direction in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.inspection.4",
+      "route": "inspection",
+      "difficulty": 1,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "0.4",
+        "q2": "0.7",
+        "l1": "1.4",
+        "l2": "0.52"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: a camera at the tip must report its pose to the base controller. Relative joints q1 = 0.4 rad, q2 = 0.7 rad; unequal links l1 = 1.4 m, l2 = 0.52 m. CCW positive, column vectors. Return the complete 3×3 homogeneous transform T_BT (maps tool coordinates into base coordinates), row by row, with the tool frame rotated by q1+q2; the translation entries are in metres. Tolerance ±0.001 for every entry.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.453596",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.891207",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.525355",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.891207",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.453596",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "1.008614",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tool angle q1 + q2 = 0.4 + 0.7 = 1.1 rad, so c = cos(1.1) = 0.453596 and s = sin(1.1) = 0.891207. Elbow: (l1 cos q1, l1 sin q1) = (1.4 cos 0.4, 1.4 sin 0.4) = (1.289485, 0.545186) m. Link 2 adds (l2 c, l2 s) = (0.23587, 0.463428) m, so the translation is x = 1.289485 + 0.23587 = 1.525355 m and y = 0.545186 + 0.463428 = 1.008614 m. T_BT = [[0.453596, -0.891207, 1.525355], [0.891207, 0.453596, 1.008614], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform.",
+      "hints": [
+        "The joints are relative, so the tool frame is rotated by q1 + q2, not by q2 = 0.7 rad alone. T_BT maps tool coordinates into base coordinates: its rotation block is R(q1 + q2) = [[c, -s], [s, c]] (not the transpose), and its last column is the tip position in the base frame.",
+        "Tool angle q1 + q2 = 0.4 + 0.7 = 1.1 rad. Elbow: (1.4 cos 0.4, 1.4 sin 0.4) = (1.289485, 0.545186) m. Next evaluate c and s of the tool angle, place them as [[c, -s], [s, c]], and add the link-2 vector (l2 c, l2 s) to the elbow for the last column.",
+        "Tool angle q1 + q2 = 0.4 + 0.7 = 1.1 rad, so c = cos(1.1) = 0.453596 and s = sin(1.1) = 0.891207. Elbow: (l1 cos q1, l1 sin q1) = (1.4 cos 0.4, 1.4 sin 0.4) = (1.289485, 0.545186) m. Link 2 adds (l2 c, l2 s) = (0.23587, 0.463428) m, so the translation is x = 1.289485 + 0.23587 = 1.525355 m and y = 0.545186 + 0.463428 = 1.008614 m. T_BT = [[0.453596, -0.891207, 1.525355], [0.891207, 0.453596, 1.008614], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform."
+      ],
+      "remediation": "Common slips on this item: writing Rᵀ instead of R puts 0.8912 in row 1, column 2 and -0.8912 in row 2, column 1 (the sign of s on the wrong off-diagonal); leaving the rotation block as the identity ignores the 1.1 rad tool angle; returning the inverse T_TB (base into tool) gives the last column (-1.5908, 0.9019); rotating the tool by q2 = 0.7 rad alone gives c ≈ 0.7648, s ≈ 0.6442 and translation (1.6872, 0.8802); a calculator in degree mode gives translation (1.9199, 0.0198). If your matrix matches one of these, fix that step. Revisit transform direction in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.inspection.5",
+      "route": "inspection",
+      "difficulty": 2,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "1.2",
+        "q2": "0.8",
+        "l1": "1.5",
+        "l2": "0.55"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: a camera at the tip must report its pose to the base controller. Relative joints q1 = 1.2 rad, q2 = 0.8 rad; unequal links l1 = 1.5 m, l2 = 0.55 m. CCW positive, column vectors. Return the complete 3×3 homogeneous transform T_BT (maps tool coordinates into base coordinates), row by row, with the tool frame rotated by q1+q2; the translation entries are in metres. Tolerance ±0.001 for every entry.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "-0.416147",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "-0.909297",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "0.314656",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "0.909297",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "-0.416147",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "1.898172",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tool angle q1 + q2 = 1.2 + 0.8 = 2 rad, so c = cos(2) = -0.416147 and s = sin(2) = 0.909297. Elbow: (l1 cos q1, l1 sin q1) = (1.5 cos 1.2, 1.5 sin 1.2) = (0.543537, 1.398059) m. Link 2 adds (l2 c, l2 s) = (-0.228881, 0.500114) m, so the translation is x = 0.543537 + (-0.228881) = 0.314656 m and y = 1.398059 + 0.500114 ≈ 1.898172 m. T_BT = [[-0.416147, -0.909297, 0.314656], [0.909297, -0.416147, 1.898172], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform.",
+      "hints": [
+        "The joints are relative, so the tool frame is rotated by q1 + q2, not by q2 = 0.8 rad alone. T_BT maps tool coordinates into base coordinates: its rotation block is R(q1 + q2) = [[c, -s], [s, c]] (not the transpose), and its last column is the tip position in the base frame. The tool angle is past π/2, so c = cos(q1 + q2) is negative.",
+        "Tool angle q1 + q2 = 1.2 + 0.8 = 2 rad. Elbow: (1.5 cos 1.2, 1.5 sin 1.2) = (0.543537, 1.398059) m. Next evaluate c and s of the tool angle, place them as [[c, -s], [s, c]], and add the link-2 vector (l2 c, l2 s) to the elbow for the last column.",
+        "Tool angle q1 + q2 = 1.2 + 0.8 = 2 rad, so c = cos(2) = -0.416147 and s = sin(2) = 0.909297. Elbow: (l1 cos q1, l1 sin q1) = (1.5 cos 1.2, 1.5 sin 1.2) = (0.543537, 1.398059) m. Link 2 adds (l2 c, l2 s) = (-0.228881, 0.500114) m, so the translation is x = 0.543537 + (-0.228881) = 0.314656 m and y = 1.398059 + 0.500114 ≈ 1.898172 m. T_BT = [[-0.416147, -0.909297, 0.314656], [0.909297, -0.416147, 1.898172], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform."
+      ],
+      "remediation": "Common slips on this item: writing Rᵀ instead of R puts 0.9093 in row 1, column 2 and -0.9093 in row 2, column 1 (the sign of s on the wrong off-diagonal); leaving the rotation block as the identity ignores the 2 rad tool angle; returning the inverse T_TB (base into tool) gives the last column (-1.5951, 1.076); rotating the tool by q2 = 0.8 rad alone gives c ≈ 0.6967, s ≈ 0.7174 and translation (0.9267, 1.7926); a calculator in degree mode gives translation (2.0493, 0.0506). If your matrix matches one of these, fix that step. Revisit transform direction in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.inspection.6",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "2.3",
+        "q2": "1.1",
+        "l1": "1.6",
+        "l2": "0.58"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: a camera at the tip must report its pose to the base controller. Relative joints q1 = 2.3 rad, q2 = 1.1 rad; unequal links l1 = 1.6 m, l2 = 0.58 m. CCW positive, column vectors. Return the complete 3×3 homogeneous transform T_BT (maps tool coordinates into base coordinates), row by row, with the tool frame rotated by q1+q2; the translation entries are in metres. Tolerance ±0.001 for every entry.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "-0.966798",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "0.255541",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "-1.626785",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "-0.255541",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "-0.966798",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "1.044915",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tool angle q1 + q2 = 2.3 + 1.1 = 3.4 rad, so c = cos(3.4) = -0.966798 and s = sin(3.4) = -0.255541. Elbow: (l1 cos q1, l1 sin q1) = (1.6 cos 2.3, 1.6 sin 2.3) = (-1.066042, 1.193128) m. Link 2 adds (l2 c, l2 s) = (-0.560743, -0.148214) m, so the translation is x = -1.066042 + (-0.560743) = -1.626785 m and y = 1.193128 + (-0.148214) ≈ 1.044915 m. T_BT = [[-0.966798, 0.255541, -1.626785], [-0.255541, -0.966798, 1.044915], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform.",
+      "hints": [
+        "The joints are relative, so the tool frame is rotated by q1 + q2, not by q2 = 1.1 rad alone. T_BT maps tool coordinates into base coordinates: its rotation block is R(q1 + q2) = [[c, -s], [s, c]] (not the transpose), and its last column is the tip position in the base frame. The tool angle goes past π, so both c and s change sign compared with a small angle.",
+        "Tool angle q1 + q2 = 2.3 + 1.1 = 3.4 rad. Elbow: (1.6 cos 2.3, 1.6 sin 2.3) = (-1.066042, 1.193128) m. Next evaluate c and s of the tool angle, place them as [[c, -s], [s, c]], and add the link-2 vector (l2 c, l2 s) to the elbow for the last column.",
+        "Tool angle q1 + q2 = 2.3 + 1.1 = 3.4 rad, so c = cos(3.4) = -0.966798 and s = sin(3.4) = -0.255541. Elbow: (l1 cos q1, l1 sin q1) = (1.6 cos 2.3, 1.6 sin 2.3) = (-1.066042, 1.193128) m. Link 2 adds (l2 c, l2 s) = (-0.560743, -0.148214) m, so the translation is x = -1.066042 + (-0.560743) = -1.626785 m and y = 1.193128 + (-0.148214) ≈ 1.044915 m. T_BT = [[-0.966798, 0.255541, -1.626785], [-0.255541, -0.966798, 1.044915], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform."
+      ],
+      "remediation": "Common slips on this item: writing Rᵀ instead of R puts -0.2555 in row 1, column 2 and 0.2555 in row 2, column 1 (the sign of s on the wrong off-diagonal); leaving the rotation block as the identity ignores the 3.4 rad tool angle; returning the inverse T_TB (base into tool) gives the last column (-1.3058, 1.4259); rotating the tool by q2 = 1.1 rad alone gives c ≈ 0.4536, s ≈ 0.8912 and translation (-0.803, 1.71); a calculator in degree mode gives translation (2.1777, 0.0986). If your matrix matches one of these, fix that step. Revisit transform direction in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.inspection.7",
+      "route": "inspection",
+      "difficulty": 2,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "-0.6",
+        "q2": "-0.9",
+        "l1": "1.7",
+        "l2": "0.61"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: a camera at the tip must report its pose to the base controller. Relative joints q1 = -0.6 rad, q2 = -0.9 rad; unequal links l1 = 1.7 m, l2 = 0.61 m. CCW positive, column vectors. Return the complete 3×3 homogeneous transform T_BT (maps tool coordinates into base coordinates), row by row, with the tool frame rotated by q1+q2; the translation entries are in metres. Tolerance ±0.001 for every entry.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "0.070737",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "0.997495",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "1.44622",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "-0.997495",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "0.070737",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "-1.568364",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tool angle q1 + q2 = -0.6 + (-0.9) = -1.5 rad, so c = cos(-1.5) = 0.070737 and s = sin(-1.5) = -0.997495. Elbow: (l1 cos q1, l1 sin q1) = (1.7 cos(-0.6), 1.7 sin(-0.6)) = (1.403071, -0.959892) m. Link 2 adds (l2 c, l2 s) = (0.04315, -0.608472) m, so the translation is x = 1.403071 + 0.04315 ≈ 1.44622 m and y = -0.959892 + (-0.608472) = -1.568364 m. T_BT = [[0.070737, 0.997495, 1.44622], [-0.997495, 0.070737, -1.568364], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform.",
+      "hints": [
+        "The joints are relative, so the tool frame is rotated by q1 + q2, not by q2 = -0.9 rad alone. T_BT maps tool coordinates into base coordinates: its rotation block is R(q1 + q2) = [[c, -s], [s, c]] (not the transpose), and its last column is the tip position in the base frame. q1 is negative, so link 1 points clockwise, below the base +x axis. The tool angle is negative, so s = sin(q1 + q2) is negative and the -s entry is positive.",
+        "Tool angle q1 + q2 = -0.6 + (-0.9) = -1.5 rad. Elbow: (1.7 cos(-0.6), 1.7 sin(-0.6)) = (1.403071, -0.959892) m. Next evaluate c and s of the tool angle, place them as [[c, -s], [s, c]], and add the link-2 vector (l2 c, l2 s) to the elbow for the last column.",
+        "Tool angle q1 + q2 = -0.6 + (-0.9) = -1.5 rad, so c = cos(-1.5) = 0.070737 and s = sin(-1.5) = -0.997495. Elbow: (l1 cos q1, l1 sin q1) = (1.7 cos(-0.6), 1.7 sin(-0.6)) = (1.403071, -0.959892) m. Link 2 adds (l2 c, l2 s) = (0.04315, -0.608472) m, so the translation is x = 1.403071 + 0.04315 ≈ 1.44622 m and y = -0.959892 + (-0.608472) = -1.568364 m. T_BT = [[0.070737, 0.997495, 1.44622], [-0.997495, 0.070737, -1.568364], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform."
+      ],
+      "remediation": "Common slips on this item: writing Rᵀ instead of R puts -0.9975 in row 1, column 2 and 0.9975 in row 2, column 1 (the sign of s on the wrong off-diagonal); leaving the rotation block as the identity ignores the -1.5 rad tool angle; returning the inverse T_TB (base into tool) gives the last column (-1.6667, -1.3317); rotating the tool by q2 = -0.9 rad alone gives c ≈ 0.6216, s ≈ -0.7833 and translation (1.7823, -1.4377); a calculator in degree mode gives translation (2.3097, -0.0338). If your matrix matches one of these, fix that step. Revisit transform direction in /lessons/R04, then try a fresh X11 item."
+    },
+    {
+      "id": "X11.inspection.8",
+      "route": "inspection",
+      "difficulty": 3,
+      "structure": "planar-2r.transform@1",
+      "inputs": {
+        "q1": "-1.7",
+        "q2": "-0.6",
+        "l1": "1.8",
+        "l2": "0.64"
+      },
+      "objectiveId": "R04.planar-fk",
+      "prompt": "Inspection tool on a planar 2R arm: a camera at the tip must report its pose to the base controller. Relative joints q1 = -1.7 rad, q2 = -0.6 rad; unequal links l1 = 1.8 m, l2 = 0.64 m. CCW positive, column vectors. Return the complete 3×3 homogeneous transform T_BT (maps tool coordinates into base coordinates), row by row, with the tool frame rotated by q1+q2; the translation entries are in metres. Tolerance ±0.001 for every entry.",
+      "fields": [
+        {
+          "label": "Pose row 1, column 1",
+          "kind": "number",
+          "answer": "-0.666276",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 2",
+          "kind": "number",
+          "answer": "0.745705",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 1, column 3",
+          "kind": "number",
+          "answer": "-0.658337",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 1",
+          "kind": "number",
+          "answer": "-0.745705",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 2",
+          "kind": "number",
+          "answer": "-0.666276",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 2, column 3",
+          "kind": "number",
+          "answer": "-2.262248",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Pose row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Tool angle q1 + q2 = -1.7 + (-0.6) = -2.3 rad, so c = cos(-2.3) = -0.666276 and s = sin(-2.3) = -0.745705. Elbow: (l1 cos q1, l1 sin q1) = (1.8 cos(-1.7), 1.8 sin(-1.7)) = (-0.23192, -1.784997) m. Link 2 adds (l2 c, l2 s) = (-0.426417, -0.477251) m, so the translation is x = -0.23192 + (-0.426417) = -0.658337 m and y = -1.784997 + (-0.477251) = -2.262248 m. T_BT = [[-0.666276, 0.745705, -0.658337], [-0.745705, -0.666276, -2.262248], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform.",
+      "hints": [
+        "The joints are relative, so the tool frame is rotated by q1 + q2, not by q2 = -0.6 rad alone. T_BT maps tool coordinates into base coordinates: its rotation block is R(q1 + q2) = [[c, -s], [s, c]] (not the transpose), and its last column is the tip position in the base frame. q1 is negative, so link 1 points clockwise, below the base +x axis. The tool angle is past -π/2, so c = cos(q1 + q2) is negative.",
+        "Tool angle q1 + q2 = -1.7 + (-0.6) = -2.3 rad. Elbow: (1.8 cos(-1.7), 1.8 sin(-1.7)) = (-0.23192, -1.784997) m. Next evaluate c and s of the tool angle, place them as [[c, -s], [s, c]], and add the link-2 vector (l2 c, l2 s) to the elbow for the last column.",
+        "Tool angle q1 + q2 = -1.7 + (-0.6) = -2.3 rad, so c = cos(-2.3) = -0.666276 and s = sin(-2.3) = -0.745705. Elbow: (l1 cos q1, l1 sin q1) = (1.8 cos(-1.7), 1.8 sin(-1.7)) = (-0.23192, -1.784997) m. Link 2 adds (l2 c, l2 s) = (-0.426417, -0.477251) m, so the translation is x = -0.23192 + (-0.426417) = -0.658337 m and y = -1.784997 + (-0.477251) = -2.262248 m. T_BT = [[-0.666276, 0.745705, -0.658337], [-0.745705, -0.666276, -2.262248], [0, 0, 1]]: the columns of the rotation block are the tool axes in base coordinates, and the bottom row (0, 0, 1) keeps it a homogeneous planar transform."
+      ],
+      "remediation": "Common slips on this item: writing Rᵀ instead of R puts -0.7457 in row 1, column 2 and 0.7457 in row 2, column 1 (the sign of s on the wrong off-diagonal); leaving the rotation block as the identity ignores the -2.3 rad tool angle; returning the inverse T_TB (base into tool) gives the last column (-2.1256, -1.0164); rotating the tool by q2 = -0.6 rad alone gives c ≈ 0.8253, s ≈ -0.5646 and translation (0.2963, -2.1464); a calculator in degree mode gives translation (2.4387, -0.0791). If your matrix matches one of these, fix that step. Revisit transform direction in /lessons/R04, then try a fresh X11 item."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "tabletop": "Return planar endpoint and tool angle.",
+    "inspection": "Return the full homogeneous inspection-tool pose."
+  }
+}

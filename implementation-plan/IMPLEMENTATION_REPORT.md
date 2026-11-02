@@ -7,8 +7,8 @@
 - Existing V1 behavior and topic mastery remain separate from V2.
 - Additive, checksummed SQLite sidecar; verified pre-migration WAL copy; supported-version guards and atomic legacy checkpoint hook.
 - Durable practice/placement attempts, frozen source bytes/hash, recorded issue/help/feedback exposures, monotonic assistance, strict answer parsing, idempotent close and no practice evidence.
-- Original drafts for 20 exercise families plus a bridge and 152 static instances; numeric, fraction, angle and choice feedback. Each core family now has two distinct authored application routes, stated route differences and separate calculation/reasoning checks. Immutable V1/V2 sources remain available after later versions activate; 15 families are now at v3 after review fixes.
-- Validated 24-objective readiness registry, optional paths, original bridge and three manual Python numerical kits (frames, planar FK, exact-arc odometry). A 176-node/319-edge curriculum projection is advisory only; the live graph is unchanged. Kit self-reports create no evidence.
+- Original drafts for 20 exercise families plus a bridge and 152 static instances; numeric, fraction, angle and choice feedback. Each core family now has two distinct authored application routes, stated route differences and separate calculation/reasoning checks. Immutable V1/V2 sources remain available after later versions activate; 15 families are at v3 after review fixes; X11 is at v4.
+- Validated 24-objective readiness registry, optional paths, original bridge and four manual Python numerical kits (frames, planar FK, exact-arc odometry, bounded P/PI feedback). A 176-node/319-edge curriculum projection is advisory only; the live graph is unchanged. Kit self-reports create no evidence.
 - Server-gated objective UI with Recommended, Explore and More Practice, route/difficulty choices, scratchpad text that is never executed, history and mobile keyboard support.
 - Backup/3 captures all learning rows with existing progress. Bounded localhost preview/confirmation, revision checks, atomic replacement, nonrecursive pre-restore snapshots and foreign-origin handling preserve local identity.
 - Owner-approved deferred restore epochs preserve every existing epoch and immediate local provenance. The first actual learning write allocates the new epoch atomically; idempotent/no-op operations and failed writes leave it deferred. Shared envelope/projection/cache accounting keeps repeated boundary restores within the same logical budget.
@@ -80,7 +80,7 @@ The default database remains .local/corelab.sqlite; V2 adds tables and creates a
 
 ## Remaining work / gates
 
-Not done: S3 learner observation (owner chose not to run it), human expert/pedagogical review, manual screen-reader and physical-device testing, large reviewed-evidence workload. Windows/macOS evidence is CI only (Node 24; browser flows on Linux). The 22-lab roadmap labels three manual kits as working and 19 lab implementations as planned; related exercise links are bounded preparation, not lab completion. Optional MuJoCo/ROBOTIS documentation is link-only; ROS documentation retrieval was provider-blocked. No simulator/ROS/hardware integration has been tested or enabled.
+Not done: S3 learner observation (owner chose not to run it), human expert/pedagogical review, manual screen-reader and physical-device testing, large reviewed-evidence workload. Windows/macOS evidence is CI only (Node 24; browser flows on Linux). The 22-lab roadmap labels four manual kits as working and 18 lab implementations as planned; related exercise links are bounded preparation, not lab completion. Optional MuJoCo/ROBOTIS documentation is link-only; ROS documentation retrieval was provider-blocked. No simulator/ROS/hardware integration has been tested or enabled.
 
 `LEARNER_PILOT_PROTOCOL.md` prepares S3 observations and stop criteria. No participant outreach or 21-day trial has occurred.
 

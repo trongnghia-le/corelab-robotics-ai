@@ -170,6 +170,12 @@ test("optional bridge, manual kit download and practice-only self-report", async
   expect((await odometryDownload).suggestedFilename()).toBe(
     "L03-odometry.v1.py",
   );
+  await page.goto("/objectives/C01.bounded-step");
+  const pidDownload = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Download Bounded feedback self-check kit" })
+    .click();
+  expect((await pidDownload).suggestedFilename()).toBe("L04-pid.v1.py");
 });
 test("mobile keyboard, source redaction and gated verification", async ({
   page,

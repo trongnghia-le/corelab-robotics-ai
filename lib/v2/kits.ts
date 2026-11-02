@@ -40,11 +40,20 @@ const definitions = [
     description:
       "Implement wheel/body velocity conversion and exact planar odometry. Check nonzero initial headings, reverse motion, pure spin, small arcs, units and invalid inputs. No calibration or physical-position claim.",
   },
+  {
+    id: "L04-pid",
+    title: "Bounded feedback self-check kit",
+    topic: "C01",
+    objectives: ["C01.bounded-step"],
+    description:
+      "Implement bounded P and PI steps with anti-windup on a declared toy integrator, a closed-loop simulation and settling/overshoot metrics. Practice beyond the one-step objective; no actuator, torque or hardware claim.",
+  },
 ] as const;
 // Keep the original shared sample bytes unchanged: they are part of both old
 // kit hashes. New kits use separate immutable manifests.
 const sampleFiles: Record<string, string> = {
   "L03-odometry": "L03-odometry.samples.v1.json",
+  "L04-pid": "L04-pid.samples.v1.json",
 };
 export function kitFiles() {
   return definitions.map((d) => ({
