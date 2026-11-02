@@ -2,7 +2,80 @@
 
 **S1/S2 activated by the owner on 2026-11-02 after an owner-assigned AI content review — not a human expert review or learner-outcome certification.** The S3 learner pilot was not run, at the owner's request. The repository was pushed to its GitHub remote on 2026-11-02 for cross-platform CI; no deployment or real learner-data deletion has been performed.
 
-## Working implementation so far
+## Roadmap execution status (2026-11-02, local commits, not pushed)
+
+Instructions: `CLAUDE_FULL_ROADMAP_PROMPT.md`; inventory and per-group log: `ROADMAP_EXECUTION.md`; API notes: `CLAUDE_BACKEND_HANDOFF.md`. **The 22-lab roadmap is not complete.** Every lab now has a reviewed *foundation* (objective, practice family, manual self-check kit, teaching coverage). For L05 and L07–L22, the environment-dependent subcontracts in their section-9 scope are listed in each roadmap entry's `unavailable` field and are not provided. All review below is **owner-assigned AI review by fresh reviewer instances that did not author the content — not human expert review**, and no learner has used any of it.
+
+### Fully implemented and tested scopes
+
+- 43 versioned objectives (was 26) in existing curriculum topics, 39 practice families with 266 static items (was 22/164), 22 manual Python self-check kits with sample manifests, and 20 V2 teaching bridges plus the existing lessons. Every family X23–X39 has two distinct routes and an independent oracle written by its reviewer (`tests/v2/oracles/`), run by `tests/v2/numerical-oracles.test.ts`.
+- New C/M sources beyond Frames/FK: **F-ODOM / RV-ODOM** (R02.exact-arc) and **F-JIK / RV-JIK** (R06.planar-jacobian, R05.planar-ik). Each has a recorded AI review, reviewer-written oracles for every M structure (`tests/v2/oracles/cm-ODOM.ts`, `cm-JIK.ts`) run by `tests/v2/assessment-oracles.test.ts`, and exact-fingerprint disjointness from practice, kit samples and the other sources (validate-v2). In total, 4 forms and 4 retention pools are approved.
+- Additive API: `forms[].title`, `reviews[].sourceId`, `labRoadmap.labs[].unavailable`, per-objective bridges (`CLAUDE_BACKEND_HANDOFF.md`). Grading, admission, exposure and evidence semantics are unchanged.
+
+### Evidence kinds — kept separate
+
+| Kind | Status |
+| --- | --- |
+| Practice (static items, help, feedback) | 39 families; no evidence created |
+| Manual self-check kits (L01–L22) | Run by the learner locally; the web server never executes learner code; self-reports create no evidence |
+| C/M admission and retention | Frames, FK (R04), odometry (R02), Jacobian/IK (R06/R05) only; every other new objective has practice and a kit but **no** C/M form |
+| Verified I, lab reports, reviewed transfer | **Unavailable**: no protected runner, no report import |
+
+### Partial labs and unimplemented subcontracts
+
+L01–L04 and L06 are manual-kit labs with no declared unavailable parts. L05 and L07–L22 are partial: each provides a numerical/replay foundation only, and its `unavailable` list (5–8 items) covers, for example, ROS 2/DDS/TF2/rosbag runtime (L05, L12, L13, L14), MuJoCo or other physics-engine and simulator runs (L08, L17, L18, L20, L21), real sensors, cameras and hardware (L09, L10, L16, L17, L21), MoveIt/ros2_control/Nav2 (L13, L14), safety certification and human hazard review (L15), LeRobot datasets and neural policies (L19), deep RL (L20), and LLM/VLM or TAMP reasoning with human review of open plans (L22). Author fixtures (normal and `python -O`), rerun on 2026-11-02:
+
+| Kit | Valid alternatives | Named mutants | Kit | Valid alternatives | Named mutants |
+| --- | --- | --- | --- | --- | --- |
+| L03 odometry | 7 | 40 | L14 interfaces | 7 | 75 |
+| L04 PID | 5 | 63 | L15 executive | 7 | 108 |
+| L05 replay | 6 | 74 | L16 camera | 11 | 80 |
+| L06 Jacobian/IK | 7 | 81 | L17 alignment | 10 | 85 |
+| L07 trajectory | 6 | 73 | L18 grasp | 8 | 56 |
+| L08 dynamics | 6 | 95 | L19 imitation | 6 | 89 |
+| L09 localization | 6 | 76 | L20 RL | 5 | 92 |
+| L10 Kalman | 6 | 75 | L21 identification | 6 | 93 |
+| L11 planning | 7 | 90 | L22 reasoning | 7 | 80 |
+| L12 description | 6 | 94 | L13 navigation | 6 | 62 |
+
+L01/L02 (frames/FK) are covered by `tests/fixtures/manual_kits.py` (12 alternatives / 48 mutants as previously recorded).
+
+### Review outcomes (AI review)
+
+Every lab group and C/M source went author → fresh reviewer → fixes → re-review until no blocker/major remained. Notable majors found and fixed: three bridge worked examples that reproduced a practice item (L05, L17, L22), a prompt showing rounded numbers while the inputs held others (X35/L18), kit defects or weakly enforced contract clauses (L09 reversed kernel and single wrap, L12 XML-safety cases, L14 endpoint sampling, L21 conditioning threshold), JIK edge targets that mirrored the R05 bridge check, C items in RV-ODOM that repeated form items or went beyond the objective, mis-stated scenario numbers in two JIK C items, and the missing odometry lesson (`/lessons/R02` teaches mechanisms/DOF; a new `diff-drive-arc-odometry` bridge now covers R02.exact-arc). One reviewer claim (an L13 remediation value) was checked by the lead, found wrong, and not applied. Remaining minors are recorded in `ROADMAP_EXECUTION.md`.
+
+Known residual: published X12 v3 remediation still links `/lessons/R02`; correcting it needs an X12 v4 (published sources are never edited in place).
+
+### Tested OS/runtime/browser matrix for this execution
+
+Linux x64 only, Node 26.8.1, Chromium (Playwright). Each group was gated in a clean `git worktree` of the staged commit: lint, typecheck, validate:content, validate:v2, unit/integration tests, V2 production build with 10 V2 browser flows, and default production build with 9 legacy flows. Final C/M commit: 259 tests in 49 files, 10 legacy flows; V2 flows passed 10/10 on two full reruns after one intermittent failure of an unscoped heading locator in `e2e/v2-interface.spec.ts` (Codex-owned, reported, not edited). The milestone commits below were **not pushed**, so no GitHub Actions run covers them; the last CI run (Ubuntu/Windows/macOS, Node 24) covers `3c0793b`. Windows/macOS behaviour of the new content is therefore untested.
+
+### Deferred or environment-blocked integrations
+
+ROS 2, Nav2, MoveIt, ros2_control, MuJoCo or other physics engines, simulators, real cameras/sensors/robots and LeRobot data are not installed or authorised here and are not imitated; they stay unavailable. S3 learner observation, human expert review, manual screen-reader and device testing remain outstanding.
+
+### Licensing, security and owner decisions
+
+- All new content is original, CC BY 4.0, author "CoreLab contributors (AI-assisted original draft)", with no third-party sources. Kits are stdlib-only Python with no file, network, subprocess, eval or exec use, and the server never runs them.
+- `npm audit --omit=dev`: 0 findings. Full `npm audit`: 16 moderate dev-toolchain findings (minimatch advisory), unchanged.
+- Owner decisions needed: (1) whether to push these local commits (then CI covers Windows/macOS); (2) whether AI review is acceptable for the new C/M sources, as it was for Frames/FK; (3) whether to publish X12 v4 to fix the R02 lesson link; (4) whether any environment-dependent subcontract should be pursued (it needs a separately reviewed runtime).
+
+### Local commits (this execution, on top of `3c0793b`)
+
+`558420b` M0 infrastructure · `b9fcefd` B1 (L07, L09, L10, L11) · `a882936` B2 (L15, L16, L19, L21) · `ec99035` B3 (L05, L12, L18, L20) · `84288ba` B4 + L14 (L08, L13, L14, L17, L22) · `69ac7f6` log · `6a44f2e` R05 IK bridge · C/M expansion commit (see `ROADMAP_EXECUTION.md`). Interleaved Codex UI commits: `37328ae`, `f8f319a`, `c633774`, `81d9ca9`.
+
+Commands to reproduce:
+
+~~~sh
+npm ci
+npm run lint && npm run typecheck
+npm run validate:content && npm run validate:v2
+npm test
+for f in tests/fixtures/*.py; do python3 -I -B "$f" && python3 -I -B -O "$f"; done
+npm run build:v2 && npm run test:v2:e2e   # in a disposable copy, temporary database
+~~~
+
+## Working implementation (baseline history)
 
 - Existing V1 behavior and topic mastery remain separate from V2.
 - Additive, checksummed SQLite sidecar; verified pre-migration WAL copy; supported-version guards and atomic legacy checkpoint hook.
@@ -50,7 +123,7 @@ The toggle check requires an existing production build and Playwright Chromium. 
 
 Latest committed release snapshot checked in this audit: `27dfe44` (L04 code at `2650aa6`). CI run [41398479649](https://github.com/trongnghia-le/corelab-robotics-ai/actions/runs/41398479649) was independently queried during the alignment check: Node 24 jobs on Ubuntu, macOS and Windows all succeeded; browser steps ran on Linux and were explicitly skipped on the other two OSes.
 
-The working tree additionally contains the unfinished L06 planar Jacobian/IK expansion, X21/X22 and two new objectives. Actual local checks on this snapshot: **218 tests in 31 files passed**, V2 content validation passed (26 objectives, 22 core families, 164 practice items, five kit definitions), and typecheck passed. This snapshot is not a completed L06 milestone: its final build/browser/review evidence and commit remain to be recorded. Do not count a kit definition or a roadmap availability label alone as a released lab.
+The L06 planar Jacobian/IK expansion (X21/X22, two objectives) was later committed as `94daa9c`/`1fa7fb3` and its CI recorded in `3c0793b` (218 tests in 31 files). Later roadmap milestones are listed in the roadmap execution status above.
 
 - 1a70a20 — execution plan and strict contracts.
 - f100af2 — storage, practice, recovery and original static catalog drafts.
@@ -84,7 +157,7 @@ The default database remains .local/corelab.sqlite; V2 adds tables and creates a
 
 ## Remaining work / gates
 
-Not done: S3 learner observation (owner chose not to run it), human expert/pedagogical review, manual screen-reader and physical-device testing, large reviewed-evidence workload. Windows/macOS evidence is CI only (Node 24; browser flows on Linux). The 22-lab roadmap labels five manual kits as working and 17 lab implementations as planned; related exercise links are bounded preparation, not lab completion. Optional MuJoCo/ROBOTIS documentation is link-only; ROS documentation retrieval was provider-blocked. No simulator/ROS/hardware integration has been tested or enabled.
+Not done: S3 learner observation (owner chose not to run it), human expert/pedagogical review, manual screen-reader and physical-device testing, large reviewed-evidence workload. Windows/macOS evidence is CI only (Node 24; browser flows on Linux). All 22 roadmap labs now have a manual-kit foundation; L05 and L07–L22 remain partial, with their environment-dependent subcontracts listed as unavailable (see the roadmap execution status above). Optional MuJoCo/ROBOTIS documentation is link-only; ROS documentation retrieval was provider-blocked. No simulator/ROS/hardware integration has been tested or enabled.
 
 `LEARNER_PILOT_PROTOCOL.md` prepares S3 observations and stop criteria. No participant outreach or 21-day trial has occurred.
 

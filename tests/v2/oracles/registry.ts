@@ -7,6 +7,9 @@ export type FamilyOracle = (item: Item) => (number | string)[];
 export const familyOracles: Record<string, FamilyOracle> = {};
 
 // Independent numeric oracles for C/M "M" items added after Frames/FK, keyed
-// by task structure; written by the source's reviewer, not its author.
-export type TaskOracle = (inputs: Record<string, unknown>) => number[];
+// by task structure; written by the source's reviewer, not its author. A
+// choice field is answered with the start of the concluded option text.
+export type TaskOracle = (
+  inputs: Record<string, unknown>,
+) => (number | string)[];
 export const cmOracles: Record<string, TaskOracle> = {};

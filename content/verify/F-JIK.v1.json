@@ -1,0 +1,1581 @@
+{
+  "id": "F-JIK",
+  "version": 1,
+  "kind": "form",
+  "variants": [
+    {
+      "id": "A",
+      "items": [
+        {
+          "task": {
+            "id": "F-JIK.A.0",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.lost-direction@1",
+            "inputs": {
+              "query": "lost-direction",
+              "l1": "1.4",
+              "l2": "0.8",
+              "poses": [
+                [
+                  "0.8",
+                  "π"
+                ],
+                [
+                  "-2.2",
+                  "1.4"
+                ],
+                [
+                  "2.6",
+                  "0"
+                ]
+              ]
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.4 m, l2 = 0.8 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). For each pose choose the tip-velocity direction (a unit vector in the base frame) that NO choice of joint rates can produce at that instant, or choose that no direction is lost. Poses: pose 1: q1 = 0.8 rad, q2 = π rad; pose 2: q1 = -2.2 rad, q2 = 1.4 rad; pose 3: q1 = 2.6 rad, q2 = 0 rad.",
+            "fields": [
+              {
+                "label": "Pose 1: q1 = 0.8 rad, q2 = π rad",
+                "kind": "choice",
+                "answer": "Along link 1: (0.697, 0.717)",
+                "tolerance": 0.001,
+                "options": [
+                  "None lost: any (vx, vy) is possible",
+                  "Normal to link 1: (-0.717, 0.697)",
+                  "World x axis: (1.000, 0.000)",
+                  "Along link 1: (0.697, 0.717)"
+                ]
+              },
+              {
+                "label": "Pose 2: q1 = -2.2 rad, q2 = 1.4 rad",
+                "kind": "choice",
+                "answer": "None lost: any (vx, vy) is possible",
+                "tolerance": 0.001,
+                "options": [
+                  "Normal to link 1: (0.808, -0.589)",
+                  "World x axis: (1.000, 0.000)",
+                  "Along link 1: (-0.589, -0.808)",
+                  "None lost: any (vx, vy) is possible"
+                ]
+              },
+              {
+                "label": "Pose 3: q1 = 2.6 rad, q2 = 0 rad",
+                "kind": "choice",
+                "answer": "Along link 1: (-0.857, 0.516)",
+                "tolerance": 0.001,
+                "options": [
+                  "Along link 1: (-0.857, 0.516)",
+                  "None lost: any (vx, vy) is possible",
+                  "World x axis: (1.000, 0.000)",
+                  "Normal to link 1: (-0.516, -0.857)"
+                ]
+              }
+            ],
+            "solution": "Pose 1: det J = l1 l2 sin q2 = 0, so J has rank 1 and both columns are perpendicular to link 1; the velocity component along link 1 is lost. Pose 2: det J = l1 l2 sin q2 ≠ 0, so J is invertible and every tip velocity is available. Pose 3: det J = l1 l2 sin q2 = 0, so J has rank 1 and both columns are perpendicular to link 1; the velocity component along link 1 is lost. The lost direction is the one along link 1, in either sense.",
+            "hints": [
+              "Think of the two columns of J as the tip velocities produced by turning each joint alone, and ask whether they span the plane at each pose.",
+              "Compute det J = l1 l2 sin q2 for each pose. When it is zero the two columns are parallel; find the direction both are perpendicular to. When it is not zero, nothing is lost.",
+              "Pose 1: det J = l1 l2 sin q2 = 0, so J has rank 1 and both columns are perpendicular to link 1; the velocity component along link 1 is lost. Pose 2: det J = l1 l2 sin q2 ≠ 0, so J is invertible and every tip velocity is available. Pose 3: det J = l1 l2 sin q2 = 0, so J has rank 1 and both columns are perpendicular to link 1; the velocity component along link 1 is lost. The lost direction is the one along link 1, in either sense."
+            ],
+            "remediation": "If you chose 'perpendicular to link 1' at a singular pose you named the direction that is still available; if you chose the world x axis you tied the lost direction to the world frame instead of the link. If you reported a lost direction at a pose with sin q2 ≠ 0, you confused a special-looking pose with a singular one. Revisit singular configurations in /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.1",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.singular-vs-unreachable@1",
+            "inputs": {
+              "query": "singular-vs-unreachable",
+              "l1": "1.5",
+              "l2": "0.9",
+              "targets": [
+                [
+                  "-1.1",
+                  "1.0"
+                ],
+                [
+                  "1.44",
+                  "1.92"
+                ],
+                [
+                  "0.36",
+                  "-0.48"
+                ],
+                [
+                  "2.1",
+                  "1.8"
+                ]
+              ]
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.5 m, l2 = 0.9 m, no joint limits; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Singular means det J = 0. For each target tip position below (in m) choose the correct statement: target 1 = (-1.1, 1.0); target 2 = (1.44, 1.92); target 3 = (0.36, -0.48); target 4 = (2.1, 1.8).",
+            "fields": [
+              {
+                "label": "Target 1: (-1.1, 1.0) m",
+                "kind": "choice",
+                "answer": "Reachable, by a non-singular pose (det J ≠ 0)",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, only by a singular pose (det J = 0)",
+                  "Unreachable: no pose of this arm reaches it",
+                  "Reachable, by a non-singular pose (det J ≠ 0)"
+                ]
+              },
+              {
+                "label": "Target 2: (1.44, 1.92) m",
+                "kind": "choice",
+                "answer": "Reachable, only by a singular pose (det J = 0)",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, by a non-singular pose (det J ≠ 0)",
+                  "Unreachable: no pose of this arm reaches it",
+                  "Reachable, only by a singular pose (det J = 0)"
+                ]
+              },
+              {
+                "label": "Target 3: (0.36, -0.48) m",
+                "kind": "choice",
+                "answer": "Reachable, only by a singular pose (det J = 0)",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, only by a singular pose (det J = 0)",
+                  "Unreachable: no pose of this arm reaches it",
+                  "Reachable, by a non-singular pose (det J ≠ 0)"
+                ]
+              },
+              {
+                "label": "Target 4: (2.1, 1.8) m",
+                "kind": "choice",
+                "answer": "Unreachable: no pose of this arm reaches it",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, by a non-singular pose (det J ≠ 0)",
+                  "Reachable, only by a singular pose (det J = 0)",
+                  "Unreachable: no pose of this arm reaches it"
+                ]
+              }
+            ],
+            "solution": "Target 1: r = 1.4866 m lies strictly inside [0.6000, 2.4000] m, so both reaching poses have sin q2 ≠ 0. Target 2: r = 2.4000 m is exactly on the edge of the reach band [0.6000, 2.4000] m, so the arm must be straight or folded, where det J = 0. Target 3: r = 0.6000 m is exactly on the edge of the reach band [0.6000, 2.4000] m, so the arm must be straight or folded, where det J = 0. Target 4: r = 2.7659 m lies outside [0.6000, 2.4000] m. Singular is a property of a pose; unreachable is a property of a target.",
+            "hints": [
+              "Reachability depends only on the distance r from the base to the target; singularity depends on the pose, through det J = l1 l2 sin q2.",
+              "Compute r for each target and compare it with |l1 - l2| and l1 + l2. Then ask which poses reach a target of that distance and whether sin q2 vanishes for them.",
+              "Target 1: r = 1.4866 m lies strictly inside [0.6000, 2.4000] m, so both reaching poses have sin q2 ≠ 0. Target 2: r = 2.4000 m is exactly on the edge of the reach band [0.6000, 2.4000] m, so the arm must be straight or folded, where det J = 0. Target 3: r = 0.6000 m is exactly on the edge of the reach band [0.6000, 2.4000] m, so the arm must be straight or folded, where det J = 0. Target 4: r = 2.7659 m lies outside [0.6000, 2.4000] m. Singular is a property of a pose; unreachable is a property of a target."
+            ],
+            "remediation": "If you called a target on the edge of the reach band unreachable, you confused a singular pose with an unreachable target: the target is reached, but only by one singular pose. If you called a target strictly inside the band singular, remember both reaching poses have sin q2 ≠ 0. Revisit /lessons/R06 and /lessons/R05, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.2",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.det-sign@1",
+            "inputs": {
+              "query": "det-sign",
+              "l1": "1.2",
+              "l2": "0.9",
+              "poses": [
+                [
+                  "0.7",
+                  "-1.1"
+                ],
+                [
+                  "-2.5",
+                  "2π"
+                ],
+                [
+                  "3.4",
+                  "0.8"
+                ],
+                [
+                  "1.9",
+                  "-2.6"
+                ]
+              ]
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.2 m, l2 = 0.9 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Let det J = J11 J22 - J12 J21 with J11 = ∂x/∂q1, J12 = ∂x/∂q2, J21 = ∂y/∂q1, J22 = ∂y/∂q2. For each pose choose the sign of det J: pose 1: q1 = 0.7 rad, q2 = -1.1 rad; pose 2: q1 = -2.5 rad, q2 = 2π rad; pose 3: q1 = 3.4 rad, q2 = 0.8 rad; pose 4: q1 = 1.9 rad, q2 = -2.6 rad.",
+            "fields": [
+              {
+                "label": "Pose 1: q1 = 0.7 rad, q2 = -1.1 rad",
+                "kind": "choice",
+                "answer": "det J < 0",
+                "tolerance": 0.001,
+                "options": [
+                  "det J < 0",
+                  "det J > 0",
+                  "det J = 0"
+                ]
+              },
+              {
+                "label": "Pose 2: q1 = -2.5 rad, q2 = 2π rad",
+                "kind": "choice",
+                "answer": "det J = 0",
+                "tolerance": 0.001,
+                "options": [
+                  "det J = 0",
+                  "det J > 0",
+                  "det J < 0"
+                ]
+              },
+              {
+                "label": "Pose 3: q1 = 3.4 rad, q2 = 0.8 rad",
+                "kind": "choice",
+                "answer": "det J > 0",
+                "tolerance": 0.001,
+                "options": [
+                  "det J < 0",
+                  "det J > 0",
+                  "det J = 0"
+                ]
+              },
+              {
+                "label": "Pose 4: q1 = 1.9 rad, q2 = -2.6 rad",
+                "kind": "choice",
+                "answer": "det J < 0",
+                "tolerance": 0.001,
+                "options": [
+                  "det J = 0",
+                  "det J < 0",
+                  "det J > 0"
+                ]
+              }
+            ],
+            "solution": "det J = l1 l2 sin q2 depends on q2 alone. Pose 1: sin q2 = -0.8912, so det J < 0. Pose 2: sin q2 = 0, so det J = 0. Pose 3: sin q2 = 0.7174, so det J > 0. Pose 4: sin q2 = -0.5155, so det J < 0.",
+            "hints": [
+              "Expand J11 J22 - J12 J21 symbolically; the terms in q1 + q2 cancel, leaving a compact expression in one joint angle.",
+              "Evaluate that expression's sign for each pose (use the sign of the sine of the relevant angle, noting where it equals exactly zero). Do not use the other angles.",
+              "det J = l1 l2 sin q2 depends on q2 alone. Pose 1: sin q2 = -0.8912, so det J < 0. Pose 2: sin q2 = 0, so det J = 0. Pose 3: sin q2 = 0.7174, so det J > 0. Pose 4: sin q2 = -0.5155, so det J < 0."
+            ],
+            "remediation": "If your signs follow sin q1 or sin(q1 + q2) you took the determinant from the wrong angle; det J = l1 l2 sin q2 is independent of q1. A pose with q2 equal to a whole multiple of π gives exactly zero, not a small positive or negative number. Revisit the determinant in /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.3",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.jacobian.entries@1",
+            "inputs": {
+              "q1": "-0.6",
+              "q2": "1.3",
+              "l1": "1.15",
+              "l2": "0.6"
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.15 m, l2 = 0.6 m, at q1 = -0.6 rad, q2 = 1.3 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Compute the four entries of J at this pose, entered row-major: J11 = ∂x/∂q1, J12 = ∂x/∂q2, J21 = ∂y/∂q1, J22 = ∂y/∂q2. Tolerance ±0.001 m/rad for each entry.",
+            "fields": [
+              {
+                "label": "J11 = ∂x/∂q1 (m/rad)",
+                "kind": "number",
+                "answer": "0.262808",
+                "tolerance": 0.001
+              },
+              {
+                "label": "J12 = ∂x/∂q2 (m/rad)",
+                "kind": "number",
+                "answer": "-0.386531",
+                "tolerance": 0.001
+              },
+              {
+                "label": "J21 = ∂y/∂q1 (m/rad)",
+                "kind": "number",
+                "answer": "1.408041",
+                "tolerance": 0.001
+              },
+              {
+                "label": "J22 = ∂y/∂q2 (m/rad)",
+                "kind": "number",
+                "answer": "0.458905",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "With q1 + q2 = 0.7 rad: J11 = -l1 sin q1 - l2 sin(q1 + q2) = 0.2628, J12 = -l2 sin(q1 + q2) = -0.3865, J21 = l1 cos q1 + l2 cos(q1 + q2) = 1.4080, J22 = l2 cos(q1 + q2) = 0.4589 (m/rad). Column 2 contains only link 2, which points at the world angle q1 + q2.",
+            "hints": [
+              "Differentiate the tip position (x, y) with respect to each joint separately: q1 appears in both angle terms, q2 only in the world angle q1 + q2 of link 2.",
+              "Write ∂x/∂q1 = -l1 sin q1 - l2 sin(q1 + q2), ∂x/∂q2 = -l2 sin(q1 + q2) and the same for y with cosines, then evaluate with q1 + q2 = 0.7 rad.",
+              "With q1 + q2 = 0.7 rad: J11 = -l1 sin q1 - l2 sin(q1 + q2) = 0.2628, J12 = -l2 sin(q1 + q2) = -0.3865, J21 = l1 cos q1 + l2 cos(q1 + q2) = 1.4080, J22 = l2 cos(q1 + q2) = 0.4589 (m/rad). Column 2 contains only link 2, which points at the world angle q1 + q2."
+            ],
+            "remediation": "Common slips on this item: the transpose J^T (rows and columns swapped) gives (0.2628, 1.4080, -0.3865, 0.4589); swapped columns give (-0.3865, 0.2628, 0.4589, 1.4080); treating q2 as a world angle gives (0.0712, -0.5781, 1.1096, 0.1605). Rows are x and y, columns are q1 and q2. Revisit the Jacobian derivation in /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.4",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.jacobian.tip-velocity@1",
+            "inputs": {
+              "q1": "1.7",
+              "q2": "-1.2",
+              "l1": "0.85",
+              "l2": "0.55",
+              "dq1": "0.8",
+              "dq2": "-0.5"
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.85 m, l2 = 0.55 m, at q1 = 1.7 rad, q2 = -1.2 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). The joint rates are dq1/dt = 0.8 rad/s and dq2/dt = -0.5 rad/s. Compute the tip velocity components vx and vy at this instant. Tolerance ±0.001 m/s.",
+            "fields": [
+              {
+                "label": "vx (m/s)",
+                "kind": "number",
+                "answer": "-0.753437",
+                "tolerance": 0.001
+              },
+              {
+                "label": "vy (m/s)",
+                "kind": "number",
+                "answer": "0.057187",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "J = [[-1.1066, -0.2637], [0.3732, 0.4827]] m/rad at this pose, so vx = -1.1066·(0.8) + -0.2637·(-0.5) = -0.7534 m/s and vy = 0.3732·(0.8) + 0.4827·(-0.5) = 0.0572 m/s.",
+            "hints": [
+              "The tip velocity is the Jacobian times the joint-rate vector: first find the four entries ∂(x, y)/∂q1 and ∂(x, y)/∂q2 at the pose, then combine them with the two rates.",
+              "Build the columns with the world angle q1 + q2 = 0.5 rad for link 2, then compute vx = J11 dq1/dt + J12 dq2/dt and vy = J21 dq1/dt + J22 dq2/dt.",
+              "J = [[-1.1066, -0.2637], [0.3732, 0.4827]] m/rad at this pose, so vx = -1.1066·(0.8) + -0.2637·(-0.5) = -0.7534 m/s and vy = 0.3732·(0.8) + 0.4827·(-0.5) = 0.0572 m/s."
+            ],
+            "remediation": "Common slips on this item: using J^T instead of J gives (-1.0719, -0.4523); swapping the two columns gives (0.3424, 0.1996); treating q2 as a world angle gives (-0.5205, -0.0278). Revisit the tip-velocity map in /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.5",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "jik.jacobian.det-rate@1",
+            "inputs": {
+              "q1": "0.9",
+              "q2": "-0.9",
+              "l1": "1.0",
+              "l2": "0.7",
+              "vx": "0.12",
+              "vy": "-0.05"
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.0 m, l2 = 0.7 m, at q1 = 0.9 rad, q2 = -0.9 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Compute det J = J11 J22 - J12 J21 (J11 = ∂x/∂q1, J12 = ∂x/∂q2, J21 = ∂y/∂q1, J22 = ∂y/∂q2), then solve J (dq1/dt, dq2/dt) = (vx, vy) for the commanded tip velocity (vx, vy) = (0.12, -0.05) m/s. Tolerance ±0.001 on every field (m² for det J, rad/s for the rates).",
+            "fields": [
+              {
+                "label": "det J (m²)",
+                "kind": "number",
+                "answer": "-0.548329",
+                "tolerance": 0.001
+              },
+              {
+                "label": "dq1/dt (rad/s)",
+                "kind": "number",
+                "answer": "-0.153193",
+                "tolerance": 0.001
+              },
+              {
+                "label": "dq2/dt (rad/s)",
+                "kind": "number",
+                "answer": "0.217802",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "J = [[-0.7833, 0.0000], [1.3216, 0.7000]] m/rad, so det J = -0.5483 m² (it equals l1 l2 sin q2 = -0.5483). Inverting: dq1/dt = (J22 vx - J12 vy)/det J = -0.1532 rad/s and dq2/dt = (-J21 vx + J11 vy)/det J = 0.2178 rad/s.",
+            "hints": [
+              "The determinant is the area scale of J and decides whether the 2×2 system can be solved; build J first, then use its determinant for the inverse.",
+              "For a 2×2 matrix, J^-1 = (1/det J) [[J22, -J12], [-J21, J11]]. Multiply it by (vx, vy) to get the two joint rates; keep at least 5 significant digits.",
+              "J = [[-0.7833, 0.0000], [1.3216, 0.7000]] m/rad, so det J = -0.5483 m² (it equals l1 l2 sin q2 = -0.5483). Inverting: dq1/dt = (J22 vx - J12 vy)/det J = -0.1532 rad/s and dq2/dt = (-J21 vx + J11 vy)/det J = 0.2178 rad/s."
+            ],
+            "remediation": "Common slips on this item: taking the determinant from the wrong angle gives l1 l2 sin q1 = 0.5483 or l1 l2 sin(q1 + q2) = 0.0000 instead of l1 l2 sin q2; solving with J^T gives rates (-0.2737, -0.0714); swapped columns give (0.2178, -0.1532). Revisit the determinant and resolved-rate sections of /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.6",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.elbow-flip@1",
+            "inputs": {
+              "query": "elbow-flip",
+              "l1": "1.3",
+              "l2": "0.8",
+              "cases": [
+                [
+                  "0.9",
+                  "1.1"
+                ],
+                [
+                  "-1.8",
+                  "-0.7"
+                ]
+              ]
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.3 m, l2 = 0.8 m, no joint limits; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Each case gives one inverse-kinematics solution (q1, q2), in rad, for some target tip position that the arm can reach with two distinct poses. For each case choose the other solution that reaches the same tip position. Given solutions: case 1: (q1, q2) = (0.9, 1.1) rad; case 2: (q1, q2) = (-1.8, -0.7) rad.",
+            "fields": [
+              {
+                "label": "Case 1: the other solution",
+                "kind": "choice",
+                "answer": "(q1, q2) = (1.710, -1.100)",
+                "tolerance": 0.001,
+                "options": [
+                  "(q1, q2) = (-0.200, -1.100)",
+                  "(q1, q2) = (2.000, -1.100)",
+                  "(q1, q2) = (-0.900, -1.100)",
+                  "(q1, q2) = (1.710, -1.100)"
+                ]
+              },
+              {
+                "label": "Case 2: the other solution",
+                "kind": "choice",
+                "answer": "(q1, q2) = (-2.327, 0.700)",
+                "tolerance": 0.001,
+                "options": [
+                  "(q1, q2) = (-2.500, 0.700)",
+                  "(q1, q2) = (-2.327, 0.700)",
+                  "(q1, q2) = (3.083, 0.700)",
+                  "(q1, q2) = (1.342, 0.700)"
+                ]
+              }
+            ],
+            "solution": "Case 1: the tip is at (0.4752, 1.7458) m; the other branch has q2 = -1.1000 and q1 = 1.7101 rad, which gives the same tip. Naive flips such as (0.9000, -1.1000) put the tip elsewhere. Case 2: the tip is at (-0.9363, -1.7448) m; the other branch has q2 = 0.7000 and q1 = -2.3266 rad, which gives the same tip. Naive flips such as (-1.8000, 0.7000) put the tip elsewhere. The two solutions are mirror images of each other across the base-to-tip line: q2 changes sign and q1 changes by twice the angle that link 1 makes with that line.",
+            "hints": [
+              "Both IK solutions put the tip at the same point; the elbow sits on opposite sides of the line from the base to the tip, so the bend direction q2 reverses.",
+              "Keep the tip fixed: compute it by forward kinematics from the given pair, then test which option reproduces that tip. Remember q1 must change too, because link 1 swings to the other side of the line of sight.",
+              "Case 1: the tip is at (0.4752, 1.7458) m; the other branch has q2 = -1.1000 and q1 = 1.7101 rad, which gives the same tip. Naive flips such as (0.9000, -1.1000) put the tip elsewhere. Case 2: the tip is at (-0.9363, -1.7448) m; the other branch has q2 = 0.7000 and q1 = -2.3266 rad, which gives the same tip. Naive flips such as (-1.8000, 0.7000) put the tip elsewhere. The two solutions are mirror images of each other across the base-to-tip line: q2 changes sign and q1 changes by twice the angle that link 1 makes with that line."
+            ],
+            "remediation": "Flipping only the sign of q2, or negating both angles, moves the tip: the pose is mirrored across the base-to-tip line, not across the x axis. Check any candidate pair by forward kinematics. Revisit why there are two branches in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.7",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.limit-report@1",
+            "inputs": {
+              "query": "limit-report",
+              "l1": "1.2",
+              "l2": "0.9",
+              "q1min": "0",
+              "q1max": "6",
+              "q2min": "-1",
+              "q2max": "2.5",
+              "cases": [
+                [
+                  [
+                    "-0.700",
+                    "1.600"
+                  ],
+                  [
+                    "0.608",
+                    "-1.600"
+                  ]
+                ],
+                [
+                  [
+                    "1.000",
+                    "2.900"
+                  ],
+                  [
+                    "2.167",
+                    "-2.900"
+                  ]
+                ]
+              ]
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.2 m, l2 = 0.9 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Joint limits: 0 ≤ q1 ≤ 6 rad and -1 ≤ q2 ≤ 2.5 rad; a joint value counts as inside its limit if it or any 2π-equivalent value is inside. Each case lists the two analytic IK solutions (q1, q2), in rad, for one reachable target. Choose what an honest IK routine should report. Case 1: solution 1 = (-0.700, 1.600), solution 2 = (0.608, -1.600); Case 2: solution 1 = (1.000, 2.900), solution 2 = (2.167, -2.900).",
+            "fields": [
+              {
+                "label": "Case 1: report",
+                "kind": "choice",
+                "answer": "Report solution 1 only",
+                "tolerance": 0.001,
+                "options": [
+                  "Report no valid solution",
+                  "Report solution 2 only",
+                  "Report both solutions",
+                  "Report solution 1 only"
+                ]
+              },
+              {
+                "label": "Case 2: report",
+                "kind": "choice",
+                "answer": "Report no valid solution",
+                "tolerance": 0.001,
+                "options": [
+                  "Report solution 2 only",
+                  "Report both solutions",
+                  "Report solution 1 only",
+                  "Report no valid solution"
+                ]
+              }
+            ],
+            "solution": "Case 1: solution 1 is inside and solution 2 is outside the limits (after allowing 2π shifts), so: report solution 1 only. Case 2: solution 1 is outside and solution 2 is outside the limits (after allowing 2π shifts), so: report no valid solution.",
+            "hints": [
+              "A solution is admissible only if both of its joints satisfy their limits; a target being reachable by the arm does not make a solution admissible.",
+              "Test each joint of each listed solution against its own window, shifting by 2π when that places the value inside. Then decide, case by case, which solutions survive.",
+              "Case 1: solution 1 is inside and solution 2 is outside the limits (after allowing 2π shifts), so: report solution 1 only. Case 2: solution 1 is outside and solution 2 is outside the limits (after allowing 2π shifts), so: report no valid solution."
+            ],
+            "remediation": "Reporting a solution that violates a limit, or reporting 'no solution' because the raw angle lies outside the window although a 2π-equivalent value is inside, are the usual slips. If neither solution fits, say so; never clamp a joint to its limit and call the result a solution. Revisit joint limits in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.8",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.honest-failure@1",
+            "inputs": {
+              "query": "honest-failure",
+              "l1": "1.6",
+              "l2": "0.7",
+              "scenarios": [
+                [
+                  "S",
+                  {
+                    "r": "1.4",
+                    "n": "40",
+                    "res": "0.057"
+                  }
+                ],
+                [
+                  "U",
+                  {
+                    "r": "2.9"
+                  }
+                ],
+                [
+                  "OK",
+                  {
+                    "r": "1.1",
+                    "res": "3e-12",
+                    "tol": "1e-8"
+                  }
+                ]
+              ]
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "A planar 2R arm uses relative joint angles; r is the distance from the base to the target. For each scenario choose what an honest IK result should say. Scenarios are independent. Scenario 1: Arm l1 = 1.6 m, l2 = 0.7 m, no joint limits; the target is 1.4 m from the base. A numeric solver stops after 40 iterations with status not_converged and residual 0.057 m. Scenario 2: Arm l1 = 1.6 m, l2 = 0.7 m, no joint limits; the target is 2.9 m from the base. A routine computes cos q2, clamps it into [-1, 1] and returns a pose. Scenario 3: Arm l1 = 1.6 m, l2 = 0.7 m, no joint limits; the target is 1.1 m from the base. An analytic solution has an FK residual of 3e-12 m and the acceptance tolerance is 1e-8 m.",
+            "fields": [
+              {
+                "label": "Scenario 1: report",
+                "kind": "choice",
+                "answer": "Reachable, solver failed: not impossible",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, solver failed: not impossible",
+                  "Unreachable target: report failure, no pose",
+                  "In reach, but limits exclude every solution",
+                  "Solution found: report it with its residual"
+                ]
+              },
+              {
+                "label": "Scenario 2: report",
+                "kind": "choice",
+                "answer": "Unreachable target: report failure, no pose",
+                "tolerance": 0.001,
+                "options": [
+                  "Unreachable target: report failure, no pose",
+                  "In reach, but limits exclude every solution",
+                  "Solution found: report it with its residual",
+                  "Reachable, solver failed: not impossible"
+                ]
+              },
+              {
+                "label": "Scenario 3: report",
+                "kind": "choice",
+                "answer": "Solution found: report it with its residual",
+                "tolerance": 0.001,
+                "options": [
+                  "Solution found: report it with its residual",
+                  "Reachable, solver failed: not impossible",
+                  "In reach, but limits exclude every solution",
+                  "Unreachable target: report failure, no pose"
+                ]
+              }
+            ],
+            "solution": "Scenario 1: the target is within reach and there are no limits, so solutions exist; not_converged is not a proof of impossibility. Scenario 2: r = 2.9 m lies outside [0.9000, 2.3000] m, so no pose reaches it and the clamped pose is only a closest approach. Scenario 3: the residual is within tolerance, so the solution is valid and is reported with its residual.",
+            "hints": [
+              "Honest failure names the real reason: the target can be out of reach, inside reach but excluded by the limits, or reachable while the numeric method simply failed.",
+              "For each scenario compare r with the reach band, check any declared limits, and read the solver status; only a verified residual within tolerance justifies reporting a pose.",
+              "Scenario 1: the target is within reach and there are no limits, so solutions exist; not_converged is not a proof of impossibility. Scenario 2: r = 2.9 m lies outside [0.9000, 2.3000] m, so no pose reaches it and the clamped pose is only a closest approach. Scenario 3: the residual is within tolerance, so the solution is valid and is reported with its residual."
+            ],
+            "remediation": "A clamped pose is not a solution, a numeric solver's not_converged status is not proof that the target is impossible, and a reachable target can still have no solution within the declared limits. Revisit honest failure in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.9",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.ik.branch@1",
+            "inputs": {
+              "x": "-0.9",
+              "y": "0.7",
+              "l1": "1.1",
+              "l2": "0.8",
+              "branch": "q2<0"
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.1 m, l2 = 0.8 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The target tip position is (x, y) = (-0.9, 0.7) m. Solve the inverse kinematics on the elbow branch with q2 < 0 (the elbow bends clockwise relative to link 1) and report q1 and q2. Angles are graded modulo 2π within ±0.001 rad; you may leave angles unwrapped.",
+            "fields": [
+              {
+                "label": "q1 (rad)",
+                "kind": "angle",
+                "answer": "-3.073123",
+                "tolerance": 0.001
+              },
+              {
+                "label": "q2 (rad)",
+                "kind": "angle",
+                "answer": "-1.88862",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "cos q2 = (x² + y² - l1² - l2²)/(2 l1 l2) = -0.3125, so q2 = -acos(cos q2) = -1.8886 rad. q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) = 2.4805 + 0.7295 = -3.0731 rad. Check: the forward kinematics of (q1, q2) returns (-0.9000, 0.7000) m.",
+            "hints": [
+              "The law of cosines on the triangle base-elbow-tip gives cos q2 from the distance to the target; the sign of q2 selects the elbow branch.",
+              "After q2, subtract the angle that link 2 adds to the line of sight: q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2). Use atan2, not atan, because the target is not in the first quadrant.",
+              "cos q2 = (x² + y² - l1² - l2²)/(2 l1 l2) = -0.3125, so q2 = -acos(cos q2) = -1.8886 rad. q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) = 2.4805 + 0.7295 = -3.0731 rad. Check: the forward kinematics of (q1, q2) returns (-0.9000, 0.7000) m."
+            ],
+            "remediation": "Common slips on this item: the other branch is (q1, q2) = (1.7510, 1.8886) rad; using atan(y/x) instead of atan2 gives q1 = 0.0685 rad; reporting the world angle of link 2, q1 + q2 = 1.3214 rad, in place of the relative q2 is also wrong. Revisit the elbow branches in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.10",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "jik.ik.limited@1",
+            "inputs": {
+              "x": "-0.7",
+              "y": "0.5",
+              "l1": "1.0",
+              "l2": "0.6",
+              "q1min": "0.4",
+              "q1max": "5.4",
+              "q2min": "-3.1",
+              "q2max": "0.5"
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.0 m, l2 = 0.6 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Joint limits: 0.4 ≤ q1 ≤ 5.4 rad and -3.1 ≤ q2 ≤ 0.5 rad; a joint value counts as inside its limit if it or any 2π-equivalent value is inside. The target tip position is (x, y) = (-0.7, 0.5) m. Find both analytic IK solutions, count how many exist ignoring the limits and how many respect both limits, and report q1 and q2 of the admissible solution when there is one. Angles are graded modulo 2π within ±0.001 rad; you may leave angles unwrapped.",
+            "fields": [
+              {
+                "label": "solutions ignoring limits",
+                "kind": "number",
+                "answer": "2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "solutions respecting both limits",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "q1 (rad)",
+                "kind": "angle",
+                "answer": "-3.121864",
+                "tolerance": 0.001
+              },
+              {
+                "label": "q2 (rad)",
+                "kind": "angle",
+                "answer": "-2.113749",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "The two analytic solutions are (1.8814, 2.1137) and (-3.1219, -2.1137) rad, so there are 2 ignoring the limits. The pair (1.8814, 2.1137) violates a limit even after adding or subtracting 2π, while (-3.1219, -2.1137) satisfies both (after 2π shifts where noted), so 1 solution respects the limits: q1 = -3.1219 (≡ 3.1613, inside [0.4, 5.4]) rad, q2 = -2.1137 rad.",
+            "hints": [
+              "Compute both elbow branches first, then test each joint of each branch against its own limit, allowing a whole number of turns (2π) to be added.",
+              "For each candidate, shift q1 and q2 by multiples of 2π into the limit window if possible; a branch is admissible only when both joints fit. Count the admissible branches before reporting any angles.",
+              "The two analytic solutions are (1.8814, 2.1137) and (-3.1219, -2.1137) rad, so there are 2 ignoring the limits. The pair (1.8814, 2.1137) violates a limit even after adding or subtracting 2π, while (-3.1219, -2.1137) satisfies both (after 2π shifts where noted), so 1 solution respects the limits: q1 = -3.1219 (≡ 3.1613, inside [0.4, 5.4]) rad, q2 = -2.1137 rad."
+            ],
+            "remediation": "Common slips on this item: reporting the branch (1.8814, 2.1137) rad that violates a limit; counting 2 solutions as admissible because both reach the target; or rejecting a joint value only because its raw value lies outside the window although a 2π-equivalent value is inside. Revisit joint limits in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.A.11",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "jik.ik.solution-count@1",
+            "inputs": {
+              "l1": "1.1",
+              "l2": "0.5",
+              "q1min": "-2.9",
+              "q1max": "2.4",
+              "q2min": "-2.7",
+              "q2max": "2.2",
+              "targets": [
+                [
+                  "0.6",
+                  "0.4"
+                ],
+                [
+                  "-0.96",
+                  "1.28"
+                ],
+                [
+                  "0.1",
+                  "0.2"
+                ],
+                [
+                  "-0.3",
+                  "-1.0"
+                ]
+              ]
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.1 m, l2 = 0.5 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Joint limits: -2.9 ≤ q1 ≤ 2.4 rad and -2.7 ≤ q2 ≤ 2.2 rad; a joint value counts as inside its limit if it or any 2π-equivalent value is inside. For each target tip position (in m) give the number of inverse-kinematics solutions (0, 1 or 2) that respect both limits, counting configurations that differ by 2π as the same. A target on the edge of the reach band (arm fully stretched or fully folded) has exactly one configuration. A = (0.6, 0.4); B = (-0.96, 1.28); C = (0.1, 0.2); D = (-0.3, -1.0).",
+            "fields": [
+              {
+                "label": "Target A (0.6, 0.4): solutions in limits",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Target B (-0.96, 1.28): solutions in limits",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Target C (0.1, 0.2): solutions in limits",
+                "kind": "number",
+                "answer": "0",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Target D (-0.3, -1.0): solutions in limits",
+                "kind": "number",
+                "answer": "2",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Reach band: |l1 - l2| = 0.6000 m ≤ r ≤ l1 + l2 = 1.6000 m. A target on a band edge has exactly one configuration (arm straight or folded); strictly inside, two branches exist, and each must pass both limits. A: r = 0.7211 m, solutions in limits = 1; B: r = 1.6000 m, solutions in limits = 1; C: r = 0.2236 m, solutions in limits = 0; D: r = 1.0440 m, solutions in limits = 2.",
+            "hints": [
+              "For each target compare the distance r = sqrt(x² + y²) with |l1 - l2| and l1 + l2 first: outside the band there is no solution, on its edge exactly one, strictly inside two.",
+              "For every target with solutions, compute q2 = ±acos(cos q2) and q1, then test each branch against both limits, adding 2π if that places a value inside. Count only the branches that pass.",
+              "Reach band: |l1 - l2| = 0.6000 m ≤ r ≤ l1 + l2 = 1.6000 m. A target on a band edge has exactly one configuration (arm straight or folded); strictly inside, two branches exist, and each must pass both limits. A: r = 0.7211 m, solutions in limits = 1; B: r = 1.6000 m, solutions in limits = 1; C: r = 0.2236 m, solutions in limits = 0; D: r = 1.0440 m, solutions in limits = 2."
+            ],
+            "remediation": "Common slips on this item: counting a target on the edge of the reach band as two solutions (the two branches coincide there); counting both branches for a target although the limits remove one; or forgetting that a raw angle outside the window may be inside after adding 2π. Revisit reachability in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "items": [
+        {
+          "task": {
+            "id": "F-JIK.B.0",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.lost-direction@1",
+            "inputs": {
+              "query": "lost-direction",
+              "l1": "1.1",
+              "l2": "1.7",
+              "poses": [
+                [
+                  "1.3",
+                  "-0.9"
+                ],
+                [
+                  "-1.9",
+                  "0"
+                ],
+                [
+                  "0.45",
+                  "-π"
+                ]
+              ]
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.1 m, l2 = 1.7 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). For each pose choose the tip-velocity direction (a unit vector in the base frame) that NO choice of joint rates can produce at that instant, or choose that no direction is lost. Poses: pose 1: q1 = 1.3 rad, q2 = -0.9 rad; pose 2: q1 = -1.9 rad, q2 = 0 rad; pose 3: q1 = 0.45 rad, q2 = -π rad.",
+            "fields": [
+              {
+                "label": "Pose 1: q1 = 1.3 rad, q2 = -0.9 rad",
+                "kind": "choice",
+                "answer": "None lost: any (vx, vy) is possible",
+                "tolerance": 0.001,
+                "options": [
+                  "None lost: any (vx, vy) is possible",
+                  "Normal to link 1: (-0.964, 0.267)",
+                  "World x axis: (1.000, 0.000)",
+                  "Along link 1: (0.267, 0.964)"
+                ]
+              },
+              {
+                "label": "Pose 2: q1 = -1.9 rad, q2 = 0 rad",
+                "kind": "choice",
+                "answer": "Along link 1: (-0.323, -0.946)",
+                "tolerance": 0.001,
+                "options": [
+                  "Normal to link 1: (0.946, -0.323)",
+                  "World x axis: (1.000, 0.000)",
+                  "Along link 1: (-0.323, -0.946)",
+                  "None lost: any (vx, vy) is possible"
+                ]
+              },
+              {
+                "label": "Pose 3: q1 = 0.45 rad, q2 = -π rad",
+                "kind": "choice",
+                "answer": "Along link 1: (0.900, 0.435)",
+                "tolerance": 0.001,
+                "options": [
+                  "Along link 1: (0.900, 0.435)",
+                  "None lost: any (vx, vy) is possible",
+                  "World x axis: (1.000, 0.000)",
+                  "Normal to link 1: (-0.435, 0.900)"
+                ]
+              }
+            ],
+            "solution": "Pose 1: det J = l1 l2 sin q2 ≠ 0, so J is invertible and every tip velocity is available. Pose 2: det J = l1 l2 sin q2 = 0, so J has rank 1 and both columns are perpendicular to link 1; the velocity component along link 1 is lost. Pose 3: det J = l1 l2 sin q2 = 0, so J has rank 1 and both columns are perpendicular to link 1; the velocity component along link 1 is lost. The lost direction is the one along link 1, in either sense.",
+            "hints": [
+              "Think of the two columns of J as the tip velocities produced by turning each joint alone, and ask whether they span the plane at each pose.",
+              "Compute det J = l1 l2 sin q2 for each pose. When it is zero the two columns are parallel; find the direction both are perpendicular to. When it is not zero, nothing is lost.",
+              "Pose 1: det J = l1 l2 sin q2 ≠ 0, so J is invertible and every tip velocity is available. Pose 2: det J = l1 l2 sin q2 = 0, so J has rank 1 and both columns are perpendicular to link 1; the velocity component along link 1 is lost. Pose 3: det J = l1 l2 sin q2 = 0, so J has rank 1 and both columns are perpendicular to link 1; the velocity component along link 1 is lost. The lost direction is the one along link 1, in either sense."
+            ],
+            "remediation": "If you chose 'perpendicular to link 1' at a singular pose you named the direction that is still available; if you chose the world x axis you tied the lost direction to the world frame instead of the link. If you reported a lost direction at a pose with sin q2 ≠ 0, you confused a special-looking pose with a singular one. Revisit singular configurations in /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.1",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.singular-vs-unreachable@1",
+            "inputs": {
+              "query": "singular-vs-unreachable",
+              "l1": "1.3",
+              "l2": "0.7",
+              "targets": [
+                [
+                  "0.2",
+                  "0.3"
+                ],
+                [
+                  "1.2",
+                  "-1.6"
+                ],
+                [
+                  "0.9",
+                  "-1.0"
+                ],
+                [
+                  "-0.48",
+                  "0.36"
+                ]
+              ]
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.3 m, l2 = 0.7 m, no joint limits; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Singular means det J = 0. For each target tip position below (in m) choose the correct statement: target 1 = (0.2, 0.3); target 2 = (1.2, -1.6); target 3 = (0.9, -1.0); target 4 = (-0.48, 0.36).",
+            "fields": [
+              {
+                "label": "Target 1: (0.2, 0.3) m",
+                "kind": "choice",
+                "answer": "Unreachable: no pose of this arm reaches it",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, only by a singular pose (det J = 0)",
+                  "Unreachable: no pose of this arm reaches it",
+                  "Reachable, by a non-singular pose (det J ≠ 0)"
+                ]
+              },
+              {
+                "label": "Target 2: (1.2, -1.6) m",
+                "kind": "choice",
+                "answer": "Reachable, only by a singular pose (det J = 0)",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, by a non-singular pose (det J ≠ 0)",
+                  "Unreachable: no pose of this arm reaches it",
+                  "Reachable, only by a singular pose (det J = 0)"
+                ]
+              },
+              {
+                "label": "Target 3: (0.9, -1.0) m",
+                "kind": "choice",
+                "answer": "Reachable, by a non-singular pose (det J ≠ 0)",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, only by a singular pose (det J = 0)",
+                  "Unreachable: no pose of this arm reaches it",
+                  "Reachable, by a non-singular pose (det J ≠ 0)"
+                ]
+              },
+              {
+                "label": "Target 4: (-0.48, 0.36) m",
+                "kind": "choice",
+                "answer": "Reachable, only by a singular pose (det J = 0)",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, by a non-singular pose (det J ≠ 0)",
+                  "Reachable, only by a singular pose (det J = 0)",
+                  "Unreachable: no pose of this arm reaches it"
+                ]
+              }
+            ],
+            "solution": "Target 1: r = 0.3606 m lies outside [0.6000, 2.0000] m. Target 2: r = 2.0000 m is exactly on the edge of the reach band [0.6000, 2.0000] m, so the arm must be straight or folded, where det J = 0. Target 3: r = 1.3454 m lies strictly inside [0.6000, 2.0000] m, so both reaching poses have sin q2 ≠ 0. Target 4: r = 0.6000 m is exactly on the edge of the reach band [0.6000, 2.0000] m, so the arm must be straight or folded, where det J = 0. Singular is a property of a pose; unreachable is a property of a target.",
+            "hints": [
+              "Reachability depends only on the distance r from the base to the target; singularity depends on the pose, through det J = l1 l2 sin q2.",
+              "Compute r for each target and compare it with |l1 - l2| and l1 + l2. Then ask which poses reach a target of that distance and whether sin q2 vanishes for them.",
+              "Target 1: r = 0.3606 m lies outside [0.6000, 2.0000] m. Target 2: r = 2.0000 m is exactly on the edge of the reach band [0.6000, 2.0000] m, so the arm must be straight or folded, where det J = 0. Target 3: r = 1.3454 m lies strictly inside [0.6000, 2.0000] m, so both reaching poses have sin q2 ≠ 0. Target 4: r = 0.6000 m is exactly on the edge of the reach band [0.6000, 2.0000] m, so the arm must be straight or folded, where det J = 0. Singular is a property of a pose; unreachable is a property of a target."
+            ],
+            "remediation": "If you called a target on the edge of the reach band unreachable, you confused a singular pose with an unreachable target: the target is reached, but only by one singular pose. If you called a target strictly inside the band singular, remember both reaching poses have sin q2 ≠ 0. Revisit /lessons/R06 and /lessons/R05, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.2",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.det-sign@1",
+            "inputs": {
+              "query": "det-sign",
+              "l1": "0.9",
+              "l2": "1.6",
+              "poses": [
+                [
+                  "-1.4",
+                  "1.9"
+                ],
+                [
+                  "2.2",
+                  "-π"
+                ],
+                [
+                  "0.4",
+                  "-0.7"
+                ],
+                [
+                  "-3.0",
+                  "3.6"
+                ]
+              ]
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.9 m, l2 = 1.6 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Let det J = J11 J22 - J12 J21 with J11 = ∂x/∂q1, J12 = ∂x/∂q2, J21 = ∂y/∂q1, J22 = ∂y/∂q2. For each pose choose the sign of det J: pose 1: q1 = -1.4 rad, q2 = 1.9 rad; pose 2: q1 = 2.2 rad, q2 = -π rad; pose 3: q1 = 0.4 rad, q2 = -0.7 rad; pose 4: q1 = -3.0 rad, q2 = 3.6 rad.",
+            "fields": [
+              {
+                "label": "Pose 1: q1 = -1.4 rad, q2 = 1.9 rad",
+                "kind": "choice",
+                "answer": "det J > 0",
+                "tolerance": 0.001,
+                "options": [
+                  "det J < 0",
+                  "det J > 0",
+                  "det J = 0"
+                ]
+              },
+              {
+                "label": "Pose 2: q1 = 2.2 rad, q2 = -π rad",
+                "kind": "choice",
+                "answer": "det J = 0",
+                "tolerance": 0.001,
+                "options": [
+                  "det J = 0",
+                  "det J > 0",
+                  "det J < 0"
+                ]
+              },
+              {
+                "label": "Pose 3: q1 = 0.4 rad, q2 = -0.7 rad",
+                "kind": "choice",
+                "answer": "det J < 0",
+                "tolerance": 0.001,
+                "options": [
+                  "det J < 0",
+                  "det J > 0",
+                  "det J = 0"
+                ]
+              },
+              {
+                "label": "Pose 4: q1 = -3.0 rad, q2 = 3.6 rad",
+                "kind": "choice",
+                "answer": "det J < 0",
+                "tolerance": 0.001,
+                "options": [
+                  "det J = 0",
+                  "det J < 0",
+                  "det J > 0"
+                ]
+              }
+            ],
+            "solution": "det J = l1 l2 sin q2 depends on q2 alone. Pose 1: sin q2 = 0.9463, so det J > 0. Pose 2: sin q2 = 0, so det J = 0. Pose 3: sin q2 = -0.6442, so det J < 0. Pose 4: sin q2 = -0.4425, so det J < 0.",
+            "hints": [
+              "Expand J11 J22 - J12 J21 symbolically; the terms in q1 + q2 cancel, leaving a compact expression in one joint angle.",
+              "Evaluate that expression's sign for each pose (use the sign of the sine of the relevant angle, noting where it equals exactly zero). Do not use the other angles.",
+              "det J = l1 l2 sin q2 depends on q2 alone. Pose 1: sin q2 = 0.9463, so det J > 0. Pose 2: sin q2 = 0, so det J = 0. Pose 3: sin q2 = -0.6442, so det J < 0. Pose 4: sin q2 = -0.4425, so det J < 0."
+            ],
+            "remediation": "If your signs follow sin q1 or sin(q1 + q2) you took the determinant from the wrong angle; det J = l1 l2 sin q2 is independent of q1. A pose with q2 equal to a whole multiple of π gives exactly zero, not a small positive or negative number. Revisit the determinant in /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.3",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.jacobian.entries@1",
+            "inputs": {
+              "q1": "2.5",
+              "q2": "-0.8",
+              "l1": "0.9",
+              "l2": "0.65"
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.9 m, l2 = 0.65 m, at q1 = 2.5 rad, q2 = -0.8 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Compute the four entries of J at this pose, entered row-major: J11 = ∂x/∂q1, J12 = ∂x/∂q2, J21 = ∂y/∂q1, J22 = ∂y/∂q2. Tolerance ±0.001 m/rad for each entry.",
+            "fields": [
+              {
+                "label": "J11 = ∂x/∂q1 (m/rad)",
+                "kind": "number",
+                "answer": "-1.183207",
+                "tolerance": 0.001
+              },
+              {
+                "label": "J12 = ∂x/∂q2 (m/rad)",
+                "kind": "number",
+                "answer": "-0.644582",
+                "tolerance": 0.001
+              },
+              {
+                "label": "J21 = ∂y/∂q1 (m/rad)",
+                "kind": "number",
+                "answer": "-0.804778",
+                "tolerance": 0.001
+              },
+              {
+                "label": "J22 = ∂y/∂q2 (m/rad)",
+                "kind": "number",
+                "answer": "-0.083749",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "With q1 + q2 = 1.7 rad: J11 = -l1 sin q1 - l2 sin(q1 + q2) = -1.1832, J12 = -l2 sin(q1 + q2) = -0.6446, J21 = l1 cos q1 + l2 cos(q1 + q2) = -0.8048, J22 = l2 cos(q1 + q2) = -0.0837 (m/rad). Column 2 contains only link 2, which points at the world angle q1 + q2.",
+            "hints": [
+              "Differentiate the tip position (x, y) with respect to each joint separately: q1 appears in both angle terms, q2 only in the world angle q1 + q2 of link 2.",
+              "Write ∂x/∂q1 = -l1 sin q1 - l2 sin(q1 + q2), ∂x/∂q2 = -l2 sin(q1 + q2) and the same for y with cosines, then evaluate with q1 + q2 = 1.7 rad.",
+              "With q1 + q2 = 1.7 rad: J11 = -l1 sin q1 - l2 sin(q1 + q2) = -1.1832, J12 = -l2 sin(q1 + q2) = -0.6446, J21 = l1 cos q1 + l2 cos(q1 + q2) = -0.8048, J22 = l2 cos(q1 + q2) = -0.0837 (m/rad). Column 2 contains only link 2, which points at the world angle q1 + q2."
+            ],
+            "remediation": "Common slips on this item: the transpose J^T (rows and columns swapped) gives (-1.1832, -0.8048, -0.6446, -0.0837); swapped columns give (-0.6446, -1.1832, -0.0837, -0.8048); treating q2 as a world angle gives (-0.0723, 0.4663, -0.2682, 0.4529). Rows are x and y, columns are q1 and q2. Revisit the Jacobian derivation in /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.4",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.jacobian.tip-velocity@1",
+            "inputs": {
+              "q1": "-1.1",
+              "q2": "0.8",
+              "l1": "0.6",
+              "l2": "0.95",
+              "dq1": "-0.6",
+              "dq2": "1.1"
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.6 m, l2 = 0.95 m, at q1 = -1.1 rad, q2 = 0.8 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). The joint rates are dq1/dt = -0.6 rad/s and dq2/dt = 1.1 rad/s. Compute the tip velocity components vx and vy at this instant. Tolerance ±0.001 m/s.",
+            "fields": [
+              {
+                "label": "vx (m/s)",
+                "kind": "number",
+                "answer": "-0.180463",
+                "tolerance": 0.001
+              },
+              {
+                "label": "vy (m/s)",
+                "kind": "number",
+                "answer": "0.29049",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "J = [[0.8155, 0.2807], [1.1797, 0.9076]] m/rad at this pose, so vx = 0.8155·(-0.6) + 0.2807·(1.1) = -0.1805 m/s and vy = 1.1797·(-0.6) + 0.9076·(1.1) = 0.2905 m/s.",
+            "hints": [
+              "The tip velocity is the Jacobian times the joint-rate vector: first find the four entries ∂(x, y)/∂q1 and ∂(x, y)/∂q2 at the pose, then combine them with the two rates.",
+              "Build the columns with the world angle q1 + q2 = -0.3 rad for link 2, then compute vx = J11 dq1/dt + J12 dq2/dt and vy = J21 dq1/dt + J22 dq2/dt.",
+              "J = [[0.8155, 0.2807], [1.1797, 0.9076]] m/rad at this pose, so vx = 0.8155·(-0.6) + 0.2807·(1.1) = -0.1805 m/s and vy = 1.1797·(-0.6) + 0.9076·(1.1) = 0.2905 m/s."
+            ],
+            "remediation": "Common slips on this item: using J^T instead of J gives (0.8084, 0.8299); swapping the two columns gives (0.7286, 0.7532); treating q2 as a world angle gives (-0.6616, 0.1676). Revisit the tip-velocity map in /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.5",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "jik.jacobian.det-rate@1",
+            "inputs": {
+              "q1": "-0.4",
+              "q2": "0.6",
+              "l1": "0.75",
+              "l2": "1.25",
+              "vx": "-0.08",
+              "vy": "0.15"
+            },
+            "objectiveId": "R06.planar-jacobian",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.75 m, l2 = 1.25 m, at q1 = -0.4 rad, q2 = 0.6 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Compute det J = J11 J22 - J12 J21 (J11 = ∂x/∂q1, J12 = ∂x/∂q2, J21 = ∂y/∂q1, J22 = ∂y/∂q2), then solve J (dq1/dt, dq2/dt) = (vx, vy) for the commanded tip velocity (vx, vy) = (-0.08, 0.15) m/s. Tolerance ±0.001 on every field (m² for det J, rad/s for the rates).",
+            "fields": [
+              {
+                "label": "det J (m²)",
+                "kind": "number",
+                "answer": "0.529352",
+                "tolerance": 0.001
+              },
+              {
+                "label": "dq1/dt (rad/s)",
+                "kind": "number",
+                "answer": "-0.114775",
+                "tolerance": 0.001
+              },
+              {
+                "label": "dq2/dt (rad/s)",
+                "kind": "number",
+                "answer": "0.301934",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "J = [[0.0437, -0.2483], [1.9159, 1.2251]] m/rad, so det J = 0.5294 m² (it equals l1 l2 sin q2 = 0.5294). Inverting: dq1/dt = (J22 vx - J12 vy)/det J = -0.1148 rad/s and dq2/dt = (-J21 vx + J11 vy)/det J = 0.3019 rad/s.",
+            "hints": [
+              "The determinant is the area scale of J and decides whether the 2×2 system can be solved; build J first, then use its determinant for the inverse.",
+              "For a 2×2 matrix, J^-1 = (1/det J) [[J22, -J12], [-J21, J11]]. Multiply it by (vx, vy) to get the two joint rates; keep at least 5 significant digits.",
+              "J = [[0.0437, -0.2483], [1.9159, 1.2251]] m/rad, so det J = 0.5294 m² (it equals l1 l2 sin q2 = 0.5294). Inverting: dq1/dt = (J22 vx - J12 vy)/det J = -0.1148 rad/s and dq2/dt = (-J21 vx + J11 vy)/det J = 0.3019 rad/s."
+            ],
+            "remediation": "Common slips on this item: taking the determinant from the wrong angle gives l1 l2 sin q1 = -0.3651 or l1 l2 sin(q1 + q2) = 0.1863 instead of l1 l2 sin q2; solving with J^T gives rates (-0.7280, -0.0251); swapped columns give (0.3019, -0.1148). Revisit the determinant and resolved-rate sections of /lessons/R06, then practise a fresh X21 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.6",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.elbow-flip@1",
+            "inputs": {
+              "query": "elbow-flip",
+              "l1": "0.9",
+              "l2": "1.4",
+              "cases": [
+                [
+                  "-0.4",
+                  "-1.3"
+                ],
+                [
+                  "2.3",
+                  "0.9"
+                ]
+              ]
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.9 m, l2 = 1.4 m, no joint limits; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Each case gives one inverse-kinematics solution (q1, q2), in rad, for some target tip position that the arm can reach with two distinct poses. For each case choose the other solution that reaches the same tip position. Given solutions: case 1: (q1, q2) = (-0.4, -1.3) rad; case 2: (q1, q2) = (2.3, 0.9) rad.",
+            "fields": [
+              {
+                "label": "Case 1: the other solution",
+                "kind": "choice",
+                "answer": "(q1, q2) = (-2.028, 1.300)",
+                "tolerance": 0.001,
+                "options": [
+                  "(q1, q2) = (0.900, 1.300)",
+                  "(q1, q2) = (-1.700, 1.300)",
+                  "(q1, q2) = (0.400, 1.300)",
+                  "(q1, q2) = (-2.028, 1.300)"
+                ]
+              },
+              {
+                "label": "Case 2: the other solution",
+                "kind": "choice",
+                "answer": "(q1, q2) = (-2.874, -0.900)",
+                "tolerance": 0.001,
+                "options": [
+                  "(q1, q2) = (-3.083, -0.900)",
+                  "(q1, q2) = (-2.874, -0.900)",
+                  "(q1, q2) = (-2.183, -0.900)",
+                  "(q1, q2) = (-0.842, -0.900)"
+                ]
+              }
+            ],
+            "solution": "Case 1: the tip is at (0.6486, -1.7388) m; the other branch has q2 = 1.3000 and q1 = -2.0276 rad, which gives the same tip. Naive flips such as (-0.4000, 1.3000) put the tip elsewhere. Case 2: the tip is at (-1.9973, 0.5894) m; the other branch has q2 = -0.9000 and q1 = -2.8739 rad, which gives the same tip. Naive flips such as (2.3000, -0.9000) put the tip elsewhere. The two solutions are mirror images of each other across the base-to-tip line: q2 changes sign and q1 changes by twice the angle that link 1 makes with that line.",
+            "hints": [
+              "Both IK solutions put the tip at the same point; the elbow sits on opposite sides of the line from the base to the tip, so the bend direction q2 reverses.",
+              "Keep the tip fixed: compute it by forward kinematics from the given pair, then test which option reproduces that tip. Remember q1 must change too, because link 1 swings to the other side of the line of sight.",
+              "Case 1: the tip is at (0.6486, -1.7388) m; the other branch has q2 = 1.3000 and q1 = -2.0276 rad, which gives the same tip. Naive flips such as (-0.4000, 1.3000) put the tip elsewhere. Case 2: the tip is at (-1.9973, 0.5894) m; the other branch has q2 = -0.9000 and q1 = -2.8739 rad, which gives the same tip. Naive flips such as (2.3000, -0.9000) put the tip elsewhere. The two solutions are mirror images of each other across the base-to-tip line: q2 changes sign and q1 changes by twice the angle that link 1 makes with that line."
+            ],
+            "remediation": "Flipping only the sign of q2, or negating both angles, moves the tip: the pose is mirrored across the base-to-tip line, not across the x axis. Check any candidate pair by forward kinematics. Revisit why there are two branches in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.7",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.limit-report@1",
+            "inputs": {
+              "query": "limit-report",
+              "l1": "1.5",
+              "l2": "1.0",
+              "q1min": "-2",
+              "q1max": "2",
+              "q2min": "-2.4",
+              "q2max": "0.8",
+              "cases": [
+                [
+                  [
+                    "-2.755",
+                    "1.900"
+                  ],
+                  [
+                    "-1.400",
+                    "-1.900"
+                  ]
+                ],
+                [
+                  [
+                    "2.600",
+                    "-0.500"
+                  ],
+                  [
+                    "2.202",
+                    "0.500"
+                  ]
+                ]
+              ]
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 1.5 m, l2 = 1.0 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Joint limits: -2 ≤ q1 ≤ 2 rad and -2.4 ≤ q2 ≤ 0.8 rad; a joint value counts as inside its limit if it or any 2π-equivalent value is inside. Each case lists the two analytic IK solutions (q1, q2), in rad, for one reachable target. Choose what an honest IK routine should report. Case 1: solution 1 = (-2.755, 1.900), solution 2 = (-1.400, -1.900); Case 2: solution 1 = (2.600, -0.500), solution 2 = (2.202, 0.500).",
+            "fields": [
+              {
+                "label": "Case 1: report",
+                "kind": "choice",
+                "answer": "Report solution 2 only",
+                "tolerance": 0.001,
+                "options": [
+                  "Report no valid solution",
+                  "Report solution 2 only",
+                  "Report both solutions",
+                  "Report solution 1 only"
+                ]
+              },
+              {
+                "label": "Case 2: report",
+                "kind": "choice",
+                "answer": "Report no valid solution",
+                "tolerance": 0.001,
+                "options": [
+                  "Report solution 2 only",
+                  "Report both solutions",
+                  "Report solution 1 only",
+                  "Report no valid solution"
+                ]
+              }
+            ],
+            "solution": "Case 1: solution 1 is outside and solution 2 is inside the limits (after allowing 2π shifts), so: report solution 2 only. Case 2: solution 1 is outside and solution 2 is outside the limits (after allowing 2π shifts), so: report no valid solution.",
+            "hints": [
+              "A solution is admissible only if both of its joints satisfy their limits; a target being reachable by the arm does not make a solution admissible.",
+              "Test each joint of each listed solution against its own window, shifting by 2π when that places the value inside. Then decide, case by case, which solutions survive.",
+              "Case 1: solution 1 is outside and solution 2 is inside the limits (after allowing 2π shifts), so: report solution 2 only. Case 2: solution 1 is outside and solution 2 is outside the limits (after allowing 2π shifts), so: report no valid solution."
+            ],
+            "remediation": "Reporting a solution that violates a limit, or reporting 'no solution' because the raw angle lies outside the window although a 2π-equivalent value is inside, are the usual slips. If neither solution fits, say so; never clamp a joint to its limit and call the result a solution. Revisit joint limits in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.8",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.concept.honest-failure@1",
+            "inputs": {
+              "query": "honest-failure",
+              "l1": "0.9",
+              "l2": "1.5",
+              "scenarios": [
+                [
+                  "L",
+                  {
+                    "r": "1.6",
+                    "a": "1.757",
+                    "lo": "-1.2",
+                    "hi": "1.2"
+                  }
+                ],
+                [
+                  "U",
+                  {
+                    "r": "0.4"
+                  }
+                ],
+                [
+                  "S",
+                  {
+                    "r": "1.2",
+                    "n": "60",
+                    "res": "0.083"
+                  }
+                ]
+              ]
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "A planar 2R arm uses relative joint angles; r is the distance from the base to the target. For each scenario choose what an honest IK result should say. Scenarios are independent. Scenario 1: Arm l1 = 0.9 m, l2 = 1.5 m; the target is 1.6 m from the base and its two analytic solutions have q2 = 1.757 rad and q2 = -1.757 rad. The declared limit is -1.2 ≤ q2 ≤ 1.2 rad. Scenario 2: Arm l1 = 0.9 m, l2 = 1.5 m, no joint limits; the target is 0.4 m from the base. A routine computes cos q2, clamps it into [-1, 1] and returns a pose. Scenario 3: Arm l1 = 0.9 m, l2 = 1.5 m, no joint limits; the target is 1.2 m from the base. A numeric solver stops after 60 iterations with status not_converged and residual 0.083 m.",
+            "fields": [
+              {
+                "label": "Scenario 1: report",
+                "kind": "choice",
+                "answer": "In reach, but limits exclude every solution",
+                "tolerance": 0.001,
+                "options": [
+                  "Reachable, solver failed: not impossible",
+                  "Unreachable target: report failure, no pose",
+                  "In reach, but limits exclude every solution",
+                  "Solution found: report it with its residual"
+                ]
+              },
+              {
+                "label": "Scenario 2: report",
+                "kind": "choice",
+                "answer": "Unreachable target: report failure, no pose",
+                "tolerance": 0.001,
+                "options": [
+                  "Unreachable target: report failure, no pose",
+                  "In reach, but limits exclude every solution",
+                  "Solution found: report it with its residual",
+                  "Reachable, solver failed: not impossible"
+                ]
+              },
+              {
+                "label": "Scenario 3: report",
+                "kind": "choice",
+                "answer": "Reachable, solver failed: not impossible",
+                "tolerance": 0.001,
+                "options": [
+                  "Solution found: report it with its residual",
+                  "Reachable, solver failed: not impossible",
+                  "In reach, but limits exclude every solution",
+                  "Unreachable target: report failure, no pose"
+                ]
+              }
+            ],
+            "solution": "Scenario 1: the target is within reach, but both analytic q2 values lie outside the q2 limit. Scenario 2: r = 0.4 m lies outside [0.6000, 2.4000] m, so no pose reaches it and the clamped pose is only a closest approach. Scenario 3: the target is within reach and there are no limits, so solutions exist; not_converged is not a proof of impossibility.",
+            "hints": [
+              "Honest failure names the real reason: the target can be out of reach, inside reach but excluded by the limits, or reachable while the numeric method simply failed.",
+              "For each scenario compare r with the reach band, check any declared limits, and read the solver status; only a verified residual within tolerance justifies reporting a pose.",
+              "Scenario 1: the target is within reach, but both analytic q2 values lie outside the q2 limit. Scenario 2: r = 0.4 m lies outside [0.6000, 2.4000] m, so no pose reaches it and the clamped pose is only a closest approach. Scenario 3: the target is within reach and there are no limits, so solutions exist; not_converged is not a proof of impossibility."
+            ],
+            "remediation": "A clamped pose is not a solution, a numeric solver's not_converged status is not proof that the target is impossible, and a reachable target can still have no solution within the declared limits. Revisit honest failure in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.9",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "jik.ik.branch@1",
+            "inputs": {
+              "x": "-0.5",
+              "y": "-1.1",
+              "l1": "0.7",
+              "l2": "1.2",
+              "branch": "q2>0"
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.7 m, l2 = 1.2 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The target tip position is (x, y) = (-0.5, -1.1) m. Solve the inverse kinematics on the elbow branch with q2 > 0 (the elbow bends counter-clockwise relative to link 1) and report q1 and q2. Angles are graded modulo 2π within ±0.001 rad; you may leave angles unwrapped.",
+            "fields": [
+              {
+                "label": "q1 (rad)",
+                "kind": "angle",
+                "answer": "3.021215",
+                "tolerance": 0.001
+              },
+              {
+                "label": "q2 (rad)",
+                "kind": "angle",
+                "answer": "1.854342",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "cos q2 = (x² + y² - l1² - l2²)/(2 l1 l2) = -0.2798, so q2 = +acos(cos q2) = 1.8543 rad. q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) = -1.9974 - 1.2645 = 3.0212 rad. Check: the forward kinematics of (q1, q2) returns (-0.5000, -1.1000) m.",
+            "hints": [
+              "The law of cosines on the triangle base-elbow-tip gives cos q2 from the distance to the target; the sign of q2 selects the elbow branch.",
+              "After q2, subtract the angle that link 2 adds to the line of sight: q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2). Use atan2, not atan, because the target is not in the first quadrant.",
+              "cos q2 = (x² + y² - l1² - l2²)/(2 l1 l2) = -0.2798, so q2 = +acos(cos q2) = 1.8543 rad. q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) = -1.9974 - 1.2645 = 3.0212 rad. Check: the forward kinematics of (q1, q2) returns (-0.5000, -1.1000) m."
+            ],
+            "remediation": "Common slips on this item: the other branch is (q1, q2) = (-0.7329, -1.8543) rad; using atan(y/x) instead of atan2 gives q1 = -0.1204 rad; reporting the world angle of link 2, q1 + q2 = -1.4076 rad, in place of the relative q2 is also wrong. Revisit the elbow branches in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.10",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "jik.ik.limited@1",
+            "inputs": {
+              "x": "0.8",
+              "y": "-0.6",
+              "l1": "0.85",
+              "l2": "0.95",
+              "q1min": "-3.5",
+              "q1max": "-1.3",
+              "q2min": "-0.3",
+              "q2max": "2.9"
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.85 m, l2 = 0.95 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Joint limits: -3.5 ≤ q1 ≤ -1.3 rad and -0.3 ≤ q2 ≤ 2.9 rad; a joint value counts as inside its limit if it or any 2π-equivalent value is inside. The target tip position is (x, y) = (0.8, -0.6) m. Find both analytic IK solutions, count how many exist ignoring the limits and how many respect both limits, and report q1 and q2 of the admissible solution when there is one. Angles are graded modulo 2π within ±0.001 rad; you may leave angles unwrapped.",
+            "fields": [
+              {
+                "label": "solutions ignoring limits",
+                "kind": "number",
+                "answer": "2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "solutions respecting both limits",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "q1 (rad)",
+                "kind": "angle",
+                "answer": "-1.710959",
+                "tolerance": 0.001
+              },
+              {
+                "label": "q2 (rad)",
+                "kind": "angle",
+                "answer": "1.968169",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "The two analytic solutions are (-1.7110, 1.9682) and (0.4240, -1.9682) rad, so there are 2 ignoring the limits. The pair (0.4240, -1.9682) violates a limit even after adding or subtracting 2π, while (-1.7110, 1.9682) satisfies both (after 2π shifts where noted), so 1 solution respects the limits: q1 = -1.7110 rad, q2 = 1.9682 rad.",
+            "hints": [
+              "Compute both elbow branches first, then test each joint of each branch against its own limit, allowing a whole number of turns (2π) to be added.",
+              "For each candidate, shift q1 and q2 by multiples of 2π into the limit window if possible; a branch is admissible only when both joints fit. Count the admissible branches before reporting any angles.",
+              "The two analytic solutions are (-1.7110, 1.9682) and (0.4240, -1.9682) rad, so there are 2 ignoring the limits. The pair (0.4240, -1.9682) violates a limit even after adding or subtracting 2π, while (-1.7110, 1.9682) satisfies both (after 2π shifts where noted), so 1 solution respects the limits: q1 = -1.7110 rad, q2 = 1.9682 rad."
+            ],
+            "remediation": "Common slips on this item: reporting the branch (0.4240, -1.9682) rad that violates a limit; counting 2 solutions as admissible because both reach the target; or rejecting a joint value only because its raw value lies outside the window although a 2π-equivalent value is inside. Revisit joint limits in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-JIK.B.11",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "jik.ik.solution-count@1",
+            "inputs": {
+              "l1": "0.8",
+              "l2": "1.3",
+              "q1min": "-5.9",
+              "q1max": "-1.4",
+              "q2min": "-0.9",
+              "q2max": "4",
+              "targets": [
+                [
+                  "0.75",
+                  "0.3"
+                ],
+                [
+                  "-1.1",
+                  "0.5"
+                ],
+                [
+                  "1.26",
+                  "1.68"
+                ],
+                [
+                  "0.2",
+                  "0.1"
+                ]
+              ]
+            },
+            "objectiveId": "R05.planar-ik",
+            "prompt": "Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.8 m, l2 = 1.3 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Joint limits: -5.9 ≤ q1 ≤ -1.4 rad and -0.9 ≤ q2 ≤ 4 rad; a joint value counts as inside its limit if it or any 2π-equivalent value is inside. For each target tip position (in m) give the number of inverse-kinematics solutions (0, 1 or 2) that respect both limits, counting configurations that differ by 2π as the same. A target on the edge of the reach band (arm fully stretched or fully folded) has exactly one configuration. A = (0.75, 0.3); B = (-1.1, 0.5); C = (1.26, 1.68); D = (0.2, 0.1).",
+            "fields": [
+              {
+                "label": "Target A (0.75, 0.3): solutions in limits",
+                "kind": "number",
+                "answer": "2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Target B (-1.1, 0.5): solutions in limits",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Target C (1.26, 1.68): solutions in limits",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Target D (0.2, 0.1): solutions in limits",
+                "kind": "number",
+                "answer": "0",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Reach band: |l1 - l2| = 0.5000 m ≤ r ≤ l1 + l2 = 2.1000 m. A target on a band edge has exactly one configuration (arm straight or folded); strictly inside, two branches exist, and each must pass both limits. A: r = 0.8078 m, solutions in limits = 2; B: r = 1.2083 m, solutions in limits = 1; C: r = 2.1000 m, solutions in limits = 1; D: r = 0.2236 m, solutions in limits = 0.",
+            "hints": [
+              "For each target compare the distance r = sqrt(x² + y²) with |l1 - l2| and l1 + l2 first: outside the band there is no solution, on its edge exactly one, strictly inside two.",
+              "For every target with solutions, compute q2 = ±acos(cos q2) and q1, then test each branch against both limits, adding 2π if that places a value inside. Count only the branches that pass.",
+              "Reach band: |l1 - l2| = 0.5000 m ≤ r ≤ l1 + l2 = 2.1000 m. A target on a band edge has exactly one configuration (arm straight or folded); strictly inside, two branches exist, and each must pass both limits. A: r = 0.8078 m, solutions in limits = 2; B: r = 1.2083 m, solutions in limits = 1; C: r = 2.1000 m, solutions in limits = 1; D: r = 0.2236 m, solutions in limits = 0."
+            ],
+            "remediation": "Common slips on this item: counting a target on the edge of the reach band as two solutions (the two branches coincide there); counting both branches for a target although the limits remove one; or forgetting that a raw angle outside the window may be inside after adding 2π. Revisit reachability in /lessons/R05, then practise a fresh X22 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        }
+      ]
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0"
+  }
+}

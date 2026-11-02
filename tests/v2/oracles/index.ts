@@ -17,3 +17,5 @@ import "./X30";
 import "./X39";
 import "./X25";
 import "./X31";
+import "./cm-ODOM";
+import "./cm-JIK";

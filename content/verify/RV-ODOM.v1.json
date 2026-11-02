@@ -1,0 +1,664 @@
+{
+  "id": "RV-ODOM",
+  "version": 1,
+  "kind": "review_pool",
+  "variants": [
+    {
+      "id": "R02.exact-arc.C.0",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.C.0",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "arc-odom.concept.scaling@1",
+            "inputs": {
+              "changeA": "swap-wheels",
+              "changeB": "double-all"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "Differential drive with track width b and wheel speeds vl, vr. Let v be the body forward speed and omega the body yaw rate. For each change below, decide what happens to v and to omega, keeping everything not mentioned fixed (the original omega is not zero). Change (a): the left and right wheel speeds are swapped (the old vl becomes the new vr and vice versa). Change (b): the track width b and both wheel speeds are doubled.",
+            "fields": [
+              {
+                "label": "(a) v",
+                "kind": "choice",
+                "answer": "remains unchanged",
+                "tolerance": 0.001,
+                "options": [
+                  "remains unchanged",
+                  "is made twice as large",
+                  "is made half as large",
+                  "reverses its sign",
+                  "increases by the added amount",
+                  "increases by half the added amount"
+                ]
+              },
+              {
+                "label": "(a) omega",
+                "kind": "choice",
+                "answer": "reverses its sign",
+                "tolerance": 0.001,
+                "options": [
+                  "remains unchanged",
+                  "is made twice as large",
+                  "is made half as large",
+                  "reverses its sign",
+                  "increases by the added amount",
+                  "increases by half the added amount"
+                ]
+              },
+              {
+                "label": "(b) v",
+                "kind": "choice",
+                "answer": "is made twice as large",
+                "tolerance": 0.001,
+                "options": [
+                  "remains unchanged",
+                  "is made twice as large",
+                  "is made half as large",
+                  "reverses its sign",
+                  "increases by the added amount",
+                  "increases by half the added amount"
+                ]
+              },
+              {
+                "label": "(b) omega",
+                "kind": "choice",
+                "answer": "remains unchanged",
+                "tolerance": 0.001,
+                "options": [
+                  "remains unchanged",
+                  "is made twice as large",
+                  "is made half as large",
+                  "reverses its sign",
+                  "increases by the added amount",
+                  "increases by half the added amount"
+                ]
+              }
+            ],
+            "solution": "(a) Swapping the wheels keeps their mean, so v is unchanged, and reverses their difference, so omega changes sign. (b) Doubling both speeds doubles v and the speed difference, while b doubles too, so omega is unchanged.",
+            "hints": [
+              "Decide which of v and omega depends on the sum, the difference, and b, and apply each change.",
+              "For (b) track how many times v and the speed difference scale, then divide the difference by the scaled b.",
+              "(a) Swapping the wheels keeps their mean, so v is unchanged, and reverses their difference, so omega changes sign. (b) Doubling both speeds doubles v and the speed difference, while b doubles too, so omega is unchanged."
+            ],
+            "remediation": "If omega doubles in (b) you forgot that b doubled as well; if v changes sign in (a) you confused a swapped pair with reversed wheels (that negates both). Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.C.1",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.C.1",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "arc-odom.concept.step-size@1",
+            "inputs": {
+              "v": "0.6",
+              "omega": "1.5",
+              "dt": "1.4",
+              "change": "halve-dt"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "A robot keeps constant v and a non-zero omega over one step of 1.4 s (v = 0.6 m/s, omega = 1.5 rad/s). Let S = v dt be the arc length, C the straight-line distance from the start to the exact end point, and E the distance between the exact end point and the Euler end point (Euler moves S along the start heading). (1) How does C compare with S? (2) If dt is halved (same v and omega), how does E for ONE step change?",
+            "fields": [
+              {
+                "label": "Chord C versus arc length S",
+                "kind": "choice",
+                "answer": "C is shorter than S",
+                "tolerance": 0.001,
+                "options": [
+                  "C is shorter than S",
+                  "C equals S",
+                  "C is longer than S",
+                  "C equals S only when omega is positive",
+                  "C is exactly half of S"
+                ]
+              },
+              {
+                "label": "Euler error E per step when dt is halved",
+                "kind": "choice",
+                "answer": "E becomes about a quarter",
+                "tolerance": 0.001,
+                "options": [
+                  "E becomes about a quarter",
+                  "E stays about the same",
+                  "E becomes about half",
+                  "E becomes about double",
+                  "E becomes about four times as large"
+                ]
+              }
+            ],
+            "solution": "(1) A chord is the shortest path between the arc's end points, 2R sin(phi/2) < R phi = S, for any non-zero turn. (2) Euler's error grows like v dt times phi/2, and both v dt and phi halve with dt, so one step's error becomes about a quarter.",
+            "hints": [
+              "Compare a curved path with the straight line between its ends, and ask how each factor of the Euler error depends on dt.",
+              "The Euler error is about the step length times half the turn angle in that step; check how each scales when dt is halved.",
+              "(1) A chord is the shortest path between the arc's end points, 2R sin(phi/2) < R phi = S, for any non-zero turn. (2) Euler's error grows like v dt times phi/2, and both v dt and phi halve with dt, so one step's error becomes about a quarter."
+            ],
+            "remediation": "If you chose 'about half' you counted only the step length; the turn angle shrinks with dt too, so one step's error scales with dt squared (the error over a fixed time scales with dt). 'C equals S' holds only in the straight-line limit. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.C.2",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.C.2",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "arc-odom.concept.seam-direction@1",
+            "inputs": {
+              "theta": "2.9",
+              "ref": "-3.0",
+              "query": "raw-command-and-short-way"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "A robot's wrapped heading is theta = 2.9 rad and the wrapped reference heading is ref = -3.0 rad (counter-clockwise positive, both in (-pi, pi]). A controller turns the robot by the raw difference ref - theta without wrapping it. (1) What does the raw command make the robot do? (2) Which single turn is the short way round to the reference?",
+            "fields": [
+              {
+                "label": "Raw command turns the robot",
+                "kind": "choice",
+                "answer": "Clockwise by about 5.9 rad, the long way round",
+                "tolerance": 0.001,
+                "options": [
+                  "Clockwise by about 5.9 rad, the long way round",
+                  "Counter-clockwise by about 5.9 rad, the long way round",
+                  "Clockwise by about 0.38 rad, the short way round",
+                  "Counter-clockwise by about 0.38 rad, the short way round",
+                  "Clockwise by about 2.9 rad, half a turn"
+                ]
+              },
+              {
+                "label": "Short way round is",
+                "kind": "choice",
+                "answer": "Counter-clockwise by about 0.38 rad",
+                "tolerance": 0.001,
+                "options": [
+                  "Clockwise by about 0.38 rad",
+                  "Counter-clockwise by about 0.38 rad",
+                  "Clockwise by about 5.9 rad",
+                  "Counter-clockwise by about 5.9 rad",
+                  "Counter-clockwise by about 0.32 rad"
+                ]
+              }
+            ],
+            "solution": "(1) ref - theta = -3 - 2.9 = -5.9 rad, a negative command: a clockwise turn of about 5.9 rad, nearly a full circle the long way. (2) The headings are only 0.3832 rad apart across the +-pi seam; adding 2 pi to the raw difference gives +0.3832 rad, a short counter-clockwise turn.",
+            "hints": [
+              "The two headings sit just either side of the +-pi seam, so their numbers are far apart although the directions are close.",
+              "Subtract, read the sign and size of the raw difference as a turn, then add or subtract one full turn 2 pi to find the equivalent short turn.",
+              "(1) ref - theta = -3 - 2.9 = -5.9 rad, a negative command: a clockwise turn of about 5.9 rad, nearly a full circle the long way. (2) The headings are only 0.3832 rad apart across the +-pi seam; adding 2 pi to the raw difference gives +0.3832 rad, a short counter-clockwise turn."
+            ],
+            "remediation": "A raw difference of -5.9 rad is a wrap artefact: the headings are only 0.3832 rad apart, so the robot should turn counter-clockwise by that small angle. Skipping the wrap sends it almost a full turn the wrong way; getting the sign wrong turns it away from the reference. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.C.3",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.C.3",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "arc-odom.concept.fixture-coverage@1",
+            "inputs": {
+              "fixtures": "straight-and-spin",
+              "rule": "euler"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "A student's integrator moves each step by v dt along the START heading (Euler) and updates the heading by omega dt. The self-check has only two fixture types: straight-line steps (omega = 0) and pure spins in place (v = 0). (1) Does that integrator pass this self-check? (2) Which added fixture would expose the problem?",
+            "fields": [
+              {
+                "label": "Passes the self-check?",
+                "kind": "choice",
+                "answer": "Yes: Euler agrees with the exact arc on both of the fixture types",
+                "tolerance": 0.001,
+                "options": [
+                  "Yes: Euler agrees with the exact arc on both of the fixture types",
+                  "Yes, but only if the spin fixtures use a small track width",
+                  "No: Euler fails the straight-line fixtures at non-zero start headings",
+                  "No: Euler fails the pure spin fixtures because the position drifts",
+                  "No: Euler gets the end heading wrong on the pure spin fixtures"
+                ]
+              },
+              {
+                "label": "Added fixture that exposes it",
+                "kind": "choice",
+                "answer": "An arc with v and omega both non-zero and omega dt large",
+                "tolerance": 0.001,
+                "options": [
+                  "An arc with v and omega both non-zero and omega dt large",
+                  "A longer straight-line run at the same start heading and speed",
+                  "A faster pure spin in place with the same track width",
+                  "The same fixtures repeated with a different track width",
+                  "A straight line starting from a different initial heading"
+                ]
+              }
+            ],
+            "solution": "On a straight line Euler is exact, and on a spin in place v = 0 so the position does not move and the heading update is exact, so it passes. The difference only appears when v and omega are both non-zero with a sizeable omega dt, which no listed fixture contains.",
+            "hints": [
+              "Check what Euler does when omega is zero and when v is zero.",
+              "Euler's only approximation is in the position when the heading changes during a moving step; look for the fixture where that happens.",
+              "On a straight line Euler is exact, and on a spin in place v = 0 so the position does not move and the heading update is exact, so it passes. The difference only appears when v and omega are both non-zero with a sizeable omega dt, which no listed fixture contains."
+            ],
+            "remediation": "A passing self-check shows only that the ran cases agree with the reference; a coverage gap lets an approximate integrator pass. Longer straight lines, faster spins, other track widths or other start headings keep v or omega at zero, so they cannot expose it. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.C.4",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.C.4",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "arc-odom.concept.segment-order@1",
+            "inputs": {
+              "update": "0.1",
+              "duration": "10",
+              "logged": "totals-only"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "A controller changes the wheel speeds every 0.1 s for 10 s. You only log the total left distance and the total right distance over the 10 s (no ordering). (1) Can the exact end pose be recovered from the two totals and the initial pose? (2) Which quantity IS determined by the two totals and the track width alone?",
+            "fields": [
+              {
+                "label": "Pose recoverable from totals?",
+                "kind": "choice",
+                "answer": "No: the same totals in another order can end at different places",
+                "tolerance": 0.001,
+                "options": [
+                  "No: the same totals in another order can end at different places",
+                  "Yes: one arc with the total distances gives the exact end pose",
+                  "Yes: but only if the initial heading is zero and b is known exactly",
+                  "No: the totals do not even determine the final heading of the robot",
+                  "Yes: if the speeds changed less than 10 percent between the updates"
+                ]
+              },
+              {
+                "label": "Quantity fixed by the totals",
+                "kind": "choice",
+                "answer": "The total heading change",
+                "tolerance": 0.001,
+                "options": [
+                  "The total heading change",
+                  "The end x coordinate",
+                  "The end y coordinate",
+                  "The straight-line distance from start to end",
+                  "The location of the turn centre"
+                ]
+              }
+            ],
+            "solution": "(1) The heading change is the right total minus the left total over b, but where the robot ends depends on the order in which it turned and moved, so different orderings of the same totals end at different positions. (2) Only the total heading change is fixed; the end position, the start-to-end distance and any turn centre depend on the order.",
+            "hints": [
+              "Think of turning first and driving afterwards versus driving first and turning afterwards.",
+              "Heading changes add up whatever the order; positions are built from directions that depend on the heading at each moment.",
+              "(1) The heading change is the right total minus the left total over b, but where the robot ends depends on the order in which it turned and moved, so different orderings of the same totals end at different positions. (2) Only the total heading change is fixed; the end position, the start-to-end distance and any turn centre depend on the order."
+            ],
+            "remediation": "A single arc from the totals assumes constant curvature for the whole 10 s. When curvature changes, segments must be applied in order from the pose each previous segment ended at; only the heading change is order independent. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.C.5",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.C.5",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "arc-odom.concept.float-limit@1",
+            "inputs": {
+              "omega": "1e-14",
+              "query": "radius-and-cancellation"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "A student implements the exact arc as x = x0 + (v/omega)(sin(theta0 + omega dt) - sin(theta0)). (1) As vr tends to vl with v fixed, what happens to the radius v/omega in magnitude? (2) What goes wrong when omega = 1e-14 is evaluated directly in floating point?",
+            "fields": [
+              {
+                "label": "Radius tends to",
+                "kind": "choice",
+                "answer": "It grows without bound",
+                "tolerance": 0.001,
+                "options": [
+                  "It grows without bound",
+                  "It shrinks to zero",
+                  "It tends to b/2, half the track width",
+                  "It tends to v dt, the step length",
+                  "It stays equal to b"
+                ]
+              },
+              {
+                "label": "Direct evaluation at omega = 1e-14",
+                "kind": "choice",
+                "answer": "Cancellation in the sine difference times a huge v/omega loses all precision",
+                "tolerance": 0.001,
+                "options": [
+                  "Cancellation in the sine difference times a huge v/omega loses all precision",
+                  "Overflow of v/omega to infinity in double precision, so the result is always NaN",
+                  "Underflow in the sine, which is then exactly zero, so the result is exactly right",
+                  "Truncation error in the sine, which is only accurate to three decimal places",
+                  "Rounding in the product, which only affects the last digit of the final result"
+                ]
+              }
+            ],
+            "solution": "v/omega grows without bound, while the sine difference nearly cancels to a tiny number; the product of a huge and a tiny number carries large relative error, so use a series or sinc form (or a straight-line first-order form).",
+            "hints": [
+              "Look at the two factors separately as omega gets small.",
+              "One factor grows and the other nearly cancels; think about their product in finite precision.",
+              "v/omega grows without bound, while the sine difference nearly cancels to a tiny number; the product of a huge and a tiny number carries large relative error, so use a series or sinc form (or a straight-line first-order form)."
+            ],
+            "remediation": "A guard that simply drives straight along the start heading drops the first-order sideways term; the stable fix keeps it through a series. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "C",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.M.0",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.M.0",
+            "route": "independent",
+            "difficulty": 1,
+            "structure": "arc-odom.wheel-body@1",
+            "inputs": {
+              "vl": "-0.15",
+              "vr": "0.47",
+              "b": "0.48"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "Convention: differential drive; track width b is the distance between the wheel contact points; vl (left) and vr (right) are LINEAR wheel speeds in m/s; heading is relative to world +x, counter-clockwise positive, in radians; constant speeds, no slip. A robot has track width b = 0.48 m, left wheel speed vl = -0.15 m/s and right wheel speed vr = 0.47 m/s. Give the body forward speed v (m/s) and the signed yaw rate omega (rad/s, counter-clockwise positive). Give 3 decimal places; tolerance ±0.001.",
+            "fields": [
+              {
+                "label": "v (m/s)",
+                "kind": "number",
+                "answer": "0.16",
+                "tolerance": 0.001
+              },
+              {
+                "label": "omega (rad/s)",
+                "kind": "number",
+                "answer": "1.291667",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "v = (vl + vr)/2 = (-0.15 + 0.47)/2 = 0.16 m/s. omega = (vr - vl)/b = (0.47 + 0.15)/0.48 = 1.2917 rad/s (full track width b, right minus left).",
+            "hints": [
+              "v describes the axle midpoint, and omega describes how the speed difference between the wheels turns the body about the vertical axis; check which wheel is faster and which way that turns the robot.",
+              "Average the two wheel speeds for v. For omega take right minus left and divide by the full track width b = 0.48 m, keeping the sign.",
+              "v = (vl + vr)/2 = (-0.15 + 0.47)/2 = 0.16 m/s. omega = (vr - vl)/b = (0.47 + 0.15)/0.48 = 1.2917 rad/s (full track width b, right minus left)."
+            ],
+            "remediation": "If omega has the opposite sign (-1.2917) you subtracted in the wrong order or swapped the wheels; dividing by b/2 instead of the full b doubles it to 2.5833. A positive omega means the right wheel is faster (counter-clockwise turn). Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.M.1",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.M.1",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "arc-odom.world-pose@1",
+            "inputs": {
+              "x0": "-2.1",
+              "y0": "0.6",
+              "theta0": "-2.3",
+              "vl": "0.65",
+              "vr": "0.45",
+              "b": "0.5",
+              "dt": "2.0"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "Convention: differential drive; track width b is the distance between the wheel contact points; vl (left) and vr (right) are LINEAR wheel speeds in m/s; heading is relative to world +x, counter-clockwise positive, in radians; constant speeds, no slip. The pose (x, y, heading) in the world frame is (-2.1 m, 0.6 m, -2.3 rad). The wheels hold vl = 0.65 m/s and vr = 0.45 m/s for dt = 2.0 s with track width b = 0.5 m. Integrate the motion exactly along its circular arc (not with Euler steps) and give the final world x, y and heading (any equivalent angle modulo 2 pi is accepted). Give 3 decimal places; tolerance ±0.001.",
+            "fields": [
+              {
+                "label": "x (m)",
+                "kind": "number",
+                "answer": "-3.068171",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y (m)",
+                "kind": "number",
+                "answer": "0.142319",
+                "tolerance": 0.001
+              },
+              {
+                "label": "heading (rad)",
+                "kind": "angle",
+                "answer": "-3.1",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "v = 0.55 m/s, omega = -0.4 rad/s, turn angle phi = omega dt = -0.8 rad, R = v/omega = -1.375 m. x = x0 + R(sin(theta0 + phi) - sin(theta0)) = -3.0682; y = y0 - R(cos(theta0 + phi) - cos(theta0)) = 0.1423; heading = theta0 + phi = -3.1 rad.",
+            "hints": [
+              "Reduce the wheel speeds to a forward speed and a yaw rate first. The robot then follows a circle whose position formulas must be measured from its initial heading, not from the x axis.",
+              "Compute v, omega, phi = omega dt and the radius R = v/omega. Then the world displacement uses the difference between the sine (and cosine) of the end heading and of the start heading -2.3 rad, scaled by R; add it to the start position.",
+              "v = 0.55 m/s, omega = -0.4 rad/s, turn angle phi = omega dt = -0.8 rad, R = v/omega = -1.375 m. x = x0 + R(sin(theta0 + phi) - sin(theta0)) = -3.0682; y = y0 - R(cos(theta0 + phi) - cos(theta0)) = 0.1423; heading = theta0 + phi = -3.1 rad."
+            ],
+            "remediation": "Common slips on this item: Euler (straight along the start heading) gives x = -2.8329, y = -0.2203; a midpoint step of length v dt gives x = -3.0945, y = 0.1299; forgetting to rotate the arc by the initial heading gives x = -1.1136, y = 0.183; omega with b/2 gives x = -3.0855, y = 0.559, heading = -3.9; swapped wheels give heading = -1.5; a calculator in degree mode gives x = -2.0808, y = 0.5991. If your answer matches one, the slip is in that step, not in the arithmetic. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.M.2",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.M.2",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "arc-odom.travel-step@1",
+            "inputs": {
+              "x0": "0.5",
+              "y0": "1.4",
+              "theta0": "1.7",
+              "dl": "0.9",
+              "dr": "1.6",
+              "b": "0.6"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "Convention: differential drive; track width b is the distance between the wheel contact points; vl (left) and vr (right) are LINEAR wheel speeds in m/s; heading is relative to world +x, counter-clockwise positive, in radians; constant speeds, no slip. In one encoder interval the left wheel travelled dl = 0.9 m and the right wheel dr = 1.6 m (distances along the floor), with track width b = 0.6 m. The pose before the interval is (0.5 m, 1.4 m, 1.7 rad). Assume constant curvature over the interval and give the exact new world x, y and heading (any equivalent angle modulo 2 pi is accepted). Give 3 decimal places; tolerance ±0.001.",
+            "fields": [
+              {
+                "label": "x (m)",
+                "kind": "number",
+                "answer": "-0.271631",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y (m)",
+                "kind": "number",
+                "answer": "2.293144",
+                "tolerance": 0.001
+              },
+              {
+                "label": "heading (rad)",
+                "kind": "angle",
+                "answer": "2.866667",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Centre travel s = (dl + dr)/2 = 1.25 m, turn angle dtheta = (dr - dl)/b = 1.1667 rad, R = s/dtheta = 1.0714 m. x = -0.2716, y = 2.2931, heading = 2.8667 rad.",
+            "hints": [
+              "Distances play the role of speeds multiplied by the interval: the average gives the distance of the axle midpoint and the difference over b gives the turn angle.",
+              "Compute s and dtheta, then the arc radius, and place the displacement relative to the initial heading 1.7 rad before adding it to (0.5, 1.4).",
+              "Centre travel s = (dl + dr)/2 = 1.25 m, turn angle dtheta = (dr - dl)/b = 1.1667 rad, R = s/dtheta = 1.0714 m. x = -0.2716, y = 2.2931, heading = 2.8667 rad."
+            ],
+            "remediation": "Euler (moving s along the start heading) gives x = 0.3389, y = 2.6396; skipping the rotation by the initial heading gives x = 1.4851, y = 2.0501; b/2 in the turn angle gives heading 4.0333, x = -0.4481. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.M.3",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.M.3",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "arc-odom.body-wheels@1",
+            "inputs": {
+              "v": "0.72",
+              "omega": "-1.3",
+              "b": "0.42"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "Convention: differential drive; track width b is the distance between the wheel contact points; vl (left) and vr (right) are LINEAR wheel speeds in m/s; heading is relative to world +x, counter-clockwise positive, in radians; constant speeds, no slip. The robot must move with body forward speed v = 0.72 m/s and yaw rate omega = -1.3 rad/s (counter-clockwise positive); track width b = 0.42 m. Give the required left wheel speed vl and right wheel speed vr (m/s). Give 3 decimal places; tolerance ±0.001.",
+            "fields": [
+              {
+                "label": "vl (m/s)",
+                "kind": "number",
+                "answer": "0.993",
+                "tolerance": 0.001
+              },
+              {
+                "label": "vr (m/s)",
+                "kind": "number",
+                "answer": "0.447",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "vl = v - omega b/2 = 0.72 - (-1.3)(0.42)/2 = 0.993 m/s; vr = v + omega b/2 = 0.72 + (-1.3)(0.42)/2 = 0.447 m/s.",
+            "hints": [
+              "Each wheel moves at the body speed plus or minus a rotation contribution that depends on its distance from the axle midpoint; decide which wheel gets the plus sign for a given sign of omega.",
+              "Each wheel is a distance b/2 = 0.21 m from the axle midpoint, so compute omega times b/2, then add it for the right wheel and subtract it for the left wheel around v.",
+              "vl = v - omega b/2 = 0.72 - (-1.3)(0.42)/2 = 0.993 m/s; vr = v + omega b/2 = 0.72 + (-1.3)(0.42)/2 = 0.447 m/s."
+            ],
+            "remediation": "Using the full b instead of b/2 for each wheel offset gives vl = 1.266, vr = 0.174; swapping the signs of the offset swaps the wheels (0.447 on the left). Each wheel is offset from v by omega times its distance b/2 from the axle midpoint. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.M.4",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.M.4",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "arc-odom.heading-wrap@1",
+            "inputs": {
+              "theta0": "2.9",
+              "vl": "0.1",
+              "vr": "0.7",
+              "b": "0.5",
+              "dt": "1.6"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "Convention: differential drive; track width b is the distance between the wheel contact points; vl (left) and vr (right) are LINEAR wheel speeds in m/s; heading is relative to world +x, counter-clockwise positive, in radians; constant speeds, no slip. The heading is 2.9 rad. The wheels hold vl = 0.1 m/s and vr = 0.7 m/s for dt = 1.6 s with track width b = 0.5 m. Give the turn angle omega dt (rad, signed) and the final heading wrapped into (-pi, pi]. Give 3 decimal places; tolerance ±0.001.",
+            "fields": [
+              {
+                "label": "turn angle omega dt (rad)",
+                "kind": "number",
+                "answer": "1.92",
+                "tolerance": 0.001
+              },
+              {
+                "label": "wrapped heading (rad)",
+                "kind": "number",
+                "answer": "-1.463185",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "omega = (vr - vl)/b = 1.2 rad/s, so the turn angle is omega dt = 1.92 rad and the unwrapped heading is 2.9 + 1.92 = 4.82 rad. Adding or subtracting 2 pi gives the wrapped heading -1.4632 rad.",
+            "hints": [
+              "The turn angle comes from the wheel-speed difference and the elapsed time; the new heading is the old one plus that angle, then reduced to the stated interval.",
+              "Find omega from vr - vl and b = 0.5 m, multiply by dt = 1.6 s, add to 2.9 rad, and if the sum leaves (-pi, pi] add or subtract 2 pi once.",
+              "omega = (vr - vl)/b = 1.2 rad/s, so the turn angle is omega dt = 1.92 rad and the unwrapped heading is 2.9 + 1.92 = 4.82 rad. Adding or subtracting 2 pi gives the wrapped heading -1.4632 rad."
+            ],
+            "remediation": "The unwrapped heading 4.82 rad is not in (-pi, pi]; shift it by 2 pi to -1.4632. Using b/2 would double the turn to 3.84 rad (heading 0.4568); swapped wheels give a turn of -1.92 rad. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "R02.exact-arc.M.5",
+      "items": [
+        {
+          "task": {
+            "id": "RV-ODOM.R02.exact-arc.M.5",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "arc-odom.turn-centre@1",
+            "inputs": {
+              "x0": "0.9",
+              "y0": "-1.3",
+              "theta0": "-0.8",
+              "vl": "0.3",
+              "vr": "0.5",
+              "b": "0.36"
+            },
+            "objectiveId": "R02.exact-arc",
+            "prompt": "Convention: differential drive; track width b is the distance between the wheel contact points; vl (left) and vr (right) are LINEAR wheel speeds in m/s; heading is relative to world +x, counter-clockwise positive, in radians; constant speeds, no slip. The pose is (0.9 m, -1.3 m, -0.8 rad) with track width b = 0.36 m, and the wheels hold vl = 0.3 m/s and vr = 0.5 m/s. Give the world coordinates (x, y) of the centre of the circle the axle midpoint follows. Give 3 decimal places; tolerance ±0.001.",
+            "fields": [
+              {
+                "label": "x_c (m)",
+                "kind": "number",
+                "answer": "1.416496",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y_c (m)",
+                "kind": "number",
+                "answer": "-0.798371",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "v = 0.4, omega = 0.5556, signed radius R = v/omega = 0.72 m. The centre lies a distance R to the left of the heading: x_c = x0 - R sin(theta0) = 1.4165, y_c = y0 + R cos(theta0) = -0.7984.",
+            "hints": [
+              "The centre lies on the line perpendicular to the current heading, at a distance equal to the radius of the path; the sign of the yaw rate chooses the side.",
+              "Get v and omega, form the signed radius v/omega, then step that radius along the left-pointing normal of the heading -0.8 rad from the start position.",
+              "v = 0.4, omega = 0.5556, signed radius R = v/omega = 0.72 m. The centre lies a distance R to the left of the heading: x_c = x0 - R sin(theta0) = 1.4165, y_c = y0 + R cos(theta0) = -0.7984."
+            ],
+            "remediation": "The centre on the wrong (right) side of the robot gives (0.3835, -1.8016); using b instead of b/2 in the radius gives (1.933, -0.2967); ignoring the heading gives (0.9, -0.58). The centre sits perpendicular to the heading, to the left when omega > 0. Revisit /objectives/R02.exact-arc (the diff-drive arc bridge) and the L03 odometry lab, then practise a fresh X12 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": true
+        }
+      ]
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0"
+  }
+}

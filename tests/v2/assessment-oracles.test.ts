@@ -28,7 +28,7 @@ for (const source of cmSources())
         for (const { task, dimension } of variant.items) {
           if (dimension !== "M") continue;
           const p = task.inputs;
-          let expected: number[];
+          let expected: (number | string)[];
           switch (task.structure) {
             case "point-direction.apply@1": {
               const [c, sn] = rotation(p),
@@ -95,18 +95,31 @@ for (const source of cmSources())
             }
           }
           expect(expected).toHaveLength(task.fields.length);
+          // A choice conclusion selects the single option that starts with it;
+          // the wrong answer for that field is any other option.
+          const submitted = expected.map((v, i) => {
+            if (typeof v === "number") return [v.toFixed(9)];
+            const options = task.fields[i].options ?? [];
+            const hits = options.filter((o) => o.startsWith(v));
+            expect(hits, task.id + " " + v).toHaveLength(1);
+            return [hits[0], ...options.filter((o) => o !== hits[0])];
+          });
           const answers = Object.fromEntries(
-            expected.map((v, i) => [String(i), v.toFixed(9)]),
+            submitted.map((v, i) => [String(i), v[0]]),
           );
           expect(gradeItem(task, answers).passed, task.id).toBe(true);
-          for (let i = 0; i < expected.length; i++)
-            expect(
-              gradeItem(task, {
-                ...answers,
-                [String(i)]: (expected[i] + 0.1).toFixed(9),
-              }).passed,
-              task.id,
-            ).toBe(false);
+          for (let i = 0; i < expected.length; i++) {
+            const v = expected[i];
+            const wrong =
+              typeof v === "number"
+                ? [(v + 0.1).toFixed(9)]
+                : submitted[i].slice(1);
+            for (const w of wrong)
+              expect(
+                gradeItem(task, { ...answers, [String(i)]: w }).passed,
+                task.id,
+              ).toBe(false);
+          }
         }
     },
   );
