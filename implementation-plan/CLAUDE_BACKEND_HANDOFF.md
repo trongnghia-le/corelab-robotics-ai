@@ -30,3 +30,4 @@ M0 infrastructure committed as `558420b`. B1 (L07 X24/L07-trajectory, L09 X26/L0
 - B2 commit (clean worktree): lint, typecheck, validate:content, validate:v2, tests 237/40 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.
 - B3 commit (clean worktree): lint, typecheck, validate:content, validate:v2, tests 245/44 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.
 - B4+L14 commit (clean worktree): typecheck, validate:content, validate:v2, tests 255/49 files, V2 build + 10 V2 flows, default build + 9 legacy flows exit 0; lint exit 0 after one reviewer-oracle fix.
+- B4 + L14 commit (clean worktree): lint, typecheck, validate:content, validate:v2, tests 255/49 files, V2 build + 10 V2 flows, default build + 9 legacy flows — all exit 0.
