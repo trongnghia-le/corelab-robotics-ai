@@ -1,6 +1,6 @@
 # CoreLab V2 Implementation Master Plan
 
-**Status: execution plan, not implementation authorization.** All task boxes and release gates are pending. This document adds no application functionality and authorizes no migration, live-data change, commit, push or visibility change.
+**Status: implementation in progress.** The original milestone checklists below describe the initial plan; the dated execution and owner-decision addenda record later scope and release decisions. Use IMPLEMENTATION_REPORT.md and ACCEPTANCE_STATUS.md for current evidence. This document alone does not authorize an external action.
 
 **Baseline:** repository commit `38b6a1d8f0baae9a753882185da7bd4430d14277`, inspected 2026-10-31. Preserve the pre-existing modification to `next-env.d.ts` and all review documents. Recheck the baseline before implementation; do not assume an unchanged worktree.
 
@@ -559,3 +559,7 @@ The owner explicitly decided the remaining release gates on 2026-11-02 and asked
 - **D11 resource budget.** Approved as measured: supported profile/transport limit 128 MiB; minimum 8 GB RAM (measured peak RSS ≈ 4.04 GB for a 133.9 MB disk-backed profile on Linux/Node 24) and about 2 GB free disk for the database, five snapshots (≤ 512 MiB) and the pre-migration copy.
 - **D6 platform evidence.** GitHub Actions `Validate CoreLab` runs lint, typecheck, content and V2 validation, unit tests and production builds on ubuntu-latest, windows-latest and macos-latest (Node 24); browser flows run on Linux. The first remote run found a real Windows defect (CRLF checkout changed hashed content bytes); `content/** -text` fixes it. No manual screen-reader or physical-device test is claimed.
 - **G4/G5 activation.** `CM_RELEASED` is true. A form or pool is issued only when its own review record is approved with reviewer and date; verified I, transfer and automatic code execution remain unavailable. S3 learner observation is not run and no learner-outcome claim is made.
+
+## Owner decision — planar Jacobian/IK scope, 2026-11-02
+
+The owner explicitly opened the previously excluded Jacobian scope for roadmap lab L06, limited to a **declared planar 2R arm**: endpoint-position Jacobian, joint-rate to tip-velocity mapping, determinant/singular configurations, reachability, both analytic IK branches with joint limits, an optional bounded numerical solver and honest failure states. IK answers are judged by FK residual and constraints, not by a single reference angle pair. Still excluded: 6D/spatial Jacobians and twists, PoE, from-scratch SVD, dynamics and any hardware claim. New objectives `R06.planar-jacobian` and `R05.planar-ik` are additive registry entries; existing objectives keep their scope. New sources follow the same owner-assigned AI review gate before approval.

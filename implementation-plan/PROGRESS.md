@@ -102,3 +102,11 @@ Latest code milestone: `3edf307`; final qualification: 210 tests/28 files, four 
 - Independent review found a blocker (windup judged from kp·e only passed) and a wording major (back-calculation); fixed and re-reviewed: approve-with-minor. Fixture: 5 alternatives accepted, 63 mutants rejected, also under python -O; 50 samples (zod max).
 - Linux/Node 26.8.1: 215 tests in 30 files; lint, typecheck, content and V2 validation; default and V2 builds; 4 V2 (incl. L04 download) + 7 legacy Chromium flows passed.
 - GitHub Actions run 41398479649 on 2650aa6: ubuntu-latest, windows-latest and macos-latest all passed.
+
+## 2026-11-02: planar Jacobian/IK scope (L06, X21, X22)
+
+- Owner opened the planar 2R Jacobian/IK scope (Master Plan addendum). Added objectives R06.planar-jacobian and R05.planar-ik (additive; readiness R04/M05 and R04/R06 recommended).
+- New practice families X21 (Jacobian: entries, tip velocity, central-difference check, determinant, null motion, resolved rate) and X22 (IK: declared branch, joint-limited unique solution, reachability, limit counts, honest failure for unreachable targets). Independent oracles in tests/v2/numerical-oracles.test.ts derive answers from inputs and verify IK through FK residual. Independent review: approve-with-minor; three minor fixes applied; approved records written.
+- L06 kit `L06-jacobian-ik`: Jacobian, determinant, tip velocity, analytic IK branches with modulo-2π joint limits and an OPTIONAL bounded numerical solver with honest status (converged / not_converged / unreachable); fk is given. Review found two majors (over-merging close branches, one-directional representatives) plus minors; fixed and re-reviewed: approve-with-minor. Fixture: 7 alternatives accepted, 81 mutants rejected, also under python -O; 50 samples.
+- Known gap: R05 (inverse kinematics) has no full lesson file; the objective links its topic overview plus R04; the IK method is taught in X22 hints and the kit docstring.
+- Linux/Node 26.8.1: 218 tests in 31 files; lint, typecheck, content and V2 validation; default and V2 builds; 4 V2 (incl. L06 download) + 7 legacy Chromium flows passed.

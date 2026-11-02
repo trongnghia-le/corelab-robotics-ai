@@ -301,6 +301,168 @@ function oracle(familyId: string, item: Item): (number | string)[] {
       }
       return ["yes"];
     }
+    case "X21":
+    case "X22": {
+      // Planar 2R: relative angles, CCW, radians. Derived from inputs only;
+      // choice keys are chosen from the conclusion, never read from answers.
+      const ang = (v: unknown) => {
+        const m = /^(-?)(?:(\d+(?:\.\d+)?)\*?)?pi(?:\/(\d+))?$/.exec(
+          String(v).trim(),
+        );
+        if (!m) return value(v);
+        return (
+          ((m[1] ? -1 : 1) * Number(m[2] ?? 1) * Math.PI) / Number(m[3] ?? 1)
+        );
+      };
+      const option = (field: number, test: (o: string) => boolean) => {
+        const hits = item.fields[field].options!.filter(test);
+        expect(hits, item.id + " option").toHaveLength(1);
+        return hits[0];
+      };
+      const fk = (q1: number, q2: number, a: number, b: number) => [
+        a * Math.cos(q1) + b * Math.cos(q1 + q2),
+        a * Math.sin(q1) + b * Math.sin(q1 + q2),
+      ];
+      const jac = (q1: number, q2: number, a: number, b: number) => [
+        [-a * Math.sin(q1) - b * Math.sin(q1 + q2), -b * Math.sin(q1 + q2)],
+        [a * Math.cos(q1) + b * Math.cos(q1 + q2), b * Math.cos(q1 + q2)],
+      ];
+      const times = (J: number[][], w: number[]) =>
+        J.map((r) => r[0] * w[0] + r[1] * w[1]);
+      // Both IK branches, each checked through the forward map.
+      const ik = (x: number, y: number, a: number, b: number) => {
+        const c2 = (x * x + y * y - a * a - b * b) / (2 * a * b);
+        if (Math.abs(c2) > 1 + 1e-12) return [];
+        const out = [1, -1].map((sign) => {
+          const q2 = sign * Math.acos(Math.max(-1, Math.min(1, c2)));
+          const q1 =
+            Math.atan2(y, x) -
+            Math.atan2(b * Math.sin(q2), a + b * Math.cos(q2));
+          const [fx, fy] = fk(q1, q2, a, b);
+          expect(Math.hypot(fx - x, fy - y)).toBeLessThan(1e-9);
+          return [q1, q2];
+        });
+        return Math.abs(out[0][1] - out[1][1]) < 1e-9 ? [out[0]] : out;
+      };
+      const within = (q: number, lo: number, hi: number) =>
+        [q, q - 2 * Math.PI, q + 2 * Math.PI].some(
+          (v) => v >= lo - 1e-9 && v <= hi + 1e-9,
+        );
+      const q1 = ang(p.q1),
+        q2 = ang(p.q2),
+        l1 = n("l1"),
+        l2 = n("l2");
+      switch (item.structure) {
+        case "planar-2r.jacobian.entries@1":
+          return jac(q1, q2, l1, l2).flat();
+        case "planar-2r.jacobian.tip-velocity@1":
+          return times(jac(q1, q2, l1, l2), [n("w1"), n("w2")]);
+        case "planar-2r.jacobian.difference-check@1": {
+          const w = [n("w1"), n("w2")],
+            h = n("h");
+          const plus = fk(q1 + h * w[0], q2 + h * w[1], l1, l2),
+            minus = fk(q1 - h * w[0], q2 - h * w[1], l1, l2);
+          return [
+            ...times(jac(q1, q2, l1, l2), w),
+            (plus[0] - minus[0]) / (2 * h),
+            (plus[1] - minus[1]) / (2 * h),
+          ];
+        }
+        case "planar-2r.jacobian.determinant@1": {
+          const J = jac(q1, q2, l1, l2);
+          return [
+            J[0][0] * J[1][1] - J[0][1] * J[1][0],
+            option(1, (o) => /^q2 = 0 or π/.test(o)),
+          ];
+        }
+        case "planar-2r.jacobian.null-motion@1": {
+          // Null joint rate (w1, w2) with J w = 0 at each singular pose.
+          const rate = (pose: number) => {
+            const J = jac(q1, pose, l1, l2),
+              row = Math.abs(J[0][1]) > Math.abs(J[1][1]) ? J[0] : J[1];
+            const w2 = (-row[0] * n("w1")) / row[1];
+            expect(Math.hypot(...times(J, [n("w1"), w2]))).toBeLessThan(1e-9);
+            return w2;
+          };
+          // The lost tip direction is the column space's normal: along link 1.
+          const J = jac(q1, ang(p.q2_straight), l1, l2);
+          const col = J.map((r) => r[0]);
+          expect(
+            Math.abs(col[0] * Math.cos(q1) + col[1] * Math.sin(q1)),
+          ).toBeLessThan(1e-9);
+          return [
+            rate(ang(p.q2_straight)),
+            rate(ang(p.q2_folded)),
+            option(2, (o) => o.startsWith("Along link 1")),
+          ];
+        }
+        case "planar-2r.jacobian.resolved-rate@1": {
+          const [[a, b], [c, d]] = jac(q1, q2, l1, l2),
+            det = a * d - b * c,
+            v = [n("vx"), n("vy")];
+          return [
+            det,
+            (d * v[0] - b * v[1]) / det,
+            (a * v[1] - c * v[0]) / det,
+          ];
+        }
+        case "planar-2r.ik.branch@1": {
+          const want = p.branch === "q2>0" ? 1 : -1;
+          const hit = ik(n("x"), n("y"), l1, l2).filter(
+            (q) => Math.sign(q[1]) === want,
+          );
+          expect(hit).toHaveLength(1);
+          return hit[0];
+        }
+        case "planar-2r.ik.limited@1": {
+          const hit = ik(n("x"), n("y"), l1, l2).filter(
+            (q) =>
+              within(q[0], ang(p.q1min), ang(p.q1max)) &&
+              within(q[1], ang(p.q2min), ang(p.q2max)),
+          );
+          expect(hit).toHaveLength(1);
+          return hit[0];
+        }
+        case "planar-2r.ik.reachability@1":
+          return (p.targets as unknown[][]).map((t, i) => {
+            const r = Math.hypot(value(t[0]), value(t[1]));
+            const kind =
+              r > l1 + l2 + 1e-12
+                ? (o: string) => o.includes("farther")
+                : r < Math.abs(l1 - l2) - 1e-12
+                  ? (o: string) => o.includes("closer")
+                  : Math.abs(r - l1 - l2) < 1e-12 ||
+                      Math.abs(r - Math.abs(l1 - l2)) < 1e-12
+                    ? (o: string) => o.startsWith("Exactly one")
+                    : (o: string) => o.startsWith("Two");
+            return option(i, kind);
+          });
+        case "planar-2r.ik.limit-count@1": {
+          const lim = (q: number[]) =>
+            within(q[0], ang(p.q1min), ang(p.q1max)) &&
+            within(q[1], ang(p.q2min), ang(p.q2max));
+          const targets = p.targets as unknown[][];
+          const sols = targets.map((t) => ik(value(t[0]), value(t[1]), l1, l2));
+          return [
+            Math.abs(sols[0][0][1]),
+            ...sols.map((s) => s.filter(lim).length),
+          ];
+        }
+        case "planar-2r.ik.unreachable@1": {
+          const x = n("x"),
+            y = n("y"),
+            r = Math.hypot(x, y);
+          expect(ik(x, y, l1, l2)).toHaveLength(0);
+          const [fx, fy] = fk(Math.atan2(y, x), 0, l1, l2);
+          return [
+            (x * x + y * y - l1 * l1 - l2 * l2) / (2 * l1 * l2),
+            Math.hypot(fx - x, fy - y),
+            option(2, (o) => o.startsWith("Failure: unreachable")),
+          ];
+        }
+      }
+      throw new Error("Unknown planar 2R structure " + item.structure);
+    }
     default:
       throw new Error("Missing oracle for " + familyId);
   }

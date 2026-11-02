@@ -48,12 +48,21 @@ const definitions = [
     description:
       "Implement bounded P and PI steps with anti-windup on a declared toy integrator, a closed-loop simulation and settling/overshoot metrics. Practice beyond the one-step objective; no actuator, torque or hardware claim.",
   },
+  {
+    id: "L06-jacobian-ik",
+    title: "Jacobian and IK self-check kit",
+    topic: "R06",
+    objectives: ["R06.planar-jacobian", "R05.planar-ik"],
+    description:
+      "Implement a planar 2R endpoint Jacobian, determinant and tip velocity, both analytic IK branches with joint limits, and a bounded numerical solver that reports failure honestly. No 6D/twist Jacobian or hardware claim.",
+  },
 ] as const;
 // Keep the original shared sample bytes unchanged: they are part of both old
 // kit hashes. New kits use separate immutable manifests.
 const sampleFiles: Record<string, string> = {
   "L03-odometry": "L03-odometry.samples.v1.json",
   "L04-pid": "L04-pid.samples.v1.json",
+  "L06-jacobian-ik": "L06-jacobian-ik.samples.v1.json",
 };
 export function kitFiles() {
   return definitions.map((d) => ({

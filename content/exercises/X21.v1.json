@@ -1,0 +1,295 @@
+{
+  "id": "X21",
+  "version": 1,
+  "title": "Compute a planar 2R endpoint Jacobian",
+  "domain": "Robotics",
+  "topicId": "R06",
+  "objectiveId": "R06.planar-jacobian",
+  "routes": [
+    "tool-velocity",
+    "singularity-check"
+  ],
+  "scope": "Endpoint-position Jacobian of a declared planar 2R arm: entries, tip velocity, difference checks, determinant and singular poses; no spatial Jacobian, twist or dynamics",
+  "labIds": [
+    "L06"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "tool-velocity": "Build J entry by entry, map joint rates to tip velocity, and compare an exact J w with a large-step central difference.",
+    "singularity-check": "det J = l1 l2 sin q2, the joint rates that give no tip motion and the lost direction at straight and folded poses, and joint-rate blow-up near a singularity."
+  },
+  "items": [
+    {
+      "id": "X21.tool-velocity.1",
+      "route": "tool-velocity",
+      "difficulty": 1,
+      "structure": "planar-2r.jacobian.entries@1",
+      "inputs": {
+        "q1": "0.3",
+        "q2": "0.9",
+        "l1": "0.8",
+        "l2": "0.5"
+      },
+      "objectiveId": "R06.planar-jacobian",
+      "prompt": "A bench camera arm must know how its lens tip moves when each joint turns. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.8 m, l2 = 0.5 m, q1 = 0.3 rad, q2 = 0.9 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Compute the four entries of J at this pose, entered row-major: J11 = ∂x/∂q1, J12 = ∂x/∂q2, J21 = ∂y/∂q1, J22 = ∂y/∂q2. Tolerance ±0.001 m/rad for each entry.",
+      "fields": [
+        {
+          "label": "J11 = ∂x/∂q1 (m/rad)",
+          "kind": "number",
+          "answer": "-0.702436",
+          "tolerance": 0.001
+        },
+        {
+          "label": "J12 = ∂x/∂q2 (m/rad)",
+          "kind": "number",
+          "answer": "-0.46602",
+          "tolerance": 0.001
+        },
+        {
+          "label": "J21 = ∂y/∂q1 (m/rad)",
+          "kind": "number",
+          "answer": "0.945448",
+          "tolerance": 0.001
+        },
+        {
+          "label": "J22 = ∂y/∂q2 (m/rad)",
+          "kind": "number",
+          "answer": "0.181179",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Link 2 points at the world angle q1 + q2 = 0.3 + 0.9 = 1.2 rad. sin q1 = 0.29552, cos q1 = 0.955336, sin(q1 + q2) = 0.932039, cos(q1 + q2) = 0.362358. J11 = -l1 sin q1 - l2 sin(q1 + q2) = -0.236416 + (-0.46602) = -0.702436; J12 = -l2 sin(q1 + q2) = -0.46602; J21 = l1 cos q1 + l2 cos(q1 + q2) = 0.764269 + 0.181179 = 0.945448; J22 = l2 cos(q1 + q2) = 0.181179 (all in m/rad). Check: column 2 = l2(-sin(q1 + q2), cos(q1 + q2)) is perpendicular to link 2, and column 1 is perpendicular to the line from the base to the tip.",
+      "hints": [
+        "Differentiate x and y with respect to one joint at a time, holding the other fixed. q1 swings both links, so it appears in both terms; q2 swings only link 2, whose world angle is q1 + q2 = 1.2 rad, not q2 = 0.9 rad alone. Keep the calculator in radian mode.",
+        "The derivative of cos is -sin, so the top row is ∂x/∂q1 = -l1 sin q1 - l2 sin(q1 + q2) and ∂x/∂q2 = -l2 sin(q1 + q2). Evaluate those with sin 0.3 and sin 1.2, then differentiate y the same way (the derivative of sin is +cos) for the bottom row.",
+        "Link 2 points at the world angle q1 + q2 = 0.3 + 0.9 = 1.2 rad. sin q1 = 0.29552, cos q1 = 0.955336, sin(q1 + q2) = 0.932039, cos(q1 + q2) = 0.362358. J11 = -l1 sin q1 - l2 sin(q1 + q2) = -0.236416 + (-0.46602) = -0.702436; J12 = -l2 sin(q1 + q2) = -0.46602; J21 = l1 cos q1 + l2 cos(q1 + q2) = 0.764269 + 0.181179 = 0.945448; J22 = l2 cos(q1 + q2) = 0.181179 (all in m/rad). Check: column 2 = l2(-sin(q1 + q2), cos(q1 + q2)) is perpendicular to link 2, and column 1 is perpendicular to the line from the base to the tip."
+      ],
+      "remediation": "Common slips on this item: using q2 = 0.9 rad as link 2's world angle gives J = [[-0.6281, -0.3917], [1.0751, 0.3108]]; entering the transpose puts 0.9454 in the J12 field and -0.466 in J21; swapping the columns gives J11 = -0.466, J12 = -0.7024; taking d(cos)/dq as +sin flips the top row to (0.7024, 0.466); degree mode gives J = [[-0.0147, -0.0105], [1.2999, 0.4999]]. Re-derive one column at a time in /lessons/R06, then try a fresh X21 item."
+    },
+    {
+      "id": "X21.tool-velocity.2",
+      "route": "tool-velocity",
+      "difficulty": 2,
+      "structure": "planar-2r.jacobian.tip-velocity@1",
+      "inputs": {
+        "q1": "1.2",
+        "q2": "-0.8",
+        "l1": "0.65",
+        "l2": "0.4",
+        "w1": "0.5",
+        "w2": "-1.5"
+      },
+      "objectiveId": "R06.planar-jacobian",
+      "prompt": "A glue-dispensing arm must report how fast its nozzle tip is moving while both joints turn. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.65 m, l2 = 0.4 m, at q1 = 1.2 rad, q2 = -0.8 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). The joint rates are dq1/dt = 0.5 rad/s and dq2/dt = -1.5 rad/s. Compute the tip velocity components vx and vy at this instant. Tolerance ±0.001 m/s.",
+      "fields": [
+        {
+          "label": "vx (m/s)",
+          "kind": "number",
+          "answer": "-0.147145",
+          "tolerance": 0.001
+        },
+        {
+          "label": "vy (m/s)",
+          "kind": "number",
+          "answer": "-0.250658",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "q1 + q2 = 1.2 + (-0.8) = 0.4 rad. J = [[-l1 sin q1 - l2 sin(q1 + q2), -l2 sin(q1 + q2)], [l1 cos q1 + l2 cos(q1 + q2), l2 cos(q1 + q2)]] = [[-0.761593, -0.155767], [0.603957, 0.368424]] m/rad. vx = J11·0.5 + J12·(-1.5) = -0.380796 + 0.233651 = -0.147145 m/s; vy = J21·0.5 + J22·(-1.5) = 0.301978 + (-0.552637) ≈ -0.250658 m/s. Each joint rate multiplies its own column: column 1 is the tip velocity per rad/s of joint 1 alone.",
+      "hints": [
+        "Build J at the pose first, then multiply it by the joint-rate vector (dq1/dt, dq2/dt). Each rate scales its own column, so the rate of joint 1 (0.5 rad/s) multiplies the q1-column. Link 2's world angle is q1 + q2 = 0.4 rad.",
+        "sin(q1 + q2) = sin 0.4 = 0.389418 and cos(q1 + q2) = 0.921061, so the q2-column is (-l2 sin(q1 + q2), l2 cos(q1 + q2)) = (-0.155767, 0.368424) m/rad. Next build the q1-column with l1 sin q1 and l1 cos q1 added in, then form vx = J11·dq1/dt + J12·dq2/dt and vy likewise.",
+        "q1 + q2 = 1.2 + (-0.8) = 0.4 rad. J = [[-l1 sin q1 - l2 sin(q1 + q2), -l2 sin(q1 + q2)], [l1 cos q1 + l2 cos(q1 + q2), l2 cos(q1 + q2)]] = [[-0.761593, -0.155767], [0.603957, 0.368424]] m/rad. vx = J11·0.5 + J12·(-1.5) = -0.380796 + 0.233651 = -0.147145 m/s; vy = J21·0.5 + J22·(-1.5) = 0.301978 + (-0.552637) ≈ -0.250658 m/s. Each joint rate multiplies its own column: column 1 is the tip velocity per rad/s of joint 1 alone."
+      ],
+      "remediation": "Common slips on this item: multiplying by the transpose of J gives (vx, vy) ≈ (-1.2867, -0.6305); pairing dq1/dt with the q2-column (swapped columns) gives ≈ (1.0645, -0.7217); using q2 = -0.8 rad as link 2's world angle gives ≈ (-0.5899, -0.1609); degree mode gives ≈ (-0.004, -0.0751). Rebuild J one column at a time in /lessons/R06, then try a fresh X21 item."
+    },
+    {
+      "id": "X21.tool-velocity.3",
+      "route": "tool-velocity",
+      "difficulty": 3,
+      "structure": "planar-2r.jacobian.difference-check@1",
+      "inputs": {
+        "q1": "2",
+        "q2": "-1.1",
+        "l1": "0.7",
+        "l2": "0.45",
+        "w1": "0.8",
+        "w2": "0.6",
+        "h": "0.5"
+      },
+      "objectiveId": "R06.planar-jacobian",
+      "prompt": "A unit test checks a robot's Jacobian code by comparing it with a central difference. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.7 m, l2 = 0.45 m, at q1 = 2 rad, q2 = -1.1 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). The joint-rate vector is w = (dq1/dt, dq2/dt) = (0.8, 0.6) rad/s. (a) Compute the exact tip velocity J w. (b) The test's author used the central difference [p(q + h w) - p(q - h w)] / (2h) with h = 0.5 s, where p(q) = (x, y) is the tip position: compute the two components of that estimate. Tolerance ±0.001 m/s on every field.",
+      "fields": [
+        {
+          "label": "Exact vx = (J w)x (m/s)",
+          "kind": "number",
+          "answer": "-1.002703",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Exact vy = (J w)y (m/s)",
+          "kind": "number",
+          "answer": "0.158572",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Central-difference vx with h = 0.5 s (m/s)",
+          "kind": "number",
+          "answer": "-0.949906",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Central-difference vy with h = 0.5 s (m/s)",
+          "kind": "number",
+          "answer": "0.13353",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "(a) q1 + q2 = 2 + (-1.1) = 0.9 rad, so J = [[-0.989005, -0.352497], [-0.011578, 0.279724]] m/rad and J w = (-0.989005·0.8 + (-0.352497)·0.6, -0.011578·0.8 + 0.279724·0.6) = (-1.002703, 0.158572) m/s. (b) q + h w = (2.4, -0.8) rad gives p = (-0.529315, 0.922632) m; q - h w = (1.6, -1.4) rad gives p = (0.42059, 0.789103) m. Dividing the difference by 2h = 1 s gives (-0.949906, 0.13353) m/s, which misses J w by (0.052797, -0.025042) m/s: the step is so large that truncation error dominates, so this test would wrongly fail a correct J at ±0.001. With h = 1e-5 s the estimate agrees with J w to better than 1e-8 m/s.",
+      "hints": [
+        "Part (a) is exact: build J at the pose (link 2's world angle is q1 + q2) and multiply it by w. Part (b) needs no Jacobian at all, only two forward-kinematics evaluations at the shifted joint vectors q + h w and q - h w; expect the two answers to disagree, because h = 0.5 s is far from small.",
+        "For (a), the q2-column is (-l2 sin(q1 + q2), l2 cos(q1 + q2)) with q1 + q2 = 0.9 rad; add (-l1 sin q1, l1 cos q1) to it for the q1-column, then form J w. For (b), the shifted joint vectors are q + h w = (2.4, -0.8) rad and q - h w = (1.6, -1.4) rad; evaluate the tip position at each, subtract, and divide by 2h = 1 s.",
+        "(a) q1 + q2 = 2 + (-1.1) = 0.9 rad, so J = [[-0.989005, -0.352497], [-0.011578, 0.279724]] m/rad and J w = (-0.989005·0.8 + (-0.352497)·0.6, -0.011578·0.8 + 0.279724·0.6) = (-1.002703, 0.158572) m/s. (b) q + h w = (2.4, -0.8) rad gives p = (-0.529315, 0.922632) m; q - h w = (1.6, -1.4) rad gives p = (0.42059, 0.789103) m. Dividing the difference by 2h = 1 s gives (-0.949906, 0.13353) m/s, which misses J w by (0.052797, -0.025042) m/s: the step is so large that truncation error dominates, so this test would wrongly fail a correct J at ±0.001. With h = 1e-5 s the estimate agrees with J w to better than 1e-8 m/s."
+      ],
+      "remediation": "Common slips on this item: answering part (a) with the h = 0.5 s difference quotient gives (-0.9499, 0.1335) instead of the exact (-1.0027, 0.1586), an error of about 0.0584 m/s; a one-sided difference [p(q + h w) - p(q)]/h in part (b) gives (-1.0355, -0.1327); multiplying w by the transpose of J gives (-0.7982, -0.1142) in part (a). A finite-difference check is only meaningful with a small step (try several h); see /lessons/R06, then try a fresh X21 item."
+    },
+    {
+      "id": "X21.singularity-check.1",
+      "route": "singularity-check",
+      "difficulty": 1,
+      "structure": "planar-2r.jacobian.determinant@1",
+      "inputs": {
+        "q1": "0.35",
+        "q2": "1.15",
+        "l1": "0.9",
+        "l2": "0.55"
+      },
+      "objectiveId": "R06.planar-jacobian",
+      "prompt": "An inspection arm logs the determinant of its endpoint Jacobian as a health check before each move. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.9 m, l2 = 0.55 m, at q1 = 0.35 rad, q2 = 1.15 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt), with J11 = ∂x/∂q1, J12 = ∂x/∂q2, J21 = ∂y/∂q1, J22 = ∂y/∂q2. Compute det J = J11 J22 - J12 J21 at this pose (tolerance ±0.001 m²), and choose the joint-angle condition under which J of this arm is singular (det J = 0).",
+      "fields": [
+        {
+          "label": "det J (m²)",
+          "kind": "number",
+          "answer": "0.451818",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Joint-angle condition under which J of this arm is singular",
+          "kind": "choice",
+          "answer": "q2 = 0 or π (link 2 in line with link 1)",
+          "tolerance": 0.001,
+          "options": [
+            "q2 = 0 or π (link 2 in line with link 1)",
+            "q1 = 0 or π (link 1 along the base x-axis)",
+            "q1 + q2 = 0 or π (link 2 along the base x-axis)",
+            "q1 = π/2 or -π/2 (link 1 along the base y-axis)"
+          ]
+        }
+      ],
+      "solution": "Expanding J11 J22 - J12 J21 with J11 = -l1 sin q1 - l2 sin(q1 + q2), J12 = -l2 sin(q1 + q2), J21 = l1 cos q1 + l2 cos(q1 + q2), J22 = l2 cos(q1 + q2): the l2² terms cancel and what remains is l1 l2 (sin(q1 + q2) cos q1 - cos(q1 + q2) sin q1) = l1 l2 sin q2. So det J = 0.9·0.55·sin 1.15 = 0.495·0.912764 = 0.451818 m² (numerically: J = [[-0.85723, -0.548622], [0.884341, 0.038905]] gives the same value). The determinant depends only on q2, so J is singular exactly when sin q2 = 0, that is q2 = 0 or π: links in line (straight or folded), whatever q1 is. The other conditions only rotate the whole arm or one link relative to the base and leave det J unchanged.",
+      "hints": [
+        "Write J symbolically first, then expand J11 J22 - J12 J21 before plugging in numbers; a lot cancels. Rotating the whole arm about the base (changing q1 alone) cannot change how much tip motion the joints can produce.",
+        "After expanding, the l2² sin(q1 + q2) cos(q1 + q2) terms cancel and the rest is l1 l2 times sin(q1 + q2) cos q1 - cos(q1 + q2) sin q1. Simplify that with the sine-difference identity, then insert l1 = 0.9 m, l2 = 0.55 m and the joint angle it depends on.",
+        "Expanding J11 J22 - J12 J21 with J11 = -l1 sin q1 - l2 sin(q1 + q2), J12 = -l2 sin(q1 + q2), J21 = l1 cos q1 + l2 cos(q1 + q2), J22 = l2 cos(q1 + q2): the l2² terms cancel and what remains is l1 l2 (sin(q1 + q2) cos q1 - cos(q1 + q2) sin q1) = l1 l2 sin q2. So det J = 0.9·0.55·sin 1.15 = 0.495·0.912764 = 0.451818 m² (numerically: J = [[-0.85723, -0.548622], [0.884341, 0.038905]] gives the same value). The determinant depends only on q2, so J is singular exactly when sin q2 = 0, that is q2 = 0 or π: links in line (straight or folded), whatever q1 is. The other conditions only rotate the whole arm or one link relative to the base and leave det J unchanged."
+      ],
+      "remediation": "Common slips on this item: using the world angle of link 2, l1 l2 sin(q1 + q2), gives 0.4938; l1 l2 sin q1 gives 0.1697; degree mode gives 0.0099; adding instead of subtracting the cross term (J11 J22 + J12 J21) gives -0.5185. Singularity is a property of the elbow angle q2 alone, not of where link 1 or link 2 points in the base frame. See /lessons/R06, then try a fresh X21 item."
+    },
+    {
+      "id": "X21.singularity-check.2",
+      "route": "singularity-check",
+      "difficulty": 2,
+      "structure": "planar-2r.jacobian.null-motion@1",
+      "inputs": {
+        "q1": "0.6",
+        "l1": "0.75",
+        "l2": "0.5",
+        "w1": "1",
+        "q2_straight": "0",
+        "q2_folded": "pi"
+      },
+      "objectiveId": "R06.planar-jacobian",
+      "prompt": "A shelf-stocking arm passes through two special poses. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.75 m, l2 = 0.5 m, q1 = 0.6 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Consider the straight pose q2 = 0 and the folded pose q2 = π. At each pose, with dq1/dt = 1 rad/s, find the rate dq2/dt for which the tip velocity is exactly zero (tolerance ±0.001 rad/s; a fraction is accepted). Then choose the tip-velocity direction that no combination of joint rates can produce at these poses.",
+      "fields": [
+        {
+          "label": "Straight pose (q2 = 0): dq2/dt (rad/s)",
+          "kind": "number",
+          "answer": "-2.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Folded pose (q2 = π): dq2/dt (rad/s)",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Tip-velocity direction that J cannot produce at either pose",
+          "kind": "choice",
+          "answer": "Along link 1: the direction (cos q1, sin q1)",
+          "tolerance": 0.001,
+          "options": [
+            "Along link 1: the direction (cos q1, sin q1)",
+            "Perpendicular to link 1: the direction (-sin q1, cos q1)",
+            "Along the base x-axis: the direction (1, 0)",
+            "Along the base y-axis: the direction (0, 1)"
+          ]
+        }
+      ],
+      "solution": "At q2 = 0: sin(q1 + q2) = sin q1 and cos(q1 + q2) = cos q1, so J = [[-(l1 + l2) sin q1, -l2 sin q1], [(l1 + l2) cos q1, l2 cos q1]]. Both columns are multiples of (-sin q1, cos q1); J w = 0 needs (l1 + l2)·dq1/dt + l2·dq2/dt = 0, so dq2/dt = -(l1 + l2)/l2 · 1 = -1.25/0.5 = -2.5 rad/s. At q2 = π: sin(q1 + π) = -sin q1 and cos(q1 + π) = -cos q1, so J = [[-(l1 - l2) sin q1, l2 sin q1], [(l1 - l2) cos q1, -l2 cos q1]]; J w = 0 needs (l1 - l2)·dq1/dt - l2·dq2/dt = 0, so dq2/dt = (l1 - l2)/l2 · 1 = 0.25/0.5 = 0.5 rad/s. At both poses every column is perpendicular to link 1, so J w always lies along (-sin q1, cos q1) and the direction along link 1, (cos q1, sin q1) = (0.825336, 0.564642), is lost: the tip cannot instantaneously move toward or away from the base. det J = l1 l2 sin q2 = 0 at both poses.",
+      "hints": [
+        "Substitute q2 = 0 (and then q2 = π) into J before using numbers: sin(q1 + q2) and cos(q1 + q2) become ± sin q1 and ± cos q1, and the two columns turn out parallel. A zero tip velocity means the two columns' contributions cancel exactly.",
+        "Write both columns of J at q2 = 0 as multiples of one unit vector, then require the two contributions to cancel for dq1/dt = 1. Repeat at q2 = π, remembering that cos(q1 + π) = -cos q1 and sin(q1 + π) = -sin q1. For the lost direction, compare the column direction with the four options.",
+        "At q2 = 0: sin(q1 + q2) = sin q1 and cos(q1 + q2) = cos q1, so J = [[-(l1 + l2) sin q1, -l2 sin q1], [(l1 + l2) cos q1, l2 cos q1]]. Both columns are multiples of (-sin q1, cos q1); J w = 0 needs (l1 + l2)·dq1/dt + l2·dq2/dt = 0, so dq2/dt = -(l1 + l2)/l2 · 1 = -1.25/0.5 = -2.5 rad/s. At q2 = π: sin(q1 + π) = -sin q1 and cos(q1 + π) = -cos q1, so J = [[-(l1 - l2) sin q1, l2 sin q1], [(l1 - l2) cos q1, -l2 cos q1]]; J w = 0 needs (l1 - l2)·dq1/dt - l2·dq2/dt = 0, so dq2/dt = (l1 - l2)/l2 · 1 = 0.25/0.5 = 0.5 rad/s. At both poses every column is perpendicular to link 1, so J w always lies along (-sin q1, cos q1) and the direction along link 1, (cos q1, sin q1) = (0.825336, 0.564642), is lost: the tip cannot instantaneously move toward or away from the base. det J = l1 l2 sin q2 = 0 at both poses."
+      ],
+      "remediation": "Common slips on this item: a sign slip gives dq2/dt = 2.5 at the straight pose (that doubles the tip speed instead of cancelling it); reusing the straight-pose relation at the folded pose gives -2.5 instead of 0.5 (cos(q1 + π) = -cos q1 flips the q2-column); inverting the ratio gives -0.4. Choosing the perpendicular direction confuses the one direction J still produces with the one it lost. See the singularity section of /lessons/R06, then try a fresh X21 item."
+    },
+    {
+      "id": "X21.singularity-check.3",
+      "route": "singularity-check",
+      "difficulty": 3,
+      "structure": "planar-2r.jacobian.resolved-rate@1",
+      "inputs": {
+        "q1": "0.5",
+        "q2": "0.05",
+        "l1": "0.8",
+        "l2": "0.6",
+        "vx": "0.03",
+        "vy": "0.02"
+      },
+      "objectiveId": "R06.planar-jacobian",
+      "prompt": "A resolved-rate controller must move a probe tip at a slow, fixed velocity while the arm is almost straight. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.8 m, l2 = 0.6 m, at q1 = 0.5 rad, q2 = 0.05 rad; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The endpoint Jacobian J has columns ∂(x, y)/∂q1 and ∂(x, y)/∂q2, so the tip velocity is (vx, vy) = J (dq1/dt, dq2/dt). Compute det J, then solve J (dq1/dt, dq2/dt) = (vx, vy) for the commanded tip velocity (vx, vy) = (0.03, 0.02) m/s. Tolerance ±0.001 on every field (m² for det J, rad/s for the rates); because det J is small here, keep at least 6 significant digits in intermediate values.",
+      "fields": [
+        {
+          "label": "det J (m²)",
+          "kind": "number",
+          "answer": "0.02399",
+          "tolerance": 0.001
+        },
+        {
+          "label": "dq1/dt (rad/s)",
+          "kind": "number",
+          "answer": "0.901112",
+          "tolerance": 0.001
+        },
+        {
+          "label": "dq2/dt (rad/s)",
+          "kind": "number",
+          "answer": "-2.098811",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "q1 + q2 = 0.55 rad. J = [[-0.697153, -0.313612], [1.213581, 0.511515]] m/rad and det J = l1 l2 sin q2 = 0.8·0.6·sin 0.05 = 0.02399 m². With the 2×2 inverse J⁻¹ = (1/det J)[[J22, -J12], [-J21, J11]]: dq1/dt = (J22·vx - J12·vy)/det J = (0.015345 - (-0.006272))/0.02399 = 0.901112 rad/s and dq2/dt = (-J21·vx + J11·vy)/det J = (-0.036407 + (-0.013943))/0.02399 = -2.098811 rad/s. Check: J times these rates returns (0.03, 0.02) m/s. For a tip speed of only 0.036056 m/s the joints must turn at up to 2.1 rad/s; at the well-bent pose q2 = 1.5 rad the same tip velocity needs only (0.007145, -0.067155) rad/s. Near a singularity small task velocities demand large joint rates, which is why controllers damp or limit them.",
+      "hints": [
+        "q2 = 0.05 rad is close to the straight-arm singularity, so det J = l1 l2 sin q2 is small and dividing by it will amplify the numerators: expect joint rates much larger than the tip speed suggests. Solve with J itself, not its transpose.",
+        "det J = l1 l2 sin q2 with sin 0.05 = 0.049979. Next build J with link 2's world angle q1 + q2 = 0.55 rad and apply J⁻¹ = (1/det J)[[J22, -J12], [-J21, J11]] to (0.03, 0.02), keeping 6 significant digits.",
+        "q1 + q2 = 0.55 rad. J = [[-0.697153, -0.313612], [1.213581, 0.511515]] m/rad and det J = l1 l2 sin q2 = 0.8·0.6·sin 0.05 = 0.02399 m². With the 2×2 inverse J⁻¹ = (1/det J)[[J22, -J12], [-J21, J11]]: dq1/dt = (J22·vx - J12·vy)/det J = (0.015345 - (-0.006272))/0.02399 = 0.901112 rad/s and dq2/dt = (-J21·vx + J11·vy)/det J = (-0.036407 + (-0.013943))/0.02399 = -2.098811 rad/s. Check: J times these rates returns (0.03, 0.02) m/s. For a tip speed of only 0.036056 m/s the joints must turn at up to 2.1 rad/s; at the well-bent pose q2 = 1.5 rad the same tip velocity needs only (0.007145, -0.067155) rad/s. Near a singularity small task velocities demand large joint rates, which is why controllers damp or limit them."
+      ],
+      "remediation": "Common slips on this item: multiplying by the transpose of J instead of solving gives ≈ (0.0034, 0.0008) rad/s, tiny rates that do not produce the requested velocity; forgetting the sign flips in the 2×2 inverse gives ≈ (0.3782, 0.9364); using q2 = 0.05 rad as link 2's world angle gives det J ≈ -0.2088 and rates ≈ (-0.089, 0.2266). Rounding J to 4 decimals already shifts the rates by about 0.0021 rad/s here, a symptom of the near-singularity. See /lessons/R06, then try a fresh X21 item."
+    }
+  ]
+}

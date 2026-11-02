@@ -1,0 +1,352 @@
+{
+  "id": "X22",
+  "version": 1,
+  "title": "Solve planar 2R inverse kinematics",
+  "domain": "Robotics",
+  "topicId": "R05",
+  "objectiveId": "R05.planar-ik",
+  "routes": [
+    "pick-target",
+    "reachability"
+  ],
+  "scope": "Analytic inverse kinematics of a declared planar 2R arm with an explicit elbow branch or joint limits, reachability and honest failure; no spatial, redundant or orientation IK",
+  "labIds": [
+    "L06"
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "pick-target": "Analytic IK with a declared branch (q2 > 0 or q2 < 0) or joint limits that leave exactly one admissible pose, so the stored key is unique; angles graded modulo 2π.",
+    "reachability": "Reachable, boundary and unreachable targets, solution counts under joint limits, and honest failure judged by forward-kinematics residual."
+  },
+  "items": [
+    {
+      "id": "X22.pick-target.1",
+      "route": "pick-target",
+      "difficulty": 1,
+      "structure": "planar-2r.ik.branch@1",
+      "inputs": {
+        "x": "0.7",
+        "y": "0.5",
+        "l1": "0.6",
+        "l2": "0.45",
+        "branch": "q2>0"
+      },
+      "objectiveId": "R05.planar-ik",
+      "prompt": "A bin-picking arm must place its gripper over a part. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.6 m, l2 = 0.45 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The target tip position is (x, y) = (0.7, 0.5) m. Solve the inverse kinematics on the elbow branch with q2 > 0 (the elbow bends counter-clockwise relative to link 1) and report q1 and q2. Angles are graded modulo 2π within ±0.001 rad; you may leave angles unwrapped.",
+      "fields": [
+        {
+          "label": "q1 (rad)",
+          "kind": "angle",
+          "answer": "0.103512",
+          "tolerance": 0.001
+        },
+        {
+          "label": "q2 (rad)",
+          "kind": "angle",
+          "answer": "1.235866",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "r² = x² + y² = 0.7² + 0.5² = 0.74 m². Law of cosines: cos q2 = (r² - l1² - l2²)/(2 l1 l2) = (0.74 - 0.36 - 0.2025)/0.54 = 0.328704, so q2 = +acos(0.328704) = 1.235866 rad on this branch. Then q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) = atan2(0.5, 0.7) - atan2(0.424995, 0.747917) = 0.620249 - 0.516738 = 0.103512 rad. Check by forward kinematics: (0.7, 0.5) m, the target. The other branch, q2 < 0, would be (1.136987, -1.235866) rad; it reaches the same point but is not the requested branch.",
+      "hints": [
+        "Find the elbow angle first from the distance to the target alone (law of cosines), choose its sign from the requested branch, and only then find q1. Work in radians and keep q2 relative to link 1.",
+        "cos q2 = (x² + y² - l1² - l2²)/(2 l1 l2) = (0.74 - 0.36 - 0.2025)/0.54 = 0.328704; take the positive acos for this branch. Then q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2), using the two-argument arctangent.",
+        "r² = x² + y² = 0.7² + 0.5² = 0.74 m². Law of cosines: cos q2 = (r² - l1² - l2²)/(2 l1 l2) = (0.74 - 0.36 - 0.2025)/0.54 = 0.328704, so q2 = +acos(0.328704) = 1.235866 rad on this branch. Then q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) = atan2(0.5, 0.7) - atan2(0.424995, 0.747917) = 0.620249 - 0.516738 = 0.103512 rad. Check by forward kinematics: (0.7, 0.5) m, the target. The other branch, q2 < 0, would be (1.136987, -1.235866) rad; it reaches the same point but is not the requested branch."
+      ],
+      "remediation": "Common slips on this item: the q2 < 0 branch, (1.137, -1.2359) rad, reaches the target but is not the requested one; adding instead of subtracting the second atan2 gives q1 ≈ 1.137; reporting link 2's world angle q1 + q2 ≈ 1.3394 as q2 confuses absolute and relative angles; answers in degrees (5.9308, 70.8099) are graded as radians. Check any candidate by forward kinematics (/lessons/R04), then try a fresh X22 item."
+    },
+    {
+      "id": "X22.pick-target.2",
+      "route": "pick-target",
+      "difficulty": 2,
+      "structure": "planar-2r.ik.branch@1",
+      "inputs": {
+        "x": "0.3",
+        "y": "0.65",
+        "l1": "0.55",
+        "l2": "0.4",
+        "branch": "q2<0"
+      },
+      "objectiveId": "R05.planar-ik",
+      "prompt": "A shelf-picking arm must reach a box on a high shelf while keeping its elbow on the shelf side. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.55 m, l2 = 0.4 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The target tip position is (x, y) = (0.3, 0.65) m. Solve the inverse kinematics on the elbow branch with q2 < 0 (the elbow bends clockwise relative to link 1) and report q1 and q2. Angles are graded modulo 2π within ±0.001 rad; you may leave angles unwrapped.",
+      "fields": [
+        {
+          "label": "q1 (rad)",
+          "kind": "angle",
+          "answer": "1.726902",
+          "tolerance": 0.001
+        },
+        {
+          "label": "q2 (rad)",
+          "kind": "angle",
+          "answer": "-1.456914",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "r² = x² + y² = 0.3² + 0.65² = 0.5125 m². Law of cosines: cos q2 = (r² - l1² - l2²)/(2 l1 l2) = (0.5125 - 0.3025 - 0.16)/0.44 = 0.113636, so q2 = -acos(0.113636) = -1.456914 rad on this branch. Then q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) = atan2(0.65, 0.3) - atan2(-0.397409, 0.595455) = 1.138389 - (-0.588513) = 1.726902 rad. Check by forward kinematics: (0.3, 0.65) m, the target. On this branch q2 is negative, so atan2(l2 sin q2, ...) is negative and q1 ends up larger than atan2(y, x). The q2 > 0 branch would be (0.549875, 1.456914) rad.",
+      "hints": [
+        "Same two steps as any 2R IK: the elbow angle from the law of cosines, then the shoulder angle. Here the branch is q2 < 0, so take the negative acos; that sign also changes the correction subtracted from atan2(y, x).",
+        "cos q2 = (0.5125 - 0.3025 - 0.16)/0.44 = 0.113636; take q2 = -acos of that. Next compute l2 sin q2 and l1 + l2 cos q2 with this negative q2 and subtract their atan2 from atan2(0.65, 0.3) = 1.138389 rad.",
+        "r² = x² + y² = 0.3² + 0.65² = 0.5125 m². Law of cosines: cos q2 = (r² - l1² - l2²)/(2 l1 l2) = (0.5125 - 0.3025 - 0.16)/0.44 = 0.113636, so q2 = -acos(0.113636) = -1.456914 rad on this branch. Then q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) = atan2(0.65, 0.3) - atan2(-0.397409, 0.595455) = 1.138389 - (-0.588513) = 1.726902 rad. Check by forward kinematics: (0.3, 0.65) m, the target. On this branch q2 is negative, so atan2(l2 sin q2, ...) is negative and q1 ends up larger than atan2(y, x). The q2 > 0 branch would be (0.549875, 1.456914) rad."
+      ],
+      "remediation": "Common slips on this item: the q2 > 0 branch, (0.5499, 1.4569) rad, is the mirror pose and is rejected here; flipping q2 negative but keeping the other branch's shoulder angle gives (0.5499, -1.4569), which misses the target by 0.7948 m; reporting link 2's world angle q1 + q2 ≈ 0.27 as q2 confuses absolute and relative angles. Verify the pair by forward kinematics (/lessons/R04), then try a fresh X22 item."
+    },
+    {
+      "id": "X22.pick-target.3",
+      "route": "pick-target",
+      "difficulty": 3,
+      "structure": "planar-2r.ik.limited@1",
+      "inputs": {
+        "x": "-0.45",
+        "y": "0.3",
+        "l1": "0.5",
+        "l2": "0.35",
+        "q1min": "0",
+        "q1max": "3",
+        "q2min": "-2.5",
+        "q2max": "2.5"
+      },
+      "objectiveId": "R05.planar-ik",
+      "prompt": "A wall-mounted arm must reach behind and to the left of its base to press a button. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.5 m, l2 = 0.35 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Joint limits: 0 ≤ q1 ≤ 3 rad and -2.5 ≤ q2 ≤ 2.5 rad. The target tip position is (x, y) = (-0.45, 0.3) m. Find both analytic IK solutions, then report the one that satisfies both joint limits (exactly one does). Angles are graded modulo 2π within ±0.001 rad; you may leave angles unwrapped.",
+      "fields": [
+        {
+          "label": "q1 (rad)",
+          "kind": "angle",
+          "answer": "1.872013",
+          "tolerance": 0.001
+        },
+        {
+          "label": "q2 (rad)",
+          "kind": "angle",
+          "answer": "1.801406",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "r² = (-0.45)² + 0.3² = 0.2925 m², cos q2 = (0.2925 - 0.25 - 0.1225)/0.35 = -0.228571, so q2 = ±1.801406 rad. The target is in the second quadrant, so atan2(y, x) = atan2(0.3, -0.45) = 2.55359 rad (not atan(y/x) = -0.588003). Branch q2 = +1.801406: q1 = 2.55359 - atan2(0.340735, 0.42) = 1.872013 rad. Branch q2 = -1.801406: q1 = 2.55359 - atan2(-0.340735, 0.42) = 3.235167 rad. Both |q2| values are inside ±2.5 rad, but q1 = 3.235167 rad exceeds the 3 rad limit (and -3.048018 rad is below 0), so the only admissible solution is q1 = 1.872013 rad, q2 = 1.801406 rad. Forward kinematics check: (-0.45, 0.3) m.",
+      "hints": [
+        "Solve both elbow branches first, then test each against the limits; a geometrically valid pose is still rejected if any joint is outside its range. The target has x < 0, so the base angle to it must come from the two-argument arctangent.",
+        "cos q2 = -0.228571, so the two branches are q2 = ±acos(-0.228571), and atan2(0.3, -0.45) = 2.55359 rad. For each branch compute q1 = 2.55359 - atan2(l2 sin q2, l1 + l2 cos q2) and check it against 0 ≤ q1 ≤ 3 rad (also try ± 2π).",
+        "r² = (-0.45)² + 0.3² = 0.2925 m², cos q2 = (0.2925 - 0.25 - 0.1225)/0.35 = -0.228571, so q2 = ±1.801406 rad. The target is in the second quadrant, so atan2(y, x) = atan2(0.3, -0.45) = 2.55359 rad (not atan(y/x) = -0.588003). Branch q2 = +1.801406: q1 = 2.55359 - atan2(0.340735, 0.42) = 1.872013 rad. Branch q2 = -1.801406: q1 = 2.55359 - atan2(-0.340735, 0.42) = 3.235167 rad. Both |q2| values are inside ±2.5 rad, but q1 = 3.235167 rad exceeds the 3 rad limit (and -3.048018 rad is below 0), so the only admissible solution is q1 = 1.872013 rad, q2 = 1.801406 rad. Forward kinematics check: (-0.45, 0.3) m."
+      ],
+      "remediation": "Common slips on this item: ignoring the limits and reporting the q2 < 0 branch (3.2352, -1.8014) rad, which needs q1 beyond 3 rad; using atan(y/x) = -0.588 instead of atan2 puts q1 at -1.2696, off by π, and the arm then points away from the target; reporting q1 + q2 ≈ 3.6734 as q2. Check both branches against every limit, then confirm by forward kinematics (/lessons/R04) and try a fresh X22 item."
+    },
+    {
+      "id": "X22.reachability.1",
+      "route": "reachability",
+      "difficulty": 1,
+      "structure": "planar-2r.ik.reachability@1",
+      "inputs": {
+        "l1": "0.7",
+        "l2": "0.4",
+        "targets": [
+          [
+            "0.6",
+            "0.5"
+          ],
+          [
+            "0.66",
+            "0.88"
+          ],
+          [
+            "0.2",
+            "-0.1"
+          ],
+          [
+            "-0.9",
+            "0.8"
+          ],
+          [
+            "-0.18",
+            "0.24"
+          ]
+        ]
+      },
+      "objectiveId": "R05.planar-ik",
+      "prompt": "Before planning a pick, a cell controller screens candidate targets for a planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.7 m, l2 = 0.4 m, no joint limits; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Classify each target tip position (in m) by its number of inverse-kinematics solutions (q1, q2), counting joint angles that differ by 2π as the same: A = (0.6, 0.5); B = (0.66, 0.88); C = (0.2, -0.1); D = (-0.9, 0.8); E = (-0.18, 0.24).",
+      "fields": [
+        {
+          "label": "Target A (0.6, 0.5)",
+          "kind": "choice",
+          "answer": "Two solutions (one per elbow branch)",
+          "tolerance": 0.001,
+          "options": [
+            "Two solutions (one per elbow branch)",
+            "Exactly one solution (arm straight or folded)",
+            "No solution: farther than l1 + l2",
+            "No solution: closer than |l1 - l2|"
+          ]
+        },
+        {
+          "label": "Target B (0.66, 0.88)",
+          "kind": "choice",
+          "answer": "Exactly one solution (arm straight or folded)",
+          "tolerance": 0.001,
+          "options": [
+            "Two solutions (one per elbow branch)",
+            "Exactly one solution (arm straight or folded)",
+            "No solution: farther than l1 + l2",
+            "No solution: closer than |l1 - l2|"
+          ]
+        },
+        {
+          "label": "Target C (0.2, -0.1)",
+          "kind": "choice",
+          "answer": "No solution: closer than |l1 - l2|",
+          "tolerance": 0.001,
+          "options": [
+            "Two solutions (one per elbow branch)",
+            "Exactly one solution (arm straight or folded)",
+            "No solution: farther than l1 + l2",
+            "No solution: closer than |l1 - l2|"
+          ]
+        },
+        {
+          "label": "Target D (-0.9, 0.8)",
+          "kind": "choice",
+          "answer": "No solution: farther than l1 + l2",
+          "tolerance": 0.001,
+          "options": [
+            "Two solutions (one per elbow branch)",
+            "Exactly one solution (arm straight or folded)",
+            "No solution: farther than l1 + l2",
+            "No solution: closer than |l1 - l2|"
+          ]
+        },
+        {
+          "label": "Target E (-0.18, 0.24)",
+          "kind": "choice",
+          "answer": "Exactly one solution (arm straight or folded)",
+          "tolerance": 0.001,
+          "options": [
+            "Two solutions (one per elbow branch)",
+            "Exactly one solution (arm straight or folded)",
+            "No solution: farther than l1 + l2",
+            "No solution: closer than |l1 - l2|"
+          ]
+        }
+      ],
+      "solution": "Compare r² = x² + y² with (l1 + l2)² = 1.21 m² and (l1 - l2)² = 0.09 m² (squares avoid rounding a square root). A: r² = 0.61, strictly between the bounds → two solutions, one per elbow branch. B: r² = 1.21 = (l1 + l2)², so r = 1.1 m and the arm must be straight (q2 = 0) → exactly one solution. C: r² = 0.05 < 0.09, closer than 0.3 m to the base → no solution. D: r² = 1.45 > 1.21, farther than 1.1 m → no solution. E: r² = 0.09 = (l1 - l2)², so r = 0.3 m and the arm must be folded (q2 = π) → exactly one solution. The boundary targets B and E are reachable; they are singular poses (det J = 0), which is a different property from being unreachable.",
+      "hints": [
+        "Only the distance r from the base to the target matters for the count: two branches exist when |l1 - l2| < r < l1 + l2, and the elbow angle is forced to 0 or π exactly on the two boundary circles.",
+        "(l1 + l2)² = 1.21 m² and (l1 - l2)² = 0.09 m². Next compute r² = x² + y² for each target, starting with A: 0.6² + 0.5² = 0.61 m², and place each value relative to these two bounds; look carefully for exact equality.",
+        "Compare r² = x² + y² with (l1 + l2)² = 1.21 m² and (l1 - l2)² = 0.09 m² (squares avoid rounding a square root). A: r² = 0.61, strictly between the bounds → two solutions, one per elbow branch. B: r² = 1.21 = (l1 + l2)², so r = 1.1 m and the arm must be straight (q2 = 0) → exactly one solution. C: r² = 0.05 < 0.09, closer than 0.3 m to the base → no solution. D: r² = 1.45 > 1.21, farther than 1.1 m → no solution. E: r² = 0.09 = (l1 - l2)², so r = 0.3 m and the arm must be folded (q2 = π) → exactly one solution. The boundary targets B and E are reachable; they are singular poses (det J = 0), which is a different property from being unreachable."
+      ],
+      "remediation": "Common slips on this item: marking B or E as \"no solution\" confuses a singular pose (det J = 0, arm straight or folded) with an unreachable one; B lies exactly on the outer circle r = l1 + l2 and E exactly on the inner circle r = l1 - l2, so each has exactly one pose. Calling C reachable forgets the inner hole: with l1 > l2 the tip can never come closer than 0.3 m to the base. Compare squared distances to avoid rounding at the boundaries, see /lessons/R04 for the geometry, then try a fresh X22 item."
+    },
+    {
+      "id": "X22.reachability.2",
+      "route": "reachability",
+      "difficulty": 2,
+      "structure": "planar-2r.ik.limit-count@1",
+      "inputs": {
+        "l1": "0.6",
+        "l2": "0.5",
+        "q1min": "-1",
+        "q1max": "1.5",
+        "q2min": "-2.3",
+        "q2max": "2.3",
+        "targets": [
+          [
+            "0.15",
+            "0.35"
+          ],
+          [
+            "0.8",
+            "0.5"
+          ],
+          [
+            "-0.2",
+            "0.9"
+          ]
+        ]
+      },
+      "objectiveId": "R05.planar-ik",
+      "prompt": "A packing arm has hard stops. Planar 2R arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.6 m, l2 = 0.5 m; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). Joint limits: -1 ≤ q1 ≤ 1.5 rad and -2.3 ≤ q2 ≤ 2.3 rad. Targets (tip positions in m): A = (0.15, 0.35), B = (0.8, 0.5), C = (-0.2, 0.9). Give the elbow-angle magnitude |q2| that target A would require (tolerance ±0.001 rad), and for each target the number of inverse-kinematics solutions that respect both joint limits (0, 1 or 2; a joint value counts as inside a limit if it or any 2π-equivalent value is inside).",
+      "fields": [
+        {
+          "label": "|q2| that target A would need (rad)",
+          "kind": "number",
+          "answer": "2.457511",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Valid solutions for target A",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Valid solutions for target B",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Valid solutions for target C",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "All three targets are geometrically reachable (|l1 - l2| = 0.1 m < r < 1.1 m), so each has two analytic branches; the limits decide how many survive. A: cos q2 = -0.775, branches (0.187145, 2.457511), (2.144664, -2.457511) rad → 0 valid (|q2| = 2.457511 rad exceeds the 2.3 rad elbow stop on both branches, so the solver must report failure even though the point is inside the workspace); B: cos q2 = 0.466667, branches (0.070726, 1.085278), (1.046473, -1.085278) rad → 2 valid (both q1 values lie in [-1, 1.5] and both |q2| < 2.3); C: cos q2 = 0.4, branches (1.269269, 1.159279), (2.309661, -1.159279) rad → 1 valid (only the q2 > 0 branch keeps q1 below 1.5 rad). Answers: |q2|(A) = 2.457511 rad; counts 0, 2, 1.",
+      "hints": [
+        "Workspace reachability is necessary but not sufficient: compute both analytic branches for each target and test every joint value against its interval. The elbow limit acts on |q2|, which depends only on the distance to the target.",
+        "For A, cos q2 = (0.15² + 0.35² - 0.6² - 0.5²)/(2·0.6·0.5) = -0.775; compare acos of that with the 2.3 rad stop. For B and C, compute both branches with q1 = atan2(y, x) - atan2(l2 sin q2, l1 + l2 cos q2) and check each q1 against [-1, 1.5].",
+        "All three targets are geometrically reachable (|l1 - l2| = 0.1 m < r < 1.1 m), so each has two analytic branches; the limits decide how many survive. A: cos q2 = -0.775, branches (0.187145, 2.457511), (2.144664, -2.457511) rad → 0 valid (|q2| = 2.457511 rad exceeds the 2.3 rad elbow stop on both branches, so the solver must report failure even though the point is inside the workspace); B: cos q2 = 0.466667, branches (0.070726, 1.085278), (1.046473, -1.085278) rad → 2 valid (both q1 values lie in [-1, 1.5] and both |q2| < 2.3); C: cos q2 = 0.4, branches (1.269269, 1.159279), (2.309661, -1.159279) rad → 1 valid (only the q2 > 0 branch keeps q1 below 1.5 rad). Answers: |q2|(A) = 2.457511 rad; counts 0, 2, 1."
+      ],
+      "remediation": "Common slips on this item: skipping the limits counts 2, 2, 2; checking only the elbow stop gives 0, 2, 2 (C's q2 < 0 branch needs q1 = 2.3097 rad, beyond 1.5); checking only q1 gives 1, 2, 1 (A's q2 > 0 branch has q1 = 0.1871 inside [-1, 1.5] but needs |q2| ≈ 2.4575 rad, beyond the 2.3 rad stop). A reachable point with no admissible pose is an honest IK failure, not a solver bug. See /lessons/R04, then try a fresh X22 item."
+    },
+    {
+      "id": "X22.reachability.3",
+      "route": "reachability",
+      "difficulty": 3,
+      "structure": "planar-2r.ik.unreachable@1",
+      "inputs": {
+        "x": "0.8",
+        "y": "0.75",
+        "l1": "0.65",
+        "l2": "0.35"
+      },
+      "objectiveId": "R05.planar-ik",
+      "prompt": "A student's IK routine for a planar 2R arm computes cos q2 from the law of cosines, clamps it into [-1, 1] before taking acos, and always returns a pose. Arm with relative joint angles (counter-clockwise positive; q1 is measured from the base +x axis, q2 from link 1), angles in radians, lengths in metres, everything in the base frame: l1 = 0.65 m, l2 = 0.35 m, no joint limits; tip position x = l1 cos q1 + l2 cos(q1 + q2), y = l1 sin q1 + l2 sin(q1 + q2). The requested target is (x, y) = (0.8, 0.75) m. Compute cos q2 = (x² + y² - l1² - l2²)/(2 l1 l2) before clamping (a fraction is accepted), the distance between the target and the tip of the returned clamped pose q = (atan2(y, x), 0), both within ±0.001, and choose what the routine should report.",
+      "fields": [
+        {
+          "label": "cos q2 before clamping",
+          "kind": "number",
+          "answer": "1.445055",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Tip-to-target distance of the clamped pose (m)",
+          "kind": "number",
+          "answer": "0.096586",
+          "tolerance": 0.001
+        },
+        {
+          "label": "What the IK routine should report",
+          "kind": "choice",
+          "answer": "Failure: unreachable (r > l1 + l2); the clamped pose may only be logged as a closest approach",
+          "tolerance": 0.001,
+          "options": [
+            "Failure: unreachable (r > l1 + l2); the clamped pose may only be logged as a closest approach",
+            "Success: the clamped pose q = (atan2(y, x), 0) is the IK solution for this target",
+            "Failure: singular configuration (det J = 0); retry from another initial guess until it converges",
+            "Success: two solutions q2 = ±acos(1) = 0, one per elbow branch, after clamping"
+          ]
+        }
+      ],
+      "solution": "x² + y² = 0.64 + 0.5625 = 1.2025 m², so cos q2 = (1.2025 - 0.4225 - 0.1225)/(2·0.65·0.35) = 0.6575/0.455 = 263/182 ≈ 1.445055, which is greater than 1: no real q2 exists. Equivalently r = √1.2025 ≈ 1.096586 m > l1 + l2 = 1 m. Clamping gives q2 = 0 and q1 = atan2(0.75, 0.8) = 0.753151 rad, the straight arm pointing at the target; its tip is at (0.729537, 0.683941) m, 0.096586 m (= r - (l1 + l2)) short of the target. A forward-kinematics residual that large shows this pose is not a solution: the routine must report failure (target unreachable) and may return the straight pose only as a clearly labelled closest approach. The straight pose is also singular, but singularity is not the cause: the target is outside the workspace and no initial guess or retry can reach it.",
+      "hints": [
+        "Compute the raw cos q2 before any clamping; a value outside [-1, 1] means the law of cosines has no real elbow angle for this distance. Then judge the returned pose by its forward-kinematics residual, not by whether the code produced numbers.",
+        "x² + y² = 1.2025 m², l1² = 0.4225 m², l2² = 0.1225 m² and 2 l1 l2 = 0.455 m². Form cos q2 from these; for the residual, evaluate the clamped pose's tip, which lies on the straight line from the base toward the target at distance l1 + l2.",
+        "x² + y² = 0.64 + 0.5625 = 1.2025 m², so cos q2 = (1.2025 - 0.4225 - 0.1225)/(2·0.65·0.35) = 0.6575/0.455 = 263/182 ≈ 1.445055, which is greater than 1: no real q2 exists. Equivalently r = √1.2025 ≈ 1.096586 m > l1 + l2 = 1 m. Clamping gives q2 = 0 and q1 = atan2(0.75, 0.8) = 0.753151 rad, the straight arm pointing at the target; its tip is at (0.729537, 0.683941) m, 0.096586 m (= r - (l1 + l2)) short of the target. A forward-kinematics residual that large shows this pose is not a solution: the routine must report failure (target unreachable) and may return the straight pose only as a clearly labelled closest approach. The straight pose is also singular, but singularity is not the cause: the target is outside the workspace and no initial guess or retry can reach it."
+      ],
+      "remediation": "Common slips on this item: accepting the clamped straight pose as a solution hides a 0.0966 m miss; blaming the singularity sends the solver into retries that can never converge, because the target is 0.0966 m outside the workspace; comparing squares instead of distances gives 0.2025 m² rather than the 0.0966 m residual. An IK routine must reject |cos q2| > 1 and report failure honestly. See /lessons/R04 and the singularity section of /lessons/R06, then try a fresh X22 item."
+    }
+  ]
+}

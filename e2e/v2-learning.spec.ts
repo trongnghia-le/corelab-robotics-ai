@@ -176,6 +176,14 @@ test("optional bridge, manual kit download and practice-only self-report", async
     .getByRole("button", { name: "Download Bounded feedback self-check kit" })
     .click();
   expect((await pidDownload).suggestedFilename()).toBe("L04-pid.v1.py");
+  await page.goto("/objectives/R06.planar-jacobian");
+  const jacobianDownload = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Download Jacobian and IK self-check kit" })
+    .click();
+  expect((await jacobianDownload).suggestedFilename()).toBe(
+    "L06-jacobian-ik.v1.py",
+  );
 });
 test("mobile keyboard, source redaction and gated verification", async ({
   page,

@@ -7,8 +7,8 @@
 - Existing V1 behavior and topic mastery remain separate from V2.
 - Additive, checksummed SQLite sidecar; verified pre-migration WAL copy; supported-version guards and atomic legacy checkpoint hook.
 - Durable practice/placement attempts, frozen source bytes/hash, recorded issue/help/feedback exposures, monotonic assistance, strict answer parsing, idempotent close and no practice evidence.
-- Original drafts for 20 exercise families plus a bridge and 152 static instances; numeric, fraction, angle and choice feedback. Each core family now has two distinct authored application routes, stated route differences and separate calculation/reasoning checks. Immutable V1/V2 sources remain available after later versions activate; 15 families are at v3 after review fixes; X11 is at v4.
-- Validated 24-objective readiness registry, optional paths, original bridge and four manual Python numerical kits (frames, planar FK, exact-arc odometry, bounded P/PI feedback). A 176-node/319-edge curriculum projection is advisory only; the live graph is unchanged. Kit self-reports create no evidence.
+- Original drafts for 22 exercise families plus a bridge and 164 static instances; numeric, fraction, angle and choice feedback. Each core family now has two distinct authored application routes, stated route differences and separate calculation/reasoning checks. Immutable V1/V2 sources remain available after later versions activate; 15 families are at v3 after review fixes; X11 is at v4.
+- Validated 26-objective readiness registry, optional paths, original bridge and five manual Python numerical kits (frames, planar FK, exact-arc odometry, bounded P/PI feedback, planar Jacobian/IK). A 176-node/319-edge curriculum projection is advisory only; the live graph is unchanged. Kit self-reports create no evidence.
 - Server-gated objective UI with Recommended, Explore and More Practice, route/difficulty choices, scratchpad text that is never executed, history and mobile keyboard support.
 - Backup/3 captures all learning rows with existing progress. Bounded localhost preview/confirmation, revision checks, atomic replacement, nonrecursive pre-restore snapshots and foreign-origin handling preserve local identity.
 - Owner-approved deferred restore epochs preserve every existing epoch and immediate local provenance. The first actual learning write allocates the new epoch atomically; idempotent/no-op operations and failed writes leave it deferred. Shared envelope/projection/cache accounting keeps repeated boundary restores within the same logical budget.
@@ -26,7 +26,7 @@ A fresh disposable source snapshot completed the default production build and **
 
 Two-process SQLite races passed: identical concurrent submissions close once; committed help prevents independent C/M admission, and help arriving after close is refused. Consistent exports retained paired legacy/V2 changes committed by a separate process. Actual SQLite page-full and pre-migration low-space failures preserved history; transaction-state guards retain the original auto-rollback error. Interrupted/corrupt copies are removed; partial migration DDL rolls back with an openable recovery copy. Failure injection after restore snapshot/replacement/pruning preserves the entire previous snapshot set and learning history. A streamed 128 MiB overflow is cancelled before a database is opened.
 
-A valid **133,917,793-byte** disk-backed non-ASCII profile with a closed practice attempt exported, restored and re-exported on the final capacity logic. Capacity stayed **133,950,561 bytes** before/after restore. The fixture left 256 KiB unused; exact-boundary cases use a reduced-budget production path. Linux x64/Node 24.22.2/i5-12500H: **47.585 seconds**, maximum RSS **4,037,042,176 bytes**. This substantial memory footprint needs a release resource-budget decision; it is not a claim of low-memory or cross-platform suitability.
+A valid **133,917,793-byte** disk-backed non-ASCII profile with a closed practice attempt exported, restored and re-exported on the final capacity logic. Capacity stayed **133,950,561 bytes** before/after restore. The fixture left 256 KiB unused; exact-boundary cases use a reduced-budget production path. Linux x64/Node 24.22.2/i5-12500H: **47.585 seconds**, maximum RSS **4,037,042,176 bytes**. This substantial memory footprint underlies the resource budget later accepted in the owner-decision addendum (8 GB RAM and approximately 2 GB free disk); it is not a low-memory support claim or a large-profile measurement on Windows/macOS.
 
 A production-build Chromium restart check passed **fresh off → on/practice → non-1 off/legacy edit → on/acknowledge/resume** using one temporary database. Off means hidden V2 navigation/API and no sidecar created on a fresh profile; existing attempts survive off-mode legacy edits. The test does not separately instrument content filesystem reads.
 
@@ -34,7 +34,7 @@ The actual baseline Store from `38b6a1d` reopened, edited and restored legacy pr
 
 A synthetic 50,000-attempt in-memory benchmark on Linux x64, Node 26.8.1, Intel i5-12500H measured ten selector calls at **9.58–40.62 ms**, a **4,882-byte** selector response and **8,232-byte** 50-item history page. Estimated supported-profile bytes were 81,888,728; RSS was 211,677,184. Command: `npm run benchmark:v2`. The fixture has repeated issued bridge attempts and no submitted artifacts; this is not a disk/restore or general workload benchmark.
 
-These are Linux results in this execution environment. Windows/macOS, remotely executed CI, manual screen-reader use, a full-size reviewed-evidence workload, an approved memory/disk budget, independent item review and the 21-day learner pilot remain unvalidated. See [ACCEPTANCE_STATUS.md](ACCEPTANCE_STATUS.md) for the criterion-by-criterion audit.
+The detailed local measurements above were obtained on Linux. Later GitHub Actions runs passed Node 24 installation/checks/builds on Windows, macOS and Linux; browser coverage runs on Linux. The Master Plan records owner acceptance of AI content review, the measured resource budget and S1/S2 activation. Manual screen-reader use, large reviewed-evidence stress testing and human expert review remain outstanding. S3 was not run according to the recorded owner decision. See [ACCEPTANCE_STATUS.md](ACCEPTANCE_STATUS.md) for the criterion-by-criterion audit.
 
 Additional reproducible qualification commands (all use new temporary databases):
 
@@ -47,6 +47,10 @@ node --import tsx scripts/qualify-v2-backup.ts --full-budget
 The toggle check requires an existing production build and Playwright Chromium. The full-budget check is an explicit high-memory operation, not a routine startup step.
 
 ## Local commits
+
+Latest committed release snapshot checked in this audit: `27dfe44` (L04 code at `2650aa6`). CI run [41398479649](https://github.com/trongnghia-le/corelab-robotics-ai/actions/runs/41398479649) was independently queried during the alignment check: Node 24 jobs on Ubuntu, macOS and Windows all succeeded; browser steps ran on Linux and were explicitly skipped on the other two OSes.
+
+The working tree additionally contains the unfinished L06 planar Jacobian/IK expansion, X21/X22 and two new objectives. Actual local checks on this snapshot: **218 tests in 31 files passed**, V2 content validation passed (26 objectives, 22 core families, 164 practice items, five kit definitions), and typecheck passed. This snapshot is not a completed L06 milestone: its final build/browser/review evidence and commit remain to be recorded. Do not count a kit definition or a roadmap availability label alone as a released lab.
 
 - 1a70a20 — execution plan and strict contracts.
 - f100af2 — storage, practice, recovery and original static catalog drafts.
@@ -80,7 +84,7 @@ The default database remains .local/corelab.sqlite; V2 adds tables and creates a
 
 ## Remaining work / gates
 
-Not done: S3 learner observation (owner chose not to run it), human expert/pedagogical review, manual screen-reader and physical-device testing, large reviewed-evidence workload. Windows/macOS evidence is CI only (Node 24; browser flows on Linux). The 22-lab roadmap labels four manual kits as working and 18 lab implementations as planned; related exercise links are bounded preparation, not lab completion. Optional MuJoCo/ROBOTIS documentation is link-only; ROS documentation retrieval was provider-blocked. No simulator/ROS/hardware integration has been tested or enabled.
+Not done: S3 learner observation (owner chose not to run it), human expert/pedagogical review, manual screen-reader and physical-device testing, large reviewed-evidence workload. Windows/macOS evidence is CI only (Node 24; browser flows on Linux). The 22-lab roadmap labels five manual kits as working and 17 lab implementations as planned; related exercise links are bounded preparation, not lab completion. Optional MuJoCo/ROBOTIS documentation is link-only; ROS documentation retrieval was provider-blocked. No simulator/ROS/hardware integration has been tested or enabled.
 
 `LEARNER_PILOT_PROTOCOL.md` prepares S3 observations and stop criteria. No participant outreach or 21-day trial has occurred.
 

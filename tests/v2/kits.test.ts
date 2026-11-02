@@ -47,6 +47,7 @@ it("serves the odometry kit with its own sample file and per-kit identity", () =
     "L02-planar",
     "L03-odometry",
     "L04-pid",
+    "L06-jacobian-ik",
   ]);
   const s = store(),
     kit = downloadKit(s, "L03-odometry");
