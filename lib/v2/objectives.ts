@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import { topicMap } from "../curriculum";
@@ -9,9 +9,7 @@ import { id, strictJSON } from "./contracts";
 import { kits } from "./kits";
 const ref = z.discriminatedUnion("type", [
   z.object({ type: z.literal("lesson"), topic: id }).strict(),
-  z
-    .object({ type: z.literal("bridge"), id: z.literal("radians-trig") })
-    .strict(),
+  z.object({ type: z.literal("bridge"), id }).strict(),
   z
     .object({
       type: z.literal("visualization"),
@@ -109,6 +107,11 @@ export function validateObjectives(input: unknown) {
       if (ref.type === "lesson" && !topicMap[ref.topic])
         throw new Error("Dangling lesson topic");
       if (
+        ref.type === "bridge" &&
+        !existsSync(path.join(process.cwd(), bridgeFile(ref.id)))
+      )
+        throw new Error("Dangling bridge");
+      if (
         (ref.type === "visualization" || ref.type === "illustration") &&
         !getLesson(ref.topic)
       )
@@ -152,11 +155,22 @@ export function objectives() {
     ),
   ));
 }
-export function bridgeText() {
-  return readFileSync(
-    path.join(process.cwd(), "content/v2/bridges/radians-trig.v1.md"),
-    "utf8",
-  );
+// Original V2 teaching bridges live at content/v2/bridges/<id>.v1.md.
+export function bridgeFile(bridgeId: string) {
+  if (!id.safeParse(bridgeId).success) throw new Error("Invalid bridge id");
+  return "content/v2/bridges/" + bridgeId + ".v1.md";
+}
+export function bridgeText(bridgeId = "radians-trig") {
+  return readFileSync(path.join(process.cwd(), bridgeFile(bridgeId)), "utf8");
+}
+export function bridgeIds() {
+  return [
+    ...new Set(
+      objectives().objectives.flatMap((o) =>
+        o.learn.flatMap((r) => (r.type === "bridge" ? [r.id] : [])),
+      ),
+    ),
+  ];
 }
 export function curriculumPreview() {
   // Advisory projection only. Never feeds v1 mastery, recommendations or evidence.

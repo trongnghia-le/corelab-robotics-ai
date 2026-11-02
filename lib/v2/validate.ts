@@ -8,7 +8,12 @@ import {
   itemFingerprint,
   archivedFamilies,
 } from "./content";
-import { objectives, curriculumPreview } from "./objectives";
+import {
+  objectives,
+  curriculumPreview,
+  bridgeFile,
+  bridgeIds,
+} from "./objectives";
 import { cmSources, fingerprintCandidates } from "./assessments";
 import { kitFingerprints, kitFiles, kits } from "./kits";
 import { labRoadmap } from "./roadmap";
@@ -63,7 +68,7 @@ export function validateV2() {
     "content/v2/objectives.v1.json",
     "content/v2/assessments.v1.json",
     "content/v2/curriculum-planning.v1.json",
-    "content/v2/bridges/radians-trig.v1.md",
+    ...bridgeIds().map(bridgeFile),
     "content/labs/samples.v1.json",
     ...c.families.map(
       (f) => "content/exercises/" + f.id + ".v" + f.version + ".json",

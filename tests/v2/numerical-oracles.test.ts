@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import { catalog, family, gradeItem, type Item } from "../../lib/v2/content";
+import { familyOracles } from "./oracles/index";
 type Inputs = Record<string, unknown>;
 const value = (v: unknown) => {
   const [n, d = "1"] = String(v).split("/");
@@ -464,8 +465,11 @@ function oracle(familyId: string, item: Item): (number | string)[] {
       }
       throw new Error("Unknown planar 2R structure " + item.structure);
     }
-    default:
-      throw new Error("Missing oracle for " + familyId);
+    default: {
+      const registered = familyOracles[familyId];
+      if (!registered) throw new Error("Missing oracle for " + familyId);
+      return registered(item);
+    }
   }
 }
 for (const f of catalog().families.filter((f) => /^X\d+$/.test(f.id))) {

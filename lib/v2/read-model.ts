@@ -16,6 +16,20 @@ const names: Record<string, string> = {
   "R03.compose-invert-se2": "Compose planar frame transformations",
   "R04.planar-fk": "Compute a planar 2R arm pose",
 };
+// Review pool that issues an objective's retention check, or null when no
+// approved pool covers it.
+export function reviewSourceFor(objectiveId: string) {
+  return (
+    cmSources().find(
+      (s) =>
+        s.kind === "review_pool" &&
+        independentlyReviewed(s) &&
+        s.variants.some((v) =>
+          v.items.some((c) => c.task.objectiveId === objectiveId),
+        ),
+    )?.id ?? null
+  );
+}
 export function summaries(store: Store) {
   const registry = objectives();
   const counts = new Map(
@@ -91,7 +105,7 @@ export function summaries(store: Store) {
           ref.type === "video"
             ? videoRegistry.videos.find((v) => v.id === ref.id)!.watchUrl
             : ref.type === "bridge"
-              ? "/objectives/M01.radians-trig"
+              ? "/objectives/" + o.id
               : "/lessons/" + ref.topic,
       })),
     })),
@@ -102,6 +116,7 @@ export function summaries(store: Store) {
       .filter((s) => s.kind === "form")
       .map((s) => ({
         id: s.id,
+        title: s.title,
         available: CM_RELEASED && independentlyReviewed(s),
         objectives: [
           ...new Set(
@@ -128,6 +143,7 @@ export function summaries(store: Store) {
       due: r.due,
       stage: r.stage,
       dueNow: Date.parse(r.due) <= Date.now(),
+      sourceId: reviewSourceFor(r.objective_id),
       available: CM_RELEASED,
     })),
     evidence: (
@@ -289,7 +305,12 @@ export function objectiveDetail(store: Store, id: string) {
   return {
     ...result,
     families,
-    bridge: id === "M01.radians-trig" ? bridgeText() : null,
+    bridge: (() => {
+      const ref = objectives()
+        .objectives.find((o) => o.id === id)
+        ?.learn.find((r) => r.type === "bridge");
+      return ref?.type === "bridge" ? bridgeText(ref.id) : null;
+    })(),
   };
 }
 export function savePreference(store: Store, input: unknown) {

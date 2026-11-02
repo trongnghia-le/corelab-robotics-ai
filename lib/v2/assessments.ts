@@ -57,7 +57,16 @@ const indexSchema = z
   .object({
     schema: z.literal("corelab-verify-catalog/1"),
     sources: z
-      .array(z.object({ id, version: z.literal(1), review: approval }).strict())
+      .array(
+        z
+          .object({
+            id,
+            version: z.literal(1),
+            title: z.string().min(1).max(120).optional(),
+            review: approval,
+          })
+          .strict(),
+      )
       .max(100),
   })
   .strict();
@@ -65,6 +74,7 @@ export type Variant = z.infer<typeof variantSchema>;
 export type CMSource = z.infer<typeof sourceSchema> & {
   hash: string;
   review: z.infer<typeof approval>;
+  title: string;
 };
 export type SourceResolver = (
   id: string,
@@ -101,7 +111,12 @@ export function cmSources() {
       )
         throw new Error("Frozen form exceeds 16 KiB");
     }
-    return { ...source, hash: hash(raw), review: entry.review };
+    return {
+      ...source,
+      hash: hash(raw),
+      review: entry.review,
+      title: entry.title ?? source.id,
+    };
   });
   return cached;
 }

@@ -18,6 +18,7 @@ const schema = z
             kit: id.nullable(),
             practiceFamilies: z.array(id).max(10),
             scopeNote: z.string().max(1000),
+            unavailable: z.array(z.string().min(1).max(300)).max(12).optional(),
           })
           .strict(),
       )

@@ -9,7 +9,7 @@ import {
   family,
 } from "../../lib/v2/content";
 import { learnerTextIssue } from "../../lib/v2/validate";
-it("loads original static contracts for twenty-two families and redacts answers/help", () => {
+it("loads original static contracts for every family and redacts answers/help", () => {
   const c = catalog();
   expect(c.families.filter((f) => /^X\d+$/.test(f.id))).toHaveLength(22);
   expect(c.families.find((f) => f.id === "XB1")?.items).toHaveLength(12);
