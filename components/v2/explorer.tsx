@@ -11,6 +11,7 @@ import {
   Terminal,
   CheckCircle2,
 } from "lucide-react";
+import { domainTone } from "../domain-theme";
 import { PageHeading } from "../ui";
 import type { objectiveDetail } from "@/lib/v2/read-model";
 import type {
@@ -691,7 +692,11 @@ export function V2Explorer({ objective }: { objective?: string }) {
             )}
             <div className="v2-card-grid">
               {families.map((f) => (
-                <article className="panel v2-family" key={f.id}>
+                <article
+                  className="panel v2-family"
+                  data-domain-tone={domainTone(f.domain)}
+                  key={f.id}
+                >
                   <div className="eyebrow">
                     {f.domain} · {f.id}
                   </div>

@@ -11,6 +11,7 @@ import {
   ArrowUpRight,
   ChevronRight,
 } from "lucide-react";
+import { domainTone } from "./domain-theme";
 import { topics, domains } from "@/lib/curriculum";
 import { useCore, Loading } from "./provider";
 import { PageHeading, Status } from "./ui";
@@ -174,7 +175,7 @@ export function Catalog({
           {domains
             .filter((d) => visible.some((t) => t.domain === d))
             .map((d) => (
-              <section key={d}>
+              <section key={d} data-domain-tone={domainTone(d)}>
                 <div className="domain-heading">
                   <h2>{d}</h2>
                   <span>
@@ -222,7 +223,12 @@ export function Catalog({
       ) : (
         <div className="lesson-grid">
           {visible.map((t) => (
-            <Link href={`/${mode}/${t.id}`} className="lesson-card" key={t.id}>
+            <Link
+              href={`/${mode}/${t.id}`}
+              className="lesson-card"
+              data-domain-tone={domainTone(t.domain)}
+              key={t.id}
+            >
               <div className="between">
                 <span className="topic-code">{t.id}</span>
                 <span className={`priority ${t.priority}`}>{t.priority}</span>

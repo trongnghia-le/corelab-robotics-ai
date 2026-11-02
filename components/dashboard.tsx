@@ -21,6 +21,7 @@ import {
   Compass,
   RotateCcw,
 } from "lucide-react";
+import { domainTone } from "./domain-theme";
 import { RoboticsConcept } from "./robotics-concept";
 import { useCore, Loading } from "./provider";
 import { PageHeading, Status, dateText, TopicChips } from "./ui";
@@ -112,7 +113,10 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
         </Link>
       </PageHeading>
       <div className="dashboard-grid dashboard-launch">
-        <section className="focus-card">
+        <section
+          className="focus-card"
+          data-domain-tone={domainTone(topic?.domain)}
+        >
           <div className="section-kicker">
             <span className="accent-dot" />
             YOUR NEXT STEP
@@ -278,6 +282,7 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
           return (
             <Link
               className="dashboard-domain-card"
+              data-domain-tone={domainTone(d)}
               href={`/roadmap?domain=${encodeURIComponent(d)}`}
               key={d}
             >

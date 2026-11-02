@@ -48,13 +48,27 @@ export function RoboticsConcept({
           stroke="currentColor"
           strokeWidth="1.5"
         >
-          <path d="M38 53 L296 111 M38 53 L326 151" strokeDasharray="4 6" />
+          <path
+            className="robotics-perception"
+            d="M38 53 L296 111 M38 53 L326 151"
+            strokeDasharray="4 6"
+          />
           <path d="M38 220 H347 M68 225 V90" />
           <path d="M347 220 l-7 -4 m7 4 l-7 4 M68 90 l-4 7 m4 -7 l4 7" />
-          <rect x="21" y="35" width="31" height="26" rx="5" />
-          <circle cx="36" cy="48" r="7" />
+          <rect
+            className="robotics-perception"
+            x="21"
+            y="35"
+            width="31"
+            height="26"
+            rx="5"
+          />
+          <circle className="robotics-perception" cx="36" cy="48" r="7" />
           <path d="M29 35 l5 -7 h12 l5 7" />
-          <path d="M269 39 L300 59 L331 32 M269 39 L298 18 L331 32 M300 59 L335 69 M331 32 L335 69" />
+          <path
+            className="robotics-learning"
+            d="M269 39 L300 59 L331 32 M269 39 L298 18 L331 32 M300 59 L335 69 M331 32 L335 69"
+          />
           {[
             [269, 39],
             [300, 59],
@@ -62,7 +76,14 @@ export function RoboticsConcept({
             [298, 18],
             [335, 69],
           ].map(([cx, cy]) => (
-            <circle key={cx} cx={cx} cy={cy} r="5" fill="var(--surface-1)" />
+            <circle
+              className="robotics-learning"
+              key={cx}
+              cx={cx}
+              cy={cy}
+              r="5"
+              fill="var(--surface-1)"
+            />
           ))}
           <path d="M251 149 Q278 133 304 132" strokeDasharray="3 5" />
         </g>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { domainTone } from "../domain-theme";
 import { RoboticsConcept } from "../robotics-concept";
 import {
   ArrowRight,
@@ -12,24 +13,28 @@ import {
 const startingPoints = [
   {
     title: "Robot motion",
+    domain: "Robotics",
     note: "Frames & kinematics",
     href: "/objectives/R04.planar-fk",
     Icon: Move3D,
   },
   {
     title: "Computer vision",
+    domain: "Computer Vision",
     note: "Camera geometry",
     href: "/objectives/V03.pinhole",
     Icon: ScanEye,
   },
   {
     title: "Machine learning",
+    domain: "Machine Learning",
     note: "Gradients & models",
     href: "/objectives/ML05.shared-gradient",
     Icon: BrainCircuit,
   },
   {
     title: "RL & decisions",
+    domain: "RL",
     note: "Values & actions",
     href: "/objectives/RL02.bellman-value",
     Icon: Workflow,
@@ -73,8 +78,8 @@ export function RoboticsHero() {
         className="robotics-starting-points"
         aria-label="Robotics and AI starting points"
       >
-        {startingPoints.map(({ title, note, href, Icon }) => (
-          <Link href={href} key={href}>
+        {startingPoints.map(({ title, note, href, Icon, domain }) => (
+          <Link href={href} key={href} data-domain-tone={domainTone(domain)}>
             <Icon size={21} aria-hidden="true" />
             <span>
               <strong>{title}</strong>

@@ -1112,13 +1112,13 @@
   }
 }
 :root {
-  --bg: #0d0f12;
-  --surface-1: #14171c;
-  --surface-2: #1b1f26;
-  --surface-3: #232831;
-  --border: #2b3038;
+  --bg: #0b1120;
+  --surface-1: #141d2d;
+  --surface-2: #1c293c;
+  --surface-3: #26364d;
+  --border: #334158;
   --text: #f3f4f6;
-  --muted: #a7afbd;
+  --muted: #b1bed1;
   --subtle: #929cab;
   --primary: #f97316;
   --primary-hover: #fb923c;
@@ -4313,4 +4313,208 @@ html:has(.media-navigation) {
 }
 .lesson-article .prose h2[id] {
   scroll-margin-top: 100px;
+}
+
+/* Shared subject colors. These are identity accents, never assessment verdicts. */
+[data-domain-tone] {
+  --domain-accent: #cbd5e1;
+  --domain-surface: #202c3d;
+  --domain-border: #475569;
+}
+[data-domain-tone="blue"] {
+  --domain-accent: #93c5fd;
+  --domain-surface: #152b48;
+  --domain-border: #365b83;
+}
+[data-domain-tone="sky"] {
+  --domain-accent: #7dd3fc;
+  --domain-surface: #143144;
+  --domain-border: #32647b;
+}
+[data-domain-tone="violet"] {
+  --domain-accent: #c4b5fd;
+  --domain-surface: #2b2248;
+  --domain-border: #615088;
+}
+[data-domain-tone="teal"] {
+  --domain-accent: #5eead4;
+  --domain-surface: #123a36;
+  --domain-border: #2c7066;
+}
+[data-domain-tone="orange"] {
+  --domain-accent: #fdba74;
+  --domain-surface: #3b281c;
+  --domain-border: #845330;
+}
+[data-domain-tone="rose"] {
+  --domain-accent: #f9a8d4;
+  --domain-surface: #3e2337;
+  --domain-border: #844563;
+}
+[data-domain-tone="indigo"] {
+  --domain-accent: #a5b4fc;
+  --domain-surface: #252b4c;
+  --domain-border: #515f98;
+}
+[data-domain-tone="amber"] {
+  --domain-accent: #fde68a;
+  --domain-surface: #39321c;
+  --domain-border: #807037;
+}
+
+.dashboard-domain-card[data-domain-tone],
+.lesson-card[data-domain-tone],
+.v2-family[data-domain-tone] {
+  background: linear-gradient(
+    145deg,
+    var(--domain-surface),
+    var(--surface-1) 75%
+  );
+  border-color: var(--domain-border);
+  border-top: 3px solid var(--domain-accent);
+}
+.dashboard-domain-card[data-domain-tone]:hover,
+.lesson-card[data-domain-tone]:hover,
+.v2-family[data-domain-tone]:hover {
+  background: linear-gradient(145deg, var(--domain-surface), var(--surface-2));
+  border-color: var(--domain-accent);
+}
+.dashboard-domain-card[data-domain-tone] .dashboard-domain-icon,
+.lesson-card[data-domain-tone] .topic-code,
+.topic-page[data-domain-tone] .topic-meta .topic-code {
+  color: var(--domain-accent);
+  background: var(--domain-surface);
+  border-color: var(--domain-border);
+}
+.dashboard-domain-card[data-domain-tone] .dashboard-domain-top > svg,
+.v2-family[data-domain-tone] .eyebrow,
+.topic-page[data-domain-tone] .topic-breadcrumb a:nth-of-type(2) {
+  color: var(--domain-accent);
+}
+.dashboard .focus-card[data-domain-tone] {
+  background:
+    radial-gradient(ellipse at 0 0, var(--domain-surface), transparent 85%),
+    var(--surface-1);
+  border-color: var(--domain-border);
+}
+.dashboard .focus-card[data-domain-tone] .focus-title .topic-code,
+.dashboard .focus-card[data-domain-tone] .priority-pill {
+  background: var(--domain-surface);
+  color: var(--domain-accent);
+  border-color: var(--domain-border);
+}
+.dashboard .focus-card[data-domain-tone] .reason-box {
+  border-color: var(--domain-border);
+}
+.dashboard .focus-card[data-domain-tone] .reason-box strong,
+.dashboard .focus-card[data-domain-tone] .reason-box > svg {
+  color: var(--domain-accent);
+}
+.dashboard-lab-card {
+  border-color: #465480;
+  background:
+    radial-gradient(ellipse at 0 0, #175a5855, transparent 60%),
+    radial-gradient(ellipse at 100% 0, #6949ab55, transparent 65%),
+    var(--surface-1);
+}
+.dashboard-lab-caption .button {
+  background: #25294a;
+  border-color: #65649a;
+}
+.dashboard-lab-caption .button:hover {
+  background: #37365c;
+  border-color: #a5b4fc;
+}
+.dashboard-evidence {
+  background:
+    linear-gradient(110deg, #142e3555, transparent 50%, #39295944),
+    var(--surface-1);
+}
+.dashboard-evidence dl > div:nth-child(1) dt svg {
+  color: #5eead4;
+}
+.dashboard-evidence dl > div:nth-child(2) dt svg {
+  color: #c4b5fd;
+}
+.dashboard-evidence dl > div:nth-child(3) dt svg {
+  color: #fde68a;
+}
+
+.robotics-hero {
+  border-color: #555078;
+  background:
+    radial-gradient(ellipse at 100% 0, #44357b66, transparent 60%),
+    radial-gradient(ellipse at 20% 100%, #124a5c66, transparent 65%),
+    var(--surface-1);
+}
+.robotics-starting-points {
+  border-top-color: #46536b;
+}
+.robotics-starting-points a[data-domain-tone] {
+  background: linear-gradient(135deg, var(--domain-surface), #101827);
+  border-color: var(--domain-border);
+}
+.robotics-starting-points a[data-domain-tone]:hover {
+  background: var(--domain-surface);
+}
+.robotics-starting-points a[data-domain-tone] > svg:first-child {
+  color: var(--domain-accent);
+}
+.robotics-perception {
+  stroke: #5eead4;
+}
+.robotics-learning {
+  stroke: #c4b5fd;
+}
+.robotics-sketch-text text:first-child {
+  fill: #5eead4;
+}
+.robotics-sketch-text text:nth-child(2) {
+  fill: #c4b5fd;
+}
+.robotics-sketch-text text:nth-last-child(2) {
+  fill: #fdba74;
+}
+.v2-workflow-nav a[href="#v2-learn"] {
+  background: #162b42;
+  border-color: #365b83;
+}
+.v2-workflow-nav a[href="#v2-learn"] svg {
+  color: #93c5fd;
+}
+.v2-workflow-nav a[href="#v2-practice"] {
+  background: #34251d;
+  border-color: #7d512e;
+}
+.v2-workflow-nav a[href="#v2-apply"] {
+  background: #15322f;
+  border-color: #2c7066;
+}
+.v2-workflow-nav a[href="#v2-apply"] svg {
+  color: #5eead4;
+}
+.v2-workflow-nav a[href="#v2-verify"] {
+  background: #29233e;
+  border-color: #615088;
+}
+.v2-workflow-nav a[href="#v2-verify"] svg {
+  color: #c4b5fd;
+}
+.v2-workflow-nav a[href="#v2-review"] {
+  background: #322c1c;
+  border-color: #807037;
+}
+.v2-workflow-nav a[href="#v2-review"] svg {
+  color: #fde68a;
+}
+.v2-workflow-nav a:hover {
+  filter: brightness(1.12);
+}
+.roadmap-groups > section[data-domain-tone] .domain-heading {
+  border-left: 3px solid var(--domain-accent);
+  padding-left: 0.85rem;
+}
+.roadmap-groups > section[data-domain-tone] .domain-heading h2,
+.roadmap-groups > section[data-domain-tone] .topic-id {
+  color: var(--domain-accent);
 }

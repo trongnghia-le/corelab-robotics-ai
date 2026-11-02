@@ -36,11 +36,9 @@ test("dashboard presents actual topic evidence and opens the selected curriculum
   await expect(page.locator(".dashboard-domain-card")).toHaveCount(
     new Set(curriculum.map((t) => t.domain)).size,
   );
-  const robotics = page
-    .locator(".dashboard-domain-card")
-    .filter({
-      has: page.getByRole("heading", { name: "Robotics", exact: true }),
-    });
+  const robotics = page.locator(".dashboard-domain-card").filter({
+    has: page.getByRole("heading", { name: "Robotics", exact: true }),
+  });
   await expect(robotics).toContainText(
     `${curriculum.filter((t) => t.domain === "Robotics").length} curriculum topics`,
   );
@@ -86,4 +84,86 @@ test("dashboard stays keyboard accessible and readable on desktop and small scre
     });
   }
   expect(errors).toEqual([]);
+});
+
+test("subject colors remain readable and consistent from dashboard to lesson", async ({
+  page,
+}) => {
+  const before = await (await page.request.get("/api/state")).json();
+  await page.goto("/");
+  await expect(page.locator(".dashboard-domain-card")).toHaveCount(8);
+  const palette = await page
+    .locator(".dashboard-domain-card")
+    .evaluateAll((cards) =>
+      cards.map((card) => {
+        const style = getComputedStyle(card);
+        const icon = getComputedStyle(
+          card.querySelector(".dashboard-domain-icon")!,
+        );
+        return {
+          name: card.querySelector("h3")!.textContent,
+          accent: icon.color,
+          iconBackground: icon.backgroundColor,
+          text: getComputedStyle(card.querySelector("p")!).color,
+          heading: getComputedStyle(card.querySelector("h3")!).color,
+          surface: style.getPropertyValue("--domain-surface").trim(),
+          base: style.getPropertyValue("--surface-1").trim(),
+        };
+      }),
+    );
+  const luminance = (color: string) => {
+    const rgb = color.startsWith("#")
+      ? [1, 3, 5].map((i) => parseInt(color.slice(i, i + 2), 16))
+      : color
+          .match(/[\d.]+/g)!
+          .slice(0, 3)
+          .map(Number);
+    const values = rgb.map((v) => {
+      const c = v / 255;
+      return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return values[0] * 0.2126 + values[1] * 0.7152 + values[2] * 0.0722;
+  };
+  const contrast = (a: string, b: string) => {
+    const x = luminance(a),
+      y = luminance(b);
+    return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+  };
+  expect(new Set(palette.map((p) => p.accent)).size).toBe(8);
+  for (const p of palette) {
+    expect(
+      contrast(p.accent, p.iconBackground),
+      p.name + " accent",
+    ).toBeGreaterThanOrEqual(4.5);
+    for (const background of [p.surface, p.base]) {
+      expect(
+        contrast(p.text, background),
+        p.name + " description",
+      ).toBeGreaterThanOrEqual(4.5);
+      expect(
+        contrast(p.heading, background),
+        p.name + " heading",
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+  }
+  const math = page
+    .locator(".dashboard-domain-card")
+    .filter({
+      has: page.getByRole("heading", { name: "Mathematics", exact: true }),
+    });
+  const mathAccent = palette.find((p) => p.name === "Mathematics")!.accent;
+  await math.focus();
+  await expect(math).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.getByLabel("Filter by domain")).toHaveValue("Mathematics");
+  await page.goto("/lessons/M01");
+  await expect(page.locator(".topic-meta .topic-code")).toHaveText("M01");
+  expect(
+    await page
+      .locator(".topic-meta .topic-code")
+      .evaluate((el) => getComputedStyle(el).color),
+  ).toBe(mathAccent);
+  expect(
+    (await (await page.request.get("/api/state")).json()).progress,
+  ).toEqual(before.progress);
 });

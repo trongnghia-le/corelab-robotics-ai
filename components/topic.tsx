@@ -12,6 +12,7 @@ import {
   Pin,
   FileText,
 } from "lucide-react";
+import { domainTone } from "./domain-theme";
 import { topicMap, topics } from "@/lib/curriculum";
 import { contextFor } from "@/lib/engine";
 import type { TopicPayload, Attempt, Assistance, Answers } from "@/lib/types";
@@ -90,7 +91,10 @@ export function TopicPage({
     }
   }
   return (
-    <div className={`page topic-page ${assessment ? "assessment-page" : ""}`}>
+    <div
+      className={`page topic-page ${assessment ? "assessment-page" : ""}`}
+      data-domain-tone={domainTone(topic.domain)}
+    >
       <div className="topic-breadcrumb">
         <Link href={assessment ? "/assessments" : "/lessons"}>
           {assessment ? "Assessments" : "Lessons"}
