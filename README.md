@@ -1,46 +1,45 @@
 <div align="center">
 
-# CoreLab — Learn. Build. Prove.
+# 🤖 CoreLab
 
-**Learn Robotics & AI from first principles.**
+### Learn Robotics & AI from first principles — on your own machine.
 
-[![Node.js 24+](https://img.shields.io/badge/Node.js-24%2B-43853d)](package.json)
+**169 topics · 169 full lessons · 1,746 worked exercises · 3,133 interactive questions · 169 hands-on labs · 270 curated videos**
+
+[![Node.js 24+](https://img.shields.io/badge/Node.js-24%2B-43853d?logo=node.js&logoColor=white)](package.json)
+[![Next.js](https://img.shields.io/badge/Next.js-App_Router-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
 [![Code: MIT](https://img.shields.io/badge/Code-MIT-f97316)](LICENSE)
 [![Content: CC BY 4.0](https://img.shields.io/badge/Content-CC_BY_4.0-64748b)](LICENSE-CONTENT)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-a3e635)](CONTRIBUTING.md)
 
-[Quick Start](#quick-start) · [Learning workflow](#how-to-learn-effectively-with-corelab) · [User guide](docs/guide.md) · [Contributing](CONTRIBUTING.md)
+[**Quick start**](#-quick-start) · [**Features**](#-what-you-get) · [**Curriculum**](#-the-curriculum) · [**How to study**](#-how-to-study-with-corelab) · [**User guide**](docs/guide.md) · [**Contributing**](CONTRIBUTING.md)
+
+<br/>
+
+<img src="docs/images/hero-lab.png" alt="CoreLab Robotics & AI lab: learn robotics and AI from first principles, with paths for robot motion, computer vision, machine learning and reinforcement learning" width="100%"/>
 
 </div>
 
-CoreLab is a local, single-user learning workspace that connects a prerequisite-based Robotics & AI curriculum with lessons, interactive explanations, independent exercises and evidence-based assessment. It helps you decide what to study next—and distinguish what you have read from what you can independently explain, calculate and implement.
+<br/>
 
-![CoreLab dashboard showing the next foundation topic and an unassessed competency map](docs/images/dashboard.png)
+CoreLab is a **free, local-first learning workspace** that takes you from vectors and Python to Kalman filters, inverse kinematics, computer vision and reinforcement learning. All of it is arranged on a prerequisite map, so you always know what to learn next. Each topic follows the same loop: **watch → understand → derive → implement → verify → review.** Your progress lives on your computer. There are no accounts, no subscriptions and no cloud.
 
-_Real application screenshot from an isolated, empty workspace. No personal learning data is included._
+> **Progress is measured by what you can independently explain, implement and verify — not by how many videos you watch.**
 
-## Key features
+## ✨ Why CoreLab?
 
-|                            | What you can do                                                                                                                                                                                                      |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Follow the foundations** | Explore a 169-topic prerequisite graph through searchable list and graph views, learning paths and explained next-step recommendations.                                                                              |
-| **Watch and experiment**   | Study 31 complete lessons, 28 curated video resources and eight interactive models—from vector projection and robot kinematics to CNN filters and Q-learning. Video coverage currently reaches 25 of the 31 lessons. |
-| **Build independently**    | Use Python and C++ starters, numerical exercises and reproducible experiment templates. Fixed local Python verifiers support M02 and PY01.                                                                           |
-| **Prove what you know**    | Track conceptual understanding, mathematical reasoning, implementation and transfer/retention separately. Assistance, diagnostic contracts and evidence stay inspectable.                                            |
-| **Learn from mistakes**    | Practice weak skills using authored question variants, inspect feedback and prerequisites, and revisit topics on a 1/3/7/21-day review schedule.                                                                     |
-| **Keep control**           | Store notes and progress in local SQLite, export backups, and optionally copy context to ChatGPT manually. No AI API, account or cloud subscription is required.                                                     |
+- 🗺️ **A real roadmap, not a playlist.** A 169-topic prerequisite graph covers mathematics, programming, ML, robotics, vision, RL, embodied AI and research methods. It explains why each next step is recommended.
+- 📖 **Complete lessons for every topic.** Each one has intuition, derivation, a fully worked example, a reference implementation, failure modes, trade-offs and further reading. Mathematics renders with KaTeX.
+- ✍️ **Practice that builds real skill.** Every lesson has 8–12 graded exercises with worked answers, including problems adapted from well-known textbooks and courses. There are also interactive diagnostics and a targeted practice bank that finds your weak skills.
+- 🧪 **Labs you actually run.** Every topic has a hands-on lab with starter code, runnable tests and expected output. You code it yourself, on your own machine.
+- 🎬 **Curated videos for every topic.** There are 270 videos from 3Blue1Brown, MIT OpenCourseWare, Stanford, Steve Brunton, Cyrill Stachniss, CppCon and others. The player loads only when you click: no autoplay, with an original-source link.
+- 🖼️ **160 original diagrams.** Purpose-drawn figures explain the idea: feedback loops, Kalman updates, capture points, PPO clipping, friction cones and more.
+- 🔒 **Yours.** Local SQLite, exportable backups, no analytics, no AI API keys. Copying context to an AI tutor is optional and manual, with a preview first.
 
-<details>
-<summary>See an interactive lesson</summary>
+## 🚀 Quick start
 
-![Vector exploration with sliders, projection, dot product and a coordinate diagram](docs/images/vector-exploration.png)
-
-_Real browser-test capture. The model runs locally; changing a parameter does not award mastery._
-
-</details>
-
-## Quick Start
-
-Install **Node.js 24 or newer**, npm and Git. Python 3 is needed for the optional verified Python labs; a C++17 compiler is needed only for C++ exercises.
+You need **Node.js 24+** and Git. Python 3 is used by most labs; a C++17 compiler is only needed for the C++ track.
 
 ```bash
 git clone https://github.com/trongnghia-le/corelab-robotics-ai.git
@@ -49,130 +48,218 @@ npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:3000**. The database is created automatically. For a production build:
+Open **http://127.0.0.1:3000**. The local database is created automatically.
 
 ```bash
-npm run build
-npm start
+npm run build && npm start   # production mode
+npm run dev:v2               # also enable the objective-based Robotics & AI lab at /objectives
 ```
 
-Keep the local server running while studying. After dependencies are installed, lessons, equations, visualizations, assessments and notes work without Internet. External references and video playback need a connection. YouTube players load only after a click, without autoplay, and always offer an original-source link.
+<details>
+<summary><b>Windows, macOS and Linux notes</b></summary>
 
-**Local use only:** CoreLab has no user authentication and is designed to bind to loopback. Do not expose its server to a network or deploy it as a public multi-user service. The public repository is source code, not a hosted learning service.
+<br/>
 
-## Cross-Platform Installation
+| System             | Install once                                                                                                                                                           | Terminal                                                                                       |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Windows 10/11**  | [Node.js 24+](https://nodejs.org/en/download), [Git](https://git-scm.com/downloads) and optionally [Python 3](https://www.python.org/downloads/) (tick "Add to PATH"). | PowerShell or Command Prompt. If PowerShell blocks `npm.ps1`, use `npm.cmd` or Command Prompt. |
+| **macOS**          | Node.js 24+ (matching Apple Silicon/Intel), Git and optional Python 3.                                                                                                 | Terminal. Check `node --version` first.                                                        |
+| **Linux / Ubuntu** | Node.js 24+ from the official instructions (distribution packages are often older); `sudo apt install git python3`.                                                    | Any terminal. Check the Node version before `npm ci`.                                          |
 
-CoreLab is designed for **Windows 10/11, macOS and Linux**, using Node.js 24+. Use a current browser and keep the local server running; no Docker, native app packaging or cloud service is needed.
+Use another port with `npm run dev -- --port 3001` and stop the server with **Ctrl+C**. After `npm ci`, lessons, equations, diagrams, quizzes and notes work offline; videos and external links need a connection.
 
-| System             | Install once                                                                                                                                                                                                                       | Terminal                                                                                                                                                   |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Windows 10/11**  | Install [Node.js 24+](https://nodejs.org/en/download), [Git](https://git-scm.com/downloads) and, for Python labs, [Python 3](https://www.python.org/downloads/). Enable Python's PATH option if offered, then reopen the terminal. | PowerShell or Command Prompt. If PowerShell blocks `npm.ps1`, use `npm.cmd` in place of `npm` or use Command Prompt; no execution-policy change is needed. |
-| **macOS**          | Install a Node.js 24+ release compatible with your macOS version, Git and optional Python 3. Match Apple Silicon/Intel downloads to your machine.                                                                                  | Terminal; confirm `node --version`, `npm --version` and `git --version`.                                                                                   |
-| **Linux / Ubuntu** | Install Node.js 24+ from the official installation instructions; a distribution's default `nodejs` package may be older. On Ubuntu, Git and optional Python can be installed with `sudo apt install git python3`.                  | Your usual terminal; confirm the Node version before `npm ci`.                                                                                             |
+**Local use only.** CoreLab has no authentication and binds to loopback. Don't expose the server to a network or host it as a public multi-user service.
 
-Then run the same **Quick Start** commands above on every platform. To use port 3001, run `npm run dev -- --port 3001`. Stop the server with **Ctrl+C**. Python labs automatically detect `python3`, `python`, or Windows `py -3`; Python is optional for studying and running the web app. A C++17 compiler is optional for C++ exercises. Quote file paths containing spaces, and run npm commands from the repository folder.
+</details>
 
-**Platform checks:** Linux is tested locally. The [validation workflow](.github/workflows/validate.yml) runs clean installation, tests and a build with Node 24 on Linux, Windows and macOS when GitHub Actions is enabled; Chromium desktop/mobile viewport tests run on Linux. Windows and macOS have not been run interactively in this workspace. Consult actual workflow results before treating those platforms as verified.
+## 🧭 What you get
 
-A local installation runs on **your own computer** and keeps its data there. A hosted website runs on someone else's server: making this repository public does not host CoreLab or sync progress. Mobile layouts are browser-responsive; there is no Android/iOS native app or cross-device synchronization. Do not expose the local server to access it from a phone.
+<table>
+<tr>
+<td width="50%" valign="top">
 
-## How CoreLab works
+### Your next step, explained
 
-The Dashboard and prerequisite graph guide topic selection; lessons build understanding; assessments and supported local tests record evidence. Notes, review dates and backups stay in a local SQLite workspace. Its competency framework separates **C** conceptual understanding, **M** mathematical reasoning, **I** independent implementation and **T** transfer/retention.
+The dashboard shows a single recommended next topic and tells you why. It also tracks the topics you have evidence for, the ones you have attempted, and the reviews that are due.
 
-## How to Learn Effectively with CoreLab
+<img src="docs/images/dashboard.png" alt="Dashboard with the recommended next topic and progress counters"/>
+
+</td>
+<td width="50%" valign="top">
+
+### A map of 169 connected topics
+
+Search, filter by domain or status, or switch to an interactive graph to see how the prerequisites connect.
+
+<img src="docs/images/roadmap-graph.png" alt="Interactive prerequisite graph of the mathematics topics"/>
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### Lessons with original diagrams
+
+Each topic comes with a long-form lesson that has a table of contents, rendered math and a figure drawn for the idea. Shown here: the Kalman update.
+
+<img src="docs/images/lesson-figure.png" alt="Kalman filtering lesson showing the prior, measurement and posterior Gaussian figure"/>
+
+</td>
+<td width="50%" valign="top">
+
+### Hands-on labs with tests
+
+Each lab gives you a goal, setup, tasks, starter code with clear contracts, runnable tests, the expected output and an extension challenge.
+
+<img src="docs/images/lesson-lab.png" alt="Lab starter code for a Kalman filter with syntax highlighting and a copy button"/>
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### Curated video, on your terms
+
+Each topic has one to three verified videos. They load only when you ask, so nothing autoplays, and every video links to its original source.
+
+<img src="docs/images/lesson-video.png" alt="Recommended video panel with three 3Blue1Brown linear algebra videos"/>
+
+</td>
+<td width="50%" valign="top">
+
+### Evidence, not checkboxes
+
+Diagnostics separately track **C**oncept, **M**ath, **I**mplementation and **T**ransfer. Each one shows suggested prerequisites and your history of evidence.
+
+<img src="docs/images/assessment.png" alt="Kalman filtering diagnostic with C/M/I/T competence cards and suggested prerequisites"/>
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+**160 original teaching diagrams across the curriculum**
+
+<img src="docs/images/figure-gallery.png" alt="Gallery of lesson figures: PID loop, Kalman update, capture point, SARSA vs Q-learning, LQR, friction-cone grasp, PPO clipping, C++ encapsulation" width="100%"/>
+
+</div>
+
+## 📚 The curriculum
+
+```mermaid
+flowchart LR
+    M[Mathematics<br/>16 topics] --> P[Programming<br/>30 topics]
+    M --> ML[Machine Learning<br/>12 topics]
+    P --> ML
+    M --> R[Robotics<br/>42 topics]
+    P --> R
+    ML --> V[Computer Vision<br/>20 topics]
+    ML --> RL[Reinforcement &<br/>Robot Learning<br/>24 topics]
+    R --> RL
+    R --> E[Embodied &<br/>Cognitive Robotics<br/>15 topics]
+    V --> E
+    RL --> E
+    M --> S[Scientific Research<br/>10 topics]
+```
+
+| Domain                         |  Topics | A taste of what's inside                                                                     |
+| ------------------------------ | ------: | -------------------------------------------------------------------------------------------- |
+| Mathematics                    |      16 | Vectors, matrices, calculus, probability, statistics, optimization, Lie groups               |
+| Programming                    |      30 | Python, NumPy, testing, modern C++ (RAII, templates, concurrency), Git, Linux, Docker        |
+| Machine Learning               |      12 | Regression, classification, neural networks, backpropagation, training and evaluation        |
+| Robotics                       |      42 | Frames, kinematics, inverse kinematics, dynamics, PID/LQR/MPC, Kalman filters, MuJoCo, ROS 2 |
+| Computer Vision                |      20 | Camera models, calibration, features, CNNs, detection, tracking, visual odometry & SLAM      |
+| Reinforcement & Robot Learning |      24 | MDPs, TD learning, Q-learning, policy gradients, PPO, offline RL, imitation, sim-to-real     |
+| Embodied & Cognitive Robotics  |      15 | Task & motion planning, world models, diffusion policies, vision-language-action models      |
+| Scientific Research            |      10 | Experimental design, reproducibility, ablations, reading and writing papers                  |
+| **Total**                      | **169** | **Every topic has a full lesson, a diagnostic, a practice bank, a lab and video**            |
+
+**Beginner path:** `M01 → M02 → PY01 → M03` (notation, vectors, Python, matrices). From there, follow the dashboard. Prerequisites are suggestions, never locks.
+
+### Anatomy of a lesson
+
+| Section                            | What it gives you                                                              |
+| ---------------------------------- | ------------------------------------------------------------------------------ |
+| Why this matters · Intuition       | Where the idea shows up in real robots and AI systems, with an original figure |
+| Theory and derivation              | The math step by step, with assumptions and units stated                       |
+| Worked example                     | A fully worked numeric example you can check by hand                           |
+| **Exercises** (8–12)               | Easy → mini-project: conceptual, numeric, find-the-bug, predict, design, proof |
+| Reference implementation           | Short, runnable code with a self-test                                          |
+| **Independent practice (lab)**     | Goal, setup, tasks, starter code, tests, expected output, extension challenge  |
+| Verification · Failure modes       | How to check your result, and the mistakes people really make                  |
+| Alternatives and trade-offs        | When to pick which method                                                      |
+| Exercise answers · Further reading | Worked solutions, sources and links to official problem sets for more practice |
+
+## 🎯 How to study with CoreLab
 
 **Diagnostic → Watch → Visualize → Understand → Derive → Implement → Verify → Review**
 
-| Step                    | A practical action                                                                                                                                                                                                                            |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Start**               | Follow a Dashboard recommendation or a prerequisite-based Learning Path. Check the topic's prerequisites and choose one achievable objective.                                                                                                 |
-| **Diagnostic**          | Try the full diagnostic before studying when available. Record assistance honestly: **A0** none; **A1** conceptual hint; **A2** specific hint/example; **A3** supplied solution. Only independent A0 evidence can satisfy verification gates. |
-| **Watch & Visualize**   | Use a curated video or local demonstration to build intuition. Pause, predict the next result, change one parameter, and compare what happened with your prediction. If no video/demo is mapped, use the worked example.                      |
-| **Understand & Derive** | Read the foundations, state assumptions and units, reconstruct the equation on a blank page, and explain why each term is present without looking at the solution.                                                                            |
-| **Implement**           | Solve the exercise and write the algorithm from scratch. Keep copied or AI-generated solutions as assisted practice, then attempt a fresh task independently.                                                                                 |
-| **Verify**              | Compare hand calculations with tests, try boundaries and deliberately broken cases, then use the assessment and supported local verifier. Inspect the C/M/I/T evidence instead of relying on one score.                                       |
-| **Fix Weaknesses**      | Open **Practice → My Weaknesses**, inspect recurring objective errors, review the linked concept, and practice the weak skill. A repaired mistake is not automatically full-topic mastery.                                                    |
-| **Review**              | Follow due reviews, note unresolved gaps in the topic notebook, and reconstruct the result after a delay. Then continue with the next recommended topic. Review suggestions use 1/3/7/21-day intervals.                                       |
+1. **Start** from the dashboard recommendation or a learning path, and check the prerequisites.
+2. **Diagnose** first. Record any help honestly: **A0** none, **A1** hint, **A2** example, **A3** solution.
+3. **Watch and explore.** Predict before you press play or move a slider.
+4. **Derive.** Rebuild the key equation on a blank page and explain every term.
+5. **Implement** the lab from scratch, then make the tests pass. Treat copied or AI-written code as assisted practice.
+6. **Verify.** Use hand calculations, boundaries and deliberately broken cases, then re-take the diagnostic.
+7. **Fix your weaknesses** in **Practice → My Weaknesses**, which targets the exact skills you missed.
+8. **Review** on a 1/3/7/21-day schedule and reconstruct the result from memory.
 
-**Beginner study order:** **M01 → M02 → PY01 → M03**—notation and units, vectors, Python fundamentals, then matrices. These are existing topic IDs, not new prerequisite edges: PY01 has no prerequisites and can run alongside mathematics; M03 depends on M02. Return to M02's coding exercise after learning basic Python.
+**Use ChatGPT (or any assistant) as a Socratic tutor:** choose **Copy Learning Context**, check the preview, and paste it yourself. Ask it to _"ask one question at a time and give the smallest hint I need."_ There's no API connection or automatic sync. See the [guide](docs/guide.md#chatgpt-project-workflow-no-api).
 
-**Example: a 75-minute M02 session, once basic Python is familiar**
+<details>
+<summary><b>How mastery is measured</b></summary>
 
-| Minutes | Focus                                                                                       |
-| ------- | ------------------------------------------------------------------------------------------- |
-| 0–10    | Check prerequisites and attempt the diagnostic at your actual assistance level.             |
-| 10–25   | Watch the vector lecture; predict a projection and test it with the sliders.                |
-| 25–40   | Reconstruct the dot-product/projection equations and explain the zero-vector edge case.     |
-| 40–60   | Implement the dot product independently and write boundary/property checks.                 |
-| 60–70   | Run the fixed M02 verifier, inspect any failures and use targeted practice where available. |
-| 70–75   | Save assumptions and remaining gaps in the notebook; check the next review/recommendation.  |
+<br/>
 
-Adjust this to **60–90 minutes** by shortening the video or extending independent work. A diagnostic retry counts as A0 only if it is genuinely independent; just seeing the solution is not fresh evidence.
+Reading, watching and clicking never count as mastery. A full independent (A0) diagnostic needs **≥ 80 %** with every critical item correct. Implementation evidence needs a supported fixed contract. Open answers are rubric-guided and stay unverified. Read the [assessment policy](docs/guide.md#assessment-and-mastery) for the details.
 
-**Use ChatGPT as a Socratic tutor:** choose **Copy Learning Context** on a topic or **AI Tutor handoff**, preview what will be shared, then paste it into ChatGPT yourself. Ask: _“Ask one question at a time. Let me predict and derive first. Offer the smallest hint I need; do not give a complete solution unless I ask.”_ Record any assistance accurately. Paste structured feedback back into CoreLab as unverified notes using the [manual handoff format](docs/guide.md#chatgpt-project-workflow-no-api); there is no automatic account connection or chat synchronization.
+</details>
 
-Reading, watching videos, clicking checkoffs and AI-generated solutions do **not** automatically establish verified mastery. A full A0 diagnostic needs at least **80%** and every critical item correct for its L1 gates. L2 also requires independent implementation evidence from a supported fixed contract, currently M02 or PY01. Open answers use rubrics and remain unverified; focused practice does not replace full diagnostic gates. L3/L4 certification is not implemented. See the [assessment policy](docs/guide.md#assessment-and-mastery).
+<p align="center"><img src="docs/images/mobile-lesson.png" alt="CoreLab lesson on a phone-width screen" width="260"/><br/><sub>Responsive down to phone width, with keyboard-friendly navigation.</sub></p>
 
-> **Progress is measured by what you can independently explain, implement, and verify — not by how many videos you watch.**
+## 🧪 Robotics & AI lab (V2 preview)
 
-## Curriculum overview
+Run `npm run dev:v2` to open `/objectives`. This adds an **objective-based workspace** next to the curriculum:
 
-| Domain                         |  Topics | Includes                                                            |
-| ------------------------------ | ------: | ------------------------------------------------------------------- |
-| Mathematics                    |      16 | Linear algebra, calculus, probability, optimization and geometry    |
-| Programming                    |      30 | Python, C++, testing and development tools                          |
-| Machine Learning               |      12 | Problem formulation, classical ML, neural networks and training     |
-| Robotics                       |      42 | Mechanics, kinematics, dynamics, control and simulation/systems     |
-| Computer Vision                |      20 | Images, geometry and visual learning                                |
-| Reinforcement & Robot Learning |      24 | MDPs, value learning, policies and robot learning                   |
-| Embodied & Cognitive Robotics  |      15 | Embodied intelligence and cognitive robotics                        |
-| Scientific Research            |      10 | Experimental design, reproducibility and critical evaluation        |
-| **Total**                      | **169** | A long-term map, not a claim that every topic has a complete course |
+- 43 versioned objectives
+- 39 exercise families with 266 practice items, each with two distinct application routes
+- 22 numerical lab kits (frames, FK/IK, odometry, PID, trajectories, Kalman, A\*, URDF/TF, camera calibration, visual servoing, grasping, RL, system identification, belief-space planning, and more)
+- Scoped concept/math checks (C/M) with spaced retention reviews
 
-There are **31 complete lessons with versioned diagnostics** and structured overviews for every topic. The initial focused practice bank contains **42 questions across seven topics**; unavailable video, lesson, assessment and practice coverage is stated explicitly. The [curriculum data](corelab/curriculum_graph_v1.json) is the source of truth for topic IDs and prerequisites.
+These kits are numerical and replay-based. Parts that need ROS 2, a physics engine or real hardware are listed as _unavailable_ rather than imitated. See the [implementation report](implementation-plan/IMPLEMENTATION_REPORT.md) for the exact coverage.
 
-## CoreLab V2 development preview
+## 🛠️ Tech stack
 
-The optional V2 workspace adds objective-based practice alongside the existing curriculum. It currently includes **26 authored objectives, 22 exercise families plus a readiness bridge, 164 practice instances, and five manual numerical lab kits**. Choose Recommended, Explore or More Practice; prerequisites suggest preparation and never lock ordinary study.
+| Layer   | Technology                                                                 |
+| ------- | -------------------------------------------------------------------------- |
+| App     | Next.js App Router, React, strict TypeScript                               |
+| UI      | Tailwind CSS, Lucide icons, React Flow graph, Dark+ syntax highlighting    |
+| Content | Markdown + GFM, KaTeX math, original SVG figures, versioned JSON contracts |
+| Storage | SQLite via Node's built-in `node:sqlite`, Zod validation                   |
+| Quality | Vitest, Playwright, content validators, Python lab fixtures                |
 
 ```bash
-npm run dev:v2
-```
-
-Open `http://127.0.0.1:3000/objectives`. The default `npm run dev` keeps V2 off. V2 uses additive SQLite tables and preserves existing topic mastery, progress and signed reports. Use the full V2 backup in Settings to retain both histories.
-
-**Content review and release.** Every practice family, C/M form, retention pool and manual kit was checked by an owner-assigned AI review: separate reviewer instances recomputed every answer, probed misconceptions and guessing, and re-reviewed each fix until no blocker or major finding remained. This is **not** a human expert or learner-trial review. The owner activated C/M verification and retention on 2026-11-02; a form or pool is offered only with its own approved review record. Verified I and human-reviewed transfer remain unavailable. Supported resources: 8 GB RAM and about 2 GB free disk for profiles up to the 128 MiB backup limit. Manual kits never grant implementation evidence. The Curriculum V2 projection is advisory; the existing 169-topic graph remains authoritative. See the [implementation report](implementation-plan/IMPLEMENTATION_REPORT.md) and [V2 operating guide](docs/guide.md#corelab-v2-development-preview) for exact coverage, recovery and limitations.
-
-## Technology stack
-
-| Layer                  | Technology                                                                         |
-| ---------------------- | ---------------------------------------------------------------------------------- |
-| Application            | Next.js App Router, React, strict TypeScript                                       |
-| Interface              | Tailwind CSS, shared CSS, Lucide icons; English interface with dark/orange styling |
-| Learning content       | Markdown, GFM, KaTeX, React/SVG visualizations                                     |
-| Knowledge graph        | React Flow (`@xyflow/react`)                                                       |
-| Storage and validation | SQLite through Node's built-in `node:sqlite`, Zod                                  |
-| Verification           | Vitest, Playwright and fixed local Python lab tests                                |
-
-**Your data:** progress lives in `.local/corelab.sqlite`. Export a backup through **Data & settings** before replacing or moving it. Restore validates and replaces progress transactionally; it does not merge records. Stop the app before copying the entire `.local/` directory, which also holds lab-signing keys. Keep databases, exports, keys and personal notes out of Git. See [backup and restore](docs/guide.md#progress-backup-and-restore).
-
-CoreLab includes no analytics, remote UI fonts, AI requests or cloud synchronization. Loading an optional external video connects to its provider. Copying context to a tutor shares the selected notes with that service; review the preview first.
-
-## Contributing
-
-Contributions to lessons, exercises, visualizations, accessibility and bug fixes are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) for content quality, attribution, contract versioning and validation requirements. Detailed setup, architecture and troubleshooting are in the [user and maintainer guide](docs/guide.md).
-
-```bash
-npm run check                    # lint, types, content, unit/integration tests, build
+npm run check                    # lint, types, content validation, tests, build
 npx playwright install chromium  # once, for browser tests
-npm run test:e2e                  # isolated test database and production server
+npm run test:e2e                 # browser tests on an isolated database
 ```
 
-## License and acknowledgments
+## 🗺️ Status and honest limits
 
-**Original source code and technical documentation:** [MIT](LICENSE), copyright © 2026 Le Trong Nghia. **Original educational prose, curriculum and assessment content:** [CC BY 4.0](LICENSE-CONTENT). Executable examples remain MIT. See the [licensing scope](LICENSING.md) for exact boundaries, attribution and exclusions.
+- ✅ All 169 topics have a lesson, exercises with answers, a lab, a diagnostic, a practice bank and curated video.
+- ⚠️ **The content was drafted with AI assistance and checked automatically**: lab tests were run, numeric answers recomputed, links checked and figures rendered. It has **not** been reviewed by a human expert. Spotted a mistake? Please [open an issue](https://github.com/trongnghia-le/corelab-robotics-ai/issues).
+- ⚠️ ROS 2, simulator and hardware labs are not included. Local automated verification of submitted code is limited to a few fixed contracts.
+- 🧭 The browser UI is tested on Linux; CI runs the build and tests on Linux, Windows and macOS.
 
-External videos, books, course materials, images, trademarks and dependencies remain the property of their respective rights holders under their own terms. A link or working embed does not grant permission to redistribute the underlying material.
+## 🤝 Contributing
 
-Thank you to the maintainers of the [open-source dependencies and educational resources](THIRD_PARTY_NOTICES.md), including 3Blue1Brown, MIT OpenCourseWare, Modern Robotics, Stanford CS231n, David Silver / Google DeepMind, Enthought and CppCon. Their inclusion does not imply endorsement.
+Corrections, new exercises, better diagrams, accessibility fixes and translations are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md); the [user and maintainer guide](docs/guide.md) covers architecture, data and troubleshooting.
+
+If CoreLab helps you learn, **a ⭐ on GitHub helps others find it.**
+
+## 📄 License and acknowledgments
+
+- **Code and technical docs:** [MIT](LICENSE) © 2026 Le Trong Nghia.
+- **Educational content** (lessons, exercises, figures, assessments): [CC BY 4.0](LICENSE-CONTENT). Executable examples remain MIT. See [LICENSING.md](LICENSING.md) for the exact scope.
+
+Videos, books, courses and trademarks belong to their owners under their own terms. A link or embed is not a licence to redistribute them. Exercises marked _"Adapted from"_ are original restatements that credit the source that inspired them. Thank you to 3Blue1Brown, MIT OpenCourseWare, Modern Robotics, Stanford CS231n, David Silver / Google DeepMind, Steve Brunton, Cyrill Stachniss, CppCon and every other educator listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Their inclusion does not imply endorsement.
