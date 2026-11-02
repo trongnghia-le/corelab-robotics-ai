@@ -4,7 +4,8 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { Store } from "../../lib/storage";
-import { initialize, learningData } from "../../lib/v2/db";
+import { initialize, learningData, write } from "../../lib/v2/db";
+import { exportBackup } from "../../lib/v2/backup";
 import { issue } from "../../lib/v2/attempts";
 import { family } from "../../lib/v2/content";
 import { issueCM } from "../../lib/v2/verification";
@@ -85,6 +86,53 @@ it("two independent processes submitting the same attempt store exactly one resu
       1,
     );
   } finally {
+    s.close();
+    rmSync(dir, { recursive: true, force: true });
+  }
+}, 25000);
+it("exports one consistent legacy/sidecar snapshot while another process commits paired updates", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "corelab-export-race-")),
+    file = path.join(dir, "test.sqlite"),
+    s = new Store(file);
+  let child: ChildProcess | undefined;
+  try {
+    initialize(s.db);
+    write(s.db, () => {
+      const p = s.read();
+      p.focusReason = "0";
+      s.db.prepare("UPDATE state SET json=? WHERE id=1").run(JSON.stringify(p));
+      s.db.prepare("INSERT INTO v2_prefs VALUES ('goal','\"0\"')").run();
+    });
+    child = fork("tests/fixtures/attempt-worker.ts", [file], {
+      execArgv: ["--import", "tsx"],
+      stdio: ["ignore", "pipe", "pipe", "ipc"],
+    });
+    await new Promise<void>((resolve, reject) => {
+      child!.once("message", () => resolve());
+      child!.once("error", reject);
+    });
+    const done = new Promise<{ ok: boolean }>((resolve, reject) => {
+      child!.once("message", (r) => resolve(r as { ok: boolean }));
+      child!.once("error", reject);
+    });
+    child.send({ action: "profileWrites", id: "unused", answers: {} });
+    const seen = new Set<string>();
+    for (let i = 0; i < 150; i++) {
+      const backup = exportBackup(s);
+      const legacy = backup.legacy as { progress: { focusReason: string } };
+      const paired = JSON.parse(
+        backup.v2.prefs.find((p) => p.key === "goal")!.value_json,
+      );
+      expect(legacy.progress.focusReason).toBe(paired);
+      seen.add(paired);
+      // Yield CPU without allowing any unrelated write on this connection.
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 2);
+    }
+    expect((await done).ok).toBe(true);
+    expect(seen.size).toBeGreaterThan(1);
+    expect(s.read().focusReason).toBe("100");
+  } finally {
+    if (child?.exitCode === null) child.kill();
     s.close();
     rmSync(dir, { recursive: true, force: true });
   }

@@ -3,7 +3,25 @@ import { randomUUID } from "node:crypto";
 import { mkdirSync, rmSync, statfsSync, statSync } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
-import { BACKUP_LIMIT, digest, enabled, hash, V2Error } from "./contracts";
+import {
+  BACKUP_LIMIT,
+  canonical,
+  digest,
+  enabled,
+  hash,
+  strictJSON,
+  V2Error,
+} from "./contracts";
+import { deferredEpochRow } from "./state";
+import {
+  LEARNING_TABLES,
+  COLLECTION_LIMITS,
+  encodedBackupBytes,
+  budgetBytes,
+  type CollectionSizes,
+  EVIDENCE_PROJECTION_FIELDS,
+  PROJECTION_ROW_BYTES,
+} from "./budget";
 
 export type DB = DatabaseSync;
 export type Row = Record<string, SQLInputValue>;
@@ -142,6 +160,12 @@ export function status(db: DB): "absent" | "supported" | "unsupported" {
   )
     return "unsupported";
   try {
+    const pending = meta(db, "pending_restore_epoch");
+    if (pending) {
+      const parsed = deferredEpochRow.parse(strictJSON(pending));
+      if (parsed.origin_workspace_id !== meta(db, "workspace_id"))
+        return "unsupported";
+    }
     const record = db
       .prepare("SELECT checksum FROM v2_migrations WHERE version=1")
       .get() as { checksum: string } | undefined;
@@ -222,6 +246,45 @@ export function nextSequence(db: DB) {
   setMeta(db, "next_event_seq", seq + 1);
   return seq;
 }
+export function deferRestoreEpoch(
+  db: DB,
+  reason: "full_restore" | "legacy_restore",
+) {
+  const cp = checkpoint(db);
+  setMeta(
+    db,
+    "pending_restore_epoch",
+    canonical(
+      deferredEpochRow.parse({
+        origin_workspace_id: meta(db, "workspace_id"),
+        at: new Date().toISOString(),
+        reason,
+        checkpoint_hash: cp.hash,
+        checkpoint_count: cp.count,
+      }),
+    ),
+  );
+}
+export function materializeRestoreEpoch(db: DB) {
+  const raw = meta(db, "pending_restore_epoch");
+  if (!raw) return false;
+  const pending = deferredEpochRow.parse(strictJSON(raw));
+  const id = (
+    db
+      .prepare("SELECT coalesce(max(id),0)+1 n FROM v2_history_epochs")
+      .get() as { n: number }
+  ).n;
+  if (!Number.isSafeInteger(id) || id >= Number.MAX_SAFE_INTEGER)
+    throw new V2Error(
+      "counter_limit",
+      "Epoch counter exhausted; keep a recovery copy",
+      503,
+    );
+  insert(db, "v2_history_epochs", { id, ...pending });
+  setMeta(db, "current_history_epoch", id);
+  setMeta(db, "pending_restore_epoch", "");
+  return true;
+}
 export function learningData(db: DB) {
   return Object.fromEntries(
     learningTables.map((t) => [t, rows(db, t)]),
@@ -233,14 +296,10 @@ export function checkCapacity(db: DB) {
       .prepare("SELECT length(CAST(json AS BLOB)) n FROM state WHERE id=1")
       .get() as { n: number }
   ).n;
-  const count = (
-    db.prepare("SELECT count(*) n FROM v2_attempts").get() as { n: number }
-  ).n;
-  let rowBytes = 0,
-    evidenceCount = 0;
+  const sizes = {} as CollectionSizes;
   // Aggregate exact JSON row bytes inside SQLite. Do not materialize every
   // historical artifact into JavaScript for each small learning mutation.
-  for (const table of learningTables) {
+  for (const [key, table] of Object.entries(LEARNING_TABLES)) {
     const columns = (
       db.prepare("PRAGMA table_info(" + table + ")").all() as { name: string }[]
     ).map((r) => r.name);
@@ -255,12 +314,58 @@ export function checkCapacity(db: DB) {
           table,
       )
       .get() as { n: number; count: number };
-    rowBytes += totals.n + totals.count; // comma allowance between rows
-    if (table === "v2_evidence") evidenceCount = totals.count;
+    sizes[key as keyof CollectionSizes] = {
+      bytes: totals.n,
+      count: totals.count,
+    };
+    if (totals.count > COLLECTION_LIMITS[key as keyof CollectionSizes])
+      throw new V2Error(
+        "capacity_limit",
+        "Profile exceeds the supported " +
+          key +
+          " count. No new data was saved. Make a current local recovery copy.",
+        503,
+      );
   }
-  // Covers envelope, restore epoch, projected provenance and validation overhead.
-  const size = legacyBytes + rowBytes + 32768 + evidenceCount * 512;
-  if (!Number.isSafeInteger(size) || count > 100000 || size > BACKUP_LIMIT)
+  const evidenceFields = EVIDENCE_PROJECTION_FIELDS.flatMap((c) => [
+    "'" + c + "'",
+    c,
+  ]).join(",");
+  sizes.evidence.bytes += (
+    db
+      .prepare(
+        "SELECT coalesce(sum(max(0,?-length(CAST(json_object(" +
+          evidenceFields +
+          ") AS BLOB)))),0) n FROM v2_evidence",
+      )
+      .get(PROJECTION_ROW_BYTES) as { n: number }
+  ).n;
+  const reviewColumns = (
+    db.prepare("PRAGMA table_info(v2_objective_reviews)").all() as {
+      name: string;
+    }[]
+  ).map((r) => r.name);
+  const reviewFields = reviewColumns
+    .flatMap((c) => ["'" + c + "'", c === "state" ? "'suspended'" : "r." + c])
+    .join(",");
+  const reviewBudget = db
+    .prepare(
+      "WITH scopes AS (SELECT objective_id,objective_version,dimension FROM v2_evidence WHERE dimension IN ('C','M') UNION SELECT objective_id,objective_version,dimension FROM v2_objective_reviews) SELECT count(*) count,coalesce(sum(max(?,CASE WHEN r.objective_id IS NULL THEN 0 ELSE length(CAST(json_object(" +
+        reviewFields +
+        ") AS BLOB)) END)),0) bytes FROM scopes s LEFT JOIN v2_objective_reviews r ON r.objective_id=s.objective_id AND r.objective_version=s.objective_version AND r.dimension=s.dimension",
+    )
+    .get(PROJECTION_ROW_BYTES) as { count: number; bytes: number };
+  sizes.objectiveReviews = reviewBudget;
+  if (reviewBudget.count > COLLECTION_LIMITS.objectiveReviews)
+    throw new V2Error(
+      "capacity_limit",
+      "Objective review scopes exceed the supported count",
+      503,
+    );
+  // Projection floors stay stable when provenance or rebuilt review caches
+  // change. The remaining fixed allowance is not charged again per restore.
+  const size = budgetBytes(encodedBackupBytes(legacyBytes, sizes));
+  if (!Number.isSafeInteger(size) || size > BACKUP_LIMIT)
     throw new V2Error(
       "capacity_limit",
       "Profile exceeds the supported backup budget. No new data was saved. Make a current local recovery copy.",
@@ -345,12 +450,6 @@ export function initialize(db: DB) {
     }))
       setMeta(db, k, v);
     refreshCheckpoint(db);
-    try {
-      setMeta(db, "capacity_bytes", checkCapacity(db).bytes);
-    } catch (e) {
-      if (!(e instanceof V2Error) || e.code !== "capacity_limit") throw e;
-      setMeta(db, "capacity_bytes", "over_limit");
-    }
     const cp = checkpoint(db);
     insert(db, "v2_history_epochs", {
       id: 1,
@@ -360,9 +459,15 @@ export function initialize(db: DB) {
       checkpoint_hash: cp.hash,
       checkpoint_count: cp.count,
     });
+    try {
+      setMeta(db, "capacity_bytes", checkCapacity(db).bytes);
+    } catch (e) {
+      if (!(e instanceof V2Error) || e.code !== "capacity_limit") throw e;
+      setMeta(db, "capacity_bytes", "over_limit");
+    }
     db.exec("COMMIT");
   } catch (e) {
-    db.exec("ROLLBACK");
+    if (db.isTransaction) db.exec("ROLLBACK");
     throw e;
   }
 }
@@ -381,7 +486,11 @@ export function ensureHeadroom(db: DB, required: number) {
       503,
     );
 }
-export function write<T>(db: DB, fn: () => T, allowPending = false): T {
+export function write<T>(
+  db: DB,
+  fn: () => T,
+  options: { allowPending?: boolean; learningMutation?: boolean } = {},
+): T {
   db.exec("BEGIN IMMEDIATE");
   try {
     if (status(db) !== "supported")
@@ -390,12 +499,19 @@ export function write<T>(db: DB, fn: () => T, allowPending = false): T {
         "Unsupported V2 schema; no V2 writes permitted",
         503,
       );
-    if (!allowPending && needsAcknowledgement(db))
+    if (!options.allowPending && needsAcknowledgement(db))
       throw new V2Error(
         "history_changed",
         "Legacy history changed outside V2. Acknowledge it before continuing.",
         409,
       );
+    const deferred =
+      options.learningMutation !== false &&
+      Boolean(meta(db, "pending_restore_epoch"));
+    if (deferred) {
+      db.exec("SAVEPOINT deferred_learning_epoch");
+      materializeRestoreEpoch(db);
+    }
     const changesBefore = (
       db.prepare("SELECT total_changes() n").get() as { n: number }
     ).n;
@@ -410,9 +526,14 @@ export function write<T>(db: DB, fn: () => T, allowPending = false): T {
       (db.prepare("SELECT total_changes() n").get() as { n: number }).n ===
       changesBefore
     ) {
+      if (deferred)
+        db.exec(
+          "ROLLBACK TO deferred_learning_epoch; RELEASE deferred_learning_epoch",
+        );
       db.exec("COMMIT");
       return result;
     }
+    if (deferred) db.exec("RELEASE deferred_learning_epoch");
     const capacity = checkCapacity(db);
     setMeta(db, "capacity_bytes", capacity.bytes);
     refreshCheckpoint(db);
@@ -420,7 +541,7 @@ export function write<T>(db: DB, fn: () => T, allowPending = false): T {
     db.exec("COMMIT");
     return result;
   } catch (e) {
-    db.exec("ROLLBACK");
+    if (db.isTransaction) db.exec("ROLLBACK");
     throw e;
   }
 }
@@ -429,6 +550,9 @@ export function legacyPrecommit(
   before: { hash: string; count: number },
 ) {
   if (!enabled() || status(db) !== "supported") return;
+  const after = checkpoint(db);
+  if (before.hash !== after.hash || before.count !== after.count)
+    materializeRestoreEpoch(db);
   if (
     before.hash !== meta(db, "legacy_state_hash") ||
     String(before.count) !== meta(db, "legacy_snapshot_count")

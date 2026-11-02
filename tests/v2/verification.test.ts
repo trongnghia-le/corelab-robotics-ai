@@ -488,3 +488,39 @@ it("replays early-draft raw-number fingerprint history without relabeling it fre
   expect(after.v2.attempts[0].fingerprints).toBe(a.fingerprints);
   expect(after.v2.exposures).toEqual(backup.v2.exposures);
 });
+it("rejects duplicate scope records and semantically mismatched review references during preview", () => {
+  const store = fresh(),
+    resolve = resolver(),
+    source = resolve("F-FRAMES", 1)!;
+  const a = issueCM(store, { purpose: "verify", source: source.id }, resolve);
+  submitCM(
+    store,
+    a.id,
+    { answers: answers(source, a.item.route), declaredAssistance: 0 },
+    resolve,
+  );
+  const backup = exportBackup(store),
+    target = fresh();
+  const rehash = (b: typeof backup) => {
+    const { contentHash: _hash, ...core } = b;
+    b.contentHash = digest(core);
+  };
+  const duplicate = structuredClone(backup);
+  duplicate.v2.evidence.push({
+    ...duplicate.v2.evidence[0],
+    id: "duplicate-scope",
+  });
+  duplicate.counts.evidence++;
+  rehash(duplicate);
+  expect(() => preview(target, duplicate, resolve)).toThrow("Duplicate");
+  const mismatch = structuredClone(backup),
+    review = mismatch.v2.objectiveReviews[0];
+  review.last_ref_id = mismatch.v2.evidence.find(
+    (e) => e.objective_id !== review.objective_id,
+  )!.id;
+  rehash(mismatch);
+  expect(() => preview(target, mismatch, resolve)).toThrow(
+    "wrong objective scope",
+  );
+  expect(learningData(target.db).v2_attempts).toHaveLength(0);
+});

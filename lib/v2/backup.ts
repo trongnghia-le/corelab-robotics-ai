@@ -14,7 +14,13 @@ import { replay } from "./replay";
 import { resolveCM, type SourceResolver } from "./assessments";
 import { backup3, type Backup, type Exposure } from "./state";
 import {
-  checkpoint,
+  LEARNING_TABLES,
+  COLLECTION_LIMITS,
+  budgetBytes,
+  encodedBackupBytes,
+  projectedCollectionSizes,
+} from "./budget";
+import {
   learningData,
   learningTables,
   insert,
@@ -26,16 +32,10 @@ import {
   type DB,
   type Row,
   ensureHeadroom,
+  deferRestoreEpoch,
 } from "./db";
 
-const mapping = {
-  attempts: "v2_attempts",
-  exposures: "v2_exposures",
-  evidence: "v2_evidence",
-  objectiveReviews: "v2_objective_reviews",
-  historyEpochs: "v2_history_epochs",
-  prefs: "v2_prefs",
-} as const;
+const mapping = LEARNING_TABLES;
 function counts(data: Backup["v2"]) {
   return Object.fromEntries(
     Object.entries(data).map(([k, v]) => [k, v.length]),
@@ -59,7 +59,19 @@ function capture(store: Store): Backup {
   return { ...core, contentHash: digest(core) };
 }
 function limited(backup: Backup) {
-  const size = bytes(backup) + 32768 + backup.v2.evidence.length * 512;
+  const sizes = projectedCollectionSizes(backup.v2);
+  const size = budgetBytes(
+    encodedBackupBytes(
+      bytes((backup.legacy as { progress: unknown }).progress),
+      sizes,
+    ),
+  );
+  if (sizes.objectiveReviews.count > COLLECTION_LIMITS.objectiveReviews)
+    throw new V2Error(
+      "capacity_limit",
+      "Restored objective review scopes exceed the supported count",
+      503,
+    );
   if (size > BACKUP_LIMIT)
     throw new V2Error(
       "backup_limit",
@@ -77,7 +89,7 @@ export function exportBackup(store: Store) {
     store.db.exec("COMMIT");
     return data;
   } catch (e) {
-    store.db.exec("ROLLBACK");
+    if (store.db.isTransaction) store.db.exec("ROLLBACK");
     throw e;
   }
 }
@@ -105,6 +117,16 @@ export function validateFull(input: unknown) {
   unique(b.v2.attempts, (a) => a.id);
   unique(b.v2.exposures, (e) => e.id);
   unique(b.v2.evidence, (e) => e.id);
+  unique(
+    b.v2.evidence.filter((e) => e.attempt_id !== null),
+    (e) =>
+      canonical([
+        e.attempt_id,
+        e.objective_id,
+        e.objective_version,
+        e.dimension,
+      ]),
+  );
   unique(b.v2.historyEpochs, (e) => e.id);
   unique(b.v2.prefs, (p) => p.key);
   unique(b.v2.objectiveReviews, (r) =>
@@ -114,6 +136,8 @@ export function validateFull(input: unknown) {
   const fingerprintsByAttempt = new Map<string, Set<string>>();
   const exposuresByAttempt = new Map<string, Exposure[]>();
   const addSeq = (s: number) => {
+    if (s >= Number.MAX_SAFE_INTEGER - 1)
+      throw new Error("No safe event sequence remains after restore");
     if (seq.has(s)) throw new Error("Duplicate event sequence");
     seq.add(s);
   };
@@ -252,7 +276,40 @@ export function validateFull(input: unknown) {
         : !eMap.has(r.last_ref_id)
     )
       throw new Error("Dangling review reference");
+    if (r.last_ref_kind === "evidence") {
+      const last = eMap.get(r.last_ref_id)!;
+      if (
+        last.objective_id !== r.objective_id ||
+        last.objective_version !== r.objective_version ||
+        last.dimension !== r.dimension
+      )
+        throw new Error(
+          "Review evidence reference has the wrong objective scope",
+        );
+    } else {
+      const last = aMap.get(r.last_ref_id)!;
+      const refs = strictJSON(last.objective_refs) as {
+        id: string;
+        version: number;
+        dimension?: string;
+      }[];
+      if (
+        last.status !== "submitted" ||
+        !["verify", "review"].includes(last.purpose) ||
+        !refs.some(
+          (ref) =>
+            ref.id === r.objective_id &&
+            ref.version === r.objective_version &&
+            (!ref.dimension || ref.dimension === r.dimension),
+        )
+      )
+        throw new Error(
+          "Review attempt reference has the wrong objective scope",
+        );
+    }
   }
+  if (b.v2.historyEpochs.some((e) => e.id >= Number.MAX_SAFE_INTEGER - 1))
+    throw new Error("No safe history epoch remains after restore");
   for (const p of b.v2.prefs)
     z.string().max(200).parse(strictJSON(p.value_json));
   limited(b);
@@ -267,6 +324,31 @@ function project(db: DB, b: Backup, resolve: SourceResolver = resolveCM) {
     resolve,
   );
 }
+// Validate normalized legacy/provenance projections before confirmation. Empty
+// restore epochs are deferred by the owner-approved D11 refinement; no existing
+// epoch is removed and no new learning row is created merely by restoring.
+function restoredCapacity(
+  backup: Backup,
+  legacy: ReturnType<typeof validateBackup>,
+  v2: Backup["v2"],
+) {
+  const data = v2;
+  for (const key of Object.keys(mapping) as (keyof typeof mapping)[])
+    if (data[key].length > COLLECTION_LIMITS[key])
+      throw new V2Error(
+        "capacity_limit",
+        "Restored profile exceeds the supported " +
+          key +
+          " count; use a current local recovery copy.",
+        503,
+      );
+  limited({
+    ...backup,
+    legacy: { ...(backup.legacy as object), progress: legacy },
+    v2: data,
+    counts: counts(data),
+  });
+}
 export function preview(
   store: Store,
   input: unknown,
@@ -275,6 +357,8 @@ export function preview(
   const schema = (input as { schema?: unknown })?.schema;
   if (schema !== "corelab-backup/3") {
     const p = validateBackup(structuredClone(input));
+    const current = capture(store);
+    restoredCapacity(current, p, current.v2);
     return {
       digest: digest(input),
       token: revisionToken(store.db),
@@ -289,9 +373,9 @@ export function preview(
       ],
     };
   }
-  const { backup } = validateFull(input);
+  const { backup, legacy } = validateFull(input);
   const projection = project(store.db, backup, resolve);
-  limited({ ...backup, v2: projection });
+  restoredCapacity(backup, legacy, projection);
   return {
     digest: digest(input),
     token: revisionToken(store.db),
@@ -325,7 +409,7 @@ export function restore(
   store: Store,
   input: unknown,
   expected: { digest: string; token: string; confirm: boolean },
-  fault?: () => void,
+  fault?: (stage: "after_snapshot" | "after_replace" | "after_prune") => void,
   resolve: SourceResolver = resolveCM,
 ) {
   const checked = preview(store, input, resolve);
@@ -373,6 +457,7 @@ export function restore(
         hash: digest(strictJSON(snapshot)),
         snapshot_json: snapshot,
       });
+      fault?.("after_snapshot");
       if (full) {
         const data = projected!;
         for (const t of [...learningTables].reverse())
@@ -396,19 +481,13 @@ export function restore(
           .prepare("SELECT coalesce(max(id),0) n FROM v2_history_epochs")
           .get() as { n: number }
       ).n;
-      const epoch = maxEpoch + 1;
-      if (!Number.isSafeInteger(epoch))
+      if (
+        !Number.isSafeInteger(maxEpoch) ||
+        maxEpoch >= Number.MAX_SAFE_INTEGER
+      )
         throw new Error("Epoch counter exhausted");
-      const cp = checkpoint(store.db);
-      insert(store.db, "v2_history_epochs", {
-        id: epoch,
-        at: new Date().toISOString(),
-        origin_workspace_id: meta(store.db, "workspace_id"),
-        reason: full ? "full_restore" : "legacy_restore",
-        checkpoint_hash: cp.hash,
-        checkpoint_count: cp.count,
-      });
-      setMeta(store.db, "current_history_epoch", epoch);
+      setMeta(store.db, "current_history_epoch", Math.max(1, maxEpoch));
+      deferRestoreEpoch(store.db, full ? "full_restore" : "legacy_restore");
       setMeta(store.db, "history_pending", 0);
       const maxSeq = (
         store.db
@@ -418,7 +497,7 @@ export function restore(
           .get() as { n: number }
       ).n;
       setMeta(store.db, "next_event_seq", maxSeq + 1);
-      fault?.();
+      fault?.("after_replace");
       const snapshots = rows(store.db, "v2_restore_snapshots").sort(
         (a, b) =>
           String(a.at).localeCompare(String(b.at)) ||
@@ -435,9 +514,10 @@ export function restore(
           .prepare("DELETE FROM v2_restore_snapshots WHERE id=?")
           .run(old.id);
       }
+      fault?.("after_prune");
       return { restored: true, scope: checked.scope };
     },
-    true,
+    { allowPending: true, learningMutation: false },
   );
 }
 export function snapshots(db: DB) {

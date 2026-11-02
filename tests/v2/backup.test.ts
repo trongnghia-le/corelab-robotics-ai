@@ -51,7 +51,7 @@ it("round-trips frozen attempts/exposure while keeping local identity and a full
   );
   expect((snapshot.legacy as { progress: unknown }).progress).toEqual(before);
   expect(validateFull(exportBackup(to)).backup.v2.historyEpochs).toHaveLength(
-    2,
+    1,
   );
 });
 it("keeps the SQLite row-byte capacity bound above a non-ASCII escaped full export", () => {
@@ -68,7 +68,7 @@ it("keeps the SQLite row-byte capacity bound above a non-ASCII escaped full expo
   const capacity = checkCapacity(s.db),
     actual = bytes(exportBackup(s));
   expect(capacity.bytes).toBeGreaterThan(actual);
-  expect(capacity.bytes - actual).toBeLessThan(32768);
+  expect(capacity.bytes - actual).toBe(32768);
   expect(Number(meta(s.db, "capacity_bytes"))).toBe(capacity.bytes);
 });
 it("rejects stale preview and rolls back replacement and snapshot on injected failure", () => {
@@ -104,7 +104,7 @@ it("rejects duplicate IDs and contradictory counts/hash before live writes", () 
   bad.contentHash = digest(rest);
   expect(() => validateFull(bad)).toThrow("counts");
 });
-it("partial legacy restore preserves sidecar learning and creates an epoch", () => {
+it("partial legacy restore preserves sidecar learning and defers its empty epoch", () => {
   const s = fresh();
   issue(s, { purpose: "practice", source: "X01" });
   const before = learningData(s.db).v2_attempts;
@@ -113,6 +113,10 @@ it("partial legacy restore preserves sidecar learning and creates an epoch", () 
   expect(p.scope).toBe("legacy-only");
   restore(s, b, { ...p, confirm: true });
   expect(learningData(s.db).v2_attempts).toEqual(before);
+  expect(learningData(s.db).v2_history_epochs).toHaveLength(1);
+  expect(JSON.parse(meta(s.db, "pending_restore_epoch"))).toMatchObject({
+    reason: "legacy_restore",
+  });
 });
 it("retains at most five nonrecursive snapshots and never exports issuer pins", () => {
   const s = fresh();
@@ -125,6 +129,35 @@ it("retains at most five nonrecursive snapshots and never exports issuer pins", 
   expect(JSON.stringify(b)).not.toContain("v2_restore_snapshots");
   expect(JSON.stringify(b)).not.toContain("v2_issuers");
 });
+it.each(["after_snapshot", "after_replace", "after_prune"] as const)(
+  "preserves the entire previous snapshot set and learning history when restore fails %s",
+  (stage) => {
+    const store = fresh();
+    for (let i = 0; i < 5; i++) {
+      const b = exportBackup(store);
+      restore(store, b, { ...preview(store, b), confirm: true });
+    }
+    const backup = exportBackup(store);
+    issue(store, { purpose: "practice", source: "X11" });
+    const before = learningData(store.db),
+      snapshotSet = snapshots(store.db),
+      token = revisionToken(store.db);
+    expect(() =>
+      restore(
+        store,
+        backup,
+        { ...preview(store, backup), confirm: true },
+        (at) => {
+          if (at === stage) throw new Error("injected " + stage);
+        },
+      ),
+    ).toThrow("injected " + stage);
+    expect(learningData(store.db)).toEqual(before);
+    expect(snapshots(store.db)).toEqual(snapshotSet);
+    expect(revisionToken(store.db)).toBe(token);
+    expect(store.db.isTransaction).toBe(false);
+  },
+);
 it("foreign serialized I claims never gain pilot admission", () => {
   const s = fresh(),
     b = exportBackup(s);

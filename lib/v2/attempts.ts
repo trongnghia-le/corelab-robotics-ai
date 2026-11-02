@@ -399,9 +399,10 @@ export function acknowledge(store: Store, token: string) {
         checkpoint_count: cp.count,
       });
       setMeta(store.db, "current_history_epoch", id);
+      setMeta(store.db, "pending_restore_epoch", "");
       setMeta(store.db, "history_pending", 0);
       return { acknowledged: true };
     },
-    true,
+    { allowPending: true, learningMutation: false },
   );
 }

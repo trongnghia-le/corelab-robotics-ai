@@ -189,7 +189,7 @@ export class Store {
       for (const t of topics) insert.run(t.id, JSON.stringify(t));
       this.db.exec("COMMIT");
     } catch (e) {
-      this.db.exec("ROLLBACK");
+      if (this.db.isTransaction) this.db.exec("ROLLBACK");
       throw e;
     }
   }
@@ -218,7 +218,7 @@ export class Store {
       this.db.exec("COMMIT");
       return p;
     } catch (e) {
-      this.db.exec("ROLLBACK");
+      if (this.db.isTransaction) this.db.exec("ROLLBACK");
       throw e;
     }
   }

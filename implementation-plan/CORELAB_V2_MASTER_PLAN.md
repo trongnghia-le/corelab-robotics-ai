@@ -536,3 +536,16 @@ The owner subsequently authorized production implementation, local milestone com
 | Authorized expansion | Two meaningful versioned routes per core family, original numerical/reasoning checks, 22-lab roadmap/resources | Twenty roadmap lab implementations and any protected execution remain unavailable; no placeholder is counted as implemented |
 
 See PROGRESS.md and IMPLEMENTATION_REPORT.md for commands, actual results, local commits and precise limits. None of these state labels grants an independent-review gate.
+
+## Approved implementation refinement — D11, 2026-11-02
+
+The owner explicitly approved: **defer an empty post-restore learning epoch until the next learning write**. This supersedes the Unified Spec's immediate-epoch wording in §§9.3/10.4 and the corresponding planning wording above. It does not approve a release, independent reviews, OS support or a measured memory budget.
+
+- Restore still records provenance immediately in the effective evidence projection, the local pre-restore snapshot, guarded revision/checkpoint and strictly validated local `pending_restore_epoch` metadata. Local workspace identity and issuer trust stay local.
+- All existing exported epochs and their references remain exact. Restore/export alone does not append another empty learning row. Repeated restores of an unchanged learning profile therefore do not consume its logical capacity through unused epochs.
+- The first actual V2 learning mutation materializes that pending epoch inside the same transaction, before issuing any new attempt that references it. No-op/idempotent operations roll back the tentative allocation; failures roll back the epoch and the attempted mutation together. Enabled legacy progress updates also materialize it atomically. Mixed-history acknowledgement creates its explicit acknowledgement epoch and clears the pending restore context instead of manufacturing an unused restore epoch.
+- Backups exclude local pending metadata. Importing learning history establishes fresh local restore provenance; it does not transplant another installation's pending authority. The next local write remains bounded and may safely refuse if there is no room for actual new learning data.
+- The shared capacity calculation includes the complete encoded backup envelope, a fixed 32 KiB allowance, a 1 KiB minimum per effective evidence projection and a conservative 1 KiB review-cache row per C/M scope. Larger retained cache/projection bytes are budgeted in full. Source/claim bytes are never trimmed. SQLite and in-memory calculations must agree; replay-derived cache/provenance changes do not add the same reserve repeatedly. New policies must requalify these bounds.
+- AC-B7/B10/VS-13 now test preserved existing epochs, immediate provenance, repeated boundary round trips, and atomic first-write allocation rather than an empty epoch appended by every restore. Exact-boundary fixtures and independent failure tests remain mandatory.
+
+The historical Unified Spec file remains unchanged; this dated owner-approved addendum is the execution authority for the refinement.

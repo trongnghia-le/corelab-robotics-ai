@@ -3,6 +3,7 @@ import { Store } from "../../lib/storage";
 import { submit } from "../../lib/v2/attempts";
 import { assistCM, submitCM } from "../../lib/v2/verification";
 import { cmSources, type SourceResolver } from "../../lib/v2/assessments";
+import { write } from "../../lib/v2/db";
 const resolve: SourceResolver = (id, v) => {
   const s = cmSources().find((s) => s.id === id && s.version === v);
   return s
@@ -30,6 +31,25 @@ process.once(
     answers: Record<string, string>;
   }) => {
     try {
+      if (message.action === "profileWrites") {
+        for (let i = 1; i <= 100; i++) {
+          write(store.db, () => {
+            const p = store.read();
+            p.focusReason = String(i);
+            store.db
+              .prepare("UPDATE state SET json=? WHERE id=1")
+              .run(JSON.stringify(p));
+            store.db
+              .prepare(
+                "INSERT INTO v2_prefs VALUES ('goal',?) ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json",
+              )
+              .run(JSON.stringify(String(i)));
+          });
+          Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 2);
+        }
+        process.send?.({ ok: true });
+        return;
+      }
       const result =
         message.action === "assistCM"
           ? assistCM(store, message.id, 3, resolve)

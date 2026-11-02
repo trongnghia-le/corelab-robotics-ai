@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { id, level, purpose, time } from "./contracts";
+import { COLLECTION_LIMITS } from "./budget";
 const integer = z
   .number()
   .int()
@@ -105,6 +106,11 @@ export const epochRow = z
     checkpoint_count: integer,
   })
   .strict();
+// Local restore provenance, not an exported learning epoch until another
+// learning mutation occurs. Owner-approved D11 refinement, 2026-11-02.
+export const deferredEpochRow = epochRow.omit({ id: true }).extend({
+  reason: z.enum(["full_restore", "legacy_restore"]),
+});
 export const prefsRow = z
   .object({
     key: z.enum(["goal", "mode", "objective", "route"]),
@@ -121,12 +127,14 @@ export const backup3 = z
     legacy: z.unknown(),
     v2: z
       .object({
-        attempts: z.array(attemptRow).max(100000),
-        exposures: z.array(exposureRow).max(1000000),
-        evidence: z.array(evidenceRow).max(500000),
-        objectiveReviews: z.array(reviewRow).max(10000),
-        historyEpochs: z.array(epochRow).max(10000),
-        prefs: z.array(prefsRow).max(4),
+        attempts: z.array(attemptRow).max(COLLECTION_LIMITS.attempts),
+        exposures: z.array(exposureRow).max(COLLECTION_LIMITS.exposures),
+        evidence: z.array(evidenceRow).max(COLLECTION_LIMITS.evidence),
+        objectiveReviews: z
+          .array(reviewRow)
+          .max(COLLECTION_LIMITS.objectiveReviews),
+        historyEpochs: z.array(epochRow).max(COLLECTION_LIMITS.historyEpochs),
+        prefs: z.array(prefsRow).max(COLLECTION_LIMITS.prefs),
       })
       .strict(),
     counts: z
