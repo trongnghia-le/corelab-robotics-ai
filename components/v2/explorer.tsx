@@ -7,6 +7,9 @@ import {
   Compass,
   FlaskConical,
   RotateCcw,
+  Search,
+  Terminal,
+  CheckCircle2,
 } from "lucide-react";
 import { PageHeading } from "../ui";
 import type { objectiveDetail } from "@/lib/v2/read-model";
@@ -29,6 +32,7 @@ export function V2Explorer({ objective }: { objective?: string }) {
     [source, setSource] = useState(""),
     [route, setRoute] = useState(""),
     [difficulty, setDifficulty] = useState("");
+  const [query, setQuery] = useState("");
   const [attempt, setAttempt] = useState<Attempt | null>(null),
     [answers, setAnswers] = useState<Record<string, string>>({}),
     [declared, setDeclared] = useState(0),
@@ -38,8 +42,9 @@ export function V2Explorer({ objective }: { objective?: string }) {
     [cursor, setCursor] = useState<string | null>(null);
   const [goal, setGoal] = useState(""),
     [recommendations, setRecommendations] = useState<
-      { id: string; reason: string }[]
-    >([]);
+      { id: string; reason: string }[] | null
+    >(null);
+  const learnDisclosure = useRef<HTMLDetailsElement>(null);
   const [pendingHelp, setPendingHelp] = useState<number | null>(null);
   const refresh = useCallback(async () => {
     const value = await v2<Data>(
@@ -116,12 +121,25 @@ export function V2Explorer({ objective }: { objective?: string }) {
     data?.families.filter((f) => !domain || f.domain === domain) ?? [];
   if (mode === "recommended") {
     const byId = new Map(families.map((f) => [f.id, f]));
-    families = recommendations
+    families = (recommendations ?? [])
       .map((r) => byId.get(r.id))
       .filter((f): f is Data["families"][number] => !!f);
   }
   if (mode === "more" && source)
     families = families.filter((f) => f.id === source);
+  const normalizedQuery = query.trim().toLowerCase();
+  if (normalizedQuery)
+    families = families.filter((f) =>
+      [f.title, f.scope, f.domain, f.topicId, f.id, ...f.routes]
+        .join(" ")
+        .replaceAll("-", " ")
+        .toLowerCase()
+        .includes(normalizedQuery.replaceAll("-", " ")),
+    );
+  const recentOpen = history.find(
+    (a) =>
+      a.status === "issued" && data?.families.some((f) => f.id === a.source),
+  );
   const domains = [...new Set(data?.families.map((f) => f.domain) ?? [])];
   const attemptPanel = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -156,6 +174,22 @@ export function V2Explorer({ objective }: { objective?: string }) {
     setAttempt({ ...attempt, observedAssistance: h.level });
     setPendingHelp(null);
   }
+  function startCheck(
+    source: string,
+    scope?: { objective: string; dimension: "C" | "M" },
+  ) {
+    void run(async () => {
+      const a = await v2<Attempt>("attempts", {
+        purpose: scope ? "review" : "verify",
+        source,
+        ...(scope
+          ? { objectiveId: scope.objective, dimension: scope.dimension }
+          : {}),
+      });
+      await Promise.all([refresh(), loadHistory()]);
+      open(a);
+    });
+  }
   return (
     <div className="page v2-page">
       <PageHeading
@@ -165,12 +199,20 @@ export function V2Explorer({ objective }: { objective?: string }) {
         }
         description="Choose a skill, work through a meaningful problem, and keep the evidence honest. Your learning path is yours to choose."
       >
-        <Link className="button" href="/settings">
-          Back up your learning
-        </Link>
+        <div className="v2-header-actions">
+          <a className="button primary" href="#v2-practice">
+            Find practice <ArrowRight size={17} />
+          </a>
+          <Link className="button" href="/settings">
+            Back up your learning
+          </Link>
+        </div>
       </PageHeading>
-      <div className="v2-notice">
-        <strong>CoreLab V2</strong>
+      <details className="v2-integrity-note">
+        <summary>
+          Practice builds skill. Verification records scoped evidence.{" "}
+          <span>How it works</span>
+        </summary>
         <p>
           Original exercises are author-tested and checked by an owner-assigned
           AI review, not a human expert review. Practice, code notes and watched
@@ -178,7 +220,7 @@ export function V2Explorer({ objective }: { objective?: string }) {
           approved review records can. Verified I and human-reviewed transfer
           are unavailable.
         </p>
-      </div>
+      </details>
       {error && (
         <p className="error-text" role="alert">
           {error}
@@ -215,219 +257,228 @@ export function V2Explorer({ objective }: { objective?: string }) {
           <div className="v2-stat-grid">
             <div className="panel">
               <strong>{data.totals.families}</strong>
-              <span>Original exercise families</span>
+              <span>Exercise collections, including the bridge</span>
             </div>
             <div className="panel">
               <strong>{data.totals.items}</strong>
-              <span>Authored practice instances</span>
+              <span>Practice tasks to work through</span>
             </div>
             <div className="panel">
               <strong>{data.totals.attempts}</strong>
-              <span>Durable practice attempts</span>
+              <span>Your recorded practice attempts</span>
             </div>
           </div>
-          <LearningPanel
-            data={data}
-            objective={objective}
-            busy={busy}
-            onGoal={setGoal}
-            onCheck={(source, scope) =>
-              void run(async () => {
-                const a = await v2<Attempt>("attempts", {
-                  purpose: scope ? "review" : "verify",
-                  source,
-                  ...(scope
-                    ? {
-                        objectiveId: scope.objective,
-                        dimension: scope.dimension,
-                      }
-                    : {}),
-                });
-                open(a);
-                await Promise.all([refresh(), loadHistory()]);
-              })
-            }
-          />
-          <nav className="v2-modes" aria-label="Objective practice mode">
+          <nav className="v2-workflow-nav" aria-label="Learning activities">
             {(
               [
-                ["recommended", "Recommended"],
-                ["explore", "Explore"],
-                ["more", "More Practice"],
+                ["learn", "Learn", "Build intuition", BookOpen],
+                ["practice", "Practice", "Work the problem", FlaskConical],
+                ["apply", "Apply", "Implement locally", Terminal],
+                ["verify", "Verify", "Check independently", CheckCircle2],
+                ["review", "Review", "Keep the knowledge", RotateCcw],
               ] as const
-            ).map(([id, label]) => (
-              <button
+            ).map(([id, label, note, Icon]) => (
+              <a
                 key={id}
-                className={"button " + (mode === id ? "primary" : "")}
-                aria-pressed={mode === id}
-                onClick={() => setMode(id)}
+                href={"#v2-" + id}
+                onClick={() => {
+                  if (id === "learn" && learnDisclosure.current)
+                    learnDisclosure.current.open = true;
+                }}
               >
-                {label}
-              </button>
+                <Icon size={19} aria-hidden="true" />
+                <span>
+                  <strong>{label}</strong>
+                  <small>{note}</small>
+                </span>
+              </a>
             ))}
           </nav>
-          <div className="v2-filters">
-            <label>
-              Domain
-              <select
-                value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-              >
-                <option value="">All domains</option>
-                {domains.map((d) => (
-                  <option key={d}>{d}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Difficulty
-              <select
-                value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value)}
-              >
-                <option value="">All authored levels</option>
-                <option value="1">1 · Start with the model</option>
-                <option value="2">2 · Apply the method</option>
-                <option value="3">3 · Change a condition</option>
-              </select>
-            </label>
-          </div>
-          <div className="v2-card-grid">
-            {families.map((f) => (
-              <article className="panel v2-family" key={f.id}>
-                <div className="eyebrow">
-                  {f.domain} · {f.id}
-                </div>
-                <h2>{f.title}</h2>
-                <p>{f.scope}</p>
-                <div className="v2-meta">
-                  <span>{f.itemCount} authored tasks</span>
-                  <span>{f.completed} completed practice</span>
-                </div>
-                <p className="muted">
-                  {mode === "recommended"
-                    ? recommendations.find((r) => r.id === f.id)?.reason
-                    : f.attempts === 0
-                      ? "Not practiced yet. Choose any route to begin."
-                      : "Try another route or revisit a specific mistake."}
-                </p>
-                <label>
-                  Application choice
-                  <select
-                    value={source === f.id ? route : ""}
-                    onChange={(e) => {
-                      setSource(f.id);
-                      setRoute(e.target.value);
-                    }}
-                  >
-                    <option value="">Any available route</option>
-                    {f.routes.map((r) => (
-                      <option key={r} value={r}>
-                        {r.replaceAll("-", " ")}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {f.routeNotes && source === f.id && route && (
-                  <p className="muted">{f.routeNotes[route]}</p>
-                )}
-                <div className="v2-actions">
-                  <button
-                    className="button primary"
-                    disabled={busy}
-                    onClick={() =>
-                      void run(() =>
-                        issue(f.id, source === f.id ? route : undefined),
-                      )
-                    }
-                  >
-                    <FlaskConical size={17} /> Practice
-                  </button>
-                  <Link className="button" href={"/lessons/" + f.topicId}>
-                    <BookOpen size={17} /> Learn
-                  </Link>
-                  {!objective && (
-                    <Link
-                      className="button"
-                      href={"/objectives/" + f.objectiveId}
-                    >
-                      <Compass size={17} /> Objective
-                    </Link>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-          {!families.length && (
-            <p className="panel">
-              No authored family matches these filters. Change a filter; nothing
-              is locked.
-            </p>
-          )}
-          {attempt && (
+          {recentOpen && !attempt && (
             <section
-              ref={attemptPanel}
-              tabIndex={-1}
-              className="panel v2-attempt"
-              aria-labelledby="v2-task-title"
+              className="v2-resume-bar"
+              aria-label="Recent open practice"
             >
-              <div className="eyebrow">
-                {attempt.source} · Difficulty {attempt.item.difficulty} ·{" "}
-                {attempt.repeat
-                  ? "Repeated instance · practice only"
-                  : "Unseen in your recorded history"}
+              <div>
+                <strong>Continue where you left off.</strong>
+                <span>
+                  {data.families.find((f) => f.id === recentOpen.source)?.title}
+                </span>
               </div>
-              <h2 id="v2-task-title">Work the problem.</h2>
-              <p className="v2-prompt">{attempt.item.prompt}</p>
-              <p>
-                Scope: <strong>{attempt.item.objectiveId}</strong>.{" "}
-                {selected?.scope}
-              </p>
-              {attempt.item.fields.length > 0 && (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    void run(async () => {
-                      const result = await v2<Attempt>(
-                        "attempts/" + attempt.id + "/submit",
-                        { answers, declaredAssistance: declared, artifact },
-                      );
-                      setAttempt(result);
-                      await Promise.all([refresh(), loadHistory()]);
-                    });
+              <button
+                className="button"
+                disabled={busy}
+                onClick={() =>
+                  void run(async () =>
+                    open(await v2<Attempt>("attempts/" + recentOpen.id)),
+                  )
+                }
+              >
+                Resume recent practice <ArrowRight size={17} />
+              </button>
+            </section>
+          )}
+          <details
+            className="v2-path-disclosure"
+            ref={learnDisclosure}
+            open={objective ? true : undefined}
+          >
+            <summary>
+              {objective
+                ? "Objective, foundations and evidence"
+                : "Have a goal in mind? Choose a learning path."}
+              <span>Optional preparation · every activity stays open</span>
+            </summary>
+            <LearningPanel
+              data={data}
+              objective={objective}
+              busy={busy}
+              section="learn"
+              onGoal={setGoal}
+              onCheck={startCheck}
+            />
+          </details>
+          <section
+            id="v2-practice"
+            className="v2-section"
+            aria-labelledby="v2-practice-title"
+          >
+            <header className="v2-section-heading">
+              <div>
+                <div className="eyebrow">PRACTICE</div>
+                <h2 id="v2-practice-title">Find your next practice.</h2>
+                <p>
+                  Choose a useful problem, try a different application or
+                  revisit a gap. You are free to start anywhere.
+                </p>
+              </div>
+            </header>
+            <nav className="v2-modes" aria-label="Objective practice mode">
+              {(
+                [
+                  ["recommended", "Recommended"],
+                  ["explore", "Explore"],
+                  ["more", "More Practice"],
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  className={"button " + (mode === id ? "primary" : "")}
+                  aria-pressed={mode === id}
+                  onClick={() => setMode(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+            <div className="v2-filters panel">
+              <label className="v2-search-label">
+                Search exercises
+                <span className="v2-search-field">
+                  <Search size={18} aria-hidden="true" />
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search skills, topics or applications"
+                    autoComplete="off"
+                  />
+                </span>
+              </label>
+              <label>
+                Domain
+                <select
+                  value={domain}
+                  onChange={(e) => setDomain(e.target.value)}
+                >
+                  <option value="">All domains</option>
+                  {domains.map((d) => (
+                    <option key={d}>{d}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Difficulty
+                <select
+                  value={difficulty}
+                  onChange={(e) => setDifficulty(e.target.value)}
+                >
+                  <option value="">All authored levels</option>
+                  <option value="1">1 · Start with the model</option>
+                  <option value="2">2 · Apply the method</option>
+                  <option value="3">3 · Change a condition</option>
+                </select>
+              </label>
+            </div>
+            <div className="v2-results-summary" role="status">
+              <span>
+                {mode === "recommended" && recommendations === null
+                  ? "Finding practice for you…"
+                  : `${families.length} ${families.length === 1 ? "collection" : "collections"} shown`}{" "}
+                ·{" "}
+                {mode === "recommended"
+                  ? "Based on your learning history"
+                  : mode === "more"
+                    ? "Choose another route or a new instance"
+                    : "Browse the authored exercise bank"}
+              </span>
+              {(query || domain || difficulty) && (
+                <button
+                  className="button"
+                  onClick={() => {
+                    setQuery("");
+                    setDomain("");
+                    setDifficulty("");
                   }}
                 >
-                  <fieldset disabled={busy || attempt.status === "submitted"}>
-                    <legend>
-                      Your answer · precision and units are part of the task
-                    </legend>
-                    <div className="v2-input-grid">
-                      {attempt.item.fields.map((field) => (
-                        <label key={field.id}>
-                          {field.label}
-                          {field.kind === "choice" ? (
-                            <select
-                              required
-                              aria-label={field.label}
-                              value={answers[field.id] ?? ""}
-                              onChange={(e) =>
-                                setAnswers((a) => ({
-                                  ...a,
-                                  [field.id]: e.target.value,
-                                }))
-                              }
-                            >
-                              <option value="">Choose an option</option>
-                              {field.options?.map((o) => (
-                                <option key={o}>{o}</option>
-                              ))}
-                            </select>
-                          ) : (
-                            <>
-                              <input
+                  Clear filters
+                </button>
+              )}
+            </div>
+            {attempt && (
+              <section
+                ref={attemptPanel}
+                tabIndex={-1}
+                className="panel v2-attempt"
+                aria-labelledby="v2-task-title"
+              >
+                <div className="eyebrow">
+                  {attempt.source} · Difficulty {attempt.item.difficulty} ·{" "}
+                  {attempt.repeat
+                    ? "Repeated instance · practice only"
+                    : "Unseen in your recorded history"}
+                </div>
+                <h2 id="v2-task-title">Work the problem.</h2>
+                <p className="v2-prompt">{attempt.item.prompt}</p>
+                <p>
+                  Scope: <strong>{attempt.item.objectiveId}</strong>.{" "}
+                  {selected?.scope}
+                </p>
+                {attempt.item.fields.length > 0 && (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      void run(async () => {
+                        const result = await v2<Attempt>(
+                          "attempts/" + attempt.id + "/submit",
+                          { answers, declaredAssistance: declared, artifact },
+                        );
+                        setAttempt(result);
+                        await Promise.all([refresh(), loadHistory()]);
+                      });
+                    }}
+                  >
+                    <fieldset disabled={busy || attempt.status === "submitted"}>
+                      <legend>
+                        Your answer · precision and units are part of the task
+                      </legend>
+                      <div className="v2-input-grid">
+                        {attempt.item.fields.map((field) => (
+                          <label key={field.id}>
+                            {field.label}
+                            {field.kind === "choice" ? (
+                              <select
                                 required
-                                autoComplete="off"
-                                inputMode="text"
                                 aria-label={field.label}
                                 value={answers[field.id] ?? ""}
                                 onChange={(e) =>
@@ -436,166 +487,304 @@ export function V2Explorer({ objective }: { objective?: string }) {
                                     [field.id]: e.target.value,
                                   }))
                                 }
-                              />
-                              <small>
-                                Decimal or fraction · tolerance ±
-                                {field.tolerance}
-                                {field.kind === "angle" ? " rad modulo 2π" : ""}
-                              </small>
-                            </>
-                          )}
-                        </label>
-                      ))}
-                    </div>
-                    <label>
-                      Implementation scratchpad (optional, never executed)
-                      <textarea
-                        spellCheck={false}
-                        rows={5}
-                        maxLength={8000}
-                        value={artifact}
-                        onChange={(e) => setArtifact(e.target.value)}
-                        placeholder="Write code or explain your method. Save it with your practice answer; it is not implementation evidence."
-                      />
-                    </label>
-                    <label>
-                      Outside assistance
-                      <select
-                        value={declared}
-                        onChange={(e) => setDeclared(Number(e.target.value))}
-                      >
-                        <option value={0}>A0 · I worked independently</option>
-                        <option value={1}>A1 · Conceptual hint</option>
-                        <option value={2}>A2 · Guided steps</option>
-                        <option value={3}>
-                          A3 · Solution or equivalent AI assistance
-                        </option>
-                      </select>
-                    </label>
-                    <button className="button primary" type="submit">
-                      Check practice answer <ArrowRight size={17} />
+                              >
+                                <option value="">Choose an option</option>
+                                {field.options?.map((o) => (
+                                  <option key={o}>{o}</option>
+                                ))}
+                              </select>
+                            ) : (
+                              <>
+                                <input
+                                  required
+                                  autoComplete="off"
+                                  inputMode="text"
+                                  aria-label={field.label}
+                                  value={answers[field.id] ?? ""}
+                                  onChange={(e) =>
+                                    setAnswers((a) => ({
+                                      ...a,
+                                      [field.id]: e.target.value,
+                                    }))
+                                  }
+                                />
+                                <small>
+                                  Decimal or fraction · tolerance ±
+                                  {field.tolerance}
+                                  {field.kind === "angle"
+                                    ? " rad modulo 2π"
+                                    : ""}
+                                </small>
+                              </>
+                            )}
+                          </label>
+                        ))}
+                      </div>
+                      <label>
+                        Implementation scratchpad (optional, never executed)
+                        <textarea
+                          spellCheck={false}
+                          rows={5}
+                          maxLength={8000}
+                          value={artifact}
+                          onChange={(e) => setArtifact(e.target.value)}
+                          placeholder="Write code or explain your method. Save it with your practice answer; it is not implementation evidence."
+                        />
+                      </label>
+                      <label>
+                        Outside assistance
+                        <select
+                          value={declared}
+                          onChange={(e) => setDeclared(Number(e.target.value))}
+                        >
+                          <option value={0}>A0 · I worked independently</option>
+                          <option value={1}>A1 · Conceptual hint</option>
+                          <option value={2}>A2 · Guided steps</option>
+                          <option value={3}>
+                            A3 · Solution or equivalent AI assistance
+                          </option>
+                        </select>
+                      </label>
+                      <button className="button primary" type="submit">
+                        {attempt.purpose === "verify"
+                          ? "Submit independent check"
+                          : attempt.purpose === "review"
+                            ? "Submit review"
+                            : "Check practice answer"}{" "}
+                        <ArrowRight size={17} />
+                      </button>
+                    </fieldset>
+                  </form>
+                )}
+                <div className="v2-actions">
+                  {[1, 2, 3].map((level) => (
+                    <button
+                      type="button"
+                      key={level}
+                      className="button"
+                      disabled={
+                        busy ||
+                        attempt.status === "submitted" ||
+                        attempt.item.fields.length === 0
+                      }
+                      onClick={() =>
+                        attempt.purpose === "verify" &&
+                        attempt.observedAssistance === 0
+                          ? setPendingHelp(level)
+                          : void run(() => loadHelp(level))
+                      }
+                    >
+                      {level === 1
+                        ? "A1 · Concept hint"
+                        : level === 2
+                          ? "A2 · Next step"
+                          : "A3 · Worked solution"}
                     </button>
-                  </fieldset>
-                </form>
-              )}
-              <div className="v2-actions">
-                {[1, 2, 3].map((level) => (
-                  <button
-                    type="button"
-                    key={level}
-                    className="button"
-                    disabled={
-                      busy ||
-                      attempt.status === "submitted" ||
-                      attempt.item.fields.length === 0
-                    }
-                    onClick={() =>
-                      attempt.purpose === "verify" &&
-                      attempt.observedAssistance === 0
-                        ? setPendingHelp(level)
-                        : void run(() => loadHelp(level))
-                    }
-                  >
-                    {level === 1
-                      ? "A1 · Concept hint"
-                      : level === 2
-                        ? "A2 · Next step"
-                        : "A3 · Worked solution"}
-                  </button>
-                ))}
-              </div>
-              <p className="muted">
-                Highest observed assistance: A{attempt.observedAssistance}.
-                Reloading or changing tabs cannot erase recorded help.
-              </p>
-              {pendingHelp !== null && (
-                <div className="v2-notice" role="status">
-                  <p>
-                    Opening help makes this verification attempt assisted and
-                    ineligible for independent evidence. You can continue
-                    learning and request another fresh check later.
-                  </p>
-                  <button
-                    className="button"
-                    disabled={busy}
-                    onClick={() => void run(() => loadHelp(pendingHelp))}
-                  >
-                    Continue with assisted attempt
-                  </button>
-                  <button
-                    className="button"
-                    onClick={() => setPendingHelp(null)}
-                  >
-                    Keep working independently
-                  </button>
+                  ))}
                 </div>
-              )}
-              {hint && (
-                <div className="v2-feedback" role="status">
-                  {hint}
-                </div>
-              )}
-              {attempt.result &&
-                ("unverifiable" in attempt.result ? (
-                  <p>
-                    Retained history; this source cannot currently be regraded.
-                  </p>
-                ) : (
-                  <div className="v2-feedback" role="status">
-                    <h3>
-                      {attempt.result.passed
-                        ? "Correct practice answer"
-                        : "A useful gap to work on"}
-                    </h3>
+                <p className="muted">
+                  Highest observed assistance: A{attempt.observedAssistance}.
+                  Reloading or changing tabs cannot erase recorded help.
+                </p>
+                {pendingHelp !== null && (
+                  <div className="v2-notice" role="status">
                     <p>
-                      {attempt.result.claim} · effective assistance A
-                      {attempt.result.effectiveAssistance}
+                      Opening help makes this verification attempt assisted and
+                      ineligible for independent evidence. You can continue
+                      learning and request another fresh check later.
                     </p>
-                    <ul>
-                      {attempt.result.fields.map((f) => (
-                        <li key={f.id}>
-                          {f.label}: {f.correct ? "correct" : "needs revision"}{" "}
-                          · expected {readableAnswer(f.expected)}
-                        </li>
-                      ))}
-                    </ul>
-                    <p>{attempt.result.solution}</p>
-                    <p>{attempt.result.remediation}</p>
-                    {"scopes" in attempt.result && (
+                    <button
+                      className="button"
+                      disabled={busy}
+                      onClick={() => void run(() => loadHelp(pendingHelp))}
+                    >
+                      Continue with assisted attempt
+                    </button>
+                    <button
+                      className="button"
+                      onClick={() => setPendingHelp(null)}
+                    >
+                      Keep working independently
+                    </button>
+                  </div>
+                )}
+                {hint && (
+                  <div className="v2-feedback" role="status">
+                    {hint}
+                  </div>
+                )}
+                {attempt.result &&
+                  ("unverifiable" in attempt.result ? (
+                    <p>
+                      Retained history; this source cannot currently be
+                      regraded.
+                    </p>
+                  ) : (
+                    <div className="v2-feedback" role="status">
+                      <h3>
+                        {attempt.purpose === "verify"
+                          ? "Your objective check results"
+                          : attempt.purpose === "review"
+                            ? "Your review results"
+                            : attempt.result.passed
+                              ? "Correct practice answer"
+                              : "A useful gap to work on"}
+                      </h3>
+                      <p>
+                        {attempt.result.claim} · effective assistance A
+                        {attempt.result.effectiveAssistance}
+                      </p>
                       <ul>
-                        {attempt.result.scopes.map((s) => (
-                          <li key={s.objective + s.dimension}>
-                            {s.objective} · {s.dimension}: {s.outcome} (
-                            {s.reason})
+                        {attempt.result.fields.map((f) => (
+                          <li key={f.id}>
+                            {f.label}:{" "}
+                            {f.correct ? "correct" : "needs revision"} ·
+                            expected {readableAnswer(f.expected)}
                           </li>
                         ))}
                       </ul>
-                    )}
-                    {attempt.result.artifact && (
-                      <details>
-                        <summary>
-                          Saved implementation notes · unverified
-                        </summary>
-                        <pre>{attempt.result.artifact}</pre>
-                      </details>
+                      <p>{attempt.result.solution}</p>
+                      <p>{attempt.result.remediation}</p>
+                      {"scopes" in attempt.result && (
+                        <ul>
+                          {attempt.result.scopes.map((s) => (
+                            <li key={s.objective + s.dimension}>
+                              {s.objective} · {s.dimension}: {s.outcome} (
+                              {s.reason})
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {attempt.result.artifact && (
+                        <details>
+                          <summary>
+                            Saved implementation notes · unverified
+                          </summary>
+                          <pre>{attempt.result.artifact}</pre>
+                        </details>
+                      )}
+                    </div>
+                  ))}
+                {attempt.status === "submitted" &&
+                  attempt.purpose === "practice" &&
+                  attempt.item.fields.length > 0 && (
+                    <button
+                      className="button primary"
+                      disabled={busy}
+                      onClick={() =>
+                        void run(() =>
+                          issue(attempt.source, attempt.item.route),
+                        )
+                      }
+                    >
+                      Choose the next available task <RotateCcw size={17} />
+                    </button>
+                  )}
+              </section>
+            )}
+            <div className="v2-card-grid">
+              {families.map((f) => (
+                <article className="panel v2-family" key={f.id}>
+                  <div className="eyebrow">
+                    {f.domain} · {f.id}
+                  </div>
+                  <h2>{f.title}</h2>
+                  <p>{f.scope}</p>
+                  <div className="v2-meta">
+                    <span>{f.itemCount} authored tasks</span>
+                    <span>{f.completed} completed practice</span>
+                  </div>
+                  <p className="muted">
+                    {mode === "recommended"
+                      ? recommendations?.find((r) => r.id === f.id)?.reason
+                      : f.attempts === 0
+                        ? "Not practiced yet. Choose any route to begin."
+                        : "Try another route or revisit a specific mistake."}
+                  </p>
+                  <label>
+                    Application choice
+                    <select
+                      value={source === f.id ? route : ""}
+                      onChange={(e) => {
+                        setSource(f.id);
+                        setRoute(e.target.value);
+                      }}
+                    >
+                      <option value="">Any available route</option>
+                      {f.routes.map((r) => (
+                        <option key={r} value={r}>
+                          {r.replaceAll("-", " ")}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {f.routeNotes && source === f.id && route && (
+                    <p className="muted">{f.routeNotes[route]}</p>
+                  )}
+                  <div className="v2-actions">
+                    <button
+                      className="button primary"
+                      disabled={busy}
+                      onClick={() =>
+                        void run(() =>
+                          issue(f.id, source === f.id ? route : undefined),
+                        )
+                      }
+                    >
+                      <FlaskConical size={17} /> Practice
+                    </button>
+                    <Link className="button" href={"/lessons/" + f.topicId}>
+                      <BookOpen size={17} /> Learn
+                    </Link>
+                    {!objective && (
+                      <Link
+                        className="button"
+                        href={"/objectives/" + f.objectiveId}
+                      >
+                        <Compass size={17} /> Objective
+                      </Link>
                     )}
                   </div>
-                ))}
-              {attempt.status === "submitted" &&
-                attempt.purpose === "practice" &&
-                attempt.item.fields.length > 0 && (
+                </article>
+              ))}
+            </div>
+            {!families.length &&
+              !(mode === "recommended" && recommendations === null) && (
+                <div className="panel v2-empty-state">
+                  <Search size={26} aria-hidden="true" />
+                  <h3>No matching exercises in this view.</h3>
+                  <p>
+                    Try another search or domain. Explore shows the full
+                    authored bank; no prerequisite locks your choices.
+                  </p>
                   <button
-                    className="button primary"
-                    disabled={busy}
-                    onClick={() =>
-                      void run(() => issue(attempt.source, attempt.item.route))
-                    }
+                    className="button"
+                    onClick={() => {
+                      setQuery("");
+                      setDomain("");
+                      setDifficulty("");
+                      setMode("explore");
+                    }}
                   >
-                    Choose the next available task <RotateCcw size={17} />
+                    Explore all exercises
                   </button>
-                )}
-            </section>
-          )}
+                </div>
+              )}
+          </section>
+          <LearningPanel
+            data={data}
+            objective={objective}
+            busy={busy}
+            section="apply"
+            onCheck={startCheck}
+          />
+          <LearningPanel
+            data={data}
+            objective={objective}
+            busy={busy}
+            section="verify"
+            onCheck={startCheck}
+          />
           <section className="panel">
             <h2>Keep the workflow flexible.</h2>
             <p>

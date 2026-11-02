@@ -125,7 +125,10 @@ export function Shell({
           {v2Enabled && (
             <Link
               href="/objectives"
-              className="nav-link"
+              className={`nav-link ${pathname.startsWith("/objectives") ? "active" : ""}`}
+              aria-current={
+                pathname.startsWith("/objectives") ? "page" : undefined
+              }
               onClick={() => setOpen(false)}
             >
               <FlaskConical size={18} />
@@ -186,7 +189,7 @@ export function Shell({
             Data & settings
           </Link>
           <div className="version">
-            CORELAB <span>v1.0</span>
+            CORELAB <span>{v2Enabled ? "V2 workspace" : "v1.0"}</span>
           </div>
         </div>
       </aside>
