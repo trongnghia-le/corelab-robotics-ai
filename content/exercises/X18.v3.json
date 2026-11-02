@@ -1,0 +1,203 @@
+{
+  "id": "X18",
+  "version": 3,
+  "title": "Distinguish value and terminal semantics",
+  "domain": "RL",
+  "topicId": "RL02",
+  "objectiveId": "RL02.bellman-value",
+  "routes": [
+    "finish-wait",
+    "navigation-value"
+  ],
+  "scope": "Exact one-state policy value and terminal bootstrapping",
+  "labIds": [
+    "L20"
+  ],
+  "items": [
+    {
+      "id": "X18.finish-wait.1",
+      "route": "finish-wait",
+      "difficulty": 1,
+      "structure": "X18.RL02.bellman-value.1@1",
+      "inputs": {
+        "reward": 1,
+        "gamma": "0.75",
+        "terminal": false
+      },
+      "objectiveId": "RL02.bellman-value",
+      "prompt": "A robot idles on a finish pad: one continuing state with a deterministic self-transition under a fixed policy. Every step gives reward 1, the discount is γ=0.75, and the process never terminates. Compute the state value V.",
+      "fields": [
+        {
+          "label": "V",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "V = 1 + 0.75·V, so (1 - 0.75)·V = 1 and V = 1/0.25 = 4. A truly terminal transition would contribute only its reward, but this state never terminates.",
+      "hints": [
+        "There is only one state and it always returns to itself, so V appears on both sides of the Bellman equation.",
+        "Write V = r + γ·V with r = 1 and γ = 0.75, then solve this linear equation for V.",
+        "V = 1 + 0.75·V, so (1 - 0.75)·V = 1 and V = 1/0.25 = 4. A truly terminal transition would contribute only its reward, but this state never terminates."
+      ],
+      "remediation": "If you answered 1, you counted only the first step (as if the state were terminal); 1.75 stops after two steps. The value is the infinite discounted sum, which the self-consistent equation V = r + γ·V gives in closed form. Revisit /lessons/RL02."
+    },
+    {
+      "id": "X18.finish-wait.2",
+      "route": "finish-wait",
+      "difficulty": 2,
+      "structure": "X18.RL02.bellman-value.2@1",
+      "inputs": {
+        "reward": 2,
+        "gamma": "0.8",
+        "terminal": false
+      },
+      "objectiveId": "RL02.bellman-value",
+      "prompt": "A robot idles on a finish pad: one continuing state with a deterministic self-transition under a fixed policy. Every step gives reward 2, the discount is γ=0.8, and the process never terminates. Compute the state value V.",
+      "fields": [
+        {
+          "label": "V",
+          "kind": "number",
+          "answer": "10",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "V = 2 + 0.8·V, so (1 - 0.8)·V = 2 and V = 2/0.2 = 10. A truly terminal transition would contribute only its reward, but this state never terminates.",
+      "hints": [
+        "The same one-state loop with a different reward and discount; the value is the discounted sum of all future rewards.",
+        "Write V = r + γ·V with r = 2 and γ = 0.8, then solve this linear equation for V.",
+        "V = 2 + 0.8·V, so (1 - 0.8)·V = 2 and V = 2/0.2 = 10. A truly terminal transition would contribute only its reward, but this state never terminates."
+      ],
+      "remediation": "If you answered 2, you counted only the first step (as if the state were terminal); 3.6 stops after two steps. The value is the infinite discounted sum, which the self-consistent equation V = r + γ·V gives in closed form. Revisit /lessons/RL02."
+    },
+    {
+      "id": "X18.finish-wait.3",
+      "route": "finish-wait",
+      "difficulty": 3,
+      "structure": "X18.RL02.bellman-value.0@1",
+      "inputs": {
+        "reward": "-0.5",
+        "gamma": "0.95",
+        "terminal": false
+      },
+      "objectiveId": "RL02.bellman-value",
+      "prompt": "A robot idles on a finish pad: one continuing state with a deterministic self-transition under a fixed policy. Every step gives reward -0.5, the discount is γ=0.95, and the process never terminates. Compute the state value V.",
+      "fields": [
+        {
+          "label": "V",
+          "kind": "number",
+          "answer": "-10",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "V = -0.5 + 0.95·V, so (1 - 0.95)·V = -0.5 and V = -0.5/0.05 = -10. A truly terminal transition would contribute only its reward, but this state never terminates.",
+      "hints": [
+        "Each step now costs reward (negative), and the discount is close to 1, so expect a large negative value.",
+        "Write V = r + γ·V with r = -0.5 and γ = 0.95, then solve this linear equation for V.",
+        "V = -0.5 + 0.95·V, so (1 - 0.95)·V = -0.5 and V = -0.5/0.05 = -10. A truly terminal transition would contribute only its reward, but this state never terminates."
+      ],
+      "remediation": "If you answered -0.5, you counted only the first step (as if the state were terminal); -0.975 stops after two steps. The value is the infinite discounted sum, which the self-consistent equation V = r + γ·V gives in closed form. Revisit /lessons/RL02."
+    },
+    {
+      "id": "X18.navigation-value.1",
+      "route": "navigation-value",
+      "difficulty": 1,
+      "structure": "rl.one-step-bootstrap@1",
+      "inputs": {
+        "reward": "1",
+        "gamma": "0.9",
+        "nextValue": "10",
+        "terminal": true,
+        "timeLimit": false
+      },
+      "objectiveId": "RL02.bellman-value",
+      "prompt": "A navigation robot reaches its goal dock and the task ends there: this is a true terminal transition. For this transition: reward r=1, discount γ=0.9, and the critic's estimate of the next state's value is V_next=10. Compute the one-step TD target for learning V.",
+      "fields": [
+        {
+          "label": "Value target",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "terminal=true, so V_next is not used: target = r = 1. Bootstrapping would wrongly give 1 + 0.9·10 = 10. This numerical target is not a policy-performance claim.",
+      "hints": [
+        "Ask whether there is any future after this transition in the task itself.",
+        "Because reaching the goal ends the task, the continuation value after this transition is defined as 0, not V_next = 10; substitute that into target = r + γ·(continuation value).",
+        "terminal=true, so V_next is not used: target = r = 1. Bootstrapping would wrongly give 1 + 0.9·10 = 10. This numerical target is not a policy-performance claim."
+      ],
+      "remediation": "If you answered 10, you bootstrapped through a true terminal state; there is no next value after the goal is reached. Revisit /lessons/RL02."
+    },
+    {
+      "id": "X18.navigation-value.2",
+      "route": "navigation-value",
+      "difficulty": 2,
+      "structure": "rl.one-step-bootstrap@1",
+      "inputs": {
+        "reward": "2",
+        "gamma": "0.9",
+        "nextValue": "10",
+        "terminal": false,
+        "timeLimit": true
+      },
+      "objectiveId": "RL02.bellman-value",
+      "prompt": "A navigation episode is cut off by a 60-second recording time limit while the robot is still driving; the task itself would continue. For this transition: reward r=2, discount γ=0.9, and the critic's estimate of the next state's value is V_next=10. Compute the one-step TD target for learning V.",
+      "fields": [
+        {
+          "label": "Value target",
+          "kind": "number",
+          "answer": "11",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The time limit truncates the recording but does not terminate the task, so bootstrap: target = 2 + 0.9·10 = 11. Treating it as terminal would wrongly give 2. This numerical target is not a policy-performance claim.",
+      "hints": [
+        "Ask whether the time limit ends the task or only ends the recording.",
+        "Truncation is not termination, so the next state still has value; substitute r = 2, γ = 0.9 and V_next = 10 into target = r + γ·V_next.",
+        "The time limit truncates the recording but does not terminate the task, so bootstrap: target = 2 + 0.9·10 = 11. Treating it as terminal would wrongly give 2. This numerical target is not a policy-performance claim."
+      ],
+      "remediation": "If you answered 2, you treated a time-limit cut-off as a true terminal state; truncated transitions still bootstrap. Revisit /lessons/RL02."
+    },
+    {
+      "id": "X18.navigation-value.3",
+      "route": "navigation-value",
+      "difficulty": 3,
+      "structure": "rl.one-step-bootstrap@1",
+      "inputs": {
+        "reward": "-1",
+        "gamma": "0.95",
+        "nextValue": "8",
+        "terminal": false,
+        "timeLimit": true,
+        "done": true
+      },
+      "objectiveId": "RL02.bellman-value",
+      "prompt": "The replay buffer marks this transition done=true because the 200-step episode limit was reached; the robot had not reached the goal and the navigation task itself continues. For this transition: reward r=-1, discount γ=0.95, and the critic's estimate of the next state's value is V_next=8. Compute the one-step TD target for learning V.",
+      "fields": [
+        {
+          "label": "Value target",
+          "kind": "number",
+          "answer": "6.6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "done=true was set only by the step limit: the limit truncates the episode but does not terminate the task, so bootstrap: target = -1 + 0.95·8 = 6.6. Treating it as terminal would wrongly give -1. This numerical target is not a policy-performance claim.",
+      "hints": [
+        "A done flag can mean either true termination or truncation; decide which one this is before choosing the target.",
+        "Truncation is not termination, so the next state still has value; substitute r = -1, γ = 0.95 and V_next = 8 into target = r + γ·V_next.",
+        "done=true was set only by the step limit: the limit truncates the episode but does not terminate the task, so bootstrap: target = -1 + 0.95·8 = 6.6. Treating it as terminal would wrongly give -1. This numerical target is not a policy-performance claim."
+      ],
+      "remediation": "If you answered -1, you treated a time-limit cut-off as a true terminal state because done=true; truncated transitions still bootstrap. Revisit /lessons/RL02."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "finish-wait": "Solve a continuing one-state Bellman value for different rewards and discounts, including a step cost.",
+    "navigation-value": "Distinguish true termination from time-limit truncation, including a done flag set only by the time limit."
+  }
+}

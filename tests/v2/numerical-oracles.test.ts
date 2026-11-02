@@ -75,18 +75,82 @@ function oracle(familyId: string, item: Item): (number | string)[] {
       return [m];
     }
     case "X08": {
+      if (p.mean !== undefined) {
+        // Apply stored training-only statistics to the held-out sample.
+        const x = nums(p.heldOut),
+          m = nums(p.mean),
+          sd = nums(p.std);
+        return x.map((v, j) => (v - m[j]) / sd[j]);
+      }
+      if (p.layout === "feature-major")
+        return (p.training as unknown[][]).map(
+          (r) => nums(r).reduce((s, v) => s + v, 0) / r.length,
+        );
       const rows = (p.rows ?? p.pixels) as number[][];
       return [0, 1, 2].map(
         (j) => rows.reduce((s, r) => s + r[j], 0) / rows.length,
       );
     }
     case "X09": {
-      if (p.case === "orientation") return ["B"];
-      if (p.case === "direction") return ["A"];
-      if (p.case === "shear") return ["B"];
-      // Original fixed mutants: the nonzero projection / rotated unequal-link
-      // case is B. This is a hand-authored reasoning anchor, not numeric proof.
-      return ["B"];
+      // A test kills the mutant when the correct and mutant outputs differ.
+      const angle = (v: unknown) => {
+        const m = /^(-?)(?:(\d+(?:\.\d+)?)\*?)?pi(?:\/(\d+))?$/.exec(String(v));
+        if (!m) return value(v);
+        const k = m[2] ? Number(m[2]) : 1;
+        return ((m[1] ? -1 : 1) * k * Math.PI) / (m[3] ? Number(m[3]) : 1);
+      };
+      const project = (u: number[], v: number[]) => {
+        const scale = (u[0] * v[0] + u[1] * v[1]) / (v[0] ** 2 + v[1] ** 2);
+        return v.map((x) => x * scale);
+      };
+      const rotate = (t: number, d: number[]) => [
+        Math.cos(t) * d[0] - Math.sin(t) * d[1],
+        Math.sin(t) * d[0] + Math.cos(t) * d[1],
+      ];
+      const pair = (c: Inputs): [number[], number[]] => {
+        switch (p.mutant) {
+          case "zero-output":
+            return [project(nums(c.u), nums(c.v)), [0, 0]];
+          case "divide-by-norm": {
+            const u = nums(c.u),
+              v = nums(c.v),
+              norm = Math.hypot(v[0], v[1]);
+            return [
+              project(u, v),
+              v.map((x) => (x * (u[0] * v[0] + u[1] * v[1])) / norm),
+            ];
+          }
+          case "swapped-arguments":
+            return [
+              project(nums(c.u), nums(c.v)),
+              project(nums(c.v), nums(c.u)),
+            ];
+          case "orientation-zero":
+            return [[angle(c.q1) + angle(c.q2)], [0]];
+          case "direction-translated": {
+            const r = rotate(angle(c.theta), nums(c.direction)),
+              t = nums(c.translation);
+            return [r, [r[0] + t[0], r[1] + t[1]]];
+          }
+          case "determinant-only": {
+            const [[a, b], [cc, d]] = c.R as number[][];
+            const det = a * d - b * cc,
+              orthonormal =
+                Math.abs(a * a + cc * cc - 1) < 1e-12 &&
+                Math.abs(b * b + d * d - 1) < 1e-12 &&
+                Math.abs(a * b + cc * d) < 1e-12;
+            const unit = Math.abs(det - 1) < 1e-12;
+            return [[orthonormal && unit ? 1 : 0], [unit ? 1 : 0]];
+          }
+        }
+        throw new Error("Unknown X09 mutant " + String(p.mutant));
+      };
+      const kills = ["A", "B"].filter((k) => {
+        const [good, bad] = pair(p[k] as Inputs);
+        return good.some((g, i) => Math.abs(g - bad[i]) > 1e-9);
+      });
+      expect(kills, item.id).toHaveLength(1);
+      return kills;
     }
     case "X10": {
       if (item.objectiveId.includes("frame-labels"))
@@ -276,7 +340,9 @@ for (const f of catalog().families.filter((f) => /^X\d+$/.test(f.id))) {
 it("retains immutable v1 contracts for resumed history", () => {
   for (let i = 1; i <= 20; i++) {
     const id = "X" + String(i).padStart(2, "0");
-    expect(family(id)?.version).toBe(2);
-    expect(family(id, 1)?.version).toBe(1);
+    const current = family(id)!.version;
+    expect(current).toBeGreaterThanOrEqual(2);
+    for (let v = 1; v < current; v++)
+      expect(family(id, v)?.version, id + "@" + v).toBe(v);
   }
 });

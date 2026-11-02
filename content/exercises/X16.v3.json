@@ -1,0 +1,258 @@
+{
+  "id": "X16",
+  "version": 3,
+  "title": "Project a camera-frame point",
+  "domain": "CV",
+  "topicId": "V03",
+  "objectiveId": "V03.pinhole",
+  "routes": [
+    "overhead-marker",
+    "wrist-point"
+  ],
+  "scope": "Supplied pinhole intrinsics; positive-depth projection",
+  "labIds": [
+    "L16",
+    "L17"
+  ],
+  "items": [
+    {
+      "id": "X16.overhead-marker.1",
+      "route": "overhead-marker",
+      "difficulty": 1,
+      "structure": "X16.V03.pinhole.1@1",
+      "inputs": {
+        "X": "0.1",
+        "Y": "-0.1",
+        "Z": "2",
+        "fx": 400,
+        "fy": 420,
+        "cx": 320,
+        "cy": 240
+      },
+      "objectiveId": "V03.pinhole",
+      "prompt": "An overhead camera sees a floor marker at camera-frame coordinates (X, Y, Z) = (0.1, -0.1, 2) m. Camera axes: x right, y down, z forward along the optical axis (Z is depth). Image axes: u grows to the right and v grows downward from the top-left pixel. Intrinsics: fx=400 px, fy=420 px, principal point (cx, cy) = (320, 240) px; no distortion. Compute the pixel coordinates (u, v), graded within ±0.001 px.",
+      "fields": [
+        {
+          "label": "u (px)",
+          "kind": "number",
+          "answer": "340",
+          "tolerance": 0.001
+        },
+        {
+          "label": "v (px)",
+          "kind": "number",
+          "answer": "219",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "u = fx·X/Z + cx = 400·0.1/2 + 320 = 340 px; v = fy·Y/Z + cy = 420·(-0.1)/2 + 240 = 219 px. Swapping fx and fy would give (341, 220); a y-up image convention would give v = 261. The supplied calibration is assumed, not estimated.",
+      "hints": [
+        "The marker is slightly right of the optical axis (X > 0) and slightly above it (Y < 0 with y down), so expect u a little above cx and v a little below cy.",
+        "Normalise by depth first: X/Z = 0.05 and Y/Z = -0.05. Next multiply each by its own focal length (fx for u, fy for v) and add the principal point.",
+        "u = fx·X/Z + cx = 400·0.1/2 + 320 = 340 px; v = fy·Y/Z + cy = 420·(-0.1)/2 + 240 = 219 px. Swapping fx and fy would give (341, 220); a y-up image convention would give v = 261. The supplied calibration is assumed, not estimated."
+      ],
+      "remediation": "If you got (341, 220) you swapped fx and fy; v = 261 means you flipped the image y axis. Revisit /lessons/V03."
+    },
+    {
+      "id": "X16.overhead-marker.2",
+      "route": "overhead-marker",
+      "difficulty": 2,
+      "structure": "X16.V03.pinhole.2@1",
+      "inputs": {
+        "X": "0.25",
+        "Y": "0.15",
+        "Z": "2.5",
+        "fx": 400,
+        "fy": 420,
+        "cx": 320,
+        "cy": 240
+      },
+      "objectiveId": "V03.pinhole",
+      "prompt": "An overhead camera sees a floor marker at camera-frame coordinates (X, Y, Z) = (0.25, 0.15, 2.5) m. Camera axes: x right, y down, z forward along the optical axis (Z is depth). Image axes: u grows to the right and v grows downward from the top-left pixel. Intrinsics: fx=400 px, fy=420 px, principal point (cx, cy) = (320, 240) px; no distortion. Compute the pixel coordinates (u, v), graded within ±0.001 px.",
+      "fields": [
+        {
+          "label": "u (px)",
+          "kind": "number",
+          "answer": "360",
+          "tolerance": 0.001
+        },
+        {
+          "label": "v (px)",
+          "kind": "number",
+          "answer": "265.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "u = fx·X/Z + cx = 400·0.25/2.5 + 320 = 360 px; v = fy·Y/Z + cy = 420·0.15/2.5 + 240 = 265.2 px. Swapping fx and fy would give (362, 264); a y-up image convention would give v = 214.8. The supplied calibration is assumed, not estimated.",
+      "hints": [
+        "The marker is right of and below the optical axis, and farther away than 2 m; both offsets are scaled down by the depth.",
+        "Normalise by depth first: X/Z = 0.1 and Y/Z = 0.06. Next multiply each by its own focal length (fx for u, fy for v) and add the principal point.",
+        "u = fx·X/Z + cx = 400·0.25/2.5 + 320 = 360 px; v = fy·Y/Z + cy = 420·0.15/2.5 + 240 = 265.2 px. Swapping fx and fy would give (362, 264); a y-up image convention would give v = 214.8. The supplied calibration is assumed, not estimated."
+      ],
+      "remediation": "If you got (362, 264) you swapped fx and fy; v = 214.8 means you flipped the image y axis. Revisit /lessons/V03."
+    },
+    {
+      "id": "X16.overhead-marker.3",
+      "route": "overhead-marker",
+      "difficulty": 3,
+      "structure": "X16.V03.pinhole.0@1",
+      "inputs": {
+        "X": "-0.36",
+        "Y": "-0.27",
+        "Z": "1.8",
+        "fx": 600,
+        "fy": 580,
+        "cx": 319.5,
+        "cy": 239.5
+      },
+      "objectiveId": "V03.pinhole",
+      "prompt": "An overhead camera sees a floor marker at camera-frame coordinates (X, Y, Z) = (-0.36, -0.27, 1.8) m. Camera axes: x right, y down, z forward along the optical axis (Z is depth). Image axes: u grows to the right and v grows downward from the top-left pixel. Intrinsics: fx=600 px, fy=580 px, principal point (cx, cy) = (319.5, 239.5) px; no distortion. Compute the pixel coordinates (u, v), graded within ±0.001 px.",
+      "fields": [
+        {
+          "label": "u (px)",
+          "kind": "number",
+          "answer": "199.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "v (px)",
+          "kind": "number",
+          "answer": "152.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "u = fx·X/Z + cx = 600·(-0.36)/1.8 + 319.5 = 199.5 px; v = fy·Y/Z + cy = 580·(-0.27)/1.8 + 239.5 = 152.5 px. Swapping fx and fy would give (203.5, 149.5); a y-up image convention would give v = 326.5. The supplied calibration is assumed, not estimated.",
+      "hints": [
+        "The marker is left of and above the optical axis, the focal lengths differ, and the principal point is not a whole pixel.",
+        "Normalise by depth first: X/Z = -0.2 and Y/Z = -0.15. Next multiply each by its own focal length (fx for u, fy for v) and add the principal point.",
+        "u = fx·X/Z + cx = 600·(-0.36)/1.8 + 319.5 = 199.5 px; v = fy·Y/Z + cy = 580·(-0.27)/1.8 + 239.5 = 152.5 px. Swapping fx and fy would give (203.5, 149.5); a y-up image convention would give v = 326.5. The supplied calibration is assumed, not estimated."
+      ],
+      "remediation": "If you got (203.5, 149.5) you swapped fx and fy; v = 326.5 means you flipped the image y axis. Revisit /lessons/V03."
+    },
+    {
+      "id": "X16.wrist-point.1",
+      "route": "wrist-point",
+      "difficulty": 1,
+      "structure": "camera.wrist-projection@1",
+      "inputs": {
+        "X": "-0.2",
+        "Y": "0.15",
+        "Z": "0.75",
+        "fx": 300,
+        "fy": 500,
+        "cx": 160,
+        "cy": 120
+      },
+      "objectiveId": "V03.pinhole",
+      "prompt": "A wrist camera sees a point at camera-frame coordinates (X, Y, Z) = (-0.2, 0.15, 0.75) m. Camera axes: x right, y down, z forward along the optical axis (Z is depth). Image axes: u grows to the right and v grows downward from the top-left pixel. Intrinsics: fx=300 px, fy=500 px, principal point (cx, cy) = (160, 120) px; no distortion. Compute the pixel coordinates (u, v), graded within ±0.001 px.",
+      "fields": [
+        {
+          "label": "u (px)",
+          "kind": "number",
+          "answer": "80",
+          "tolerance": 0.001
+        },
+        {
+          "label": "v (px)",
+          "kind": "number",
+          "answer": "220",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "u = fx·X/Z + cx = 300·(-0.2)/0.75 + 160 = 80 px; v = fy·Y/Z + cy = 500·0.15/0.75 + 120 = 220 px. Swapping fx and fy would give (26.667, 180); a y-up image convention would give v = 20. The supplied calibration is assumed, not estimated.",
+      "hints": [
+        "The point is left of the optical axis (X < 0) and below it (Y > 0 with y down), close to the camera; the focal lengths for u and v differ a lot.",
+        "Normalise by depth first: X/Z = -0.2/0.75 ≈ -0.266667 and Y/Z = 0.2. Next multiply each by its own focal length (fx for u, fy for v) and add the principal point.",
+        "u = fx·X/Z + cx = 300·(-0.2)/0.75 + 160 = 80 px; v = fy·Y/Z + cy = 500·0.15/0.75 + 120 = 220 px. Swapping fx and fy would give (26.667, 180); a y-up image convention would give v = 20. The supplied calibration is assumed, not estimated."
+      ],
+      "remediation": "If you got (26.667, 180) you swapped fx and fy; v = 20 means you flipped the image y axis. Revisit /lessons/V03."
+    },
+    {
+      "id": "X16.wrist-point.2",
+      "route": "wrist-point",
+      "difficulty": 2,
+      "structure": "camera.wrist-projection@1",
+      "inputs": {
+        "X": "-0.4",
+        "Y": "0.15",
+        "Z": "1.0",
+        "fx": 300,
+        "fy": 500,
+        "cx": 160,
+        "cy": 120
+      },
+      "objectiveId": "V03.pinhole",
+      "prompt": "A wrist camera sees a point at camera-frame coordinates (X, Y, Z) = (-0.4, 0.15, 1.0) m. Camera axes: x right, y down, z forward along the optical axis (Z is depth). Image axes: u grows to the right and v grows downward from the top-left pixel. Intrinsics: fx=300 px, fy=500 px, principal point (cx, cy) = (160, 120) px; no distortion. Compute the pixel coordinates (u, v), graded within ±0.001 px.",
+      "fields": [
+        {
+          "label": "u (px)",
+          "kind": "number",
+          "answer": "40",
+          "tolerance": 0.001
+        },
+        {
+          "label": "v (px)",
+          "kind": "number",
+          "answer": "195",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "u = fx·X/Z + cx = 300·(-0.4)/1.0 + 160 = 40 px; v = fy·Y/Z + cy = 500·0.15/1.0 + 120 = 195 px. Swapping fx and fy would give (-40, 165); a y-up image convention would give v = 45. The supplied calibration is assumed, not estimated.",
+      "hints": [
+        "The point is farther left than before and at depth 1 m; keep fx with X and fy with Y.",
+        "Normalise by depth first: X/Z = -0.4 and Y/Z = 0.15. Next multiply each by its own focal length (fx for u, fy for v) and add the principal point.",
+        "u = fx·X/Z + cx = 300·(-0.4)/1.0 + 160 = 40 px; v = fy·Y/Z + cy = 500·0.15/1.0 + 120 = 195 px. Swapping fx and fy would give (-40, 165); a y-up image convention would give v = 45. The supplied calibration is assumed, not estimated."
+      ],
+      "remediation": "If you got (-40, 165) you swapped fx and fy; v = 45 means you flipped the image y axis. Revisit /lessons/V03."
+    },
+    {
+      "id": "X16.wrist-point.3",
+      "route": "wrist-point",
+      "difficulty": 3,
+      "structure": "camera.wrist-depth-vs-range@1",
+      "inputs": {
+        "X": "-0.3",
+        "Y": "0.4",
+        "Z": "1.2",
+        "fx": 300,
+        "fy": 480,
+        "cx": 160,
+        "cy": 120,
+        "range": "1.3"
+      },
+      "objectiveId": "V03.pinhole",
+      "prompt": "A wrist camera's rangefinder reports a point 1.3 m from the camera centre (Euclidean range). Its camera-frame coordinates are (X, Y, Z) = (-0.3, 0.4, 1.2) m. Camera axes: x right, y down, z forward along the optical axis (Z is depth). Image axes: u grows to the right and v grows downward from the top-left pixel. Intrinsics: fx=300 px, fy=480 px, principal point (cx, cy) = (160, 120) px; no distortion. Compute the pixel coordinates (u, v), graded within ±0.001 px.",
+      "fields": [
+        {
+          "label": "u (px)",
+          "kind": "number",
+          "answer": "85",
+          "tolerance": 0.001
+        },
+        {
+          "label": "v (px)",
+          "kind": "number",
+          "answer": "280",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "u = fx·X/Z + cx = 300·(-0.3)/1.2 + 160 = 85 px; v = fy·Y/Z + cy = 480·0.4/1.2 + 120 = 280 px. Z = 1.2 m is the depth; dividing by the range 1.3 m instead would give u = 90.769 px. The supplied calibration is assumed, not estimated.",
+      "hints": [
+        "Two distances are given; only one of them is the depth Z along the optical axis that the pinhole model divides by.",
+        "Normalise by depth first: X/Z = -0.25 and Y/Z = 0.4/1.2 ≈ 0.333333. Next multiply each by its own focal length (fx for u, fy for v) and add the principal point.",
+        "u = fx·X/Z + cx = 300·(-0.3)/1.2 + 160 = 85 px; v = fy·Y/Z + cy = 480·0.4/1.2 + 120 = 280 px. Z = 1.2 m is the depth; dividing by the range 1.3 m instead would give u = 90.769 px. The supplied calibration is assumed, not estimated."
+      ],
+      "remediation": "If you got u about 90.769 you divided by the range instead of the depth Z. Swapping fx and fy gives (40, 220). Revisit /lessons/V03."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "overhead-marker": "Project overhead-camera markers on both sides of the optical axis, with unequal focal lengths and an off-pixel principal point.",
+    "wrist-point": "Handle wrist-camera depth, negative coordinates, unequal focal scales, and depth versus Euclidean range."
+  }
+}

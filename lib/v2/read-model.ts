@@ -81,7 +81,7 @@ export function summaries(store: Store) {
       : null,
     capacity,
     reviewStatus:
-      "Development preview. Original content is author-tested; independent review and release gates remain pending.",
+      "Original content, author-tested and checked by an owner-assigned AI review (not a human expert review). Verified I and transfer remain unavailable.",
     workspace: { revision: meta(store.db, "data_revision") },
     objectives: registry.objectives.map((o) => ({
       ...o,
@@ -108,7 +108,7 @@ export function summaries(store: Store) {
             s.variants.flatMap((v) => v.items.map((c) => c.task.objectiveId)),
           ),
         ],
-        reason: "Requires independent content review and S2 release activation",
+        reason: "Requires an approved review record for this form",
       })),
     reviews: (
       store.db

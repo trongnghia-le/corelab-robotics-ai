@@ -24,6 +24,14 @@ import { canonical, digest, fingerprint } from "../../lib/v2/contracts";
 
 // Synthetic approvals exercise the engine without modifying release metadata.
 // These fixtures are NOT independent reviewer sign-off.
+function unreviewed(): SourceResolver {
+  const sources = structuredClone(cmSources()).map((s) => ({
+    ...s,
+    review: { status: "pending" as const, reviewer: null, date: null },
+  }));
+  return (id, version) =>
+    sources.find((s) => s.id === id && s.version === version);
+}
 function resolver(): SourceResolver {
   const sources = structuredClone(cmSources()).map((s) => ({
     ...s,
@@ -59,9 +67,25 @@ function answers(source: CMSource, variantId: string) {
       ),
   );
 }
-it("keeps real approvals pending and validates disjoint authored form/review pools", () => {
+it("only treats complete dated approval records as reviewed and validates disjoint authored form/review pools", () => {
   const sources = cmSources();
-  expect(sources.every((s) => !independentlyReviewed(s))).toBe(true);
+  for (const s of sources)
+    expect(independentlyReviewed(s), s.id).toBe(
+      s.review.status === "approved" && !!s.review.reviewer && !!s.review.date,
+    );
+  const [first] = sources;
+  expect(
+    independentlyReviewed({
+      ...first,
+      review: { status: "approved", reviewer: null, date: "2026-11-02" },
+    }),
+  ).toBe(false);
+  expect(
+    independentlyReviewed({
+      ...first,
+      review: { status: "approved", reviewer: "Someone", date: "2999-01-01" },
+    }),
+  ).toBe(false);
   const seen = new Set<string>();
   const practice = new Set(
     catalog().families.flatMap((f) => f.items.map(itemFingerprint)),
@@ -409,7 +433,7 @@ it("does not readmit a forged grade, suspends its reviews, and keeps unreviewed 
       (e) => e.reason_code === "recompute_mismatch",
     ),
   ).toBe(true);
-  const pending = preview(target, backup);
+  const pending = preview(target, backup, unreviewed());
   expect(pending.evidence?.unverifiable).toBe(2);
 });
 

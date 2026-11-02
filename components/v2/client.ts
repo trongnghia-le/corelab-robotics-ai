@@ -18,3 +18,12 @@ export async function v2<T>(
     throw new Error(data.error ?? "The local operation could not finish");
   return data as T;
 }
+// Display-only rounding of a stored numeric oracle; grading and stored grades
+// keep the exact authored string.
+export function readableAnswer(value: string) {
+  if (!/^[+-]?\d+(\.\d+)?(e[+-]?\d+)?$/i.test(value)) return value;
+  const n = Number(value);
+  if (!Number.isFinite(n)) return value;
+  if (Math.abs(n) < 1e-9) return "0";
+  return String(Number(n.toPrecision(10)));
+}

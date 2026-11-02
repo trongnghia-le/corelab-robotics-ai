@@ -1,0 +1,227 @@
+{
+  "id": "X07",
+  "version": 3,
+  "title": "Implement a mean contract",
+  "domain": "Python",
+  "topicId": "PY01",
+  "objectiveId": "PY01.mean-contract",
+  "routes": [
+    "sensor-batch",
+    "telemetry-summary"
+  ],
+  "scope": "Manual function implementation plus numeric output reasoning; CoreLab never runs your code, so this never counts as verified implementation (I) evidence",
+  "labIds": [],
+  "items": [
+    {
+      "id": "X07.sensor-batch.1",
+      "route": "sensor-batch",
+      "difficulty": 1,
+      "structure": "X07.PY01.mean-contract.1@1",
+      "inputs": {
+        "values": [
+          2,
+          3,
+          6,
+          4
+        ]
+      },
+      "objectiveId": "PY01.mean-contract",
+      "prompt": "Write mean(values) from scratch in your own Python file. Contract: values is a nonempty list of finite real numbers; return sum/count as a float; never modify values; raise ValueError for an empty list. What must mean([2, 3, 6, 4]) return? CoreLab checks only this number; your code is not run or verified. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "mean([2, 3, 6, 4])",
+          "kind": "number",
+          "answer": "3.75",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "sum = 2 + 3 + 6 + 4 = 15 and len = 4, so mean = 15/4 = 3.75. Floor division 15 // 4 = 3 would break the float contract. Add local tests for [] (ValueError), a fractional mean like this one, and an unchanged list after the call.",
+      "hints": [
+        "The mean divides the sum by len(values), and the contract requires a float result.",
+        "Add the four values, then divide by len(values) = 4 with true division (/), not floor division (//).",
+        "sum = 2 + 3 + 6 + 4 = 15 and len = 4, so mean = 15/4 = 3.75. Floor division 15 // 4 = 3 would break the float contract. Add local tests for [] (ValueError), a fractional mean like this one, and an unchanged list after the call."
+      ],
+      "remediation": "3 means floor division (//) was used; 5 means you divided by the last index 3 instead of len(values) = 4. Revisit /lessons/PY01."
+    },
+    {
+      "id": "X07.sensor-batch.2",
+      "route": "sensor-batch",
+      "difficulty": 2,
+      "structure": "X07.PY01.mean-contract.2@1",
+      "inputs": {
+        "values": [
+          1.5,
+          -2,
+          4,
+          0.5,
+          7
+        ]
+      },
+      "objectiveId": "PY01.mean-contract",
+      "prompt": "Write mean(values) locally. Contract: values is a nonempty list of finite real numbers; return sum/count as a float; never modify values; raise ValueError for an empty list. A first draft empties the list with values.pop() while summing, so a second call on the same list fails. Your local test calls mean(values) twice on values = [1.5, -2, 4, 0.5, 7]. Under the contract, what must the SECOND call return? CoreLab checks only this number; your code is not run or verified. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Second call result",
+          "kind": "number",
+          "answer": "2.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Because a correct mean never modifies values, the second call returns the same result as the first: (1.5 - 2 + 4 + 0.5 + 7)/5 = 11/5 = 2.2. The pop() draft would raise ValueError on the second call, which is exactly what this local test should catch.",
+      "hints": [
+        "No-mutation means the list is identical before and after every call, so repeated calls see the same data.",
+        "The second call sees all five values again; add them (negatives included) and divide by len(values) = 5.",
+        "Because a correct mean never modifies values, the second call returns the same result as the first: (1.5 - 2 + 4 + 0.5 + 7)/5 = 11/5 = 2.2. The pop() draft would raise ValueError on the second call, which is exactly what this local test should catch."
+      ],
+      "remediation": "If you answered 3.25 you dropped the negative reading -2; if you answered 2.75 you divided by the last index 4; 2 means floor division. If you expected an error, that is the mutating draft's behaviour, not the contract's. Revisit /lessons/PY01."
+    },
+    {
+      "id": "X07.sensor-batch.3",
+      "route": "sensor-batch",
+      "difficulty": 3,
+      "structure": "X07.PY01.mean-contract.0@1",
+      "inputs": {
+        "values": [
+          -7,
+          2.5,
+          0,
+          -3,
+          -4.5,
+          1.2
+        ]
+      },
+      "objectiveId": "PY01.mean-contract",
+      "prompt": "Write mean(values) locally. Contract: values is a nonempty list of finite real numbers; return sum/count as a float; never modify values; raise ValueError for an empty list. For values = [-7, 2.5, 0, -3, -4.5, 1.2], what must mean(values) return? CoreLab checks only this number; your code is not run or verified. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "mean(values)",
+          "kind": "number",
+          "answer": "-1.8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "sum = -7 + 2.5 + 0 - 3 - 4.5 + 1.2 = -10.8 and len = 6, so mean = -10.8/6 = -1.8. A loop written as 'if x: total += x; n += 1' skips the 0 and divides by 5; floor division gives -2.0.",
+      "hints": [
+        "Every element counts toward len(values), including 0 and the negative readings.",
+        "Sum all six values with their signs, then divide by len(values) = 6 using true division.",
+        "sum = -7 + 2.5 + 0 - 3 - 4.5 + 1.2 = -10.8 and len = 6, so mean = -10.8/6 = -1.8. A loop written as 'if x: total += x; n += 1' skips the 0 and divides by 5; floor division gives -2.0."
+      ],
+      "remediation": "If you got -2.16 you divided by 5: either the 0 was skipped as falsy or you used the last index. If you got -2 you used floor division. Revisit /lessons/PY01."
+    },
+    {
+      "id": "X07.telemetry-summary.1",
+      "route": "telemetry-summary",
+      "difficulty": 1,
+      "structure": "python.streaming-mean@1",
+      "inputs": {
+        "values": [
+          -3,
+          1.5,
+          2,
+          0.5
+        ],
+        "contract": "nonempty-finite-no-mutation"
+      },
+      "objectiveId": "PY01.mean-contract",
+      "prompt": "Implement mean(values) locally in ONE pass: keep a count n and a running mean m, and for each reading x set n = n + 1 and m = m + (x - m)/n. Do not store readings or call sum(); raise ValueError if no reading arrives. Telemetry arrives in order -3, 1.5, 2, 0.5. What is m after the last reading? CoreLab checks only this number; your code is not run or verified. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Running mean m",
+          "kind": "number",
+          "answer": "0.25",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "n = 1: m = -3. n = 2: m = -3 + (1.5 + 3)/2 = -0.75. n = 3: m = -0.75 + (2 + 0.75)/3 = 1/6. n = 4: m = 1/6 + (0.5 - 1/6)/4 = 0.25. Check: (-3 + 1.5 + 2 + 0.5)/4 = 1/4.",
+      "hints": [
+        "With the count-based update, the final running mean equals the ordinary mean of all readings.",
+        "Start from n = 0, m = 0. The first reading gives n = 1, m = -3; apply m = m + (x - m)/n for x = 1.5 with n = 2 and continue.",
+        "n = 1: m = -3. n = 2: m = -3 + (1.5 + 3)/2 = -0.75. n = 3: m = -0.75 + (2 + 0.75)/3 = 1/6. n = 4: m = 1/6 + (0.5 - 1/6)/4 = 0.25. Check: (-3 + 1.5 + 2 + 0.5)/4 = 1/4."
+      ],
+      "remediation": "0.5625 comes from m = (m + x)/2, which overweights the latest reading; the divisor must be the running count n. About 0.333 means you divided the sum by the last index 3. Revisit /lessons/PY01."
+    },
+    {
+      "id": "X07.telemetry-summary.2",
+      "route": "telemetry-summary",
+      "difficulty": 2,
+      "structure": "python.streaming-mean@1",
+      "inputs": {
+        "values": [
+          1,
+          2,
+          3,
+          7,
+          -4
+        ],
+        "state": {
+          "count": 3,
+          "mean": 2
+        },
+        "contract": "nonempty-finite-no-mutation"
+      },
+      "objectiveId": "PY01.mean-contract",
+      "prompt": "Implement mean(values) locally in ONE pass: keep a count n and a running mean m, and for each reading x set n = n + 1 and m = m + (x - m)/n. Do not store readings or call sum(); raise ValueError if no reading arrives. After readings 1, 2, 3 the aggregator saved its state as n = 3, m = 2 and discarded the readings. After a restart it restores that state and then receives 7 and -4. What is m now? CoreLab checks only this number; your code is not run or verified. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Running mean m",
+          "kind": "number",
+          "answer": "1.8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "n = 4: m = 2 + (7 - 2)/4 = 3.25. n = 5: m = 3.25 + (-4 - 3.25)/5 = 3.25 - 1.45 = 1.8. Check against the full batch: (1 + 2 + 3 + 7 - 4)/5 = 9/5.",
+      "hints": [
+        "The saved state already summarises three readings; the count must continue from n = 3, not restart at 0.",
+        "Restore n = 3 and m = 2, then apply the update for x = 7 with n = 4 and for x = -4 with n = 5.",
+        "n = 4: m = 2 + (7 - 2)/4 = 3.25. n = 5: m = 3.25 + (-4 - 3.25)/5 = 3.25 - 1.45 = 1.8. Check against the full batch: (1 + 2 + 3 + 7 - 4)/5 = 9/5."
+      ],
+      "remediation": "1.5 means the count restarted at 0 after the restart; about 1.667 means you averaged the saved mean with the two new readings as if each were one sample. Revisit /lessons/PY01."
+    },
+    {
+      "id": "X07.telemetry-summary.3",
+      "route": "telemetry-summary",
+      "difficulty": 3,
+      "structure": "python.streaming-mean@1",
+      "inputs": {
+        "values": [
+          -2.5,
+          4,
+          -6,
+          1.5,
+          -3,
+          0,
+          2,
+          -1
+        ],
+        "contract": "nonempty-finite-no-mutation"
+      },
+      "objectiveId": "PY01.mean-contract",
+      "prompt": "Implement mean(values) locally in ONE pass: keep a count n and a running mean m, and for each reading x set n = n + 1 and m = m + (x - m)/n. Do not store readings or call sum(); raise ValueError if no reading arrives. A sensor stream delivers -2.5, 4, -6, 1.5, -3, 0, 2, -1 (the 0 is a valid reading). What is m after the last reading? CoreLab checks only this number; your code is not run or verified. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Running mean m",
+          "kind": "number",
+          "answer": "-0.625",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The readings sum to -2.5 + 4 - 6 + 1.5 - 3 + 0 + 2 - 1 = -5 over n = 8, so the count-based running mean ends at -5/8 = -0.625. An update that skips the falsy 0 ends at -5/7 (n = 7), and m = (m + x)/2 ends near -0.223.",
+      "hints": [
+        "Every reading increments n, including the 0 and the negative values.",
+        "Either track (n, m) through all eight updates, or check your final m against (sum of all readings)/8; both must agree.",
+        "The readings sum to -2.5 + 4 - 6 + 1.5 - 3 + 0 + 2 - 1 = -5 over n = 8, so the count-based running mean ends at -5/8 = -0.625. An update that skips the falsy 0 ends at -5/7 (n = 7), and m = (m + x)/2 ends near -0.223."
+      ],
+      "remediation": "If you got about -0.714 the 0 reading was skipped; if you got about -0.223 you used m = (m + x)/2. A one-pass mean must give the same value as sum/len. Revisit /lessons/PY01."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "sensor-batch": "Predict batch-mean outputs that expose floor division, wrong denominators, skipped zeros and input mutation.",
+    "telemetry-summary": "Trace a one-pass count-based running mean, including a restored saved state and negative readings."
+  }
+}

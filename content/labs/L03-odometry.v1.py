@@ -18,16 +18,24 @@ Contracts (finite int/float, never bool):
   odom_step(pose,dl,dr,track) -> (x,y,theta); |dl|,|dr| <= 10.
   velocity_step(pose,vl,vr,track,dt) -> pose; speed bounds above, 0 < dt <= 5.
 For every function 0.1 <= track <= 2. Pose is exactly a length-3 list/tuple,
-|x|,|y| <= 1000 and |theta| <= 2*pi. Invalid inputs raise ValueError.
-Return exactly a list/tuple of finite non-bool values; never mutate inputs.
-Pose heading must be in [-pi,pi], allowing either endpoint. Output positions or
-inverse wheel speeds may exceed the input bounds; do not silently clip them.
+|x|,|y| <= 1000 and |theta| <= 2*pi. All bounds are inclusive and symmetric.
+Invalid inputs (wrong type or shape, bool, NaN, infinity, out of bounds)
+raise ValueError. Return exactly a list/tuple of finite int/float (non-bool)
+values; never mutate inputs. Returned pose heading must be in [-pi,pi]
+(either endpoint allowed), on every path including straight-line motion with
+an input heading beyond +-pi. Output positions or inverse wheel speeds may
+exceed the input bounds; do not silently clip or reject them.
 
 Predict straight, reverse, pure-spin and arc cases before coding. Derive the
 wheel/body map. Integrate each constant-curvature segment exactly, including
 its initial heading; a stable small-angle expression avoids 1-cos cancellation.
-For changing curvature, apply segments in order, not just cumulative wheel totals.
+A small-turn guard that moves straight along the initial heading is NOT exact:
+the near-straight fixtures check the sideways offset with absolute tolerances
+of 1e-15 m and 1e-24 m, so keep the first-order term (or use a series/sinc form).
+In your own tests: for changing curvature, apply segments in order, not totals.
 Self-check tolerances are per-case metres and radians, not physical accuracy.
+Failure messages name the case and the kind of mismatch, never the expected
+numbers. "your code raised X" means your function raised on a VALID input.
 This does not implement calibration, localization, SLAM, ROS or a simulator.
 Explain why passing an ideal integrator cannot establish accurate robot position.
 
@@ -53,6 +61,14 @@ def odom_step(pose, dl, dr, track):
 
 def velocity_step(pose, vl, vr, track, dt):
     raise NotImplementedError("Convert metres/second to wheel travel before integrating")
+
+
+# ---- SPOILER BELOW: _decimal_arc is a complete reference integrator. ----
+# ---- Do not read it before attempting odom_step; copying it teaches nothing.
+
+
+class _Mismatch(Exception):
+    """Kit-side check failure. Messages never reveal the expected values."""
 
 
 def _finite_vector(value, length):
@@ -86,49 +102,63 @@ def _decimal_arc(pose, dl, dr, track):
 
 
 def self_check():
-    """Return failure descriptions. These fixed author fixtures are practice only."""
+    """Return failure descriptions. These fixed author fixtures are practice only.
+
+    Explicit checks only (no assert), so python -O cannot disable them.
+    """
     failures = []
 
-    def vector_case(label, function, args, expected, tolerance=1e-10):
+    def run(label, function, args, compare):
         try:
-            got = function(*args)
-            if not _finite_vector(got, len(expected)):
-                raise ValueError("wrong output shape/type/finiteness")
-            if any(abs(a-b) > tolerance for a, b in zip(got, expected)):
-                raise ValueError("wrong numeric result")
+            compare(function(*args))
+        except _Mismatch as error:
+            failures.append(label + ": " + str(error))
         except Exception as error:
-            failures.append(label + ": " + type(error).__name__)
+            failures.append(label + ": your code raised " + type(error).__name__
+                            + " on a valid input")
 
-    for vl, vr, width, expected in [
+    def vector_case(label, function, args, expected, tolerance=1e-10):
+        def compare(got):
+            if not _finite_vector(got, len(expected)):
+                raise _Mismatch("output must be a length-" + str(len(expected))
+                                + " list/tuple of finite int/float")
+            for name, a, b in zip(("first", "second"), got, expected):
+                if abs(a-b) > tolerance:
+                    raise _Mismatch(name + " output value is wrong (tolerance "
+                                    + repr(tolerance) + ")")
+        run(label, function, args, compare)
+
+    for i, (vl, vr, width, expected) in enumerate([
         (.2, .2, .5, (.2, 0.)), (-.2, .2, .5, (0., .8)),
         (-.3, -.1, .4, (-.2, .5)), (2., -2., .1, (0., -40.)),
         (0., 0., 2., (0., 0.)), (.12, .44, .8, (.28, .4)),
-    ]:
-        vector_case("wheel/body", wheel_to_body, (vl, vr, width), expected)
-    for v, w, width, expected in [
+        (1, -1, 1, (0., -2.)),
+    ]):
+        vector_case("wheel/body " + str(i), wheel_to_body, (vl, vr, width), expected)
+    for i, (v, w, width, expected) in enumerate([
         (.2, 0., .5, (.2, .2)), (0., .8, .5, (-.2, .2)),
         (-.2, .5, .4, (-.3, -.1)), (2., 40., 2., (-38., 42.)),
-        (0., 0., .1, (0., 0.)),
-    ]:
-        vector_case("body/wheel", body_to_wheels, (v, w, width), expected)
+        (0., 0., .1, (0., 0.)), (1, 2, 1, (0., 2.)),
+    ]):
+        vector_case("body/wheel " + str(i), body_to_wheels, (v, w, width), expected)
 
     def pose_case(label, function, args, expected, position_tolerance=1e-9):
         original = list(args[0])
-        try:
-            got = function(*args)
+
+        def compare(got):
             if not _finite_vector(got, 3):
-                raise ValueError("wrong pose shape/type/finiteness")
+                raise _Mismatch("output must be a length-3 list/tuple of finite int/float")
             if list(args[0]) != original:
-                raise ValueError("input pose mutated")
-            if abs(got[0]-expected[0]) > position_tolerance or abs(got[1]-expected[1]) > position_tolerance:
-                raise ValueError("position error in metres")
+                raise _Mismatch("input pose was mutated")
+            if (abs(got[0]-expected[0]) > position_tolerance
+                    or abs(got[1]-expected[1]) > position_tolerance):
+                raise _Mismatch("position error exceeds " + repr(position_tolerance) + " m")
             if not -math.pi <= got[2] <= math.pi:
-                raise ValueError("heading not wrapped")
+                raise _Mismatch("heading not wrapped to [-pi, pi]")
             error = math.atan2(math.sin(got[2]-expected[2]), math.cos(got[2]-expected[2]))
             if abs(error) > 1e-10:
-                raise ValueError("heading error in radians")
-        except Exception as error:
-            failures.append(label + ": " + type(error).__name__)
+                raise _Mismatch("heading error exceeds 1e-10 rad")
+        run(label, function, args, compare)
 
     anchors = [
         ([1., 2., math.pi/2], 1., 1., .5, (1., 3., math.pi/2)),
@@ -136,6 +166,8 @@ def self_check():
         ([2., -1., 0.], -.5, .5, 1., (2., -1., 1.)),
         ([1., 2., math.pi/2], -.5, -.5, .5, (1., 1.5, math.pi/2)),
         ([0., 0., math.pi], 0., 0., .5, (0., 0., math.pi)),
+        ([999., 0., 0.], 10., 10., .5, (1009., 0., 0.)),
+        ((0, 0, 0), 1, 1, 1, (1., 0., 0.)),
     ]
     for i, (pose, dl, dr, track, expected) in enumerate(anchors):
         pose_case("hand anchor " + str(i), odom_step, (pose, dl, dr, track), expected)
@@ -147,6 +179,10 @@ def self_check():
         ([999., -999., 2*math.pi], -10., 10., .1, 1e-9),
         ([0., 0., -math.pi], -9., 10., .1, 1e-9),
         ([0., 0., 3.1], -.4, .4, 2., 1e-9),
+        ([0., 0., 2*math.pi], 1., 1., .5, 1e-9),
+        ([0., 0., -4.], -1., -1., .5, 1e-9),
+        ((0., 0., 0.), 0, 1, 1, 1e-9),
+        ([-1000., 1000., -2*math.pi], .3, -.2, .5, 1e-9),
     ]):
         expected = _decimal_arc(pose, dl, dr, track)
         pose_case("decimal arc " + str(i), odom_step, (pose, dl, dr, track), expected, tol)
@@ -155,48 +191,73 @@ def self_check():
         ([1., -1., .7], -.2, .4, .6, 2.),
         ([0., 0., 0.], 2., -2., .1, 5.),
         ([0., 0., 0.], .2, .2, .5, 1e-6),
+        ((0, 0, 0), 1, 1, 1, 2),
     ]):
         expected = _decimal_arc(pose, vl*dt, vr*dt, track)
         pose_case("velocity/dt " + str(i), velocity_step, (pose, vl, vr, track, dt), expected)
 
+    nan, inf = float('nan'), float('inf')
     invalid = [
-        (wheel_to_body, (True, 0., .5)), (wheel_to_body, (float('nan'), 0., .5)),
-        (wheel_to_body, (0., float('inf'), .5)), (wheel_to_body, (2.01, 0., .5)),
+        (wheel_to_body, (True, 0., .5)), (wheel_to_body, (nan, 0., .5)),
+        (wheel_to_body, (0., inf, .5)), (wheel_to_body, (2.01, 0., .5)),
+        (wheel_to_body, (0., -2.01, .5)), (wheel_to_body, (0., 0., True)),
         (wheel_to_body, (0., 0., .099)), (wheel_to_body, (0., 0., 2.01)),
-        (body_to_wheels, (False, 0., .5)), (body_to_wheels, (0., float('nan'), .5)),
-        (body_to_wheels, (2.01, 0., .5)), (body_to_wheels, (0., 40.01, .5)),
-        (body_to_wheels, (0., 0., 0.)),
+        (body_to_wheels, (False, 0., .5)), (body_to_wheels, (0., nan, .5)),
+        (body_to_wheels, (2.01, 0., .5)), (body_to_wheels, (0., -40.01, .5)),
+        (body_to_wheels, (0., 0., 0.)), (body_to_wheels, (0., 0., 2.01)),
+        (body_to_wheels, (0., 0., True)), (wheel_to_body, (0., nan, .5)),
+        (wheel_to_body, (0., 0., nan)), (body_to_wheels, (nan, 0., .5)),
+        (body_to_wheels, (0., 0., nan)),
     ]
-    for bad_pose in ([0., 0.], [0., 0., 0., 0.], [True, 0., 0.],
-                     [0., float('nan'), 0.], [1001., 0., 0.], [0., 0., 7.], 'bad'):
+    for bad_pose in ([0., 0.], [0., 0., 0., 0.], [True, 0., 0.], [0., 0., False],
+                     [0., nan, 0.], [nan, 0., 0.], [0., 0., nan], [1001., 0., 0.], [0., -1001., 0.], [0., 0., 7.],
+                     [0., 0., -7.], 'bad', {0: 0., 1: 0., 2: 0.}):
         invalid.append((odom_step, (bad_pose, 0., 0., .5)))
         invalid.append((velocity_step, (bad_pose, 0., 0., .5, 1.)))
     invalid += [
         (odom_step, ([0., 0., 0.], True, 0., .5)),
+        (odom_step, ([0., 0., 0.], 0., False, .5)),
         (odom_step, ([0., 0., 0.], 10.01, 0., .5)),
-        (odom_step, ([0., 0., 0.], 0., float('inf'), .5)),
+        (odom_step, ([0., 0., 0.], 0., -10.01, .5)),
+        (odom_step, ([0., 0., 0.], 0., inf, .5)),
         (odom_step, ([0., 0., 0.], 0., 0., -.5)),
+        (odom_step, ([0., 0., 0.], 0., 0., 2.01)),
+        (odom_step, ([0., 0., 0.], 0., 0., True)),
+        (odom_step, ([0., 0., 0.], nan, 0., .5)),
+        (odom_step, ([0., 0., 0.], 0., nan, .5)),
+        (odom_step, ([0., 0., 0.], 0., 0., nan)),
+        (velocity_step, ([0., 0., 0.], 0., 0., .5, nan)),
+        (velocity_step, ([0., 0., 0.], nan, 0., .5, 1.)),
+        (velocity_step, ([0., 0., 0.], 0., nan, .5, 1.)),
+        (velocity_step, ([0., 0., 0.], 0., 0., nan, 1.)),
         (velocity_step, ([0., 0., 0.], 0., 0., .5, 0.)),
         (velocity_step, ([0., 0., 0.], 0., 0., .5, -1.)),
         (velocity_step, ([0., 0., 0.], 0., 0., .5, 5.01)),
         (velocity_step, ([0., 0., 0.], 0., 0., .5, True)),
-        (velocity_step, ([0., 0., 0.], 0., 0., .5, float('inf'))),
+        (velocity_step, ([0., 0., 0.], 0., 0., .5, inf)),
         (velocity_step, ([0., 0., 0.], 2.01, 0., .5, 1.)),
+        (velocity_step, ([0., 0., 0.], 0., -2.01, .5, 1.)),
         (velocity_step, ([0., 0., 0.], 0., 0., 2.01, 1.)),
+        (velocity_step, ([0., 0., 0.], 0., 0., .099, 1.)),
+        (velocity_step, ([0., 0., 0.], 0., 0., True, 1.)),
     ]
-    for function, args in invalid:
+    names = {wheel_to_body: "wheel_to_body", body_to_wheels: "body_to_wheels",
+             odom_step: "odom_step", velocity_step: "velocity_step"}
+    for i, (function, args) in enumerate(invalid):
+        label = "invalid " + str(i) + " " + names[function] + repr(args)
         try:
             function(*args)
         except ValueError:
             continue
-        except Exception:
-            pass
-        failures.append(function.__name__ + ": invalid input must raise ValueError")
+        except Exception as error:
+            failures.append(label + ": raised " + type(error).__name__ + " instead of ValueError")
+            continue
+        failures.append(label + ": returned instead of raising ValueError")
     return failures
 
 
 if __name__ == "__main__":
     failures = self_check()
-    print("CoreLab manual odometry self-check — practice only, no signed evidence")
+    print("CoreLab manual odometry self-check - practice only, no signed evidence")
     print("Failures:", failures if failures else "none in this fixed fixture set")
     raise SystemExit(1 if failures else 0)

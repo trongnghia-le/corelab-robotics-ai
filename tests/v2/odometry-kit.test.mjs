@@ -17,6 +17,6 @@ it("checks the manual odometry kit against alternative exact integrators, high-p
   expect(result.error).toBeUndefined();
   expect(result.status, result.stdout + result.stderr).toBe(0);
   expect(result.stdout).toContain(
-    "2 valid alternatives accepted, 18 injected bugs rejected",
+    "7 valid alternatives accepted, 40 injected bugs rejected",
   );
 });

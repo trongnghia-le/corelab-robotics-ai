@@ -85,3 +85,11 @@ Latest code milestone: `3edf307`; final qualification: 210 tests/28 files, four 
 - Author fixture: two valid alternative integrators accepted, 18 injected bugs rejected, starter fails as intended. NOT independent sign-off; no calibration, localization, ROS or simulator claim.
 - Actual validation on Linux/Node 26.8.1: **212 tests in 29 files** passed; lint, typecheck, legacy content and V2 contract validation passed; V2 production build and four Chromium V2 flows passed, including the odometry kit download. next-env.d.ts restored after the build and not staged.
 - External gates unchanged: independent reviews, S1/S2 release activation, resource budget approval, Windows/macOS support and the S3 learner pilot.
+
+## 2026-11-02: review gates, cross-platform CI and S1/S2 activation
+
+- Owner decisions (recorded in the Master Plan addendum): accept an owner-assigned AI review for G2; approve the measured D11 budget (128 MiB profiles, 8 GB RAM, about 2 GB free disk); push to GitHub for Windows/macOS CI; activate S1/S2; do not run S3. Commits do not credit an AI contributor.
+- First CI run (8dc13a5): ubuntu and macOS passed; Windows failed `validate:v2` because CRLF checkout changed hashed content bytes (reproduced locally with `core.autocrlf=true`). Fixed with `content/** -text`.
+- Independent AI review of all issuable content found no wrong key and about 25 majors; fixes by separate author instances, then fresh re-reviews until no blocker/major remained. 15 families moved to v3; C/M sources and kits were revised in place at v1 (never issuable/downloaded). Approved review records: all 21 families, F-FRAMES, F-R04, RV-FRAMES, RV-R04. `CM_RELEASED = true`.
+- Added: U+2212 answer acceptance, display rounding of expected values, validator rules for truncated hints and float-noise prompts, independent X08/X09 and angle-parsing C/M test oracles, kit fixes (python -O safe, contract cases, messages, ASCII banner) with 48/40 named mutants.
+- Linux/Node 26.8.1: 214 tests in 29 files; lint, typecheck, content and V2 validation; default and V2 builds; 4 V2 + 7 legacy Chromium flows passed. Legacy browser run used its own `.local/e2e-*.sqlite`; signing keys and the learner database were not modified. next-env.d.ts restored and not staged.

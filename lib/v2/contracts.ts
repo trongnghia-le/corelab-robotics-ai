@@ -163,7 +163,8 @@ export function numberAnswer(s: string): {
   d: string;
   value: number;
 } {
-  s = s.trim();
+  // Prompts typeset negatives with U+2212; accept a copied leading minus.
+  s = s.trim().replace(/^−/, "-");
   let n: bigint, d: bigint;
   if (/^[+-]?\d{1,9}\/[1-9]\d{0,8}$/.test(s)) {
     const parts = s.split("/");

@@ -1,0 +1,284 @@
+{
+  "id": "X12",
+  "version": 3,
+  "title": "Integrate differential-drive odometry",
+  "domain": "Robotics",
+  "topicId": "R02",
+  "objectiveId": "R02.exact-arc",
+  "routes": [
+    "cart",
+    "inspection-rover"
+  ],
+  "scope": "Exact constant-wheel arc on a planar model",
+  "labIds": [
+    "L03",
+    "L05"
+  ],
+  "items": [
+    {
+      "id": "X12.cart.1",
+      "route": "cart",
+      "difficulty": 1,
+      "structure": "X12.R02.exact-arc.1@1",
+      "inputs": {
+        "vl": "0.2",
+        "vr": "0.6",
+        "b": "0.4",
+        "dt": "1"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "A delivery cart starts at the origin with heading 0 (heading is measured counter-clockwise from +x, so a left turn makes y positive). Its left and right wheels roll at constant linear speeds vl=0.2 m/s and vr=0.6 m/s, track width b=0.4 m, for t=1 s, without slip. Integrate this constant-speed motion exactly and return the final x, y and heading. Give positions to at least 3 decimal places (graded within ±0.001 m); the heading is graded within ±0.001 rad and any angle equivalent modulo 2π is accepted.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.336588",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "0.183879",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "angle",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v = (0.2+0.6)/2 = 0.4 m/s, ω = (0.6-0.2)/0.4 = 1 rad/s, ωt = 1 rad. x = 0.4·sin(1)/1 = 0.336588 m, y = 0.4·(1-cos(1))/1 = 0.183879 m, heading = 1 rad. A single Euler step would give (0.4, 0) and a midpoint step (0.351, 0.192); both miss the exact arc by more than 0.001 m. This is odometry from wheel speeds, not localization.",
+      "hints": [
+        "The right wheel is faster, so the cart curves left (counter-clockwise): expect y > 0 and a final heading of about 1 rad.",
+        "v = (vl+vr)/2 = 0.4 m/s and ω = (vr-vl)/b = 1 rad/s. Next evaluate the exact arc from the origin with t = 1 s: x = v·sin(ωt)/ω, y = v·(1-cos(ωt))/ω, heading = ωt (angles in radians).",
+        "v = (0.2+0.6)/2 = 0.4 m/s, ω = (0.6-0.2)/0.4 = 1 rad/s, ωt = 1 rad. x = 0.4·sin(1)/1 = 0.336588 m, y = 0.4·(1-cos(1))/1 = 0.183879 m, heading = 1 rad. A single Euler step would give (0.4, 0) and a midpoint step (0.351, 0.192); both miss the exact arc by more than 0.001 m. This is odometry from wheel speeds, not localization."
+      ],
+      "remediation": "If you got about (0.4, 0) you took one Euler step along the initial heading; about (0.351, 0.192) means a midpoint (RK2) step. Both approximate the arc. If y has the wrong sign, check ω = (vr-vl)/b. Revisit /lessons/R02."
+    },
+    {
+      "id": "X12.cart.2",
+      "route": "cart",
+      "difficulty": 2,
+      "structure": "X12.R02.exact-arc.2@1",
+      "inputs": {
+        "vl": "0.5",
+        "vr": "0.2",
+        "b": "0.3",
+        "dt": "2"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "A delivery cart starts at the origin with heading 0 (heading is measured counter-clockwise from +x, so a left turn makes y positive). Its left and right wheels roll at constant linear speeds vl=0.5 m/s and vr=0.2 m/s, track width b=0.3 m, for t=2 s, without slip. Integrate this constant-speed motion exactly and return the final x, y and heading. Give positions to at least 3 decimal places (graded within ±0.001 m); the heading is graded within ±0.001 rad and any angle equivalent modulo 2π is accepted.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.318254",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-0.495651",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "angle",
+          "answer": "-2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v = (0.5+0.2)/2 = 0.35 m/s, ω = (0.2-0.5)/0.3 = -1 rad/s, ωt = -2 rad. x = 0.35·sin(-2)/(-1) = 0.318254 m, y = 0.35·(1-cos(-2))/(-1) = -0.495651 m, heading = -2 rad. A single Euler step would give (0.7, 0) and a midpoint step (0.378, -0.589); both miss the exact arc by more than 0.001 m. This is odometry from wheel speeds, not localization.",
+      "hints": [
+        "The left wheel is faster, so the cart curves right (clockwise): expect y < 0 and a heading change of -2 rad; with a turn this large a straight-line step lands far from the arc.",
+        "v = (vl+vr)/2 = 0.35 m/s and ω = (vr-vl)/b = -1 rad/s. Next evaluate the exact arc from the origin with t = 2 s: x = v·sin(ωt)/ω, y = v·(1-cos(ωt))/ω, heading = ωt (angles in radians).",
+        "v = (0.5+0.2)/2 = 0.35 m/s, ω = (0.2-0.5)/0.3 = -1 rad/s, ωt = -2 rad. x = 0.35·sin(-2)/(-1) = 0.318254 m, y = 0.35·(1-cos(-2))/(-1) = -0.495651 m, heading = -2 rad. A single Euler step would give (0.7, 0) and a midpoint step (0.378, -0.589); both miss the exact arc by more than 0.001 m. This is odometry from wheel speeds, not localization."
+      ],
+      "remediation": "If you got about (0.7, 0) you took one Euler step along the initial heading; about (0.378, -0.589) means a midpoint (RK2) step. Both approximate the arc. If y has the wrong sign, check ω = (vr-vl)/b. Revisit /lessons/R02."
+    },
+    {
+      "id": "X12.cart.3",
+      "route": "cart",
+      "difficulty": 3,
+      "structure": "X12.R02.exact-arc.0@1",
+      "inputs": {
+        "vl": "-0.3",
+        "vr": "0.1",
+        "b": "0.25",
+        "dt": "2.5"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "A delivery cart starts at the origin with heading 0 (heading is measured counter-clockwise from +x, so a left turn makes y positive). Its left and right wheels roll at constant linear speeds vl=-0.3 m/s and vr=0.1 m/s, track width b=0.25 m, for t=2.5 s, without slip. Integrate this constant-speed motion exactly and return the final x, y and heading. Give positions to at least 3 decimal places (graded within ±0.001 m); the heading is graded within ±0.001 rad and any angle equivalent modulo 2π is accepted.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.0473",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-0.103353",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "angle",
+          "answer": "-2.283185",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v = (-0.3+0.1)/2 = -0.1 m/s, ω = (0.1-(-0.3))/0.25 = 1.6 rad/s, ωt = 4 rad. x = -0.1·sin(4)/1.6 = 0.0473 m, y = -0.1·(1-cos(4))/1.6 = -0.103353 m, heading = 4 rad, which wraps to -2.283185 rad. A single Euler step would give (-0.25, 0) and a midpoint step (0.104, -0.227); both miss the exact arc by more than 0.001 m. This is odometry from wheel speeds, not localization.",
+      "hints": [
+        "The average wheel speed is negative, so the cart reverses while turning counter-clockwise; the heading change exceeds π, so expect to wrap it.",
+        "v = (vl+vr)/2 = -0.1 m/s and ω = (vr-vl)/b = 1.6 rad/s. Next evaluate the exact arc from the origin with t = 2.5 s: x = v·sin(ωt)/ω, y = v·(1-cos(ωt))/ω, heading = ωt (angles in radians).",
+        "v = (-0.3+0.1)/2 = -0.1 m/s, ω = (0.1-(-0.3))/0.25 = 1.6 rad/s, ωt = 4 rad. x = -0.1·sin(4)/1.6 = 0.0473 m, y = -0.1·(1-cos(4))/1.6 = -0.103353 m, heading = 4 rad, which wraps to -2.283185 rad. A single Euler step would give (-0.25, 0) and a midpoint step (0.104, -0.227); both miss the exact arc by more than 0.001 m. This is odometry from wheel speeds, not localization."
+      ],
+      "remediation": "If you got about (-0.25, 0) you took one Euler step along the initial heading; about (0.104, -0.227) means a midpoint (RK2) step. Both approximate the arc. If y has the wrong sign, check ω = (vr-vl)/b. Revisit /lessons/R02."
+    },
+    {
+      "id": "X12.inspection-rover.1",
+      "route": "inspection-rover",
+      "difficulty": 1,
+      "structure": "odometry.initial-frame-arc@1",
+      "inputs": {
+        "vl": "0.1",
+        "vr": "0.3",
+        "b": "0.4",
+        "dt": "2",
+        "x0": "1.5",
+        "y0": "-0.5",
+        "theta0": "0.5"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "An inspection rover starts at world pose x=1.5 m, y=-0.5 m, heading 0.5 rad (counter-clockwise from world +x). Its wheels roll at constant linear speeds vl=0.1 m/s and vr=0.3 m/s, track width b=0.4 m, for t=2 s, without slip. Integrate the constant wheel speeds exactly and return the final world x, y and heading. Give positions to at least 3 decimal places (graded within ±0.001 m); the heading is graded within ±0.001 rad and any angle equivalent modulo 2π is accepted.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "1.707228",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-0.177262",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "angle",
+          "answer": "1.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v = (0.1+0.3)/2 = 0.2 m/s, ω = (0.3-0.1)/0.4 = 0.5 rad/s, ωt = 1 rad. Body arc: dx = 0.336588 m, dy = 0.183879 m. World: x = 1.5 + cos(0.5)·dx - sin(0.5)·dy = 1.707228 m, y = -0.5 + sin(0.5)·dx + cos(0.5)·dy = -0.177262 m, heading = 1.5 rad. An Euler step would give (1.851, -0.308) and a midpoint step (1.716, -0.163); both miss by more than 0.001 m.",
+      "hints": [
+        "The rover curves left by 1 rad while starting at heading 0.5 rad, so its body-frame arc must be turned by 0.5 rad before it is added to the start position.",
+        "v = 0.2 m/s and ω = 0.5 rad/s. Body-frame arc over t = 2 s: dx = v·sin(ωt)/ω, dy = v·(1-cos(ωt))/ω. Next rotate (dx, dy) by the initial heading 0.5 rad and add (1.5, -0.5).",
+        "v = (0.1+0.3)/2 = 0.2 m/s, ω = (0.3-0.1)/0.4 = 0.5 rad/s, ωt = 1 rad. Body arc: dx = 0.336588 m, dy = 0.183879 m. World: x = 1.5 + cos(0.5)·dx - sin(0.5)·dy = 1.707228 m, y = -0.5 + sin(0.5)·dx + cos(0.5)·dy = -0.177262 m, heading = 1.5 rad. An Euler step would give (1.851, -0.308) and a midpoint step (1.716, -0.163); both miss by more than 0.001 m."
+      ],
+      "remediation": "If you got about (1.837, -0.316) you added the body-frame arc without rotating it by the initial heading. About (1.851, -0.308) is one Euler step and (1.716, -0.163) a midpoint step; use the exact arc. Revisit /lessons/R02."
+    },
+    {
+      "id": "X12.inspection-rover.2",
+      "route": "inspection-rover",
+      "difficulty": 2,
+      "structure": "odometry.initial-frame-arc@1",
+      "inputs": {
+        "vl": "-0.1",
+        "vr": "0.3",
+        "b": "0.4",
+        "dt": "2",
+        "x0": "1",
+        "y0": "-1",
+        "theta0": "0.7"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "An inspection rover starts at world pose x=1 m, y=-1 m, heading 0.7 rad (counter-clockwise from world +x). Its wheels roll at constant linear speeds vl=-0.1 m/s and vr=0.3 m/s, track width b=0.4 m, for t=2 s, without slip. Integrate the constant wheel speeds exactly and return the final world x, y and heading. Give positions to at least 3 decimal places (graded within ±0.001 m); the heading is graded within ±0.001 rad and any angle equivalent modulo 2π is accepted.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "0.978316",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "-0.833109",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "angle",
+          "answer": "2.7",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v = (-0.1+0.3)/2 = 0.1 m/s, ω = (0.3-(-0.1))/0.4 = 1 rad/s, ωt = 2 rad: a tight left turn with one wheel reversing. Body arc: dx = v·sin(ωt)/ω = 0.090930 m, dy = v·(1-cos(ωt))/ω = 0.141615 m. World: x = 1 + cos(0.7)·dx - sin(0.7)·dy = 0.978316 m, y = -1 + sin(0.7)·dx + cos(0.7)·dy = -0.833109 m, heading = 0.7 + 2 = 2.7 rad. An Euler step would give (1.153, -0.871) and a midpoint step (0.974, -0.802); both miss by more than 0.001 m.",
+      "hints": [
+        "One wheel runs backwards, so the rover turns sharply while creeping forward; the turn is large, so a straight-line step will not do.",
+        "Compute v = (vl+vr)/2 and ω = (vr-vl)/b, form the body-frame arc dx = v·sin(ωt)/ω, dy = v·(1-cos(ωt))/ω, then rotate it by the start heading before adding the start position.",
+        "v = (-0.1+0.3)/2 = 0.1 m/s, ω = (0.3-(-0.1))/0.4 = 1 rad/s, ωt = 2 rad: a tight left turn with one wheel reversing. Body arc: dx = v·sin(ωt)/ω = 0.090930 m, dy = v·(1-cos(ωt))/ω = 0.141615 m. World: x = 1 + cos(0.7)·dx - sin(0.7)·dy = 0.978316 m, y = -1 + sin(0.7)·dx + cos(0.7)·dy = -0.833109 m, heading = 0.7 + 2 = 2.7 rad. An Euler step would give (1.153, -0.871) and a midpoint step (0.974, -0.802); both miss by more than 0.001 m."
+      ],
+      "remediation": "About (1.153, -0.871) is one Euler step and (0.974, -0.802) a midpoint step; (1.091, -0.858) means the arc was added without rotating it by the start heading 0.7 rad. Revisit /lessons/R02."
+    },
+    {
+      "id": "X12.inspection-rover.3",
+      "route": "inspection-rover",
+      "difficulty": 3,
+      "structure": "odometry.initial-frame-arc@1",
+      "inputs": {
+        "vl": "-0.15",
+        "vr": "-0.45",
+        "b": "0.5",
+        "dt": "3",
+        "x0": "-2",
+        "y0": "3",
+        "theta0": "-2.5"
+      },
+      "objectiveId": "R02.exact-arc",
+      "prompt": "An inspection rover starts at world pose x=-2 m, y=3 m, heading -2.5 rad (counter-clockwise from world +x). Its wheels roll at constant linear speeds vl=-0.15 m/s and vr=-0.45 m/s, track width b=0.5 m, for t=3 s, without slip. Integrate the constant wheel speeds exactly and return the final world x, y and heading. Give positions to at least 3 decimal places (graded within ±0.001 m); the heading is graded within ±0.001 rad and any angle equivalent modulo 2π is accepted.",
+      "fields": [
+        {
+          "label": "x (m)",
+          "kind": "number",
+          "answer": "-1.242681",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (m)",
+          "kind": "number",
+          "answer": "2.799828",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Heading (rad)",
+          "kind": "angle",
+          "answer": "1.983185",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "v = (-0.15+(-0.45))/2 = -0.3 m/s, ω = (-0.45-(-0.15))/0.5 = -0.6 rad/s, ωt = -1.8 rad. Body arc: dx = -0.486924 m, dy = 0.613601 m. World: x = -2 + cos(-2.5)·dx - sin(-2.5)·dy = -1.242681 m, y = 3 + sin(-2.5)·dx + cos(-2.5)·dy = 2.799828 m, heading = -4.3 rad, which wraps to 1.983185 rad. An Euler step would give (-1.279, 3.539) and a midpoint step (-1.13, 2.77); both miss by more than 0.001 m.",
+      "hints": [
+        "Both wheels run backwards and the right one is faster backwards, so the rover reverses while turning clockwise; the final heading passes -π and must be wrapped.",
+        "v = -0.3 m/s and ω = -0.6 rad/s. Body-frame arc over t = 3 s: dx = v·sin(ωt)/ω, dy = v·(1-cos(ωt))/ω. Next rotate (dx, dy) by the initial heading -2.5 rad and add (-2, 3).",
+        "v = (-0.15+(-0.45))/2 = -0.3 m/s, ω = (-0.45-(-0.15))/0.5 = -0.6 rad/s, ωt = -1.8 rad. Body arc: dx = -0.486924 m, dy = 0.613601 m. World: x = -2 + cos(-2.5)·dx - sin(-2.5)·dy = -1.242681 m, y = 3 + sin(-2.5)·dx + cos(-2.5)·dy = 2.799828 m, heading = -4.3 rad, which wraps to 1.983185 rad. An Euler step would give (-1.279, 3.539) and a midpoint step (-1.13, 2.77); both miss by more than 0.001 m."
+      ],
+      "remediation": "If you got about (-2.487, 3.614) you added the body-frame arc without rotating it by the initial heading. About (-1.279, 3.539) is one Euler step and (-1.13, 2.77) a midpoint step; use the exact arc. Revisit /lessons/R02."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "cart": "Exact constant-speed arcs from the origin: a left turn, a right turn, and reversing with a heading that wraps past π.",
+    "inspection-rover": "Exact arcs from a nonzero world pose: a forward turn, a pure spin, and a reversing clockwise turn whose heading wraps past -π."
+  }
+}

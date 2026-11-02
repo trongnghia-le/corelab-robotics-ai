@@ -204,6 +204,13 @@ test("mobile keyboard, source redaction and gated verification", async ({
     data: { purpose: "verify", source: "X11" },
   });
   expect(denied.status()).toBe(503);
+  const verify = await page.request.post("/api/v2/attempts", {
+    data: { purpose: "verify", source: "F-R04" },
+  });
+  expect(verify.status()).toBe(201);
+  const form = await verify.json();
+  expect(form.purpose).toBe("verify");
+  expect(JSON.stringify(form)).not.toContain('"answer"');
   const forged = await page.request.post("/api/v2/reports/import", {
     data: { passed: true, path: "do-not-open" },
   });

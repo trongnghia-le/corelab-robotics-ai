@@ -1,0 +1,259 @@
+{
+  "id": "X19",
+  "version": 3,
+  "title": "Avoid episode leakage",
+  "domain": "ML & data",
+  "topicId": "ML03",
+  "objectiveId": "ML03.group-split",
+  "routes": [
+    "teleop-episodes",
+    "sensor-sessions"
+  ],
+  "scope": "Group-disjoint split reasoning, not generalization measurement",
+  "labIds": [
+    "L19"
+  ],
+  "items": [
+    {
+      "id": "X19.teleop-episodes.1",
+      "route": "teleop-episodes",
+      "difficulty": 1,
+      "structure": "X19.ML03.group-split.1@1",
+      "inputs": {
+        "train": [
+          "e1",
+          "e2"
+        ],
+        "test": [
+          "e2",
+          "e3"
+        ]
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Teleoperation frames are tagged with the episode they came from. Training frames come from episodes e1, e2; held-out frames come from episodes e2, e3. Does any episode appear on both sides of the split? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Episode overlap",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Training {e1, e2} and held-out {e2, e3} share {e2}, so yes: the split leaks. Frames from one episode on both sides share episode-specific context.",
+      "hints": [
+        "Each frame inherits its episode ID; compare the two sets of episode IDs, not individual frames.",
+        "Take the first held-out episode, e2, and check whether exactly that ID is in the training list; repeat for e3.",
+        "Training {e1, e2} and held-out {e2, e3} share {e2}, so yes: the split leaks. Frames from one episode on both sides share episode-specific context."
+      ],
+      "remediation": "If you answered no, you compared frames instead of episode IDs; episode e2 is on both sides. Revisit /lessons/ML03."
+    },
+    {
+      "id": "X19.teleop-episodes.2",
+      "route": "teleop-episodes",
+      "difficulty": 2,
+      "structure": "X19.ML03.group-split.2@1",
+      "inputs": {
+        "train": [
+          "e1",
+          "e2"
+        ],
+        "test": [
+          "e3",
+          "e4"
+        ]
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Teleoperation frames are tagged with the episode they came from. Training frames come from episodes e1, e2; held-out frames come from episodes e3, e4. Does any episode appear on both sides of the split? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Episode overlap",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Training {e1, e2} and held-out {e3, e4} share no episode ID, so no: the split is episode-disjoint.",
+      "hints": [
+        "List the episode IDs on each side and look for any ID that appears in both lists.",
+        "Take the first held-out episode, e3, and check whether exactly that ID is in the training list; repeat for e4.",
+        "Training {e1, e2} and held-out {e3, e4} share no episode ID, so no: the split is episode-disjoint."
+      ],
+      "remediation": "If you answered yes, check each held-out episode against the training list again; none repeats. Revisit /lessons/ML03."
+    },
+    {
+      "id": "X19.teleop-episodes.3",
+      "route": "teleop-episodes",
+      "difficulty": 3,
+      "structure": "X19.ML03.group-split.0@1",
+      "inputs": {
+        "train": [
+          "ep-1",
+          "ep-10",
+          "ep-12",
+          "ep-21",
+          "ep-110"
+        ],
+        "test": [
+          "ep-11",
+          "ep-101",
+          "ep-120",
+          "ep-2"
+        ]
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Teleoperation frames are tagged with the episode they came from. Episode IDs are compared exactly as written (no renaming or normalisation). Training frames come from episodes ep-1, ep-10, ep-12, ep-21, ep-110; held-out frames come from episodes ep-11, ep-101, ep-120, ep-2. Does any episode appear on both sides of the split? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Episode overlap",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Training {ep-1, ep-10, ep-12, ep-21, ep-110} and held-out {ep-11, ep-101, ep-120, ep-2} share no episode ID, so no: the split is episode-disjoint. Look-alike IDs such as ep-1 and ep-11 are different episodes.",
+      "hints": [
+        "Several IDs look alike; compare each held-out ID as a whole string, character by character, against the training list.",
+        "Take the first held-out episode, ep-11, and check whether exactly that ID is in the training list; repeat for ep-101, ep-120, ep-2.",
+        "Training {ep-1, ep-10, ep-12, ep-21, ep-110} and held-out {ep-11, ep-101, ep-120, ep-2} share no episode ID, so no: the split is episode-disjoint. Look-alike IDs such as ep-1 and ep-11 are different episodes."
+      ],
+      "remediation": "If you answered yes, you matched IDs by prefix or substring (ep-1 inside ep-11 or ep-101); compare whole IDs. Revisit /lessons/ML03."
+    },
+    {
+      "id": "X19.sensor-sessions.1",
+      "route": "sensor-sessions",
+      "difficulty": 1,
+      "structure": "data.subject-group-split@1",
+      "inputs": {
+        "train": [
+          "person-A/session-1",
+          "person-B/session-1"
+        ],
+        "test": [
+          "person-A/session-2"
+        ],
+        "groupBy": "person"
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Sensor records are named person/session. Training records: person-A/session-1, person-B/session-1. Held-out records: person-A/session-2. Evaluation requires PERSON-disjoint groups, not just distinct sessions. Is there person overlap? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Person overlap",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Persons: training {person-A, person-B}, held-out {person-A}; overlap {person-A}, so yes. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality.",
+      "hints": [
+        "The split rule is about people, so first strip each record name down to its person part.",
+        "Map every record to the part before the slash, giving one set of people for training and one for held-out; next intersect the two sets.",
+        "Persons: training {person-A, person-B}, held-out {person-A}; overlap {person-A}, so yes. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality."
+      ],
+      "remediation": "If you answered no, you compared whole record names; person-A appears on both sides with different sessions. Revisit /lessons/ML03."
+    },
+    {
+      "id": "X19.sensor-sessions.2",
+      "route": "sensor-sessions",
+      "difficulty": 2,
+      "structure": "data.subject-group-split@1",
+      "inputs": {
+        "train": [
+          "person-A/session-1",
+          "person-B/session-1"
+        ],
+        "test": [
+          "person-C/session-1"
+        ],
+        "groupBy": "person"
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Sensor records are named person/session. Training records: person-A/session-1, person-B/session-1. Held-out records: person-C/session-1. Evaluation requires PERSON-disjoint groups, not just distinct sessions. Is there person overlap? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Person overlap",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Persons: training {person-A, person-B}, held-out {person-C}; no overlap, so no. A shared session label (session-1) belongs to different people and is not leakage. This checks the declared split rule, not generalization quality.",
+      "hints": [
+        "A session label can repeat across people; only the person part decides leakage here.",
+        "Map every record to the part before the slash, giving one set of people for training and one for held-out; next intersect the two sets.",
+        "Persons: training {person-A, person-B}, held-out {person-C}; no overlap, so no. A shared session label (session-1) belongs to different people and is not leakage. This checks the declared split rule, not generalization quality."
+      ],
+      "remediation": "If you answered yes, you compared session labels; session-1 recurs, but the people differ. Revisit /lessons/ML03."
+    },
+    {
+      "id": "X19.sensor-sessions.3",
+      "route": "sensor-sessions",
+      "difficulty": 3,
+      "structure": "data.subject-group-split@1",
+      "inputs": {
+        "train": [
+          "person-A/session-1",
+          "person-B/session-1",
+          "person-C/session-2",
+          "person-D/session-1"
+        ],
+        "test": [
+          "person-E/session-1",
+          "person-F/session-3",
+          "person-C/session-4"
+        ],
+        "groupBy": "person"
+      },
+      "objectiveId": "ML03.group-split",
+      "prompt": "Sensor records are named person/session. Training records: person-A/session-1, person-B/session-1, person-C/session-2, person-D/session-1. Held-out records: person-E/session-1, person-F/session-3, person-C/session-4. Evaluation requires PERSON-disjoint groups, not just distinct sessions. Is there person overlap? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Person overlap",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Persons: training {person-A, person-B, person-C, person-D}, held-out {person-C, person-E, person-F}; overlap {person-C}, so yes. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality.",
+      "hints": [
+        "The lists are longer and every record name is distinct; reduce each one to its person before comparing.",
+        "Map every record to the part before the slash, giving one set of people for training and one for held-out; next intersect the two sets.",
+        "Persons: training {person-A, person-B, person-C, person-D}, held-out {person-C, person-E, person-F}; overlap {person-C}, so yes. Different session names do not prevent subject leakage. This checks the declared split rule, not generalization quality."
+      ],
+      "remediation": "If you answered no, you compared whole record names; person-C appears on both sides with different sessions. Revisit /lessons/ML03."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "teleop-episodes": "Check episode overlap between frame splits, including look-alike episode IDs compared exactly.",
+    "sensor-sessions": "Detect subject leakage across distinct sensor sessions, including a shared session label and a longer list."
+  }
+}

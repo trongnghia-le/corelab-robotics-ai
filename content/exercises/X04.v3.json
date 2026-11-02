@@ -1,0 +1,210 @@
+{
+  "id": "X04",
+  "version": 3,
+  "title": "Interpret a rare positive alarm",
+  "domain": "Mathematics",
+  "topicId": "M08",
+  "objectiveId": "M08.posterior",
+  "routes": [
+    "fault-alarm",
+    "part-screening"
+  ],
+  "scope": "One binary observation with specified sensitivity and false-positive rate",
+  "labIds": [
+    "L09"
+  ],
+  "items": [
+    {
+      "id": "X04.fault-alarm.1",
+      "route": "fault-alarm",
+      "difficulty": 1,
+      "structure": "X04.M08.posterior.1@1",
+      "inputs": {
+        "prior": "1/100",
+        "sensitivity": "99/100",
+        "falsePositive": "3/100"
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "1% of motors in a fleet have a bearing fault. The vibration alarm fires for 99% of faulty motors (sensitivity) and for 3% of healthy motors (false-positive rate). One motor's alarm fires once. Compute P(fault | alarm) as a probability, not a percentage. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "P(fault | alarm)",
+          "kind": "number",
+          "answer": "0.25",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Fault-and-alarm = 0.01·0.99 = 0.0099. Healthy-and-alarm = 0.99·0.03 = 0.0297. P(alarm) = 0.0099 + 0.0297 = 0.0396. P(fault | alarm) = 0.0099/0.0396 = 0.25. The sensitivity 0.99 alone is not the posterior.",
+      "hints": [
+        "You want P(fault | alarm), not P(alarm | fault). Alarms come from faulty motors and from healthy ones.",
+        "Compute the two ways an alarm happens: fault-and-alarm = 0.01·0.99 and healthy-and-alarm = 0.99·0.03. The posterior is the fault share of their sum.",
+        "Fault-and-alarm = 0.01·0.99 = 0.0099. Healthy-and-alarm = 0.99·0.03 = 0.0297. P(alarm) = 0.0099 + 0.0297 = 0.0396. P(fault | alarm) = 0.0099/0.0396 = 0.25. The sensitivity 0.99 alone is not the posterior."
+      ],
+      "remediation": "0.99 is the sensitivity P(alarm | fault), not the posterior. If you got about 0.248 you used 0.03 instead of 0.99·0.03 for the healthy-and-alarm term. Revisit /lessons/M08."
+    },
+    {
+      "id": "X04.fault-alarm.2",
+      "route": "fault-alarm",
+      "difficulty": 2,
+      "structure": "X04.M08.posterior.2@1",
+      "inputs": {
+        "prior": "1/25",
+        "sensitivity": "4/5",
+        "falsePositive": "1/20",
+        "specificity": "19/20"
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "4% of gearboxes leaving a line are faulty. An acoustic check has sensitivity 80% and specificity 95% (it stays silent for 95% of good gearboxes). The check flags one gearbox. Compute P(faulty | flag) as a probability. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "P(faulty | flag)",
+          "kind": "number",
+          "answer": "0.4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "False-positive rate = 1 - 0.95 = 0.05. Faulty-and-flag = 0.04·0.8 = 0.032. Good-and-flag = 0.96·0.05 = 0.048. P(faulty | flag) = 0.032/(0.032 + 0.048) = 0.4.",
+      "hints": [
+        "Specificity is P(no flag | good). The false-positive rate P(flag | good) is 1 minus the specificity.",
+        "Convert specificity 95% into a false-positive rate, then compute faulty-and-flag = 0.04·0.8 and good-and-flag = 0.96·(that rate).",
+        "False-positive rate = 1 - 0.95 = 0.05. Faulty-and-flag = 0.04·0.8 = 0.032. Good-and-flag = 0.96·0.05 = 0.048. P(faulty | flag) = 0.032/(0.032 + 0.048) = 0.4."
+      ],
+      "remediation": "If you got about 0.034 you used the specificity 0.95 as the false-positive rate. If you got 0.8 you reported the sensitivity. Revisit /lessons/M08."
+    },
+    {
+      "id": "X04.fault-alarm.3",
+      "route": "fault-alarm",
+      "difficulty": 3,
+      "structure": "X04.M08.posterior.0@1",
+      "inputs": {
+        "prior": "1/100",
+        "sensitivity": "9/10",
+        "falsePositive": "1/50",
+        "missRate": "1/10",
+        "specificity": "49/50"
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "1 in 100 battery packs has a cell defect. A thermal screen misses 10% of defective packs (false-negative rate) and has specificity 98% on good packs. One pack is flagged. Compute P(defect | flag) as a probability. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "P(defect | flag)",
+          "kind": "number",
+          "answer": "0.3125",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Sensitivity = 1 - 0.10 = 0.9; false-positive rate = 1 - 0.98 = 0.02. Defect-and-flag = 0.01·0.9 = 0.009. Good-and-flag = 0.99·0.02 = 0.0198. P(flag) = 0.0288. P(defect | flag) = 0.009/0.0288 = 0.3125 (= 5/16).",
+      "hints": [
+        "Both rates are stated the other way round: convert the miss rate into a sensitivity and the specificity into a false-positive rate first.",
+        "Sensitivity = 1 - miss rate and false-positive rate = 1 - specificity. Then form defect-and-flag (0.01 times the sensitivity) and good-and-flag (0.99 times the false-positive rate).",
+        "Sensitivity = 1 - 0.10 = 0.9; false-positive rate = 1 - 0.98 = 0.02. Defect-and-flag = 0.01·0.9 = 0.009. Good-and-flag = 0.99·0.02 = 0.0198. P(flag) = 0.0288. P(defect | flag) = 0.009/0.0288 = 0.3125 (= 5/16)."
+      ],
+      "remediation": "If you got about 0.048 you used the miss rate 0.10 as the sensitivity. If you got about 0.0092 you used the specificity 0.98 as the false-positive rate. Revisit /lessons/M08."
+    },
+    {
+      "id": "X04.part-screening.1",
+      "route": "part-screening",
+      "difficulty": 1,
+      "structure": "bayes.count-table@1",
+      "inputs": {
+        "population": 10000,
+        "prior": "1/25",
+        "sensitivity": "9/10",
+        "falsePositive": "1/40",
+        "truePositive": 360,
+        "falseNegative": 40,
+        "falsePositiveCount": 240,
+        "trueNegative": 9360
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "An expected-count table for 10000 screened parts: 400 defective parts (360 test positive, 40 negative) and 9600 good parts (240 test positive, 9360 negative). A part tests positive. Compute P(defective | positive) as a probability. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "P(defective | positive)",
+          "kind": "number",
+          "answer": "0.6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Positives = 360 + 240 = 600. P(defective | positive) = 360/600 = 0.6. Dividing 360 by all 10000 parts or by the 400 defective parts answers a different question.",
+      "hints": [
+        "Given a positive result, only the positive column of the table matters.",
+        "Add the two positive cells (defective-positive and good-positive) to get all positives; the posterior is the defective share of that total.",
+        "Positives = 360 + 240 = 600. P(defective | positive) = 360/600 = 0.6. Dividing 360 by all 10000 parts or by the 400 defective parts answers a different question."
+      ],
+      "remediation": "0.9 is the sensitivity (360/400) and 0.036 is P(defective and positive) (360/10000); neither conditions on the positive result. Revisit /lessons/M08."
+    },
+    {
+      "id": "X04.part-screening.2",
+      "route": "part-screening",
+      "difficulty": 2,
+      "structure": "bayes.count-table@1",
+      "inputs": {
+        "population": 2000,
+        "prior": "2/25",
+        "sensitivity": "17/20",
+        "falsePositive": "1/10"
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "A batch of 2000 castings has 8% porosity defects. An X-ray screen flags 85% of defective castings and 10% of good castings. Build the expected-count table and compute P(defective | flagged) as a probability. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "P(defective | flagged)",
+          "kind": "number",
+          "answer": "0.425",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Defective = 0.08·2000 = 160 and good = 1840. Flagged-defective = 0.85·160 = 136; flagged-good = 0.10·1840 = 184. P(defective | flagged) = 136/(136 + 184) = 136/320 = 0.425.",
+      "hints": [
+        "Build the table first: split the batch into defective and good rows, then split each row into flagged and not flagged.",
+        "Defective = 8% of 2000 and good = the rest. Flagged-defective = 85% of the defective row and flagged-good = 10% of the good row; then condition on the flagged column.",
+        "Defective = 0.08·2000 = 160 and good = 1840. Flagged-defective = 0.85·160 = 136; flagged-good = 0.10·1840 = 184. P(defective | flagged) = 136/(136 + 184) = 136/320 = 0.425."
+      ],
+      "remediation": "If you got about 0.405 you took 10% of all 2000 castings (200) as false positives; the 10% applies only to the 1840 good castings. Revisit /lessons/M08."
+    },
+    {
+      "id": "X04.part-screening.3",
+      "route": "part-screening",
+      "difficulty": 3,
+      "structure": "bayes.count-table@1",
+      "inputs": {
+        "population": 8000,
+        "prior": "1/40",
+        "sensitivity": "9/10",
+        "falsePositive": "1/10",
+        "defective": 200,
+        "falseNegative": 20,
+        "good": 7800,
+        "trueNegative": 7020
+      },
+      "objectiveId": "M08.posterior",
+      "prompt": "A screening report for 8000 valves lists only the negatives: of 200 leaking valves, 20 tested negative; of 7800 sound valves, 7020 tested negative. A valve tests positive. Compute P(leaking | positive) as a probability. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "P(leaking | positive)",
+          "kind": "number",
+          "answer": "0.1875",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Positive-leaking = 180 and positive-sound = 780, so positives = 960. P(leaking | positive) = 180/960 = 0.1875 (= 3/16).",
+      "hints": [
+        "The report gives the negative cells; recover the positive cells by subtraction before conditioning.",
+        "Positive-leaking = 200 - 20 and positive-sound = 7800 - 7020. Then use only the positive column.",
+        "Positive-leaking = 180 and positive-sound = 780, so positives = 960. P(leaking | positive) = 180/960 = 0.1875 (= 3/16)."
+      ],
+      "remediation": "If you got about 0.003 you used the negative column (20/7040), which is P(leaking | negative). If you got 0.9 you reported the sensitivity 180/200. Revisit /lessons/M08."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "fault-alarm": "Compute a rare-fault posterior from stated rates, including specificity and miss-rate conversions.",
+    "part-screening": "Read, build or complete an expected-count table and condition on the positive column."
+  }
+}

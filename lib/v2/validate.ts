@@ -12,6 +12,21 @@ import { objectives, curriculumPreview } from "./objectives";
 import { cmSources, fingerprintCandidates } from "./assessments";
 import { kitFingerprints, kitFiles, kits } from "./kits";
 import { labRoadmap } from "./roadmap";
+export function learnerTextIssue(item: { prompt: string; hints: string[] }) {
+  const [, a2, a3] = item.hints;
+  if (
+    a2 &&
+    a3 &&
+    a3.length > a2.length &&
+    a3.startsWith(a2) &&
+    /\d\.$/.test(a2) &&
+    /\d/.test(a3[a2.length])
+  )
+    return "Truncated graduated hint";
+  if (/\d\.\d*(?:0{7,}|9{7,})\d/.test(item.prompt))
+    return "Floating-point noise in prompt";
+  return null;
+}
 export function validateV2() {
   const c = catalog(),
     o = objectives(),
@@ -83,6 +98,18 @@ export function validateV2() {
         if (!o.objectives.some((o) => o.id === check.task.objectiveId))
           throw new Error("Unknown assessment objective");
       }
+  // Learner-facing text checks for every issuable item: a graduated A2 hint
+  // must not stop at a decimal point of A3, and prompts show readable numbers.
+  const issuable = [
+    ...c.families.flatMap((f) => f.items),
+    ...sources.flatMap((s) =>
+      s.variants.flatMap((v) => v.items.map((i) => i.task)),
+    ),
+  ];
+  for (const item of issuable) {
+    const issue = learnerTextIssue(item);
+    if (issue) throw new Error(issue + ": " + item.id);
+  }
   for (const f of c.families)
     for (const item of f.items) {
       const answers = Object.fromEntries(
@@ -105,7 +132,11 @@ export function validateV2() {
       .filter((s) => s.kind === "review_pool")
       .reduce((n, s) => n + s.variants.length, 0),
     advisoryTopics: p.nodes.length,
-    independentReview: "pending",
+    review: [...c.families, ...sources].every(
+      (s) => s.review.status === "approved",
+    )
+      ? "approved (owner-assigned AI review)"
+      : "pending",
     verifiedI: "unavailable",
   };
 }

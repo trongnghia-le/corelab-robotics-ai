@@ -1,0 +1,251 @@
+{
+  "id": "X05",
+  "version": 3,
+  "title": "Compute covariance under a stated convention",
+  "domain": "Mathematics",
+  "topicId": "M09",
+  "objectiveId": "M09.covariance",
+  "routes": [
+    "sensor-residuals",
+    "coordinate-logs"
+  ],
+  "scope": "Two-variable covariance, not independence",
+  "labIds": [
+    "L09",
+    "L10"
+  ],
+  "items": [
+    {
+      "id": "X05.sensor-residuals.1",
+      "route": "sensor-residuals",
+      "difficulty": 1,
+      "structure": "X05.M09.covariance.1@1",
+      "inputs": {
+        "x": [
+          1,
+          4,
+          7
+        ],
+        "y": [
+          2,
+          2,
+          8
+        ],
+        "denominator": 3
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Three paired, unitless sensor residuals: x = [1, 4, 7] and y = [2, 2, 8]. Compute the population covariance cov(x, y), dividing by N = 3. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "cov(x, y)",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "mean(x) = 4 and mean(y) = 4. Centered x: -3, 0, 3; centered y: -2, -2, 4. Products: 6, 0, 12; sum = 18. Population covariance = 18/3 = 6. Covariance alone does not establish independence or causation.",
+      "hints": [
+        "Covariance averages products of deviations from each channel's own mean; it is not the average of x·y.",
+        "Compute mean(x) and mean(y), subtract them to get centered values, and multiply the centered values pair by pair.",
+        "mean(x) = 4 and mean(y) = 4. Centered x: -3, 0, 3; centered y: -2, -2, 4. Products: 6, 0, 12; sum = 18. Population covariance = 18/3 = 6. Covariance alone does not establish independence or causation."
+      ],
+      "remediation": "If you got 22 you averaged x·y without centering ((2 + 8 + 56)/3). If you got 9 you divided by N - 1 = 2 instead of N = 3. Revisit /lessons/M09."
+    },
+    {
+      "id": "X05.sensor-residuals.2",
+      "route": "sensor-residuals",
+      "difficulty": 2,
+      "structure": "X05.M09.covariance.2@1",
+      "inputs": {
+        "x": [
+          0.5,
+          1.5,
+          4
+        ],
+        "y": [
+          3,
+          1,
+          2
+        ],
+        "denominator": 2
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Three paired, unitless residuals: x = [0.5, 1.5, 4] and y = [3, 1, 2]. Compute the sample covariance cov(x, y), dividing by N - 1 = 2. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "cov(x, y)",
+          "kind": "number",
+          "answer": "-0.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "mean(x) = 2 and mean(y) = 2. Centered x: -1.5, -0.5, 2; centered y: 1, -1, 0. Products: -1.5, 0.5, 0; sum = -1. Sample covariance = -1/2 = -0.5.",
+      "hints": [
+        "This item uses the sample convention: same centered products, but the sum is divided by N - 1.",
+        "Center both channels (both means are whole numbers), sum the three centered pair-products, then divide by N - 1 = 2.",
+        "mean(x) = 2 and mean(y) = 2. Centered x: -1.5, -0.5, 2; centered y: 1, -1, 0. Products: -1.5, 0.5, 0; sum = -1. Sample covariance = -1/2 = -0.5."
+      ],
+      "remediation": "If you got about -0.333 you divided by N = 3; this item asks for the sample convention N - 1 = 2. Revisit /lessons/M09."
+    },
+    {
+      "id": "X05.sensor-residuals.3",
+      "route": "sensor-residuals",
+      "difficulty": 3,
+      "structure": "X05.M09.covariance.0@1",
+      "inputs": {
+        "x": [
+          2,
+          5,
+          11
+        ],
+        "y": [
+          -1,
+          4,
+          1.5
+        ],
+        "denominator": 2
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Three paired, unitless residuals: x = [2, 5, 11] and y = [-1, 4, 1.5]. Compute the sample covariance cov(x, y), dividing by N - 1 = 2. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "cov(x, y)",
+          "kind": "number",
+          "answer": "3.75",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "mean(x) = 6 and mean(y) = 1.5. Centered x: -4, -1, 5; centered y: -2.5, 2.5, 0. Products: 10, -2.5, 0; sum = 7.5. Sample covariance = 7.5/2 = 3.75.",
+      "hints": [
+        "One mean is not a whole number and the centered products have mixed signs; keep every sign when you sum them.",
+        "Compute mean(x) and mean(y), center both channels, and write the three pair-products with their signs before dividing the sum by N - 1 = 2.",
+        "mean(x) = 6 and mean(y) = 1.5. Centered x: -4, -1, 5; centered y: -2.5, 2.5, 0. Products: 10, -2.5, 0; sum = 7.5. Sample covariance = 7.5/2 = 3.75."
+      ],
+      "remediation": "If you got 2.5 you divided by N = 3 instead of N - 1 = 2. If you got 11.5 you averaged x·y without centering. Revisit /lessons/M09."
+    },
+    {
+      "id": "X05.coordinate-logs.1",
+      "route": "coordinate-logs",
+      "difficulty": 1,
+      "structure": "statistics.centered-covariance@1",
+      "inputs": {
+        "x": [
+          -1,
+          0,
+          1,
+          2
+        ],
+        "y": [
+          3,
+          1,
+          0,
+          -2
+        ],
+        "denominator": 4
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "A robot logs four paired position residuals in metres: x = [-1, 0, 1, 2] and y = [3, 1, 0, -2]. Compute the population covariance cov(x, y) in m², dividing by N = 4 after centering each coordinate. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "cov(x, y) (m²)",
+          "kind": "number",
+          "answer": "-2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "mean(x) = 0.5 m and mean(y) = 0.5 m. Centered x: -1.5, -0.5, 0.5, 1.5; centered y: 2.5, 0.5, -0.5, -2.5. Products: -3.75, -0.25, -0.25, -3.75; sum = -8. Population covariance = -8/4 = -2 m².",
+      "hints": [
+        "Center each coordinate by its own mean before multiplying; the covariance has units m·m = m².",
+        "Compute mean(x) and mean(y) over all four samples, subtract them, form the four centered pair-products, and divide their sum by N = 4.",
+        "mean(x) = 0.5 m and mean(y) = 0.5 m. Centered x: -1.5, -0.5, 0.5, 1.5; centered y: 2.5, 0.5, -0.5, -2.5. Products: -3.75, -0.25, -0.25, -3.75; sum = -8. Population covariance = -8/4 = -2 m²."
+      ],
+      "remediation": "If you got -1.75 you averaged x·y without centering ((-3 + 0 + 0 - 4)/4). If you got about -2.667 you divided by N - 1 = 3. Revisit /lessons/M09."
+    },
+    {
+      "id": "X05.coordinate-logs.2",
+      "route": "coordinate-logs",
+      "difficulty": 2,
+      "structure": "statistics.centered-covariance@1",
+      "inputs": {
+        "x": [
+          0.2,
+          0.4,
+          0.6,
+          1.0
+        ],
+        "y": [
+          1.1,
+          0.9,
+          1.0,
+          0.6
+        ],
+        "denominator": 4
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Four paired coordinate-log samples in metres: x = [0.2, 0.4, 0.6, 1.0] and y = [1.1, 0.9, 1.0, 0.6]. Compute the population covariance cov(x, y) in m², dividing by N = 4. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "cov(x, y) (m²)",
+          "kind": "number",
+          "answer": "-0.05",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "mean(x) = 0.55 m and mean(y) = 0.9 m. Centered x: -0.35, -0.15, 0.05, 0.45; centered y: 0.2, 0, 0.1, -0.3. Products: -0.07, 0, 0.005, -0.135; sum = -0.2. Population covariance = -0.2/4 = -0.05 m².",
+      "hints": [
+        "Small decimal values give a small covariance; keep enough decimals in each centered product.",
+        "Compute mean(x) and mean(y); one centered y value is exactly 0, so that product drops out. Sum the other three products and divide by N = 4.",
+        "mean(x) = 0.55 m and mean(y) = 0.9 m. Centered x: -0.35, -0.15, 0.05, 0.45; centered y: 0.2, 0, 0.1, -0.3. Products: -0.07, 0, 0.005, -0.135; sum = -0.2. Population covariance = -0.2/4 = -0.05 m²."
+      ],
+      "remediation": "If you got 0.445 you averaged x·y without centering. If you got about -0.067 you divided by N - 1 = 3. Revisit /lessons/M09."
+    },
+    {
+      "id": "X05.coordinate-logs.3",
+      "route": "coordinate-logs",
+      "difficulty": 3,
+      "structure": "statistics.centered-covariance@1",
+      "inputs": {
+        "x": [
+          -2,
+          1,
+          3,
+          6
+        ],
+        "y": [
+          3.5,
+          3,
+          0.5,
+          0
+        ],
+        "denominator": 3
+      },
+      "objectiveId": "M09.covariance",
+      "prompt": "Four paired coordinate-log samples in metres: x = [-2, 1, 3, 6] and y = [3.5, 3, 0.5, 0]. Compute the sample covariance cov(x, y) in m², dividing by N - 1 = 3. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "cov(x, y) (m²)",
+          "kind": "number",
+          "answer": "-5.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "mean(x) = 2 m and mean(y) = 1.75 m. Centered x: -4, -1, 1, 4; centered y: 1.75, 1.25, -1.25, -1.75. Products: -7, -1.25, -1.25, -7; sum = -16.5. Sample covariance = -16.5/3 = -5.5 m².",
+      "hints": [
+        "Same centering as before, but this log uses the sample convention N - 1.",
+        "Compute mean(x) and mean(y) (one is not a whole number), form the four centered pair-products, and divide their sum by N - 1 = 3.",
+        "mean(x) = 2 m and mean(y) = 1.75 m. Centered x: -4, -1, 1, 4; centered y: 1.75, 1.25, -1.25, -1.75. Products: -7, -1.25, -1.25, -7; sum = -16.5. Sample covariance = -16.5/3 = -5.5 m²."
+      ],
+      "remediation": "If you got -4.125 you divided by N = 4 instead of N - 1 = 3. Covariance is not correlation: it is not bounded by 1. Revisit /lessons/M09."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "sensor-residuals": "Center three paired residuals under a stated N or N - 1 convention.",
+    "coordinate-logs": "Center four coordinate-log samples in metres and report covariance in m²."
+  }
+}

@@ -1,0 +1,256 @@
+{
+  "id": "X15",
+  "version": 3,
+  "title": "Check swept clearance",
+  "domain": "Robotics",
+  "topicId": "R03",
+  "objectiveId": "R03.segment-clearance",
+  "routes": [
+    "disc-robot",
+    "tool-clearance"
+  ],
+  "scope": "2D point-segment distance after radius inflation",
+  "labIds": [
+    "L11"
+  ],
+  "items": [
+    {
+      "id": "X15.disc-robot.1",
+      "route": "disc-robot",
+      "difficulty": 1,
+      "structure": "X15.R03.segment-clearance.1@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0
+        ],
+        "center": [
+          2,
+          1.5
+        ],
+        "radius": "0.5"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A disc robot's centre follows the straight path segment from (0, 0) to (4, 0) m. An obstacle, already inflated by the robot's radius, is a circle centred at (2, 1.5) m with radius 0.5 m. Find the minimum distance in metres from the obstacle centre to any point of the path segment. Give the distance to at least 3 decimal places (graded within ±0.001 m).",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "d = (4, 0), w = (2, 1.5), t = (w·d)/(d·d) = 0.5; t is inside [0, 1], so the closest point is interior (2, 0). Distance = 1.5 m, greater than the inflated radius 0.5 m, so the path is clear.",
+      "hints": [
+        "Drop a perpendicular from the obstacle centre onto the path and check whether its foot lies between the two endpoints.",
+        "With d = end - start = (4, 0) and w = centre - start = (2, 1.5), compute t = (w·d)/(d·d), clamp it to [0, 1], and find the closest point start + t·d; then measure to the centre.",
+        "d = (4, 0), w = (2, 1.5), t = (w·d)/(d·d) = 0.5; t is inside [0, 1], so the closest point is interior (2, 0). Distance = 1.5 m, greater than the inflated radius 0.5 m, so the path is clear."
+      ],
+      "remediation": "If you answered 2.5 you only measured to the endpoints; here the closest point is in the middle of the path. Revisit /lessons/R03."
+    },
+    {
+      "id": "X15.disc-robot.2",
+      "route": "disc-robot",
+      "difficulty": 2,
+      "structure": "X15.R03.segment-clearance.2@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          4,
+          0
+        ],
+        "center": [
+          6,
+          1
+        ],
+        "radius": "0.5"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A disc robot's centre follows the straight path segment from (0, 0) to (4, 0) m. An obstacle, already inflated by the robot's radius, is a circle centred at (6, 1) m with radius 0.5 m. Find the minimum distance in metres from the obstacle centre to any point of the path segment. Give the distance to at least 3 decimal places (graded within ±0.001 m).",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "2.236068",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "d = (4, 0), w = (6, 1), t = (w·d)/(d·d) = 1.5; t is above 1, so clamp it to 1: the closest point is the end (4, 0). Distance = 2.236068 m, greater than the inflated radius 0.5 m, so the path is clear. The infinite-line distance would be 1 m, which is not the segment distance.",
+      "hints": [
+        "The obstacle sits beyond the end of the path, so check whether the perpendicular foot is still on the segment.",
+        "With d = end - start = (4, 0) and w = centre - start = (6, 1), compute t = (w·d)/(d·d), clamp it to [0, 1], and find the closest point start + t·d; then measure to the centre.",
+        "d = (4, 0), w = (6, 1), t = (w·d)/(d·d) = 1.5; t is above 1, so clamp it to 1: the closest point is the end (4, 0). Distance = 2.236068 m, greater than the inflated radius 0.5 m, so the path is clear. The infinite-line distance would be 1 m, which is not the segment distance."
+      ],
+      "remediation": "If you answered 1 you measured to the infinite line through the path; its perpendicular foot (6, 0) lies past the endpoint (4, 0), so clamp to the endpoint. Revisit /lessons/R03."
+    },
+    {
+      "id": "X15.disc-robot.3",
+      "route": "disc-robot",
+      "difficulty": 3,
+      "structure": "X15.R03.segment-clearance.0@1",
+      "inputs": {
+        "start": [
+          1,
+          1
+        ],
+        "end": [
+          5,
+          4
+        ],
+        "center": [
+          -2,
+          2
+        ],
+        "radius": "1"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A disc robot's centre follows the straight path segment from (1, 1) to (5, 4) m. An obstacle, already inflated by the robot's radius, is a circle centred at (-2, 2) m with radius 1 m. Find the minimum distance in metres from the obstacle centre to any point of the path segment. Give the distance to at least 3 decimal places (graded within ±0.001 m).",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "3.162278",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "d = (4, 3), w = (-3, 1), t = (w·d)/(d·d) = -0.36; t is below 0, so clamp it to 0: the closest point is the start (1, 1). Distance = 3.162278 m, greater than the inflated radius 1 m, so the path is clear. The infinite-line distance would be 2.6 m, which is not the segment distance.",
+      "hints": [
+        "The segment is slanted; compute the projection parameter t carefully, because the obstacle is behind the start point.",
+        "With d = end - start = (4, 3) and w = centre - start = (-3, 1), compute t = (w·d)/(d·d), clamp it to [0, 1], and find the closest point start + t·d; then measure to the centre.",
+        "d = (4, 3), w = (-3, 1), t = (w·d)/(d·d) = -0.36; t is below 0, so clamp it to 0: the closest point is the start (1, 1). Distance = 3.162278 m, greater than the inflated radius 1 m, so the path is clear. The infinite-line distance would be 2.6 m, which is not the segment distance."
+      ],
+      "remediation": "If you answered 2.6 you used the infinite-line distance; t is negative here, so the closest point is the start (1, 1). Endpoint distances alone are only right when t falls outside [0, 1]. Revisit /lessons/R03."
+    },
+    {
+      "id": "X15.tool-clearance.1",
+      "route": "tool-clearance",
+      "difficulty": 1,
+      "structure": "geometry.degenerate-segment@1",
+      "inputs": {
+        "start": [
+          1,
+          1
+        ],
+        "end": [
+          1,
+          1
+        ],
+        "center": [
+          4,
+          5
+        ],
+        "radius": "1"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A tool centre moves along the straight segment from (1, 1) to (1, 1) m. An obstacle, already inflated by the tool radius, is a circle centred at (4, 5) m with radius 1 m. Find the minimum distance in metres from the obstacle centre to any point of the tool's segment. This is a geometry check, not a hardware clearance authorization. Give the distance to at least 3 decimal places (graded within ±0.001 m).",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "The segment has zero length, so it is the point (1, 1). Distance = sqrt(3² + 4²) = 5 m, greater than the inflated radius 1 m, so the path is clear.",
+      "hints": [
+        "The start and end points coincide, so the 'segment' is a single point; the projection formula would divide by zero.",
+        "Treat the segment as the single point (1, 1); next compute the ordinary distance from (4, 5) to it.",
+        "The segment has zero length, so it is the point (1, 1). Distance = sqrt(3² + 4²) = 5 m, greater than the inflated radius 1 m, so the path is clear."
+      ],
+      "remediation": "If your calculation failed or returned NaN, you divided by the zero segment length; a zero-length segment is just its point. Revisit /lessons/R03."
+    },
+    {
+      "id": "X15.tool-clearance.2",
+      "route": "tool-clearance",
+      "difficulty": 2,
+      "structure": "geometry.segment-tangent@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          2,
+          0
+        ],
+        "center": [
+          1,
+          0.5
+        ],
+        "radius": "0.5"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A tool centre moves along the straight segment from (0, 0) to (2, 0) m. An obstacle, already inflated by the tool radius, is a circle centred at (1, 0.5) m with radius 0.5 m. Find the minimum distance in metres from the obstacle centre to any point of the tool's segment. This is a geometry check, not a hardware clearance authorization. Give the distance to at least 3 decimal places (graded within ±0.001 m).",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "d = (2, 0), w = (1, 0.5), t = (w·d)/(d·d) = 0.5; t is inside [0, 1], so the closest point is interior (1, 0). Distance = 0.5 m, equal to the radius, so the obstacle touches the path; touching counts as collision.",
+      "hints": [
+        "The obstacle centre is directly above the middle of the tool path; compare the distance you find with the radius afterwards.",
+        "With d = end - start = (2, 0) and w = centre - start = (1, 0.5), compute t = (w·d)/(d·d), clamp it to [0, 1], and find the closest point start + t·d; then measure to the centre.",
+        "d = (2, 0), w = (1, 0.5), t = (w·d)/(d·d) = 0.5; t is inside [0, 1], so the closest point is interior (1, 0). Distance = 0.5 m, equal to the radius, so the obstacle touches the path; touching counts as collision."
+      ],
+      "remediation": "If you answered about 1.118 you measured only to the endpoints; the closest point is (1, 0), in the middle of the path. Revisit /lessons/R03."
+    },
+    {
+      "id": "X15.tool-clearance.3",
+      "route": "tool-clearance",
+      "difficulty": 3,
+      "structure": "geometry.segment-endpoint-clamp@1",
+      "inputs": {
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          2,
+          2
+        ],
+        "center": [
+          3.5,
+          2.5
+        ],
+        "radius": "0.8"
+      },
+      "objectiveId": "R03.segment-clearance",
+      "prompt": "A tool centre moves along the straight segment from (0, 0) to (2, 2) m. An obstacle, already inflated by the tool radius, is a circle centred at (3.5, 2.5) m with radius 0.8 m. Find the minimum distance in metres from the obstacle centre to any point of the tool's segment. This is a geometry check, not a hardware clearance authorization. Give the distance to at least 3 decimal places (graded within ±0.001 m).",
+      "fields": [
+        {
+          "label": "Minimum distance (m)",
+          "kind": "number",
+          "answer": "1.581139",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "d = (2, 2), w = (3.5, 2.5), t = (w·d)/(d·d) = 1.5; t is above 1, so clamp it to 1: the closest point is the end (2, 2). Distance = 1.581139 m, greater than the inflated radius 0.8 m, so the path is clear. The infinite-line distance would be 0.707107 m, which is not the segment distance.",
+      "hints": [
+        "The obstacle is beyond the end of the diagonal tool path; decide whether the perpendicular foot is on the segment before trusting a perpendicular distance.",
+        "With d = end - start = (2, 2) and w = centre - start = (3.5, 2.5), compute t = (w·d)/(d·d), clamp it to [0, 1], and find the closest point start + t·d; then measure to the centre.",
+        "d = (2, 2), w = (3.5, 2.5), t = (w·d)/(d·d) = 1.5; t is above 1, so clamp it to 1: the closest point is the end (2, 2). Distance = 1.581139 m, greater than the inflated radius 0.8 m, so the path is clear. The infinite-line distance would be 0.707107 m, which is not the segment distance."
+      ],
+      "remediation": "If you answered about 0.707 you used the infinite line, which would even report a false collision (0.707 < 0.8). The projection parameter is t = 1.5 > 1, so clamp to the endpoint (2, 2). Revisit /lessons/R03."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "disc-robot": "Point-segment distance with an interior closest point, a foot past the end, and a slanted segment clamped at its start.",
+    "tool-clearance": "A zero-length segment, an exactly tangent obstacle, and an obstacle beyond the segment end where the infinite-line distance would report a false collision."
+  }
+}

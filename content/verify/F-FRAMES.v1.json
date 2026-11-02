@@ -11,31 +11,39 @@
             "id": "F-FRAMES.A.0",
             "route": "independent",
             "difficulty": 2,
-            "structure": "frame.labels.compose@1",
+            "structure": "frame.labels.chain-lidar@1",
             "inputs": {
-              "query": "compose"
+              "given": [
+                "T_WB",
+                "T_LB"
+              ],
+              "have": "p_L",
+              "want": "p_W"
             },
             "objectiveId": "M12.frame-labels",
-            "prompt": "Given T_AB and T_BC, which transform maps C→A?",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. A robot base B sits in the world frame W, and T_WB is known. A lidar L is mounted on the base, but its calibration is stored as T_LB. The lidar measures a point p_L. Which expression gives the same point in world coordinates p_W?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Expression",
                 "kind": "choice",
-                "answer": "T_AC",
+                "answer": "T_WB inv(T_LB) p_L",
                 "tolerance": 0.001,
                 "options": [
-                  "T_AC",
-                  "T_CA"
+                  "T_WB inv(T_LB) p_L",
+                  "T_WB T_LB p_L",
+                  "inv(T_LB) T_WB p_L",
+                  "inv(T_WB) T_LB p_L",
+                  "T_LB T_WB p_L"
                 ]
               }
             ],
-            "solution": "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame.",
+            "solution": "inv(T_LB) = T_BL turns lidar coordinates into base coordinates, and T_WB turns base coordinates into world coordinates, so p_W = T_WB inv(T_LB) p_L = T_WB T_BL p_L = T_WL p_L. T_WB T_LB p_L has the mismatched pair B|L and feeds p_L to a matrix that expects B coordinates; inv(T_LB) T_WB = T_BL T_WB has the pair L|W; inv(T_WB) T_LB = T_BW T_LB has the pair W|L; T_LB T_WB has the pair B|W. All four are invalid chains, not maps in some other direction.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame."
+              "Each label reads destination-source: T_LB takes B coordinates and returns L coordinates. You start from L coordinates.",
+              "Rewrite every inv(T_XY) in the options as T_YX. The factor next to p_L must have source label L, neighbouring labels must match, and the leftmost label must be W.",
+              "inv(T_LB) = T_BL turns lidar coordinates into base coordinates, and T_WB turns base coordinates into world coordinates, so p_W = T_WB inv(T_LB) p_L = T_WB T_BL p_L = T_WL p_L. T_WB T_LB p_L has the mismatched pair B|L and feeds p_L to a matrix that expects B coordinates; inv(T_LB) T_WB = T_BL T_WB has the pair L|W; inv(T_WB) T_LB = T_BW T_LB has the pair W|L; T_LB T_WB has the pair B|W. All four are invalid chains, not maps in some other direction."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose T_WB T_LB p_L, you used the stored calibration as if it went from L to B; T_LB goes from B to L, so it must be inverted. Read every transform as destination-source: in a valid product neighbouring labels match (T_AB T_BC), the leftmost label is the output frame and the rightmost label is the input frame; inverting swaps the labels. Revisit frame labels in lesson M12 (Theory and derivation) and practise the X10 frame-label items."
           },
           "dimension": "C",
           "critical": true
@@ -45,31 +53,37 @@
             "id": "F-FRAMES.A.1",
             "route": "independent",
             "difficulty": 2,
-            "structure": "frame.labels.derived@1",
+            "structure": "frame.labels.derived-pair@1",
             "inputs": {
-              "query": "derived"
+              "given": [
+                "T_AB",
+                "T_AC"
+              ],
+              "want": "T_BC"
             },
             "objectiveId": "M12.frame-labels",
-            "prompt": "Given T_AB and T_AC, choose the expression mapping C→B.",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. Two sensors B and C are mounted on one body A, and both T_AB and T_AC are known. Which expression equals T_BC, the transform that maps C coordinates into B?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Expression",
                 "kind": "choice",
-                "answer": "inverse-AB-times-AC",
+                "answer": "inv(T_AB) T_AC",
                 "tolerance": 0.001,
                 "options": [
-                  "inverse-AB-times-AC",
-                  "AB-times-AC"
+                  "T_AB T_AC",
+                  "inv(T_AB) T_AC",
+                  "inv(T_AC) T_AB",
+                  "T_AC inv(T_AB)"
                 ]
               }
             ],
-            "solution": "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame.",
+            "solution": "inv(T_AB) T_AC = T_BA T_AC = T_BC: the inner labels A-A match and the outer labels are B and C. inv(T_AC) T_AB = T_CA T_AB = T_CB maps the other way; T_AB T_AC and T_AC inv(T_AB) = T_AC T_BA have mismatched inner labels (B-A, C-B).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame."
+              "You need output frame B and input frame C. Write each candidate with explicit labels, remembering inv(T_AB) = T_BA.",
+              "Rewrite every inv(T_XY) in the options as T_YX. Then, for each product, check that the two inner labels match and that the outer labels read B ... C.",
+              "inv(T_AB) T_AC = T_BA T_AC = T_BC: the inner labels A-A match and the outer labels are B and C. inv(T_AC) T_AB = T_CA T_AB = T_CB maps the other way; T_AB T_AC and T_AC inv(T_AB) = T_AC T_BA have mismatched inner labels (B-A, C-B)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose inv(T_AC) T_AB, you built T_CB (B into C) instead of T_BC. Read every transform as destination-source: in a valid product neighbouring labels match (T_AB T_BC), the leftmost label is the output frame and the rightmost label is the input frame; inverting swaps the labels. Revisit frame labels in lesson M12 (Theory and derivation) and practise the X10 frame-label items."
           },
           "dimension": "C",
           "critical": false
@@ -79,179 +93,164 @@
             "id": "F-FRAMES.A.2",
             "route": "independent",
             "difficulty": 2,
-            "structure": "point-direction.direction-w@1",
+            "structure": "frame.labels.rotation-column@1",
             "inputs": {
-              "quantity": "direction-w"
+              "transform": "T_AB",
+              "part": "first-rotation-column"
             },
-            "objectiveId": "M12.point-vs-direction",
-            "prompt": "A homogeneous 2D direction has which final coordinate w?",
+            "objectiveId": "M12.frame-labels",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. In the homogeneous matrix T_AB = [[R, t], [0, 0, 1]], what does the FIRST column of the 2x2 rotation block R describe?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Meaning of R's first column",
                 "kind": "choice",
-                "answer": "0",
+                "answer": "The unit x-axis direction of frame B, in A coordinates",
                 "tolerance": 0.001,
                 "options": [
-                  "0",
-                  "1"
+                  "The unit x-axis direction of frame A, in B coordinates",
+                  "The unit y-axis direction of frame B, in A coordinates",
+                  "The unit x-axis direction of frame B, in A coordinates",
+                  "The unit x-axis direction of frame B, in B coordinates",
+                  "The position of frame B's origin, in A coordinates"
                 ]
               }
             ],
-            "solution": "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm.",
+            "solution": "T_AB (1, 0, 0) = (first column of R, 0). The input (1, 0, 0) is B's x-axis direction in B coordinates, and T_AB outputs A coordinates, so R's first column is B's unit x-axis expressed in A. The second column is B's y-axis in A, the translation column t (not part of R) is B's origin in A, and the options in B coordinates swap source and destination.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm."
+              "B's x-axis is the direction (1, 0) in B coordinates. Think about what T_AB does to it.",
+              "Multiply T_AB by the homogeneous direction (1, 0, 0) (w = 0, so t is not added). Only one column of R survives; then decide which frame every output of T_AB is written in.",
+              "T_AB (1, 0, 0) = (first column of R, 0). The input (1, 0, 0) is B's x-axis direction in B coordinates, and T_AB outputs A coordinates, so R's first column is B's unit x-axis expressed in A. The second column is B's y-axis in A, the translation column t (not part of R) is B's origin in A, and the options in B coordinates swap source and destination."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
-          },
-          "dimension": "C",
-          "critical": true
-        },
-        {
-          "task": {
-            "id": "F-FRAMES.A.3",
-            "route": "independent",
-            "difficulty": 2,
-            "structure": "point-direction.point-w@1",
-            "inputs": {
-              "quantity": "point-w"
-            },
-            "objectiveId": "M12.point-vs-direction",
-            "prompt": "A homogeneous 2D point has which final coordinate w?",
-            "fields": [
-              {
-                "label": "Answer",
-                "kind": "choice",
-                "answer": "1",
-                "tolerance": 0.001,
-                "options": [
-                  "0",
-                  "1"
-                ]
-              }
-            ],
-            "solution": "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm.",
-            "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm."
-            ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose an option in B coordinates, you swapped source and destination; if you chose the y-axis, you mixed up the columns of R. Read every transform as destination-source: in a valid product neighbouring labels match (T_AB T_BC), the leftmost label is the output frame and the rightmost label is the input frame; inverting swaps the labels. Revisit frame labels in lesson M12 (Theory and derivation) and practise the X10 frame-label items."
           },
           "dimension": "C",
           "critical": false
         },
         {
           "task": {
-            "id": "F-FRAMES.A.4",
+            "id": "F-FRAMES.A.3",
             "route": "independent",
             "difficulty": 2,
-            "structure": "point-direction.apply@1",
+            "structure": "point-direction.wheel-objects@1",
             "inputs": {
-              "theta": "pi/2",
-              "translation": [
-                12,
-                -1
-              ],
-              "vector": [
-                1,
-                2
+              "objects": [
+                "contact point",
+                "rolling direction",
+                "vector between contact points"
               ]
             },
             "objectiveId": "M12.point-vs-direction",
-            "prompt": "Rotate +π/2 then translate (12,−1). Transform point p=(1,2) and direction v=(1,2). Return point x,y then direction x,y.",
+            "prompt": "A rigid transform with rotation R and translation t is applied in homogeneous form to three objects of a wheeled robot: (a) the position of a wheel's ground-contact point, (b) the wheel's rolling direction, and (c) the vector from the left wheel's contact point to the right wheel's contact point. Which of them get t added?",
             "fields": [
               {
-                "label": "Point x",
+                "label": "Receive t",
+                "kind": "choice",
+                "answer": "Only (a)",
+                "tolerance": 0.001,
+                "options": [
+                  "(a) and (c)",
+                  "Only (b)",
+                  "(a) and (b)",
+                  "Only (a)",
+                  "All three"
+                ]
+              }
+            ],
+            "solution": "(a) is a location, a point with w = 1, so it becomes R a + t. (b) is a heading, a direction with w = 0, so it becomes R b. (c) is the difference of two points, which is also a direction (w = 1 - 1 = 0), so it becomes R c: the translation cancels. Only (a) gets t added. '(a) and (c)' treats the point-to-point vector as a point.",
+            "hints": [
+              "Decide for each object whether it is a location (a point) or a displacement/heading (a direction).",
+              "A location changes when the frame is shifted; a heading or a point-to-point vector does not. Classify (a), (b) and (c) that way, then recall which kind gets t in [[R, t], [0, 0, 1]].",
+              "(a) is a location, a point with w = 1, so it becomes R a + t. (b) is a heading, a direction with w = 0, so it becomes R b. (c) is the difference of two points, which is also a direction (w = 1 - 1 = 0), so it becomes R c: the translation cancels. Only (a) gets t added. '(a) and (c)' treats the point-to-point vector as a point."
+            ],
+            "remediation": "Points (w = 1) receive the translation; directions (w = 0), including differences of points, are only rotated. Revisit the point/direction part of lesson M12 (Theory and derivation) and practise the X10 point-vs-direction items."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.4",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.difference@1",
+            "inputs": {
+              "p": [
+                5,
+                1
+              ],
+              "q": [
+                2,
+                5
+              ],
+              "theta": "pi/2",
+              "translation": [
+                6,
+                -2
+              ]
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Points p = (5, 1) and q = (2, 5) are in frame A. A rigid transform T rotates by +pi/2 (CCW, about the origin) and then translates by (6, -2). Using homogeneous coordinates for p and q, compute T (p - q) and give its x and y components. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
+            "fields": [
+              {
+                "label": "x of T (p - q)",
                 "kind": "number",
-                "answer": "10",
+                "answer": "4",
                 "tolerance": 0.001
               },
               {
-                "label": "Point y",
+                "label": "y of T (p - q)",
                 "kind": "number",
-                "answer": "0",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Direction x",
-                "kind": "number",
-                "answer": "-2",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Direction y",
-                "kind": "number",
-                "answer": "1",
+                "answer": "3",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Rotation maps (1,2) to (−2,1); only the point receives the offset.",
+            "solution": "p - q = (5 - 2, 1 - 5, 1 - 1) = (3, -4, 0): w = 0, so it is a direction and T only rotates it: R(+pi/2) (3, -4) = (4, 3). Treating p - q as a point would add (6, -2) and give (10, 1); computing T p - q also mixes a transformed and an untransformed point.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Rotation maps (1,2) to (−2,1); only the point receives the offset."
+              "Form p - q from the homogeneous points first, and look at its last component before applying T.",
+              "p - q has last component 1 - 1. Use that to decide whether the translation (6, -2) is applied, then rotate p - q with R(+pi/2)(x, y) = (-y, x).",
+              "p - q = (5 - 2, 1 - 5, 1 - 1) = (3, -4, 0): w = 0, so it is a direction and T only rotates it: R(+pi/2) (3, -4) = (4, 3). Treating p - q as a point would add (6, -2) and give (10, 1); computing T p - q also mixes a transformed and an untransformed point."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Point minus point is a direction (w = 0); point plus direction is a point (w = 1). Revisit lesson M12 (Theory and derivation) and practise the X10 point-vs-direction items."
           },
-          "dimension": "M",
-          "critical": true
+          "dimension": "C",
+          "critical": false
         },
         {
           "task": {
             "id": "F-FRAMES.A.5",
             "route": "independent",
             "difficulty": 2,
-            "structure": "point-direction.apply@1",
+            "structure": "point-direction.inverse-direction@1",
             "inputs": {
-              "theta": "pi/2",
-              "translation": [
-                13,
-                -1
-              ],
-              "vector": [
-                1,
-                2
-              ]
+              "transform": "T_AB",
+              "have": "d_A",
+              "want": "d_B"
             },
             "objectiveId": "M12.point-vs-direction",
-            "prompt": "Rotate +π/2 then translate (13,−1). Transform point p=(1,2) and direction v=(1,2). Return point x,y then direction x,y.",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. T_AB has rotation block R and translation t. A direction d_A (for example a heading) is known in frame A. Which expression gives the same direction in frame B?",
             "fields": [
               {
-                "label": "Point x",
-                "kind": "number",
-                "answer": "11",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Point y",
-                "kind": "number",
-                "answer": "0",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Direction x",
-                "kind": "number",
-                "answer": "-2",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Direction y",
-                "kind": "number",
-                "answer": "1",
-                "tolerance": 0.001
+                "label": "Expression",
+                "kind": "choice",
+                "answer": "R^T d_A",
+                "tolerance": 0.001,
+                "options": [
+                  "R^T d_A",
+                  "R^T (d_A - t)",
+                  "R d_A + t",
+                  "R d_A"
+                ]
               }
             ],
-            "solution": "Rotation maps (1,2) to (−2,1); only the point receives the offset.",
+            "solution": "A direction has w = 0, so inv(T_AB) (d_A, 0) = (R^T d_A + 0 * (-R^T t), 0) = (R^T d_A, 0): directions only undergo the inverse rotation. R^T (d_A - t) is the inverse map of a point (it wrongly removes t); R d_A + t is the forward map of a point; R d_A rotates the right kind of object but in the forward direction (B into A).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Rotation maps (1,2) to (−2,1); only the point receives the offset."
+              "Two decisions: which way the map goes (A into B is the inverse of T_AB), and whether a direction feels the translation.",
+              "Write inv(T_AB) = [[R^T, -R^T t], [0, 0, 1]] and multiply it by the homogeneous form of a direction; check which part of the matrix is switched off.",
+              "A direction has w = 0, so inv(T_AB) (d_A, 0) = (R^T d_A + 0 * (-R^T t), 0) = (R^T d_A, 0): directions only undergo the inverse rotation. R^T (d_A - t) is the inverse map of a point (it wrongly removes t); R d_A + t is the forward map of a point; R d_A rotates the right kind of object but in the forward direction (B into A)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you subtracted t, you treated the direction as a point; if you chose R d_A, you applied the forward rotation (B into A). Revisit lesson M12 (Theory and derivation) and practise the X10 point-vs-direction items."
           },
-          "dimension": "M",
+          "dimension": "C",
           "critical": false
         },
         {
@@ -259,67 +258,123 @@
             "id": "F-FRAMES.A.6",
             "route": "independent",
             "difficulty": 2,
-            "structure": "se2.concept.order@1",
+            "structure": "point-direction.apply@1",
             "inputs": {
-              "query": "order"
+              "theta": "-pi/2",
+              "cos": 0,
+              "sin": -1,
+              "translation": [
+                3,
+                -1
+              ],
+              "point": [
+                -2,
+                5
+              ],
+              "vector": [
+                -2,
+                -8
+              ]
             },
-            "objectiveId": "R03.compose-invert-se2",
-            "prompt": "Column vectors: which composition maps C→A?",
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Convention: column vectors; angles in radians, counter-clockwise (CCW) positive. A rigid transform T first rotates about the origin by theta = -pi/2 and then translates by t = (3, -1). Apply T to the point p = (-2, 5) and to the direction v = (-2, -8). Return the transformed point x, y, then the transformed direction x, y. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
             "fields": [
               {
-                "label": "Answer",
-                "kind": "choice",
-                "answer": "AB-times-BC",
-                "tolerance": 0.001,
-                "options": [
-                  "AB-times-BC",
-                  "BC-times-AB"
-                ]
+                "label": "Point x",
+                "kind": "number",
+                "answer": "8",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Point y",
+                "kind": "number",
+                "answer": "1",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction x",
+                "kind": "number",
+                "answer": "-8",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction y",
+                "kind": "number",
+                "answer": "2",
+                "tolerance": 0.001
               }
             ],
-            "solution": "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp.",
+            "solution": "R p = (5, 2), and the point also receives the translation: R p + t = (5, 2) + (3, -1) = (8, 1). The direction has w = 0, so it is only rotated: R v = (-8, 2). Answer: point (8, 1), direction (-8, 2).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp."
+              "A point (w = 1) is rotated and then shifted by t; a direction (w = 0) is only rotated. Here R = [[c, -s], [s, c]] with c = 0 and s = -1.",
+              "Rotate both vectors with R(x, y) = (c x - s y, s x + c y): R p = (0*(-2) - (-1)*5, (-1)*(-2) + 0*5) and R v = (0*(-2) - (-1)*(-8), (-1)*(-2) + 0*(-8)). Then add t = (3, -1) only to the vector that has w = 1.",
+              "R p = (5, 2), and the point also receives the translation: R p + t = (5, 2) + (3, -1) = (8, 1). The direction has w = 0, so it is only rotated: R v = (-8, 2). Answer: point (8, 1), direction (-8, 2)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If your direction came out as (-5, 1), you added t to a direction (treated w = 0 as w = 1). If both results are off, check that R rotates CCW (R = [[c, -s], [s, c]], not its transpose) and that the point is rotated before it is translated. Revisit the point/direction part of lesson M12 (Theory and derivation, Failure modes) and practise the X10 point-vs-direction items."
           },
-          "dimension": "C",
+          "dimension": "M",
           "critical": true
         },
         {
           "task": {
             "id": "F-FRAMES.A.7",
             "route": "independent",
-            "difficulty": 2,
-            "structure": "se2.concept.inverse-offset@1",
+            "difficulty": 3,
+            "structure": "point-direction.apply@1",
             "inputs": {
-              "query": "inverse-offset"
+              "theta": "atan2(0.8, 0.6)",
+              "cos": 0.6,
+              "sin": 0.8,
+              "translation": [
+                2,
+                2
+              ],
+              "point": [
+                5,
+                2
+              ],
+              "vector": [
+                -5,
+                1
+              ]
             },
-            "objectiveId": "R03.compose-invert-se2",
-            "prompt": "In inverse (R,p), which translation is correct?",
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Convention: column vectors; angles in radians, counter-clockwise (CCW) positive. A rigid transform T first rotates about the origin by theta with cos(theta) = 0.6 and sin(theta) = 0.8 (theta is about 0.9273 rad) and then translates by t = (2, 2). Apply T to the point p = (5, 2) and to the direction v = (-5, 1). Return the transformed point x, y, then the transformed direction x, y. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
             "fields": [
               {
-                "label": "Answer",
-                "kind": "choice",
-                "answer": "-R-transpose-p",
-                "tolerance": 0.001,
-                "options": [
-                  "-R-transpose-p",
-                  "-p"
-                ]
+                "label": "Point x",
+                "kind": "number",
+                "answer": "3.4",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Point y",
+                "kind": "number",
+                "answer": "7.2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction x",
+                "kind": "number",
+                "answer": "-3.8",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction y",
+                "kind": "number",
+                "answer": "-3.4",
+                "tolerance": 0.001
               }
             ],
-            "solution": "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp.",
+            "solution": "R p = (1.4, 5.2), and the point also receives the translation: R p + t = (1.4, 5.2) + (2, 2) = (3.4, 7.2). The direction has w = 0, so it is only rotated: R v = (-3.8, -3.4). Answer: point (3.4, 7.2), direction (-3.8, -3.4).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp."
+              "A point (w = 1) is rotated and then shifted by t; a direction (w = 0) is only rotated. Here R = [[c, -s], [s, c]] with c = 0.6 and s = 0.8.",
+              "Rotate both vectors with R(x, y) = (c x - s y, s x + c y): R p = (0.6*5 - 0.8*2, 0.8*5 + 0.6*2) and R v = (0.6*(-5) - 0.8*1, 0.8*(-5) + 0.6*1). Then add t = (2, 2) only to the vector that has w = 1.",
+              "R p = (1.4, 5.2), and the point also receives the translation: R p + t = (1.4, 5.2) + (2, 2) = (3.4, 7.2). The direction has w = 0, so it is only rotated: R v = (-3.8, -3.4). Answer: point (3.4, 7.2), direction (-3.8, -3.4)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If your direction came out as (-1.8, -1.4), you added t to a direction (treated w = 0 as w = 1). If both results are off, check that R rotates CCW (R = [[c, -s], [s, c]], not its transpose) and that the point is rotated before it is translated. Revisit the point/direction part of lesson M12 (Theory and derivation, Failure modes) and practise the X10 point-vs-direction items."
           },
-          "dimension": "C",
+          "dimension": "M",
           "critical": false
         },
         {
@@ -327,47 +382,37 @@
             "id": "F-FRAMES.A.8",
             "route": "independent",
             "difficulty": 2,
-            "structure": "se2.compose.translation@1",
+            "structure": "se2.concept.compose-translation-formula@1",
             "inputs": {
-              "A": {
-                "theta": "pi/2",
-                "translation": [
-                  1,
-                  2
-                ]
-              },
-              "B": {
-                "translation": [
-                  12,
-                  -1
-                ]
-              }
+              "A": "(R1, t1)",
+              "B": "(R2, t2)",
+              "want": "t_AC"
             },
             "objectiveId": "R03.compose-invert-se2",
-            "prompt": "T_AB is +π/2 with offset (1,2), T_BC is translation (12,−1). Find the translation of T_AC=T_AB T_BC.",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. T_AB = (R1, t1) and T_BC = (R2, t2), where R is the rotation block and t the translation column. What is the translation column of the product T_AB T_BC?",
             "fields": [
               {
-                "label": "Translation x",
-                "kind": "number",
-                "answer": "2",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Translation y",
-                "kind": "number",
-                "answer": "14",
-                "tolerance": 0.001
+                "label": "Translation of T_AB T_BC",
+                "kind": "choice",
+                "answer": "t1 + R1 t2",
+                "tolerance": 0.001,
+                "options": [
+                  "t1 + t2",
+                  "t1 + R1 t2",
+                  "t2 + R2 t1",
+                  "R1 t1 + R2 t2"
+                ]
               }
             ],
-            "solution": "Rotate the child offset first: (1,n), then add (1,2).",
+            "solution": "[[R1, t1], [0, 1]] [[R2, t2], [0, 1]] = [[R1 R2, R1 t2 + t1], [0, 1]], so t_AC = t1 + R1 t2: the child offset t2 is rotated into A by R1, then the parent offset t1 is added. t1 + t2 forgets the rotation; t2 + R2 t1 is the product in the wrong order (T_BC T_AB).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Rotate the child offset first: (1,n), then add (1,2)."
+              "t2 is the origin of C written in B coordinates; the answer must be written in A coordinates.",
+              "Multiply the block matrices [[R1, t1], [0, 1]] [[R2, t2], [0, 1]] and read off only the top-right block.",
+              "[[R1, t1], [0, 1]] [[R2, t2], [0, 1]] = [[R1 R2, R1 t2 + t1], [0, 1]], so t_AC = t1 + R1 t2: the child offset t2 is rotated into A by R1, then the parent offset t1 is added. t1 + t2 forgets the rotation; t2 + R2 t1 is the product in the wrong order (T_BC T_AB)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Forgetting to rotate the child offset is the most common composition error. Revisit composition in lesson R03 (Theory and derivation) and practise the X10 compose items."
           },
-          "dimension": "M",
+          "dimension": "C",
           "critical": true
         },
         {
@@ -375,43 +420,36 @@
             "id": "F-FRAMES.A.9",
             "route": "independent",
             "difficulty": 2,
-            "structure": "se2.inverse.point@1",
+            "structure": "se2.concept.inverse-translation@1",
             "inputs": {
-              "theta": "pi/2",
-              "translation": [
-                1,
-                13
-              ],
-              "point": [
-                3,
-                14
-              ]
+              "transform": "(R, t)",
+              "want": "translation of inv(T)"
             },
             "objectiveId": "R03.compose-invert-se2",
-            "prompt": "T_AB is +π/2 with offset (1,13). Given p_A=(3,14), compute p_B=T_AB⁻¹ p_A.",
+            "prompt": "A rigid transform T has rotation block R and translation t (column vectors). What is the translation column of inv(T)?",
             "fields": [
               {
-                "label": "x in B",
-                "kind": "number",
-                "answer": "1",
-                "tolerance": 0.001
-              },
-              {
-                "label": "y in B",
-                "kind": "number",
-                "answer": "-2",
-                "tolerance": 0.001
+                "label": "Translation of inv(T)",
+                "kind": "choice",
+                "answer": "-R^T t",
+                "tolerance": 0.001,
+                "options": [
+                  "-t",
+                  "R^T t",
+                  "-R^T t",
+                  "-R t"
+                ]
               }
             ],
-            "solution": "Subtract the offset to get (2,1), then rotate −π/2 to (1,−2).",
+            "solution": "p = R^T (q - t) = R^T q - R^T t, so inv(T) has rotation R^T and translation -R^T t. -t would only be correct when R = I; -R t uses the forward rotation.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Subtract the offset to get (2,1), then rotate −π/2 to (1,−2)."
+              "inv(T) must undo T: if q = R p + t, solve for p.",
+              "Start from q = R p + t and solve it for p, using R^{-1} = R^T. Then split the result into a rotation applied to q plus a constant vector; the constant is the translation you need.",
+              "p = R^T (q - t) = R^T q - R^T t, so inv(T) has rotation R^T and translation -R^T t. -t would only be correct when R = I; -R t uses the forward rotation."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Using -t instead of -R^T t is the classic inverse error. Revisit the inverse in lesson R03 (Theory and derivation) and practise the X10 inverse items."
           },
-          "dimension": "M",
+          "dimension": "C",
           "critical": false
         },
         {
@@ -419,173 +457,364 @@
             "id": "F-FRAMES.A.10",
             "route": "independent",
             "difficulty": 2,
-            "structure": "rotation.proper@1",
+            "structure": "se2.concept.order-noncommute@1",
             "inputs": {
-              "R": [
-                [
-                  1,
-                  1
-                ],
-                [
-                  0,
-                  1
-                ]
-              ]
+              "translation": [
+                2,
+                0
+              ],
+              "theta": "pi/2"
             },
-            "objectiveId": "R03.rotation-validity",
-            "prompt": "Is R=[[1, 1], [0, 1]] a proper 2D rotation? Require orthogonality AND determinant +1.",
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "Column vectors; CCW-positive angles. Let Tr be a pure translation by (2, 0) and Rot a pure rotation by +pi/2 about the origin. Compare the products Tr Rot and Rot Tr. Which statement is true?",
             "fields": [
               {
-                "label": "Proper rotation",
+                "label": "Statement",
                 "kind": "choice",
-                "answer": "no",
+                "answer": "Same rotation block; translations (2, 0) for Tr Rot and (0, 2) for Rot Tr",
                 "tolerance": 0.001,
                 "options": [
-                  "yes",
-                  "no"
+                  "They are equal",
+                  "Same rotation block; translations (0, 2) for Tr Rot and (2, 0) for Rot Tr",
+                  "Different rotation blocks; both translations are (2, 0)",
+                  "Same rotation block; translations (2, 0) for Tr Rot and (0, 2) for Rot Tr"
                 ]
               }
             ],
-            "solution": "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition.",
+            "solution": "Tr Rot: translation (2, 0) + I * 0 = (2, 0). Rot Tr: translation 0 + R(+pi/2) (2, 0) = (0, 2). Both rotation blocks are R(+pi/2). So rigid-transform products do not commute in general: the order changes the translation.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition."
+              "Use the composition rule: the translation of T1 T2 is t1 + R1 t2.",
+              "For Tr Rot, T1 = Tr (R1 = I, t1 = (2, 0)) and t2 = 0. For Rot Tr, R1 is the +pi/2 rotation and t2 = (2, 0); rotate (2, 0) by +pi/2.",
+              "Tr Rot: translation (2, 0) + I * 0 = (2, 0). Rot Tr: translation 0 + R(+pi/2) (2, 0) = (0, 2). Both rotation blocks are R(+pi/2). So rigid-transform products do not commute in general: the order changes the translation."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
-          },
-          "dimension": "C",
-          "critical": true
-        },
-        {
-          "task": {
-            "id": "F-FRAMES.A.11",
-            "route": "independent",
-            "difficulty": 2,
-            "structure": "rotation.proper@1",
-            "inputs": {
-              "R": [
-                [
-                  0,
-                  -1
-                ],
-                [
-                  1,
-                  0
-                ]
-              ]
-            },
-            "objectiveId": "R03.rotation-validity",
-            "prompt": "Is R=[[0, -1], [1, 0]] a proper 2D rotation? Require orthogonality AND determinant +1.",
-            "fields": [
-              {
-                "label": "Proper rotation",
-                "kind": "choice",
-                "answer": "yes",
-                "tolerance": 0.001,
-                "options": [
-                  "yes",
-                  "no"
-                ]
-              }
-            ],
-            "solution": "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition.",
-            "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition."
-            ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Reordering a product changes which offset gets rotated. Revisit composition in lesson R03 (Theory and derivation) and practise the X10 compose items."
           },
           "dimension": "C",
           "critical": false
         },
         {
           "task": {
-            "id": "F-FRAMES.A.12",
+            "id": "F-FRAMES.A.11",
             "route": "independent",
             "difficulty": 2,
-            "structure": "rotation.invariants@1",
+            "structure": "se2.compose.translation@1",
             "inputs": {
-              "R": [
-                [
-                  0.7648421872844884,
-                  0.6442176872376911
-                ],
-                [
-                  0.6442176872376911,
-                  -0.7648421872844884
+              "A": {
+                "theta": "pi/2",
+                "cos": 0,
+                "sin": 1,
+                "translation": [
+                  -5,
+                  -7
                 ]
-              ]
+              },
+              "B": {
+                "theta": "pi",
+                "cos": -1,
+                "sin": 0,
+                "translation": [
+                  -7,
+                  -5
+                ]
+              }
             },
-            "objectiveId": "R03.rotation-validity",
-            "prompt": "For R=[[0.7648421872844884, 0.6442176872376911], [0.6442176872376911, -0.7648421872844884]], compute det R and the squared norm of its SECOND column. These two checks alone are not a complete general orthogonality test.",
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); angles in radians, counter-clockwise (CCW) positive; a transform is written [[R, t], [0, 0, 1]] with rotation block R and translation column t. T_AB rotates by theta = +pi/2 and has translation (-5, -7). T_BC rotates by theta = pi and has translation (-7, -5). Find the translation column of the product T_AB T_BC. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
             "fields": [
               {
-                "label": "Determinant",
+                "label": "Translation x",
                 "kind": "number",
-                "answer": "-1",
+                "answer": "0",
                 "tolerance": 0.001
               },
               {
-                "label": "Second column norm squared",
+                "label": "Translation y",
                 "kind": "number",
-                "answer": "1",
+                "answer": "-14",
                 "tolerance": 0.001
               }
             ],
-            "solution": "The determinant is -1; the second-column squared norm is 1.",
+            "solution": "Rotate the child offset first: R_AB t_BC = (5, -7). Then add the parent offset: t_AC = (-5, -7) + (5, -7) = (0, -14). The rotation of T_BC only changes the rotation block of T_AC.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "The determinant is -1; the second-column squared norm is 1."
+              "The translation of a product is t_AC = t_AB + R_AB t_BC: the offset t_BC is written in B coordinates, so it must be rotated into A before it is added. The rotation of T_BC does not enter the translation of T_AC.",
+              "Rotate the child offset with R_AB (c = 0, s = 1): R_AB t_BC = (0*(-7) - 1*(-5), 1*(-7) + 0*(-5)). Then add t_AB = (-5, -7).",
+              "Rotate the child offset first: R_AB t_BC = (5, -7). Then add the parent offset: t_AC = (-5, -7) + (5, -7) = (0, -14). The rotation of T_BC only changes the rotation block of T_AC."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you got (-12, -12), you added the offsets without rotating t_BC into A. If you rotated t_AB by the rotation of T_BC instead, you multiplied in the wrong order (T_BC T_AB). Revisit composition in lesson R03 (Theory and derivation) and practise the X10 compose items."
           },
           "dimension": "M",
           "critical": true
         },
         {
           "task": {
+            "id": "F-FRAMES.A.12",
+            "route": "independent",
+            "difficulty": 3,
+            "structure": "se2.inverse.point@1",
+            "inputs": {
+              "theta": "atan2(-0.6, 0.8)",
+              "cos": 0.8,
+              "sin": -0.6,
+              "translation": [
+                -8,
+                -2
+              ],
+              "point": [
+                15.2,
+                0.6
+              ]
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); angles in radians, counter-clockwise (CCW) positive; a transform is written [[R, t], [0, 0, 1]] with rotation block R and translation column t. T_AB rotates by theta with cos(theta) = 0.8 and sin(theta) = -0.6 (theta is about -0.6435 rad) and has translation t = (-8, -2). A point has coordinates p_A = (15.2, 0.6) in A. Compute its coordinates p_B in frame B. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
+            "fields": [
+              {
+                "label": "x in B",
+                "kind": "number",
+                "answer": "17",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y in B",
+                "kind": "number",
+                "answer": "16",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "p_A - t = (15.2, 0.6) - (-8, -2) = (23.2, 2.6). Applying R^T (c = 0.8, s = -0.6) gives p_B = (0.8*23.2 + (-0.6)*2.6, 0.6*23.2 + 0.8*2.6) = (17, 16). Check: R p_B + t = (15.2, 0.6).",
+            "hints": [
+              "p_A = R p_B + t, so to go from A back to B you must undo T_AB: undo the translation first, then undo the rotation with R^T = [[c, s], [-s, c]].",
+              "Subtract the translation: p_A - t = (15.2 - (-8), 0.6 - (-2)). Then apply R^T(x, y) = (c x + s y, -s x + c y) with c = 0.8 and s = -0.6.",
+              "p_A - t = (15.2, 0.6) - (-8, -2) = (23.2, 2.6). Applying R^T (c = 0.8, s = -0.6) gives p_B = (0.8*23.2 + (-0.6)*2.6, 0.6*23.2 + 0.8*2.6) = (17, 16). Check: R p_B + t = (15.2, 0.6)."
+            ],
+            "remediation": "If you got (23.2, 2.6), you removed the translation but not the rotation. If you used R instead of R^T, or rotated before subtracting t (R^T p_A - t), you applied the forward map or the wrong order. Revisit the inverse p_B = R^T(p_A - t) in lesson M12/R03 (Theory and derivation) and practise the X10 inverse items."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
             "id": "F-FRAMES.A.13",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.classify@1",
+            "inputs": {
+              "R": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ]
+              ],
+              "query": "classify"
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). Classify R = [[1, 0], [3, 1]]. A 2D proper rotation must be orthogonal (both columns unit length and perpendicular, i.e. R^T R = I) AND have det R = +1.",
+            "fields": [
+              {
+                "label": "Classification",
+                "kind": "choice",
+                "answer": "Not orthogonal, but det = +1",
+                "tolerance": 0.001,
+                "options": [
+                  "Proper rotation (orthogonal, det = +1)",
+                  "Reflection (orthogonal, det = -1)",
+                  "Not orthogonal, but det = +1",
+                  "Not orthogonal, and det is not +1"
+                ]
+              }
+            ],
+            "solution": "Columns (1, 3) and (0, 1): squared lengths 10 and 1, dot product 3, so R is not orthogonal. det R = (1)(1) - (0)(3) = 1. Class: Not orthogonal, but det = +1.",
+            "hints": [
+              "Test the two conditions one at a time: are the columns unit length and perpendicular, and is det R = +1?",
+              "The columns are (1, 3) and (0, 1). Compute the squared length of the first column, then det R = 1*1 - 0*3.",
+              "Columns (1, 3) and (0, 1): squared lengths 10 and 1, dot product 3, so R is not orthogonal. det R = (1)(1) - (0)(3) = 1. Class: Not orthogonal, but det = +1."
+            ],
+            "remediation": "Check both conditions separately: det = +1 alone does not make a rotation (shears and stretches can have det +1), and orthogonal matrices with det -1 are reflections. Revisit rotation validity in lesson R03 (Verification) and practise the X10 rotation-validity items."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.14",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.classify@1",
+            "inputs": {
+              "R": [
+                [
+                  -0.28,
+                  0.96
+                ],
+                [
+                  0.96,
+                  0.28
+                ]
+              ],
+              "query": "classify"
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). Classify R = [[-0.28, 0.96], [0.96, 0.28]]. A 2D proper rotation must be orthogonal (both columns unit length and perpendicular, i.e. R^T R = I) AND have det R = +1.",
+            "fields": [
+              {
+                "label": "Classification",
+                "kind": "choice",
+                "answer": "Reflection (orthogonal, det = -1)",
+                "tolerance": 0.001,
+                "options": [
+                  "Proper rotation (orthogonal, det = +1)",
+                  "Reflection (orthogonal, det = -1)",
+                  "Not orthogonal, but det = +1",
+                  "Not orthogonal, and det is not +1"
+                ]
+              }
+            ],
+            "solution": "Columns (-0.28, 0.96) and (0.96, 0.28): squared lengths 1 and 1, dot product 0, so R is orthogonal. det R = (-0.28)(0.28) - (0.96)(0.96) = -1. Class: Reflection (orthogonal, det = -1).",
+            "hints": [
+              "Test the two conditions one at a time: are the columns unit length and perpendicular, and is det R = +1?",
+              "The columns are (-0.28, 0.96) and (0.96, 0.28). Compute their squared lengths and their dot product, then det R = (-0.28)*0.28 - 0.96*0.96.",
+              "Columns (-0.28, 0.96) and (0.96, 0.28): squared lengths 1 and 1, dot product 0, so R is orthogonal. det R = (-0.28)(0.28) - (0.96)(0.96) = -1. Class: Reflection (orthogonal, det = -1)."
+            ],
+            "remediation": "Check both conditions separately: det = +1 alone does not make a rotation (shears and stretches can have det +1), and orthogonal matrices with det -1 are reflections. Revisit rotation validity in lesson R03 (Verification) and practise the X10 rotation-validity items."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.15",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.classify@1",
+            "inputs": {
+              "R": [
+                [
+                  -0.8,
+                  0.6
+                ],
+                [
+                  -0.6,
+                  -0.8
+                ]
+              ],
+              "query": "classify"
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). Classify R = [[-0.8, 0.6], [-0.6, -0.8]]. A 2D proper rotation must be orthogonal (both columns unit length and perpendicular, i.e. R^T R = I) AND have det R = +1.",
+            "fields": [
+              {
+                "label": "Classification",
+                "kind": "choice",
+                "answer": "Proper rotation (orthogonal, det = +1)",
+                "tolerance": 0.001,
+                "options": [
+                  "Proper rotation (orthogonal, det = +1)",
+                  "Reflection (orthogonal, det = -1)",
+                  "Not orthogonal, but det = +1",
+                  "Not orthogonal, and det is not +1"
+                ]
+              }
+            ],
+            "solution": "Columns (-0.8, -0.6) and (0.6, -0.8): squared lengths 1 and 1, dot product 0, so R is orthogonal. det R = (-0.8)(-0.8) - (0.6)(-0.6) = 1. Class: Proper rotation (orthogonal, det = +1).",
+            "hints": [
+              "Test the two conditions one at a time: are the columns unit length and perpendicular, and is det R = +1?",
+              "The columns are (-0.8, -0.6) and (0.6, -0.8). Compute their squared lengths and their dot product, then det R = (-0.8)*(-0.8) - 0.6*(-0.6).",
+              "Columns (-0.8, -0.6) and (0.6, -0.8): squared lengths 1 and 1, dot product 0, so R is orthogonal. det R = (-0.8)(-0.8) - (0.6)(-0.6) = 1. Class: Proper rotation (orthogonal, det = +1)."
+            ],
+            "remediation": "Check both conditions separately: det = +1 alone does not make a rotation (shears and stretches can have det +1), and orthogonal matrices with det -1 are reflections. Revisit rotation validity in lesson R03 (Verification) and practise the X10 rotation-validity items."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.16",
             "route": "independent",
             "difficulty": 2,
             "structure": "rotation.invariants@1",
             "inputs": {
               "R": [
                 [
-                  1,
-                  13
+                  2,
+                  -2
                 ],
                 [
-                  0,
-                  1
+                  3,
+                  -6
                 ]
               ]
             },
             "objectiveId": "R03.rotation-validity",
-            "prompt": "For R=[[1, 13], [0, 1]], compute det R and the squared norm of its SECOND column. These two checks alone are not a complete general orthogonality test.",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). For R = [[2, -2], [3, -6]], compute det R and the squared length of its SECOND column. (These two checks alone are not a complete orthogonality test.) Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
             "fields": [
               {
                 "label": "Determinant",
                 "kind": "number",
-                "answer": "1",
+                "answer": "-6",
                 "tolerance": 0.001
               },
               {
-                "label": "Second column norm squared",
+                "label": "Second column squared length",
                 "kind": "number",
-                "answer": "170",
+                "answer": "40",
                 "tolerance": 0.001
               }
             ],
-            "solution": "The determinant is 1; the second-column squared norm is 170.",
+            "solution": "det R = (2)(-6) - (-2)(3) = -12 - (-6) = -6. The second column is (-2, -6), so its squared length is 4 + 36 = 40. Either value alone already shows that R is not a proper rotation.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "The determinant is 1; the second-column squared norm is 170."
+              "det [[a, b], [c, d]] = a d - b c. The second column is (b, d): read it down the matrix, not along the first row.",
+              "Substitute a = 2, b = -2, c = 3, d = -6: det R = (2)*(-6) - (-2)*(3), and the squared length of (b, d) is (-2)^2 + (-6)^2.",
+              "det R = (2)(-6) - (-2)(3) = -12 - (-6) = -6. The second column is (-2, -6), so its squared length is 4 + 36 = 40. Either value alone already shows that R is not a proper rotation."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If your determinant was -18, you used a d + b c instead of a d - b c. If your squared length was 8, you used the first row (a, b); if it was 13, you used the first column. Revisit the rotation-validity checks in lesson R03 (Verification, Failure modes) and practise the X10 rotation-validity items."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.A.17",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.invariants@1",
+            "inputs": {
+              "R": [
+                [
+                  3.5,
+                  -2
+                ],
+                [
+                  1,
+                  -3
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). For R = [[3.5, -2], [1, -3]], compute det R and the squared length of its SECOND column. (These two checks alone are not a complete orthogonality test.) Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
+            "fields": [
+              {
+                "label": "Determinant",
+                "kind": "number",
+                "answer": "-8.5",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Second column squared length",
+                "kind": "number",
+                "answer": "13",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "det R = (3.5)(-3) - (-2)(1) = -10.5 - (-2) = -8.5. The second column is (-2, -3), so its squared length is 4 + 9 = 13. Either value alone already shows that R is not a proper rotation.",
+            "hints": [
+              "det [[a, b], [c, d]] = a d - b c. The second column is (b, d): read it down the matrix, not along the first row.",
+              "Substitute a = 3.5, b = -2, c = 1, d = -3: det R = (3.5)*(-3) - (-2)*(1), and the squared length of (b, d) is (-2)^2 + (-3)^2.",
+              "det R = (3.5)(-3) - (-2)(1) = -10.5 - (-2) = -8.5. The second column is (-2, -3), so its squared length is 4 + 9 = 13. Either value alone already shows that R is not a proper rotation."
+            ],
+            "remediation": "If your determinant was -12.5, you used a d + b c instead of a d - b c. If your squared length was 16.25, you used the first row (a, b); if it was 13.25, you used the first column. Revisit the rotation-validity checks in lesson R03 (Verification, Failure modes) and practise the X10 rotation-validity items."
           },
           "dimension": "M",
           "critical": false
@@ -600,31 +829,39 @@
             "id": "F-FRAMES.B.0",
             "route": "independent",
             "difficulty": 2,
-            "structure": "frame.labels.row-transpose@1",
+            "structure": "frame.labels.valid-chain@1",
             "inputs": {
-              "query": "row-transpose"
+              "given": [
+                "T_AB",
+                "T_CB",
+                "T_CD"
+              ],
+              "want": "D into A"
             },
             "objectiveId": "M12.frame-labels",
-            "prompt": "For column-vector p_A=T_AB p_B, is p_Aᵀ=p_Bᵀ T_ABᵀ the equivalent row expression?",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. The transforms T_AB, T_CB and T_CD are known. Which expression maps coordinates in frame D into frame A?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Expression",
                 "kind": "choice",
-                "answer": "yes",
+                "answer": "T_AB inv(T_CB) T_CD",
                 "tolerance": 0.001,
                 "options": [
-                  "yes",
-                  "no"
+                  "T_AB T_CB T_CD",
+                  "inv(T_CD) T_CB inv(T_AB)",
+                  "T_CD inv(T_CB) T_AB",
+                  "T_AB inv(T_CB) T_CD",
+                  "T_AB T_CD inv(T_CB)"
                 ]
               }
             ],
-            "solution": "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame.",
+            "solution": "inv(T_CB) = T_BC, so T_AB inv(T_CB) T_CD = T_AB T_BC T_CD = T_AD: inner pairs B|B and C|C, outer labels A and D. T_AB T_CB T_CD has the mismatched pair B|C. inv(T_CD) T_CB inv(T_AB) = T_DC T_CB T_BA = T_DA is valid but maps A into D. T_CD inv(T_CB) T_AB = T_CD T_BC T_AB has the pair D|B, and T_AB T_CD inv(T_CB) has the pair B|C.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame."
+              "A valid chain has matching neighbouring labels; its leftmost label is the output frame and its rightmost label the input frame. One of the known transforms points the wrong way for this chain.",
+              "Rewrite every inv(T_XY) as T_YX, then write down the pairs of neighbouring labels and the outer labels of each option. You need outer labels A ... D with every inner pair matching.",
+              "inv(T_CB) = T_BC, so T_AB inv(T_CB) T_CD = T_AB T_BC T_CD = T_AD: inner pairs B|B and C|C, outer labels A and D. T_AB T_CB T_CD has the mismatched pair B|C. inv(T_CD) T_CB inv(T_AB) = T_DC T_CB T_BA = T_DA is valid but maps A into D. T_CD inv(T_CB) T_AB = T_CD T_BC T_AB has the pair D|B, and T_AB T_CD inv(T_CB) has the pair B|C."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose T_AB T_CB T_CD, you matched letters without checking the direction of T_CB; if you chose inv(T_CD) T_CB inv(T_AB), you built the reverse map. Read every transform as destination-source: in a valid product neighbouring labels match (T_AB T_BC), the leftmost label is the output frame and the rightmost label is the input frame; inverting swaps the labels. Revisit frame labels in lesson M12 (Theory and derivation) and practise the X10 frame-label items."
           },
           "dimension": "C",
           "critical": true
@@ -634,31 +871,35 @@
             "id": "F-FRAMES.B.1",
             "route": "independent",
             "difficulty": 2,
-            "structure": "frame.labels.translation-frame@1",
+            "structure": "frame.labels.choose-inverse@1",
             "inputs": {
-              "query": "translation-frame"
+              "known": "T_BA",
+              "have": "p_B",
+              "want": "p_A"
             },
             "objectiveId": "M12.frame-labels",
-            "prompt": "In T_AB, in which frame is the translation column expressed?",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. You know a point p_B in frame B and the transform T_BA. Which expression gives p_A?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Expression",
                 "kind": "choice",
-                "answer": "A",
+                "answer": "inv(T_BA) p_B",
                 "tolerance": 0.001,
                 "options": [
-                  "A",
-                  "B"
+                  "T_BA p_B",
+                  "inv(T_BA) p_B",
+                  "transpose(T_BA) p_B (transpose of the whole 3x3 matrix)",
+                  "R_BA p_B (rotation block only)"
                 ]
               }
             ],
-            "solution": "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame.",
+            "solution": "T_BA maps A into B, so T_AB = inv(T_BA) and p_A = inv(T_BA) p_B. The transpose of the whole 3x3 matrix is not its inverse (only the rotation block inverts by transposing), and the rotation block alone ignores the translation.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use destination/source labels. Adjacent inner labels cancel; inverse maps the other direction. Translation is expressed in the destination frame."
+              "T_BA maps A coordinates into B. Is that the direction you need?",
+              "You need a map whose output frame is A and whose input frame is B. Ask how the known T_BA (A into B) is related to that map.",
+              "T_BA maps A into B, so T_AB = inv(T_BA) and p_A = inv(T_BA) p_B. The transpose of the whole 3x3 matrix is not its inverse (only the rotation block inverts by transposing), and the rotation block alone ignores the translation."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose T_BA p_B, you read the label source-destination. Read every transform as destination-source: in a valid product neighbouring labels match (T_AB T_BC), the leftmost label is the output frame and the rightmost label is the input frame; inverting swaps the labels. Revisit frame labels in lesson M12 (Theory and derivation) and practise the X10 frame-label items."
           },
           "dimension": "C",
           "critical": false
@@ -668,181 +909,178 @@
             "id": "F-FRAMES.B.2",
             "route": "independent",
             "difficulty": 2,
-            "structure": "point-direction.translation@1",
+            "structure": "frame.labels.product-label@1",
             "inputs": {
-              "quantity": "translation"
+              "product": [
+                "inv(T_BC)",
+                "T_BA"
+              ]
             },
-            "objectiveId": "M12.point-vs-direction",
-            "prompt": "Which receives a translation offset?",
+            "objectiveId": "M12.frame-labels",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. A product of labelled transforms is itself a labelled transform. What is the label of the product inv(T_BC) T_BA?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Label",
                 "kind": "choice",
-                "answer": "point",
+                "answer": "T_CA",
                 "tolerance": 0.001,
                 "options": [
-                  "point",
-                  "direction",
-                  "both",
-                  "neither"
+                  "T_CA",
+                  "T_AC",
+                  "T_BA",
+                  "T_CB",
+                  "Not a valid chain"
                 ]
               }
             ],
-            "solution": "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm.",
+            "solution": "inv(T_BC) = T_CB, so the product is T_CB T_BA: the inner labels B|B match and the label is T_CA (A coordinates into C). Reading T_BC T_BA without inverting gives the pair C|B and the wrong verdict 'not a valid chain'; T_AC is the inverse of the answer.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm."
+              "First give inv(T_BC) its own label, then check the neighbouring labels and read the outer labels.",
+              "Inverting a transform swaps its two labels. After that, check whether the two inner labels match; if they do, the product's label is built from the outer labels in the order they are written.",
+              "inv(T_BC) = T_CB, so the product is T_CB T_BA: the inner labels B|B match and the label is T_CA (A coordinates into C). Reading T_BC T_BA without inverting gives the pair C|B and the wrong verdict 'not a valid chain'; T_AC is the inverse of the answer."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
-          },
-          "dimension": "C",
-          "critical": true
-        },
-        {
-          "task": {
-            "id": "F-FRAMES.B.3",
-            "route": "independent",
-            "difficulty": 2,
-            "structure": "point-direction.direction-length@1",
-            "inputs": {
-              "quantity": "direction-length"
-            },
-            "objectiveId": "M12.point-vs-direction",
-            "prompt": "A proper rigid transform maps a nonzero direction to a direction. Is its norm preserved?",
-            "fields": [
-              {
-                "label": "Answer",
-                "kind": "choice",
-                "answer": "yes",
-                "tolerance": 0.001,
-                "options": [
-                  "yes",
-                  "no"
-                ]
-              }
-            ],
-            "solution": "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm.",
-            "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Points have w=1 and receive translation. Directions have w=0; a proper rotation preserves their norm."
-            ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Inverting swaps labels; inner labels cancel and outer labels stay in order. Read every transform as destination-source: in a valid product neighbouring labels match (T_AB T_BC), the leftmost label is the output frame and the rightmost label is the input frame; inverting swaps the labels. Revisit frame labels in lesson M12 (Theory and derivation) and practise the X10 frame-label items."
           },
           "dimension": "C",
           "critical": false
         },
         {
           "task": {
-            "id": "F-FRAMES.B.4",
+            "id": "F-FRAMES.B.3",
             "route": "independent",
             "difficulty": 2,
-            "structure": "point-direction.apply@1",
+            "structure": "point-direction.receives-translation@1",
             "inputs": {
-              "theta": "pi/2",
               "translation": [
-                22,
+                5,
                 -1
               ],
-              "vector": [
-                1,
-                2
+              "objects": [
+                "position",
+                "heading"
               ]
             },
             "objectiveId": "M12.point-vs-direction",
-            "prompt": "Rotate +π/2 then translate (22,−1). Transform point p=(1,2) and direction v=(1,2). Return point x,y then direction x,y.",
+            "prompt": "A rigid transform with rotation R and translation t = (5, -1) is applied in homogeneous form to a robot's position p (a point) and to its heading h (a unit direction). Which of them gets t added?",
             "fields": [
               {
-                "label": "Point x",
-                "kind": "number",
-                "answer": "20",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Point y",
-                "kind": "number",
-                "answer": "0",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Direction x",
-                "kind": "number",
-                "answer": "-2",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Direction y",
-                "kind": "number",
-                "answer": "1",
-                "tolerance": 0.001
+                "label": "Receives t",
+                "kind": "choice",
+                "answer": "Only p",
+                "tolerance": 0.001,
+                "options": [
+                  "Only h",
+                  "Both p and h",
+                  "Neither",
+                  "Only p"
+                ]
               }
             ],
-            "solution": "Rotation maps (1,2) to (−2,1); only the point receives the offset.",
+            "solution": "(p, 1) gives R p + t, while (h, 0) gives R h + 0 t = R h. Only the position p is shifted; the heading is only rotated, so it stays a unit direction.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Rotation maps (1,2) to (−2,1); only the point receives the offset."
+              "Write both objects homogeneously and recall which value of w each one carries.",
+              "Multiply [[R, t], [0, 0, 1]] by (p, 1) and by (h, 0); the translation is added w times.",
+              "(p, 1) gives R p + t, while (h, 0) gives R h + 0 t = R h. Only the position p is shifted; the heading is only rotated, so it stays a unit direction."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Positions are points (w = 1); headings, velocities and normals are directions (w = 0). Revisit lesson M12 (Theory and derivation) and practise the X10 point-vs-direction items."
           },
-          "dimension": "M",
+          "dimension": "C",
           "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.4",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "point-direction.midpoint@1",
+            "inputs": {
+              "p": [
+                2,
+                6
+              ],
+              "q": [
+                4,
+                -2
+              ]
+            },
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Homogeneous points p = (2, 6, 1) and q = (4, -2, 1) are in the same frame; their sum is (6, 4, 2). (1) If (6, 4, 2) is multiplied as it is by a rigid transform [[R, t], [0, 0, 1]], how many times is t added? (2) Which vector is the homogeneous midpoint, ready to be transformed as a point?",
+            "fields": [
+              {
+                "label": "Times t is added",
+                "kind": "choice",
+                "answer": "2",
+                "tolerance": 0.001,
+                "options": [
+                  "0",
+                  "1",
+                  "2",
+                  "-1"
+                ]
+              },
+              {
+                "label": "Midpoint",
+                "kind": "choice",
+                "answer": "(3, 2, 1)",
+                "tolerance": 0.001,
+                "options": [
+                  "(3, 2, 1)",
+                  "(6, 4, 2) as it is",
+                  "(6, 4, 1)",
+                  "(3, 2, 0)"
+                ]
+              }
+            ],
+            "solution": "[[R, t], [0, 0, 1]] (x, y, w) = (R (x, y) + w t, w), so with w = 2 the translation is added twice: (6, 4, 2) is not a standard point. Dividing all components by 2 gives (p + q) / 2 = (3, 2, 1), which receives t once. (6, 4, 1) resets w without dividing and is a different point; (3, 2, 0) is a direction and would receive no translation.",
+            "hints": [
+              "The translation column is multiplied by the last component w of the input.",
+              "Multiply [[R, t], [0, 0, 1]] by (x, y, w) symbolically and read the coefficient of t; then decide what must happen to (6, 4, 2) so that t is added exactly once.",
+              "[[R, t], [0, 0, 1]] (x, y, w) = (R (x, y) + w t, w), so with w = 2 the translation is added twice: (6, 4, 2) is not a standard point. Dividing all components by 2 gives (p + q) / 2 = (3, 2, 1), which receives t once. (6, 4, 1) resets w without dividing and is a different point; (3, 2, 0) is a direction and would receive no translation."
+            ],
+            "remediation": "Only affine combinations whose weights sum to 1 give a point with w = 1. Revisit lesson M12 (Theory and derivation) and practise the X10 point-vs-direction items."
+          },
+          "dimension": "C",
+          "critical": false
         },
         {
           "task": {
             "id": "F-FRAMES.B.5",
             "route": "independent",
             "difficulty": 2,
-            "structure": "point-direction.apply@1",
+            "structure": "point-direction.norm-preserved@1",
             "inputs": {
-              "theta": "pi/2",
+              "length": 5,
+              "theta": "pi/3",
               "translation": [
-                23,
-                -1
-              ],
-              "vector": [
-                1,
-                2
+                2,
+                6
               ]
             },
             "objectiveId": "M12.point-vs-direction",
-            "prompt": "Rotate +π/2 then translate (23,−1). Transform point p=(1,2) and direction v=(1,2). Return point x,y then direction x,y.",
+            "prompt": "A direction d of length 5 is transformed in homogeneous form by a rigid transform that rotates by pi/3 and translates by (2, 6). What is the length of the transformed direction?",
             "fields": [
               {
-                "label": "Point x",
-                "kind": "number",
-                "answer": "21",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Point y",
-                "kind": "number",
-                "answer": "0",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Direction x",
-                "kind": "number",
-                "answer": "-2",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Direction y",
-                "kind": "number",
-                "answer": "1",
-                "tolerance": 0.001
+                "label": "Length",
+                "kind": "choice",
+                "answer": "5",
+                "tolerance": 0.001,
+                "options": [
+                  "5 plus the length of the translation",
+                  "5",
+                  "It depends on the rotation angle",
+                  "The length of d + (2, 6), which depends on d"
+                ]
               }
             ],
-            "solution": "Rotation maps (1,2) to (−2,1); only the point receives the offset.",
+            "solution": "The transformed direction is R d (the translation is ignored because w = 0). Since R^T R = I, |R d|^2 = d^T d = 25, so its length is 5 for every rotation angle.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Rotation maps (1,2) to (−2,1); only the point receives the offset."
+              "With w = 0, which part of the transform acts on d?",
+              "Only R acts on d. Recall what a proper rotation does to lengths: |R d|^2 = d^T R^T R d.",
+              "The transformed direction is R d (the translation is ignored because w = 0). Since R^T R = I, |R d|^2 = d^T d = 25, so its length is 5 for every rotation angle."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Rigid transforms preserve the length of directions and the distance between points. Revisit lesson M12 (Theory and derivation) and practise the X10 point-vs-direction items."
           },
-          "dimension": "M",
+          "dimension": "C",
           "critical": false
         },
         {
@@ -850,68 +1088,123 @@
             "id": "F-FRAMES.B.6",
             "route": "independent",
             "difficulty": 2,
-            "structure": "se2.concept.noncommute@1",
+            "structure": "point-direction.apply@1",
             "inputs": {
-              "query": "noncommute"
+              "theta": "pi/2",
+              "cos": 0,
+              "sin": 1,
+              "translation": [
+                -9,
+                9
+              ],
+              "point": [
+                6,
+                6
+              ],
+              "vector": [
+                6,
+                9
+              ]
             },
-            "objectiveId": "R03.compose-invert-se2",
-            "prompt": "Can general rigid-transform multiplication be reordered without changing the result?",
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Convention: column vectors; angles in radians, counter-clockwise (CCW) positive. A rigid transform T first rotates about the origin by theta = +pi/2 and then translates by t = (-9, 9). Apply T to the point p = (6, 6) and to the direction v = (6, 9). Return the transformed point x, y, then the transformed direction x, y. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
             "fields": [
               {
-                "label": "Answer",
-                "kind": "choice",
-                "answer": "no",
-                "tolerance": 0.001,
-                "options": [
-                  "yes",
-                  "no"
-                ]
+                "label": "Point x",
+                "kind": "number",
+                "answer": "-15",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Point y",
+                "kind": "number",
+                "answer": "15",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction x",
+                "kind": "number",
+                "answer": "-9",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction y",
+                "kind": "number",
+                "answer": "6",
+                "tolerance": 0.001
               }
             ],
-            "solution": "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp.",
+            "solution": "R p = (-6, 6), and the point also receives the translation: R p + t = (-6, 6) + (-9, 9) = (-15, 15). The direction has w = 0, so it is only rotated: R v = (-9, 6). Answer: point (-15, 15), direction (-9, 6).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp."
+              "A point (w = 1) is rotated and then shifted by t; a direction (w = 0) is only rotated. Here R = [[c, -s], [s, c]] with c = 0 and s = 1.",
+              "Rotate both vectors with R(x, y) = (c x - s y, s x + c y): R p = (0*6 - 1*6, 1*6 + 0*6) and R v = (0*6 - 1*9, 1*6 + 0*9). Then add t = (-9, 9) only to the vector that has w = 1.",
+              "R p = (-6, 6), and the point also receives the translation: R p + t = (-6, 6) + (-9, 9) = (-15, 15). The direction has w = 0, so it is only rotated: R v = (-9, 6). Answer: point (-15, 15), direction (-9, 6)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If your direction came out as (-18, 15), you added t to a direction (treated w = 0 as w = 1). If both results are off, check that R rotates CCW (R = [[c, -s], [s, c]], not its transpose) and that the point is rotated before it is translated. Revisit the point/direction part of lesson M12 (Theory and derivation, Failure modes) and practise the X10 point-vs-direction items."
           },
-          "dimension": "C",
+          "dimension": "M",
           "critical": true
         },
         {
           "task": {
             "id": "F-FRAMES.B.7",
             "route": "independent",
-            "difficulty": 2,
-            "structure": "se2.concept.output-frame@1",
+            "difficulty": 3,
+            "structure": "point-direction.apply@1",
             "inputs": {
-              "query": "output-frame"
+              "theta": "atan2(-0.6, 0.8)",
+              "cos": 0.8,
+              "sin": -0.6,
+              "translation": [
+                -5,
+                1
+              ],
+              "point": [
+                2,
+                6
+              ],
+              "vector": [
+                -8,
+                -8
+              ]
             },
-            "objectiveId": "R03.compose-invert-se2",
-            "prompt": "For T_AB T_BC, in which frame is the resulting translation expressed?",
+            "objectiveId": "M12.point-vs-direction",
+            "prompt": "Convention: column vectors; angles in radians, counter-clockwise (CCW) positive. A rigid transform T first rotates about the origin by theta with cos(theta) = 0.8 and sin(theta) = -0.6 (theta is about -0.6435 rad) and then translates by t = (-5, 1). Apply T to the point p = (2, 6) and to the direction v = (-8, -8). Return the transformed point x, y, then the transformed direction x, y. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
             "fields": [
               {
-                "label": "Answer",
-                "kind": "choice",
-                "answer": "A",
-                "tolerance": 0.001,
-                "options": [
-                  "A",
-                  "B",
-                  "C"
-                ]
+                "label": "Point x",
+                "kind": "number",
+                "answer": "0.2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Point y",
+                "kind": "number",
+                "answer": "4.6",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction x",
+                "kind": "number",
+                "answer": "-11.2",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Direction y",
+                "kind": "number",
+                "answer": "-1.6",
+                "tolerance": 0.001
               }
             ],
-            "solution": "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp.",
+            "solution": "R p = (5.2, 3.6), and the point also receives the translation: R p + t = (5.2, 3.6) + (-5, 1) = (0.2, 4.6). The direction has w = 0, so it is only rotated: R v = (-11.2, -1.6). Answer: point (0.2, 4.6), direction (-11.2, -1.6).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Follow column-vector composition. The child offset must be rotated; inverse translation is −Rᵀp."
+              "A point (w = 1) is rotated and then shifted by t; a direction (w = 0) is only rotated. Here R = [[c, -s], [s, c]] with c = 0.8 and s = -0.6.",
+              "Rotate both vectors with R(x, y) = (c x - s y, s x + c y): R p = (0.8*2 - (-0.6)*6, (-0.6)*2 + 0.8*6) and R v = (0.8*(-8) - (-0.6)*(-8), (-0.6)*(-8) + 0.8*(-8)). Then add t = (-5, 1) only to the vector that has w = 1.",
+              "R p = (5.2, 3.6), and the point also receives the translation: R p + t = (5.2, 3.6) + (-5, 1) = (0.2, 4.6). The direction has w = 0, so it is only rotated: R v = (-11.2, -1.6). Answer: point (0.2, 4.6), direction (-11.2, -1.6)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If your direction came out as (-16.2, -0.6), you added t to a direction (treated w = 0 as w = 1). If both results are off, check that R rotates CCW (R = [[c, -s], [s, c]], not its transpose) and that the point is rotated before it is translated. Revisit the point/direction part of lesson M12 (Theory and derivation, Failure modes) and practise the X10 point-vs-direction items."
           },
-          "dimension": "C",
+          "dimension": "M",
           "critical": false
         },
         {
@@ -919,47 +1212,39 @@
             "id": "F-FRAMES.B.8",
             "route": "independent",
             "difficulty": 2,
-            "structure": "se2.compose.translation@1",
+            "structure": "se2.concept.inverse-product@1",
             "inputs": {
-              "A": {
-                "theta": "pi/2",
-                "translation": [
-                  1,
-                  2
-                ]
-              },
-              "B": {
-                "translation": [
-                  22,
-                  -1
-                ]
-              }
+              "product": [
+                "T1",
+                "T2",
+                "T3"
+              ]
             },
             "objectiveId": "R03.compose-invert-se2",
-            "prompt": "T_AB is +π/2 with offset (1,2), T_BC is translation (22,−1). Find the translation of T_AC=T_AB T_BC.",
+            "prompt": "For invertible 3x3 homogeneous transforms T1, T2 and T3, which expression equals inv(T1 T2 T3)?",
             "fields": [
               {
-                "label": "Translation x",
-                "kind": "number",
-                "answer": "2",
-                "tolerance": 0.001
-              },
-              {
-                "label": "Translation y",
-                "kind": "number",
-                "answer": "24",
-                "tolerance": 0.001
+                "label": "Expression",
+                "kind": "choice",
+                "answer": "inv(T3) inv(T2) inv(T1)",
+                "tolerance": 0.001,
+                "options": [
+                  "inv(T1) inv(T2) inv(T3)",
+                  "inv(T3) inv(T1) inv(T2)",
+                  "inv(T3) inv(T2) inv(T1)",
+                  "transpose(T3) transpose(T2) transpose(T1)"
+                ]
               }
             ],
-            "solution": "Rotate the child offset first: (1,n), then add (1,2).",
+            "solution": "inv(T3) inv(T2) inv(T1) T1 T2 T3 = I, because inv(T1) T1, then inv(T2) T2, then inv(T3) T3 cancel from the middle out. The same order inv(T1) inv(T2) inv(T3) does not cancel in general, and the transpose of a homogeneous transform is not its inverse.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Rotate the child offset first: (1,n), then add (1,2)."
+              "To undo a sequence of operations, undo the last one first.",
+              "Multiply the candidate by T1 T2 T3 and check whether neighbouring factors cancel to the identity.",
+              "inv(T3) inv(T2) inv(T1) T1 T2 T3 = I, because inv(T1) T1, then inv(T2) T2, then inv(T3) T3 cancel from the middle out. The same order inv(T1) inv(T2) inv(T3) does not cancel in general, and the transpose of a homogeneous transform is not its inverse."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Inverting a product reverses its order. Revisit the inverse in lesson R03 (Theory and derivation) and practise the X10 inverse items."
           },
-          "dimension": "M",
+          "dimension": "C",
           "critical": true
         },
         {
@@ -967,43 +1252,39 @@
             "id": "F-FRAMES.B.9",
             "route": "independent",
             "difficulty": 2,
-            "structure": "se2.inverse.point@1",
+            "structure": "se2.concept.inverse-angle@1",
             "inputs": {
-              "theta": "pi/2",
+              "theta": "0.7",
               "translation": [
-                1,
-                23
-              ],
-              "point": [
-                3,
-                24
+                2,
+                -3
               ]
             },
             "objectiveId": "R03.compose-invert-se2",
-            "prompt": "T_AB is +π/2 with offset (1,23). Given p_A=(3,24), compute p_B=T_AB⁻¹ p_A.",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); inv(T) is the inverse of T. Angles CCW positive. T_AB rotates by theta = 0.7 rad and has translation t = (2, -3); R is its rotation block. Which statement about inv(T_AB) is correct?",
             "fields": [
               {
-                "label": "x in B",
-                "kind": "number",
-                "answer": "1",
-                "tolerance": 0.001
-              },
-              {
-                "label": "y in B",
-                "kind": "number",
-                "answer": "-2",
-                "tolerance": 0.001
+                "label": "Statement",
+                "kind": "choice",
+                "answer": "Rotation -0.7 rad; translation -R^T t",
+                "tolerance": 0.001,
+                "options": [
+                  "Rotation -0.7 rad; translation (-2, 3)",
+                  "Rotation 0.7 rad; translation -R^T t",
+                  "Rotation 0.7 rad; translation (-2, 3)",
+                  "Rotation -0.7 rad; translation -R^T t"
+                ]
               }
             ],
-            "solution": "Subtract the offset to get (2,1), then rotate −π/2 to (1,−2).",
+            "solution": "inv(T_AB) has rotation R^T = R(-0.7) and translation -R^T t (from p = R^T q - R^T t). (-2, 3) = -t would only be right if R were the identity.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Subtract the offset to get (2,1), then rotate −π/2 to (1,−2)."
+              "Treat the rotation part and the translation part of the inverse separately.",
+              "The rotation block of inv(T_AB) is R^T = R(-theta). For the translation, solve q = R p + t for p and read off the constant term.",
+              "inv(T_AB) has rotation R^T = R(-0.7) and translation -R^T t (from p = R^T q - R^T t). (-2, 3) = -t would only be right if R were the identity."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Both parts of the inverse change: the angle flips sign and the offset is -R^T t, not -t. Revisit the inverse in lesson R03 and practise the X10 inverse items."
           },
-          "dimension": "M",
+          "dimension": "C",
           "critical": false
         },
         {
@@ -1011,173 +1292,364 @@
             "id": "F-FRAMES.B.10",
             "route": "independent",
             "difficulty": 2,
-            "structure": "rotation.proper@1",
+            "structure": "se2.concept.rotate-child-offset@1",
             "inputs": {
-              "R": [
-                [
-                  1,
-                  0
-                ],
-                [
-                  0,
-                  -1
-                ]
+              "theta": "-pi/2",
+              "translation_bc": [
+                0,
+                3
               ]
             },
-            "objectiveId": "R03.rotation-validity",
-            "prompt": "Is R=[[1, 0], [0, -1]] a proper 2D rotation? Require orthogonality AND determinant +1.",
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); angles in radians, counter-clockwise (CCW) positive; a transform is written [[R, t], [0, 0, 1]] with rotation block R and translation column t. T_AB is a pure rotation by -pi/2 (zero translation). T_BC is a pure translation by (0, 3). What is the translation column of the product T_AB T_BC?",
             "fields": [
               {
-                "label": "Proper rotation",
+                "label": "Translation of T_AB T_BC",
                 "kind": "choice",
-                "answer": "no",
+                "answer": "(3, 0)",
                 "tolerance": 0.001,
                 "options": [
-                  "yes",
-                  "no"
+                  "(3, 0)",
+                  "(0, 3)",
+                  "(-3, 0)",
+                  "(0, -3)"
                 ]
               }
             ],
-            "solution": "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition.",
+            "solution": "t_AC = (0, 0) + R(-pi/2) (0, 3) = (3, 0). (0, 3) forgets to rotate the child offset, and (-3, 0) rotates by +pi/2.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition."
+              "The offset (0, 3) of T_BC is written in B coordinates; the product's translation must be written in A.",
+              "Write R(-pi/2) as a matrix from cos(-pi/2) = 0 and sin(-pi/2) = -1, then apply t_AC = t_AB + R_AB t_BC with t_AB = (0, 0).",
+              "t_AC = (0, 0) + R(-pi/2) (0, 3) = (3, 0). (0, 3) forgets to rotate the child offset, and (-3, 0) rotates by +pi/2."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
-          },
-          "dimension": "C",
-          "critical": true
-        },
-        {
-          "task": {
-            "id": "F-FRAMES.B.11",
-            "route": "independent",
-            "difficulty": 2,
-            "structure": "rotation.proper@1",
-            "inputs": {
-              "R": [
-                [
-                  0,
-                  1
-                ],
-                [
-                  -1,
-                  0
-                ]
-              ]
-            },
-            "objectiveId": "R03.rotation-validity",
-            "prompt": "Is R=[[0, 1], [-1, 0]] a proper 2D rotation? Require orthogonality AND determinant +1.",
-            "fields": [
-              {
-                "label": "Proper rotation",
-                "kind": "choice",
-                "answer": "yes",
-                "tolerance": 0.001,
-                "options": [
-                  "yes",
-                  "no"
-                ]
-              }
-            ],
-            "solution": "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition.",
-            "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "A proper rotation has RᵀR=I and det R=+1. Reflections or shears fail at least one condition."
-            ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "The child offset must be rotated into the parent frame. Revisit composition in lesson R03 and practise the X10 compose items."
           },
           "dimension": "C",
           "critical": false
         },
         {
           "task": {
-            "id": "F-FRAMES.B.12",
+            "id": "F-FRAMES.B.11",
             "route": "independent",
-            "difficulty": 2,
-            "structure": "rotation.invariants@1",
+            "difficulty": 3,
+            "structure": "se2.compose.translation@1",
             "inputs": {
-              "R": [
-                [
-                  0.16996714290024081,
-                  0.9854497299884603
-                ],
-                [
-                  0.9854497299884603,
-                  -0.16996714290024081
+              "A": {
+                "theta": "atan2(0.8, -0.6)",
+                "cos": -0.6,
+                "sin": 0.8,
+                "translation": [
+                  -2,
+                  -5
                 ]
-              ]
+              },
+              "B": {
+                "theta": "-pi/2",
+                "cos": 0,
+                "sin": -1,
+                "translation": [
+                  3,
+                  3
+                ]
+              }
             },
-            "objectiveId": "R03.rotation-validity",
-            "prompt": "For R=[[0.16996714290024081, 0.9854497299884603], [0.9854497299884603, -0.16996714290024081]], compute det R and the squared norm of its SECOND column. These two checks alone are not a complete general orthogonality test.",
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); angles in radians, counter-clockwise (CCW) positive; a transform is written [[R, t], [0, 0, 1]] with rotation block R and translation column t. T_AB rotates by theta with cos(theta) = -0.6 and sin(theta) = 0.8 (theta is about 2.2143 rad) and has translation (-2, -5). T_BC rotates by theta = -pi/2 and has translation (3, 3). Find the translation column of the product T_AB T_BC. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
             "fields": [
               {
-                "label": "Determinant",
+                "label": "Translation x",
                 "kind": "number",
-                "answer": "-1",
+                "answer": "-6.2",
                 "tolerance": 0.001
               },
               {
-                "label": "Second column norm squared",
+                "label": "Translation y",
                 "kind": "number",
-                "answer": "1",
+                "answer": "-4.4",
                 "tolerance": 0.001
               }
             ],
-            "solution": "The determinant is -1; the second-column squared norm is 1.",
+            "solution": "Rotate the child offset first: R_AB t_BC = (-4.2, 0.6). Then add the parent offset: t_AC = (-2, -5) + (-4.2, 0.6) = (-6.2, -4.4). The rotation of T_BC only changes the rotation block of T_AC.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "The determinant is -1; the second-column squared norm is 1."
+              "The translation of a product is t_AC = t_AB + R_AB t_BC: the offset t_BC is written in B coordinates, so it must be rotated into A before it is added. The rotation of T_BC does not enter the translation of T_AC.",
+              "Rotate the child offset with R_AB (c = -0.6, s = 0.8): R_AB t_BC = ((-0.6)*3 - 0.8*3, 0.8*3 + (-0.6)*3). Then add t_AB = (-2, -5).",
+              "Rotate the child offset first: R_AB t_BC = (-4.2, 0.6). Then add the parent offset: t_AC = (-2, -5) + (-4.2, 0.6) = (-6.2, -4.4). The rotation of T_BC only changes the rotation block of T_AC."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you got (1, -2), you added the offsets without rotating t_BC into A. If you rotated t_AB by the rotation of T_BC instead, you multiplied in the wrong order (T_BC T_AB). Revisit composition in lesson R03 (Theory and derivation) and practise the X10 compose items."
           },
           "dimension": "M",
           "critical": true
         },
         {
           "task": {
+            "id": "F-FRAMES.B.12",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "se2.inverse.point@1",
+            "inputs": {
+              "theta": "pi/2",
+              "cos": 0,
+              "sin": 1,
+              "translation": [
+                -3,
+                9
+              ],
+              "point": [
+                15,
+                -4
+              ]
+            },
+            "objectiveId": "R03.compose-invert-se2",
+            "prompt": "Convention: column vectors; T_AB maps B coordinates into A (p_A = T_AB p_B); angles in radians, counter-clockwise (CCW) positive; a transform is written [[R, t], [0, 0, 1]] with rotation block R and translation column t. T_AB rotates by theta = +pi/2 and has translation t = (-3, 9). A point has coordinates p_A = (15, -4) in A. Compute its coordinates p_B in frame B. Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
+            "fields": [
+              {
+                "label": "x in B",
+                "kind": "number",
+                "answer": "-13",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y in B",
+                "kind": "number",
+                "answer": "-18",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "p_A - t = (15, -4) - (-3, 9) = (18, -13). Applying R^T (c = 0, s = 1) gives p_B = (0*18 + 1*(-13), (-1)*18 + 0*(-13)) = (-13, -18). Check: R p_B + t = (15, -4).",
+            "hints": [
+              "p_A = R p_B + t, so to go from A back to B you must undo T_AB: undo the translation first, then undo the rotation with R^T = [[c, s], [-s, c]].",
+              "Subtract the translation: p_A - t = (15 - (-3), -4 - 9). Then apply R^T(x, y) = (c x + s y, -s x + c y) with c = 0 and s = 1.",
+              "p_A - t = (15, -4) - (-3, 9) = (18, -13). Applying R^T (c = 0, s = 1) gives p_B = (0*18 + 1*(-13), (-1)*18 + 0*(-13)) = (-13, -18). Check: R p_B + t = (15, -4)."
+            ],
+            "remediation": "If you got (18, -13), you removed the translation but not the rotation. If you used R instead of R^T, or rotated before subtracting t (R^T p_A - t), you applied the forward map or the wrong order. Revisit the inverse p_B = R^T(p_A - t) in lesson M12/R03 (Theory and derivation) and practise the X10 inverse items."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
             "id": "F-FRAMES.B.13",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.classify@1",
+            "inputs": {
+              "R": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0.5
+                ]
+              ],
+              "query": "classify"
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). Classify R = [[2, 0], [0, 0.5]]. A 2D proper rotation must be orthogonal (both columns unit length and perpendicular, i.e. R^T R = I) AND have det R = +1.",
+            "fields": [
+              {
+                "label": "Classification",
+                "kind": "choice",
+                "answer": "Not orthogonal, but det = +1",
+                "tolerance": 0.001,
+                "options": [
+                  "Proper rotation (orthogonal, det = +1)",
+                  "Reflection (orthogonal, det = -1)",
+                  "Not orthogonal, but det = +1",
+                  "Not orthogonal, and det is not +1"
+                ]
+              }
+            ],
+            "solution": "Columns (2, 0) and (0, 0.5): squared lengths 4 and 0.25, dot product 0, so R is not orthogonal. det R = (2)(0.5) - (0)(0) = 1. Class: Not orthogonal, but det = +1.",
+            "hints": [
+              "Test the two conditions one at a time: are the columns unit length and perpendicular, and is det R = +1?",
+              "The columns are (2, 0) and (0, 0.5). Compute their squared lengths, then det R = 2*0.5 - 0*0.",
+              "Columns (2, 0) and (0, 0.5): squared lengths 4 and 0.25, dot product 0, so R is not orthogonal. det R = (2)(0.5) - (0)(0) = 1. Class: Not orthogonal, but det = +1."
+            ],
+            "remediation": "Check both conditions separately: det = +1 alone does not make a rotation (shears and stretches can have det +1), and orthogonal matrices with det -1 are reflections. Revisit rotation validity in lesson R03 (Verification) and practise the X10 rotation-validity items."
+          },
+          "dimension": "C",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.14",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.classify@1",
+            "inputs": {
+              "R": [
+                [
+                  0.8,
+                  0.6
+                ],
+                [
+                  0.6,
+                  -0.8
+                ]
+              ],
+              "query": "classify"
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). Classify R = [[0.8, 0.6], [0.6, -0.8]]. A 2D proper rotation must be orthogonal (both columns unit length and perpendicular, i.e. R^T R = I) AND have det R = +1.",
+            "fields": [
+              {
+                "label": "Classification",
+                "kind": "choice",
+                "answer": "Reflection (orthogonal, det = -1)",
+                "tolerance": 0.001,
+                "options": [
+                  "Proper rotation (orthogonal, det = +1)",
+                  "Reflection (orthogonal, det = -1)",
+                  "Not orthogonal, but det = +1",
+                  "Not orthogonal, and det is not +1"
+                ]
+              }
+            ],
+            "solution": "Columns (0.8, 0.6) and (0.6, -0.8): squared lengths 1 and 1, dot product 0, so R is orthogonal. det R = (0.8)(-0.8) - (0.6)(0.6) = -1. Class: Reflection (orthogonal, det = -1).",
+            "hints": [
+              "Test the two conditions one at a time: are the columns unit length and perpendicular, and is det R = +1?",
+              "The columns are (0.8, 0.6) and (0.6, -0.8). Compute their squared lengths and dot product, then det R = 0.8*(-0.8) - 0.6*0.6.",
+              "Columns (0.8, 0.6) and (0.6, -0.8): squared lengths 1 and 1, dot product 0, so R is orthogonal. det R = (0.8)(-0.8) - (0.6)(0.6) = -1. Class: Reflection (orthogonal, det = -1)."
+            ],
+            "remediation": "Check both conditions separately: det = +1 alone does not make a rotation (shears and stretches can have det +1), and orthogonal matrices with det -1 are reflections. Revisit rotation validity in lesson R03 (Verification) and practise the X10 rotation-validity items."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.15",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.classify@1",
+            "inputs": {
+              "R": [
+                [
+                  1.2,
+                  -1.6
+                ],
+                [
+                  1.6,
+                  1.2
+                ]
+              ],
+              "query": "classify"
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). Classify R = [[1.2, -1.6], [1.6, 1.2]]. A 2D proper rotation must be orthogonal (both columns unit length and perpendicular, i.e. R^T R = I) AND have det R = +1.",
+            "fields": [
+              {
+                "label": "Classification",
+                "kind": "choice",
+                "answer": "Not orthogonal, and det is not +1",
+                "tolerance": 0.001,
+                "options": [
+                  "Proper rotation (orthogonal, det = +1)",
+                  "Reflection (orthogonal, det = -1)",
+                  "Not orthogonal, but det = +1",
+                  "Not orthogonal, and det is not +1"
+                ]
+              }
+            ],
+            "solution": "Columns (1.2, 1.6) and (-1.6, 1.2): squared lengths 4 and 4, dot product 0, so R is not orthogonal. det R = (1.2)(1.2) - (-1.6)(1.6) = 4. Class: Not orthogonal, and det is not +1.",
+            "hints": [
+              "Test the two conditions one at a time: are the columns unit length and perpendicular, and is det R = +1?",
+              "The columns are (1.2, 1.6) and (-1.6, 1.2). Compute their squared lengths and dot product, then det R = 1.2*1.2 - (-1.6)*1.6.",
+              "Columns (1.2, 1.6) and (-1.6, 1.2): squared lengths 4 and 4, dot product 0, so R is not orthogonal. det R = (1.2)(1.2) - (-1.6)(1.6) = 4. Class: Not orthogonal, and det is not +1."
+            ],
+            "remediation": "Check both conditions separately: det = +1 alone does not make a rotation (shears and stretches can have det +1), and orthogonal matrices with det -1 are reflections. Revisit rotation validity in lesson R03 (Verification) and practise the X10 rotation-validity items."
+          },
+          "dimension": "C",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.16",
             "route": "independent",
             "difficulty": 2,
             "structure": "rotation.invariants@1",
             "inputs": {
               "R": [
                 [
-                  1,
-                  23
+                  -4,
+                  -3
                 ],
                 [
-                  0,
+                  -2,
+                  -5
+                ]
+              ]
+            },
+            "objectiveId": "R03.rotation-validity",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). For R = [[-4, -3], [-2, -5]], compute det R and the squared length of its SECOND column. (These two checks alone are not a complete orthogonality test.) Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
+            "fields": [
+              {
+                "label": "Determinant",
+                "kind": "number",
+                "answer": "14",
+                "tolerance": 0.001
+              },
+              {
+                "label": "Second column squared length",
+                "kind": "number",
+                "answer": "34",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "det R = (-4)(-5) - (-3)(-2) = 20 - 6 = 14. The second column is (-3, -5), so its squared length is 9 + 25 = 34. Either value alone already shows that R is not a proper rotation.",
+            "hints": [
+              "det [[a, b], [c, d]] = a d - b c. The second column is (b, d): read it down the matrix, not along the first row.",
+              "Substitute a = -4, b = -3, c = -2, d = -5: det R = (-4)*(-5) - (-3)*(-2), and the squared length of (b, d) is (-3)^2 + (-5)^2.",
+              "det R = (-4)(-5) - (-3)(-2) = 20 - 6 = 14. The second column is (-3, -5), so its squared length is 9 + 25 = 34. Either value alone already shows that R is not a proper rotation."
+            ],
+            "remediation": "If your determinant was 26, you used a d + b c instead of a d - b c. If your squared length was 25, you used the first row (a, b); if it was 20, you used the first column. Revisit the rotation-validity checks in lesson R03 (Verification, Failure modes) and practise the X10 rotation-validity items."
+          },
+          "dimension": "M",
+          "critical": true
+        },
+        {
+          "task": {
+            "id": "F-FRAMES.B.17",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "rotation.invariants@1",
+            "inputs": {
+              "R": [
+                [
+                  -3.5,
+                  -3.5
+                ],
+                [
+                  -2,
                   1
                 ]
               ]
             },
             "objectiveId": "R03.rotation-validity",
-            "prompt": "For R=[[1, 23], [0, 1]], compute det R and the squared norm of its SECOND column. These two checks alone are not a complete general orthogonality test.",
+            "prompt": "Matrices are written row by row: [[a, b], [c, d]] has first row (a, b) and second row (c, d). For R = [[-3.5, -3.5], [-2, 1]], compute det R and the squared length of its SECOND column. (These two checks alone are not a complete orthogonality test.) Every answer is an exact decimal with at most 2 decimal places; enter decimals (tolerance ±0.001) and type negatives with an ordinary minus sign (-).",
             "fields": [
               {
                 "label": "Determinant",
                 "kind": "number",
-                "answer": "1",
+                "answer": "-10.5",
                 "tolerance": 0.001
               },
               {
-                "label": "Second column norm squared",
+                "label": "Second column squared length",
                 "kind": "number",
-                "answer": "530",
+                "answer": "13.25",
                 "tolerance": 0.001
               }
             ],
-            "solution": "The determinant is 1; the second-column squared norm is 530.",
+            "solution": "det R = (-3.5)(1) - (-3.5)(-2) = -3.5 - 7 = -10.5. The second column is (-3.5, 1), so its squared length is 12.25 + 1 = 13.25. Either value alone already shows that R is not a proper rotation.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "The determinant is 1; the second-column squared norm is 530."
+              "det [[a, b], [c, d]] = a d - b c. The second column is (b, d): read it down the matrix, not along the first row.",
+              "Substitute a = -3.5, b = -3.5, c = -2, d = 1: det R = (-3.5)*(1) - (-3.5)*(-2), and the squared length of (b, d) is (-3.5)^2 + (1)^2.",
+              "det R = (-3.5)(1) - (-3.5)(-2) = -3.5 - 7 = -10.5. The second column is (-3.5, 1), so its squared length is 12.25 + 1 = 13.25. Either value alone already shows that R is not a proper rotation."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If your determinant was 3.5, you used a d + b c instead of a d - b c. If your squared length was 24.5, you used the first row (a, b); if it was 16.25, you used the first column. Revisit the rotation-validity checks in lesson R03 (Verification, Failure modes) and practise the X10 rotation-validity items."
           },
           "dimension": "M",
           "critical": false

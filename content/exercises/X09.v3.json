@@ -1,0 +1,323 @@
+{
+  "id": "X09",
+  "version": 3,
+  "title": "Design a test that detects a real bug",
+  "domain": "Programming & C++",
+  "topicId": "PY07",
+  "objectiveId": "PY07.mutation-tests",
+  "routes": [
+    "projection-tests",
+    "kinematic-tests"
+  ],
+  "scope": "Reason about a selected mutant; no submitted-test execution",
+  "labIds": [
+    "L05",
+    "L06"
+  ],
+  "items": [
+    {
+      "id": "X09.projection-tests.1",
+      "route": "projection-tests",
+      "difficulty": 1,
+      "structure": "X09.PY07.mutation-tests.1@1",
+      "inputs": {
+        "mutant": "zero-output",
+        "A": {
+          "u": [
+            3,
+            1
+          ],
+          "v": [
+            1,
+            0
+          ]
+        },
+        "B": {
+          "u": [
+            0,
+            2
+          ],
+          "v": [
+            1,
+            0
+          ]
+        }
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "proj(u, v) should return ((u·v)/(v·v))·v, the projection of u onto v. A mutant always returns [0, 0]. Which test fails the mutant but passes the correct code? A: proj([3, 1], [1, 0]). B: proj([0, 2], [1, 0]). Return A or B.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "A",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "Correct outputs: A gives (3/1)·[1, 0] = [3, 0]; B gives (0/1)·[1, 0] = [0, 0]. The mutant returns [0, 0] for both, so only A fails the mutant. B passes both versions and cannot detect the bug.",
+      "hints": [
+        "A test kills a mutant only if the correct function and the mutant return different outputs on it.",
+        "Compute the correct projection for A and for B, and compare each with the mutant's constant output [0, 0].",
+        "Correct outputs: A gives (3/1)·[1, 0] = [3, 0]; B gives (0/1)·[1, 0] = [0, 0]. The mutant returns [0, 0] for both, so only A fails the mutant. B passes both versions and cannot detect the bug."
+      ],
+      "remediation": "If you chose B, its correct answer is also [0, 0], so the mutant passes it. A useful test needs a nonzero expected projection. Revisit /lessons/PY07."
+    },
+    {
+      "id": "X09.projection-tests.2",
+      "route": "projection-tests",
+      "difficulty": 2,
+      "structure": "X09.PY07.mutation-tests.2@1",
+      "inputs": {
+        "mutant": "divide-by-norm",
+        "A": {
+          "u": [
+            2,
+            5
+          ],
+          "v": [
+            1,
+            0
+          ]
+        },
+        "B": {
+          "u": [
+            1,
+            1
+          ],
+          "v": [
+            0,
+            2
+          ]
+        }
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "proj(u, v) should return ((u·v)/(v·v))·v, the projection of u onto v. A mutant divides by the length ‖v‖ instead of v·v = ‖v‖², returning ((u·v)/‖v‖)·v. Which test kills it? A: proj([2, 5], [1, 0]). B: proj([1, 1], [0, 2]). Return A or B.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "B",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "A: v = [1, 0] has ‖v‖ = ‖v‖² = 1, so both versions return [2, 0] and the mutant passes. B: u·v = 2, ‖v‖² = 4, ‖v‖ = 2. Correct: (2/4)·[0, 2] = [0, 1]; mutant: (2/2)·[0, 2] = [0, 2]. Only B kills the mutant: unit-length test vectors hide normalisation bugs.",
+      "hints": [
+        "The mutant and the correct code differ only through the divisor: ‖v‖ versus ‖v‖².",
+        "For each option compute ‖v‖ and ‖v‖²; the two formulas can only disagree when those numbers differ.",
+        "A: v = [1, 0] has ‖v‖ = ‖v‖² = 1, so both versions return [2, 0] and the mutant passes. B: u·v = 2, ‖v‖² = 4, ‖v‖ = 2. Correct: (2/4)·[0, 2] = [0, 1]; mutant: (2/2)·[0, 2] = [0, 2]. Only B kills the mutant: unit-length test vectors hide normalisation bugs."
+      ],
+      "remediation": "If you chose A, a unit vector v makes ‖v‖ and ‖v‖² equal, so the bug is invisible there. Revisit /lessons/PY07."
+    },
+    {
+      "id": "X09.projection-tests.3",
+      "route": "projection-tests",
+      "difficulty": 3,
+      "structure": "X09.PY07.mutation-tests.0@1",
+      "inputs": {
+        "mutant": "swapped-arguments",
+        "A": {
+          "u": [
+            2,
+            2
+          ],
+          "v": [
+            1,
+            0
+          ]
+        },
+        "B": {
+          "u": [
+            0,
+            3
+          ],
+          "v": [
+            2,
+            0
+          ]
+        }
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "proj(u, v) should return ((u·v)/(v·v))·v, the projection of u onto v. A mutant swaps the arguments and returns proj(v, u), the projection of v onto u. Which test kills it? A: proj([2, 2], [1, 0]). B: proj([0, 3], [2, 0]). Return A or B.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "A",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "A: correct (2/1)·[1, 0] = [2, 0]; the mutant projects v onto u: (2/8)·[2, 2] = [0.5, 0.5]. They differ, so A kills the mutant. B: u·v = 0, so both versions return [0, 0] and the swap is invisible.",
+      "hints": [
+        "Compute both the projection of u onto v and the projection of v onto u for each option.",
+        "Check u·v for each option first: when it is 0, both projections are the zero vector.",
+        "A: correct (2/1)·[1, 0] = [2, 0]; the mutant projects v onto u: (2/8)·[2, 2] = [0.5, 0.5]. They differ, so A kills the mutant. B: u·v = 0, so both versions return [0, 0] and the swap is invisible."
+      ],
+      "remediation": "If you chose B, perpendicular inputs give a zero projection in both directions, so they cannot reveal swapped arguments. Revisit /lessons/PY07."
+    },
+    {
+      "id": "X09.kinematic-tests.1",
+      "route": "kinematic-tests",
+      "difficulty": 1,
+      "structure": "testing.kinematic-mutant@1",
+      "inputs": {
+        "mutant": "orientation-zero",
+        "A": {
+          "q1": "pi/4",
+          "q2": "pi/4"
+        },
+        "B": {
+          "q1": "pi/3",
+          "q2": "-pi/3"
+        }
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "A planar 2R forward-kinematics function returns (x, y, θ) with θ = q1 + q2. A mutant returns the correct x and y but always returns θ = 0. Which test, checking every returned field, kills it? A: q1 = π/4, q2 = π/4. B: q1 = π/3, q2 = -π/3. Return A or B.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "A",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "A: θ = π/4 + π/4 = π/2 ≠ 0, so the mutant fails the orientation check. B: θ = π/3 - π/3 = 0, so the hardcoded 0 happens to be right and the mutant passes, even though both joints move.",
+      "hints": [
+        "Only the orientation field is wrong, so the test must have a correct θ different from 0.",
+        "For each option compute the correct orientation θ = q1 + q2 and compare it with the mutant's 0.",
+        "A: θ = π/4 + π/4 = π/2 ≠ 0, so the mutant fails the orientation check. B: θ = π/3 - π/3 = 0, so the hardcoded 0 happens to be right and the mutant passes, even though both joints move."
+      ],
+      "remediation": "If you chose B, moving joints is not enough: its joint angles cancel, so the correct θ is also 0. Revisit /lessons/PY07."
+    },
+    {
+      "id": "X09.kinematic-tests.2",
+      "route": "kinematic-tests",
+      "difficulty": 2,
+      "structure": "testing.kinematic-mutant@1",
+      "inputs": {
+        "mutant": "direction-translated",
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            0,
+            0
+          ],
+          "direction": [
+            1,
+            0
+          ]
+        },
+        "B": {
+          "theta": "0",
+          "translation": [
+            2,
+            1
+          ],
+          "direction": [
+            0,
+            1
+          ]
+        }
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "A rigid transform (rotation θ, translation t) should map a direction d to R(θ)·d, with no translation. A mutant treats directions like points and returns R(θ)·d + t. Which test kills it? A: θ = π/2, t = (0, 0), d = (1, 0). B: θ = 0, t = (2, 1), d = (0, 1). Return A or B.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "B",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "A: correct R·d = (0, 1); the mutant adds t = (0, 0) and also gives (0, 1), so it passes. B: correct R·d = (0, 1); the mutant gives (0, 1) + (2, 1) = (2, 2). Only a nonzero translation exposes the bug, so B kills it.",
+      "hints": [
+        "The mutant differs from the correct code only by the added translation t.",
+        "For each option compute R(θ)·d and R(θ)·d + t; the test kills the mutant only if they differ.",
+        "A: correct R·d = (0, 1); the mutant adds t = (0, 0) and also gives (0, 1), so it passes. B: correct R·d = (0, 1); the mutant gives (0, 1) + (2, 1) = (2, 2). Only a nonzero translation exposes the bug, so B kills it."
+      ],
+      "remediation": "If you chose A, the rotation is interesting but the translation is zero, so adding t changes nothing. Revisit /lessons/PY07."
+    },
+    {
+      "id": "X09.kinematic-tests.3",
+      "route": "kinematic-tests",
+      "difficulty": 3,
+      "structure": "testing.kinematic-mutant@1",
+      "inputs": {
+        "mutant": "determinant-only",
+        "A": {
+          "R": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        "B": {
+          "R": [
+            [
+              1,
+              0.5
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      "objectiveId": "PY07.mutation-tests",
+      "prompt": "A correct 2D rotation validator accepts R only if RᵀR = I and det(R) = +1. A mutant checks det(R) = +1 only. Which input makes the mutant and the correct validator disagree? A: R = [[0, 1], [1, 0]]. B: R = [[1, 0.5], [0, 1]]. Return A or B.",
+      "fields": [
+        {
+          "label": "Discriminating test",
+          "kind": "choice",
+          "answer": "B",
+          "tolerance": 0.001,
+          "options": [
+            "A",
+            "B"
+          ]
+        }
+      ],
+      "solution": "A: det = -1, so the mutant rejects it, and the full validator also rejects it (orthonormal but a reflection): same verdict, no detection. B: det = 1·1 - 0.5·0 = 1, so the mutant accepts it, but RᵀR = [[1, 0.5], [0.5, 1.25]] ≠ I, so the correct validator rejects it. Only B kills the mutant.",
+      "hints": [
+        "Decide separately what the correct validator and the determinant-only mutant return for each matrix.",
+        "For each matrix compute det(R) and check whether RᵀR = I; then write down both verdicts.",
+        "A: det = -1, so the mutant rejects it, and the full validator also rejects it (orthonormal but a reflection): same verdict, no detection. B: det = 1·1 - 0.5·0 = 1, so the mutant accepts it, but RᵀR = [[1, 0.5], [0.5, 1.25]] ≠ I, so the correct validator rejects it. Only B kills the mutant."
+      ],
+      "remediation": "If you chose A, both validators reject a reflection because det = -1; the mutant only slips when det = +1 but the columns are not orthonormal. Revisit /lessons/PY07."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "projection-tests": "Choose the input that kills a projection mutant: zero output, wrong normaliser or swapped arguments.",
+    "kinematic-tests": "Pick FK orientation, point-versus-direction and rotation-validity tests that expose a stated mutant."
+  }
+}

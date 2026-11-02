@@ -102,7 +102,7 @@ function result(a: Attempt) {
       artifact: saved.artifact,
       answers: saved.answers,
       effectiveAssistance: Math.max(a.observed_level, a.declared_level ?? 0),
-      claim: "Practice only; independent content review pending",
+      claim: "Practice only; creates no evidence",
     };
   } catch {
     return {
@@ -140,7 +140,7 @@ export function publicAttempt(db: DB, id: string) {
     submittedAt: a.submitted_at,
     repeat,
     result: result(a),
-    reviewStatus: "Independent review pending",
+    reviewStatus: "Owner-assigned AI review; not a human expert review",
     verifiedI: "unavailable",
   };
 }

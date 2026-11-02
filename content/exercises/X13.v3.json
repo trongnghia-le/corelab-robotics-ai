@@ -1,0 +1,244 @@
+{
+  "id": "X13",
+  "version": 3,
+  "title": "Analyze bounded feedback",
+  "domain": "Control",
+  "topicId": "C01",
+  "objectiveId": "C01.bounded-step",
+  "routes": [
+    "wheel-speed",
+    "thermal-model"
+  ],
+  "scope": "One bounded P-control integrator step, not general PID",
+  "labIds": [
+    "L04"
+  ],
+  "items": [
+    {
+      "id": "X13.wheel-speed.1",
+      "route": "wheel-speed",
+      "difficulty": 1,
+      "structure": "X13.C01.bounded-step.1@1",
+      "inputs": {
+        "y": "1.6",
+        "r": "2",
+        "kp": "2",
+        "limit": "1.5",
+        "h": "0.1"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "A wheel-speed loop is modelled as a toy integrator: speed y (m/s) updates as y_next = y + h·u with step h=0.1 s. A P controller commands u = clip(kp·(r - y), -L, L) with kp=2 and limit L=1.5 m/s². Current speed y=1.6 m/s, reference r=2 m/s. Compute the applied command u and the next speed y_next. Answers are graded within ±0.001.",
+      "fields": [
+        {
+          "label": "Applied u (m/s²)",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y (m/s)",
+          "kind": "number",
+          "answer": "1.68",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Raw command = 2·(2 - 1.6) = 0.8 m/s², which is inside the limits, so the clip does not change it: u = 0.8 m/s². y_next = 1.6 + 0.1·0.8 = 1.68 m/s. The clip acts on the actuator command, not on the speed.",
+      "hints": [
+        "The speed is just below the reference, so expect a small positive command; check whether it stays inside the ±limit.",
+        "First evaluate the raw command kp·(r - y) = 2·(2 - 1.6); next compare it with the limits ±1.5 to get the applied u, and only then step the integrator with h = 0.1 s.",
+        "Raw command = 2·(2 - 1.6) = 0.8 m/s², which is inside the limits, so the clip does not change it: u = 0.8 m/s². y_next = 1.6 + 0.1·0.8 = 1.68 m/s. The clip acts on the actuator command, not on the speed."
+      ],
+      "remediation": "If you got u = -0.8, you used y - r instead of r - y. Recompute y_next from the applied u. Revisit /lessons/C01."
+    },
+    {
+      "id": "X13.wheel-speed.2",
+      "route": "wheel-speed",
+      "difficulty": 2,
+      "structure": "X13.C01.bounded-step.2@1",
+      "inputs": {
+        "y": "0.4",
+        "r": "3",
+        "kp": "1.5",
+        "limit": "2",
+        "h": "0.2"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "A wheel-speed loop is modelled as a toy integrator: speed y (m/s) updates as y_next = y + h·u with step h=0.2 s. A P controller commands u = clip(kp·(r - y), -L, L) with kp=1.5 and limit L=2 m/s². Current speed y=0.4 m/s, reference r=3 m/s. Compute the applied command u and the next speed y_next. Answers are graded within ±0.001.",
+      "fields": [
+        {
+          "label": "Applied u (m/s²)",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y (m/s)",
+          "kind": "number",
+          "answer": "0.8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Raw command = 1.5·(3 - 0.4) = 3.9 m/s², which is beyond +2, so the applied command is clipped: u = 2 m/s². y_next = 0.4 + 0.2·2 = 0.8 m/s. The clip acts on the actuator command, not on the speed.",
+      "hints": [
+        "The speed is far below the reference, so the raw command is large and positive; the upper limit may bind.",
+        "First evaluate the raw command kp·(r - y) = 1.5·(3 - 0.4); next compare it with the limits ±2 to get the applied u, and only then step the integrator with h = 0.2 s.",
+        "Raw command = 1.5·(3 - 0.4) = 3.9 m/s², which is beyond +2, so the applied command is clipped: u = 2 m/s². y_next = 0.4 + 0.2·2 = 0.8 m/s. The clip acts on the actuator command, not on the speed."
+      ],
+      "remediation": "If you got u = 3.9, you skipped the clip; if you got u = -2, you used y - r instead of r - y. Recompute y_next from the applied u. Revisit /lessons/C01."
+    },
+    {
+      "id": "X13.wheel-speed.3",
+      "route": "wheel-speed",
+      "difficulty": 3,
+      "structure": "X13.C01.bounded-step.0@1",
+      "inputs": {
+        "y": "2.5",
+        "r": "-1",
+        "kp": "0.8",
+        "limit": "1.2",
+        "h": "0.25"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "A wheel-speed loop is modelled as a toy integrator: speed y (m/s) updates as y_next = y + h·u with step h=0.25 s. A P controller commands u = clip(kp·(r - y), -L, L) with kp=0.8 and limit L=1.2 m/s². Current speed y=2.5 m/s, reference r=-1 m/s. Compute the applied command u and the next speed y_next. Answers are graded within ±0.001.",
+      "fields": [
+        {
+          "label": "Applied u (m/s²)",
+          "kind": "number",
+          "answer": "-1.2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y (m/s)",
+          "kind": "number",
+          "answer": "2.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Raw command = 0.8·(-1 - 2.5) = -2.8 m/s², which is beyond -1.2, so the applied command is clipped: u = -1.2 m/s². y_next = 2.5 + 0.25·(-1.2) = 2.2 m/s. The clip acts on the actuator command, not on the speed.",
+      "hints": [
+        "The reference is negative and below the current speed, so the error r-y and the command are negative; the lower limit may bind.",
+        "First evaluate the raw command kp·(r - y) = 0.8·(-1 - 2.5); next compare it with the limits ±1.2 to get the applied u, and only then step the integrator with h = 0.25 s.",
+        "Raw command = 0.8·(-1 - 2.5) = -2.8 m/s², which is beyond -1.2, so the applied command is clipped: u = -1.2 m/s². y_next = 2.5 + 0.25·(-1.2) = 2.2 m/s. The clip acts on the actuator command, not on the speed."
+      ],
+      "remediation": "If you got u = -2.8, you skipped the clip; if you got u = 1.2, you used y - r instead of r - y; if you got u = 0, you clipped to [0, L] instead of [-L, L]. Recompute y_next from the applied u. Revisit /lessons/C01."
+    },
+    {
+      "id": "X13.thermal-model.1",
+      "route": "thermal-model",
+      "difficulty": 1,
+      "structure": "control.cooling-integrator@1",
+      "inputs": {
+        "y": "6",
+        "r": "2",
+        "kp": "1.5",
+        "limit": "2",
+        "h": "0.1"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy thermal integrator: temperature y=6 °C, target r=2 °C. The applied heating/cooling rate is u = clip(1.5·(r - y), -2, 2) °C/s and y_next = y + 0.1·u (one 0.1 s step). No heat-loss model is included; negative u means cooling. Compute the signed applied u and y_next. Answers are graded within ±0.001.",
+      "fields": [
+        {
+          "label": "Applied u (°C/s)",
+          "kind": "number",
+          "answer": "-2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y (°C)",
+          "kind": "number",
+          "answer": "5.8",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "r - y = -4 °C; raw command 1.5·(-4) = -6 °C/s, which is beyond -2, so the applied command is clipped: u = -2 °C/s. y_next = 6 + 0.1·(-2) = 5.8 °C. The actuator clips the control input, not the state.",
+      "hints": [
+        "The temperature is above the target, so the error r-y is negative and the actuator must cool; the cooling limit may bind.",
+        "Error r - y = 2 - 6 = -4 °C. Next multiply by 1.5 to get the raw command, compare it with ±2 to get the applied u, then take one 0.1 s step.",
+        "r - y = -4 °C; raw command 1.5·(-4) = -6 °C/s, which is beyond -2, so the applied command is clipped: u = -2 °C/s. y_next = 6 + 0.1·(-2) = 5.8 °C. The actuator clips the control input, not the state."
+      ],
+      "remediation": "If you got u = -6, the clip was skipped; if you got u = 2, the error sign was flipped (use r - y). Revisit /lessons/C01."
+    },
+    {
+      "id": "X13.thermal-model.2",
+      "route": "thermal-model",
+      "difficulty": 2,
+      "structure": "control.cooling-integrator@1",
+      "inputs": {
+        "y": "7",
+        "r": "5.9",
+        "kp": "1.5",
+        "limit": "2",
+        "h": "0.1"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy thermal integrator: temperature y=7 °C, target r=5.9 °C. The applied heating/cooling rate is u = clip(1.5·(r - y), -2, 2) °C/s and y_next = y + 0.1·u (one 0.1 s step). No heat-loss model is included; negative u means cooling. Compute the signed applied u and y_next. Answers are graded within ±0.001.",
+      "fields": [
+        {
+          "label": "Applied u (°C/s)",
+          "kind": "number",
+          "answer": "-1.65",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y (°C)",
+          "kind": "number",
+          "answer": "6.835",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "r - y = -1.1 °C; raw command 1.5·(-1.1) = -1.65 °C/s, which is inside ±2, so it is applied unchanged: u = -1.65 °C/s. y_next = 7 + 0.1·(-1.65) = 6.835 °C. The actuator clips the control input, not the state.",
+      "hints": [
+        "The temperature is only slightly above the target: the command is negative, and you must check whether it reaches the -2 limit.",
+        "Error r - y = 5.9 - 7 = -1.1 °C. Next multiply by 1.5 to get the raw command, compare it with ±2 to get the applied u, then take one 0.1 s step.",
+        "r - y = -1.1 °C; raw command 1.5·(-1.1) = -1.65 °C/s, which is inside ±2, so it is applied unchanged: u = -1.65 °C/s. y_next = 7 + 0.1·(-1.65) = 6.835 °C. The actuator clips the control input, not the state."
+      ],
+      "remediation": "If you got u = 1.65, the error sign was flipped (use r - y). Revisit /lessons/C01."
+    },
+    {
+      "id": "X13.thermal-model.3",
+      "route": "thermal-model",
+      "difficulty": 3,
+      "structure": "control.cooling-integrator@1",
+      "inputs": {
+        "y": "8",
+        "r": "12",
+        "kp": "1.5",
+        "limit": "2",
+        "h": "0.1"
+      },
+      "objectiveId": "C01.bounded-step",
+      "prompt": "Toy thermal integrator: temperature y=8 °C, target r=12 °C. The applied heating/cooling rate is u = clip(1.5·(r - y), -2, 2) °C/s and y_next = y + 0.1·u (one 0.1 s step). No heat-loss model is included; negative u means cooling. Compute the signed applied u and y_next. Answers are graded within ±0.001.",
+      "fields": [
+        {
+          "label": "Applied u (°C/s)",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Next y (°C)",
+          "kind": "number",
+          "answer": "8.2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "r - y = 4 °C; raw command 1.5·4 = 6 °C/s, which is beyond +2, so the applied command is clipped: u = 2 °C/s. y_next = 8 + 0.1·2 = 8.2 °C. The actuator clips the control input, not the state.",
+      "hints": [
+        "The temperature is well below the target, so the command is positive (heating) and may hit the +2 limit.",
+        "Error r - y = 12 - 8 = 4 °C. Next multiply by 1.5 to get the raw command, compare it with ±2 to get the applied u, then take one 0.1 s step.",
+        "r - y = 4 °C; raw command 1.5·4 = 6 °C/s, which is beyond +2, so the applied command is clipped: u = 2 °C/s. y_next = 8 + 0.1·2 = 8.2 °C. The actuator clips the control input, not the state."
+      ],
+      "remediation": "If you got u = 6, the clip was skipped; if you got u = -2, the error sign was flipped (use r - y). Revisit /lessons/C01."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "wheel-speed": "One bounded P step on a wheel-speed integrator: an unsaturated step, positive saturation and negative saturation.",
+    "thermal-model": "Handle cooling, saturation and signed error in a toy thermal integrator."
+  }
+}

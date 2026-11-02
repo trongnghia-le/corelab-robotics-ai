@@ -14,7 +14,7 @@ import type {
   publicAttempt,
   history as learningHistory,
 } from "@/lib/v2/attempts";
-import { v2 } from "./client";
+import { readableAnswer, v2 } from "./client";
 import { LearningPanel } from "./learning-panel";
 type Data = ReturnType<typeof objectiveDetail>;
 type Attempt = ReturnType<typeof publicAttempt>;
@@ -170,12 +170,13 @@ export function V2Explorer({ objective }: { objective?: string }) {
         </Link>
       </PageHeading>
       <div className="v2-notice">
-        <strong>V2 development preview</strong>
+        <strong>CoreLab V2</strong>
         <p>
-          Original exercises are author-tested; independent content review is
-          pending. Practice, code notes and watched solutions do not grant
-          verified mastery. C/M assessment release is gated; verified I and
-          human-reviewed transfer are unavailable.
+          Original exercises are author-tested and checked by an owner-assigned
+          AI review, not a human expert review. Practice, code notes and watched
+          solutions do not grant verified mastery; only scoped C/M checks with
+          approved review records can. Verified I and human-reviewed transfer
+          are unavailable.
         </p>
       </div>
       {error && (
@@ -554,7 +555,7 @@ export function V2Explorer({ objective }: { objective?: string }) {
                       {attempt.result.fields.map((f) => (
                         <li key={f.id}>
                           {f.label}: {f.correct ? "correct" : "needs revision"}{" "}
-                          · expected {f.expected}
+                          · expected {readableAnswer(f.expected)}
                         </li>
                       ))}
                     </ul>

@@ -1,0 +1,377 @@
+{
+  "id": "X08",
+  "version": 3,
+  "title": "Respect feature axes and training statistics",
+  "domain": "ML & CV",
+  "topicId": "PY04",
+  "objectiveId": "PY04.column-axes",
+  "routes": [
+    "feature-columns",
+    "image-channels"
+  ],
+  "scope": "Non-square array axes; provided training-only means",
+  "labIds": [
+    "L16",
+    "L19"
+  ],
+  "items": [
+    {
+      "id": "X08.feature-columns.1",
+      "route": "feature-columns",
+      "difficulty": 1,
+      "structure": "X08.PY04.column-axes.1@1",
+      "inputs": {
+        "rows": [
+          [
+            1,
+            4,
+            10
+          ],
+          [
+            5,
+            0,
+            13
+          ]
+        ]
+      },
+      "objectiveId": "PY04.column-axes",
+      "prompt": "A training array X has shape (2, 3): rows are samples and columns are features. X = [[1, 4, 10], [5, 0, 13]]. Compute the per-feature means a scaler would store. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Feature 1 mean",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Feature 2 mean",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Feature 3 mean",
+          "kind": "number",
+          "answer": "11.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Feature means: (1 + 5)/2 = 3, (4 + 0)/2 = 2, (10 + 13)/2 = 11.5. X.mean(axis=0) has shape (3,); X.mean(axis=1) would instead give two per-sample means [5, 6].",
+      "hints": [
+        "Rows are samples and columns are features, so a per-feature mean averages down each column (NumPy axis=0).",
+        "For feature 1 average the first entry of each row (1 and 5); do the same for features 2 and 3.",
+        "Feature means: (1 + 5)/2 = 3, (4 + 0)/2 = 2, (10 + 13)/2 = 11.5. X.mean(axis=0) has shape (3,); X.mean(axis=1) would instead give two per-sample means [5, 6]."
+      ],
+      "remediation": "If you averaged across a row (for example (1 + 4 + 10)/3 = 5) you reduced the feature axis; per-feature statistics reduce the sample axis. Revisit /lessons/PY04."
+    },
+    {
+      "id": "X08.feature-columns.2",
+      "route": "feature-columns",
+      "difficulty": 2,
+      "structure": "arrays.feature-major-fit@1",
+      "inputs": {
+        "layout": "feature-major",
+        "training": [
+          [
+            2,
+            4,
+            6,
+            0
+          ],
+          [
+            10,
+            14,
+            12,
+            16
+          ],
+          [
+            -1,
+            0,
+            3,
+            2
+          ]
+        ],
+        "heldOut": [
+          13,
+          3,
+          6
+        ]
+      },
+      "objectiveId": "PY04.column-axes",
+      "prompt": "A data loader stores the TRAINING matrix feature-major with shape (3, 4): row j holds feature j for the 4 training samples. Stored = [[2, 4, 6, 0], [10, 14, 12, 16], [-1, 0, 3, 2]]. A held-out sample [13, 3, 6] arrives later. Compute the per-feature means a scaler must store, fitted on training data only. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Feature 1 mean",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Feature 2 mean",
+          "kind": "number",
+          "answer": "13",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Feature 3 mean",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Feature 1: (2 + 4 + 6 + 0)/4 = 3; feature 2: (10 + 14 + 12 + 16)/4 = 13; feature 3: (-1 + 0 + 3 + 2)/4 = 1. Folding the held-out sample in would give [5, 11, 2], which leaks test data into the scaler.",
+      "hints": [
+        "Here each stored row is one feature, so a per-feature mean averages along each stored row (axis=1); the held-out sample is not training data.",
+        "Average the four numbers in each stored row and leave [13, 3, 6] out of every mean.",
+        "Feature 1: (2 + 4 + 6 + 0)/4 = 3; feature 2: (10 + 14 + 12 + 16)/4 = 13; feature 3: (-1 + 0 + 3 + 2)/4 = 1. Folding the held-out sample in would give [5, 11, 2], which leaks test data into the scaler."
+      ],
+      "remediation": "[5, 11, 2] means the held-out sample was included in the fit. If you got 3.667, 6, 7, 6 (four values, one per stored sample) you averaged down the stored columns (axis=0), which mixes features. Revisit /lessons/PY04."
+    },
+    {
+      "id": "X08.feature-columns.3",
+      "route": "feature-columns",
+      "difficulty": 3,
+      "structure": "scaling.apply-training-stats@1",
+      "inputs": {
+        "mean": [
+          3,
+          13,
+          1
+        ],
+        "std": [
+          2,
+          2.5,
+          0.5
+        ],
+        "heldOut": [
+          6,
+          9,
+          0.25
+        ]
+      },
+      "objectiveId": "PY04.column-axes",
+      "prompt": "A standard scaler was fitted on training data only and stored per-feature mean = [3, 13, 1] and std = [2, 2.5, 0.5]. Standardise the held-out sample [6, 9, 0.25] with z = (x - mean)/std, feature by feature. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "z (feature 1)",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "z (feature 2)",
+          "kind": "number",
+          "answer": "-1.6",
+          "tolerance": 0.001
+        },
+        {
+          "label": "z (feature 3)",
+          "kind": "number",
+          "answer": "-1.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "z1 = (6 - 3)/2 = 1.5; z2 = (9 - 13)/2.5 = -1.6; z3 = (0.25 - 1)/0.5 = -1.5.",
+      "hints": [
+        "A held-out sample is transformed with the stored training mean and std; nothing is refitted on it.",
+        "For each feature subtract its stored mean, then divide by that feature's stored std (not the variance).",
+        "z1 = (6 - 3)/2 = 1.5; z2 = (9 - 13)/2.5 = -1.6; z3 = (0.25 - 1)/0.5 = -1.5."
+      ],
+      "remediation": "Zeros mean you refitted the mean on the held-out sample itself. -0.64 for feature 2 means you divided by the variance 6.25 instead of the std 2.5. Revisit /lessons/PY04."
+    },
+    {
+      "id": "X08.image-channels.1",
+      "route": "image-channels",
+      "difficulty": 1,
+      "structure": "arrays.channel-reduction@1",
+      "inputs": {
+        "shape": [
+          2,
+          2,
+          3
+        ],
+        "pixels": [
+          [
+            10,
+            200,
+            30
+          ],
+          [
+            20,
+            180,
+            50
+          ],
+          [
+            30,
+            160,
+            40
+          ],
+          [
+            60,
+            140,
+            80
+          ]
+        ],
+        "layout": "HWC"
+      },
+      "objectiveId": "PY04.column-axes",
+      "prompt": "A 2×2 RGB image uses HWC layout (height, width, channel). Its four pixels in row-major order are [[10, 200, 30], [20, 180, 50], [30, 160, 40], [60, 140, 80]]. Compute the three channel means by reducing height and width while keeping the channel axis. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Red mean",
+          "kind": "number",
+          "answer": "30",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Green mean",
+          "kind": "number",
+          "answer": "170",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Blue mean",
+          "kind": "number",
+          "answer": "50",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Red: (10 + 20 + 30 + 60)/4 = 30; green: (200 + 180 + 160 + 140)/4 = 170; blue: (30 + 50 + 40 + 80)/4 = 50. In NumPy this is img.mean(axis=(0, 1)).",
+      "hints": [
+        "Channel means reduce the spatial axes H and W and keep C; each output averages one channel over all pixels.",
+        "Collect the four red values (first entry of each pixel) and average them; repeat for green and blue.",
+        "Red: (10 + 20 + 30 + 60)/4 = 30; green: (200 + 180 + 160 + 140)/4 = 170; blue: (30 + 50 + 40 + 80)/4 = 50. In NumPy this is img.mean(axis=(0, 1))."
+      ],
+      "remediation": "If you got one number per pixel (for example 80 for the first pixel) you averaged the three channels together. Revisit /lessons/PY04."
+    },
+    {
+      "id": "X08.image-channels.2",
+      "route": "image-channels",
+      "difficulty": 2,
+      "structure": "arrays.batch-channel-reduction@1",
+      "inputs": {
+        "shape": [
+          2,
+          1,
+          2,
+          3
+        ],
+        "pixels": [
+          [
+            0,
+            50,
+            255
+          ],
+          [
+            40,
+            70,
+            205
+          ],
+          [
+            80,
+            90,
+            155
+          ],
+          [
+            120,
+            10,
+            105
+          ]
+        ],
+        "layout": "NHWC"
+      },
+      "objectiveId": "PY04.column-axes",
+      "prompt": "A training batch has shape (2, 1, 2, 3) in NHWC layout: two images, each 1×2 pixels with RGB channels. Image 1 pixels: [0, 50, 255], [40, 70, 205]. Image 2 pixels: [80, 90, 155], [120, 10, 105]. Compute the dataset channel means used for normalisation (one value per channel). Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Red mean",
+          "kind": "number",
+          "answer": "60",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Green mean",
+          "kind": "number",
+          "answer": "55",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Blue mean",
+          "kind": "number",
+          "answer": "180",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Red: (0 + 40 + 80 + 120)/4 = 60; green: (50 + 70 + 90 + 10)/4 = 55; blue: (255 + 205 + 155 + 105)/4 = 180. In NumPy this is batch.mean(axis=(0, 1, 2)).",
+      "hints": [
+        "Dataset channel statistics reduce every axis except C: batch N, height H and width W.",
+        "List the four red values across both images and average them; repeat for green and blue.",
+        "Red: (0 + 40 + 80 + 120)/4 = 60; green: (50 + 70 + 90 + 10)/4 = 55; blue: (255 + 205 + 155 + 105)/4 = 180. In NumPy this is batch.mean(axis=(0, 1, 2))."
+      ],
+      "remediation": "If you produced one set of means per image (for example red 20 and 100) you kept the batch axis N; dataset channel statistics reduce it too. Revisit /lessons/PY04."
+    },
+    {
+      "id": "X08.image-channels.3",
+      "route": "image-channels",
+      "difficulty": 3,
+      "structure": "scaling.apply-channel-stats@1",
+      "inputs": {
+        "mean": [
+          120,
+          110,
+          100
+        ],
+        "std": [
+          60,
+          50,
+          40
+        ],
+        "heldOut": [
+          150,
+          85,
+          160
+        ],
+        "layout": "RGB"
+      },
+      "objectiveId": "PY04.column-axes",
+      "prompt": "Training images gave stored channel statistics mean = [120, 110, 100] and std = [60, 50, 40] (R, G, B). Normalise the held-out test pixel [150, 85, 160] channel by channel with z = (x - mean)/std. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Red z",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Green z",
+          "kind": "number",
+          "answer": "-0.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Blue z",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Red: (150 - 120)/60 = 0.5; green: (85 - 110)/50 = -0.5; blue: (160 - 100)/40 = 1.5.",
+      "hints": [
+        "Each channel uses its own stored training mean and std; the test pixel does not change the statistics.",
+        "For each channel subtract that channel's stored mean, then divide by that channel's stored std.",
+        "Red: (150 - 120)/60 = 0.5; green: (85 - 110)/50 = -0.5; blue: (160 - 100)/40 = 1.5."
+      ],
+      "remediation": "If all three values used the same mean or std you mixed channels; each channel keeps its own statistics. Recomputing a mean from the test pixel itself is a train/test leak. Revisit /lessons/PY04."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "feature-columns": "Reduce the sample axis of non-square feature matrices, fit on training rows only, and apply stored statistics to a held-out row.",
+    "image-channels": "Reduce spatial and batch axes while preserving RGB, then normalise a held-out pixel with stored training channel statistics."
+  }
+}

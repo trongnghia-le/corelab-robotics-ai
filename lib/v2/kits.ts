@@ -58,7 +58,7 @@ export function kits() {
     version: 1,
     status: "manual-unverified" as const,
     review:
-      "Author-tested draft; independent technical/adversarial review pending",
+      "Author-tested; owner-assigned AI technical/adversarial review. Manual self-check only",
     verifiedI: "unavailable" as const,
   }));
 }

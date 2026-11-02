@@ -38,7 +38,18 @@ it("rejects duplicate decoded keys, malformed JSON, overflow and deep nesting", 
 it("normalizes fractions and decimals without eval", () => {
   expect(numberAnswer("2/4")).toEqual(numberAnswer("0.50"));
   expect(numberAnswer("-0").n).toBe("0");
-  for (const s of ["1/0", "1e3", "true", "1,5", "Math.PI", "9".repeat(1000)])
+  expect(numberAnswer("−1.5")).toEqual(numberAnswer("-1.5"));
+  expect(numberAnswer("−3/4")).toEqual(numberAnswer("-0.75"));
+  for (const s of [
+    "1/0",
+    "1e3",
+    "true",
+    "1,5",
+    "Math.PI",
+    "9".repeat(1000),
+    "−−1",
+    "1−2",
+  ])
     expect(() => numberAnswer(s)).toThrow();
   expect(fingerprint("task@1", { x: "1" })).toBe(
     fingerprint("task@1", { x: "1" }),

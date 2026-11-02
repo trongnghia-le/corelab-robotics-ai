@@ -1,0 +1,298 @@
+{
+  "id": "X02",
+  "version": 3,
+  "title": "Solve calibration equations",
+  "domain": "Mathematics",
+  "topicId": "M04",
+  "objectiveId": "M04.two-equations",
+  "routes": [
+    "sensor-calibration",
+    "force-allocation"
+  ],
+  "scope": "Unique bounded 2×2 systems; no general solver claim",
+  "labIds": [
+    "L06"
+  ],
+  "items": [
+    {
+      "id": "X02.sensor-calibration.1",
+      "route": "sensor-calibration",
+      "difficulty": 1,
+      "structure": "X02.M04.two-equations.1@1",
+      "inputs": {
+        "A": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "b": [
+          5,
+          11
+        ]
+      },
+      "objectiveId": "M04.two-equations",
+      "prompt": "A temperature sensor follows r = c0 + c1·T, where c0 is the offset (mV) and c1 is the gain (mV/°C). Calibration gives r = 5 mV at T = 1 °C and r = 11 mV at T = 3 °C. Find c0 and c1. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "c0 (mV)",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "c1 (mV/°C)",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Equations: c0 + c1 = 5 and c0 + 3c1 = 11. Subtracting the first from the second gives 2c1 = 6, so c1 = 3 mV/°C. Then c0 = 5 - 3 = 2 mV. Check: 2 + 3·3 = 11.",
+      "hints": [
+        "Each calibration point gives one linear equation in the same two unknowns c0 and c1, so solve the two equations together.",
+        "Write c0 + 1·c1 = 5 and c0 + 3·c1 = 11, then subtract the first equation from the second to eliminate c0.",
+        "Equations: c0 + c1 = 5 and c0 + 3c1 = 11. Subtracting the first from the second gives 2c1 = 6, so c1 = 3 mV/°C. Then c0 = 5 - 3 = 2 mV. Check: 2 + 3·3 = 11."
+      ],
+      "remediation": "If you got c1 = 11/3 you ignored the offset c0 (11 = 3·c1); c0 = 5 means you dropped the gain term. Both points share the same offset and gain; subtract the equations to remove c0. Revisit /lessons/M04."
+    },
+    {
+      "id": "X02.sensor-calibration.2",
+      "route": "sensor-calibration",
+      "difficulty": 2,
+      "structure": "X02.M04.two-equations.2@1",
+      "inputs": {
+        "A": [
+          [
+            1,
+            -2
+          ],
+          [
+            1,
+            4
+          ]
+        ],
+        "b": [
+          1,
+          10
+        ]
+      },
+      "objectiveId": "M04.two-equations",
+      "prompt": "The same sensor model r = c0 + c1·T (c0 offset in mV, c1 gain in mV/°C) is recalibrated at r = 1 mV for T = -2 °C and r = 10 mV for T = 4 °C. Find c0 and c1. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "c0 (mV)",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "c1 (mV/°C)",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Subtracting gives (4 - (-2))·c1 = 10 - 1, so 6c1 = 9 and c1 = 1.5 mV/°C. Then c0 = 1 + 2·1.5 = 4 mV. Check: 4 + 4·1.5 = 10.",
+      "hints": [
+        "One calibration temperature is negative; keep its sign as the coefficient of c1.",
+        "Write c0 - 2·c1 = 1 and c0 + 4·c1 = 10, then subtract the first equation from the second to get an equation in c1 alone.",
+        "Subtracting gives (4 - (-2))·c1 = 10 - 1, so 6c1 = 9 and c1 = 1.5 mV/°C. Then c0 = 1 + 2·1.5 = 4 mV. Check: 4 + 4·1.5 = 10."
+      ],
+      "remediation": "If you got c1 = 4.5 you treated T = -2 °C as +2 °C, so 4 - 2 replaced 4 - (-2). Keep the sign of every temperature. Revisit /lessons/M04."
+    },
+    {
+      "id": "X02.sensor-calibration.3",
+      "route": "sensor-calibration",
+      "difficulty": 3,
+      "structure": "X02.M04.two-equations.0@1",
+      "inputs": {
+        "A": [
+          [
+            2,
+            3
+          ],
+          [
+            5,
+            -2
+          ]
+        ],
+        "b": [
+          4.5,
+          6.5
+        ]
+      },
+      "objectiveId": "M04.two-equations",
+      "prompt": "Two strain-gauge channels have crosstalk. With true signals x and y (V), channel 1 reads 2x + 3y and channel 2 reads 5x - 2y. The readings are 4.5 V and 6.5 V. Recover x and y. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "x (V)",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (V)",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "2·(2x + 3y) = 9 gives 4x + 6y = 9, and 3·(5x - 2y) = 19.5 gives 15x - 6y = 19.5. Adding: 19x = 28.5, so x = 1.5 V. Then 3y = 4.5 - 2·1.5 = 1.5, so y = 0.5 V. Check channel 2: 5·1.5 - 2·0.5 = 6.5.",
+      "hints": [
+        "Neither unknown has coefficient 1 in both equations, so scale the equations before eliminating one unknown.",
+        "Multiply the channel-1 equation by 2 and the channel-2 equation by 3, so the y-terms become +6y and -6y, then add the equations.",
+        "2·(2x + 3y) = 9 gives 4x + 6y = 9, and 3·(5x - 2y) = 19.5 gives 15x - 6y = 19.5. Adding: 19x = 28.5, so x = 1.5 V. Then 3y = 4.5 - 2·1.5 = 1.5, so y = 0.5 V. Check channel 2: 5·1.5 - 2·0.5 = 6.5."
+      ],
+      "remediation": "If you got x = 2.25 or 1.3 you solved each channel as if it saw only one signal. Each reading mixes x and y, so the two equations must be solved together. Revisit /lessons/M04."
+    },
+    {
+      "id": "X02.force-allocation.1",
+      "route": "force-allocation",
+      "difficulty": 1,
+      "structure": "linear.force-allocation@1",
+      "inputs": {
+        "A": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            -1
+          ]
+        ],
+        "b": [
+          3,
+          -6
+        ]
+      },
+      "objectiveId": "M04.two-equations",
+      "prompt": "Two thrusters take signed commands x and y (N). Their allocation gives a net surge force x + y = 3 N and a coupled sway force 2x - y = -6 N. This is algebraic allocation only, with no actuator limits. Find x and y. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "x (N)",
+          "kind": "number",
+          "answer": "-1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (N)",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Adding gives 3x = 3 + (-6) = -3, so x = -1 N. Then y = 3 - x = 4 N. Check: 2·(-1) - 4 = -6.",
+      "hints": [
+        "The y-coefficients are +1 and -1, so a single operation removes y.",
+        "Add the two equations to eliminate y, then solve the result for x.",
+        "Adding gives 3x = 3 + (-6) = -3, so x = -1 N. Then y = 3 - x = 4 N. Check: 2·(-1) - 4 = -6."
+      ],
+      "remediation": "If you got x = 3 (y = 0) you added 3 and 6 instead of 3 and -6. A reversed (negative) thruster command is a valid allocation here. Revisit /lessons/M04."
+    },
+    {
+      "id": "X02.force-allocation.2",
+      "route": "force-allocation",
+      "difficulty": 2,
+      "structure": "linear.force-allocation@1",
+      "inputs": {
+        "A": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            -3
+          ]
+        ],
+        "b": [
+          -0.5,
+          5
+        ]
+      },
+      "objectiveId": "M04.two-equations",
+      "prompt": "A different thruster layout gives 2x + y = -0.5 N and x - 3y = 5 N for signed commands x and y (N). There are no actuator limits. Find x and y. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "x (N)",
+          "kind": "number",
+          "answer": "0.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (N)",
+          "kind": "number",
+          "answer": "-1.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "3·(2x + y) = -1.5 gives 6x + 3y = -1.5. Adding x - 3y = 5 gives 7x = 3.5, so x = 0.5 N. Then y = -0.5 - 2·0.5 = -1.5 N. Check: 0.5 - 3·(-1.5) = 5.",
+      "hints": [
+        "No single addition cancels a variable here; scale one equation first.",
+        "Multiply the first equation by 3 so its y-term becomes +3y, then add it to x - 3y = 5.",
+        "3·(2x + y) = -1.5 gives 6x + 3y = -1.5. Adding x - 3y = 5 gives 7x = 3.5, so x = 0.5 N. Then y = -0.5 - 2·0.5 = -1.5 N. Check: 0.5 - 3·(-1.5) = 5."
+      ],
+      "remediation": "If x looked right but y did not, recheck the substitution y = -0.5 - 2x; a sign slip there gives y = 0.5. Revisit /lessons/M04."
+    },
+    {
+      "id": "X02.force-allocation.3",
+      "route": "force-allocation",
+      "difficulty": 3,
+      "structure": "linear.force-allocation@1",
+      "inputs": {
+        "A": [
+          [
+            0.5,
+            1.5
+          ],
+          [
+            2,
+            -1
+          ]
+        ],
+        "b": [
+          -2.375,
+          4.5
+        ]
+      },
+      "objectiveId": "M04.two-equations",
+      "prompt": "Two thrusters with signed commands x and y (N) sit at lever arms 0.5 m and 1.5 m, so the net yaw moment is 0.5x + 1.5y = -2.375 N·m. Thruster 1 is a double unit and thruster 2 points backward, so the net force is 2x - y = 4.5 N. There are no actuator limits. Find x and y. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "x (N)",
+          "kind": "number",
+          "answer": "1.25",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y (N)",
+          "kind": "number",
+          "answer": "-2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "y = 2x - 4.5. Then 0.5x + 1.5·(2x - 4.5) = -2.375, so 3.5x - 6.75 = -2.375, 3.5x = 4.375 and x = 1.25 N. Then y = 2·1.25 - 4.5 = -2 N. Check the moment: 0.5·1.25 + 1.5·(-2) = -2.375 N·m.",
+      "hints": [
+        "One equation is a moment (N·m) and one is a force (N); both are linear in the same commands x and y.",
+        "Solve the force equation for y (y = 2x - 4.5) and substitute it into the moment equation.",
+        "y = 2x - 4.5. Then 0.5x + 1.5·(2x - 4.5) = -2.375, so 3.5x - 6.75 = -2.375, 3.5x = 4.375 and x = 1.25 N. Then y = 2·1.25 - 4.5 = -2 N. Check the moment: 0.5·1.25 + 1.5·(-2) = -2.375 N·m."
+      ],
+      "remediation": "If your values fail the check 2x - y = 4.5, you probably rearranged it as y = 4.5 - 2x; the correct form is y = 2x - 4.5. Revisit /lessons/M04."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "sensor-calibration": "Fit sensor offset/gain from two calibration points, then undo two-channel crosstalk.",
+    "force-allocation": "Recover signed thruster commands from coupled force and moment equations."
+  }
+}

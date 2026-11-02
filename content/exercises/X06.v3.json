@@ -1,0 +1,224 @@
+{
+  "id": "X06",
+  "version": 3,
+  "title": "Step a first-order model",
+  "domain": "Mathematics",
+  "topicId": "M07",
+  "objectiveId": "M07.euler-step",
+  "routes": [
+    "decay-state",
+    "driven-response"
+  ],
+  "scope": "Explicit Euler for a supplied toy model",
+  "labIds": [
+    "L04",
+    "L08"
+  ],
+  "items": [
+    {
+      "id": "X06.decay-state.1",
+      "route": "decay-state",
+      "difficulty": 1,
+      "structure": "X06.M07.euler-step.1@1",
+      "inputs": {
+        "y": "4",
+        "k": "0.5",
+        "u": 0,
+        "h": "0.2"
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "A capacitor voltage y (V) decays as dy/dt = -k·y with k = 0.5 s⁻¹. Starting from y0 = 4 V, take ONE explicit Euler step of h = 0.2 s and return the next y. Do not use the exact exponential solution. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Next y (V)",
+          "kind": "number",
+          "answer": "3.6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Slope f(4) = -0.5·4 = -2 V/s. y_next = 4 + 0.2·(-2) = 3.6 V. The exact solution 4·e^(-0.1) ≈ 3.619 V belongs to a different model; one Euler step is the requested numerical model.",
+      "hints": [
+        "Explicit Euler uses only the slope at the current state: y_next = y0 + h·f(y0), where f(y) = -k·y.",
+        "Evaluate the slope f(y0) = -0.5·4 first (in V/s), then multiply it by h = 0.2 s and add the result to y0.",
+        "Slope f(4) = -0.5·4 = -2 V/s. y_next = 4 + 0.2·(-2) = 3.6 V. The exact solution 4·e^(-0.1) ≈ 3.619 V belongs to a different model; one Euler step is the requested numerical model."
+      ],
+      "remediation": "If you got about 3.619 you used the exact exponential, not one Euler step. If you got 4.4 you dropped the minus sign in -k·y. Revisit /lessons/M07."
+    },
+    {
+      "id": "X06.decay-state.2",
+      "route": "decay-state",
+      "difficulty": 2,
+      "structure": "X06.M07.euler-step.2@1",
+      "inputs": {
+        "y": "-3",
+        "k": 2,
+        "u": 1,
+        "h": "0.25"
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "The state y (V) obeys dy/dt = -k·y + u with k = 2 s⁻¹ and a constant input u = 1 V/s. Starting from y0 = -3 V, take ONE explicit Euler step of h = 0.25 s and return the next y. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Next y (V)",
+          "kind": "number",
+          "answer": "-1.25",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Slope = -2·(-3) + 1 = 6 + 1 = 7 V/s. y_next = -3 + 0.25·7 = -1.25 V.",
+      "hints": [
+        "The state is negative, so -k·y is positive; the constant input u adds to the slope.",
+        "Evaluate the slope at y0 = -3 V as -2·(-3) + 1, watching the double negative, then advance by h = 0.25 s.",
+        "Slope = -2·(-3) + 1 = 6 + 1 = 7 V/s. y_next = -3 + 0.25·7 = -1.25 V."
+      ],
+      "remediation": "If you got -4.25 you used -k·y = -6 for y = -3 (a sign error with a negative state). If you got -1.5 you dropped the input u; -2.75 means you dropped the -k·y term. Revisit /lessons/M07."
+    },
+    {
+      "id": "X06.decay-state.3",
+      "route": "decay-state",
+      "difficulty": 3,
+      "structure": "X06.M07.euler-step.0@1",
+      "inputs": {
+        "y": "2",
+        "k": 4,
+        "u": 0,
+        "h": "0.3"
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "A stiff decay dy/dt = -k·y has k = 4 s⁻¹ and y0 = 2 V. A coarse controller loop uses ONE explicit Euler step of h = 0.3 s. Return the next y exactly as explicit Euler computes it. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "Next y (V)",
+          "kind": "number",
+          "answer": "-0.4",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Slope = -4·2 = -8 V/s. y_next = 2 + 0.3·(-8) = -0.4 V. The sign flip is an artefact of the large step (h·k = 1.2 > 1); the exact solution 2·e^(-1.2) ≈ 0.602 V stays positive.",
+      "hints": [
+        "Apply the same Euler formula even though h·k is greater than 1; the method itself decides the result.",
+        "Compute the slope -k·y0 at y0 = 2 V, multiply it by h = 0.3 s, and add it to y0 (equivalently y0·(1 - h·k) when u = 0).",
+        "Slope = -4·2 = -8 V/s. y_next = 2 + 0.3·(-8) = -0.4 V. The sign flip is an artefact of the large step (h·k = 1.2 > 1); the exact solution 2·e^(-1.2) ≈ 0.602 V stays positive."
+      ],
+      "remediation": "If you reported about 0.602 V or clipped the result to 0 you replaced the Euler step with the exact behaviour. The question asks what explicit Euler returns, overshoot included. Revisit /lessons/M07."
+    },
+    {
+      "id": "X06.driven-response.1",
+      "route": "driven-response",
+      "difficulty": 1,
+      "structure": "numerics.euler-two-step@1",
+      "inputs": {
+        "y": "1.5",
+        "k": 1,
+        "u": 3,
+        "h": "0.05",
+        "steps": 2
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "A low-pass filter output y (V) obeys dy/dt = -y + 3 (k = 1 s⁻¹, input u = 3 V/s) with y0 = 1.5 V. Apply TWO explicit Euler steps of h = 0.05 s each and return y1 and y2. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "y1 (V)",
+          "kind": "number",
+          "answer": "1.575",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y2 (V)",
+          "kind": "number",
+          "answer": "1.64625",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Slope at y0: -1.5 + 3 = 1.5 V/s, so y1 = 1.5 + 0.05·1.5 = 1.575 V. Slope at y1: -1.575 + 3 = 1.425 V/s, so y2 = 1.575 + 0.05·1.425 = 1.64625 V.",
+      "hints": [
+        "Two Euler steps need two slope evaluations: one at y0 and a new one at y1.",
+        "Step 1: the slope at y0 is -1.5 + 3; multiply it by h = 0.05 and add it to y0 to get y1. Evaluate the slope again at y1 before taking step 2.",
+        "Slope at y0: -1.5 + 3 = 1.5 V/s, so y1 = 1.5 + 0.05·1.5 = 1.575 V. Slope at y1: -1.575 + 3 = 1.425 V/s, so y2 = 1.575 + 0.05·1.425 = 1.64625 V."
+      ],
+      "remediation": "If y2 = 1.65 you reused the first slope, which is the same as one step of 2h = 0.1 s. Recompute the slope at y1. Revisit /lessons/M07."
+    },
+    {
+      "id": "X06.driven-response.2",
+      "route": "driven-response",
+      "difficulty": 2,
+      "structure": "numerics.euler-two-step@1",
+      "inputs": {
+        "y": "0.4",
+        "k": "0.5",
+        "u": -1,
+        "h": "0.1",
+        "steps": 2
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "A heater temperature offset y (K) obeys dy/dt = -k·y + u with k = 0.5 s⁻¹ and a constant cooling input u = -1 K/s, starting at y0 = 0.4 K. Apply TWO explicit Euler steps of h = 0.1 s and return y1 and y2. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "y1 (K)",
+          "kind": "number",
+          "answer": "0.28",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y2 (K)",
+          "kind": "number",
+          "answer": "0.166",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Slope at y0: -0.2 - 1 = -1.2 K/s, so y1 = 0.4 + 0.1·(-1.2) = 0.28 K. Slope at y1: -0.5·0.28 - 1 = -1.14 K/s, so y2 = 0.28 + 0.1·(-1.14) = 0.166 K.",
+      "hints": [
+        "Both terms of the slope are negative here, so y falls; recompute the slope after the first step.",
+        "Step 1: the slope at y0 is -0.5·0.4 + (-1). Take the step to get y1, then evaluate -0.5·y1 - 1 for step 2.",
+        "Slope at y0: -0.2 - 1 = -1.2 K/s, so y1 = 0.4 + 0.1·(-1.2) = 0.28 K. Slope at y1: -0.5·0.28 - 1 = -1.14 K/s, so y2 = 0.28 + 0.1·(-1.14) = 0.166 K."
+      ],
+      "remediation": "If y2 = 0.16 you reused the first slope -1.2 K/s. If y1 = 0.48 you added u = -1 with the wrong sign. Revisit /lessons/M07."
+    },
+    {
+      "id": "X06.driven-response.3",
+      "route": "driven-response",
+      "difficulty": 3,
+      "structure": "numerics.euler-two-step@1",
+      "inputs": {
+        "y": "0",
+        "k": 3,
+        "u": 6,
+        "h": "0.2",
+        "steps": 2
+      },
+      "objectiveId": "M07.euler-step",
+      "prompt": "A motor speed y (rad/s) obeys dy/dt = -k·y + u with k = 3 s⁻¹ and u = 6 rad/s², starting from rest (y0 = 0). A coarse simulation applies TWO explicit Euler steps of h = 0.2 s. Return y1 and y2. Enter exact values as decimals or fractions such as 3/8; tolerance ±0.001.",
+      "fields": [
+        {
+          "label": "y1 (rad/s)",
+          "kind": "number",
+          "answer": "1.2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "y2 (rad/s)",
+          "kind": "number",
+          "answer": "1.68",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Slope at y0: -3·0 + 6 = 6 rad/s², so y1 = 0 + 0.2·6 = 1.2 rad/s. Slope at y1: -3·1.2 + 6 = 2.4 rad/s², so y2 = 1.2 + 0.2·2.4 = 1.68 rad/s. One step of 2h would give 2.4, and the exact solution 2·(1 - e^(-1.2)) ≈ 1.398 is a different model.",
+      "hints": [
+        "The step is large (h·k = 0.6), so recomputing the slope at y1 changes y2 a lot.",
+        "Step 1 starts from rest, so the slope is just u. After finding y1, evaluate -3·y1 + 6 before step 2.",
+        "Slope at y0: -3·0 + 6 = 6 rad/s², so y1 = 0 + 0.2·6 = 1.2 rad/s. Slope at y1: -3·1.2 + 6 = 2.4 rad/s², so y2 = 1.2 + 0.2·2.4 = 1.68 rad/s. One step of 2h would give 2.4, and the exact solution 2·(1 - e^(-1.2)) ≈ 1.398 is a different model."
+      ],
+      "remediation": "If y2 = 2.4 you reused the first slope (one step of 2h = 0.4 s). If y2 is about 1.398 you used the exact solution. Revisit /lessons/M07."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "decay-state": "Advance one explicit Euler step, including a negative state and a step that overshoots.",
+    "driven-response": "Advance two driven-response steps, recomputing the slope after each step."
+  }
+}

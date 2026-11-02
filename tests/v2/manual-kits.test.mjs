@@ -16,5 +16,7 @@ it("accepts valid numerical alternatives and rejects malformed/mutated outputs i
   );
   expect(result.error).toBeUndefined();
   expect(result.status, result.stdout + result.stderr).toBe(0);
-  expect(result.stdout).toContain("16 injected bugs rejected");
+  expect(result.stdout).toContain(
+    "12 valid alternatives accepted, 48 injected bugs rejected",
+  );
 });

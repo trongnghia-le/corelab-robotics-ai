@@ -13,30 +13,33 @@
             "difficulty": 2,
             "structure": "planar-2r.concept.relative-heading@1",
             "inputs": {
-              "query": "relative-heading"
+              "query": "relative-heading",
+              "q1": "3π/4",
+              "q2": "-π/2"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Relative 2R joints q1=π/2,q2=−π/2: what is the tool orientation modulo 2π?",
+            "prompt": "A planar 2R arm uses relative joint angles q1 = 3π/4 rad and q2 = -π/2 rad (counter-clockwise positive, q1 measured from the +x axis). What is the tool orientation, the world angle of link 2, modulo 2π?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Tool orientation",
                 "kind": "choice",
-                "answer": "0",
+                "answer": "π/4 rad",
                 "tolerance": 0.001,
                 "options": [
-                  "0",
-                  "pi/2",
-                  "-pi/2"
+                  "-π/2 rad",
+                  "π/4 rad",
+                  "3π/4 rad",
+                  "-3π/4 rad"
                 ]
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "Tool orientation = q1 + q2 = 3π/4 + (-π/2) = π/4 rad. -π/2 rad is q2 alone (treating q2 as a world angle), 3π/4 rad is q1 alone (ignoring the elbow), and -3π/4 rad comes from q1 - q2.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "With relative joints, link 2 is turned by q2 from the direction of link 1, which itself points at q1.",
+              "Add the two joint angles: 3π/4 + (-π/2). Write both with a denominator of 4 before adding, then reduce modulo 2π if needed.",
+              "Tool orientation = q1 + q2 = 3π/4 + (-π/2) = π/4 rad. -π/2 rad is q2 alone (treating q2 as a world angle), 3π/4 rad is q1 alone (ignoring the elbow), and -3π/4 rad comes from q1 - q2."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose -π/2 rad, you read q2 as an absolute angle; relative joint angles add along the chain. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "C",
           "critical": true
@@ -46,31 +49,31 @@
             "id": "F-R04.A.1",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.concept.extended@1",
+            "structure": "planar-2r.concept.folded-distance@1",
             "inputs": {
-              "query": "extended"
+              "query": "folded-distance",
+              "q1": "0.9",
+              "q2": "pi",
+              "l1": "1.8",
+              "l2": "0.7"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "With both relative joint angles zero and positive links, the arm is:",
+            "prompt": "A planar 2R arm has l1 = 1.8 m and l2 = 0.7 m, with relative joint angles q1 = 0.9 rad and q2 = π rad. What is the straight-line distance from the base to the tip? Give 3 decimal places; tolerance ±0.001 m.",
             "fields": [
               {
-                "label": "Answer",
-                "kind": "choice",
-                "answer": "fully-extended",
-                "tolerance": 0.001,
-                "options": [
-                  "fully-extended",
-                  "folded-back"
-                ]
+                "label": "distance (m)",
+                "kind": "number",
+                "answer": "1.1",
+                "tolerance": 0.001
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "r² = l1² + l2² + 2 l1 l2 cos π = (l1 - l2)², so r = |l1 - l2| = |1.8 - 0.7| = 1.1 m. q1 = 0.9 rad only rotates the folded arm about the base and does not change r. A distance is never negative.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "q2 = π turns link 2 back by half a turn relative to link 1. Ask which joint angle the base-to-tip distance actually depends on.",
+              "The distance satisfies r² = l1² + l2² + 2 l1 l2 cos q2, which does not contain q1. Substitute cos π = -1 and simplify before taking the square root.",
+              "r² = l1² + l2² + 2 l1 l2 cos π = (l1 - l2)², so r = |l1 - l2| = |1.8 - 0.7| = 1.1 m. q1 = 0.9 rad only rotates the folded arm about the base and does not change r. A distance is never negative."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "An answer of 2.5 m is the link sum (the fully extended arm, q2 = 0), and a negative answer is the signed difference l1 - l2; both show the folded case was not reduced to |l1 - l2|. Revisit the reach invariant r² = l1² + l2² + 2 l1 l2 cos q2 in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "C",
           "critical": true
@@ -80,31 +83,34 @@
             "id": "F-R04.A.2",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.concept.folded@1",
+            "structure": "planar-2r.concept.joint-effect@1",
             "inputs": {
-              "query": "folded"
+              "query": "joint-effect",
+              "changed": "q2"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "When q2=π with positive unequal links, the tip distance from the base is:",
+            "prompt": "A planar 2R arm uses relative joint angles. Only q2 changes; q1, l1 and l2 stay fixed. Which quantity is guaranteed to stay the same?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Unchanged quantity",
                 "kind": "choice",
-                "answer": "absolute-link-difference",
+                "answer": "elbow position",
                 "tolerance": 0.001,
                 "options": [
-                  "absolute-link-difference",
-                  "link-sum"
+                  "tip position",
+                  "elbow position",
+                  "tool orientation",
+                  "tip distance from the base"
                 ]
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "The elbow is at (l1 cos q1, l1 sin q1), which contains only q1 and l1, so it stays fixed. The tip, the tool orientation q1 + q2 and the base-to-tip distance sqrt(l1² + l2² + 2 l1 l2 cos q2) all change with q2.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "Picture the arm and decide which links move when joint 2 turns: a joint moves everything after it in the chain.",
+              "Write the elbow position (l1 cos q1, l1 sin q1) and the distance r² = l1² + l2² + 2 l1 l2 cos q2, then check which expressions contain q2.",
+              "The elbow is at (l1 cos q1, l1 sin q1), which contains only q1 and l1, so it stays fixed. The tip, the tool orientation q1 + q2 and the base-to-tip distance sqrt(l1² + l2² + 2 l1 l2 cos q2) all change with q2."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose the tip distance, recall that the distance formula contains cos q2, so moving the elbow joint changes it. Revisit the reach invariant r² = l1² + l2² + 2 l1 l2 cos q2 in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "C",
           "critical": false
@@ -114,31 +120,59 @@
             "id": "F-R04.A.3",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.concept.length-domain@1",
+            "structure": "planar-2r.concept.domain@1",
             "inputs": {
-              "query": "length-domain"
+              "query": "domain-outside",
+              "sets": [
+                [
+                  "1.5",
+                  "0.4",
+                  "-2.5",
+                  "-0.3"
+                ],
+                [
+                  "0",
+                  "1.2",
+                  "0.8",
+                  "1.0"
+                ],
+                [
+                  "9.5",
+                  "0.2",
+                  "6.0",
+                  "-6.0"
+                ],
+                [
+                  "0.3",
+                  "2.0",
+                  "-6.2",
+                  "3.1"
+                ]
+              ]
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Does this contract permit a zero or negative link length?",
+            "prompt": "The course's planar 2R model accepts link lengths 0 < l1, l2 ≤ 10 m and joint angles -2π ≤ q1, q2 ≤ 2π rad (2π ≈ 6.2832). Exactly one input set below is OUTSIDE this domain. Which one?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Input set",
                 "kind": "choice",
-                "answer": "no",
+                "answer": "l1 = 0 m, l2 = 1.2 m, q1 = 0.8 rad, q2 = 1.0 rad",
                 "tolerance": 0.001,
                 "options": [
-                  "yes",
-                  "no"
+                  "l1 = 1.5 m, l2 = 0.4 m, q1 = -2.5 rad, q2 = -0.3 rad",
+                  "l1 = 0 m, l2 = 1.2 m, q1 = 0.8 rad, q2 = 1.0 rad",
+                  "l1 = 9.5 m, l2 = 0.2 m, q1 = 6.0 rad, q2 = -6.0 rad",
+                  "l1 = 0.3 m, l2 = 2.0 m, q1 = -6.2 rad, q2 = 3.1 rad"
                 ]
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "Check each bound separately. Outside: l1 = 0 m, l2 = 1.2 m, q1 = 0.8 rad, q2 = 1.0 rad: l1 = 0 m is not positive. Inside: l1 = 1.5 m, l2 = 0.4 m, q1 = -2.5 rad, q2 = -0.3 rad | l1 = 9.5 m, l2 = 0.2 m, q1 = 6.0 rad, q2 = -6.0 rad | l1 = 0.3 m, l2 = 2.0 m, q1 = -6.2 rad, q2 = 3.1 rad (negative angles are allowed as long as |q| ≤ 2π).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "Test four separate conditions for each set: l1 > 0, l2 > 0, both lengths ≤ 10 m, and both |q1|, |q2| ≤ 2π.",
+              "Remember that negative joint angles are allowed; only their magnitude is bounded. Compare each |q| with 6.2832 and each length with 0 and 10.",
+              "Check each bound separately. Outside: l1 = 0 m, l2 = 1.2 m, q1 = 0.8 rad, q2 = 1.0 rad: l1 = 0 m is not positive. Inside: l1 = 1.5 m, l2 = 0.4 m, q1 = -2.5 rad, q2 = -0.3 rad | l1 = 9.5 m, l2 = 0.2 m, q1 = 6.0 rad, q2 = -6.0 rad | l1 = 0.3 m, l2 = 2.0 m, q1 = -6.2 rad, q2 = 3.1 rad (negative angles are allowed as long as |q| ≤ 2π)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "A frequent slip is treating negative joint angles as invalid, or allowing a zero link length; the model needs strictly positive links. Re-read the input domain stated in the L02-planar kit header (0 < l1, l2 ≤ 10 m, |q| ≤ 2π), then try a fresh practice item before another independent check."
           },
           "dimension": "C",
           "critical": false
@@ -150,29 +184,32 @@
             "difficulty": 2,
             "structure": "planar-2r.concept.scope@1",
             "inputs": {
-              "query": "scope"
+              "query": "scope",
+              "variant": "A"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Does an exact 2D analytic pose prove a physical robot will reach it accurately?",
+            "prompt": "Your planar 2R forward-kinematics calculation for given l1, l2, q1, q2 is exactly right. What does that result establish?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Conclusion",
                 "kind": "choice",
-                "answer": "no",
+                "answer": "the tip pose of the ideal planar model at those joint angles",
                 "tolerance": 0.001,
                 "options": [
-                  "yes",
-                  "no"
+                  "the joint angles needed to reach any chosen tip point",
+                  "the tip pose of the ideal planar model at those joint angles",
+                  "the pose of a 3D arm with the same link lengths",
+                  "that the physical robot will reach that pose to within 1 mm"
                 ]
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "A correct FK result establishes only the tip pose of the ideal planar model at the given joint angles. Reaching a chosen point is inverse kinematics, a 3D arm needs a spatial model, and real-robot accuracy needs calibration and measurement.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "Forward kinematics maps given joint angles to a pose of an ideal model. Ask which option is exactly that map and nothing more.",
+              "Inverse kinematics runs the map backwards, spatial arms need a 3D model, and physical accuracy depends on calibration, backlash and sensing, none of which a planar formula contains.",
+              "A correct FK result establishes only the tip pose of the ideal planar model at the given joint angles. Reaching a chosen point is inverse kinematics, a 3D arm needs a spatial model, and real-robot accuracy needs calibration and measurement."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Treat a correct FK pose as a claim about the ideal planar model only; inverse kinematics, spatial chains and hardware accuracy are separate claims. Re-read what the R04 objective excludes (inverse kinematics, spatial chains, physical accuracy) in /lessons/R04 before another independent check."
           },
           "dimension": "C",
           "critical": false
@@ -182,45 +219,45 @@
             "id": "F-R04.A.5",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.pose@1",
+            "structure": "planar-2r.concept.pose-not-position@1",
             "inputs": {
-              "q1": "-0.5",
-              "q2": "-0.6000000000000001",
-              "l1": "2.0",
-              "l2": "1.0"
+              "query": "pose-not-position",
+              "l": "0.8",
+              "a": [
+                "-0.3",
+                "1.4"
+              ],
+              "b": [
+                "1.1",
+                "-1.4"
+              ]
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=2.0,l2=1.0 metres; relative q1=-0.5,q2=-0.6000000000000001 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "A planar 2R arm has l1 = l2 = 0.8 m. Configuration A has relative joint angles (q1, q2) = (-0.3, 1.4) rad and configuration B has (1.1, -1.4) rad. Both place the tip at the same point. What are the tool orientations (world angle of link 2) of A and B, in that order?",
             "fields": [
               {
-                "label": "x (m)",
-                "kind": "number",
-                "answer": "2.2087612452063228",
-                "tolerance": 0.001
-              },
-              {
-                "label": "y (m)",
-                "kind": "number",
-                "answer": "-1.8500584372698414",
-                "tolerance": 0.001
-              },
-              {
-                "label": "theta (rad)",
-                "kind": "angle",
-                "answer": "-1.1",
-                "tolerance": 0.001
+                "label": "Orientations of A and B",
+                "kind": "choice",
+                "answer": "1.1 rad and -0.3 rad",
+                "tolerance": 0.001,
+                "options": [
+                  "0.4 rad for both",
+                  "1.4 rad and -1.4 rad",
+                  "1.1 rad and -0.3 rad",
+                  "1.1 rad for both"
+                ]
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "theta_A = -0.3 + 1.4 = 1.1 rad and theta_B = 1.1 + (-1.4) = -0.3 rad. The tips coincide (elbow-up and elbow-down solutions), but the tool orientations differ, so a pose is more than a tip position. 0.4 rad is the direction of the tip seen from the base, not a link orientation.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Reaching the same tip point does not fix the direction of link 2; compute each configuration's orientation from its own joint angles.",
+              "For A add -0.3 + 1.4; for B add 1.1 + (-1.4).",
+              "theta_A = -0.3 + 1.4 = 1.1 rad and theta_B = 1.1 + (-1.4) = -0.3 rad. The tips coincide (elbow-up and elbow-down solutions), but the tool orientations differ, so a pose is more than a tip position. 0.4 rad is the direction of the tip seen from the base, not a link orientation."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose a single orientation for both, you assumed that equal tip positions imply equal poses; orientation is a separate output of FK. Revisit the paragraph on one endpoint reached by different configurations in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
-          "dimension": "M",
-          "critical": true
+          "dimension": "C",
+          "critical": false
         },
         {
           "task": {
@@ -229,40 +266,40 @@
             "difficulty": 2,
             "structure": "planar-2r.pose@1",
             "inputs": {
-              "q1": "-0.25",
-              "q2": "-0.8",
-              "l1": "2.1",
-              "l2": "1.0299999999999998"
+              "q1": "0.6",
+              "q2": "-1.1",
+              "l1": "2.0",
+              "l2": "1.2"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=2.1,l2=1.0299999999999998 metres; relative q1=-0.25,q2=-0.8 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "Planar 2R arm: l1 = 2.0 m, l2 = 1.2 m; relative joint angles q1 = 0.6 rad, q2 = -1.1 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta.",
             "fields": [
               {
                 "label": "x (m)",
                 "kind": "number",
-                "answer": "2.5472142649208327",
+                "answer": "2.70377",
                 "tolerance": 0.001
               },
               {
                 "label": "y (m)",
                 "kind": "number",
-                "answer": "-1.4129942367963355",
+                "answer": "0.553974",
                 "tolerance": 0.001
               },
               {
                 "label": "theta (rad)",
                 "kind": "angle",
-                "answer": "-1.05",
+                "answer": "-0.5",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (2.0 cos 0.6, 2.0 sin 0.6) = (1.6507, 1.1293) m. Link 2 points at the world angle q1 + q2 = 0.6 + (-1.1) = -0.5 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (1.0531, -0.5753) m. Tip: x = 1.6507 + 1.0531 = 2.7038 m; y = 1.1293 + (-0.5753) = 0.554 m. theta = q1 + q2 = -0.5 rad (any value that differs by a multiple of 2π is also accepted).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Relative joints: link 1 points at q1 = 0.6 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -1.1 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (2.0 cos 0.6, 2.0 sin 0.6) = (1.6507, 1.1293) m. Next add a vector of length l2 = 1.2 m pointing at the world angle q1 + q2 = -0.5 rad.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (2.0 cos 0.6, 2.0 sin 0.6) = (1.6507, 1.1293) m. Link 2 points at the world angle q1 + q2 = 0.6 + (-1.1) = -0.5 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (1.0531, -0.5753) m. Tip: x = 1.6507 + 1.0531 = 2.7038 m; y = 1.1293 + (-0.5753) = 0.554 m. theta = q1 + q2 = -0.5 rad (any value that differs by a multiple of 2π is also accepted)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Common slips on this item: treating q2 = -1.1 rad as the world angle of link 2 gives x ≈ 2.195, y ≈ 0.0598 and theta = -1.1; a calculator in degree mode gives x ≈ 3.1998, y ≈ 0.0105. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "M",
           "critical": true
@@ -274,43 +311,43 @@
             "difficulty": 2,
             "structure": "planar-2r.pose@1",
             "inputs": {
-              "q1": "0.0",
-              "q2": "-0.2",
-              "l1": "2.2",
-              "l2": "1.06"
+              "q1": "-0.9",
+              "q2": "1.6",
+              "l1": "1.5",
+              "l2": "0.8"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=2.2,l2=1.06 metres; relative q1=0.0,q2=-0.2 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "Planar 2R arm: l1 = 1.5 m, l2 = 0.8 m; relative joint angles q1 = -0.9 rad, q2 = 1.6 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta.",
             "fields": [
               {
                 "label": "x (m)",
                 "kind": "number",
-                "answer": "3.2388705725117166",
+                "answer": "1.544289",
                 "tolerance": 0.001
               },
               {
                 "label": "y (m)",
                 "kind": "number",
-                "answer": "-0.2105894906427649",
+                "answer": "-0.659616",
                 "tolerance": 0.001
               },
               {
                 "label": "theta (rad)",
                 "kind": "angle",
-                "answer": "-0.2",
+                "answer": "0.7",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.5 cos -0.9, 1.5 sin -0.9) = (0.9324, -1.175) m. Link 2 points at the world angle q1 + q2 = -0.9 + 1.6 = 0.7 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.6119, 0.5154) m. Tip: x = 0.9324 + 0.6119 = 1.5443 m; y = -1.175 + 0.5154 = -0.6596 m. theta = q1 + q2 = 0.7 rad (any value that differs by a multiple of 2π is also accepted).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Relative joints: link 1 points at q1 = -0.9 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 1.6 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (1.5 cos -0.9, 1.5 sin -0.9) = (0.9324, -1.175) m. Next add a vector of length l2 = 0.8 m pointing at the world angle q1 + q2 = 0.7 rad.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (1.5 cos -0.9, 1.5 sin -0.9) = (0.9324, -1.175) m. Link 2 points at the world angle q1 + q2 = -0.9 + 1.6 = 0.7 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.6119, 0.5154) m. Tip: x = 0.9324 + 0.6119 = 1.5443 m; y = -1.175 + 0.5154 = -0.6596 m. theta = q1 + q2 = 0.7 rad (any value that differs by a multiple of 2π is also accepted)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Common slips on this item: treating q2 = 1.6 rad as the world angle of link 2 gives x ≈ 0.9091, y ≈ -0.3753 and theta = 1.6; a calculator in degree mode gives x ≈ 2.2998, y ≈ -0.0138. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "M",
-          "critical": false
+          "critical": true
         },
         {
           "task": {
@@ -319,40 +356,40 @@
             "difficulty": 2,
             "structure": "planar-2r.pose@1",
             "inputs": {
-              "q1": "0.25",
-              "q2": "-0.4",
-              "l1": "2.3",
-              "l2": "1.0899999999999999"
+              "q1": "1.3",
+              "q2": "0.5",
+              "l1": "1.8",
+              "l2": "1.1"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=2.3,l2=1.0899999999999999 metres; relative q1=0.25,q2=-0.4 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "Planar 2R arm: l1 = 1.8 m, l2 = 1.1 m; relative joint angles q1 = 1.3 rad, q2 = 0.5 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta.",
             "fields": [
               {
                 "label": "x (m)",
                 "kind": "number",
-                "answer": "3.3062590448847686",
+                "answer": "0.231576",
                 "tolerance": 0.001
               },
               {
                 "label": "y (m)",
                 "kind": "number",
-                "answer": "0.40614154188917956",
+                "answer": "2.805637",
                 "tolerance": 0.001
               },
               {
                 "label": "theta (rad)",
                 "kind": "angle",
-                "answer": "-0.15000000000000002",
+                "answer": "1.8",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.8 cos 1.3, 1.8 sin 1.3) = (0.4815, 1.7344) m. Link 2 points at the world angle q1 + q2 = 1.3 + 0.5 = 1.8 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.2499, 1.0712) m. Tip: x = 0.4815 + (-0.2499) = 0.2316 m; y = 1.7344 + 1.0712 = 2.8056 m. theta = q1 + q2 = 1.8 rad (any value that differs by a multiple of 2π is also accepted).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Relative joints: link 1 points at q1 = 1.3 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 0.5 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (1.8 cos 1.3, 1.8 sin 1.3) = (0.4815, 1.7344) m. Next add a vector of length l2 = 1.1 m pointing at the world angle q1 + q2 = 1.8 rad.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (1.8 cos 1.3, 1.8 sin 1.3) = (0.4815, 1.7344) m. Link 2 points at the world angle q1 + q2 = 1.3 + 0.5 = 1.8 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.2499, 1.0712) m. Tip: x = 0.4815 + (-0.2499) = 0.2316 m; y = 1.7344 + 1.0712 = 2.8056 m. theta = q1 + q2 = 1.8 rad (any value that differs by a multiple of 2π is also accepted)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Common slips on this item: treating q2 = 0.5 rad as the world angle of link 2 gives x ≈ 1.4468, y ≈ 2.2618 and theta = 0.5; a calculator in degree mode gives x ≈ 2.899, y ≈ 0.0754. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "M",
           "critical": false
@@ -361,43 +398,88 @@
           "task": {
             "id": "F-R04.A.9",
             "route": "independent",
-            "difficulty": 2,
+            "difficulty": 3,
             "structure": "planar-2r.pose@1",
             "inputs": {
-              "q1": "0.5",
-              "q2": "-0.6000000000000001",
-              "l1": "2.4000000000000004",
-              "l2": "1.1199999999999999"
+              "q1": "2.2",
+              "q2": "1.5",
+              "l1": "2.4",
+              "l2": "0.9"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=2.4000000000000004,l2=1.1199999999999999 metres; relative q1=0.5,q2=-0.6000000000000001 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "Planar 2R arm: l1 = 2.4 m, l2 = 0.9 m; relative joint angles q1 = 2.2 rad, q2 = 1.5 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832.",
             "fields": [
               {
                 "label": "x (m)",
                 "kind": "number",
-                "answer": "3.2206028136482834",
+                "answer": "-2.175693",
                 "tolerance": 0.001
               },
               {
                 "label": "y (m)",
                 "kind": "number",
-                "answer": "1.0388078660056397",
+                "answer": "1.463539",
                 "tolerance": 0.001
               },
               {
                 "label": "theta (rad)",
                 "kind": "angle",
-                "answer": "-0.10000000000000009",
+                "answer": "-2.583185",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (2.4 cos 2.2, 2.4 sin 2.2) = (-1.4124, 1.9404) m. Link 2 points at the world angle q1 + q2 = 2.2 + 1.5 = 3.7 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.7633, -0.4769) m. Tip: x = -1.4124 + (-0.7633) = -2.1757 m; y = 1.9404 + (-0.4769) = 1.4635 m. theta = q1 + q2 = 3.7 rad, which lies outside (-π, π]; subtracting 2π gives 3.7 - 6.2832 = -2.5832 rad. Both 3.7 and -2.5832 are accepted, because orientation is compared modulo 2π.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Relative joints: link 1 points at q1 = 2.2 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 1.5 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (2.4 cos 2.2, 2.4 sin 2.2) = (-1.4124, 1.9404) m. Next add a vector of length l2 = 0.9 m pointing at the world angle q1 + q2 = 3.7 rad, and note that this sum is larger than π in magnitude, so theta can also be reported after removing a full turn of 2π.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (2.4 cos 2.2, 2.4 sin 2.2) = (-1.4124, 1.9404) m. Link 2 points at the world angle q1 + q2 = 2.2 + 1.5 = 3.7 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.7633, -0.4769) m. Tip: x = -1.4124 + (-0.7633) = -2.1757 m; y = 1.9404 + (-0.4769) = 1.4635 m. theta = q1 + q2 = 3.7 rad, which lies outside (-π, π]; subtracting 2π gives 3.7 - 6.2832 = -2.5832 rad. Both 3.7 and -2.5832 are accepted, because orientation is compared modulo 2π."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Common slips on this item: treating q2 = 1.5 rad as the world angle of link 2 gives x ≈ -1.3487, y ≈ 2.8381 and theta = 1.5; a calculator in degree mode gives x ≈ 3.2964, y ≈ 0.1502. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-R04.A.10",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "planar-2r.pose@1",
+            "inputs": {
+              "q1": "-0.4",
+              "q2": "-2.3",
+              "l1": "1.2",
+              "l2": "1.0"
+            },
+            "objectiveId": "R04.planar-fk",
+            "prompt": "Planar 2R arm: l1 = 1.2 m, l2 = 1.0 m; relative joint angles q1 = -0.4 rad, q2 = -2.3 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta.",
+            "fields": [
+              {
+                "label": "x (m)",
+                "kind": "number",
+                "answer": "0.201201",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y (m)",
+                "kind": "number",
+                "answer": "-0.894682",
+                "tolerance": 0.001
+              },
+              {
+                "label": "theta (rad)",
+                "kind": "angle",
+                "answer": "-2.7",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.2 cos -0.4, 1.2 sin -0.4) = (1.1053, -0.4673) m. Link 2 points at the world angle q1 + q2 = -0.4 + (-2.3) = -2.7 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.9041, -0.4274) m. Tip: x = 1.1053 + (-0.9041) = 0.2012 m; y = -0.4673 + (-0.4274) = -0.8947 m. theta = q1 + q2 = -2.7 rad (any value that differs by a multiple of 2π is also accepted).",
+            "hints": [
+              "Relative joints: link 1 points at q1 = -0.4 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -2.3 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (1.2 cos -0.4, 1.2 sin -0.4) = (1.1053, -0.4673) m. Next add a vector of length l2 = 1.0 m pointing at the world angle q1 + q2 = -2.7 rad.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (1.2 cos -0.4, 1.2 sin -0.4) = (1.1053, -0.4673) m. Link 2 points at the world angle q1 + q2 = -0.4 + (-2.3) = -2.7 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.9041, -0.4274) m. Tip: x = 1.1053 + (-0.9041) = 0.2012 m; y = -0.4673 + (-0.4274) = -0.8947 m. theta = q1 + q2 = -2.7 rad (any value that differs by a multiple of 2π is also accepted)."
+            ],
+            "remediation": "Common slips on this item: treating q2 = -2.3 rad as the world angle of link 2 gives x ≈ 0.439, y ≈ -1.213 and theta = -2.3; a calculator in degree mode gives x ≈ 2.1989, y ≈ -0.0555. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "M",
           "critical": false
@@ -412,31 +494,35 @@
             "id": "F-R04.B.0",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.concept.base-joint@1",
+            "structure": "planar-2r.concept.relative-heading@1",
             "inputs": {
-              "query": "base-joint"
+              "query": "relative-heading",
+              "q1": "-π/4",
+              "q2": "3π/4"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "With q2 fixed, changing q1 rotates the entire arm about its base. Is tip-to-base distance preserved?",
+            "prompt": "A planar 2R arm uses relative joint angles q1 = -π/4 rad and q2 = 3π/4 rad (counter-clockwise positive, q1 measured from the +x axis). What is the tool orientation, the world angle of link 2, modulo 2π?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Tool orientation",
                 "kind": "choice",
-                "answer": "yes",
+                "answer": "π/2 rad",
                 "tolerance": 0.001,
                 "options": [
-                  "yes",
-                  "no"
+                  "3π/4 rad",
+                  "-π/4 rad",
+                  "π/2 rad",
+                  "π rad"
                 ]
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "Tool orientation = q1 + q2 = -π/4 + 3π/4 = π/2 rad. 3π/4 rad is q2 alone (treating q2 as a world angle), -π/4 rad is q1 alone (ignoring the elbow), and π rad comes from q1 - q2.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "With relative joints, link 2 is turned by q2 from the direction of link 1, which itself points at q1.",
+              "Add the two joint angles: -π/4 + 3π/4. Write both with a denominator of 4 before adding, then reduce modulo 2π if needed.",
+              "Tool orientation = q1 + q2 = -π/4 + 3π/4 = π/2 rad. 3π/4 rad is q2 alone (treating q2 as a world angle), -π/4 rad is q1 alone (ignoring the elbow), and π rad comes from q1 - q2."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose 3π/4 rad, you read q2 as an absolute angle; relative joint angles add along the chain. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "C",
           "critical": true
@@ -446,31 +532,31 @@
             "id": "F-R04.B.1",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.concept.elbow@1",
+            "structure": "planar-2r.concept.folded-distance@1",
             "inputs": {
-              "query": "elbow"
+              "query": "folded-distance",
+              "q1": "-0.7",
+              "q2": "pi",
+              "l1": "0.6",
+              "l2": "1.5"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "With q1 fixed, does changing q2 leave the elbow position unchanged?",
+            "prompt": "A planar 2R arm has l1 = 0.6 m and l2 = 1.5 m, with relative joint angles q1 = -0.7 rad and q2 = π rad. What is the straight-line distance from the base to the tip? Give 3 decimal places; tolerance ±0.001 m.",
             "fields": [
               {
-                "label": "Answer",
-                "kind": "choice",
-                "answer": "yes",
-                "tolerance": 0.001,
-                "options": [
-                  "yes",
-                  "no"
-                ]
+                "label": "distance (m)",
+                "kind": "number",
+                "answer": "0.9",
+                "tolerance": 0.001
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "r² = l1² + l2² + 2 l1 l2 cos π = (l1 - l2)², so r = |l1 - l2| = |0.6 - 1.5| = 0.9 m. q1 = -0.7 rad only rotates the folded arm about the base and does not change r. A distance is never negative.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "q2 = π turns link 2 back by half a turn relative to link 1. Ask which joint angle the base-to-tip distance actually depends on.",
+              "The distance satisfies r² = l1² + l2² + 2 l1 l2 cos q2, which does not contain q1. Substitute cos π = -1 and simplify before taking the square root.",
+              "r² = l1² + l2² + 2 l1 l2 cos π = (l1 - l2)², so r = |l1 - l2| = |0.6 - 1.5| = 0.9 m. q1 = -0.7 rad only rotates the folded arm about the base and does not change r. A distance is never negative."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "An answer of 2.1 m is the link sum (the fully extended arm, q2 = 0), and a negative answer is the signed difference l1 - l2; both show the folded case was not reduced to |l1 - l2|. Revisit the reach invariant r² = l1² + l2² + 2 l1 l2 cos q2 in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "C",
           "critical": true
@@ -480,31 +566,34 @@
             "id": "F-R04.B.2",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.concept.base-translation@1",
+            "structure": "planar-2r.concept.joint-effect@1",
             "inputs": {
-              "query": "base-translation"
+              "query": "joint-effect",
+              "changed": "q1"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Does adding a pure base translation change the computed tool orientation?",
+            "prompt": "A planar 2R arm uses relative joint angles. Only q1 changes; q2, l1 and l2 stay fixed. Which quantity is guaranteed to stay the same?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Unchanged quantity",
                 "kind": "choice",
-                "answer": "no",
+                "answer": "tip distance from the base",
                 "tolerance": 0.001,
                 "options": [
-                  "yes",
-                  "no"
+                  "elbow position",
+                  "tip distance from the base",
+                  "tip position",
+                  "tool orientation"
                 ]
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "Changing only q1 rotates the whole arm rigidly about the base. The distance r = sqrt(l1² + l2² + 2 l1 l2 cos q2) contains no q1, so it is preserved, while the elbow, the tip and the tool orientation q1 + q2 all rotate with q1.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "Picture the arm and decide which links move when joint 1 turns: a joint moves everything after it in the chain.",
+              "Write the elbow (l1 cos q1, l1 sin q1), the orientation q1 + q2 and the distance r² = l1² + l2² + 2 l1 l2 cos q2, then check which contain q1.",
+              "Changing only q1 rotates the whole arm rigidly about the base. The distance r = sqrt(l1² + l2² + 2 l1 l2 cos q2) contains no q1, so it is preserved, while the elbow, the tip and the tool orientation q1 + q2 all rotate with q1."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose the elbow position, recall that the elbow is (l1 cos q1, l1 sin q1) and moves whenever q1 changes. Revisit the reach invariant r² = l1² + l2² + 2 l1 l2 cos q2 in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "C",
           "critical": false
@@ -514,31 +603,59 @@
             "id": "F-R04.B.3",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.concept.pose-not-position@1",
+            "structure": "planar-2r.concept.domain@1",
             "inputs": {
-              "query": "pose-not-position"
+              "query": "domain-inside",
+              "sets": [
+                [
+                  "1.0",
+                  "-0.5",
+                  "0.2",
+                  "0.4"
+                ],
+                [
+                  "2.0",
+                  "1.0",
+                  "7.0",
+                  "0.0"
+                ],
+                [
+                  "0.8",
+                  "3.0",
+                  "-5.9",
+                  "-1.4"
+                ],
+                [
+                  "10.5",
+                  "1.0",
+                  "0.5",
+                  "-0.5"
+                ]
+              ]
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Must two arm configurations with the same tip position always have the same tool orientation?",
+            "prompt": "The course's planar 2R model accepts link lengths 0 < l1, l2 ≤ 10 m and joint angles -2π ≤ q1, q2 ≤ 2π rad (2π ≈ 6.2832). Exactly one input set below is INSIDE this domain. Which one?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Input set",
                 "kind": "choice",
-                "answer": "no",
+                "answer": "l1 = 0.8 m, l2 = 3.0 m, q1 = -5.9 rad, q2 = -1.4 rad",
                 "tolerance": 0.001,
                 "options": [
-                  "yes",
-                  "no"
+                  "l1 = 1.0 m, l2 = -0.5 m, q1 = 0.2 rad, q2 = 0.4 rad",
+                  "l1 = 2.0 m, l2 = 1.0 m, q1 = 7.0 rad, q2 = 0.0 rad",
+                  "l1 = 0.8 m, l2 = 3.0 m, q1 = -5.9 rad, q2 = -1.4 rad",
+                  "l1 = 10.5 m, l2 = 1.0 m, q1 = 0.5 rad, q2 = -0.5 rad"
                 ]
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "Check each bound separately. Outside: l1 = 1.0 m, l2 = -0.5 m, q1 = 0.2 rad, q2 = 0.4 rad: l2 = -0.5 m is not positive | l1 = 2.0 m, l2 = 1.0 m, q1 = 7.0 rad, q2 = 0.0 rad: |q1| = 7 rad exceeds 2π ≈ 6.2832 | l1 = 10.5 m, l2 = 1.0 m, q1 = 0.5 rad, q2 = -0.5 rad: l1 = 10.5 m exceeds 10 m. Inside: l1 = 0.8 m, l2 = 3.0 m, q1 = -5.9 rad, q2 = -1.4 rad (negative angles are allowed as long as |q| ≤ 2π).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "Test four separate conditions for each set: l1 > 0, l2 > 0, both lengths ≤ 10 m, and both |q1|, |q2| ≤ 2π.",
+              "Remember that negative joint angles are allowed; only their magnitude is bounded. Compare each |q| with 6.2832 and each length with 0 and 10.",
+              "Check each bound separately. Outside: l1 = 1.0 m, l2 = -0.5 m, q1 = 0.2 rad, q2 = 0.4 rad: l2 = -0.5 m is not positive | l1 = 2.0 m, l2 = 1.0 m, q1 = 7.0 rad, q2 = 0.0 rad: |q1| = 7 rad exceeds 2π ≈ 6.2832 | l1 = 10.5 m, l2 = 1.0 m, q1 = 0.5 rad, q2 = -0.5 rad: l1 = 10.5 m exceeds 10 m. Inside: l1 = 0.8 m, l2 = 3.0 m, q1 = -5.9 rad, q2 = -1.4 rad (negative angles are allowed as long as |q| ≤ 2π)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "A frequent slip is treating negative joint angles as invalid, or allowing a zero link length; the model needs strictly positive links. Re-read the input domain stated in the L02-planar kit header (0 < l1, l2 ≤ 10 m, |q| ≤ 2π), then try a fresh practice item before another independent check."
           },
           "dimension": "C",
           "critical": false
@@ -548,31 +665,34 @@
             "id": "F-R04.B.4",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.concept.second-link@1",
+            "structure": "planar-2r.concept.scope@1",
             "inputs": {
-              "query": "second-link"
+              "query": "scope",
+              "variant": "B"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "For relative joints, which angle sets the second link world orientation?",
+            "prompt": "A planar 2R forward-kinematics routine returns the correct x, y and theta for every tested set of joint angles. Which conclusion is justified by that alone?",
             "fields": [
               {
-                "label": "Answer",
+                "label": "Conclusion",
                 "kind": "choice",
-                "answer": "q1-plus-q2",
+                "answer": "it computes the ideal-model tool pose for given joint angles",
                 "tolerance": 0.001,
                 "options": [
-                  "q1-plus-q2",
-                  "q2-only"
+                  "it can choose joint angles that reach a requested tip point",
+                  "the real arm may be commanded without further hardware checks",
+                  "it computes the ideal-model tool pose for given joint angles",
+                  "it describes a 6-joint spatial arm once two angles are fixed"
                 ]
               }
             ],
-            "solution": "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim.",
+            "solution": "Passing FK tests shows the routine computes the ideal-model pose for given joint angles. Choosing angles for a target is inverse kinematics, a 6-joint spatial arm is outside the planar model, and commanding hardware needs separate safety and accuracy checks.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use relative joint angles, positive link lengths and the stated analytic scope. Physical accuracy is a separate claim."
+              "Forward kinematics maps given joint angles to a pose of an ideal model. Ask which option is exactly that map and nothing more.",
+              "Inverse kinematics runs the map backwards, spatial arms need a 3D model, and physical accuracy depends on calibration, backlash and sensing, none of which a planar formula contains.",
+              "Passing FK tests shows the routine computes the ideal-model pose for given joint angles. Choosing angles for a target is inverse kinematics, a 6-joint spatial arm is outside the planar model, and commanding hardware needs separate safety and accuracy checks."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Treat a correct FK pose as a claim about the ideal planar model only; inverse kinematics, spatial chains and hardware accuracy are separate claims. Re-read what the R04 objective excludes (inverse kinematics, spatial chains, physical accuracy) in /lessons/R04 before another independent check."
           },
           "dimension": "C",
           "critical": false
@@ -582,45 +702,45 @@
             "id": "F-R04.B.5",
             "route": "independent",
             "difficulty": 2,
-            "structure": "planar-2r.pose@1",
+            "structure": "planar-2r.concept.pose-not-position@1",
             "inputs": {
-              "q1": "-0.5",
-              "q2": "-0.2",
-              "l1": "3.0",
-              "l2": "1.2999999999999998"
+              "query": "pose-not-position",
+              "l": "1.1",
+              "a": [
+                "0.2",
+                "1.0"
+              ],
+              "b": [
+                "1.2",
+                "-1"
+              ]
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=3.0,l2=1.2999999999999998 metres; relative q1=-0.5,q2=-0.2 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "A planar 2R arm has l1 = l2 = 1.1 m. Configuration A has relative joint angles (q1, q2) = (0.2, 1.0) rad and configuration B has (1.2, -1) rad. Both place the tip at the same point. What are the tool orientations (world angle of link 2) of A and B, in that order?",
             "fields": [
               {
-                "label": "x (m)",
-                "kind": "number",
-                "answer": "3.627042529140953",
-                "tolerance": 0.001
-              },
-              {
-                "label": "y (m)",
-                "kind": "number",
-                "answer": "-2.2757596092216072",
-                "tolerance": 0.001
-              },
-              {
-                "label": "theta (rad)",
-                "kind": "angle",
-                "answer": "-0.7",
-                "tolerance": 0.001
+                "label": "Orientations of A and B",
+                "kind": "choice",
+                "answer": "1.2 rad and 0.2 rad",
+                "tolerance": 0.001,
+                "options": [
+                  "1.2 rad for both",
+                  "1.2 rad and 0.2 rad",
+                  "0.7 rad for both",
+                  "1.0 rad and -1 rad"
+                ]
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "theta_A = 0.2 + 1.0 = 1.2 rad and theta_B = 1.2 + (-1) = 0.2 rad. The tips coincide (elbow-up and elbow-down solutions), but the tool orientations differ, so a pose is more than a tip position. 0.7 rad is the direction of the tip seen from the base, not a link orientation.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Reaching the same tip point does not fix the direction of link 2; compute each configuration's orientation from its own joint angles.",
+              "For A add 0.2 + 1.0; for B add 1.2 + (-1).",
+              "theta_A = 0.2 + 1.0 = 1.2 rad and theta_B = 1.2 + (-1) = 0.2 rad. The tips coincide (elbow-up and elbow-down solutions), but the tool orientations differ, so a pose is more than a tip position. 0.7 rad is the direction of the tip seen from the base, not a link orientation."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "If you chose a single orientation for both, you assumed that equal tip positions imply equal poses; orientation is a separate output of FK. Revisit the paragraph on one endpoint reached by different configurations in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
-          "dimension": "M",
-          "critical": true
+          "dimension": "C",
+          "critical": false
         },
         {
           "task": {
@@ -629,40 +749,40 @@
             "difficulty": 2,
             "structure": "planar-2r.pose@1",
             "inputs": {
-              "q1": "-0.25",
-              "q2": "-0.4",
-              "l1": "3.1",
-              "l2": "1.33"
+              "q1": "-0.7",
+              "q2": "1.2",
+              "l1": "1.6",
+              "l2": "1.3"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=3.1,l2=1.33 metres; relative q1=-0.25,q2=-0.4 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "Planar 2R arm: l1 = 1.6 m, l2 = 1.3 m; relative joint angles q1 = -0.7 rad, q2 = 1.2 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta.",
             "fields": [
               {
                 "label": "x (m)",
                 "kind": "number",
-                "answer": "4.062419959373243",
+                "answer": "2.364605",
                 "tolerance": 0.001
               },
               {
                 "label": "y (m)",
                 "kind": "number",
-                "answer": "-1.5718501933179536",
+                "answer": "-0.407495",
                 "tolerance": 0.001
               },
               {
                 "label": "theta (rad)",
                 "kind": "angle",
-                "answer": "-0.65",
+                "answer": "0.5",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.6 cos -0.7, 1.6 sin -0.7) = (1.2237475, -1.0307483) m. Link 2 points at the world angle q1 + q2 = -0.7 + 1.2 = 0.5 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (1.1408573, 0.6232532) m. Tip: x = 1.2237475 + 1.1408573 = 2.3646048 m; y = -1.0307483 + 0.6232532 = -0.4074951 m. theta = q1 + q2 = 0.5 rad (any value that differs by a multiple of 2π is also accepted).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Relative joints: link 1 points at q1 = -0.7 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 1.2 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (1.6 cos -0.7, 1.6 sin -0.7) = (1.2237475, -1.0307483) m. Next add a vector of length l2 = 1.3 m pointing at the world angle q1 + q2 = 0.5 rad.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (1.6 cos -0.7, 1.6 sin -0.7) = (1.2237475, -1.0307483) m. Link 2 points at the world angle q1 + q2 = -0.7 + 1.2 = 0.5 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (1.1408573, 0.6232532) m. Tip: x = 1.2237475 + 1.1408573 = 2.3646048 m; y = -1.0307483 + 0.6232532 = -0.4074951 m. theta = q1 + q2 = 0.5 rad (any value that differs by a multiple of 2π is also accepted)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Common slips on this item: treating q2 = 1.2 rad as the world angle of link 2 gives x ≈ 1.6948, y ≈ 0.1809 and theta = 1.2; a calculator in degree mode gives x ≈ 2.8998, y ≈ -0.0082. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "M",
           "critical": true
@@ -674,43 +794,43 @@
             "difficulty": 2,
             "structure": "planar-2r.pose@1",
             "inputs": {
-              "q1": "0.0",
-              "q2": "-0.6000000000000001",
-              "l1": "3.2",
-              "l2": "1.3599999999999999"
+              "q1": "0.9",
+              "q2": "-1.7",
+              "l1": "2.2",
+              "l2": "0.7"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=3.2,l2=1.3599999999999999 metres; relative q1=0.0,q2=-0.6000000000000001 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "Planar 2R arm: l1 = 2.2 m, l2 = 0.7 m; relative joint angles q1 = 0.9 rad, q2 = -1.7 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta.",
             "fields": [
               {
                 "label": "x (m)",
                 "kind": "number",
-                "answer": "4.322456436277163",
+                "answer": "1.855237",
                 "tolerance": 0.001
               },
               {
                 "label": "y (m)",
                 "kind": "number",
-                "answer": "-0.7679137638172482",
+                "answer": "1.22117",
                 "tolerance": 0.001
               },
               {
                 "label": "theta (rad)",
                 "kind": "angle",
-                "answer": "-0.6000000000000001",
+                "answer": "-0.8",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (2.2 cos 0.9, 2.2 sin 0.9) = (1.3675, 1.7233) m. Link 2 points at the world angle q1 + q2 = 0.9 + (-1.7) = -0.8 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.4877, -0.5021) m. Tip: x = 1.3675 + 0.4877 = 1.8552 m; y = 1.7233 + (-0.5021) = 1.2212 m. theta = q1 + q2 = -0.8 rad (any value that differs by a multiple of 2π is also accepted).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Relative joints: link 1 points at q1 = 0.9 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -1.7 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (2.2 cos 0.9, 2.2 sin 0.9) = (1.3675, 1.7233) m. Next add a vector of length l2 = 0.7 m pointing at the world angle q1 + q2 = -0.8 rad.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (2.2 cos 0.9, 2.2 sin 0.9) = (1.3675, 1.7233) m. Link 2 points at the world angle q1 + q2 = 0.9 + (-1.7) = -0.8 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (0.4877, -0.5021) m. Tip: x = 1.3675 + 0.4877 = 1.8552 m; y = 1.7233 + (-0.5021) = 1.2212 m. theta = q1 + q2 = -0.8 rad (any value that differs by a multiple of 2π is also accepted)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Common slips on this item: treating q2 = -1.7 rad as the world angle of link 2 gives x ≈ 1.2774, y ≈ 1.0292 and theta = -1.7; a calculator in degree mode gives x ≈ 2.8997, y ≈ 0.0248. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "M",
-          "critical": false
+          "critical": true
         },
         {
           "task": {
@@ -719,40 +839,40 @@
             "difficulty": 2,
             "structure": "planar-2r.pose@1",
             "inputs": {
-              "q1": "0.25",
-              "q2": "-0.8",
-              "l1": "3.3000000000000003",
-              "l2": "1.39"
+              "q1": "-1.4",
+              "q2": "-0.3",
+              "l1": "1.9",
+              "l2": "1.4"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=3.3000000000000003,l2=1.39 metres; relative q1=0.25,q2=-0.8 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "Planar 2R arm: l1 = 1.9 m, l2 = 1.4 m; relative joint angles q1 = -1.4 rad, q2 = -0.3 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta.",
             "fields": [
               {
                 "label": "x (m)",
                 "kind": "number",
-                "answer": "4.382420077307841",
+                "answer": "0.142555",
                 "tolerance": 0.001
               },
               {
                 "label": "y (m)",
                 "kind": "number",
-                "answer": "0.08989781732630953",
+                "answer": "-3.260685",
                 "tolerance": 0.001
               },
               {
                 "label": "theta (rad)",
                 "kind": "angle",
-                "answer": "-0.55",
+                "answer": "-1.7",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.9 cos -1.4, 1.9 sin -1.4) = (0.3229376, -1.8723545) m. Link 2 points at the world angle q1 + q2 = -1.4 + (-0.3) = -1.7 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.1803823, -1.3883307) m. Tip: x = 0.3229376 + (-0.1803823) = 0.1425553 m; y = -1.8723545 + (-1.3883307) = -3.2606852 m. theta = q1 + q2 = -1.7 rad (any value that differs by a multiple of 2π is also accepted).",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Relative joints: link 1 points at q1 = -1.4 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -0.3 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (1.9 cos -1.4, 1.9 sin -1.4) = (0.3229376, -1.8723545) m. Next add a vector of length l2 = 1.4 m pointing at the world angle q1 + q2 = -1.7 rad.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (1.9 cos -1.4, 1.9 sin -1.4) = (0.3229376, -1.8723545) m. Link 2 points at the world angle q1 + q2 = -1.4 + (-0.3) = -1.7 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.1803823, -1.3883307) m. Tip: x = 0.3229376 + (-0.1803823) = 0.1425553 m; y = -1.8723545 + (-1.3883307) = -3.2606852 m. theta = q1 + q2 = -1.7 rad (any value that differs by a multiple of 2π is also accepted)."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Common slips on this item: treating q2 = -0.3 rad as the world angle of link 2 gives x ≈ 1.6604, y ≈ -2.2861 and theta = -0.3; a calculator in degree mode gives x ≈ 3.2988, y ≈ -0.088. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "M",
           "critical": false
@@ -761,43 +881,88 @@
           "task": {
             "id": "F-R04.B.9",
             "route": "independent",
-            "difficulty": 2,
+            "difficulty": 3,
             "structure": "planar-2r.pose@1",
             "inputs": {
-              "q1": "0.5",
-              "q2": "-0.2",
-              "l1": "3.4000000000000004",
-              "l2": "1.42"
+              "q1": "-2.4",
+              "q2": "-1.2",
+              "l1": "1.3",
+              "l2": "0.6"
             },
             "objectiveId": "R04.planar-fk",
-            "prompt": "Planar 2R: l1=3.4000000000000004,l2=1.42 metres; relative q1=0.5,q2=-0.2 radians; CCW positive. Compute tip x,y and orientation modulo 2π.",
+            "prompt": "Planar 2R arm: l1 = 1.3 m, l2 = 0.6 m; relative joint angles q1 = -2.4 rad, q2 = -1.2 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta. You may leave theta unwrapped; if you reduce it, use 2π ≈ 6.2832.",
             "fields": [
               {
                 "label": "x (m)",
                 "kind": "number",
-                "answer": "4.3403585249856285",
+                "answer": "-1.496667",
                 "tolerance": 0.001
               },
               {
                 "label": "y (m)",
                 "kind": "number",
-                "answer": "2.0496855247133925",
+                "answer": "-0.61259",
                 "tolerance": 0.001
               },
               {
                 "label": "theta (rad)",
                 "kind": "angle",
-                "answer": "0.3",
+                "answer": "2.683185",
                 "tolerance": 0.001
               }
             ],
-            "solution": "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π.",
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (1.3 cos -2.4, 1.3 sin -2.4) = (-0.9586, -0.8781) m. Link 2 points at the world angle q1 + q2 = -2.4 + (-1.2) = -3.6 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.5381, 0.2655) m. Tip: x = -0.9586 + (-0.5381) = -1.4967 m; y = -0.8781 + 0.2655 = -0.6126 m. theta = q1 + q2 = -3.6 rad, which lies outside (-π, π]; adding 2π gives -3.6 + 6.2832 = 2.6832 rad. Both -3.6 and 2.6832 are accepted, because orientation is compared modulo 2π.",
             "hints": [
-              "State the convention and identify the requested quantity.",
-              "Work one intermediate step using the stated model.",
-              "Use x=l1 cos q1+l2 cos(q1+q2), y=l1 sin q1+l2 sin(q1+q2), theta=q1+q2 modulo 2π."
+              "Relative joints: link 1 points at q1 = -2.4 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = -1.2 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (1.3 cos -2.4, 1.3 sin -2.4) = (-0.9586, -0.8781) m. Next add a vector of length l2 = 0.6 m pointing at the world angle q1 + q2 = -3.6 rad, and note that this sum is larger than π in magnitude, so theta can also be reported after removing a full turn of 2π.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (1.3 cos -2.4, 1.3 sin -2.4) = (-0.9586, -0.8781) m. Link 2 points at the world angle q1 + q2 = -2.4 + (-1.2) = -3.6 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-0.5381, 0.2655) m. Tip: x = -0.9586 + (-0.5381) = -1.4967 m; y = -0.8781 + 0.2655 = -0.6126 m. theta = q1 + q2 = -3.6 rad, which lies outside (-π, π]; adding 2π gives -3.6 + 6.2832 = 2.6832 rad. Both -3.6 and 2.6832 are accepted, because orientation is compared modulo 2π."
             ],
-            "remediation": "Compare your intermediate step with the declared frame/angle convention; use a new practice instance before another independent check."
+            "remediation": "Common slips on this item: treating q2 = -1.2 rad as the world angle of link 2 gives x ≈ -0.7412, y ≈ -1.4373 and theta = -1.2; a calculator in degree mode gives x ≈ 1.8977, y ≈ -0.0921. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
+          },
+          "dimension": "M",
+          "critical": false
+        },
+        {
+          "task": {
+            "id": "F-R04.B.10",
+            "route": "independent",
+            "difficulty": 2,
+            "structure": "planar-2r.pose@1",
+            "inputs": {
+              "q1": "0.5",
+              "q2": "2.1",
+              "l1": "2.6",
+              "l2": "1.5"
+            },
+            "objectiveId": "R04.planar-fk",
+            "prompt": "Planar 2R arm: l1 = 2.6 m, l2 = 1.5 m; relative joint angles q1 = 0.5 rad, q2 = 2.1 rad (counter-clockwise positive; base at the origin, q1 measured from the +x axis). Compute the tip position x, y and the tool orientation theta (the world angle of link 2) modulo 2π. Give 3 decimal places; tolerance ±0.001 m for x, y and ±0.001 rad for theta.",
+            "fields": [
+              {
+                "label": "x (m)",
+                "kind": "number",
+                "answer": "0.996382",
+                "tolerance": 0.001
+              },
+              {
+                "label": "y (m)",
+                "kind": "number",
+                "answer": "2.019758",
+                "tolerance": 0.001
+              },
+              {
+                "label": "theta (rad)",
+                "kind": "angle",
+                "answer": "2.6",
+                "tolerance": 0.001
+              }
+            ],
+            "solution": "Elbow: (l1 cos q1, l1 sin q1) = (2.6 cos 0.5, 2.6 sin 0.5) = (2.2817, 1.2465) m. Link 2 points at the world angle q1 + q2 = 0.5 + 2.1 = 2.6 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-1.2853, 0.7733) m. Tip: x = 2.2817 + (-1.2853) = 0.9964 m; y = 1.2465 + 0.7733 = 2.0198 m. theta = q1 + q2 = 2.6 rad (any value that differs by a multiple of 2π is also accepted).",
+            "hints": [
+              "Relative joints: link 1 points at q1 = 0.5 rad from the +x axis, and link 2 points at the world angle q1 + q2, not at q2 = 2.1 rad alone. Keep the calculator in radian mode.",
+              "Elbow first: (2.6 cos 0.5, 2.6 sin 0.5) = (2.2817, 1.2465) m. Next add a vector of length l2 = 1.5 m pointing at the world angle q1 + q2 = 2.6 rad.",
+              "Elbow: (l1 cos q1, l1 sin q1) = (2.6 cos 0.5, 2.6 sin 0.5) = (2.2817, 1.2465) m. Link 2 points at the world angle q1 + q2 = 0.5 + 2.1 = 2.6 rad, so it adds (l2 cos(q1 + q2), l2 sin(q1 + q2)) = (-1.2853, 0.7733) m. Tip: x = 2.2817 + (-1.2853) = 0.9964 m; y = 1.2465 + 0.7733 = 2.0198 m. theta = q1 + q2 = 2.6 rad (any value that differs by a multiple of 2π is also accepted)."
+            ],
+            "remediation": "Common slips on this item: treating q2 = 2.1 rad as the world angle of link 2 gives x ≈ 1.5244, y ≈ 2.5413 and theta = 2.1; a calculator in degree mode gives x ≈ 4.0984, y ≈ 0.0907. If your answer matches one of these, the slip is in the angle convention, not the formula. Revisit the relative-angle convention in /lessons/R04, then practise a fresh X11 item before another independent check."
           },
           "dimension": "M",
           "critical": false

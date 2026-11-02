@@ -1,0 +1,765 @@
+{
+  "id": "X10",
+  "version": 3,
+  "title": "Work with coordinate frames",
+  "domain": "Robotics",
+  "topicId": "R03",
+  "objectiveId": "R03.compose-invert-se2",
+  "routes": [
+    "camera-marker",
+    "warehouse-waypoint"
+  ],
+  "scope": "SE(2), labelled transforms and point/direction semantics",
+  "labIds": [
+    "L01",
+    "L12"
+  ],
+  "items": [
+    {
+      "id": "X10.camera-marker.1",
+      "route": "camera-marker",
+      "difficulty": 1,
+      "structure": "X10.M12.frame-labels.1@1",
+      "inputs": {
+        "mapping": "B-to-A",
+        "query": "forward"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "Convention (column vectors): T_XY maps coordinates expressed in frame Y into frame X. Frame A is the camera and frame B is a fiducial marker. A marker corner is known in marker coordinates, and you need its camera coordinates. Which transform do you apply: T_AB or T_BA?",
+      "fields": [
+        {
+          "label": "Transform",
+          "kind": "choice",
+          "answer": "T_AB",
+          "tolerance": 0.001,
+          "options": [
+            "T_AB",
+            "T_BA"
+          ]
+        }
+      ],
+      "solution": "Source B, destination A, so apply T_AB: p_A = T_AB·p_B (marker coordinates into camera coordinates). T_BA would map camera coordinates into the marker frame.",
+      "hints": [
+        "Decide which frame the corner's coordinates start in and which frame you need them in.",
+        "The coordinates start in the marker frame B and must end in the camera frame A. Under the convention the source is the second subscript and the destination is the first; pick the transform that matches.",
+        "Source B, destination A, so apply T_AB: p_A = T_AB·p_B (marker coordinates into camera coordinates). T_BA would map camera coordinates into the marker frame."
+      ],
+      "remediation": "If you chose T_BA, you read the subscripts as source-then-destination; with column vectors the destination comes first, so T_AB·p_B = p_A. Revisit /lessons/M12."
+    },
+    {
+      "id": "X10.camera-marker.2",
+      "route": "camera-marker",
+      "difficulty": 1,
+      "structure": "X10.M12.point-vs-direction.2@1",
+      "inputs": {
+        "theta": "pi/2",
+        "translation": [
+          2,
+          2
+        ],
+        "point": [
+          2,
+          0
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "T_AB (maps marker coordinates into camera coordinates) rotates by +π/2 and then translates by (2, 2) m. Map the point p = (2, 0) and the direction d = (2, 0) through it. Return point x, y, then direction x, y.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotating (2, 0) by +π/2 gives (0, 2) for both. Point: (0, 2) + (2, 2) = (2, 4). Direction: (0, 2) (no translation). Only the point receives the translation.",
+      "hints": [
+        "A marker point is a location, so it moves with the marker's offset; a marker axis direction is a free vector and only turns.",
+        "A rotation by +π/2 maps (x, y) to (-y, x). Apply it to (2, 0), then add the translation (2, 2) only for the point (homogeneous w = 1), not for the direction (w = 0).",
+        "Rotating (2, 0) by +π/2 gives (0, 2) for both. Point: (0, 2) + (2, 2) = (2, 4). Direction: (0, 2) (no translation). Only the point receives the translation."
+      ],
+      "remediation": "If your direction is (2, 4), you translated a direction; directions use w = 0 and ignore translation. If the rotated vector is (0, -2), you rotated the wrong way. Revisit /lessons/M12."
+    },
+    {
+      "id": "X10.camera-marker.3",
+      "route": "camera-marker",
+      "difficulty": 2,
+      "structure": "X10.R03.compose-invert-se2.0@1",
+      "inputs": {
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            1,
+            2
+          ]
+        },
+        "B": {
+          "translation": [
+            4,
+            -3
+          ]
+        }
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "Convention (column vectors): T_XY maps coordinates expressed in frame Y into frame X. Frames: A = camera, B = marker, C = a corner frame on the marker. T_AB (maps marker coordinates into camera coordinates) is a +π/2 rotation with translation (1, 2) m; T_BC (maps corner coordinates into marker coordinates) is a pure translation (4, -3) m. Find the translation part of T_AC = T_AB·T_BC.",
+      "fields": [
+        {
+          "label": "Translation x (m)",
+          "kind": "number",
+          "answer": "4",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Translation y (m)",
+          "kind": "number",
+          "answer": "6",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "R_AB·(4, -3) = (3, 4); adding t_AB = (1, 2) gives (4, 6). Adding the translations directly gives (5, -1), which is wrong because t_BC is expressed in frame B; reversing the product order is also not equivalent.",
+      "hints": [
+        "The corner offset t_BC is written in marker coordinates, so it has to be turned into camera axes before it can be added to t_AB.",
+        "The translation of T_AB·T_BC is R_AB·t_BC + t_AB. A +π/2 rotation maps (x, y) to (-y, x); apply it to (4, -3), then add (1, 2).",
+        "R_AB·(4, -3) = (3, 4); adding t_AB = (1, 2) gives (4, 6). Adding the translations directly gives (5, -1), which is wrong because t_BC is expressed in frame B; reversing the product order is also not equivalent."
+      ],
+      "remediation": "If you got (5, -1), you added translations from different frames (or used T_BC·T_AB); rotate t_BC by R_AB first. Revisit /lessons/R03."
+    },
+    {
+      "id": "X10.camera-marker.4",
+      "route": "camera-marker",
+      "difficulty": 2,
+      "structure": "X10.R03.rotation-validity.1@1",
+      "inputs": {
+        "R": [
+          [
+            0.28,
+            -0.96
+          ],
+          [
+            0.96,
+            0.28
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "A camera-to-marker calibration routine gives the 2×2 rotation block R = [[0.28, -0.96], [0.96, 0.28]]. Is R a proper planar rotation? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Columns (0.28, 0.96) and (-0.96, 0.28) both have length 1 (0.0784 + 0.9216 = 1), their dot product is 0.28·(-0.96) + 0.96·0.28 = 0, and det R = 0.28·0.28 - (-0.96)·0.96 = 1, so yes: R rotates by 1.287002 rad (about 73.74°).",
+      "hints": [
+        "No entry is 0 or 1, so nothing can be read off at a glance; a proper rotation needs orthonormal columns and determinant +1.",
+        "Square and add the entries of each column, then take the dot product of the two columns; only after both checks pass, compute the determinant.",
+        "Columns (0.28, 0.96) and (-0.96, 0.28) both have length 1 (0.0784 + 0.9216 = 1), their dot product is 0.28·(-0.96) + 0.96·0.28 = 0, and det R = 0.28·0.28 - (-0.96)·0.96 = 1, so yes: R rotates by 1.287002 rad (about 73.74°)."
+      ],
+      "remediation": "If you answered no, recompute with exact squares: 0.28² + 0.96² = 0.0784 + 0.9216 = 1 for each column, the columns are perpendicular and det R = +1. Revisit /lessons/R03."
+    },
+    {
+      "id": "X10.camera-marker.5",
+      "route": "camera-marker",
+      "difficulty": 2,
+      "structure": "X10.M12.frame-labels.2@1",
+      "inputs": {
+        "mapping": "B-to-A",
+        "query": "inverse"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "Convention (column vectors): T_XY maps coordinates expressed in frame Y into frame X. Frame A is the camera and frame B is a fiducial marker. The detector reports T_AB, the marker's pose in the camera frame. A grasp target is given in camera coordinates and you need it in marker coordinates. Which transform do you apply: T_AB or T_BA?",
+      "fields": [
+        {
+          "label": "Transform",
+          "kind": "choice",
+          "answer": "T_BA",
+          "tolerance": 0.001,
+          "options": [
+            "T_AB",
+            "T_BA"
+          ]
+        }
+      ],
+      "solution": "Source A, destination B, so apply T_BA = inverse(T_AB): p_B = T_BA·p_A. Using the detector's T_AB directly would map marker coordinates into the camera frame, the opposite direction.",
+      "hints": [
+        "The detector's output is not necessarily the map you need; first name the source and destination frames of this conversion.",
+        "This conversion starts in the camera frame A and ends in the marker frame B. Write the transform with the destination first and the source second, and compare it with the one the detector gave you.",
+        "Source A, destination B, so apply T_BA = inverse(T_AB): p_B = T_BA·p_A. Using the detector's T_AB directly would map marker coordinates into the camera frame, the opposite direction."
+      ],
+      "remediation": "If you chose T_AB, you used the transform you were given rather than the one this direction needs; reversing the direction means inverting it. Revisit /lessons/M12."
+    },
+    {
+      "id": "X10.camera-marker.6",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.M12.point-vs-direction.0@1",
+      "inputs": {
+        "theta": "pi/2",
+        "translation": [
+          -3,
+          1.5
+        ],
+        "point": [
+          1.5,
+          -2
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "T_AB (maps marker coordinates into camera coordinates) rotates by +π/2 and then translates by (-3, 1.5) m. Map the point p = (1.5, -2) and the direction d = (1.5, -2) through it. Return point x, y, then direction x, y.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "-1",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotating (1.5, -2) by +π/2 gives (2, 1.5) for both. Point: (2, 1.5) + (-3, 1.5) = (-1, 3). Direction: (2, 1.5) (no translation). Only the point receives the translation.",
+      "hints": [
+        "Treat the location and the axis direction separately: both turn by the same rotation, but only one is offset.",
+        "A rotation by +π/2 maps (x, y) to (-y, x). Apply it to (1.5, -2), then add the translation (-3, 1.5) only for the point (homogeneous w = 1), not for the direction (w = 0).",
+        "Rotating (1.5, -2) by +π/2 gives (2, 1.5) for both. Point: (2, 1.5) + (-3, 1.5) = (-1, 3). Direction: (2, 1.5) (no translation). Only the point receives the translation."
+      ],
+      "remediation": "If your direction is (-1, 3), you translated a direction; directions use w = 0 and ignore translation. If the rotated vector is (-2, -1.5), you rotated the wrong way. Revisit /lessons/M12."
+    },
+    {
+      "id": "X10.camera-marker.7",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.compose-invert-se2.1@1",
+      "inputs": {
+        "A": {
+          "theta": "pi/2",
+          "translation": [
+            -1,
+            3
+          ]
+        },
+        "B": {
+          "translation": [
+            2.5,
+            -4
+          ]
+        }
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "Convention (column vectors): T_XY maps coordinates expressed in frame Y into frame X. Frames: A = camera, B = marker, C = a corner frame on the marker. T_AB (maps marker coordinates into camera coordinates) is a +π/2 rotation with translation (-1, 3) m; T_BC (maps corner coordinates into marker coordinates) is a pure translation (2.5, -4) m. Find the translation part of T_AC = T_AB·T_BC.",
+      "fields": [
+        {
+          "label": "Translation x (m)",
+          "kind": "number",
+          "answer": "3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Translation y (m)",
+          "kind": "number",
+          "answer": "5.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "R_AB·(2.5, -4) = (4, 2.5); adding t_AB = (-1, 3) gives (3, 5.5). Adding the translations directly gives (1.5, -1), which is wrong because t_BC is expressed in frame B; reversing the product order is also not equivalent.",
+      "hints": [
+        "The corner offset t_BC is written in marker coordinates, so it has to be turned into camera axes before it can be added to t_AB.",
+        "The translation of T_AB·T_BC is R_AB·t_BC + t_AB. A +π/2 rotation maps (x, y) to (-y, x); apply it to (2.5, -4), then add (-1, 3).",
+        "R_AB·(2.5, -4) = (4, 2.5); adding t_AB = (-1, 3) gives (3, 5.5). Adding the translations directly gives (1.5, -1), which is wrong because t_BC is expressed in frame B; reversing the product order is also not equivalent."
+      ],
+      "remediation": "If you got (1.5, -1), you added translations from different frames (or used T_BC·T_AB); rotate t_BC by R_AB first. Revisit /lessons/R03."
+    },
+    {
+      "id": "X10.camera-marker.8",
+      "route": "camera-marker",
+      "difficulty": 3,
+      "structure": "X10.R03.rotation-validity.2@1",
+      "inputs": {
+        "R": [
+          [
+            0.6,
+            0.8
+          ],
+          [
+            0.8,
+            -0.6
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "A camera-to-marker calibration routine gives the 2×2 rotation block R = [[0.6, 0.8], [0.8, -0.6]]. Is R a proper planar rotation? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Columns (0.6, 0.8) and (0.8, -0.6) have length 1 and their dot product is 0.48 - 0.48 = 0, so R is orthonormal, but det R = 0.6·(-0.6) - 0.8·0.8 = -1: R is a reflection that flips handedness, not a proper rotation: no. An orthonormality-only check would wrongly accept it.",
+      "hints": [
+        "Every entry has magnitude 0.6 or 0.8, so the columns may well be unit length; a proper rotation also needs determinant +1.",
+        "Check column lengths and their dot product first; then compute ad - bc with a = 0.6, b = 0.8, c = 0.8, d = -0.6.",
+        "Columns (0.6, 0.8) and (0.8, -0.6) have length 1 and their dot product is 0.48 - 0.48 = 0, so R is orthonormal, but det R = 0.6·(-0.6) - 0.8·0.8 = -1: R is a reflection that flips handedness, not a proper rotation: no. An orthonormality-only check would wrongly accept it."
+      ],
+      "remediation": "If you answered yes, you checked only orthonormality; this block has unit, perpendicular columns but det = -1, so it mirrors the marker frame. Revisit /lessons/R03."
+    },
+    {
+      "id": "X10.warehouse-waypoint.1",
+      "route": "warehouse-waypoint",
+      "difficulty": 1,
+      "structure": "frame.labels.warehouse-inverse@1",
+      "inputs": {
+        "from": "warehouse",
+        "to": "shelf",
+        "query": "inverse"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "T_WS (maps shelf coordinates into warehouse coordinates) is the shelf's pose in the warehouse. A waypoint is given in warehouse coordinates and the shelf-mounted arm needs it in shelf coordinates. Which map do you apply: T_WS or inverse(T_WS)?",
+      "fields": [
+        {
+          "label": "Map",
+          "kind": "choice",
+          "answer": "inverse(T_WS)",
+          "tolerance": 0.001,
+          "options": [
+            "T_WS",
+            "inverse(T_WS)"
+          ]
+        }
+      ],
+      "solution": "The conversion runs W to S, the opposite of T_WS (S to W), so apply inverse(T_WS) = T_SW. Renaming the point without inverting the map would leave it in warehouse coordinates.",
+      "hints": [
+        "Name the frame the waypoint starts in and the frame the arm needs, then compare with what T_WS does.",
+        "The waypoint starts in W and must end in S, while T_WS goes from S to W. Decide whether that is the same direction or the opposite one.",
+        "The conversion runs W to S, the opposite of T_WS (S to W), so apply inverse(T_WS) = T_SW. Renaming the point without inverting the map would leave it in warehouse coordinates."
+      ],
+      "remediation": "If you chose T_WS, you applied the shelf-to-warehouse map in the wrong direction; going from W to S needs its inverse. Revisit /lessons/M12."
+    },
+    {
+      "id": "X10.warehouse-waypoint.2",
+      "route": "warehouse-waypoint",
+      "difficulty": 1,
+      "structure": "point-direction.warehouse@1",
+      "inputs": {
+        "theta": "-1.5707963267948966",
+        "translation": [
+          5,
+          -2
+        ],
+        "vector": [
+          1,
+          2
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "T_WS (maps shelf coordinates into warehouse coordinates) rotates by -π/2 (a clockwise quarter-turn) and then translates by (5, -2) m. Map the point p = (1, 2) and the direction d = (1, 2) through it. Return point x, y, then direction x, y.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "7",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "-3",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "-1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotating (1, 2) by -π/2 gives (2, -1) for both. Point: (2, -1) + (5, -2) = (7, -3). Direction: (2, -1) (no translation). Only the point receives the translation.",
+      "hints": [
+        "The point is a shelf location and the direction is a pick-approach direction; decide which of the two the shelf offset applies to.",
+        "A rotation by -π/2 maps (x, y) to (y, -x). Apply it to (1, 2), then add the translation (5, -2) only for the point (homogeneous w = 1), not for the direction (w = 0).",
+        "Rotating (1, 2) by -π/2 gives (2, -1) for both. Point: (2, -1) + (5, -2) = (7, -3). Direction: (2, -1) (no translation). Only the point receives the translation."
+      ],
+      "remediation": "If your direction is (7, -3), you translated a direction; directions use w = 0 and ignore translation. If the rotated vector is (-2, 1), you rotated the wrong way. Revisit /lessons/M12."
+    },
+    {
+      "id": "X10.warehouse-waypoint.3",
+      "route": "warehouse-waypoint",
+      "difficulty": 2,
+      "structure": "se2.inverse.matrix@1",
+      "inputs": {
+        "theta": "0.6",
+        "translation": [
+          3,
+          -2
+        ]
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "T_WS = [[cos θ, -sin θ, 3], [sin θ, cos θ, -2], [0, 0, 1]] with θ = 0.6 rad and translation in metres maps shelf coordinates into warehouse coordinates. Return the complete 3×3 inverse T_SW, row by row. Give each value to at least 3 decimal places (graded within ±0.001).",
+      "fields": [
+        {
+          "label": "Inverse row 1, column 1",
+          "kind": "number",
+          "answer": "0.825336",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 1, column 2",
+          "kind": "number",
+          "answer": "0.564642",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 1, column 3",
+          "kind": "number",
+          "answer": "-1.346722",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 1",
+          "kind": "number",
+          "answer": "-0.564642",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 2",
+          "kind": "number",
+          "answer": "0.825336",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 3",
+          "kind": "number",
+          "answer": "3.344599",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "c = cos 0.6 = 0.825336, s = sin 0.6 = 0.564642. T_SW = [[Rᵀ, -Rᵀp], [0, 0, 1]] with Rᵀ = [[c, s], [-s, c]] and p = (3, -2): -Rᵀp = (-(c·3 + s·(-2)), -(-s·3 + c·(-2))) = (-1.346722, 3.344599). So T_SW = [[0.825336, 0.564642, -1.346722], [-0.564642, 0.825336, 3.344599], [0, 0, 1]]. The bottom row stays (0, 0, 1); a plain negated translation (-3, 2) is wrong.",
+      "hints": [
+        "Inverting a rigid transform undoes the rotation with Rᵀ and then undoes the offset, expressed in the shelf frame; the bottom row never changes.",
+        "Write T_SW = [[Rᵀ, -Rᵀp], [0, 0, 1]] with p = (3, -2). Compute c = cos 0.6 and s = sin 0.6 first; Rᵀ = [[c, s], [-s, c]], then -Rᵀp = (-(c·3 + s·(-2)), -(-s·3 + c·(-2))).",
+        "c = cos 0.6 = 0.825336, s = sin 0.6 = 0.564642. T_SW = [[Rᵀ, -Rᵀp], [0, 0, 1]] with Rᵀ = [[c, s], [-s, c]] and p = (3, -2): -Rᵀp = (-(c·3 + s·(-2)), -(-s·3 + c·(-2))) = (-1.346722, 3.344599). So T_SW = [[0.825336, 0.564642, -1.346722], [-0.564642, 0.825336, 3.344599], [0, 0, 1]]. The bottom row stays (0, 0, 1); a plain negated translation (-3, 2) is wrong."
+      ],
+      "remediation": "If your translation column is (-3, 2), you negated p without rotating it by Rᵀ; if the rotation block equals R, you forgot to transpose it. Revisit /lessons/R03."
+    },
+    {
+      "id": "X10.warehouse-waypoint.4",
+      "route": "warehouse-waypoint",
+      "difficulty": 1,
+      "structure": "rotation.warehouse-validation@1",
+      "inputs": {
+        "R": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "A shelf localisation estimate gives the 2×2 rotation block R = [[0, -1], [1, 0]]. Is R a proper planar rotation? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "yes",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "Both columns have length 1, their dot product is 0, and det R = 1, so yes: R is a rotation by π/2.",
+      "hints": [
+        "Compare R with the standard form [[cos θ, -sin θ], [sin θ, cos θ]] and then confirm both conditions: orthonormal columns and determinant +1.",
+        "The columns are (0, 1) and (-1, 0). Check that each has length 1, that their dot product is 0, and then that the determinant is +1.",
+        "Both columns have length 1, their dot product is 0, and det R = 1, so yes: R is a rotation by π/2."
+      ],
+      "remediation": "If you answered no, recompute this shelf estimate: the columns (0, 1) and (-1, 0) have length 1, are perpendicular, and det R = +1. Revisit /lessons/R03."
+    },
+    {
+      "id": "X10.warehouse-waypoint.5",
+      "route": "warehouse-waypoint",
+      "difficulty": 2,
+      "structure": "frame.labels.warehouse-inverse-not-transpose@1",
+      "inputs": {
+        "from": "warehouse",
+        "to": "shelf",
+        "query": "inverse-not-transpose",
+        "translation": "nonzero"
+      },
+      "objectiveId": "M12.frame-labels",
+      "prompt": "T_WS (maps shelf coordinates into warehouse coordinates) is a full 3×3 homogeneous transform whose translation is not zero. An overhead scanner reports a parcel in warehouse coordinates, and the shelf controller needs it in shelf coordinates. Which map do you apply: T_WS, inverse(T_WS) or transpose(T_WS)?",
+      "fields": [
+        {
+          "label": "Map",
+          "kind": "choice",
+          "answer": "inverse(T_WS)",
+          "tolerance": 0.001,
+          "options": [
+            "T_WS",
+            "inverse(T_WS)",
+            "transpose(T_WS)"
+          ]
+        }
+      ],
+      "solution": "The conversion runs W to S, so you need T_SW = inverse(T_WS). Transposing works only for the 2×2 rotation block (Rᵀ = R⁻¹); transposing the whole homogeneous matrix moves the translation into the bottom row, which is not a valid SE(2) transform. The inverse is [[Rᵀ, -Rᵀp], [0, 0, 1]].",
+      "hints": [
+        "First fix the direction of the conversion (which frame the parcel starts in, which it must end in); then ask which matrix operation really reverses a homogeneous transform.",
+        "The parcel goes from W to S, the opposite direction of T_WS, so T_WS itself is out. Now compare the two remaining options on the translation column: does transposing the 3×3 matrix undo a nonzero translation?",
+        "The conversion runs W to S, so you need T_SW = inverse(T_WS). Transposing works only for the 2×2 rotation block (Rᵀ = R⁻¹); transposing the whole homogeneous matrix moves the translation into the bottom row, which is not a valid SE(2) transform. The inverse is [[Rᵀ, -Rᵀp], [0, 0, 1]]."
+      ],
+      "remediation": "If you chose transpose(T_WS), you used the rotation-only shortcut on the whole transform; the translation needs -Rᵀp. If you chose T_WS, the direction is reversed. Revisit /lessons/M12."
+    },
+    {
+      "id": "X10.warehouse-waypoint.6",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "point-direction.warehouse@1",
+      "inputs": {
+        "theta": "3.141592653589793",
+        "translation": [
+          9,
+          -6
+        ],
+        "vector": [
+          2,
+          -1.5
+        ]
+      },
+      "objectiveId": "M12.point-vs-direction",
+      "prompt": "T_WS (maps shelf coordinates into warehouse coordinates) rotates by π (a half-turn) and then translates by (9, -6) m. Map the point p = (2, -1.5) and the direction d = (2, -1.5) through it. Return point x, y, then direction x, y.",
+      "fields": [
+        {
+          "label": "Point x",
+          "kind": "number",
+          "answer": "7",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Point y",
+          "kind": "number",
+          "answer": "-4.5",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction x",
+          "kind": "number",
+          "answer": "-2",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Direction y",
+          "kind": "number",
+          "answer": "1.5",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "Rotating (2, -1.5) by π gives (-2, 1.5) for both. Point: (-2, 1.5) + (9, -6) = (7, -4.5). Direction: (-2, 1.5) (no translation). Only the point receives the translation.",
+      "hints": [
+        "A half-turn reverses every vector; then decide which of the two results also receives the shelf offset.",
+        "A rotation by π maps (x, y) to (-x, -y). Apply it to (2, -1.5), then add the translation (9, -6) only for the point (homogeneous w = 1), not for the direction (w = 0).",
+        "Rotating (2, -1.5) by π gives (-2, 1.5) for both. Point: (-2, 1.5) + (9, -6) = (7, -4.5). Direction: (-2, 1.5) (no translation). Only the point receives the translation."
+      ],
+      "remediation": "If your direction is (7, -4.5), you translated a direction; directions use w = 0 and ignore translation. Revisit /lessons/M12."
+    },
+    {
+      "id": "X10.warehouse-waypoint.7",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "se2.inverse.matrix@1",
+      "inputs": {
+        "theta": "1.4",
+        "translation": [
+          7,
+          -2
+        ]
+      },
+      "objectiveId": "R03.compose-invert-se2",
+      "prompt": "T_WS = [[cos θ, -sin θ, 7], [sin θ, cos θ, -2], [0, 0, 1]] with θ = 1.4 rad and translation in metres maps shelf coordinates into warehouse coordinates. Return the complete 3×3 inverse T_SW, row by row. Give each value to at least 3 decimal places (graded within ±0.001).",
+      "fields": [
+        {
+          "label": "Inverse row 1, column 1",
+          "kind": "number",
+          "answer": "0.169967",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 1, column 2",
+          "kind": "number",
+          "answer": "0.98545",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 1, column 3",
+          "kind": "number",
+          "answer": "0.781129",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 1",
+          "kind": "number",
+          "answer": "-0.98545",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 2",
+          "kind": "number",
+          "answer": "0.169967",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 2, column 3",
+          "kind": "number",
+          "answer": "7.238082",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 1",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 2",
+          "kind": "number",
+          "answer": "0",
+          "tolerance": 0.001
+        },
+        {
+          "label": "Inverse row 3, column 3",
+          "kind": "number",
+          "answer": "1",
+          "tolerance": 0.001
+        }
+      ],
+      "solution": "c = cos 1.4 = 0.169967, s = sin 1.4 = 0.98545. T_SW = [[Rᵀ, -Rᵀp], [0, 0, 1]] with Rᵀ = [[c, s], [-s, c]] and p = (7, -2): -Rᵀp = (-(c·7 + s·(-2)), -(-s·7 + c·(-2))) = (0.781129, 7.238082). So T_SW = [[0.169967, 0.98545, 0.781129], [-0.98545, 0.169967, 7.238082], [0, 0, 1]]. The bottom row stays (0, 0, 1); a plain negated translation (-7, 2) is wrong.",
+      "hints": [
+        "Inverting a rigid transform undoes the rotation with Rᵀ and then undoes the offset, expressed in the shelf frame; the bottom row never changes.",
+        "Write T_SW = [[Rᵀ, -Rᵀp], [0, 0, 1]] with p = (7, -2). Compute c = cos 1.4 and s = sin 1.4 first; Rᵀ = [[c, s], [-s, c]], then -Rᵀp = (-(c·7 + s·(-2)), -(-s·7 + c·(-2))).",
+        "c = cos 1.4 = 0.169967, s = sin 1.4 = 0.98545. T_SW = [[Rᵀ, -Rᵀp], [0, 0, 1]] with Rᵀ = [[c, s], [-s, c]] and p = (7, -2): -Rᵀp = (-(c·7 + s·(-2)), -(-s·7 + c·(-2))) = (0.781129, 7.238082). So T_SW = [[0.169967, 0.98545, 0.781129], [-0.98545, 0.169967, 7.238082], [0, 0, 1]]. The bottom row stays (0, 0, 1); a plain negated translation (-7, 2) is wrong."
+      ],
+      "remediation": "If your translation column is (-7, 2), you negated p without rotating it by Rᵀ; if the rotation block equals R, you forgot to transpose it. Revisit /lessons/R03."
+    },
+    {
+      "id": "X10.warehouse-waypoint.8",
+      "route": "warehouse-waypoint",
+      "difficulty": 3,
+      "structure": "rotation.warehouse-validation@1",
+      "inputs": {
+        "R": [
+          [
+            1,
+            0.5
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "objectiveId": "R03.rotation-validity",
+      "prompt": "A shelf localisation estimate gives the 2×2 rotation block R = [[1, 0.5], [0, 1]]. Is R a proper planar rotation? Answer yes or no.",
+      "fields": [
+        {
+          "label": "Proper rotation",
+          "kind": "choice",
+          "answer": "no",
+          "tolerance": 0.001,
+          "options": [
+            "yes",
+            "no"
+          ]
+        }
+      ],
+      "solution": "det R = 1, but the second column (0.5, 1) has length 1.118034 ≠ 1 and the columns' dot product is 0.5, so R is a shear, not a rotation: no. A determinant-only check would wrongly accept it.",
+      "hints": [
+        "The diagonal is all ones, which is tempting; check whether the columns keep unit length and stay perpendicular, not only the determinant.",
+        "det R = 1·1 - 0.5·0 = 1. That alone does not settle it; next check the length of the second column (0.5, 1).",
+        "det R = 1, but the second column (0.5, 1) has length 1.118034 ≠ 1 and the columns' dot product is 0.5, so R is a shear, not a rotation: no. A determinant-only check would wrongly accept it."
+      ],
+      "remediation": "If you answered yes, you checked only the determinant; this shelf estimate has det = +1 but its column (0.5, 1) is not unit length, so it is a shear that changes lengths and angles. Revisit /lessons/R03."
+    }
+  ],
+  "rights": {
+    "status": "original",
+    "author": "CoreLab contributors (AI-assisted original draft)",
+    "license": "CC-BY-4.0",
+    "sources": []
+  },
+  "routeNotes": {
+    "camera-marker": "Label camera-marker transforms in both directions, map marker points and directions, compose a camera-marker-corner chain, and check calibration rotation blocks.",
+    "warehouse-waypoint": "Choose the inverse (not the transpose) of a shelf transform, compute it, map points and directions, and accept a valid rotation block while rejecting a determinant-+1 shear."
+  }
+}
