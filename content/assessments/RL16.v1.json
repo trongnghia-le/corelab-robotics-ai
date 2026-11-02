@@ -1,0 +1,179 @@
+{
+  "id": "RL16-diagnostic",
+  "topicId": "RL16",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which evaluation best tests the robustness of a domain-randomized controller?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Parameters at the extremes outside the training box, with worst-case and failure counts",
+        "Fresh samples from the same training box, reporting only the mean cost",
+        "The nominal plant only, reporting its cost to many decimals",
+        "The training cost at the last iteration, averaged over the box"
+      ],
+      "answer": "0",
+      "explanation": "Fresh samples from the same box measure interpolation. Robustness to the unmodelled needs points outside the box and worst-case reporting.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dr-held-out-evaluation"
+      ],
+      "skillLabel": "Choose a held-out evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL16#verification"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A payload is 3.0 kg with 20% tolerance. What is the lower end of the sampling range? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.4",
+      "tolerance": 0.05,
+      "explanation": "3.0 * (1 - 0.2) = 2.4 kg.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-ranges"
+      ],
+      "skillLabel": "Derive a range from tolerance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Three parameters, each randomized with 2 bins per axis. How many cells are there in the coverage grid?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "2^3 = 8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-coverage"
+      ],
+      "skillLabel": "Count coverage cells",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Probability that 20 independent uniform samples all miss a region with 10% of the volume? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.122",
+      "tolerance": 0.002,
+      "explanation": "(1 - 0.1)^20 = 0.1216.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-coverage"
+      ],
+      "skillLabel": "Compute the miss probability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Compared with controller gains tuned on the nominal plant only, gains tuned over a randomized box typically",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "only matter for sensor noise, not for plant parameter changes",
+        "are better at every parameter value, including the nominal plant",
+        "cost a little at the nominal plant and cut the worst-case cost",
+        "are worse at every parameter value, including the extremes"
+      ],
+      "answer": "2",
+      "explanation": "They are a compromise: slightly worse where the nominal controller was optimal, much better where it was fragile.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dr-robustness-tradeoff"
+      ],
+      "skillLabel": "State the robustness trade-off",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Explain why ranges that are too wide can be as harmful as ranges that are too narrow.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Too narrow: the real robot lies outside the box, no robustness",
+        "Too wide: conservative policy, lower performance, harder training",
+        "Ranges should come from measurement tolerance and physical reasoning, tested by held-out extremes"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dr-ranges",
+        "dr-robustness-tradeoff"
+      ],
+      "skillLabel": "Reason about range width",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL16#failure-modes"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how you would decide the ranges for mass, friction and latency of a mobile robot and what you would hold out for testing.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Uses measurements, datasheet tolerances or system identification to set each range",
+        "Treats multiplicative parameters (friction) on a log or relative scale",
+        "Holds out extreme combinations outside the box and reports worst case"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "dr-ranges",
+        "dr-held-out-evaluation"
+      ],
+      "skillLabel": "Plan a randomization",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

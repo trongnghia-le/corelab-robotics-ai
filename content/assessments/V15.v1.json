@@ -1,0 +1,186 @@
+{
+  "id": "V15-diagnostic",
+  "topicId": "V15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A ViT uses 16x16 patches on a 224x224 image and a CLS token. How many tokens enter the first encoder block?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "token-counting"
+      ],
+      "skillLabel": "Counting patch tokens",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V15#worked-example"
+        }
+      ],
+      "answer": "197",
+      "tolerance": 0.01,
+      "explanation": "14*14=196 patches plus CLS = 197."
+    },
+    {
+      "id": "q2",
+      "prompt": "For that model, how many entries does one head's attention matrix have?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-cost"
+      ],
+      "skillLabel": "Attention cost scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V15#theory-and-derivation"
+        }
+      ],
+      "answer": "38809",
+      "tolerance": 0.5,
+      "explanation": "197^2 = 38,809."
+    },
+    {
+      "id": "q3",
+      "prompt": "Why does a plain self-attention layer need position codes in a vision transformer?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "position-encoding"
+      ],
+      "skillLabel": "Why position encodings are needed",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "ML09"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V15#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Without position codes the softmax rows no longer sum to 1 across the patch tokens.",
+        "Patch embeddings are too small to carry content unless position codes are added.",
+        "Position codes are needed only to reduce the computational cost of attention.",
+        "Attention is permutation-equivariant, so without codes it cannot tell where a patch came from."
+      ],
+      "answer": "3",
+      "explanation": "Shuffling tokens just shuffles outputs; spatial arrangement is invisible unless added."
+    },
+    {
+      "id": "q4",
+      "prompt": "The image side is doubled and the patch size is unchanged. How does the attention matrix size per head change?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": true,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-cost"
+      ],
+      "skillLabel": "Attention cost scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V15#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "4x larger",
+        "2x larger",
+        "unchanged",
+        "16x larger"
+      ],
+      "answer": "3",
+      "explanation": "Tokens grow 4x, the matrix grows with the square: 16x."
+    },
+    {
+      "id": "q5",
+      "prompt": "Two orthogonal unit tokens, identity weights and d=2. What is the attention weight of token 1 on itself (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "scaled-attention"
+      ],
+      "skillLabel": "Scaled dot-product attention",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V15#worked-example"
+        }
+      ],
+      "answer": "0.6698",
+      "tolerance": 0.001,
+      "explanation": "e^0.7071/(e^0.7071+1)=0.6698."
+    },
+    {
+      "id": "q6",
+      "prompt": "A ViT pretrained at 224 px with learned position embeddings is used at 384 px. What must be handled?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "position-encoding"
+      ],
+      "skillLabel": "Why position encodings are needed",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: exercise answers",
+          "href": "/lessons/V15#exercise-answers"
+        }
+      ],
+      "options": [
+        "Nothing; learned position codes are resolution-independent and transfer directly.",
+        "The embedding table has the wrong number of positions; interpolate the 2D grid.",
+        "The patch size must change to 14 so the larger image has the same token count.",
+        "The softmax temperature must be set to zero to handle the longer sequence."
+      ],
+      "answer": "1",
+      "explanation": "There are 576 positions instead of 196; reshape and interpolate the grid."
+    },
+    {
+      "id": "q7",
+      "prompt": "A robot must run a perception model at 20 Hz on a small board. Compare a global-attention ViT with a convolutional network or windowed transformer for this budget.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "attention-cost",
+        "vit-vs-cnn"
+      ],
+      "skillLabel": "Attention cost and ViT versus CNN",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/V15#alternatives-and-trade-offs"
+        }
+      ],
+      "rubric": [
+        "Mentions quadratic attention cost versus linear cost.",
+        "Discusses data needs or inductive bias (locality, translation equivariance).",
+        "Reaches a justified choice and says how to measure latency and accuracy on the robot's data."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

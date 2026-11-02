@@ -1,0 +1,226 @@
+{
+  "id": "E02-diagnostic",
+  "topicId": "E02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A heuristic h is admissible if:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "admissible-heuristic"
+      ],
+      "skillLabel": "Admissible heuristics",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "It is zero at every state, including states away from the goal",
+        "It never over-estimates the true cost-to-go",
+        "It decreases by exactly the step cost along every edge of the graph",
+        "It never under-estimates the true cost-to-go from any state"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "Admissible means h(s) <= h*(s) for all s."
+    },
+    {
+      "id": "q2",
+      "prompt": "A* node with g = 7 and h = 4.5. What is f?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "astar-bookkeeping"
+      ],
+      "skillLabel": "A* bookkeeping",
+      "mistakeCategory": "mathematical",
+      "answer": "11.5",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "f = g + h = 11.5."
+    },
+    {
+      "id": "q3",
+      "prompt": "Open states have (g,h): P (3,6), Q (5,2), R (2,8). Which A* pops first? Answer with the f-value of that state.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "astar-bookkeeping"
+      ],
+      "skillLabel": "A* bookkeeping",
+      "mistakeCategory": "mathematical",
+      "answer": "7",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "f: P=9, Q=7, R=10; Q is popped first with f=7."
+    },
+    {
+      "id": "q4",
+      "prompt": "When must A* stop to guarantee an optimal answer with an admissible heuristic?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "astar-stopping"
+      ],
+      "skillLabel": "A* stopping rule",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "After the first path to the goal has been found by any means",
+        "When the goal is first generated as a successor of an expanded state",
+        "After every reachable state has been expanded once, ending the search",
+        "When the goal is popped from the open set"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "A cheaper route may still be in the queue when the goal is only generated."
+    },
+    {
+      "id": "q5",
+      "prompt": "A grid has cells costing 0.5 on roads. A straight road route of 6 cells is cheapest. True cost-to-go is 3. Manhattan distance (1 per cell) says 6. By how much does it over-estimate?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "admissible-heuristic"
+      ],
+      "skillLabel": "Admissible heuristics",
+      "mistakeCategory": "mathematical",
+      "answer": "3",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E02#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "6 - 3 = 3, so Manhattan is inadmissible; use 0.5 * Manhattan."
+    },
+    {
+      "id": "q6",
+      "prompt": "The open set becomes empty and the goal was never popped. Conclusion?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "astar-stopping"
+      ],
+      "skillLabel": "A* stopping rule",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Increase the budget, because the search just ran out of expansions",
+        "The goal is unreachable under the model",
+        "The goal is reachable but far away, so the search needs more time",
+        "The heuristic is inadmissible, so it pruned the path to the goal"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E02#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "An empty open set means every reachable state was tried."
+    },
+    {
+      "id": "q7",
+      "prompt": "Edge a-b has cost 2, h(a)=7, h(b)=4. By how much is the consistency inequality h(a) <= c + h(b) violated? (0 if it holds)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "consistent-heuristic"
+      ],
+      "skillLabel": "Consistency check",
+      "mistakeCategory": "mathematical",
+      "answer": "1",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "7 > 2 + 4 = 6, violated by 1."
+    },
+    {
+      "id": "q8",
+      "prompt": "Design a search formulation for a robot that must visit three shelves in any order. State what the state must contain, the successor function, the goal test, a heuristic, and how you would check the heuristic is admissible.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "search-formulation",
+        "admissible-heuristic"
+      ],
+      "skillLabel": "Formulate a search problem",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E02#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "rubric": [
+        "State includes position and the set of visited shelves.",
+        "Successor moves to a shelf with distance cost; goal: all visited.",
+        "Heuristic from a relaxation, e.g. distance to the farthest unvisited shelf; check h <= true cost by Dijkstra on small cases."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

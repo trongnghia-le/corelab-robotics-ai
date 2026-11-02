@@ -1,0 +1,382 @@
+{
+  "id": "M15-targeted",
+  "topicId": "M15",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "group-structure"
+      ],
+      "skillLabel": "Group versus vector space",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "b1",
+      "kind": "choice",
+      "prompt": "Which set of 3x3 matrices is closed under addition?",
+      "options": [
+        "Rotation matrices of the same angle",
+        "Orthogonal matrices with determinant 1",
+        "Rotation matrices SO(3)",
+        "Skew-symmetric matrices (the Lie algebra so(3))"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "The sum of two rotation matrices is not a rotation, but the sum of skew matrices is skew.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "so3-log-exp"
+      ],
+      "skillLabel": "Angle from the trace",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "b2",
+      "kind": "number",
+      "prompt": "Rotation matrix with trace -1. Angle in degrees?",
+      "answer": "180",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.5,
+      "explanation": "cos(theta)=(-1-1)/2=-1.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "so3-log-exp"
+      ],
+      "skillLabel": "Rodrigues' formula",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "b3",
+      "kind": "number",
+      "prompt": "Rotation vector (0,0,pi). Evaluate sin(theta)/theta and give the value (3 decimals)",
+      "answer": "0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "sin(pi)/pi=0.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "so3-log-exp"
+      ],
+      "skillLabel": "Rodrigues' formula",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#worked-example"
+        }
+      ],
+      "id": "b4",
+      "kind": "number",
+      "prompt": "Let theta=pi/2. What is (1-cos theta)/theta^2 (3 decimals)?",
+      "answer": "0.405",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "1/(pi^2/4)=0.4053.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rotation-composition"
+      ],
+      "skillLabel": "BCH correction",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "b5",
+      "kind": "number",
+      "prompt": "a=(0.1,0,0), b=(0,0.3,0). The norm of the BCH correction (1/2)(a x b) (3 decimals)?",
+      "answer": "0.015",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.0005,
+      "explanation": "0.5*0.1*0.3=0.015.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "se3-twist"
+      ],
+      "skillLabel": "Exponential of a twist",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#exercises"
+        }
+      ],
+      "id": "b6",
+      "kind": "number",
+      "prompt": "Twist v=(2,0,0), w=(0,0,pi/2). The y-coordinate of the translation of exp(xi), 3 decimals?",
+      "answer": "1.273",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.003,
+      "explanation": "Radius 4/pi: y=(4/pi)(1-cos(pi/2))=1.273.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "se3-twist"
+      ],
+      "skillLabel": "Exponential of a twist",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "b7",
+      "kind": "choice",
+      "prompt": "For twist (v, w=0) the translation of exp(xi) is",
+      "options": [
+        "v, a straight-line motion",
+        "zero, because without rotation the exponential gives no translation",
+        "v rotated by pi/2, because the twist generates a quarter-turn",
+        "a quarter circle, since the exponential always bends the path"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "V=I when w=0.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "group-structure"
+      ],
+      "skillLabel": "Left and right perturbations",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "b8",
+      "kind": "choice",
+      "prompt": "R exp(delta) equals exp(delta') R with delta' =",
+      "options": [
+        "R delta",
+        "R^T delta",
+        "-delta",
+        "delta"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "R[delta]x R^T=[R delta]x.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "so3-log-exp"
+      ],
+      "skillLabel": "Logarithm limitations",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#failure-modes"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "The logarithm of a rotation matrix is ambiguous near",
+      "options": [
+        "angle pi, where the axis sign flips",
+        "angle 0, where small rotations make the axis direction undefined",
+        "the identity, where the matrix is close to the identity and the axis is lost",
+        "angle pi/2, where the sine and cosine are equal in the formula"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "At pi, +axis and -axis give the same matrix.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "so3-log-exp"
+      ],
+      "skillLabel": "Small-angle approximation",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#verification"
+        }
+      ],
+      "id": "b10",
+      "kind": "number",
+      "prompt": "For w=(0,0,0.01) rad the exact (0,0) entry of exp([w]x) is cos(0.01), while I+[w]x gives 1. Compute the difference in units of 1e-5 (3 decimals).",
+      "answer": "5.0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "1-cos(0.01)=5.0e-5, so 5.0 in units of 1e-5.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "group-structure",
+        "rotation-composition"
+      ],
+      "skillLabel": "Averaging rotations",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "You must average three noisy orientation estimates from different sensors. Explain why averaging matrices or Euler angles is wrong and describe a correct approach.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "States that averaging entries breaks orthogonality or ignores wrap-around.",
+        "Describes a tangent-space average: log of relative rotations, mean, then exp (iterated).",
+        "Mentions quaternion or SVD-based chordal average as alternatives."
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "group-structure"
+      ],
+      "skillLabel": "Testing group invariants",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#verification"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "Explain, with the Euler integrator R+R[w]x dt as an example, how you would test whether a rotation update has drifted off SO(3), and what you would assert in a unit test.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Checks R^T R = I and det R = 1 within tolerance.",
+        "Runs many steps and bounds the drift.",
+        "Compares against the exp-based update as an oracle."
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    }
+  ]
+}

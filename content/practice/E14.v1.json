@@ -1,0 +1,344 @@
+{
+  "id": "E14-targeted",
+  "topicId": "E14",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A task reads 10 perceived facts, each 0.98 reliable and independent. Probability all are correct? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grounding-uncertainty"
+      ],
+      "skillLabel": "Grounding uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.8170728068875467",
+      "tolerance": 0.002,
+      "explanation": "0.98^10=0.817"
+    },
+    {
+      "id": "b2",
+      "prompt": "Per-fact confidence needed for 90% joint reliability over 12 facts? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grounding-uncertainty"
+      ],
+      "skillLabel": "Grounding uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.9912583890453033",
+      "tolerance": 0.0005,
+      "explanation": "0.9^(1/12)=0.9913"
+    },
+    {
+      "id": "b3",
+      "prompt": "Each of 9 precondition facts independently changes with probability 0.02 before execution. Probability the plan survives? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grounding-uncertainty"
+      ],
+      "skillLabel": "Grounding uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ],
+      "answer": "0.8337477621301498",
+      "tolerance": 0.002,
+      "explanation": "0.98^9=0.834"
+    },
+    {
+      "id": "b4",
+      "prompt": "Blocks world: C on A, A and B on the table, hand empty. For the plan [unstack C A, putdown C, pickup A, stack A B], suppose block D has been put on C (so C is not clear). Index (0-based) of the first invalid step?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "plan-validity"
+      ],
+      "skillLabel": "Plan validity under scene change",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ],
+      "answer": "0.0",
+      "tolerance": 0.01,
+      "explanation": "unstack(C,A) needs clear(C), which is missing: index 0."
+    },
+    {
+      "id": "b5",
+      "prompt": "Same start, but the hand is already holding block E (handempty false, holding(E) true). Index of the first invalid step of the same plan?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "plan-validity"
+      ],
+      "skillLabel": "Plan validity under scene change",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ],
+      "answer": "0.0",
+      "tolerance": 0.01,
+      "explanation": "unstack(C,A) needs handempty: index 0."
+    },
+    {
+      "id": "b6",
+      "prompt": "Plan: a1 adds holding(X); a2 and a3 do not touch it; a4 needs holding(X). During a2 the object slips (unobserved). What does the symbolic simulation without feedback predict at a4?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "execution-feedback"
+      ],
+      "skillLabel": "Execution feedback",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "It predicts a4 fails, because the slip is simulated through the symbolic state",
+        "It predicts a4 is applicable, but reality fails: only feedback reveals the slip.",
+        "It predicts the goal is unreachable and reports an error before execution",
+        "It automatically replans a new grasp, since the simulator detects the slip"
+      ],
+      "answer": "1",
+      "explanation": "The symbolic state is not updated without observation."
+    },
+    {
+      "id": "b7",
+      "prompt": "After placing a block, predicted facts {ontable(C), clear(C)} but observed {on(C,B), clear(C)}. What are the missing and extra sets?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "execution-feedback"
+      ],
+      "skillLabel": "Execution feedback",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "Both sets are empty, as clear(C) matches.",
+        "Missing {on(C,B)}, extra {ontable(C)}.",
+        "Missing {ontable(C)}, extra {on(C,B)}.",
+        "Missing {clear(C)}, extra {}."
+      ],
+      "answer": "2",
+      "explanation": "Missing = predicted but not observed; extra = observed but not predicted."
+    },
+    {
+      "id": "b8",
+      "prompt": "In a plan, step a1 = pickup(A) adds holding(A) and step a3 needs holding(A). Which statement identifies a threat to this causal link?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "causal-links"
+      ],
+      "skillLabel": "Causal links and threats",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "A step a2 between them that deletes holding(A), for example putdown(A).",
+        "Any step that adds a different fact, since it changes the state.",
+        "A step after a3 that deletes holding(A), after the link was used.",
+        "A step before a1 that adds holding(A), duplicating the producer."
+      ],
+      "answer": "0",
+      "explanation": "A threat sits between producer and consumer and deletes the protected fact."
+    },
+    {
+      "id": "b9",
+      "prompt": "A language model writes a plausible 5-step plan. Which check most directly tests its validity for the current scene?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "plan-validity"
+      ],
+      "skillLabel": "Plan validity under scene change",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Ask the model to re-read its plan and confirm it is valid.",
+        "Count the words in the plan and compare with the step limit.",
+        "Simulate each step's preconditions against the grounded state.",
+        "Run it on three random scenes only, ignoring the current one."
+      ],
+      "answer": "2",
+      "explanation": "Validation requires the current grounded state."
+    },
+    {
+      "id": "b10",
+      "prompt": "A robot records that when the 'door open' light is on it can go through 99% of the time. A technician shows the light can be on while the door is jammed. What does this suggest?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "causal-links"
+      ],
+      "skillLabel": "Intervention versus observation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "Trust the light fully, since 99% is high enough for planning decisions.",
+        "The door causes the light always, so the light is a reliable proxy.",
+        "The light is a correlate; check the door state directly or intervene to test it.",
+        "Ignore all sensors, since correlations cannot ever be used for planning."
+      ],
+      "answer": "2",
+      "explanation": "A correlate is not the cause; sensors need to measure the preconditions."
+    },
+    {
+      "id": "b11",
+      "prompt": "You receive a language-model plan for 'clean the table'. Describe how you would make it embodied-reasoning-safe: grounding, validation, feedback, and replanning, with one check for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "plan-validity",
+        "execution-feedback",
+        "grounding-uncertainty"
+      ],
+      "skillLabel": "Plan validity under scene change",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "rubric": [
+        "Grounding check of objects/relations against perception with confidences.",
+        "Symbolic validation of preconditions before execution and finding the first invalid step.",
+        "Per-step predicted-vs-observed comparison and a replanning rule."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain, with a small example, the difference between conditioning on an observation and intervening on a variable when estimating an action's effect.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "causal-links"
+      ],
+      "skillLabel": "Intervention versus observation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "Defines conditioning (what we see) versus intervening (what we set).",
+        "Gives a confounded example such as other agents lifting objects or a common cause.",
+        "States an experiment such as randomised commands that identifies the effect."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

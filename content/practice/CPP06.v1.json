@@ -1,0 +1,327 @@
+{
+  "id": "CPP06-targeted",
+  "topicId": "CPP06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "const int& r = i; auto x = r; What is the type of x?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "int&",
+        "const int",
+        "int",
+        "const int&"
+      ],
+      "answer": "2",
+      "explanation": "auto deduces by value, dropping the reference and top-level const.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "template-deduction",
+        "constexpr-evaluation"
+      ],
+      "skillLabel": "auto deduction",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A streaming variance computed as (sum_sq - n*mean^2)/(n-1) is run on values around 1e9. What is the typical symptom?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "An empty optional returned for large inputs",
+        "A slightly slower but still exact result",
+        "An integer overflow exception thrown at run time",
+        "A wildly inaccurate or even negative variance"
+      ],
+      "answer": "3",
+      "explanation": "Two huge, nearly equal numbers are subtracted, so rounding error dominates.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "numerical-stability"
+      ],
+      "skillLabel": "Catastrophic cancellation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP06#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Why prefer static_assert(std::is_floating_point_v<T>) over documenting 'T must be floating point' in a comment?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It makes the generated code run noticeably faster at run time",
+        "It lets integer types be used safely inside the template",
+        "Comments are not allowed anywhere inside template code",
+        "The compiler enforces it and reports your message at instantiation"
+      ],
+      "answer": "3",
+      "explanation": "A checked assumption fails loudly where it is violated.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "template-constraints"
+      ],
+      "skillLabel": "Checking assumptions",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Which makes 'template <class T> T clamp_to(T, T, T);' with its body in util.cpp link for int and double?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Declare the function inline in main.cpp only, and keep the body in util.cpp",
+        "Link the program with -lstdc++ so that the template symbols resolve",
+        "Add const to every parameter in the declaration and the definition",
+        "template int clamp_to<int>(int,int,int); and the same for double in util.cpp"
+      ],
+      "answer": "3",
+      "explanation": "Explicit instantiation emits the specializations in util.cpp; putting the body in the header is the other fix.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "template-deduction"
+      ],
+      "skillLabel": "Explicit instantiation",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP06#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "constexpr std::array<double, 181> holds a sine table in 0.5-degree steps. How many bytes is it (8-byte double)? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1448",
+      "tolerance": 0.5,
+      "explanation": "181 x 8 = 1448 bytes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "constexpr-evaluation"
+      ],
+      "skillLabel": "Compile-time table size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Sample variance (n-1) of {10, 20, 60}. Give an integer or decimal.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "700",
+      "tolerance": 0.01,
+      "explanation": "Mean 30; squared deviations 400+100+900 = 1400; 1400/2 = 700.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "numerical-stability"
+      ],
+      "skillLabel": "Variance arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP06#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Trapezoid rule on f(x)=e^x over [0,1] has error at most (b-a)^3/(12 n^2) * max|f''| with max|f''| = e. What is the smallest integer n for error <= 1e-4?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "48",
+      "tolerance": 0.01,
+      "explanation": "n >= sqrt(e / (12e-4)) = sqrt(2265.2) = 47.6, so n = 48.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "numerical-stability",
+        "template-constraints"
+      ],
+      "skillLabel": "Choosing n for an error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Calls: clamp_to(1,2,3), clamp_to(1.0,2.0,3.0), clamp_to(2,3,4), clamp_to(1.5f,2.f,3.f), clamp_to(3.5,4.5,5.5), clamp_to(7L,8L,9L). How many distinct instantiations does the compiler create? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "int, double, float and long: 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "template-deduction"
+      ],
+      "skillLabel": "Counting instantiations",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Write a templated function describe(T) that returns \"integer\" for integral types, \"real\" for floating-point types and \"other\" otherwise, using if constexpr. Why would a plain if not work if one branch calls std::sqrt(x)?",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Uses if constexpr (std::is_integral_v<T>) ... else if constexpr (std::is_floating_point_v<T>) ... else ...",
+        "A plain if still compiles every branch for every T, so std::sqrt(x) must be valid even for strings.",
+        "Notes the untaken branches are discarded, not just skipped at run time."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "template-constraints"
+      ],
+      "skillLabel": "Writing if constexpr",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP06#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "The linker reports undefined reference to 'RunningStats<float>::push(float)' although the class is declared in a header and defined in a .cpp. Diagnose and give two fixes.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "The member definitions are not visible where RunningStats<float> is used, so no instantiation is emitted.",
+        "Fix 1: move the definitions into the header (or include the .tpp).",
+        "Fix 2: explicit instantiation in the .cpp for the supported types."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "template-deduction"
+      ],
+      "skillLabel": "Diagnosing a template link error",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP06#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Write a constexpr factorial(int n) for 0 <= n <= 12 and the static_assert that checks factorial(5) == 120. Say what happens for factorial(13) in a constant expression.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "constexpr int factorial(int n) { int r = 1; for (int i = 2; i <= n; ++i) r *= i; return r; }",
+        "static_assert(factorial(5) == 120);",
+        "13! overflows a 32-bit int; in a constant expression signed overflow is a compile error."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "constexpr-evaluation"
+      ],
+      "skillLabel": "Writing constexpr functions",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP06#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

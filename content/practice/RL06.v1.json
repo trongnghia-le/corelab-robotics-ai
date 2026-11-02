@@ -1,0 +1,330 @@
+{
+  "id": "RL06-targeted",
+  "topicId": "RL06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "Q(s',.) = (-3, -1, -2, -5), r = -1, gamma = 0.9. Q-learning target (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "q-learning-update"
+      ],
+      "skillLabel": "Q-learning and SARSA updates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "-1.9",
+      "tolerance": 0.01,
+      "explanation": "-1 + 0.9*(-1) = -1.9.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "Same row; the behaviour policy chose the last action (value -5). SARSA target (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "q-learning-update"
+      ],
+      "skillLabel": "Q-learning and SARSA updates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "-5.5",
+      "tolerance": 0.01,
+      "explanation": "-1 + 0.9*(-5) = -5.5.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "Transition into the goal, r = -1, gamma = 0.9, Q(s,a) = 0, alpha = 0.5. New Q(s,a) (2 decimals)? Treat the goal as terminated.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "terminal-vs-truncated"
+      ],
+      "skillLabel": "Terminated versus truncated",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "-0.5",
+      "tolerance": 0.01,
+      "explanation": "Target -1; Q = 0 + 0.5*(-1) = -0.5.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "n = 4, epsilon = 0.1, three tied greedy actions. Probability of the one non-greedy action (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "epsilon-greedy"
+      ],
+      "skillLabel": "Epsilon-greedy probabilities",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "0.025",
+      "tolerance": 0.001,
+      "explanation": "epsilon/n = 0.025.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "A greedy action is unique, n = 4, epsilon = 0.1. Its selection probability (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "epsilon-greedy"
+      ],
+      "skillLabel": "Epsilon-greedy probabilities",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "0.925",
+      "tolerance": 0.002,
+      "explanation": "0.025 + 0.9 = 0.925.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p6",
+      "prompt": "Q-learning is called off-policy because",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "on-vs-off-policy"
+      ],
+      "skillLabel": "On-policy versus off-policy learning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL06#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "it needs a transition model to compute the next-state value, which on-policy methods do not",
+        "it updates the target network more slowly than the behaviour network, so the two policies differ",
+        "its target takes a max over actions, so it evaluates the greedy policy whatever policy collected the data",
+        "it updates only at terminal states, so the data policy never influences the update"
+      ],
+      "answer": "2",
+      "explanation": "The target does not depend on the action actually chosen next.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "A student's epsilon-greedy takes max(range(n), key=q.__getitem__) for the greedy action. What is the effect when all Q values are equal?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "epsilon-greedy"
+      ],
+      "skillLabel": "Epsilon-greedy probabilities",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL06#failure-modes"
+        }
+      ],
+      "options": [
+        "Always the first action is greedy, so exploration among ties is lost",
+        "No effect, because max breaks ties uniformly at random among equal values",
+        "It chooses uniformly among all actions, so exploration is preserved",
+        "It raises an exception because the key function sees equal values"
+      ],
+      "answer": "0",
+      "explanation": "Ties should share the greedy probability equally.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "Time-limit cut: r = -1, max Q(s') = -20, gamma = 0.99. Correct (truncated) target, 1 decimal?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "terminal-vs-truncated"
+      ],
+      "skillLabel": "Terminated versus truncated",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "-20.8",
+      "tolerance": 0.05,
+      "explanation": "-1 + 0.99*(-20) = -20.8; treating it as terminal gives -1.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p9",
+      "prompt": "Standard error of five seed scores with sample standard deviation 4.77 (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-statistics"
+      ],
+      "skillLabel": "Reporting over seeds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "2.13",
+      "tolerance": 0.02,
+      "explanation": "4.77/sqrt(5) = 2.133.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p10",
+      "prompt": "Which statement about maximization bias is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "on-vs-off-policy"
+      ],
+      "skillLabel": "On-policy versus off-policy learning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL06#alternatives-and-trade-offs"
+        }
+      ],
+      "options": [
+        "SARSA suffers from it more than Q-learning, because it uses the max in its target.",
+        "It only occurs with terminal states, where the max is taken over an empty set.",
+        "The max of noisy value estimates is biased upward, which affects Q-learning targets.",
+        "The max of noisy estimates is unbiased, so Q-learning targets are correct on average."
+      ],
+      "answer": "2",
+      "explanation": "E[max] >= max E for noisy estimates.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p11",
+      "prompt": "Write the Q-learning and SARSA targets as one function with a terminated flag, and a test showing that a stored value for the terminal state does not change the result.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "terminal-vs-truncated"
+      ],
+      "skillLabel": "Terminated versus truncated",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/RL06#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Returns r if terminated, otherwise r + gamma*max(Q[s2]) or r + gamma*Q[s2][a2].",
+        "Does not read the terminal row when terminated.",
+        "Test sets a nonzero terminal row and checks the target stays r."
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p12",
+      "prompt": "A robot learns near a real drop-off. Argue for SARSA or Q-learning for the training phase, naming one risk of your choice and one safeguard.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "on-vs-off-policy",
+        "seed-statistics"
+      ],
+      "skillLabel": "Reporting over seeds and on/off-policy choice",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL06#alternatives-and-trade-offs"
+        }
+      ],
+      "rubric": [
+        "Connects the choice to online (on-policy) cost versus final greedy quality.",
+        "Names a risk (falls during exploration, maximization bias) and a safeguard (decaying epsilon, safety shield, simulation first).",
+        "Mentions evaluating the final greedy policy separately over declared seeds."
+      ],
+      "equivalentTo": [
+        "q3",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

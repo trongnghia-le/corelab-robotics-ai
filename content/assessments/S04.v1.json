@@ -1,0 +1,208 @@
+{
+  "id": "S04-diagnostic",
+  "topicId": "S04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "What does a joint's <origin xyz rpy> specify?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The pose of the child frame in the parent frame when the joint value is zero.",
+        "The pose of the child frame in the world frame.",
+        "The pose of the parent frame in the child frame at the current joint value.",
+        "The center of mass of the child link."
+      ],
+      "answer": "0",
+      "explanation": "Origin is parent-to-child at q=0; the joint motion follows.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "joint-origin-fk"
+      ],
+      "skillLabel": "Joint origins and forward kinematics",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R03"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Planar arm, offsets l1=0.5 m, l2=0.3 m, z-axis revolute joints, q1=pi/3, q2=pi/6 (relative). Tool x in m. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.25",
+      "tolerance": 0.001,
+      "explanation": "0.5cos60+0.3cos90=0.25.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "joint-origin-fk"
+      ],
+      "skillLabel": "Joint origins and forward kinematics",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R03"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Solid box m=3 kg, sx=0.5, sy=0.1, sz=0.1 m. Izz about its center, kg m^2. Precision 0.0005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.065",
+      "tolerance": 0.0005,
+      "explanation": "3/12*(0.25+0.01)=0.065.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inertia-formulas"
+      ],
+      "skillLabel": "Inertia formulas and parallel axis",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R03"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Link inertia about its center of mass 0.02 kg m^2, mass 2 kg, joint axis 0.3 m from the center. Inertia about the joint axis, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.001,
+      "explanation": "0.02+2*0.09.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inertia-formulas"
+      ],
+      "skillLabel": "Inertia formulas and parallel axis",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R03"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Which diagonal inertia (kg m^2) cannot belong to any real rigid body?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "(0.02, 0.02, 0.03)",
+        "(0.01, 0.01, 0.05)",
+        "(0.05, 0.05, 0.05)",
+        "(0.01, 0.01, 0.02)"
+      ],
+      "answer": "1",
+      "explanation": "0.01+0.01<0.05 violates the triangle inequality.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "inertia-validity"
+      ],
+      "skillLabel": "Physical validity of inertia",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R03"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A description has links a,b,c,d and joints a->b, c->d, d->c (3 joints = 4-1). What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Nothing; joints = links - 1 guarantees a valid tree.",
+        "A fixed joint is missing at the root.",
+        "There are two roots a and c.",
+        "c and d form a cycle unreachable from the single root a."
+      ],
+      "answer": "3",
+      "explanation": "Count tests are not enough; walk from the root.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "urdf-tree-validity"
+      ],
+      "skillLabel": "Validate a URDF tree",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R03"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how you would validate a new two-link URDF before using it in MoveIt or a simulator: file checks, hand-derived numbers and inertia checks.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Checks tree validity (unique names, one root, reachability, limits) with check_urdf or code.",
+        "Compares FK at several poses (zero, +/-90 degrees, random) with hand or closed-form values.",
+        "Checks masses, centers and inertia (positivity, triangle inequality, units) and mesh scales."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "urdf-tree-validity",
+        "urdf-units-conventions"
+      ],
+      "skillLabel": "Validate a URDF tree",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S04#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R03"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

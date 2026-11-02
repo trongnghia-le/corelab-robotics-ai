@@ -1,0 +1,204 @@
+{
+  "id": "M14-diagnostic",
+  "topicId": "M14",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "correlated-errors",
+        "effective-sample-size"
+      ],
+      "skillLabel": "Averaging correlated samples",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "Sensor errors are positively correlated over time. Compared with the independence formula sigma/sqrt(n), the true standard error of the average is",
+      "options": [
+        "smaller, because correlation between samples reduces the noise in the mean",
+        "larger, because neighbouring samples carry overlapping information",
+        "the same, because the sample mean is unbiased whatever the correlation",
+        "undefined, because the independence assumption no longer holds at all"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Positive correlation inflates Var(mean) by about (1+phi)/(1-phi) for AR(1)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ar1-process"
+      ],
+      "skillLabel": "AR(1) variance",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "An AR(1) error has phi=0.8 and driving noise variance 0.36. What is its stationary variance?",
+      "answer": "1.0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "0.36/(1-0.64)=1."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ar1-process"
+      ],
+      "skillLabel": "Autocorrelation of AR(1)",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "AR(1) with phi=0.5. What is the autocorrelation at lag 3?",
+      "answer": "0.125",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "phi^3=0.125."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "effective-sample-size"
+      ],
+      "skillLabel": "Effective sample size",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "phi=0.6. Large-n effective sample size of 160 consecutive samples (nearest integer)?",
+      "answer": "40",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.6,
+      "explanation": "160*(0.4/1.6)=40."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "conditional-independence"
+      ],
+      "skillLabel": "Conditional independence",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "q5",
+      "kind": "choice",
+      "prompt": "Two sensors observe the same hidden state and are conditionally independent given it. Without knowing the state, their readings are",
+      "options": [
+        "independent, because they are conditionally independent given the hidden state",
+        "generally dependent, because both depend on the state",
+        "negatively correlated, because one reading explains away the other one",
+        "identical, because both sensors are measuring exactly the same hidden state"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Common cause: dependent marginally, independent once the cause is given."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "concentration-bounds"
+      ],
+      "skillLabel": "Hoeffding sample size",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "q6",
+      "kind": "number",
+      "prompt": "Readings lie in [0,1]. Using Hoeffding, how many independent readings guarantee the mean within 0.1 of the truth with probability at least 0.95 (integer)?",
+      "answer": "185",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1,
+      "explanation": "n>=ln(40)/(2*0.01)=184.4, so 185."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "conditional-independence",
+        "correlated-errors"
+      ],
+      "skillLabel": "Checking independence assumptions",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#failure-modes"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "Two cameras are used as independent sensors for a binary obstacle decision, but both are fooled by the same glare. Explain what is wrong with multiplying their likelihoods and how you would handle it.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "States that the factorization assumes conditional independence given the true state.",
+        "Explains that shared glare double-counts evidence and makes the posterior overconfident.",
+        "Proposes modelling the shared error, using a common-cause variable, or discounting the second sensor."
+      ]
+    }
+  ]
+}

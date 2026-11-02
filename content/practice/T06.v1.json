@@ -1,0 +1,352 @@
+{
+  "id": "T06-targeted",
+  "topicId": "T06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Mounts: /data (named volume) and /cfg (read-only bind mount). The program writes /data/out.csv, /cfg/new.yaml and /var/tmp/x. Which write fails?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "/data/out.csv, because a named volume is read-only inside a container",
+        "None of them, since every path accepts writes while the container runs",
+        "/cfg/new.yaml (read-only mount)",
+        "/var/tmp/x, because the container's root filesystem is read-only"
+      ],
+      "answer": "2",
+      "explanation": "A read-only mount rejects writes; the others succeed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "volumes-mounts"
+      ],
+      "skillLabel": "Volumes and bind mounts",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Mounts: /results (volume) only. The program writes 5 files: 3 under /results, 1 under /tmp, 1 under /root/.cache. After docker rm, how many survive? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.0",
+      "tolerance": 0.5,
+      "explanation": "Only the 3 under the mounted volume.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "container-persistence"
+      ],
+      "skillLabel": "What survives container removal",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "The mount target is /results but the program writes to /result/run.json (typo). What is the consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The write fails immediately, because the directory /result does not exist",
+        "Docker creates a new volume called /result and keeps the file there",
+        "The file lands in the writable layer and is lost on docker rm",
+        "The file is written to the volume anyway, because Docker fixes the typo"
+      ],
+      "answer": "2",
+      "explanation": "/result is not covered by the mount, so it goes to the container layer silently.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-persistence",
+        "volumes-mounts"
+      ],
+      "skillLabel": "What survives container removal",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Mounts /results (volume) and /results/cache (bind mount). Where does /results/cache/model.bin go?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The bind mount (longest matching target)",
+        "The writable layer, because nested mounts are not allowed to overlap",
+        "Both the volume and the bind mount, since a write goes to every mount",
+        "The volume, because it was declared first and so takes priority"
+      ],
+      "answer": "0",
+      "explanation": "The most specific (longest) target covering the path wins.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "volumes-mounts"
+      ],
+      "skillLabel": "Volumes and bind mounts",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A 7-instruction Dockerfile has the code COPY as instruction 3 and the dependency install as instruction 4. After editing code, how many instructions are reused from cache? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.5,
+      "explanation": "Instructions 1 and 2 are unchanged; 3 and all following are rebuilt.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "build-cache"
+      ],
+      "skillLabel": "Build cache and instruction order",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "After reordering so that the lock COPY is instruction 3, the install is 4 and the code COPY is 5 (7 instructions in total), how many instructions are reused after a code edit? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.5,
+      "explanation": "Instructions 1-4 are unchanged.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "build-cache"
+      ],
+      "skillLabel": "Build cache and instruction order",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Five images share 200 MB of base layers and add 10 MB each. Storage with sharing? (integer MB, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "250.0",
+      "tolerance": 0.5,
+      "explanation": "200 + 5×10 = 250 MB.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "images-layers"
+      ],
+      "skillLabel": "Images and layers",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Which is a bad practice in a Dockerfile for a reproducible experiment?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "COPY of the lock file before the code",
+        "FROM python:3.12-slim pinned, secrets passed at run time",
+        "A .dockerignore excluding .git and .env",
+        "FROM python:latest and ENV API_KEY=... baked into the image"
+      ],
+      "answer": "3",
+      "explanation": "An unpinned base changes over time and secrets in ENV are readable from the image.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "images-layers",
+        "build-cache"
+      ],
+      "skillLabel": "Images and layers",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Files written by a root container into a bind-mounted host folder cannot be deleted by you. What is the standard fix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Switch to the latest image, which no longer runs as root",
+        "Remove the volume so that the files are not kept after the run",
+        "Run the container with --user \"$(id -u):$(id -g)\"",
+        "Use sudo for every file operation on the host from now on"
+      ],
+      "answer": "2",
+      "explanation": "The process then writes files owned by your uid.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "volumes-mounts"
+      ],
+      "skillLabel": "Volumes and bind mounts",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A container is stopped (not removed). You start it again. What is true of its writable layer?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It was moved into a volume when the container stopped, so it persists",
+        "It still exists with its files, because only docker rm discards it",
+        "It was moved into the image when the container stopped, as a new layer",
+        "It was discarded when the container stopped, so the files are gone"
+      ],
+      "answer": "1",
+      "explanation": "Stopping keeps the container and its writable layer; removing deletes it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-persistence"
+      ],
+      "skillLabel": "What survives container removal",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Your teammate's results vanished after they updated the image and recreated the container. Explain the likely cause and give the corrected run command.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Results were written to the container filesystem (or an unmounted path), which is discarded on recreation.",
+        "Fix: mount a named volume or bind mount at the results path, e.g. -v results:/results, and write there.",
+        "Verify with ls in a second container and record the image digest with the results."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "container-persistence",
+        "volumes-mounts"
+      ],
+      "skillLabel": "What survives container removal",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7",
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "What does a container not reproduce about an experiment, and how do you record it?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "The host kernel, GPU driver, CPU model and non-deterministic kernels are not packaged in the image.",
+        "The data and the seed/config must be supplied and versioned separately.",
+        "Record the image digest, host kernel and driver versions, hardware, commit id and config with each result."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "images-layers",
+        "container-persistence"
+      ],
+      "skillLabel": "Images and layers",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

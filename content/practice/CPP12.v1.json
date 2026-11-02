@@ -1,0 +1,339 @@
+{
+  "id": "CPP12-targeted",
+  "topicId": "CPP12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which change is binary-compatible for callers of a pimpl class?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Changing a public method's parameter type",
+        "Adding a public data member",
+        "Adding a data member to the hidden Impl struct",
+        "Adding a virtual function to the public class"
+      ],
+      "answer": "2",
+      "explanation": "The public class is only a pointer; its size and layout do not change.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Pimpl and ABI",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Why can a std::string in the signature of a prebuilt .so cause a link error with a different compiler setting?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The linker forbids templates such as std::string in the signature of a .so",
+        "Strings cannot be exported from a shared library, only char pointers can",
+        "The mangled type name and layout differ between library ABIs (libstdc++ dual ABI)",
+        "std::string is not copyable, so it cannot cross a shared library boundary"
+      ],
+      "answer": "2",
+      "explanation": "GCC's _GLIBCXX_USE_CXX11_ABI switches std::string between two incompatible types with different mangled names.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Standard types in the ABI",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Which return type states exclusive ownership transfer most clearly in C++?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Map& (a mutable reference)",
+        "const Map& (a const reference)",
+        "Map* (a raw pointer)",
+        "std::unique_ptr<Map>"
+      ],
+      "answer": "3",
+      "explanation": "unique_ptr documents and enforces that the caller becomes the sole owner.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ownership-audit"
+      ],
+      "skillLabel": "Ownership types",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A function returns std::string::c_str() of a local string through an extern \"C\" interface. What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "c_str() allocates memory that is never freed",
+        "extern \"C\" forbids strings",
+        "The pointer dangles after the function returns",
+        "It is fine: strings live forever"
+      ],
+      "answer": "2",
+      "explanation": "The local string is destroyed at return; return static storage or write into a caller buffer.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "c-boundary-errors",
+        "ownership-audit"
+      ],
+      "skillLabel": "Dangling returns",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "struct Pose { double x; double y; } is 16 bytes. Version 2 adds a double z and an int flag at the end. With natural alignment on x86-64, what is the new sizeof? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "32",
+      "tolerance": 0.01,
+      "explanation": "3 doubles = 24 bytes, int at offset 24, padded to 32.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Struct layout arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A library has 9 exported symbols; 6 are extern \"C\". How many are mangled? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "9-6 = 3 C++ symbols with mangled names.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "c-boundary-errors"
+      ],
+      "skillLabel": "Counting mangled symbols",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "An application compiled against a struct with fields (int size; double x; double y) = 24 bytes receives a v2 struct (int size; double x; double y; double z) = 32 bytes. If the library honours the caller's size field and fills only the fields that fit, how many bytes of the caller's struct are written at most? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "24",
+      "tolerance": 0.01,
+      "explanation": "The library limits itself to the caller-declared 24 bytes, so no overflow occurs.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Size-field versioning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q2"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A test hook rc_live_arms() returns 0 initially. A test creates 3 Arm objects, moves one into another, and destroys one by scope exit. How many arms remain alive if the moved-to object previously owned an arm that should be released? Start: a, b, c created; c = std::move(a); then b goes out of scope. Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "Three created; move assignment c = std::move(a) destroys c's old arm (2 alive: a's arm now in c, b's); b leaves scope: 1 alive.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ownership-audit"
+      ],
+      "skillLabel": "Tracking live resources",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP12#worked-example"
+        },
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP12#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Write the declaration of a C interface (create, destroy, get value, error string) for an opaque 'imu' handle, and state who owns what.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "typedef struct imu imu; imu* imu_create(void); void imu_destroy(imu*); int imu_get_accel(const imu*, double out[3]); const char* imu_strerror(int);",
+        "The caller owns the handle until imu_destroy; imu_destroy accepts NULL; strerror returns static storage.",
+        "No C++ types or exceptions in the interface; functions return codes."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "c-boundary-errors",
+        "ownership-audit"
+      ],
+      "skillLabel": "Designing a C interface",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP12#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "A vendor SDK's header exposes std::function callbacks and std::vector results. Give three integration strategies and the risk each removes.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Wrap behind a C interface compiled with the vendor's toolchain; removes standard-library ABI mismatch.",
+        "Build the SDK or the whole stack with one pinned compiler/ABI flag, as in a single ROS workspace.",
+        "Isolate it in a separate process (IPC/ROS node) so a crash or ABI issue does not take down the robot; copy data at the boundary."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "api-vs-abi",
+        "c-boundary-errors"
+      ],
+      "skillLabel": "Integrating a binary SDK",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP12#alternatives-and-trade-offs"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Declare a pimpl class Planner so that a user translation unit including only the header compiles. Which special members must be declared in the header and defined in the .cpp?",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "class Planner { public: Planner(); ~Planner(); Planner(Planner&&) noexcept; Planner& operator=(Planner&&) noexcept; private: struct Impl; std::unique_ptr<Impl> impl_; };",
+        "Destructor and moves are defined in the .cpp (= default) where Impl is complete.",
+        "Reason: unique_ptr's deleter needs the complete type, otherwise 'invalid application of sizeof to incomplete type'."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "api-vs-abi",
+        "ownership-audit"
+      ],
+      "skillLabel": "Pimpl special members",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "id": "S05-diagnostic",
+  "topicId": "S05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A sensor driver publishes with best_effort reliability. Your subscriber requests reliable. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "They do not connect: no data and no exception in your code.",
+        "The subscriber receives the data with retransmissions.",
+        "The publisher is upgraded to reliable automatically.",
+        "Every second message is delivered."
+      ],
+      "answer": "0",
+      "explanation": "A best-effort offer cannot satisfy a reliable request.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "qos-compatibility"
+      ],
+      "skillLabel": "QoS compatibility rules",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Messages arrive every 25 ms and the callback takes 40 ms. Utilization S/P. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.6",
+      "tolerance": 0.01,
+      "explanation": "40/25.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-utilization"
+      ],
+      "skillLabel": "Utilization and drops",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Overloaded keep-last queue, depth 6, arrivals every 10 ms. Upper bound on queueing delay (ms).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "60",
+      "tolerance": 0.5,
+      "explanation": "N*P=60.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "steady-delay"
+      ],
+      "skillLabel": "Queue depth and staleness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Long-run fraction of messages dropped when utilization is 1.25 (single worker). Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.01,
+      "explanation": "1-1/1.25=0.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-utilization"
+      ],
+      "skillLabel": "Utilization and drops",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A map is published once at startup. A planner starting later must still receive it. Which QoS on both ends?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "best_effort, volatile",
+        "best_effort, transient_local on the publisher only",
+        "reliable, transient_local",
+        "reliable, volatile, depth 100"
+      ],
+      "answer": "2",
+      "explanation": "transient_local on both sides keeps and replays the last sample.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "qos-compatibility"
+      ],
+      "skillLabel": "QoS compatibility rules",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A 150 ms callback and a 100 ms safety timer share one single-threaded executor. What is the effect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The timer can fire late because only one callback runs at a time.",
+        "The timer fires twice as fast, because the executor catches up on missed ticks.",
+        "The 150 ms callback is skipped whenever the 100 ms timer becomes due.",
+        "Nothing happens; timers have a dedicated thread that is independent of callbacks."
+      ],
+      "answer": "0",
+      "explanation": "Callbacks are serialized in a single-threaded executor.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "executor-blocking"
+      ],
+      "skillLabel": "Executors and callback blocking",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A perception node must publish at 30 Hz but its subscriber sees 12 Hz and stale data. Describe how you would diagnose it with numbers and what you would change.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Measures callback time and arrival period and computes utilization.",
+        "Checks QoS (depth, reliability) and the executor/callback groups with ros2 topic info and logs.",
+        "Proposes a fix: faster callback, decimation, smaller depth, separate callback group or executor, with a re-measurement."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "steady-delay"
+      ],
+      "skillLabel": "Queue depth and staleness",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

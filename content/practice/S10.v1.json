@@ -1,0 +1,381 @@
+{
+  "id": "S10-targeted",
+  "topicId": "S10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "update_rate 125 Hz. Period in ms.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "1000/125.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "update-timing"
+      ],
+      "skillLabel": "Update-loop timing budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Period 4 ms, read 0.4 ms, write 0.6 ms. Largest update time (ms) before an overrun.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.0",
+      "tolerance": 0.01,
+      "explanation": "4-0.4-0.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "update-timing"
+      ],
+      "skillLabel": "Update-loop timing budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Cycle 3.0 ms at a 5 ms period. Utilization. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.6",
+      "tolerance": 0.01,
+      "explanation": "3/5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "update-timing"
+      ],
+      "skillLabel": "Update-loop timing budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "PID kp=1.5, ki=0.5, error 2, dt=0.2, output limit 1.0, conditional anti-windup, integral starts 0. Integral after the step. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0",
+      "tolerance": 0.001,
+      "explanation": "u=3.2 saturates with error pushing further: integral not committed.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pid-windup"
+      ],
+      "skillLabel": "Discrete PID and anti-windup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Velocity-limited P loop: kp=4, vmax=2, step e0=1, band 0.02. Time to settle t=(e0-vmax/kp)/vmax + ln(vmax/(kp*band))/kp, s. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.055",
+      "tolerance": 0.01,
+      "explanation": "0.25+0.25 ln 25.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pid-windup"
+      ],
+      "skillLabel": "Discrete PID and anti-windup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A joint 0.004 rad below its upper limit is commanded +1 rad/s for dt=0.02 s. Reported velocity (rad/s), precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.001,
+      "explanation": "0.004/0.02.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "state-consistency"
+      ],
+      "skillLabel": "Consistent state from a mock interface",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Which can several controllers do at the same time?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Read the same state interface",
+        "Write the same command interface",
+        "Own the same command interface in the same cycle",
+        "Write the same joint's position and velocity commands without any ownership rule"
+      ],
+      "answer": "0",
+      "explanation": "State interfaces are shared.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "resource-ownership"
+      ],
+      "skillLabel": "Resource ownership of interfaces",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Why is derivative on measurement preferred in update()?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It needs fewer samples than derivative on the error",
+        "It makes the integral term zero at steady state",
+        "A step in the reference does not create a spike in the output.",
+        "It removes measurement noise completely from the output"
+      ],
+      "answer": "2",
+      "explanation": "Reference changes do not enter the derivative.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pid-windup"
+      ],
+      "skillLabel": "Discrete PID and anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A controller hardcodes dt=0.01 while the manager runs at 50 Hz. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Integral gain is effectively halved and derivative doubled.",
+        "Nothing happens, because dt is only used for logging output",
+        "The controller manager overrides dt with the real period",
+        "Both gains are doubled, since dt appears in each term"
+      ],
+      "answer": "0",
+      "explanation": "Real period is 0.02 s.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pid-windup"
+      ],
+      "skillLabel": "Discrete PID and anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "The strict switch asks to activate B (needs j1 and j2 position) while A holds j1 and C holds j2, and deactivates only A. Result?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A is stopped and B is only partly active",
+        "The request fails; A and C stay active.",
+        "B is activated and C is stopped to free j2",
+        "B is activated with j2 shared between B and C"
+      ],
+      "answer": "1",
+      "explanation": "C still owns j2.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "atomic-switch"
+      ],
+      "skillLabel": "Atomic controller switching",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Write a test that proves a failed switch leaves ownership unchanged, with concrete controller and interface names.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Sets up two active controllers with named interfaces and a conflicting request.",
+        "Snapshots ownership before and compares after the failed switch.",
+        "Checks that the successful alternative request (with the deactivations) works."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "atomic-switch"
+      ],
+      "skillLabel": "Atomic controller switching",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S10#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain how windup against a hard stop delays a reversal and how you would detect it in a log.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Explains persistent error integrating while the joint cannot move.",
+        "Describes the symptom: output stays pinned/late after the reference reverses.",
+        "Proposes anti-windup and a test with numbers (steps to leave the stop)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "pid-windup"
+      ],
+      "skillLabel": "Discrete PID and anti-windup",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

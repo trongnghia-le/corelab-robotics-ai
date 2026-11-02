@@ -1,0 +1,201 @@
+{
+  "id": "T08-diagnostic",
+  "topicId": "T08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A scheduler restarts a finished job because it never received the success signal. What property of the job makes the restart harmless?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "idempotence-and-restart"
+      ],
+      "skillLabel": "Idempotent restart",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Idempotent restart",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "options": [
+        "Idempotence: the job detects completed outputs and does not redo or corrupt them",
+        "A large backoffLimit, so the scheduler keeps retrying until the run succeeds",
+        "Running with parallelism 1, so two copies of the job never overlap",
+        "Using the latest image tag, so each restart picks up the newest fixes"
+      ],
+      "answer": "0",
+      "explanation": "At-least-once scheduling is made safe by idempotent jobs that check for a completion marker."
+    },
+    {
+      "id": "q2",
+      "prompt": "backoff_delays(6, base=2, cap=30): what is the sum of all six delays in seconds?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "retry-backoff"
+      ],
+      "skillLabel": "Retry backoff",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Retry backoff",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "answer": "90",
+      "tolerance": 0.01,
+      "explanation": "Delays 2,4,8,16,30,30 sum to 90."
+    },
+    {
+      "id": "q3",
+      "prompt": "Checkpoints cost C = 5 s and the mean time between failures is M = 7200 s. What checkpoint interval T = sqrt(2CM) in seconds (one decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "checkpoint-interval"
+      ],
+      "skillLabel": "Checkpoint interval",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Checkpoint interval",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "answer": "268.3",
+      "tolerance": 0.1,
+      "explanation": "sqrt(2*5*7200)=sqrt(72000)=268.33."
+    },
+    {
+      "id": "q4",
+      "prompt": "In which order should a job publish its outputs?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "atomic-publish"
+      ],
+      "skillLabel": "Atomic publication",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: Atomic publication",
+          "href": "/lessons/T08#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "options": [
+        "Result files atomically, then the DONE marker last",
+        "Both at the same time in the same file handle",
+        "DONE marker first, then result files",
+        "Order does not matter if the filesystem is local"
+      ],
+      "answer": "0",
+      "explanation": "DONE must imply that all outputs are complete, so it is written last."
+    },
+    {
+      "id": "q5",
+      "prompt": "Why is docker pull exp:latest a poor basis for reproducing an old result?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "artifact-identity"
+      ],
+      "skillLabel": "Artifact identity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Artifact identity",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "options": [
+        "latest always points at the oldest build in the repository",
+        "Docker cannot pull a tag, only a digest, so the command fails",
+        "latest is a movable tag, so the bytes behind it can change",
+        "Tags are encrypted, so the image contents cannot be inspected"
+      ],
+      "answer": "2",
+      "explanation": "Tags are pointers; only a digest identifies exact image content."
+    },
+    {
+      "id": "q6",
+      "prompt": "A job has 200 steps of 3 s. It is killed right after step 130 completes and the last checkpoint was after step 125. How many seconds of work are redone?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "checkpoint-interval",
+        "idempotence-and-restart"
+      ],
+      "skillLabel": "Cost of a restart",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Cost of a restart",
+          "href": "/lessons/T08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "answer": "15",
+      "tolerance": 0.01,
+      "explanation": "5 steps x 3 s = 15 s."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design the output contract for a sweep of 144 runs on 4 preemptible machines: directory layout, completion marker, what is recorded for reproducibility, and how a rerun avoids repeated work.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "output-contract"
+      ],
+      "skillLabel": "Output contract design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Output contract design",
+          "href": "/lessons/T08#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "rubric": [
+        "Output directory derived from a canonical config hash, with result files, a manifest of checksums and a DONE marker written last.",
+        "Records commit and image digest (and seeds/dataset version) with each run.",
+        "Rerun skips runs with valid DONE/manifest, resumes others from checkpoints, and uses atomic writes."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

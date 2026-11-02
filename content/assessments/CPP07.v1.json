@@ -1,0 +1,197 @@
+{
+  "id": "CPP07-diagnostic",
+  "topicId": "CPP07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "The build prints \"undefined reference to 'plan(Path const&)'\". Which stage reported it and what is the usual cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Preprocess: an included header file was not found on the include path",
+        "Run time: the shared library was not found by the dynamic loader at start-up",
+        "Compile: the function name was misspelled at the call site in the source",
+        "Link: a declaration was seen but no linked object or library defines the function"
+      ],
+      "answer": "3",
+      "explanation": "Declarations satisfy the compiler; the linker needs one definition in the objects and libraries it is given.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "build-stages"
+      ],
+      "skillLabel": "Mapping errors to stages",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A project has 60 object files at 2.5 s each. A header is included by 18 of them. How many seconds of compile time does touching that header cost (ignore linking)? Give a number.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "45",
+      "tolerance": 0.01,
+      "explanation": "18 x 2.5 s = 45 s, versus 2.5 s for a .cpp change.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rebuild-graph"
+      ],
+      "skillLabel": "Cost of touching a header",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Library sensors includes <util/units.hpp> in its PUBLIC header sensors.hpp. How should sensors link util?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "PRIVATE, because util is an implementation detail",
+        "It does not matter for headers",
+        "INTERFACE only, so that sensors itself ignores util",
+        "PUBLIC, because users of sensors.hpp also need util's headers"
+      ],
+      "answer": "3",
+      "explanation": "A dependency that appears in the library's public headers is part of its interface and must propagate.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "usage-requirements"
+      ],
+      "skillLabel": "PUBLIC versus PRIVATE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Graph: app needs libplan and main.o; libplan needs plan.o and libmath; libmath needs math.o; math.o needs math.cpp and math.hpp; plan.o needs plan.cpp and math.hpp; main.o needs main.cpp and plan.hpp. math.cpp is edited. How many NON-source nodes (objects, libraries, executables) must be rebuilt? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "math.o, libmath, libplan, app = 4. plan.o and main.o do not depend on math.cpp.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rebuild-graph"
+      ],
+      "skillLabel": "Rebuild sets",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP07#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A test uses assert(f(x) == expected). It fails in a Debug build but passes in a Release build that has the same bug. Why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "assert only works when sanitizers are enabled",
+        "Release links a different standard library than Debug",
+        "ctest ignores failing tests in Release configurations",
+        "Release defines NDEBUG, which compiles assert to nothing"
+      ],
+      "answer": "3",
+      "explanation": "-DNDEBUG compiles assert(...) to nothing. Use a test macro that always checks.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "test-targets"
+      ],
+      "skillLabel": "Tests and NDEBUG",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP07#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Two .cpp files include a header containing 'int twice(int x) { return 2*x; }'. What is the failure?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Preprocessor error: header included twice",
+        "No error; the linker picks one silently for non-inline functions",
+        "Link error: multiple definition of twice(int)",
+        "Compile error in the second file"
+      ],
+      "answer": "2",
+      "explanation": "Each translation unit emits a definition; a non-inline function may be defined only once in the program. Mark it inline or define it in one .cpp.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "build-stages"
+      ],
+      "skillLabel": "One-definition rule",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP07#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Explain how you would structure CMake targets for a library with one test executable so that the test can include the library's headers without any directory-global include commands, and how you would run the test.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "add_library with target_include_directories(... PUBLIC include) and add_executable for the test.",
+        "target_link_libraries(test PRIVATE library) so the include directory is inherited.",
+        "enable_testing(), add_test(NAME ... COMMAND ...), then cmake -S . -B build, cmake --build build, ctest --test-dir build."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "usage-requirements",
+        "test-targets"
+      ],
+      "skillLabel": "Target structure",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP07#reference-implementation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

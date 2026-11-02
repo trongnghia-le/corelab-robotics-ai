@@ -1,0 +1,363 @@
+{
+  "id": "RL20-targeted",
+  "topicId": "RL20",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "gamma=0.95, reward -1 per step. An option lasts 4 steps. R? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "option-return"
+      ],
+      "skillLabel": "Discounted option return",
+      "mistakeCategory": "mathematical",
+      "answer": "-3.709875",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL20#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Geometric sum 1+0.95+0.9025+0.857375=3.709875."
+    },
+    {
+      "id": "b2",
+      "prompt": "R=-3.439, tau=4, gamma=0.9, V(s_end)=-5.217. Backup value? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "smdp-backup"
+      ],
+      "skillLabel": "SMDP backup",
+      "mistakeCategory": "mathematical",
+      "answer": "-6.861874",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL20#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "-3.439+0.6561*(-5.217)=-6.862."
+    },
+    {
+      "id": "b3",
+      "prompt": "A student uses gamma instead of gamma^tau for a 6-step option with negative rewards. The option's value is estimated:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "smdp-backup"
+      ],
+      "skillLabel": "SMDP backup",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Too high (too optimistic), as the negative future counts less",
+        "Exactly right if the policy is optimal",
+        "Too low (too pessimistic), as the negative future counts more",
+        "Unaffected, because tau cancels in the ratio"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL20#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "gamma > gamma^6 so the continuation (negative) is weighted too much; the value is too low."
+    },
+    {
+      "id": "b4",
+      "prompt": "Termination probability 0.05 per step. Probability the option lasts more than 10 steps (still running after 10 steps)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "termination"
+      ],
+      "skillLabel": "Termination and duration",
+      "mistakeCategory": "mathematical",
+      "answer": "0.598737",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL20#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "0.95^10=0.5987."
+    },
+    {
+      "id": "b5",
+      "prompt": "Termination probability 0.04 per step. Expected duration?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "termination"
+      ],
+      "skillLabel": "Termination and duration",
+      "mistakeCategory": "mathematical",
+      "answer": "25",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL20#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "1/0.04=25."
+    },
+    {
+      "id": "b6",
+      "prompt": "When all primitive actions are kept in the action set, adding options changes the optimal value:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "options-speedup"
+      ],
+      "skillLabel": "What options change",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "It always decreases the optimum, as options restrict the policy",
+        "It always increases the optimum, since options add behaviours",
+        "It makes the problem non-Markov, so values are undefined",
+        "Not at all; it can only change how quickly it is found"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL20#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "Options are realisable by flat policies, so the optimum is the same."
+    },
+    {
+      "id": "b7",
+      "prompt": "Which log would best reveal option collapse in a learned hierarchy?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "option-collapse"
+      ],
+      "skillLabel": "Option collapse diagnostics",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Gradient norm of the encoder per update",
+        "Learning-rate schedule of the high-level optimiser",
+        "Training loss of the critic over time",
+        "Histogram of option usage and mean option duration"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL20#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "One option used everywhere or durations of 1 indicate collapse."
+    },
+    {
+      "id": "b8",
+      "prompt": "Which is a legitimate reason to prefer hand-designed options over learned ones?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "options-speedup"
+      ],
+      "skillLabel": "Choose option design",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "The sub-skills are known and must be safe and testable",
+        "Learned options need no reward signal to be trained",
+        "Hand-designed options remove the need for a termination condition",
+        "Learned options never collapse onto a single option"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL20#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "Known decomposition + testability favour hand design."
+    },
+    {
+      "id": "b9",
+      "prompt": "A navigation option starts in a room whose door is closed. The initiation set should:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "option-definition"
+      ],
+      "skillLabel": "Initiation versus termination",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Be ignored, because the termination beta handles it",
+        "Exclude that state, since the skill cannot succeed there",
+        "Be empty, so the option is never started",
+        "Include it, since failure teaches the high level"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL20#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "An initiation set is the precondition; including states where the skill is invalid creates avoidable failures."
+    },
+    {
+      "id": "b10",
+      "prompt": "Corridor of length 20 (goal at 20, reward -1, primitives only). Starting from V=-100 (goal 0), how many synchronous sweeps until the value reaches state 0 for the first time? ",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "options-speedup"
+      ],
+      "skillLabel": "What options change",
+      "mistakeCategory": "mathematical",
+      "answer": "20",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL20#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "One state per sweep: goal-adjacent state in sweep 1 ... state 0 in sweep 20."
+    },
+    {
+      "id": "b11",
+      "prompt": "A grasp option commits for 2 seconds and the object slips after 0.5 s. Explain the problem and give two design changes.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "option-definition",
+        "termination"
+      ],
+      "skillLabel": "Design a skill as an option",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL20#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "The option cannot react because it only terminates on time; the high level cannot re-plan.",
+        "Make termination depend on state (slip or force detected) and add a failure outcome.",
+        "Use interruptible options or let the manager override on failure."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain, using the return decomposition, where the factor gamma^tau in the SMDP Bellman equation comes from.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "smdp-backup"
+      ],
+      "skillLabel": "SMDP backup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL20#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "rubric": [
+        "Split the return at the termination time tau: first tau rewards then the later return.",
+        "The later return starts tau steps later so each reward is discounted by an extra gamma^tau.",
+        "Take the expectation over the joint distribution of s' and tau."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

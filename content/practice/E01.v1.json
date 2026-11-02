@@ -1,0 +1,370 @@
+{
+  "id": "E01-targeted",
+  "topicId": "E01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Dead-end choice: grab pays 1 then 0. Walk pays 0, reaches B w.p. 1.0 (no slip), B pays 2 per step. Value of walk with 3 steps to go (walk then 2 steps)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "backward-induction"
+      ],
+      "skillLabel": "Backward induction",
+      "mistakeCategory": "mathematical",
+      "answer": "4",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "0 + 2 + 2 = 4 versus grab 1."
+    },
+    {
+      "id": "b2",
+      "prompt": "Same problem: smallest horizon h where walking beats grabbing?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "decision-horizon"
+      ],
+      "skillLabel": "Horizon-dependent decisions",
+      "mistakeCategory": "mathematical",
+      "answer": "2",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "At h=2, walk=2>1; at h=1 walk=0<1."
+    },
+    {
+      "id": "b3",
+      "prompt": "Walk success p=0.6 else stay, B pays 3. V_1(A)=1. With 2 steps to go, value of walking? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "backward-induction"
+      ],
+      "skillLabel": "Backward induction",
+      "mistakeCategory": "mathematical",
+      "answer": "2.2",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "0.6*3+0.4*1=2.2."
+    },
+    {
+      "id": "b4",
+      "prompt": "Walk pays 0; with probability p it reaches B (worth 3 with one step left), otherwise the dead end C (worth 0). Grab is worth 1. Smallest p for which walking beats grabbing with 2 steps to go? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "decision-horizon"
+      ],
+      "skillLabel": "Horizon-dependent decisions",
+      "mistakeCategory": "mathematical",
+      "answer": "0.333333",
+      "tolerance": 0.005,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "3p > 1 gives p > 1/3."
+    },
+    {
+      "id": "b5",
+      "prompt": "A deterministic system has no noise. The gap between the best open-loop plan and the optimal closed-loop policy is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "open-vs-closed-loop"
+      ],
+      "skillLabel": "Open vs closed loop",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Zero",
+        "Undefined",
+        "Positive",
+        "Negative"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "With deterministic dynamics the trajectory is known in advance, so feedback adds nothing."
+    },
+    {
+      "id": "b6",
+      "prompt": "Prior belief A=0.5, B=0.5 (no action effect). Sensor: P('a'|A)=0.8, P('a'|B)=0.2. Posterior P(A | 'a')?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "belief-update"
+      ],
+      "skillLabel": "Bayes belief update",
+      "mistakeCategory": "mathematical",
+      "answer": "0.8",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "0.4/(0.4+0.1)=0.8."
+    },
+    {
+      "id": "b7",
+      "prompt": "Same sensor, second independent 'a' reading from belief A=0.8. Posterior P(A)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "belief-update"
+      ],
+      "skillLabel": "Bayes belief update",
+      "mistakeCategory": "mathematical",
+      "answer": "0.941176",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "0.8*0.8=0.64; 0.2*0.2=0.04; 0.64/0.68=0.941."
+    },
+    {
+      "id": "b8",
+      "prompt": "Why is the belief a useful state for planning?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "belief-update"
+      ],
+      "skillLabel": "Bayes belief update",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "It is a sufficient statistic: the next belief depends only on belief, action and observation",
+        "It makes the sensor perfect, so the true state is known after each step",
+        "It removes all uncertainty, so the planner can treat the state as known",
+        "It reduces the action set, so only a few actions need to be planned over"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "This makes the belief-MDP Markov."
+    },
+    {
+      "id": "b9",
+      "prompt": "A receding-horizon controller with lookahead 1 on the lesson problem behaves like:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "decision-horizon"
+      ],
+      "skillLabel": "Compare greedy and planned decisions",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "The optimal 4-step policy",
+        "The greedy policy",
+        "An open-loop plan",
+        "A random policy"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/E01#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "explanation": "One-step lookahead on immediate reward is greedy."
+    },
+    {
+      "id": "b10",
+      "prompt": "Which signals that a lookahead depth is long enough?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "decision-horizon"
+      ],
+      "skillLabel": "Compare greedy and planned decisions",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Increasing the depth no longer changes the chosen actions or the value",
+        "The resulting policy becomes stochastic once the depth is large enough",
+        "The planner runs faster at the larger depth, since fewer states remain",
+        "The immediate reward turns negative once the lookahead is deep enough"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E01#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "explanation": "Convergence of value with depth is the practical check."
+    },
+    {
+      "id": "b11",
+      "prompt": "A warehouse robot has a short route that is sometimes blocked and a long sure route. Describe how greedy, open-loop and closed-loop decision rules differ and what you would compute to choose.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "open-vs-closed-loop",
+        "decision-horizon"
+      ],
+      "skillLabel": "Compare greedy and planned decisions",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E01#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "rubric": [
+        "Greedy ignores the blocked-route cost; open-loop commits; closed-loop senses and diverts.",
+        "Compute expected cost of each rule with the blocking probability and feedback value.",
+        "State the break-even probability."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain why a belief update needs normalisation and what an impossible observation indicates.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "belief-update"
+      ],
+      "skillLabel": "Bayes belief update",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "Multiplying by likelihood yields unnormalised weights that must sum to 1.",
+        "An observation with zero total weight contradicts the model.",
+        "Fix the model or sensor assumptions rather than dividing by zero."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

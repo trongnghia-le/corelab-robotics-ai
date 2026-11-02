@@ -1,0 +1,377 @@
+{
+  "id": "V03-targeted",
+  "topicId": "V03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "f = 700 px, c = (640, 360). Project the camera-frame point (-0.4, 0.3, 2.5) m. Give u in pixels (precision 0.1).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pinhole-projection"
+      ],
+      "skillLabel": "Pinhole projection",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "528",
+      "tolerance": 0.1,
+      "explanation": "u = 700*(-0.4)/2.5 + 640 = 528."
+    },
+    {
+      "id": "b2",
+      "prompt": "A 0.5 m wide box faces a camera with f = 640 px at distance 4 m. How many pixels wide is it? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "range-from-size"
+      ],
+      "skillLabel": "Range from apparent size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "80",
+      "tolerance": 0.1,
+      "explanation": "640*0.5/4 = 80."
+    },
+    {
+      "id": "b3",
+      "prompt": "A pole is 100 pixels tall at 3 m. How tall (pixels) is it at 6 m with the same camera? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "range-from-size"
+      ],
+      "skillLabel": "Range from apparent size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "50",
+      "tolerance": 0.1,
+      "explanation": "Image size is inversely proportional to depth."
+    },
+    {
+      "id": "b4",
+      "prompt": "A 0.20 m marker is measured as 25 pixels (fx = 500), giving Z = 4.0 m. If the true width is 26 pixels, by how many metres is the range overestimated? (precision 0.005)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "range-from-size"
+      ],
+      "skillLabel": "Range from apparent size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.154",
+      "tolerance": 0.005,
+      "explanation": "Z = 500*0.2/26 = 3.846; 4.0 - 3.846 = 0.154."
+    },
+    {
+      "id": "b5",
+      "prompt": "With R = [[0,-1,0],[0,0,-1],[1,0,0]] and t = (0, 0.5, -0.1) the camera centre in the world is c = -R^T t. What is its world z coordinate in metres? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pinhole-projection"
+      ],
+      "skillLabel": "Pinhole projection",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "R^T t = (-0.1, 0, -0.5), so c = (0.1, 0, 0.5)."
+    },
+    {
+      "id": "b6",
+      "prompt": "fx = 800, cx = 320. A pixel has u = 420. What is its normalised coordinate x = X/Z? (precision 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ray-depth-ambiguity"
+      ],
+      "skillLabel": "Rays and depth ambiguity",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.125",
+      "tolerance": 0.001,
+      "explanation": "x = (420-320)/800."
+    },
+    {
+      "id": "b7",
+      "prompt": "With f = 1000 px the horizontal field of view of a 1000-pixel-wide image is 2*atan(0.5). What is it in degrees? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fov-focal-length"
+      ],
+      "skillLabel": "Field of view and focal length",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "53.1",
+      "tolerance": 0.1,
+      "explanation": "2*26.565 = 53.13."
+    },
+    {
+      "id": "b8",
+      "prompt": "A robot sees a box of width 0.3 m at 2 m. Which statement is true using only one image and known intrinsics?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ray-depth-ambiguity"
+      ],
+      "skillLabel": "Rays and depth ambiguity",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#intuition"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Only the lateral position is ambiguous",
+        "The image alone fixes its depth if the focal length is known",
+        "A wider box at the same depth looks identical",
+        "An object of 0.6 m at 4 m would look identical"
+      ],
+      "answer": "3",
+      "explanation": "Scaling object size and depth together preserves the image."
+    },
+    {
+      "id": "b9",
+      "prompt": "In p_cam = R p_w + t, what does t represent?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pinhole-projection"
+      ],
+      "skillLabel": "Pinhole projection",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "The principal point offset of the image plane",
+        "The world origin expressed in camera coordinates",
+        "The camera position expressed in world coordinates",
+        "The translation of the image between frames"
+      ],
+      "answer": "1",
+      "explanation": "The camera centre is -R^T t, not t."
+    },
+    {
+      "id": "b10",
+      "prompt": "A lens change from 4 mm to 8 mm (same sensor, same position) is made. Which is true?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "perspective-vs-zoom"
+      ],
+      "skillLabel": "Perspective versus zoom",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "Distant objects appear relatively larger than near ones, so depth cues are compressed",
+        "The perspective becomes stronger, since the focal length changes the viewpoint",
+        "Only the image brightness changes, because the sensor and position are the same",
+        "Objects appear twice as large, the field of view narrows, and near/far size ratios are unchanged"
+      ],
+      "answer": "3",
+      "explanation": "Perspective depends on camera position, zoom only magnifies."
+    },
+    {
+      "id": "b11",
+      "prompt": "A robot must see a 0.1 m marker at 5 m with at least 20 pixels across it and keep a 90 degree horizontal field of view. Work out the minimum focal length in pixels and the minimum image width, and decide whether a 640-pixel camera works.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "fov-focal-length"
+      ],
+      "skillLabel": "Field of view and focal length",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q6"
+      ],
+      "rubric": [
+        "f >= 20*5/0.1 = 1000 px for the marker.",
+        "Field of view 90 degrees needs n >= 2f, so n >= 2000 px; 640 px is too small.",
+        "Concludes: use a wider sensor or accept lower marker resolution / two cameras."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write the unit tests you would use for a function project(p, fx, fy, cx, cy). Include an on-axis point, a symmetry case, a scale-invariance case and a behind-camera case.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "behind-camera"
+      ],
+      "skillLabel": "Points behind the camera",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "On-axis point (0,0,Z) lands on the principal point for several Z.",
+        "Scaled points lambda*p give identical pixels; (X,Y,Z) and (-X,-Y,Z) are symmetric about the principal point.",
+        "Z <= 0 is rejected (None or exception), not returned."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

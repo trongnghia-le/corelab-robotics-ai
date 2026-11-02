@@ -1,0 +1,297 @@
+{
+  "id": "RL01-targeted",
+  "topicId": "RL01",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "markov-state"
+      ],
+      "skillLabel": "Markov state",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r1",
+      "kind": "choice",
+      "prompt": "A robot arm policy is trained on joint positions only, but the task depends on how fast the joints are moving. Which statement is correct?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The observation is Markov because positions are measured exactly",
+        "Discounting with a smaller gamma fixes the missing velocity",
+        "The observation is not Markov; add velocities or a short history to the state",
+        "The Markov property only matters for continuing, not episodic, tasks"
+      ],
+      "answer": "2",
+      "explanation": "If velocity affects future transitions or rewards but is not in the observation, the observation is not Markov; adding velocities (or a short history) restores the property."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "discounted-return"
+      ],
+      "skillLabel": "Discounted return",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r2",
+      "kind": "number",
+      "prompt": "Rewards 1, 1, 1, 1 are received at four consecutive steps (then the episode ends) with gamma = 0.8. What is the discounted return from the first step? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.952",
+      "tolerance": 0.002,
+      "explanation": "1 + 0.8 + 0.64 + 0.512 = 2.952."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "discounted-return"
+      ],
+      "skillLabel": "Value of a self-loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r3",
+      "kind": "number",
+      "prompt": "A state loops to itself forever with reward 3 per step and gamma = 0.8. What is its value? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "15",
+      "tolerance": 0.05,
+      "explanation": "V = 3 + 0.8 V, so V = 3/(1-0.8) = 15."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bellman-equation"
+      ],
+      "skillLabel": "One Bellman backup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r4",
+      "kind": "number",
+      "prompt": "From state s a fixed policy gets reward 1, then moves to s' with probability 0.5 (V(s') = 10) or s'' with probability 0.5 (V(s'') = 4). With gamma = 0.9, what is V(s)? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7.3",
+      "tolerance": 0.01,
+      "explanation": "V(s) = 1 + 0.9*(0.5*10 + 0.5*4) = 1 + 0.9*7 = 7.3."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bellman-equation"
+      ],
+      "skillLabel": "Return recursion",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r5",
+      "kind": "choice",
+      "prompt": "Which recursion for the discounted return is correct?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "G_t = gamma * r_{t+1} + G_{t+1}",
+        "G_t = r_{t+1} + G_{t+1} / gamma",
+        "G_t = (r_{t+1} + G_{t+1}) * gamma",
+        "G_t = r_{t+1} + gamma * G_{t+1}"
+      ],
+      "answer": "3",
+      "explanation": "Separating the first reward gives G_t = r_{t+1} + gamma G_{t+1}."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "discounted-return"
+      ],
+      "skillLabel": "Effective horizon",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r6",
+      "kind": "number",
+      "prompt": "Roughly how many steps ahead does an agent with gamma = 0.98 effectively look (1/(1-gamma))? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "50",
+      "tolerance": 0.5,
+      "explanation": "1/(1-0.98) = 50 steps."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "terminal-vs-truncation"
+      ],
+      "skillLabel": "Time limits",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#failure-modes"
+        }
+      ],
+      "id": "r7",
+      "kind": "choice",
+      "prompt": "An episode of a patrolling robot is cut off after 200 steps, but the task would otherwise continue. How should the learner treat the last transition when bootstrapping?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "Skip the transition entirely and do not update",
+        "As terminal: set the future value to 0",
+        "As a non-terminal: still bootstrap from V(s')",
+        "Replace the reward by -1 on the last step"
+      ],
+      "answer": "2",
+      "explanation": "A time-limit truncation is not a real terminal state: bootstrap from V(s'), otherwise values near the limit are wrongly small."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "discounted-return"
+      ],
+      "skillLabel": "Weight of a delayed reward",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r8",
+      "kind": "number",
+      "prompt": "A reward arrives 20 steps in the future and gamma = 0.95. By what factor is it discounted (gamma^20)? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.358",
+      "tolerance": 0.002,
+      "explanation": "0.95^20 = 0.358."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "policy-evaluation"
+      ],
+      "skillLabel": "Iterative policy evaluation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r9",
+      "kind": "number",
+      "prompt": "A state loops to itself with reward 1 and gamma = 0.5. Starting from V = 0, what is V after exactly 3 synchronous sweeps of V <- 1 + 0.5 V? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.75",
+      "tolerance": 0.002,
+      "explanation": "After sweep 1: 1; sweep 2: 1.5; sweep 3: 1.75 (the limit is 2)."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "policy-evaluation"
+      ],
+      "skillLabel": "Policy improvement",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r10",
+      "kind": "choice",
+      "prompt": "You have evaluated a policy and computed Q(s,a) for every action. Which update is guaranteed not to make the policy worse?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Pick the action with the highest immediate reward only",
+        "Pick the action with the lowest Q to explore",
+        "Pick actions at random with the same probabilities",
+        "Pick the action with the highest Q(s,a) in each state"
+      ],
+      "answer": "3",
+      "explanation": "Acting greedily with respect to the policy's own Q-values (policy improvement theorem) can only improve or keep the value."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "reward-design"
+      ],
+      "skillLabel": "Designing a reward",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r11",
+      "kind": "short",
+      "prompt": "A delivery robot is rewarded +1 for each package delivered and -0.01 per second. Describe two unintended behaviours this could encourage and revise the reward.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names plausible exploits: unsafe speed or collisions, repeatedly picking up and re-delivering the same package, or avoiding hard deliveries",
+        "Revises the reward with safety/collision penalties, per-package one-time credit, or constraints, and keeps it tied to the true goal",
+        "Mentions testing the reward with held-out metrics or inspecting trajectories rather than trusting the return alone"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "markov-state"
+      ],
+      "skillLabel": "State design",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RL01#theory-and-derivation"
+        }
+      ],
+      "id": "r12",
+      "kind": "short",
+      "prompt": "A balancing robot gets only the tilt angle from its IMU. Explain why this is not a Markov state for the balancing task and what you would add.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States that tilt alone does not determine future motion; angular velocity (and possibly action history/delay) also matters",
+        "Proposes adding angular velocity (or stacking recent observations) to the state",
+        "Notes that a recurrent policy or state estimator is an alternative to a hand-built state"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

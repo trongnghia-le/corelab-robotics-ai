@@ -1,0 +1,359 @@
+{
+  "id": "PY02-targeted",
+  "topicId": "PY02",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "list-queue-costs"
+      ],
+      "skillLabel": "Queue cost model",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#worked-example"
+        }
+      ],
+      "id": "b1",
+      "kind": "number",
+      "prompt": "Draining a list of 1000 items with pop(0): total element moves?",
+      "answer": "499500",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1,
+      "explanation": "1000*999/2.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "list-queue-costs"
+      ],
+      "skillLabel": "Costs of list operations",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "b2",
+      "kind": "choice",
+      "prompt": "deque.popleft() differs from list.pop(0) because",
+      "options": [
+        "it only moves a head pointer, so it is O(1)",
+        "it needs a lock, so the removal is safe between threads",
+        "it sorts the items first, so the removal order stays correct",
+        "it returns a copy of the list, so nothing has to shift"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "deque is a doubly linked block structure.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hash-lookup"
+      ],
+      "skillLabel": "Membership with sets and dicts",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "b3",
+      "kind": "choice",
+      "prompt": "To keep the latest reading for each of 12 named sensors you should use",
+      "options": [
+        "a deque of all readings",
+        "a dict keyed by sensor name",
+        "a set of readings",
+        "a list searched by name each time"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Key-addressed update in O(1).",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hash-lookup"
+      ],
+      "skillLabel": "Hashable keys",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#failure-modes"
+        }
+      ],
+      "id": "b4",
+      "kind": "choice",
+      "prompt": "Which key is valid in a dict?",
+      "options": [
+        "(3, 4)",
+        "[3, 4]",
+        "{'a': 1}",
+        "{3, 4}"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Tuples of hashables are hashable.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bounded-buffer"
+      ],
+      "skillLabel": "Bounded buffers",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#worked-example"
+        }
+      ],
+      "id": "b5",
+      "kind": "number",
+      "prompt": "Drop-oldest buffer capacity 4 receives 10 messages. What is the value of the oldest message still in it? (messages numbered 1..10)",
+      "answer": "7",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "It holds 7,8,9,10.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bounded-buffer"
+      ],
+      "skillLabel": "Backlog growth",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "b6",
+      "kind": "number",
+      "prompt": "Producer 50 Hz, consumer 30 Hz, run 10 s. Messages waiting at the end of an unbounded queue?",
+      "answer": "200",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1,
+      "explanation": "(50-30)*10.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bounded-buffer"
+      ],
+      "skillLabel": "Backlog growth",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "b7",
+      "kind": "number",
+      "prompt": "With the queue above, latency of the newest message at the end, in seconds (consumer 30 Hz, 2 decimals)?",
+      "answer": "6.67",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.02,
+      "explanation": "200/30.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amortized-append"
+      ],
+      "skillLabel": "Amortized append",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "b8",
+      "kind": "number",
+      "prompt": "Appending 16 items to a list that doubles capacity from 1: total element copies at reallocations?",
+      "answer": "15",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "1+2+4+8=15."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "amortized-append"
+      ],
+      "skillLabel": "Amortized append",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "Appending to a Python list is called amortized O(1) because",
+      "options": [
+        "the occasional expensive resize is spread over many cheap appends",
+        "every append takes exactly the same time, whatever the list size",
+        "the list never copies, so each append costs the same time",
+        "appends are done in parallel, so their costs overlap"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Average cost over a sequence is constant."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sliding-window"
+      ],
+      "skillLabel": "Monotonic deque",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "b10",
+      "kind": "choice",
+      "prompt": "In the monotonic-deque sliding maximum, when a new value x arrives you first",
+      "options": [
+        "scan the whole window for the maximum",
+        "pop from the front always",
+        "pop from the back while the back value is <= x",
+        "sort the window"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Smaller earlier values can never be maxima again."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "bounded-buffer"
+      ],
+      "skillLabel": "Choosing a drop policy",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "Give the drop policy (oldest, newest or block) you would choose for (a) a camera feed used for obstacle avoidance, (b) a log of every command sent to a motor, (c) a batch data-processing script, and justify each.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Chooses drop-oldest for the camera (freshness matters).",
+        "Chooses drop-newest or an unbounded/persistent log for commands (history matters).",
+        "Chooses blocking/backpressure for batch work, with a reason."
+      ]
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "sliding-window"
+      ],
+      "skillLabel": "Monotonic deque",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "Write the invariant of a sliding-window-maximum deque and explain why each element is processed at most twice.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "States the deque holds indices of decreasing values in the window.",
+        "Explains each index is appended once and removed at most once.",
+        "Concludes O(n) total versus O(nk) brute force."
+      ]
+    }
+  ]
+}

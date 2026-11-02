@@ -1,0 +1,189 @@
+{
+  "id": "T06-diagnostic",
+  "topicId": "T06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "You run a container, write /tmp/result.txt inside it, then run docker rm on the container. What happens to the file?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It is lost, because it was in the container's writable layer",
+        "It is copied to the host automatically when the container is removed",
+        "It is kept if the container was stopped first, since stopping saves its files",
+        "It is kept in the image, which stores every file written by the container"
+      ],
+      "answer": "0",
+      "explanation": "The writable layer is discarded when the container is removed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-persistence"
+      ],
+      "skillLabel": "What survives container removal",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A named volume is mounted at /results. Where must the program write results so they survive replacing the container?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Under /app if the image contains it",
+        "Under /results",
+        "Anywhere in the container",
+        "Under /tmp"
+      ],
+      "answer": "1",
+      "explanation": "Only paths covered by a mount persist; everything else goes to the writable layer.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-persistence",
+        "volumes-mounts"
+      ],
+      "skillLabel": "Volumes and bind mounts",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Which statement about an image and a container is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A container is a template for images; each image is created by running a container",
+        "An image is a read-only template; a container is an instance with a writable layer",
+        "Images and containers are the same thing, only named differently in the tools",
+        "An image is a running process that holds a writable layer of its own"
+      ],
+      "answer": "1",
+      "explanation": "Containers are created from images and add a writable layer and a running process.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "images-layers"
+      ],
+      "skillLabel": "Images and layers",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A Dockerfile has 6 instructions. Editing one source file changes the 5th instruction (COPY . .). How many layers/instructions are taken from the cache? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.5,
+      "explanation": "Instructions 1-4 are unchanged and cached; the 5th and everything after are rebuilt.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "build-cache"
+      ],
+      "skillLabel": "Build cache and instruction order",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Why copy requirements.lock and run pip install before copying the rest of the code?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It makes the final image smaller by definition, since fewer layers are stored",
+        "Docker requires lock files to be copied first, or the build fails",
+        "Pip can only run before any code has been copied into the image",
+        "Code changes then do not invalidate the cached dependency layer"
+      ],
+      "answer": "3",
+      "explanation": "The first changed instruction invalidates all later ones; dependencies change rarely, code often.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "build-cache"
+      ],
+      "skillLabel": "Build cache and instruction order",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Three images share a 120 MB base layer. Each adds its own 30 MB layer. How many MB of storage do the three images need in total? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "210.0",
+      "tolerance": 0.5,
+      "explanation": "Shared layers are stored once: 120 + 3×30 = 210 MB.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "images-layers"
+      ],
+      "skillLabel": "Images and layers",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You must show a reviewer which files of your experiment survive when the container is replaced with a new version of the image. Describe the experiment, the commands, and what you will observe.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Writes one file into a mounted volume and one into the container filesystem (e.g. /tmp), then docker rm.",
+        "Starts a new container with the same volume and lists both paths; also uses docker diff/ls to observe.",
+        "Observes only the volume file survives; read-only mounts reject writes; records the image digest and notes that the kernel/driver is not packaged."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "container-persistence",
+        "volumes-mounts"
+      ],
+      "skillLabel": "What survives container removal",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

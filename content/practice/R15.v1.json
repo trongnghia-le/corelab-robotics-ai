@@ -1,0 +1,396 @@
+{
+  "id": "R15-targeted",
+  "topicId": "R15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A robot link rings after a fast move at 40 Hz although its controller runs at 8 Hz. Which is the most probable reason?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rigid-validity"
+      ],
+      "skillLabel": "Rigid-model validity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Rigid-model validity",
+          "href": "/lessons/R15#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "The link has a bending mode near 40 Hz that the fast move excited",
+        "The link is too stiff, so it cannot absorb the fast acceleration",
+        "Gravity compensation is switched on, which adds a 40 Hz force",
+        "The controller is too slow, so it cannot follow the commanded move"
+      ],
+      "answer": "0",
+      "explanation": "Fast moves have broad frequency content that can excite a flexible mode."
+    },
+    {
+      "id": "b2",
+      "prompt": "Planar mechanism with 6 links including ground and 7 revolute joints. Mobility?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Grubler mobility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Grubler mobility",
+          "href": "/lessons/R15#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "3(6-1) - 14 = 1."
+    },
+    {
+      "id": "b3",
+      "prompt": "A triangle truss has 3 links and 3 revolute joints. Mobility by Grubler?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Grubler mobility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Grubler mobility",
+          "href": "/lessons/R15#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0",
+      "tolerance": 0.01,
+      "explanation": "3(3-1) - 6 = 0."
+    },
+    {
+      "id": "b4",
+      "prompt": "DAF at f/fn = 0.3 (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dynamic-amplification"
+      ],
+      "skillLabel": "Dynamic amplification",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Dynamic amplification",
+          "href": "/lessons/R15#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "1.098901",
+      "tolerance": 0.003,
+      "explanation": "1/(1-0.09) = 1.099."
+    },
+    {
+      "id": "b5",
+      "prompt": "fn = 40 Hz, tolerance 5% (DAF - 1 <= 0.05). Largest excitation frequency in Hz (one decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dynamic-amplification"
+      ],
+      "skillLabel": "Dynamic amplification",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Dynamic amplification",
+          "href": "/lessons/R15#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "8.728716",
+      "tolerance": 0.1,
+      "explanation": "fn sqrt(eps/(1+eps)) = 8.73."
+    },
+    {
+      "id": "b6",
+      "prompt": "Doubling the thickness h (bending direction) of a rectangular cantilever multiplies its tip stiffness by what factor?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "beam-stiffness-frequency"
+      ],
+      "skillLabel": "Cantilever scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Cantilever scaling",
+          "href": "/lessons/R15#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "k ~ I ~ h^3."
+    },
+    {
+      "id": "b7",
+      "prompt": "Jm = 1e-4, Jl = 0.02, k = 100. Resonance with a free motor in rad/s (one decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "flexible-joint"
+      ],
+      "skillLabel": "Flexible joint frequencies",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Flexible joint frequencies",
+          "href": "/lessons/R15#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "1002.496883",
+      "tolerance": 0.2,
+      "explanation": "sqrt(k (Jm+Jl)/(Jm Jl)) = 1002.5."
+    },
+    {
+      "id": "b8",
+      "prompt": "A position-controlled motor drives a load through a spring. Which frequency limits the load's rigid behaviour?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "flexible-joint"
+      ],
+      "skillLabel": "Flexible joint frequencies",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Flexible joint frequencies",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "Anti-resonance sqrt(k/Jl)",
+        "Both are irrelevant",
+        "Resonance sqrt(k(Jm+Jl)/(Jm Jl))",
+        "Zero"
+      ],
+      "answer": "0",
+      "explanation": "With the motor held, the load oscillates on the spring at the anti-resonance."
+    },
+    {
+      "id": "b9",
+      "prompt": "Constant-curvature arm, L = 0.4 m, kappa = 2.5 1/m: x of the tip in m (four decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "continuum-arc"
+      ],
+      "skillLabel": "Constant-curvature arm",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Constant-curvature arm",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "0.183879",
+      "tolerance": 0.0005,
+      "explanation": "theta = 1 rad; x = (1-cos1)/2.5 = 0.1839."
+    },
+    {
+      "id": "b10",
+      "prompt": "Same arm: y of the tip in m (four decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "continuum-arc"
+      ],
+      "skillLabel": "Constant-curvature arm",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Constant-curvature arm",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "0.336588",
+      "tolerance": 0.0005,
+      "explanation": "y = sin(1)/2.5 = 0.3366."
+    },
+    {
+      "id": "b11",
+      "prompt": "Three equal parallel links connect the ground to a coupler. Grubler's formula gives 0 but the coupler can move. Why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Grubler mobility",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Grubler mobility",
+          "href": "/lessons/R15#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "The constraints are redundant (not independent), so the formula over-counts them",
+        "The formula only works for spatial mechanisms, not for planar ones",
+        "The coupler is flexible, so it adds degrees of freedom to the count",
+        "The joints are friction-free, which the formula does not allow for"
+      ],
+      "answer": "1",
+      "explanation": "Redundant constraints break the independence assumption."
+    },
+    {
+      "id": "b12",
+      "prompt": "A series elastic actuator is chosen for a leg joint. Explain what the spring gives (torque sensing, shock tolerance) and what it costs (control bandwidth), with the two-mass frequencies.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "flexible-joint"
+      ],
+      "skillLabel": "Series elastic actuation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Series elastic actuation",
+          "href": "/lessons/R15#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "Torque from deflection tau = k (theta_m - theta_l).",
+        "Lower k reduces anti-resonance sqrt(k/Jl) and so the usable bandwidth.",
+        "Mentions shock absorption and the need for control that accounts for the resonance."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "b13",
+      "prompt": "Compare a rigid two-link approximation with the constant-curvature model for a soft arm. When is the approximation good and what does it get wrong?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "continuum-arc"
+      ],
+      "skillLabel": "Constant-curvature arm",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Constant-curvature arm",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "rubric": [
+        "Tip position error shrinks as the number of links grows; two links give small but non-zero position error.",
+        "Tip orientation/tangent and shape along the arm differ (link directions are discrete).",
+        "States model limits (variable curvature under gravity/contact)."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "id": "M15-diagnostic",
+  "topicId": "M15",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rotation-composition"
+      ],
+      "skillLabel": "Composing versus adding rotations",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "Rotating by rotation vector a and then by b is, in general,",
+      "options": [
+        "not equal to rotating by a+b; the error is of second order and involves a x b",
+        "exactly the rotation with vector a+b, since the vectors simply add",
+        "the rotation with vector a-b, since the second rotation undoes the first",
+        "the same as b followed by a, because rotations always commute"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "SO(3) is non-commutative; BCH gives exp(a)exp(b)=exp(a+b+1/2 a x b+...)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "so3-log-exp"
+      ],
+      "skillLabel": "Angle from the trace",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "A rotation matrix has trace 2. What is its rotation angle in degrees?",
+      "answer": "60",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.5,
+      "explanation": "cos(theta)=(tr-1)/2=0.5."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "so3-log-exp"
+      ],
+      "skillLabel": "Rodrigues' formula",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#worked-example"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "Rotation vector (0,0,pi/2) (rad). What is the (1,0) entry of exp([w]x)? (row 1, column 0, 0-based)",
+      "answer": "1",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "This is Rz(90 deg): second row first column = sin(90 deg)=1."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rotation-composition"
+      ],
+      "skillLabel": "BCH correction",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#worked-example"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "a=(0.2,0,0) and b=(0,0.2,0). The BCH second-order term (1/2)(a x b) has what z-component?",
+      "answer": "0.02",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.0005,
+      "explanation": "(1/2)(0.2*0.2)=0.02."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "group-structure"
+      ],
+      "skillLabel": "Staying on the group",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#failure-modes"
+        }
+      ],
+      "id": "q5",
+      "kind": "choice",
+      "prompt": "Why does R <- R + R[w]x dt fail as a gyro integrator?",
+      "options": [
+        "Skew-symmetric matrices cannot be multiplied with rotation matrices in this form",
+        "It integrates the wrong angular velocity; the body-frame rate must be used instead",
+        "It is too slow to compute, so the step must be replaced by a lookup of rotations",
+        "The result is not orthogonal: I+[w]x dt scales the columns by sqrt(1+(w dt)^2)"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "The update leaves SO(3); use R exp([w]x dt)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "se3-twist"
+      ],
+      "skillLabel": "Exponential of a twist",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#worked-example"
+        }
+      ],
+      "id": "q6",
+      "kind": "number",
+      "prompt": "Twist with v=(1,0,0) m/s and w=(0,0,pi/2) rad/s applied for 1 s. What is the x-coordinate of the translation of exp(xi)? (3 decimals)",
+      "answer": "0.6366",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "The robot follows a quarter circle of radius 2/pi, so x=2/pi=0.6366."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "group-structure",
+        "so3-log-exp"
+      ],
+      "skillLabel": "Error-state orientation",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#transfer-and-retention"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "An error-state filter stores orientation as a quaternion but represents its error as a 3-vector and updates with exp. Explain why the error is kept in the tangent space, and how the update and covariance are handled.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Explains that the tangent space is a flat 3-D vector space where covariances and additive corrections make sense.",
+        "Gives the update R <- R exp(delta) (or q <- q * exp(delta/2)) followed by a reset.",
+        "Notes the choice of left or right perturbation must match the covariance convention."
+      ]
+    }
+  ]
+}

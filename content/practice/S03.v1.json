@@ -1,0 +1,381 @@
+{
+  "id": "S03-targeted",
+  "topicId": "S03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A LaserScan has 1080 float32 ranges at 20 Hz. Payload bandwidth of the ranges in kB/s (1 kB = 1000 B). Precision 0.1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "86.4",
+      "tolerance": 0.1,
+      "explanation": "1080*4*20=86400 B/s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "interface-choice"
+      ],
+      "skillLabel": "Choose topic, service or action",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A timer is created with period 0.04 (seconds). Rate in Hz?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "25",
+      "tolerance": 0.01,
+      "explanation": "1/0.04.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "31 stamps span 3.0 s. Rate in Hz, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "30/3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "An odometer integrates speed 0.8 m/s from 11 messages spaced 0.1 s (first has no predecessor). Distance in m, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.001,
+      "explanation": "10 intervals * 0.1 * 0.8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "The same odometer wrongly uses dt=0.1 for all 11 messages. Relative error in percent, precision 0.1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.1,
+      "explanation": "11/10 -> 10 % too large.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Stamps in ms: 0, 20, 40, 100, 120, 200, expected period 20 ms. Missing messages in total.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "Gap 60 -> 2; gap 80 -> 3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A sender publishes distance in centimeters into a field the receiver treats as meters. Which tool catches this?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The message type check, because the field type differs between centimeters and meters",
+        "The quality of service settings, which include a unit for each published value",
+        "The ros2 topic info -v command, which prints the declared units of every field",
+        "Documented units plus a known-value test across the interface"
+      ],
+      "answer": "1",
+      "explanation": "Types are identical; only conventions and tests catch it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "units-conventions"
+      ],
+      "skillLabel": "Units and frame conventions",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A node publishes every 10 s though it was meant to run at 10 Hz. Most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The message has no header, so the timestamp delays each publication.",
+        "DDS discovery is slow, so the publisher waits ten seconds between sends.",
+        "The timer period was given as 10 (seconds) instead of 0.1.",
+        "The queue depth is too small, so most messages are dropped before sending."
+      ],
+      "answer": "3",
+      "explanation": "create_timer takes seconds.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S03#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Why is a service a poor fit for a 100 Hz IMU stream?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Each sample needs a request-reply round trip and a client; a topic broadcasts to any subscriber",
+        "Services cannot be used from Python, and the IMU driver here is written in Python.",
+        "Services cannot carry floating-point values, which the IMU samples would require here",
+        "Topics are always faster than any service, whatever the message rate happens to be."
+      ],
+      "answer": "0",
+      "explanation": "Streams belong on topics.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "interface-choice"
+      ],
+      "skillLabel": "Choose topic, service or action",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "What does remapping /cmd_vel to /robot1/cmd_vel at launch achieve?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It changes the publisher's code so that it writes to another topic.",
+        "It changes the message type that the topic carries between nodes.",
+        "It changes the name the node uses, without any code changes.",
+        "It encrypts the topic so that only the new name can read it."
+      ],
+      "answer": "0",
+      "explanation": "Names can be changed at launch.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "topic-names"
+      ],
+      "skillLabel": "Topic naming rules",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Describe a unit test that detects a gap in a stream of integer-nanosecond stamps, with concrete numbers and one edge case.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Gives stamps and a period with an expected missing count (e.g. 0,100,200,500 with 100 -> 2).",
+        "Includes an edge case such as fewer than two stamps or a duplicate stamp.",
+        "States how floats are avoided (integer ns) and what the test must reject."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/S03#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Argue for or against putting pose, battery and diagnostics in one 30 Hz custom message.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Compares coupling, bandwidth, replay and evolution.",
+        "Uses standard types where possible.",
+        "Concludes with a justified split by rate and consumer."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "interface-choice"
+      ],
+      "skillLabel": "Choose topic, service or action",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/S03#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

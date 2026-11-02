@@ -1,0 +1,338 @@
+{
+  "id": "RL10-targeted",
+  "topicId": "RL10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "eps = 0.1, ratio r = 1.25, advantage A = 2. Value of the clipped objective? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.2",
+      "tolerance": 0.01,
+      "explanation": "rA = 2.5, clip = 1.1*2 = 2.2; the minimum is 2.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-clipped-objective"
+      ],
+      "skillLabel": "Evaluate the clipped objective",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "eps = 0.2, ratio r = 1.5, advantage A = -2. Value of the clipped objective? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-3.0",
+      "tolerance": 0.05,
+      "explanation": "rA = -3.0, clip(r)A = 1.2*(-2) = -2.4; the minimum is -3.0 (unclipped).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-clipped-objective"
+      ],
+      "skillLabel": "Evaluate the clipped objective",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Advantage -1 and ratio 1.5 (eps = 0.2). What happens to the gradient?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is zero because r is outside the clip range",
+        "It is active and pushes the ratio back down",
+        "It changes sign at r = 1.2",
+        "It is active and pushes the ratio further up"
+      ],
+      "answer": "1",
+      "explanation": "For A < 0 the unclipped term is the minimum when r > 1-eps, so the gradient is A*grad r and the optimiser lowers r.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ppo-clip-rule"
+      ],
+      "skillLabel": "Apply the clip rule",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Samples have ratios 1.3, 0.7, 1.0, 1.1 and advantages 2, -2, 1, 1 (eps = 0.2). What is the clip fraction? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "Sample 1 (A>0, r>1.2) and sample 2 (A<0, r<0.8) are clipped; the others are active: 2 of 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-clip-rule"
+      ],
+      "skillLabel": "Compute clip fraction",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL10#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A single sample has ratio 0.8. What is its k3 KL contribution (r-1) - ln r? (four decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0231",
+      "tolerance": 0.0005,
+      "explanation": "-0.2 - ln 0.8 = -0.2 + 0.22314 = 0.02314.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-kl"
+      ],
+      "skillLabel": "Estimate KL from a ratio",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Your PPO run's first epoch shows ratios mostly between 0.6 and 1.6, before any update. What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The advantages are too large, so the ratios are inflated by their size before the first step",
+        "The learning rate is too high, so the first epoch already moves the policy a long way",
+        "Old log-probs were recorded in a different policy mode (exploration noise, dropout) than the new ones",
+        "The clip range is set too small, so the ratios spread out well beyond one before any update"
+      ],
+      "answer": "2",
+      "explanation": "At epoch 0 the parameters are unchanged, so the ratio must be 1; any spread means the two log-probs are computed inconsistently.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ppo-ratio"
+      ],
+      "skillLabel": "Debug the ratio at epoch zero",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL10#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "The ratio is computed as new_logp/old_logp with new_logp = -1.2 and old_logp = -1.5. What value does the buggy code give? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.01,
+      "explanation": "-1.2/-1.5 = 0.8; the correct ratio is exp(0.3) = 1.35.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-ratio"
+      ],
+      "skillLabel": "Spot the ratio bug",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Which statement about PPO versus an off-policy method like SAC is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "PPO needs fresh data from the current policy, while SAC reuses a replay buffer",
+        "SAC requires strictly on-policy data, while PPO can use old data",
+        "Both discard their data after a single gradient step",
+        "PPO reuses a replay buffer indefinitely, while SAC discards old data"
+      ],
+      "answer": "0",
+      "explanation": "PPO's surrogate and advantages are tied to the collecting policy; SAC is designed to learn from a replay buffer of older policies' data.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ppo-on-policy"
+      ],
+      "skillLabel": "Compare on-policy and off-policy data use",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL10#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Write a minimal PPO-clip loss for a batch (new_logp, old_logp, adv, eps) in plain Python or pseudocode and say which line would cause the objective to exceed r*A if mis-signed.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Computes r = exp(new_logp - old_logp)",
+        "Takes min(r*adv, clip(r,1-eps,1+eps)*adv) and averages, negating for a minimiser",
+        "Names the min/clip line or the sign of the loss as the risky place"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "ppo-clipped-objective",
+        "ppo-ratio"
+      ],
+      "skillLabel": "Implement the clipped loss",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "A training log shows KL estimate 0.2, clip fraction 0.8 and falling returns after you doubled the learning rate. Explain each number and propose the next experiment.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Interprets high KL and high clip fraction as an overly large update that left the clip range",
+        "Links falling returns to the policy leaving the region where the advantages are valid",
+        "Proposes lowering the learning rate or adding KL early stopping and checking the metrics recover"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "ppo-kl",
+        "ppo-clip-rule"
+      ],
+      "skillLabel": "Interpret PPO diagnostics",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "With ratios (1.0, 1.0, 1.0) what is the mean k3 KL estimate? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0",
+      "tolerance": 0.005,
+      "explanation": "(1-1) - ln 1 = 0 for every sample.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-kl"
+      ],
+      "skillLabel": "Know the KL estimate at zero change",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL10#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Normalising advantages to zero mean and unit variance per batch mainly helps PPO because it",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "keeps the step size comparable across batches and tasks, so updates do not overshoot",
+        "guarantees that the KL divergence stays below eps for every batch of collected data",
+        "makes the critic unnecessary by replacing the learned value baseline with batch statistics",
+        "changes the sign of the negative advantages so that they become positive in the batch"
+      ],
+      "answer": "0",
+      "explanation": "The gradient scales with advantage magnitude; normalising decouples the effective step size from reward scale.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ppo-kl",
+        "ppo-clip-rule"
+      ],
+      "skillLabel": "Understand advantage scaling",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    }
+  ]
+}

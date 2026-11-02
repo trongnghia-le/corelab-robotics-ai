@@ -1,0 +1,207 @@
+{
+  "id": "S01-diagnostic",
+  "topicId": "S01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Explicit Euler is applied to the undamped oscillator x''=-x with a fixed step h. What happens to the energy 0.5(x^2+v^2)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It oscillates around the true value without drift.",
+        "It grows by the factor (1+h^2) per step.",
+        "It decays slowly like friction.",
+        "It stays exactly constant."
+      ],
+      "answer": "1",
+      "explanation": "x'^2+v'^2=(1+h^2)(x^2+v^2) for every h>0.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "euler-energy-growth"
+      ],
+      "skillLabel": "Energy behaviour of an integrator",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M07",
+        "M11"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Explicit Euler on x''=-x with h=0.3. By what factor is the energy multiplied in one step? Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.09",
+      "tolerance": 0.001,
+      "explanation": "1+h^2=1.09.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "euler-energy-growth"
+      ],
+      "skillLabel": "Energy behaviour of an integrator",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M07",
+        "M11"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A method has global errors 8e-3 at step h and 2e-3 at h/2 (same final time). Observed order p=log2(e(h)/e(h/2)). Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.01,
+      "explanation": "log2(4)=2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "observed-order"
+      ],
+      "skillLabel": "Measure the order of a method",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M07",
+        "M11"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A motor model y'=-20y is simulated with explicit Euler. Largest stable step h (s)? Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1",
+      "tolerance": 0.001,
+      "explanation": "|1-20h|<1 gives h<2/20=0.1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stability-limit"
+      ],
+      "skillLabel": "Stability limit of explicit steps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M07",
+        "M11"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A pendulum swung from 1.0 rad is simulated with the small-angle model. The period is 6.6% short of the real one even when dt is made tiny. Which statement is right?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The error is modelling error; the integrator solves the wrong equation accurately.",
+        "The integrator is explicit Euler; switch to RK4 and the period error will vanish.",
+        "dt is still too large for the integrator; keep shrinking it until the period matches.",
+        "Float32 round-off accumulates over each cycle and is the cause of the short period."
+      ],
+      "answer": "0",
+      "explanation": "The error does not vanish with dt, so it is not discretization error.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "modeling-vs-numerical"
+      ],
+      "skillLabel": "Separate model error from numerical error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M07",
+        "M11"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "`n = int(0.3/0.1)` gives 2 in Python. Why is it a hazard for validation against an analytic solution at t=0.3?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It makes the energy grow, since the missing step injects extra energy each period.",
+        "It makes the integrator unstable, because the last step overshoots the stability limit.",
+        "It changes the order of the method, since the last step has a different size.",
+        "The run stops at t=0.2, so the comparison error is dominated by a wrong end time."
+      ],
+      "answer": "3",
+      "explanation": "0.3/0.1=2.9999999999999996 truncates; use round with a divisibility check.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "observed-order"
+      ],
+      "skillLabel": "Measure the order of a method",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M07",
+        "M11"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You must simulate a robot hand with stiff contacts for training. Which integrator family and validation checks would you choose, and why not plain explicit Euler?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names an implicit/semi-implicit family and links it to the stiffness stability limit h<2/lambda.",
+        "Names checks: step-size convergence study, penetration depth, energy not increasing.",
+        "Notes the trade-off between accuracy, cost and robustness (RK4 loses order at contacts)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "stability-limit"
+      ],
+      "skillLabel": "Stability limit of explicit steps",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/S01#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M07",
+        "M11"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

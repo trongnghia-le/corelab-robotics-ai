@@ -1,0 +1,432 @@
+{
+  "id": "RS05-targeted",
+  "topicId": "RS05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which set of labels forms the best failure taxonomy for a mobile robot that fails to reach goals?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Easy failures, medium failures, hard failures, and the very hard failures",
+        "Hardware, software, weather, bad luck, other causes, and unknown ones as well",
+        "Collision before goal, timeout while moving, stuck in recovery, localisation lost, other",
+        "Fixed by retraining, not fixed by retraining, and not yet looked at by anyone"
+      ],
+      "answer": "2",
+      "explanation": "The second set is observable from the run log, mutually exclusive and each points to a different fix. The first mixes causes with guesses, the third and fourth are not observable categories.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "failure-taxonomy"
+      ],
+      "skillLabel": "Write observable, actionable failure categories",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "You have 2,000 logged failures and time to label 60. Which sample is best?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The first 60 in the log",
+        "The 60 with the highest model confidence",
+        "60 failures drawn uniformly at random",
+        "The 60 that look most interesting"
+      ],
+      "answer": "2",
+      "explanation": "Random sampling keeps category counts representative. The first rows may all come from one session; confidence or interest introduces selection bias.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "failure-taxonomy"
+      ],
+      "skillLabel": "Sample failures without bias",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Three object classes: 800 attempts/16 failures, 150 attempts/24 failures, 50 attempts/20 failures. What percentage of all failures comes from the third class? One decimal.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "33.3",
+      "tolerance": 0.1,
+      "explanation": "Total failures 60; third class 20/60 = 33.3% of failures although it is 5% of the attempts.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "subgroup-rates"
+      ],
+      "skillLabel": "Share of errors by group",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Groups make up 50%, 30% and 20% of a test set with error rates 2%, 6% and 10%. What is the overall error rate in percent, one decimal?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.8",
+      "tolerance": 0.05,
+      "explanation": "0.5*2 + 0.3*6 + 0.2*10 = 1.0 + 1.8 + 2.0 = 4.8%.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "subgroup-rates"
+      ],
+      "skillLabel": "Weighted overall error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q1",
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "True values are [4, 6, 9, 13] and predictions [5, 6, 7, 10]. Compute the RMSE of the predictions, 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.87",
+      "tolerance": 0.01,
+      "explanation": "Residuals -1, 0, 2, 3; squares 1, 0, 4, 9; mean 3.5; sqrt = 1.87.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "residual-analysis"
+      ],
+      "skillLabel": "Compute RMSE from residuals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A residual plot of a range model shows residuals near zero up to 5 m, then growing steadily more positive out to 20 m. What does this suggest?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The model under-predicts more with range: a structural problem needing a range term.",
+        "The noise is Gaussian and nothing needs fixing, since the errors are small up to 5 m.",
+        "The test set is shuffled incorrectly, since the residuals depend on the range.",
+        "The RMSE is too small to trust, since the residuals are near zero at first."
+      ],
+      "answer": "0",
+      "explanation": "Residuals should look like structureless noise. A trend with a variable signals a missing term, not just noise.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "residual-analysis"
+      ],
+      "skillLabel": "Read structure in residuals",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A detector made 0 errors in 20 trials of a rare condition. What is the upper end of the 95% Wilson interval for its error rate? Decimal to 3 places.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.161",
+      "tolerance": 0.002,
+      "explanation": "With k=0, n=20, the upper bound is z^2/(n+z^2) = 3.8416/23.8416 = 0.161. Zero observed errors does not mean zero error rate.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "small-group-uncertainty"
+      ],
+      "skillLabel": "Wilson interval at zero errors",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Slice A fails 30 of 100 trials, slice B fails 60 of 400. Compute the pooled two-proportion z statistic (A minus B), 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.49",
+      "tolerance": 0.02,
+      "explanation": "Pooled p = 90/500 = 0.18; SE = sqrt(0.18*0.82*(1/100+1/400)) = 0.0430; z = (0.30-0.15)/0.0430 = 3.49.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confounding-stratification",
+        "small-group-uncertainty"
+      ],
+      "skillLabel": "Two-proportion test",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q4",
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Planner X fails 10% of easy and 50% of hard tasks; planner Y fails 5% of easy and 45% of hard. X fails 18% overall, Y fails 37% overall. Which is the correct reading?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "X is better because the aggregate is the fairest single summary of the comparison.",
+        "Y is better at every difficulty level; the aggregate is distorted since Y got more hard tasks.",
+        "The per-difficulty numbers must be wrong, because they contradict the aggregate numbers.",
+        "They are equivalent, since the average of the four per-level rates is the same for both."
+      ],
+      "answer": "1",
+      "explanation": "A reversal between aggregate and strata is Simpson's paradox. Compare like with like by stratifying.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confounding-stratification"
+      ],
+      "skillLabel": "Spot a Simpson reversal",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked-example",
+          "href": "/lessons/RS05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A colleague tests 30 slices of a test set, finds one with p = 0.02 for 'worse than average', and wants to report it as a finding. Write what you would reply and what you would do.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Explains that with many slices a small p-value is expected by chance (about 1-0.95^30 = 78% chance of a false alarm).",
+        "Proposes correction (Bonferroni or FDR) or pre-registering the slice.",
+        "Proposes confirming on held-out or fresh data and reporting group sizes."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "confounding-stratification"
+      ],
+      "skillLabel": "Handle multiple comparisons",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Your evaluation produced only 25 failures in total. Which approach best finds the cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Read all 25 failures by hand and label them.",
+        "Report the group with the highest error rate.",
+        "Run many subgroup tests and keep the significant ones.",
+        "Fit a logistic regression on 30 condition variables."
+      ],
+      "answer": "0",
+      "explanation": "With so few failures statistics have little power and many slices invite false findings; manual reading is the right tool.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "failure-taxonomy",
+        "small-group-uncertainty"
+      ],
+      "skillLabel": "Choose analysis depth for tiny failure sets",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives-and-trade-offs",
+          "href": "/lessons/RS05#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "You test 20 independent slices at the 0.05 level when no real effect exists. What is the probability, as a percentage with one decimal, of at least one false positive?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "64.2",
+      "tolerance": 0.1,
+      "explanation": "1 - 0.95^20 = 1 - 0.3585 = 64.2%.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confounding-stratification"
+      ],
+      "skillLabel": "Multiple comparison risk",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RS05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "This function is meant to return per-condition error rate but returns 0.74 for a condition with 26 failures in 100: `out[g] = sum(r['correct'] for r in rows)/len(rows)`. Explain the bug, fix it, and describe one test that would have caught it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies that it computes accuracy (fraction correct), not error rate.",
+        "Gives a correct fix (1 minus accuracy, or sum an error flag).",
+        "Describes a hand-computed test such as 26 errors in 100 giving 0.26."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "subgroup-rates"
+      ],
+      "skillLabel": "Debug a grouped-rate function",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

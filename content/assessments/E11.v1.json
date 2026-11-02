@@ -1,0 +1,178 @@
+{
+  "id": "E11-diagnostic",
+  "topicId": "E11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Demonstrations at one observation split between two action modes. An MSE-trained regression policy and a flow-matching policy are compared. What is the key difference?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "multimodal-vs-regression"
+      ],
+      "skillLabel": "Multimodal policies vs regression",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "ML11"
+      ],
+      "options": [
+        "Regression outputs the mean, possibly between the modes; flow can sample either mode.",
+        "The flow policy outputs the mean plus a little extra noise added at each step.",
+        "The flow policy is always more accurate at predicting the mean action of the data.",
+        "Regression needs many more demonstrations before it can represent two action modes."
+      ],
+      "answer": "0",
+      "explanation": "MSE minimisers are conditional means; generative policies represent the distribution."
+    },
+    {
+      "id": "q2",
+      "prompt": "DDPM forward process with alpha_bar=0.36, a0=1.5, noise eps=-0.5. Compute a_t. (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "diffusion-noising"
+      ],
+      "skillLabel": "Diffusion noising and loss",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#theory-and-derivation"
+        }
+      ],
+      "answer": "0.4999999999999999",
+      "tolerance": 0.002,
+      "explanation": "0.6*1.5+0.8*(-0.5)=0.5."
+    },
+    {
+      "id": "q3",
+      "prompt": "Flow matching: x0=-1.0, x1=2.0. What is the regression target velocity? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "flow-matching-velocity"
+      ],
+      "skillLabel": "Flow matching velocity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "answer": "3.0",
+      "tolerance": 0.01,
+      "explanation": "x1-x0 = 3.0."
+    },
+    {
+      "id": "q4",
+      "prompt": "Same pair x0=-1, x1=2: what is x_t at t=0.4 on the straight path? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "flow-matching-velocity"
+      ],
+      "skillLabel": "Flow matching velocity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "answer": "0.20000000000000007",
+      "tolerance": 0.01,
+      "explanation": "(1-0.4)(-1)+0.4(2)=0.2."
+    },
+    {
+      "id": "q5",
+      "prompt": "For a two-mode dataset {-1,+1} and Gaussian noise start, what does ONE Euler step of the exact flow-matching field produce?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "multimodal-vs-regression",
+        "flow-matching-velocity"
+      ],
+      "skillLabel": "Multimodal policies vs regression",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "options": [
+        "A fresh sample from the Gaussian, unchanged by the step.",
+        "Exactly one of the modes, picked by the sign of the start.",
+        "The data mean (0), exactly what MSE regression would output.",
+        "The mode nearest the starting point, as in a lookup."
+      ],
+      "answer": "2",
+      "explanation": "At t=0 the velocity points to the data mean minus x."
+    },
+    {
+      "id": "q6",
+      "prompt": "A diffusion policy uses 20 network evaluations per chunk at 4 ms each. How many ms of inference per chunk?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inference-cost"
+      ],
+      "skillLabel": "Inference cost budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "answer": "80.0",
+      "tolerance": 0.5,
+      "explanation": "20*4=80."
+    },
+    {
+      "id": "q7",
+      "prompt": "You must deploy a diffusion policy at 10 Hz on an embedded computer where one network pass takes 25 ms. Describe how you would choose chunk length, steps and execution horizon, and how you would verify the loop is real time.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "inference-cost"
+      ],
+      "skillLabel": "Inference cost budget",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Computes evaluations x pass time per chunk and compares with the time covered by executed actions.",
+        "Proposes ways to cut cost (fewer solver steps, smaller model, asynchronous inference) with the quality trade-off.",
+        "Measures wall-clock latency and success rate against the step count."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

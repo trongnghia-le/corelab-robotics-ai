@@ -1,0 +1,368 @@
+{
+  "id": "C03-targeted",
+  "topicId": "C03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which term of a PID controller looks at the trend of the error and acts like a damper?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Derivative",
+        "Feedforward",
+        "Integral",
+        "Proportional"
+      ],
+      "answer": "0",
+      "explanation": "D responds to the rate of change, braking motion toward the setpoint.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pid-terms"
+      ],
+      "skillLabel": "What P, I and D respond to",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A step of the setpoint from 0 to 1 produces a one-sample spike in u when the derivative is taken on the error but not when it is taken on the measurement. Why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The error jumps by 1 in one sample while the measurement is continuous, so d(error)/dt is huge for one step.",
+        "Derivative on measurement removes the proportional term, so the setpoint no longer acts on u.",
+        "The integral term is cancelled by the derivative, so the output briefly loses its stored value.",
+        "The measurement noise is larger than the error, so the derivative amplifies it in that one sample."
+      ],
+      "answer": "0",
+      "explanation": "A setpoint step is instantaneous in e but y moves smoothly because the plant has inertia.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "derivative-noise"
+      ],
+      "skillLabel": "Derivative term and noise",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A drone-yaw model has a = 0.5, b = 4, Kp = 2, r = 0.8 and wind d = 0.3 (same units as the plant equation). Steady-state error e = r - y_inf with P control (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.011765",
+      "tolerance": 0.001,
+      "explanation": "y_inf=(6.4+0.3)/8.5=0.7882; e=0.0118.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "steady-state-error"
+      ],
+      "skillLabel": "Steady-state error of P and PI loops",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "With a = 3, b = 2, Kp = 4, how large must the P gain be (answer in a new Kp) to reduce the offset (a r - d)/(a + b Kp) to half its value at Kp = 4?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "19",
+      "tolerance": 0.01,
+      "explanation": "Need a+bKp' = 2*(3+8)=22 so Kp'=(22-3)/2=9.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "steady-state-error"
+      ],
+      "skillLabel": "Steady-state error of P and PI loops",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "PI loop with a = 1, b = 1, Kp = 3. Find the Ki that gives a critically damped pair of poles.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "s^2+4s+Ki has a double root when 16 = 4 Ki.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pi-poles"
+      ],
+      "skillLabel": "Closed-loop poles of a PI loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "For s^3 + 3 s^2 + 4 s + Ki (a PI loop on a plant with a velocity lag), the Routh test says stable when 3*4 > Ki. What is the largest Ki that is still stable (the boundary)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12",
+      "tolerance": 0.01,
+      "explanation": "Routh: a2 a1 > a0 so Ki < 12.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pi-poles"
+      ],
+      "skillLabel": "Closed-loop poles of a PI loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A PI loop works for small moves but overshoots badly after a long period at the actuator limit. Which fix targets the cause with the least side effect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Conditional integration or back-calculation anti-windup",
+        "Doubling Kd so that the derivative term damps the overshoot",
+        "Lowering the sampling rate so that the integral grows more slowly",
+        "Removing the integral term altogether and relying on proportional action"
+      ],
+      "answer": "0",
+      "explanation": "The problem is stored integral during saturation; anti-windup bounds it without altering unsaturated behaviour.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "windup"
+      ],
+      "skillLabel": "Integrator windup and anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Plain integrator, Kp = 2, Ki = 1, Delta t = 0.5 s, e = 2 held constant for 4 steps (blocked plant), limits |u| <= 3. What is the integral state I after 4 steps?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "I = sum e*dt = 4*2*0.5 = 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "windup"
+      ],
+      "skillLabel": "Integrator windup and anti-windup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Same blocked loop but with the clamp rule: u_raw = 2*2 + 1*I_trial. After step 1 trial I = 1, u_raw = 5 > 3 and e > 0. What is I after 4 steps?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0",
+      "tolerance": 0.01,
+      "explanation": "The clamp skips integration whenever u_raw > umax and e > 0, so I stays 0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "windup"
+      ],
+      "skillLabel": "Integrator windup and anti-windup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "An IMU gyro-less estimator differentiates a 200 Hz position signal with noise sigma = 0.005 m. Standard deviation of the velocity estimate in m/s (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.414214",
+      "tolerance": 0.01,
+      "explanation": "sqrt(2)*sigma/dt = 1.414*0.005*200 = 1.414.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "derivative-noise"
+      ],
+      "skillLabel": "Derivative term and noise",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Your PID speed loop oscillates once the actuator limit is introduced, although it was fine in an unlimited simulation. Describe the experiment you would run to confirm windup versus an excessive gain, and what you would see in each case.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Logs u_raw, u and the integral state; windup shows u pinned and I growing, then overshoot.",
+        "Reruns with a clamp or smaller step: windup disappears, a too-high gain does not.",
+        "States an assumption and a rejection check (e.g. lowering Kp in the unlimited sim)."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "windup",
+        "pid-terms"
+      ],
+      "skillLabel": "Integrator windup and anti-windup",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain in your own words why a PD controller on a robot joint with gravity leaves an offset and give two ways to remove it, with one drawback of each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Gravity torque is a constant load, so P needs nonzero error to balance it.",
+        "Names integral action (windup/slow) and gravity feedforward (needs a model/payload).",
+        "Mentions the offset formula or magnitude relation."
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "steady-state-error",
+        "pid-terms"
+      ],
+      "skillLabel": "Steady-state error of P and PI loops",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

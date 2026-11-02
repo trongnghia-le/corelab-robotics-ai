@@ -1,0 +1,203 @@
+{
+  "id": "PY09-diagnostic",
+  "topicId": "PY09",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "profiling-first"
+      ],
+      "skillLabel": "Profile before optimizing",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "A profile shows one function using 70% of the runtime and another 8%. What should you do first?",
+      "options": [
+        "measure and optimize the 70% function",
+        "add multiprocessing everywhere",
+        "optimize the 8% function because it is easier",
+        "rewrite the whole program in C"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Gains are bounded by the share of the part you improve."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amdahl"
+      ],
+      "skillLabel": "Amdahl's law",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "30% of the runtime is made 3 times faster. What is the overall speedup (3 decimals)?",
+      "answer": "1.25",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.005,
+      "explanation": "1/(0.7+0.1)=1.25."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amdahl"
+      ],
+      "skillLabel": "Amdahl's law",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "What is the maximum possible overall speedup if 75% of the runtime can be accelerated by any factor?",
+      "answer": "4",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "1/(1-0.75)=4."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "complexity"
+      ],
+      "skillLabel": "Operation counts",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#worked-example"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "Naive moving average with n=10,000 and window k=100 does about (n-k+1)*k additions. How many (in millions, 2 decimals)?",
+      "answer": "0.99",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "9901*100=0.99 million."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "memory"
+      ],
+      "skillLabel": "Memory use",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "id": "q5",
+      "kind": "number",
+      "prompt": "A float64 NumPy array of 5 million elements occupies how many megabytes (1 MB = 1e6 bytes)?",
+      "answer": "40",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.1,
+      "explanation": "5e6*8=40e6 bytes."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "memory"
+      ],
+      "skillLabel": "Temporaries and memory",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#failure-modes"
+        }
+      ],
+      "id": "q6",
+      "kind": "choice",
+      "prompt": "Why can a vectorized pairwise-distance computation for 50,000 points fail even though the loop version runs?",
+      "options": [
+        "Vectorization changes the numerical answer, so the program stops with an error",
+        "Arrays cannot hold as many as 50,000 points, so a loop must be used",
+        "NumPy cannot subtract two arrays of different shape, even with broadcasting",
+        "The N x N temporary array needs about 20 GB of memory"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "50,000^2*8 bytes=20 GB."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "equivalence-testing",
+        "profiling-first"
+      ],
+      "skillLabel": "Verifying an optimization",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#verification"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "You replaced a loop with a vectorized version and measured a 4x speedup. List the checks you run before merging, including how you compare numerical results.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Compares against the old implementation as an oracle on hand-computed, random and edge cases.",
+        "Uses tolerances appropriate for float64 reordering, not ==.",
+        "Measures time (min of repeats), memory and compares with the predicted speedup."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "id": "ML09-diagnostic",
+  "topicId": "ML09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In scaled dot-product attention, why are scores divided by sqrt(d_k)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It makes attention independent of sequence length, so the same model works on any input",
+        "It makes the attention weights sum to one across the keys for every query position",
+        "It converts the raw scores into probabilities directly, so no softmax is needed after it",
+        "The dot product of unit-variance vectors has variance d_k; scaling keeps the softmax from saturating"
+      ],
+      "answer": "3",
+      "explanation": "Var(q·k)=d_k, so unscaled scores grow with d_k and push the softmax to one-hot with vanishing gradients.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "attention-scaling"
+      ],
+      "skillLabel": "Scaled dot-product attention",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "softmax([2, 1, 0]): what is the largest weight? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.665241",
+      "tolerance": 0.001,
+      "explanation": "e²/(e²+e+1)=7.389/11.107=0.6652.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-scaling"
+      ],
+      "skillLabel": "Scaled dot-product attention",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Two tokens with q1=(1,0), keys k1=(1,0), k2=(0,1), d_k=2. What weight does token 1 give to key 2 (scaled dot-product attention)? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.330238",
+      "tolerance": 0.001,
+      "explanation": "Scores (1/√2, 0)=(0.7071,0); weights e^0.7071/(e^0.7071+1)=0.6698 and 1/(...)=0.3302.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-computation"
+      ],
+      "skillLabel": "Computing an attention matrix",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "For next-token prediction, how must future positions be masked?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Multiply the finished weights by 0 and leave the rows unnormalized",
+        "Remove the keys but keep the values",
+        "Set their scores to 0 before the softmax",
+        "Set their scores to -infinity before the softmax"
+      ],
+      "answer": "3",
+      "explanation": "exp(-inf)=0 so the weights are exactly zero and the row still sums to 1; a score of 0 gives exp(0)=1, a leak.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "causal-masking"
+      ],
+      "skillLabel": "Causal masking",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A layer has 8 heads and a sequence of 100 tokens. How many attention-weight entries does it compute (all heads, no masking tricks)? (integer, tolerance 1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "80000.0",
+      "tolerance": 1,
+      "explanation": "h·n²=8·10,000=80,000.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-cost"
+      ],
+      "skillLabel": "Attention cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "If no positional information is added, what happens when the input tokens are shuffled?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Attention fails because the weights no longer sum to one",
+        "The outputs are shuffled in the same way; the model cannot see order",
+        "The outputs are unchanged",
+        "The outputs become random"
+      ],
+      "answer": "1",
+      "explanation": "Attention is permutation-equivariant: Attn(PX)=P·Attn(X).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "positional-information"
+      ],
+      "skillLabel": "Positional information",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Explain byte-pair encoding in your own words and give one advantage and one cost of using it instead of word-level tokens.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Start from characters/bytes and repeatedly merge the most frequent adjacent pair into a new token.",
+        "Advantage: no unknown words, rare words split into known pieces, bounded vocabulary.",
+        "Cost: longer sequences than words, merge table depends on training text, odd splits for rare words/numbers."
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "tokenization-bpe"
+      ],
+      "skillLabel": "Tokenization and BPE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

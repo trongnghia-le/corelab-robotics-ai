@@ -1,0 +1,362 @@
+{
+  "id": "E12-targeted",
+  "topicId": "E12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Range [0,2] metres, 200 bins: worst-case reconstruction error in millimetres? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "action-tokenization"
+      ],
+      "skillLabel": "Action tokenisation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "5.0",
+      "tolerance": 0.01,
+      "explanation": "2/(400)=0.005 m=5 mm"
+    },
+    {
+      "id": "b2",
+      "prompt": "Bin index for a=-0.25 in range [-1,1] with 8 bins?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "action-tokenization"
+      ],
+      "skillLabel": "Action tokenisation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "3.0",
+      "tolerance": 0.01,
+      "explanation": "floor(0.75/2*8)=floor(3.0)=3"
+    },
+    {
+      "id": "b3",
+      "prompt": "Centre value reconstructed for bin 5 of 8 over [-1,1]? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "action-tokenization"
+      ],
+      "skillLabel": "Action tokenisation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.375",
+      "tolerance": 0.002,
+      "explanation": "-1+5.5*0.25=0.375"
+    },
+    {
+      "id": "b4",
+      "prompt": "A 6-token action decoded at 30 tokens/s; chunks of 3 actions per call. How many model calls per second are needed to execute at 5 actions/s? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "action-tokenization"
+      ],
+      "skillLabel": "Action tokenisation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "1.6666666666666667",
+      "tolerance": 0.05,
+      "explanation": "5 actions/s / 3 per call = 1.67 calls/s; each call needs 18 tokens = 0.6 s, so decoding fits."
+    },
+    {
+      "id": "b5",
+      "prompt": "Wilson 95% interval, 16/20 successes: UPPER bound? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "generalization-evaluation"
+      ],
+      "skillLabel": "Evaluating generalisation with intervals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.9193436467288",
+      "tolerance": 0.01,
+      "explanation": "upper bound 0.919"
+    },
+    {
+      "id": "b6",
+      "prompt": "Wilson 95% interval for 0 successes in 20 trials: UPPER bound? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "generalization-evaluation"
+      ],
+      "skillLabel": "Evaluating generalisation with intervals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.16113012549493322",
+      "tolerance": 0.005,
+      "explanation": "upper bound 0.161"
+    },
+    {
+      "id": "b7",
+      "prompt": "Seen-object success is 36/40 and held-out-object success is 24/40, each in different scenes. Why is it unsafe to blame language grounding?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "generalization-evaluation"
+      ],
+      "skillLabel": "Evaluating generalisation with intervals",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "Wilson intervals do not apply to ratios of successes, so the gap has no uncertainty.",
+        "Forty trials is always enough, so the gap is certainly caused by language grounding.",
+        "Held-out objects cannot be tested in a scene, so any comparison with them is invalid.",
+        "Scene difficulty changed with the objects, so object novelty is confounded with scene."
+      ],
+      "answer": "3",
+      "explanation": "A fair comparison keeps the scene fixed."
+    },
+    {
+      "id": "b8",
+      "prompt": "Instruction sensitivity is 0.0 for three conflicting instructions on the same observation. What does it show?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "instruction-grounding"
+      ],
+      "skillLabel": "Instruction grounding tests",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "options": [
+        "The tokenizer is broken and drops the instruction text",
+        "The policy is perfectly accurate on all three instructions",
+        "The policy ignores the instruction in that scene.",
+        "The three instructions are in fact paraphrases of one"
+      ],
+      "answer": "2",
+      "explanation": "Identical actions for different targets indicate no use of language."
+    },
+    {
+      "id": "b9",
+      "prompt": "Which is a counterfactual test for language use?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "instruction-grounding"
+      ],
+      "skillLabel": "Instruction grounding tests",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "Keep the image identical and change 'red cube' to 'blue ball'.",
+        "Change both the image and the instruction at once.",
+        "Train a second model with different seeds.",
+        "Increase the control rate."
+      ],
+      "answer": "0",
+      "explanation": "Only the instruction should change."
+    },
+    {
+      "id": "b10",
+      "prompt": "Four instruction pairs are tested on one scene; the policy's actions differ in 3 of the 6 pairs of four instructions. Instruction sensitivity?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "instruction-grounding"
+      ],
+      "skillLabel": "Instruction grounding tests",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "3/6"
+    },
+    {
+      "id": "b11",
+      "prompt": "A VLA trained on 100 scenes scores 85% on those scenes and 82% on 20 new scenes with the same objects. Which is the most defensible reading?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "generalization-evaluation"
+      ],
+      "skillLabel": "Evaluating generalisation with intervals",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "Little evidence of a scene gap, but object and instruction generalisation remain untested.",
+        "The VLA generalises to all novel conditions, including new objects and new instructions.",
+        "The VLA memorised the training scenes, since 82% is below the 85% training score.",
+        "Twenty held-out scenes are too few to compute any success rate or interval."
+      ],
+      "answer": "0",
+      "explanation": "Each axis needs its own test."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write a short evaluation plan comparing a VLA to a scripted baseline on held-out objects, including trials per condition, confidence intervals, and failure categories.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "generalization-evaluation",
+        "instruction-grounding"
+      ],
+      "skillLabel": "Evaluating generalisation with intervals",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "rubric": [
+        "Equal trials, same scenes, randomised order and intervals (e.g. Wilson).",
+        "Failures categorised (perception, wrong object, grasp, language) rather than only a rate.",
+        "A scripted or oracle baseline for task difficulty and a falsifier set in advance."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Explain the precision-versus-rate trade-off of tokenising actions, with a worked numeric example.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "action-tokenization"
+      ],
+      "skillLabel": "Action tokenisation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q4"
+      ],
+      "rubric": [
+        "Gives bin width or max error for a range and bin count.",
+        "Computes tokens per action and the resulting control rate.",
+        "Names a mitigation such as chunking or a continuous action head."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

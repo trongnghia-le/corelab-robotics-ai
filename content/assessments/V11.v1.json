@@ -1,0 +1,207 @@
+{
+  "id": "V11-diagnostic",
+  "topicId": "V11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A point has pixel x1 in image 1. Where must its correct match lie in image 2 (known relative pose, calibrated cameras)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "epipolar-constraint"
+      ],
+      "skillLabel": "Epipolar constraint",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Anywhere in the image, since a single pixel does not constrain its match",
+        "On a circle around the principal point whose radius is set by the depth",
+        "At the same pixel coordinates as x1 whenever the cameras are calibrated",
+        "On the epipolar line determined by x1 and the relative pose"
+      ],
+      "answer": "3",
+      "explanation": "The ray through x1 projects to a line in the other image, the epipolar line."
+    },
+    {
+      "id": "q2",
+      "prompt": "Rectified stereo with f = 600 px and baseline 0.15 m. A feature has disparity 30 px. What is its depth in metres? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stereo-depth"
+      ],
+      "skillLabel": "Stereo depth from disparity",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#worked-example"
+        }
+      ],
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "Z = fB/d = 600*0.15/30 = 3.0 m."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same rig (f = 600, B = 0.15 m). First-order depth error for a point at Z = 6 m with a disparity error of 0.5 px, sigma_Z = Z^2 sigma_d/(f B), in metres (precision 0.01)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "depth-error-baseline"
+      ],
+      "skillLabel": "Depth error and baseline",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#theory-and-derivation"
+        }
+      ],
+      "answer": "0.2",
+      "tolerance": 0.01,
+      "explanation": "36*0.5/(600*0.15) = 0.2 m."
+    },
+    {
+      "id": "q4",
+      "prompt": "A single moving camera recovers the relative pose from the essential matrix. What can it NOT determine?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scale-ambiguity"
+      ],
+      "skillLabel": "Scale ambiguity",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Whether a point lies in front of the camera",
+        "The metric length of the translation (scale)",
+        "The rotation",
+        "The direction of the translation"
+      ],
+      "answer": "1",
+      "explanation": "E and lambda*E satisfy the same constraint; scale needs a known baseline, IMU or object size."
+    },
+    {
+      "id": "q5",
+      "prompt": "Two views with baseline 0.3 m of a point at 6 m. What is the parallax angle 2*atan(B/(2Z)) in degrees? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "depth-error-baseline"
+      ],
+      "skillLabel": "Depth error and baseline",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#worked-example"
+        }
+      ],
+      "answer": "2.86",
+      "tolerance": 0.01,
+      "explanation": "2*atan(0.025) = 2.865 degrees."
+    },
+    {
+      "id": "q6",
+      "prompt": "The camera only rotates between two frames (translation zero). What happens to triangulation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scale-ambiguity"
+      ],
+      "skillLabel": "Scale ambiguity",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#failure-modes"
+        }
+      ],
+      "options": [
+        "The essential matrix has full rank and the pose is fully determined",
+        "Scale becomes observable, because pure rotation fixes the world unit",
+        "The rays are parallel in direction: depth cannot be recovered",
+        "Depth is recovered with double accuracy since the rays intersect twice"
+      ],
+      "answer": "2",
+      "explanation": "With t = 0 there is no baseline and E = 0."
+    },
+    {
+      "id": "q7",
+      "prompt": "A robot with two cameras must measure depth to 5% at 6 m. Which design parameters set the achievable accuracy, and what limits making the baseline very large?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "depth-error-baseline"
+      ],
+      "skillLabel": "Depth error and baseline",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#alternatives-and-trade-offs"
+        }
+      ],
+      "rubric": [
+        "Error sigma_Z = Z^2 sigma_d/(f B): baseline, focal length and disparity noise.",
+        "Larger baseline improves accuracy.",
+        "Limits: matching across very different views, occlusions, larger minimum range, mounting and calibration."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

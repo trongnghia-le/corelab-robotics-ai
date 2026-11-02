@@ -1,0 +1,365 @@
+{
+  "id": "RL17-targeted",
+  "topicId": "RL17",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Per-step error 0.01 over 30 steps. Probability of at least one mistake? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.26",
+      "tolerance": 0.002,
+      "explanation": "1 - 0.99^30 = 0.2603.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-compounding-error"
+      ],
+      "skillLabel": "Compute the probability of a mistake",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Ditch model, eps = 0.05, q = 0, T = 20. Expected steps off the path? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7.81",
+      "tolerance": 0.02,
+      "explanation": "T - (1-eps)(1-(1-eps)^T)/eps = 20 - 0.95*0.6415/0.05 = 7.81.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-compounding-error"
+      ],
+      "skillLabel": "Compute compounding cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Which assumption does behaviour cloning violate when the learner acts in a closed loop?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The actions to imitate are continuous values",
+        "The expert's behaviour is deterministic",
+        "The loss used for imitation is differentiable",
+        "Training and test states come from the same distribution"
+      ],
+      "answer": "3",
+      "explanation": "The learner's own actions shape its states, so the test distribution differs from the demonstrations.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "il-distribution-shift"
+      ],
+      "skillLabel": "Name the violated assumption",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "eps = 0.05. Smallest horizon T for which the probability of at least one mistake exceeds 50% (integer)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "14",
+      "tolerance": 0.5,
+      "explanation": "ln 0.5 / ln 0.95 = 13.5, so T = 14.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-compounding-error"
+      ],
+      "skillLabel": "Find the horizon for likely failure",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A DAgger implementation adds (s, learner.act(s)) for every state visited by the learner. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The new data reinforce the current policy, so there is no improvement at the new states",
+        "The data become off-policy, so the labels can no longer be used for supervised training",
+        "The learner converges faster, because the data now lie on exactly its own state distribution",
+        "The expert is queried twice for every state, which doubles the labelling cost of the data"
+      ],
+      "answer": "0",
+      "explanation": "The labels are the learner's own outputs; the expert's knowledge never enters.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "il-dagger"
+      ],
+      "skillLabel": "Spot the self-labelling bug",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL17#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "eps = 0.04, q = 0.16. Steady-state off-path probability? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.005,
+      "explanation": "0.04/(0.04+0.16) = 0.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-dagger",
+        "il-compounding-error"
+      ],
+      "skillLabel": "Compute the steady-state off-path probability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Demonstrations go around an obstacle on the left or the right equally often. A regression policy trained with squared error will",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "always go left, since it breaks the tie in a fixed way",
+        "become more accurate and avoid it as more data are added",
+        "choose the more common of the two sides and go around it",
+        "predict the average action and drive into the obstacle"
+      ],
+      "answer": "3",
+      "explanation": "The mean of two modes is a third action that neither demonstrator takes.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "il-distribution-shift"
+      ],
+      "skillLabel": "Recognise multimodal averaging",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL17#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "DAgger-like cost T*eps/(eps+q) with T = 200, eps = 0.01, q = 0.9. Value? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.2",
+      "tolerance": 0.02,
+      "explanation": "200 * 0.01/0.91 = 2.198.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-dagger"
+      ],
+      "skillLabel": "Estimate the recovering learner's cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Write the DAgger loop in pseudocode, including the aggregation step and which policy generates the states.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Trains on the aggregated data D",
+        "Rolls out the current (or mixed) policy, recording visited states",
+        "Labels those states with the expert and appends them to D (aggregation, not replacement), then repeats"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "il-dagger"
+      ],
+      "skillLabel": "Write the DAgger loop",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL17#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Design a closed-loop evaluation for a cloned pick-and-place policy. Specify the number of trials, the varied conditions, the metric and how you report uncertainty.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "At least 30 trials with randomised object poses or initial states",
+        "Reports success rate with a confidence interval (e.g. Wilson or bootstrap)",
+        "Reports one-step error beside success and the number of corrective rounds used"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "il-closed-loop-eval"
+      ],
+      "skillLabel": "Design a closed-loop evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL17#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Policy A has 99.5% held-out one-step accuracy and 60% closed-loop success; policy B has 98% and 85%. Which statement is best supported?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "B is better at the task; accuracy does not rank closed-loop performance",
+        "Accuracy is the only reliable metric for imitation policies",
+        "A is better, because its one-step accuracy is higher",
+        "They are equal, because both exceed 95% accuracy"
+      ],
+      "answer": "0",
+      "explanation": "Closed-loop success measures the task, and it can invert the ranking by accuracy because of compounding and recovery behaviour.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "il-closed-loop-eval"
+      ],
+      "skillLabel": "Interpret accuracy versus success",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL17#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Corridor lab: any action is flipped with probability 0.2 and three right moves are needed (start 2, goal 5, horizon 3). Success probability? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.512",
+      "tolerance": 0.002,
+      "explanation": "0.8^3 = 0.512 for a policy that always chooses right on the path.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-closed-loop-eval",
+        "il-compounding-error"
+      ],
+      "skillLabel": "Compute a closed-loop success probability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL17#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "When is a DAgger-style expert query impossible, and what two alternatives could still improve robustness?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Expert unavailable at arbitrary states (human cost, safety, real hardware)",
+        "Alternative: noise injection or diverse/recovery demonstrations",
+        "Alternative: RL fine-tuning in simulation or conservative/regularised policies"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "il-dagger",
+        "il-distribution-shift"
+      ],
+      "skillLabel": "Choose alternatives to DAgger",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL17#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,384 @@
+{
+  "id": "C06-targeted",
+  "topicId": "C06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which pair best describes the process model and the measurement model for a 1-D robot with a position sensor?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "z = x + noise (state evolution) and x_{k+1} = x_k + v dt (what the sensor reports)",
+        "The process model contains the sensor noise and nothing else",
+        "Both are the same equation",
+        "x_{k+1} = x_k + v dt (state evolution) and z = x + noise (what the sensor reports)"
+      ],
+      "answer": "3",
+      "explanation": "The process model moves the state forward in time; the measurement model maps state to sensor reading.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "measurement-model"
+      ],
+      "skillLabel": "Measurement and process models",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "dt = 0.02, sigma = 0.002 m. Noise std of the two-sample difference velocity (m/s, 3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.141421",
+      "tolerance": 0.001,
+      "explanation": "sqrt(2)*0.002/0.02 = 0.1414.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A 5-sample least-squares slope has variance 12 sigma^2/(N(N^2-1) dt^2). For sigma = 0.01, dt = 0.05, N = 5 give the standard deviation (m/s, 4 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.063246",
+      "tolerance": 0.001,
+      "explanation": "sqrt(12e-4/(120*0.0025)) = sqrt(0.004)=0.0632.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "dt = 0.05, state (2.0, 1.0), alpha = 0.4, beta = 0.1, z = 2.12. What is the residual r (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.07",
+      "tolerance": 0.001,
+      "explanation": "x_pred = 2.05, r = 0.07.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "predict-correct"
+      ],
+      "skillLabel": "Predict-correct update by hand",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Encoder 1024 counts/rev, sampled every 5 ms. Smallest nonzero velocity from a two-sample difference (rad/s, 3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.227185",
+      "tolerance": 0.001,
+      "explanation": "2 pi/1024 = 0.006136 rad per count; /0.005 = 1.227.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "alpha = 0.5 and beta = 0.2: trace of the error matrix 2 - alpha - beta (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.3",
+      "tolerance": 0.001,
+      "explanation": "2-0.5-0.2 = 1.3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-dynamics"
+      ],
+      "skillLabel": "Estimation-error dynamics and stability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A friend's tracker has v += beta*r (no division by dt). When dt is halved with beta unchanged, what happens to the effective velocity correction?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It becomes unstable only if beta < 0, and otherwise behaves identically",
+        "It is not rescaled, so the velocity response per second changes with the sample rate",
+        "It halves automatically, because halving dt halves every term in the update",
+        "It stays the same per second, since beta already includes the sample period"
+      ],
+      "answer": "1",
+      "explanation": "The correct form uses beta/dt so that the gain per unit time is independent of the step size.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-dynamics"
+      ],
+      "skillLabel": "Estimation-error dynamics and stability",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A constant-velocity filter tracks a target that is accelerating. The velocity estimate trails the truth by a nearly constant amount. Which statement is right?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "This means the filter is unstable, so the gains must be reduced to fix it",
+        "This indicates the sensor is biased, so it must be recalibrated to fix the lag",
+        "This is white measurement noise, and averaging more samples removes the offset",
+        "This is model-mismatch lag; raising the gains or modelling acceleration reduces it"
+      ],
+      "answer": "3",
+      "explanation": "The model says v is constant, so acceleration is unexplained and shows up as a steady offset.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which is a correct statement about velocity observability from position only for x' = v, v' = 0?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Observable only if there is no noise",
+        "Unobservable: position carries no velocity information",
+        "Observable: the position history over two samples determines v",
+        "Observable only with acceleration in the model"
+      ],
+      "answer": "2",
+      "explanation": "O = [[1,0],[1,dt]] has determinant dt > 0.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "measurement-model"
+      ],
+      "skillLabel": "Measurement and process models",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A position measurement is delayed by 3 samples at dt = 0.05 s. A constant-velocity filter tracks a target at 1.5 m/s. Converged position error (m, 3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.225",
+      "tolerance": 0.001,
+      "explanation": "The estimate tracks the delayed ramp: error v*m*dt = 0.225 m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "You want a velocity estimate from an encoder for a joint that moves slowly most of the time and occasionally accelerates sharply. Compare differencing, a fixed-gain filter and a period-based (time between ticks) method; say which you would test first and why.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies quantisation at slow speed as the issue for differencing.",
+        "Explains lag versus noise for fixed gains under sharp acceleration.",
+        "Chooses a method with a test criterion (RMSE at slow speed, lag at the transient)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "noise-lag",
+        "measurement-model"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write the steps to validate your alpha-beta code without hardware: three tests, each with the expected result and the bug it would catch.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Hand-computed single step (catches sign/dt scaling bugs).",
+        "Noise-free ramp convergence or stationary target (catches model/gain errors).",
+        "Error-matrix poles or acceleration-lag check (catches stability and lag assumptions)."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "predict-correct",
+        "error-dynamics"
+      ],
+      "skillLabel": "Predict-correct update by hand",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

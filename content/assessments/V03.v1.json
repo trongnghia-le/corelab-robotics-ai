@@ -1,0 +1,202 @@
+{
+  "id": "V03-diagnostic",
+  "topicId": "V03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A detector reports an object centre at pixel (410, 260) and nothing else. What does that pixel determine about its 3-D position?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ray-depth-ambiguity"
+      ],
+      "skillLabel": "Rays and depth ambiguity",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Only a ray from the camera centre; every depth along it gives the same pixel",
+        "A unique 3-D point, once the intrinsics are known and the image is undistorted",
+        "The lateral position but not the height, since only the x coordinate is fixed",
+        "The depth but not the direction, since the pixel measures only distance"
+      ],
+      "answer": "0",
+      "explanation": "Intrinsics turn a pixel into a direction (x, y, 1); depth is a separate unknown."
+    },
+    {
+      "id": "q2",
+      "prompt": "fx = fy = 600, cx = 320, cy = 240. Project the camera-frame point (0.3, 0.1, 3.0) m. Give u in pixels (precision 0.1).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pinhole-projection"
+      ],
+      "skillLabel": "Pinhole projection",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#worked-example"
+        }
+      ],
+      "answer": "380",
+      "tolerance": 0.1,
+      "explanation": "u = 600*0.3/3 + 320 = 380."
+    },
+    {
+      "id": "q3",
+      "prompt": "A 0.20 m wide board facing the camera is 50 pixels wide; fx = 750. What is its distance in metres? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "range-from-size"
+      ],
+      "skillLabel": "Range from apparent size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#worked-example"
+        }
+      ],
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "Z = f S / s = 750*0.2/50 = 3.0 m."
+    },
+    {
+      "id": "q4",
+      "prompt": "A 1920-pixel-wide image has fx = 1400 px. What is the horizontal field of view in degrees? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fov-focal-length"
+      ],
+      "skillLabel": "Field of view and focal length",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "answer": "68.9",
+      "tolerance": 0.1,
+      "explanation": "2*atan(1920/2800) = 68.88 degrees."
+    },
+    {
+      "id": "q5",
+      "prompt": "Your projection function returns (270, 240) for the camera-frame point (0.2, 0, -2) with f=500, c=(320,240). What should a correct implementation do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "behind-camera"
+      ],
+      "skillLabel": "Points behind the camera",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#failure-modes"
+        }
+      ],
+      "options": [
+        "Return the pixel, since the point is just left of the image centre",
+        "Clamp the pixel to the nearest border of the image",
+        "Reject the point because it is behind the camera (Z <= 0)",
+        "Take the absolute value of Z and then project as usual"
+      ],
+      "answer": "2",
+      "explanation": "Negative Z flips the signs, producing a mirrored pixel for an invisible point."
+    },
+    {
+      "id": "q6",
+      "prompt": "A 8 mm lens on a sensor 6.4 mm wide produces 1600-pixel-wide images. Give the focal length in pixels. (precision 1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fov-focal-length"
+      ],
+      "skillLabel": "Field of view and focal length",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#worked-example"
+        }
+      ],
+      "answer": "2000",
+      "tolerance": 1,
+      "explanation": "f_px = 8*1600/6.4 = 2000."
+    },
+    {
+      "id": "q7",
+      "prompt": "You double the focal length of a camera that stays in place. Explain what changes in the image (size, field of view) and what does not (perspective: the ratio of near and far object sizes). What would change the ratio?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "perspective-vs-zoom"
+      ],
+      "skillLabel": "Perspective versus zoom",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#exercises"
+        }
+      ],
+      "rubric": [
+        "Image offsets from the principal point and object sizes double; field of view narrows.",
+        "Ratio of sizes depends only on depths, so zooming leaves it unchanged.",
+        "Moving the camera changes the depths and therefore the ratio."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

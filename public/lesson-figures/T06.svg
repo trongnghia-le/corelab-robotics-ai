@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="Inter, Arial, sans-serif" font-size="14">
+<rect width="800" height="420" fill="#111827" rx="12"/>
+<text x="200" y="30" fill="#e5e7eb" font-size="16" text-anchor="middle">Container = image layers + writable layer</text>
+<text x="600" y="30" fill="#e5e7eb" font-size="16" text-anchor="middle">Storage outside the container</text>
+<rect x="40" y="60" width="320" height="50" rx="8" fill="#f97316" fill-opacity="0.25" stroke="#f97316" stroke-width="2"/><text x="200.0" y="90.0" fill="#e5e7eb" font-size="13" text-anchor="middle">writable layer: /tmp, caches, new files</text>
+<rect x="40" y="125" width="320" height="44" rx="8" fill="#38bdf8" fill-opacity="0.15" stroke="#38bdf8" stroke-width="2"/><text x="200.0" y="152.0" fill="#e5e7eb" font-size="13" text-anchor="middle">layer 3: COPY . .   (your code)</text>
+<rect x="40" y="177" width="320" height="44" rx="8" fill="#38bdf8" fill-opacity="0.15" stroke="#38bdf8" stroke-width="2"/><text x="200.0" y="204.0" fill="#e5e7eb" font-size="13" text-anchor="middle">layer 2: RUN pip install (locked deps)</text>
+<rect x="40" y="229" width="320" height="44" rx="8" fill="#38bdf8" fill-opacity="0.15" stroke="#38bdf8" stroke-width="2"/><text x="200.0" y="256.0" fill="#e5e7eb" font-size="13" text-anchor="middle">layer 1: base OS + Python (pinned)</text>
+<text x="200" y="298" fill="#38bdf8" font-size="13" text-anchor="middle">image layers: read-only, shared between containers</text>
+<path d="M200 322 v30" stroke="#f97316" stroke-width="2"/><path d="M194 346 l6 8 l6 -8" fill="none" stroke="#f97316" stroke-width="2"/>
+<text x="200" y="382" fill="#f97316" font-size="14" text-anchor="middle">docker rm  →  writable layer discarded</text>
+<text x="200" y="404" fill="#e5e7eb" font-size="13" text-anchor="middle">kernel and GPU driver come from the host</text>
+<rect x="440" y="60" width="320" height="56" rx="8" fill="#a3e635" fill-opacity="0.2" stroke="#a3e635" stroke-width="2"/><text x="600.0" y="93.0" fill="#e5e7eb" font-size="13" text-anchor="middle">named volume  t06results  →  /results</text>
+<rect x="440" y="135" width="320" height="56" rx="8" fill="#a3e635" fill-opacity="0.2" stroke="#a3e635" stroke-width="2"/><text x="600.0" y="168.0" fill="#e5e7eb" font-size="13" text-anchor="middle">bind mount  ./  →  /app  (read-only)</text>
+<text x="600" y="224" fill="#a3e635" font-size="13" text-anchor="middle">survive docker rm; write to /app fails (read-only)</text>
+<path d="M360 85 L440 88" stroke="#a3e635" stroke-width="2" stroke-dasharray="5 4"/><path d="M360 160 L440 163" stroke="#a3e635" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="600" y="262" fill="#e5e7eb" font-size="13" text-anchor="middle">where does a write to path p go?</text><text x="600" y="284" fill="#e5e7eb" font-size="13" text-anchor="middle">longest mount target that is a prefix of p,</text><text x="600" y="306" fill="#e5e7eb" font-size="13" text-anchor="middle">otherwise the writable layer</text>
+<text x="600" y="346" fill="#e5e7eb" font-size="13" text-anchor="middle">cache: first changed instruction rebuilds all after it</text><text x="600" y="368" fill="#e5e7eb" font-size="13" text-anchor="middle">order: base, lock + install, code last</text>
+</svg>

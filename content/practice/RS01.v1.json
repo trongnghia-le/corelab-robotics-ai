@@ -1,0 +1,300 @@
+{
+  "id": "RS01-targeted",
+  "topicId": "RS01",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "falsifiable-claims"
+      ],
+      "skillLabel": "Falsifiable hypotheses",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s1",
+      "kind": "choice",
+      "prompt": "Which statement is a falsifiable scientific hypothesis?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "On 200 held-out scenes, the planner's success rate exceeds the baseline's by at least 5 points under a 1 s limit",
+        "The method works well in most cases, so it is better than the existing ones",
+        "The robot is intelligent if it never fails at any task it is given",
+        "Our algorithm is more elegant than the baseline and therefore a clear improvement"
+      ],
+      "answer": "1",
+      "explanation": "It names a metric, a comparison, a population and a threshold, so a measurement can contradict it. The others cannot be refuted by any observation."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ablation-design"
+      ],
+      "skillLabel": "Counting experimental conditions",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s2",
+      "kind": "number",
+      "prompt": "A full-factorial ablation has 4 binary design choices and each condition is run with 3 seeds. How many training runs are needed? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "48",
+      "tolerance": 0.01,
+      "explanation": "2^4 = 16 conditions x 3 seeds = 48 runs."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "uncertainty-statistics"
+      ],
+      "skillLabel": "Standard error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s3",
+      "kind": "number",
+      "prompt": "Four repeated measurements have sample standard deviation 3.0 (computed with n-1). What is the standard error of the mean? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "SE = s / sqrt(n) = 3.0 / 2 = 1.50."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "uncertainty-statistics"
+      ],
+      "skillLabel": "Paired differences",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s4",
+      "kind": "number",
+      "prompt": "Controller A scores 8, 6, 9 and controller B scores 5, 6, 4 on the same three seeds. What is the mean of the paired differences A-B? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.67",
+      "tolerance": 0.01,
+      "explanation": "Differences 3, 0, 5; mean = 8/3 = 2.67."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confounding"
+      ],
+      "skillLabel": "Identifying confounders",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s5",
+      "kind": "choice",
+      "prompt": "A new vision pipeline is compared with the old one, but it was also trained on twice as much data. What can be concluded?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The new pipeline is better; more data is irrelevant",
+        "The difference cannot be attributed to the pipeline alone",
+        "The result is invalid because bigger datasets are always unfair",
+        "The new pipeline is better only if the gain is above 10%"
+      ],
+      "answer": "1",
+      "explanation": "The change in data size is confounded with the change in method: a gain cannot be attributed to the new pipeline without a control (same data) or an ablation."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "multiple-comparisons"
+      ],
+      "skillLabel": "Multiple comparisons",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s6",
+      "kind": "number",
+      "prompt": "You test 10 independent variants, none of which truly has any effect, each at level 0.05. What is the probability that at least one appears significant? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.401",
+      "tolerance": 0.003,
+      "explanation": "1 - 0.95^10 = 0.401."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confounding"
+      ],
+      "skillLabel": "Seeds and selection",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#failure-modes"
+        }
+      ],
+      "id": "s7",
+      "kind": "choice",
+      "prompt": "Which reporting practice gives the most honest picture of a stochastic training method?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "All seeds, with mean and an interval, plus the raw values",
+        "The seed that the baseline performed worst on",
+        "One seed, fixed in advance, so the result is reproducible",
+        "Only the best seed, to show what the method can do"
+      ],
+      "answer": "0",
+      "explanation": "Reporting all seeds with a mean and interval avoids selection bias; best-seed or tuned-seed reporting overstates performance."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ablation-design"
+      ],
+      "skillLabel": "Order of convergence",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s8",
+      "kind": "number",
+      "prompt": "An integrator's error drops from 4.0e-2 to 4.0e-4 when the step size is reduced by a factor of 10. What is the observed order of convergence? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.05,
+      "explanation": "p = log(100)/log(10) = 2."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "uncertainty-statistics"
+      ],
+      "skillLabel": "Reading a confidence interval",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s9",
+      "kind": "choice",
+      "prompt": "A 95% confidence interval for the mean improvement of A over B is [-0.5, 3.3] points. Which conclusion is justified?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A is better than B with 95% probability, since most of the interval is positive",
+        "A is worse than B, because the lower end of the interval is negative",
+        "The data do not rule out zero improvement; more data are needed to decide",
+        "There is a 5% chance that A is better, as the interval covers zero"
+      ],
+      "answer": "3",
+      "explanation": "The interval includes 0, so the data are compatible with no improvement; it does not show that there is none, and it is not a probability statement about this fixed interval."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "ablation-design"
+      ],
+      "skillLabel": "Designing an ablation",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s10",
+      "kind": "short",
+      "prompt": "A vision model improved after you added augmentation and more data at the same time. Design the experiment that separates the two effects and state what conclusions remain limited.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Uses a 2x2 design: (augmentation off/on) x (small/large data), with matched seeds, training budget and evaluation set",
+        "Reads the main effects and the interaction, and reports intervals over several seeds",
+        "States limits: one dataset/task/architecture, no hardware transfer, hyperparameters tuned for only some conditions"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "falsifiable-claims"
+      ],
+      "skillLabel": "Writing a protocol",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s11",
+      "kind": "short",
+      "prompt": "Write the key fields of a one-page protocol for comparing two controllers in simulation, and say which of them must be fixed before looking at any results.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Includes hypothesis, metric, scenes/initial conditions, seeds, budgets and controls, environment/versions, success criterion",
+        "States that the metric, success criterion, seeds and exclusion rules are fixed in advance",
+        "Says deviations are reported and exploratory findings are separated from confirmatory ones"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confounding"
+      ],
+      "skillLabel": "Test-set reuse",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS01#theory-and-derivation"
+        }
+      ],
+      "id": "s12",
+      "kind": "short",
+      "prompt": "Explain why choosing the best of 50 model variants by its test-set score gives an optimistic estimate, and how to repair the protocol.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Explains the winner's-curse selection effect: the maximum of noisy scores is biased upward",
+        "Proposes a separate validation split (or cross-validation) for selection and a single final evaluation on untouched test data",
+        "Mentions reporting how many variants were tried"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

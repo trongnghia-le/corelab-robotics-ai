@@ -1,0 +1,411 @@
+{
+  "id": "RS06-targeted",
+  "topicId": "RS06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "'All methods were trained for the same 1M environment steps.' In a claim-evidence-assumption table this sentence is best filed as:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "An assumption or experimental condition that the comparison depends on.",
+        "None of these; it is background information that needs no filing.",
+        "Evidence, because it contains a number that readers can verify.",
+        "A claim, because it asserts something about how the methods behave."
+      ],
+      "answer": "0",
+      "explanation": "It is a condition under which the comparison is fair; if it were false, the performance evidence would not mean the same thing.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "claim-evidence-mapping",
+        "assumption-listing"
+      ],
+      "skillLabel": "Classify paper sentences",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q4",
+        "q6"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "You want to build on a paper's method and need to know exactly where its assumptions break. Which reading depth is appropriate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Third pass: re-derive or re-implement, challenging each assumption.",
+        "Read only the abstract and conclusion, since they state the assumptions.",
+        "First pass only: read the title, abstract and figures once.",
+        "Second pass only: read the main text, skipping the figures."
+      ],
+      "answer": "0",
+      "explanation": "Building on a paper needs the deepest reading, ideally reproducing parts of it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reading-passes"
+      ],
+      "skillLabel": "Choose reading depth",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives-and-trade-offs",
+          "href": "/lessons/RS06#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Baseline seeds: 60, 63, 61, 64. New method seeds: 62, 66, 64, 68. What is the difference in means (new minus baseline)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "Means 62 and 65, difference 3.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Difference of means across seeds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "For the same data (baseline 60, 63, 61, 64; new 62, 66, 64, 68) compute the standard error of the difference with sample variances. Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.58",
+      "tolerance": 0.01,
+      "explanation": "Sample variances 10/3 and 20/3; SE = sqrt(3.333/4 + 6.667/4) = sqrt(2.5) = 1.58.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Standard error of a difference",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Using the same data, what is t = difference / SE? Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.9",
+      "tolerance": 0.02,
+      "explanation": "t = 3 / 1.581 = 1.90, below the usual ~2.4 critical value for 4 seeds per group (about 6 degrees of freedom), so the gain is not clearly distinguishable from noise.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Interpret a t statistic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Per-run standard deviation is 6 points, the effect you care about is 3 points, and you require z = 2.5. How many runs per method?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "50",
+      "tolerance": 0.5,
+      "explanation": "n >= 2*(2.5*6/3)^2 = 2*25 = 50.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Plan the number of seeds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A script computes the spread of seeds [10, 12, 14] by dividing the sum of squared deviations by n instead of n-1. What does it return? Give 2 decimals (the correct sample sd is 2.00).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.63",
+      "tolerance": 0.01,
+      "explanation": "sqrt(8/3) = 1.63, about 18% too small, which makes noise look smaller than it is.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Population versus sample sd",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A paper compares the best of 10 seeds of its method with the average of 10 seeds of the baseline. What is the problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Ten seeds is too many for a fair comparison; a single seed per method would be enough.",
+        "Nothing is wrong: both numbers come from real runs, so the comparison is fair.",
+        "The summaries are not comparable; best-of-n is biased upward, so the gap is inflated.",
+        "The baseline should have used a different metric from the one the method used."
+      ],
+      "answer": "2",
+      "explanation": "Selecting the maximum for only one method inflates its apparent advantage. Compare means (with spread) or best-of-n for both.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "claim-evidence-mapping",
+        "seed-noise"
+      ],
+      "skillLabel": "Detect biased comparisons",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A difference between two methods is 'statistically significant'. Which conclusion is justified?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The result will replicate in other environments, because the test accounts for environment shift.",
+        "The effect is large enough to matter in practice, because small p-values imply big effects.",
+        "The new method is better on every task, since the pooled test found a significant gain overall.",
+        "The difference is unlikely to be pure run-to-run noise under the test's assumptions; its size needs judging."
+      ],
+      "answer": "3",
+      "explanation": "Significance concerns noise only, not effect size, practical relevance or generality.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Significance versus importance",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A paper states: 'Our grasper is robust to clutter.' The evidence is 20 trials on tables with 2 to 4 objects. Rewrite the claim to match the evidence and name an experiment that would justify the original.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Rewrite names the tested range (2 to 4 objects, 20 trials) and avoids 'robust'.",
+        "Experiment varies clutter density widely (e.g. 1 to 15 objects, touching/stacked) with enough trials per level.",
+        "States a success metric and a baseline for comparison."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "claim-scope"
+      ],
+      "skillLabel": "Rewrite an over-broad claim",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Which table row is least supported?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Claim: removing the planner module drops success by 15 points. Evidence: ablation, 5 seeds, spread 2.",
+        "Claim: works on real robots. Evidence: one successful run in a video.",
+        "Claim: converges under Lipschitz dynamics. Evidence: a proof with stated assumptions.",
+        "Claim: higher success than baseline on 3 maps. Evidence: Table 2, 10 seeds, mean +6, SE 1."
+      ],
+      "answer": "1",
+      "explanation": "A single run cannot show reliability and says nothing about variability or failure rate.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "claim-evidence-mapping",
+        "claim-scope"
+      ],
+      "skillLabel": "Find the weakest row",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked-example",
+          "href": "/lessons/RS06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q1",
+        "q4"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "A paper claims 'component B is the source of the improvement' but only compares the full system to a baseline. Design the minimum experiment that tests the claim, including what result would reject it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Proposes full system versus full system without B (and ideally baseline plus B alone).",
+        "Uses several seeds and reports spread.",
+        "States rejection: if removing B leaves performance within noise of the full system, the claim is rejected."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "claim-evidence-mapping"
+      ],
+      "skillLabel": "Design an ablation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Your claim-audit function reports no problems for a claim whose evidence id is misspelled in the claims dict. Explain what the code probably does wrong and write a test that exposes it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies that unknown evidence ids must count as missing (filter by membership in the evidence dict).",
+        "Writes a test with a claim pointing to a nonexistent id and expects 'no supporting evidence'.",
+        "Mentions also testing a claim with an empty evidence list."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "claim-evidence-mapping"
+      ],
+      "skillLabel": "Test the auditor",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference-implementation",
+          "href": "/lessons/RS06#reference-implementation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

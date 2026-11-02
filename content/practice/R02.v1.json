@@ -1,0 +1,297 @@
+{
+  "id": "R02-targeted",
+  "topicId": "R02",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "configuration-coordinates"
+      ],
+      "skillLabel": "Joint coordinates and units",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d1",
+      "kind": "choice",
+      "prompt": "A planar arm has one revolute and one prismatic joint. Which statement about its configuration vector is correct?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "One coordinate is an angle and one is a length, so the units differ",
+        "Both coordinates are angles in radians, since every joint rotates",
+        "Both coordinates are lengths in metres, since every joint translates",
+        "A prismatic joint adds no coordinate, because it only slides along a fixed line"
+      ],
+      "answer": "1",
+      "explanation": "A revolute coordinate is an angle and a prismatic coordinate is a length, so the vector mixes units and any joint-space distance needs scaling."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Grubler mobility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d2",
+      "kind": "number",
+      "prompt": "A planar six-bar linkage has 6 links including the ground and 7 revolute joints. Using dof = 3(N-1-J) + sum f_i, what is its mobility? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "3*(6-1-7) + 7 = -6 + 7 = 1."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Grubler mobility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d3",
+      "kind": "number",
+      "prompt": "A spatial serial arm has 7 revolute joints and 8 links including the ground. Using dof = 6(N-1-J) + sum f_i, what is its mobility? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "6*(8-1-7) + 7 = 7."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Limits of the mobility formula",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#failure-modes"
+        }
+      ],
+      "id": "d4",
+      "kind": "choice",
+      "prompt": "Grubler's formula predicts 0 degrees of freedom for a planar linkage that visibly moves. What is the most likely explanation?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "One of the joints must be prismatic, which the formula undercounts",
+        "The ground link should be counted twice, which raises the freedom",
+        "The constraints are not all independent, because of special geometry",
+        "The formula only works for spatial mechanisms, not planar linkages"
+      ],
+      "answer": "0",
+      "explanation": "The formula counts constraints, not whether they are independent. Special geometry (equal-length parallel bars) makes some constraints redundant."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "angle-wrapping"
+      ],
+      "skillLabel": "Shortest revolute motion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d5",
+      "kind": "number",
+      "prompt": "A revolute joint must move from 350 degrees to 20 degrees. What is the shortest signed rotation in degrees (positive counter-clockwise)? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "30",
+      "tolerance": 0.01,
+      "explanation": "The difference 20 - 350 = -330 degrees wraps to +30 degrees."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "workspace-reachability"
+      ],
+      "skillLabel": "Workspace area",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d6",
+      "kind": "number",
+      "prompt": "A planar 2R arm has link lengths 1 m and 2 m and no joint limits. What is the area of its reachable workspace in m^2? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "25.13",
+      "tolerance": 0.02,
+      "explanation": "The workspace is an annulus with radii |2-1| = 1 and 2+1 = 3: pi(9-1) = 8 pi = 25.13 m^2."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "workspace-reachability"
+      ],
+      "skillLabel": "Workspace area",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d7",
+      "kind": "number",
+      "prompt": "A planar revolute-prismatic arm has theta in [0, pi/2] and extension r in [0.4, 1.2] m. What is the area of its workspace in m^2? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.005",
+      "tolerance": 0.005,
+      "explanation": "A sector between the radii: 0.5*(pi/2)*(1.2^2 - 0.4^2) = 0.5*1.5708*1.28 = 1.005 m^2."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "redundancy"
+      ],
+      "skillLabel": "Redundancy",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d8",
+      "kind": "number",
+      "prompt": "A 7-joint arm is only asked to place its hand at a 3D position (orientation is ignored). How many redundant degrees of freedom does it have? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "Redundancy = joints - task dimension = 7 - 3 = 4."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "redundancy"
+      ],
+      "skillLabel": "Meaning of redundancy",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d9",
+      "kind": "choice",
+      "prompt": "A planar 3R arm positions its tip at a fixed point. What does its one degree of redundancy allow?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Reaching points farther than the sum of the link lengths",
+        "Making the forward kinematics non-unique in the other direction",
+        "Removing the need to model joint limits",
+        "Moving the elbow while the tip stays at the same point"
+      ],
+      "answer": "3",
+      "explanation": "A redundant arm has a continuous family of joint configurations (self-motion) for the same tip position, usable for avoiding obstacles or limits."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "constraints"
+      ],
+      "skillLabel": "Holonomic versus nonholonomic",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d10",
+      "kind": "choice",
+      "prompt": "A differential-drive base cannot move sideways instantly, yet it can reach any pose by manoeuvring. What does that imply?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is a holonomic system with an extra joint added by the wheels",
+        "Its velocity constraint is not integrable, so it does not reduce the reachable poses",
+        "Its configuration space is a 2D surface, as the sideways direction is removed",
+        "It has only 2 configuration coordinates, since sideways motion is impossible"
+      ],
+      "answer": "0",
+      "explanation": "The sideways constraint is on velocity and is not integrable, so it does not remove a configuration coordinate: the configuration space is still 3-dimensional."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Checking mobility in special cases",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d11",
+      "kind": "short",
+      "prompt": "Grubler's formula gives 0 for a linkage you are building from equal-length parallel bars, and you expect it to move. Describe how you would decide the true mobility.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Says the formula counts constraints without checking their independence, so special geometry can break it",
+        "Proposes computing the rank of the constraint (loop-closure) Jacobian at the assembled configuration or checking motion numerically/physically",
+        "States that mobility = number of coordinates minus that rank, and gives the equal-length parallelogram as an example"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "constraints"
+      ],
+      "skillLabel": "Underactuation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "d12",
+      "kind": "short",
+      "prompt": "A quadrotor has a 6D pose but only four rotors. Explain how many configuration coordinates it has, how many independent inputs, and why this is not a problem for reaching an arbitrary pose.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States 6 configuration degrees of freedom (3 translation, 3 rotation) and 4 inputs (thrusts)",
+        "Explains it is underactuated: not every velocity direction can be commanded instantly (e.g., lateral motion needs tilting first)",
+        "Explains that coupling between tilt and translation still allows reaching any pose over time, so reachability depends on dynamics, not only on the dof count"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

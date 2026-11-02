@@ -1,0 +1,371 @@
+{
+  "id": "PY09-targeted",
+  "topicId": "PY09",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "profiling-first"
+      ],
+      "skillLabel": "Reading a profile",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "id": "b1",
+      "kind": "choice",
+      "prompt": "cProfile column tottime for a function means",
+      "options": [
+        "the total time including the time spent in all of its callees",
+        "the number of calls made to the function during the profiled run",
+        "the time of the slowest single call to the function",
+        "the time spent in the function itself, excluding its callees"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "cumtime includes callees.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amdahl"
+      ],
+      "skillLabel": "Amdahl's law",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "id": "b2",
+      "kind": "number",
+      "prompt": "60% of the runtime is made 6 times faster. Overall speedup (3 decimals)?",
+      "answer": "2.0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.005,
+      "explanation": "1/(0.4+0.1)=2.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amdahl"
+      ],
+      "skillLabel": "Amdahl's law",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "id": "b3",
+      "kind": "number",
+      "prompt": "What fraction p must be accelerated for the speedup limit to be 20x?",
+      "answer": "0.95",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "1/(1-p)=20.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "complexity"
+      ],
+      "skillLabel": "Operation counts",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#worked-example"
+        }
+      ],
+      "id": "b4",
+      "kind": "number",
+      "prompt": "Running-sum moving average does about 2n operations. For n=10,000 and k=100, how many times fewer operations than the naive version (nearest integer)?",
+      "answer": "50",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1,
+      "explanation": "990100/20000=49.5.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "memory"
+      ],
+      "skillLabel": "Memory use",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#worked-example"
+        }
+      ],
+      "id": "b5",
+      "kind": "number",
+      "prompt": "A list of 1 million floats uses about 32 bytes per element. How many MB?",
+      "answer": "32",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.5,
+      "explanation": "32e6 bytes.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "memory"
+      ],
+      "skillLabel": "Temporaries and memory",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#exercises"
+        }
+      ],
+      "id": "b6",
+      "kind": "number",
+      "prompt": "Pairwise distance matrix of 10,000 points, float64. Memory in GB (1 GB = 1e9 bytes, 2 decimals)?",
+      "answer": "0.8",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "1e8*8=0.8e9 bytes.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "benchmarking"
+      ],
+      "skillLabel": "Benchmarking",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "id": "b7",
+      "kind": "choice",
+      "prompt": "Which statistic best compares two implementations' timings?",
+      "options": [
+        "the maximum over several repeats, which is the safest bound",
+        "a single run, because it shows the real time of the program",
+        "the minimum over several repeats, which is the least noisy",
+        "the mean including a cold start, because it uses all the runs"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Noise only adds time."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "equivalence-testing"
+      ],
+      "skillLabel": "Numerical equivalence",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#failure-modes"
+        }
+      ],
+      "id": "b8",
+      "kind": "choice",
+      "prompt": "The running-sum moving average returns 0.0 where the naive one returns 1.0 after a 1e16 value leaves the window. This is",
+      "options": [
+        "caused by integer division, which truncates the small values to zero",
+        "absorption: the small values were lost when added to 1e16",
+        "a bug in NumPy, which sums the window with the wrong dtype",
+        "the expected behaviour of the naive version, which is also inexact"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Spacing of doubles near 1e16 is 2.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "equivalence-testing"
+      ],
+      "skillLabel": "Numerical equivalence",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#verification"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "np.allclose(a, b) is preferred over a == b for checking an optimized float computation because",
+      "options": [
+        "== does not work on arrays, and raises an error for them",
+        "reordering operations changes the rounding in the last bits",
+        "== is slower than allclose on large arrays of floats",
+        "allclose is exact, while == allows a small tolerance"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Rounding differs with operation order.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "benchmarking"
+      ],
+      "skillLabel": "Benchmarking",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#exercises"
+        }
+      ],
+      "id": "b10",
+      "kind": "number",
+      "prompt": "A benchmark includes list creation that takes 40% of the timed region. The function itself took 6 ms. What was the (wrongly) measured total in ms?",
+      "answer": "10",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.2,
+      "explanation": "6/0.6=10 ms."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "memory",
+        "complexity"
+      ],
+      "skillLabel": "Chunked computation",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "Explain what chunking is, why it reduces memory for pairwise distances, and what it costs.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Describes processing blocks of rows so only a small part of the NxN matrix exists at once.",
+        "Notes that peak memory scales with the block size.",
+        "Notes the extra loop and code complexity but similar total arithmetic."
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "profiling-first",
+        "amdahl"
+      ],
+      "skillLabel": "Dealing with a dominant library call",
+      "relatedPrerequisites": [
+        "PY04",
+        "PY08"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "Your profile shows 85% of time in a library call you did not write. What are your options, and what does Amdahl's law say about optimizing everything else?",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Suggests reducing the number or size of calls, batching, caching or choosing another library/algorithm.",
+        "Computes that optimizing the other 15% gives at most 1.18 times.",
+        "Recommends measuring before and after."
+      ]
+    }
+  ]
+}

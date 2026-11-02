@@ -1,0 +1,177 @@
+{
+  "id": "RL03-diagnostic",
+  "topicId": "RL03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "At a state the policy is (0.25, 0.75) over two actions and Q = (4, 8). What is V?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "v-q-relation"
+      ],
+      "skillLabel": "Relating V and Q",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL03#theory-and-derivation"
+        }
+      ],
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "0.25*4 + 0.75*8 = 7."
+    },
+    {
+      "id": "q2",
+      "prompt": "With the same numbers, what is the advantage of the second action?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "advantage"
+      ],
+      "skillLabel": "Advantage",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL03#theory-and-derivation"
+        }
+      ],
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "A = Q - V = 8 - 7 = 1."
+    },
+    {
+      "id": "q3",
+      "prompt": "The policy-weighted average of the advantage, sum_a pi(a|s) A(s,a), always equals",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "advantage"
+      ],
+      "skillLabel": "Advantage",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL03#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "V(s)",
+        "0",
+        "the largest Q",
+        "1"
+      ],
+      "answer": "1",
+      "explanation": "V is the pi-weighted average of Q, so the weighted deviations cancel."
+    },
+    {
+      "id": "q4",
+      "prompt": "Rewards 1, 0, 5 at steps 0, 1, 2 and then the episode ends. Compute the return G_0 for gamma = 0.9 (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "return-and-discount"
+      ],
+      "skillLabel": "Discounted return",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "5.05",
+      "tolerance": 0.005,
+      "explanation": "1 + 0 + 0.81*5 = 5.05."
+    },
+    {
+      "id": "q5",
+      "prompt": "A function claims to compute V^pi as max_a Q(s,a). What does it actually compute?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "v-q-relation"
+      ],
+      "skillLabel": "Relating V and Q",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL03#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The value of the greedy one-step action, not the value of pi.",
+        "The return of a single episode, not an expected value over episodes.",
+        "V^pi, correctly, because the max picks the policy's own action.",
+        "The advantage of the best action, not a value of any state."
+      ],
+      "answer": "0",
+      "explanation": "V^pi is the pi-weighted average of Q; the max is a control quantity."
+    },
+    {
+      "id": "q6",
+      "prompt": "A state has a single self-loop with reward 2 per step and gamma = 0.95. What is its value?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "return-and-discount"
+      ],
+      "skillLabel": "Discounted return",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "40",
+      "tolerance": 0.01,
+      "explanation": "2/(1-0.95) = 40."
+    },
+    {
+      "id": "q7",
+      "prompt": "Explain why the action with the largest immediate reward can have the smallest value, and give a small example.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "return-and-discount"
+      ],
+      "skillLabel": "Discounted return",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: intuition",
+          "href": "/lessons/RL03#intuition"
+        }
+      ],
+      "rubric": [
+        "States that value includes the discounted future, not only the immediate reward.",
+        "Gives a concrete example such as a high-reward action leading to a dead end.",
+        "Mentions that the choice can change with gamma."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

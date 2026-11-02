@@ -1,0 +1,376 @@
+{
+  "id": "V02-targeted",
+  "topicId": "V02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A 99-pixel-wide row is filtered with a 3-wide kernel, padding 1, stride 2. How many output pixels? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "output-size"
+      ],
+      "skillLabel": "Output size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "50",
+      "tolerance": 0.01,
+      "explanation": "floor((99+2-3)/2)+1=50."
+    },
+    {
+      "id": "b2",
+      "prompt": "A 9x9 Gaussian is implemented separably. By what factor does this cut the multiplications per pixel compared with the direct 2-D kernel? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "output-size"
+      ],
+      "skillLabel": "Output size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "4.5",
+      "tolerance": 0.1,
+      "explanation": "81/(2*9)=4.5."
+    },
+    {
+      "id": "b3",
+      "prompt": "Two Gaussian blurs with sigma 6 and sigma 8 are applied in sequence. What single sigma is equivalent? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-smoothing"
+      ],
+      "skillLabel": "Noise reduction by averaging",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "sqrt(36+64)=10."
+    },
+    {
+      "id": "b4",
+      "prompt": "A constant image of value 100 is filtered with a 5x5 box (weights 1/25) using zero padding. What is the output at a corner pixel? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kernel-correlation"
+      ],
+      "skillLabel": "Kernel normalisation and correlation",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "36",
+      "tolerance": 0.1,
+      "explanation": "Only 3x3=9 of 25 window pixels are inside: 100*9/25=36."
+    },
+    {
+      "id": "b5",
+      "prompt": "Independent noise has std 14. A 7x7 box filter is applied. What is the output std? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-smoothing"
+      ],
+      "skillLabel": "Noise reduction by averaging",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "14/7=2."
+    },
+    {
+      "id": "b6",
+      "prompt": "Sobel-x is applied to a patch whose three columns are 20, 20, 100 on every row. What raw response do you get (no normalisation)? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kernel-correlation"
+      ],
+      "skillLabel": "Kernel normalisation and correlation",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "320",
+      "tolerance": 0.01,
+      "explanation": "(100-20)*(1+2+1)=320, i.e. 40 grey levels per pixel after dividing by 8."
+    },
+    {
+      "id": "b7",
+      "prompt": "A pattern with frequency 0.4 cycles per pixel is subsampled by keeping every 2nd pixel. What is the apparent period in small-image pixels? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aliasing-prefilter"
+      ],
+      "skillLabel": "Aliasing and prefiltering",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "5",
+      "tolerance": 0.1,
+      "explanation": "0.4*2=0.8 per new px, alias 1-0.8=0.2, period 5."
+    },
+    {
+      "id": "b8",
+      "prompt": "You resize a segmentation label mask (class ids 0, 1, 2) to half size. Which interpolation is appropriate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "aliasing-prefilter"
+      ],
+      "skillLabel": "Aliasing and prefiltering",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "Bilinear",
+        "Gaussian blur then bilinear",
+        "Nearest neighbour",
+        "Area averaging"
+      ],
+      "answer": "2",
+      "explanation": "Averaging class ids creates meaningless values like 0.5 or class 1 between 0 and 2."
+    },
+    {
+      "id": "b9",
+      "prompt": "Your edge detector gives -160 where a colleague's gives +160 for the same Sobel kernel and patch. The most likely reason?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kernel-correlation"
+      ],
+      "skillLabel": "Kernel normalisation and correlation",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "One of the two uses zero padding at the border of the patch",
+        "The patch is transposed in one of the two implementations",
+        "One implements correlation, the other true convolution (kernel flipped)",
+        "One image is in BGR channel order and the other is in RGB order"
+      ],
+      "answer": "2",
+      "explanation": "The flip changes the sign of an antisymmetric kernel's response."
+    },
+    {
+      "id": "b10",
+      "prompt": "After 3x3 box filtering with zero padding, the border of a bright image looks darker than the interior. Why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "output-size"
+      ],
+      "skillLabel": "Output size",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "The image was aliased, so the border pixels are darker than the rest",
+        "The noise variance is higher at the borders, which lowers the mean",
+        "The kernel was not separable, so the border is filtered differently",
+        "Missing neighbours are counted as 0 inside the average"
+      ],
+      "answer": "3",
+      "explanation": "Zero padding mixes zeros into the border windows; replicate or reflect padding avoids it."
+    },
+    {
+      "id": "b11",
+      "prompt": "A camera image has salt-and-pepper noise (a few isolated pixels at 0 or 255). Compare a Gaussian filter and a median filter for removing it. Which would you use and why?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "noise-smoothing"
+      ],
+      "skillLabel": "Noise reduction by averaging",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "rubric": [
+        "A Gaussian averages the outlier into its neighbours, leaving a smudge and blurring edges.",
+        "A median filter ignores a small number of outliers and preserves edges, but is non-linear and slower.",
+        "Chooses median with reasoning about the noise type."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write the tests you would use to check a separable Gaussian blur implementation (inputs, expected outputs and one invariant).",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "kernel-correlation"
+      ],
+      "skillLabel": "Kernel normalisation and correlation",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "rubric": [
+        "Equality against a 2-D correlation with the outer-product kernel on a small random image.",
+        "A constant image stays constant and an impulse reproduces the kernel.",
+        "Checks border behaviour and output shape."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "id": "S02-diagnostic",
+  "topicId": "S02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A MJCF hinge joint is written without an axis attribute. About which axis does it rotate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "y, (0,1,0)",
+        "x, (1,0,0)",
+        "z, (0,0,1)",
+        "The axis is chosen by the geom's longest direction."
+      ],
+      "answer": "2",
+      "explanation": "The default hinge axis is (0,0,1); a pendulum hanging along -z then has no gravity torque.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mjcf-defaults"
+      ],
+      "skillLabel": "MJCF defaults and coordinates",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A model has one free-joint box and three hinge joints. How many position coordinates nq does it have?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "7 for the free joint (3+quaternion 4) plus 3 hinges.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mjcf-defaults"
+      ],
+      "skillLabel": "MJCF defaults and coordinates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A sphere geom of radius 0.1 m has no mass or density given. With the default density 1000 kg/m^3, what is its mass in kg? Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.189",
+      "tolerance": 0.001,
+      "explanation": "4/3 pi r^3 * 1000 = 4.1888.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inertia-from-geometry"
+      ],
+      "skillLabel": "Inertia and mass from geometry",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A hinge at the origin holds a sphere (m=2 kg, r=0.1 m) centered 0.5 m away. Pivot inertia I = 0.4 m r^2 + m L^2 in kg m^2. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.508",
+      "tolerance": 0.001,
+      "explanation": "0.008+0.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inertia-from-geometry"
+      ],
+      "skillLabel": "Inertia and mass from geometry",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Position actuator kp=20, kv=1, ctrl=1, q=0.4, qdot=-0.5, no force limit. Applied torque? Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12.5",
+      "tolerance": 0.01,
+      "explanation": "20(1-0.4)-1(-0.5)=12.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "actuator-law"
+      ],
+      "skillLabel": "Actuator laws and limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A contact has solref time constant 0.004 s and the timestep is 0.004 s (default reference safety). What do you get?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "An effective time constant of 0.008 s: softer than written.",
+        "An error because contacts cannot be softer than the timestep.",
+        "Exactly the 0.004 s contact you wrote.",
+        "A rigid contact with no penetration."
+      ],
+      "answer": "0",
+      "explanation": "The time constant is floored at 2*timestep.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "contact-softness"
+      ],
+      "skillLabel": "Soft contacts and time scale",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You built a MuJoCo pendulum and want evidence it is correct before using it for control. List the checks, hand values and tolerances you would use.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Compares compiled mass and inertia with hand calculations (parallel-axis theorem).",
+        "Compares small-angle period and an energy band with an explicit tolerance and a timestep study.",
+        "Changes one parameter on purpose (radius, density) and checks the predicted direction."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "energy-validation"
+      ],
+      "skillLabel": "Validate energy and period",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S02#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

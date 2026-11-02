@@ -1,0 +1,341 @@
+{
+  "id": "T02-targeted",
+  "topicId": "T02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "History: C0←C1←C2←C3 on main; feature branches from C1 with C4←C5. How many commits is main ahead of feature? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.5,
+      "explanation": "C2 and C3 are on main only.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "branches-dag"
+      ],
+      "skillLabel": "Branches and the commit graph",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "In the same history, what is the generation number (1 for a root) of C5? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.5,
+      "explanation": "C0=1, C1=2, C4=3, C5=4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "branches-dag"
+      ],
+      "skillLabel": "Branches and the commit graph",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "`git merge feature` is run while on main, and main's tip is an ancestor of feature's tip. What happens by default?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The merge is refused because main has no new commits of its own",
+        "main's label moves forward (fast-forward); no merge commit is created",
+        "A merge commit with two parents is always created, even without divergence",
+        "All commits of main are rewritten on top of feature's tip"
+      ],
+      "answer": "1",
+      "explanation": "When no divergence exists, Git just advances the label.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "branches-dag"
+      ],
+      "skillLabel": "Branches and the commit graph",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q1"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "What happens to a commit's id if you change only its message with `git commit --amend`?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A new commit with a different id replaces it; its descendants must be rewritten too",
+        "The id changes only if the files changed, since the id hashes the tree",
+        "The id stays the same because the message is stored separately from the content",
+        "Only the message object changes, and the commit id is kept for the parents"
+      ],
+      "answer": "0",
+      "explanation": "The message is part of the hashed content; amending creates a new commit.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "commit-objects"
+      ],
+      "skillLabel": "Commits as content-addressed snapshots",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "How many bytes of header text 'blob <len>' precede the NUL for a 6-byte file? 'blob 6' has how many characters? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.0",
+      "tolerance": 0.5,
+      "explanation": "'blob 6' is 6 characters; the object is that, a NUL byte and the 6 content bytes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "commit-objects"
+      ],
+      "skillLabel": "Commits as content-addressed snapshots",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A diff hunk header reads @@ -10,6 +10,9 @@. How many more lines does the new file have in this hunk? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.0",
+      "tolerance": 0.5,
+      "explanation": "9−6=3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reading-diffs"
+      ],
+      "skillLabel": "Reading diffs",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A diff shows every line of a file as changed although you only edited one line. A likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The branch was fast-forwarded",
+        "Line endings were converted (CRLF/LF)",
+        "Git stores whole files for every commit",
+        "The file has too many lines"
+      ],
+      "answer": "1",
+      "explanation": "Different line endings make every line different.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reading-diffs"
+      ],
+      "skillLabel": "Reading diffs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Which command discards uncommitted edits to a tracked file permanently?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "git stash",
+        "git restore file",
+        "git branch new",
+        "git commit -a"
+      ],
+      "answer": "1",
+      "explanation": "git restore overwrites the working-tree file from the index/HEAD; stash and commit keep the edits.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "staging-area"
+      ],
+      "skillLabel": "The staging area",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "You run `git add .` in a folder that contains .env with API keys but no .gitignore. What is the right response before committing?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Commit it anyway, since private repositories are a safe place to keep API keys long term",
+        "Rename the file to .env.bak and commit it, since scanners only look for files named .env",
+        "Unstage it (git restore --staged .env), add it to .gitignore, and rotate the key if it was committed",
+        "Commit it, then delete the file in the next commit so the key disappears from history"
+      ],
+      "answer": "2",
+      "explanation": "Anything committed stays in history; avoid committing, and revoke keys that were exposed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "experiment-provenance"
+      ],
+      "skillLabel": "Experiment provenance",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A result file records `dirty: true`. How many of your results from such runs should be trusted as reproducible from the commit alone? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0",
+      "tolerance": 0.5,
+      "explanation": "Dirty means the code differed from the recorded commit, so the commit id does not identify the code.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "experiment-provenance"
+      ],
+      "skillLabel": "Experiment provenance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Describe two checks that show a recorded result is reproducible from its commit, and one that shows it is not.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Fresh clone/checkout of the commit, rerun with the config and compare the numbers.",
+        "Confirm the dirty flag is false and the config in the result equals git show <commit>:config.",
+        "A mismatch, uncommitted data/dependency, or unseeded randomness indicates it is not reproducible."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "experiment-provenance"
+      ],
+      "skillLabel": "Experiment provenance",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write the sequence of git commands you would use to find which of 20 commits first made a test fail, assuming a script ./check.sh exits non-zero when the bug is present.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "git bisect start; git bisect bad (current); git bisect good <known-good-commit>.",
+        "git bisect run ./check.sh and read the reported first bad commit.",
+        "git bisect reset to return to the original branch."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "branches-dag",
+        "commit-objects"
+      ],
+      "skillLabel": "Branches and the commit graph",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

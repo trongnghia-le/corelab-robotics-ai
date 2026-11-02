@@ -1,0 +1,384 @@
+{
+  "id": "PY08-targeted",
+  "topicId": "PY08",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "configuration"
+      ],
+      "skillLabel": "Config validation",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "id": "b1",
+      "kind": "choice",
+      "prompt": "Which setting prevents silent typos in a configuration file?",
+      "options": [
+        "giving every key a default, so that no key is ever missing",
+        "using a global dictionary, so that every module reads the same keys",
+        "rejecting unknown keys when loading the config",
+        "logging the config at DEBUG, so that a typo can be seen in the log"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "An unknown key such as learning_rat must be an error.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-variability"
+      ],
+      "skillLabel": "Variability across seeds",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#worked-example"
+        }
+      ],
+      "id": "b2",
+      "kind": "number",
+      "prompt": "Per-run std 0.0164 and 20 seeds. Standard error of the mean (4 decimals)?",
+      "answer": "0.0037",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.0002,
+      "explanation": "0.0164/sqrt(20).",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-variability"
+      ],
+      "skillLabel": "Variability across seeds",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "id": "b3",
+      "kind": "number",
+      "prompt": "Per-run standard deviation 0.5; how many seeds give a standard error of 0.1?",
+      "answer": "25",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.5,
+      "explanation": "(0.5/0.1)^2=25.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "logging"
+      ],
+      "skillLabel": "Logging basics",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#exercises"
+        }
+      ],
+      "id": "b4",
+      "kind": "choice",
+      "prompt": "logging.warning('x') is called before any logging configuration. What happens?",
+      "options": [
+        "nothing is printed, since the message is discarded without a handler",
+        "the root logger is configured automatically and WARNING:root:x is printed",
+        "it is written to a file named after the root logger in the working directory",
+        "an exception is raised because no handler has been configured"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Module-level logging functions call basicConfig if there are no handlers.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "logging"
+      ],
+      "skillLabel": "Logging basics",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#exercises"
+        }
+      ],
+      "id": "b5",
+      "kind": "choice",
+      "prompt": "After the implicit configuration by the first logging call, logging.basicConfig(level=logging.INFO) will",
+      "options": [
+        "raise an error, because the logging was configured twice",
+        "lower the threshold to INFO, since basicConfig always sets the level",
+        "do nothing, because handlers already exist (unless force=True)",
+        "remove the existing handler and install a new one at INFO"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "basicConfig is a no-op if the root logger has handlers.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Floating-point non-associativity",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "id": "b6",
+      "kind": "number",
+      "prompt": "Floating point: (0.1+0.2)+0.3 minus 0.1+(0.2+0.3), in units of 1e-16 (1 decimal).",
+      "answer": "1.1",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.2,
+      "explanation": "0.6000000000000001-0.6=1.1e-16.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reproducible-outputs"
+      ],
+      "skillLabel": "Exactness versus tolerance",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b7",
+      "kind": "choice",
+      "prompt": "Bit-exact equality of results is the right test for",
+      "options": [
+        "a parallel floating-point sum on different thread counts",
+        "a GPU training run",
+        "results of different BLAS libraries",
+        "a hash of an input data file"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Floating-point results should be compared with tolerances.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Sources of nondeterminism",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#worked-example"
+        }
+      ],
+      "id": "b8",
+      "kind": "number",
+      "prompt": "With PYTHONHASHSEED values 1, 2 and 3 the set order of three strings was ABC, ABC, ACB. How many distinct orders were observed?",
+      "answer": "2",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "Orders for seeds 1 and 2 coincided.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "clean-checkout-test"
+      ],
+      "skillLabel": "Recording code version",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#failure-modes"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "What should a git commit hash in env.json guarantee?",
+      "options": [
+        "the code that ran is identifiable, but only if the working tree was clean",
+        "the result is bit-exact, because the same code gives the same numbers",
+        "the seed is fixed, since the commit hash includes the random state",
+        "dependencies are pinned, since the commit includes the installed packages"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "A dirty tree means the commit does not describe the code.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "configuration"
+      ],
+      "skillLabel": "Canonical configuration",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#worked-example"
+        }
+      ],
+      "id": "b10",
+      "kind": "number",
+      "prompt": "How many hex digits does the config hash in the lesson keep (a0af821358e4)?",
+      "answer": "12",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "12 hex digits.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "reproducible-outputs",
+        "configuration"
+      ],
+      "skillLabel": "Run directory design",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#transfer-and-retention"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "Design the contents of a run directory for one experiment and say what each file is for, and which ones should be committed to git.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Lists config.json, result.json, run.log and env.json (or similar) with purposes.",
+        "Separates result data from metadata such as time and host.",
+        "Says that code, configs and small results can be committed, while large data and logs are referenced or ignored."
+      ]
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Debugging nondeterminism",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#failure-modes"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "A teammate's experiment gives a different number every time even with a fixed seed. List the first four things you check and in which order.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Checks use of the global RNG and call order.",
+        "Checks set/dict iteration order and PYTHONHASHSEED.",
+        "Checks timestamps, threads/floating-point order and unpinned dependencies."
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "id": "ML01-targeted",
+  "topicId": "ML01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "ml01-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "leakage"
+      ],
+      "skillLabel": "Where to fit preprocessing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Where should normalisation statistics (mean, std) be fitted?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "On the test set, so the scaling matches the data seen at deployment",
+        "On the full dataset before splitting, so all splits share the same scaling",
+        "Separately on each split, so each one is centred and scaled independently",
+        "On the training set only, then reused unchanged on validation and test"
+      ],
+      "answer": "3",
+      "explanation": "Fitting on other splits leaks information; refitting per split changes the transformation between sets."
+    },
+    {
+      "id": "ml01-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "data-splits"
+      ],
+      "skillLabel": "Role of the test set",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "What is the correct use of the test set?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Early-stop training as soon as the test loss starts to rise",
+        "Select the features that look most predictive on the test labels",
+        "Tune hyperparameters repeatedly until the test score stops improving",
+        "Evaluate the final chosen model once, after all choices are fixed"
+      ],
+      "answer": "3",
+      "explanation": "Any repeated use for choices turns it into a validation set and biases the final estimate."
+    },
+    {
+      "id": "ml01-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "leakage"
+      ],
+      "skillLabel": "Correlated samples",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Video frames from the same run end up in both train and test through a random split. What is the consequence?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The test score is pessimistic because the model sees fewer frames per run",
+        "The test score is optimistic because near-duplicate frames leak run identity",
+        "Only the training accuracy changes, since test frames are unaffected",
+        "Nothing changes, because consecutive frames of a run are independent samples"
+      ],
+      "answer": "1",
+      "explanation": "Split by run (group) so the test set contains unseen runs."
+    },
+    {
+      "id": "ml01-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "metrics-imbalance"
+      ],
+      "skillLabel": "Metric choice",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Defects are 1% of parts and missing one is costly. Which report is most informative?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Accuracy after adding many more good parts to the test set",
+        "Overall accuracy only, since it summarises all parts in one number",
+        "Training loss only, since it shows directly how well the model fits",
+        "Recall and precision for the defect class, with the confusion matrix"
+      ],
+      "answer": "3",
+      "explanation": "Accuracy is dominated by the majority class; recall measures missed defects, precision measures false alarms."
+    },
+    {
+      "id": "ml01-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "baseline"
+      ],
+      "skillLabel": "Mean baseline",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Training targets are 4, 6, 11. What constant minimises squared training error?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.001,
+      "explanation": "The mean (4 + 6 + 11)/3 = 7."
+    },
+    {
+      "id": "ml01-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "baseline"
+      ],
+      "skillLabel": "Squared error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A constant prediction of 7 is evaluated on a single test target of 3. What is the squared error?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "16",
+      "tolerance": 0.001,
+      "explanation": "(7 − 3)² = 16."
+    },
+    {
+      "id": "ml01-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "metrics-imbalance"
+      ],
+      "skillLabel": "Majority accuracy",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A test set has 90% negatives. What accuracy (in percent) does always predicting negative obtain?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "90",
+      "tolerance": 0.001,
+      "explanation": "It is right on every negative: 90%."
+    },
+    {
+      "id": "ml01-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "metrics-imbalance"
+      ],
+      "skillLabel": "Recall",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A detector finds 8 of 10 true defects and raises 4 false alarms. What is its recall?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.001,
+      "explanation": "TP/(TP+FN) = 8/10 = 0.8."
+    },
+    {
+      "id": "ml01-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "data-splits"
+      ],
+      "skillLabel": "Test uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A model scores accuracy 0.8 on 400 independent test samples. What is the standard error sqrt(p(1−p)/n)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.02",
+      "tolerance": 0.0005,
+      "explanation": "sqrt(0.16/400) = 0.02."
+    },
+    {
+      "id": "ml01-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "data-splits"
+      ],
+      "skillLabel": "Transfer split",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A model trained on one robot must run on a second robot. Design a split that tests transfer and name two hardware differences that could break it.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Trains/validates on robot A and tests on unseen robot B (or leave-one-robot-out).",
+        "Names differences such as sensor calibration/mounting, actuator dynamics or payload.",
+        "Reports performance on the new robot separately, not pooled with the training robot."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "ml01-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "leakage"
+      ],
+      "skillLabel": "Detect leakage in code",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Describe checks you would add to a pipeline to detect leakage: preprocessing order, duplicate samples, group overlap and suspiciously high scores.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Fit preprocessing inside the training fold only.",
+        "Assert group and duplicate disjointness between sets.",
+        "Treats a score that is too good as a signal to look for leaks and compares with a baseline."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "ml01-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "baseline"
+      ],
+      "skillLabel": "Why baselines",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML01#verification"
+        }
+      ],
+      "prompt": "A model reports a small test loss. Explain why that is not enough, and what comparison you would add.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "The loss scale has no meaning without a reference.",
+        "Adds a trivial baseline (mean/majority) and a simple physical or linear model.",
+        "Notes the model must beat the baseline on held-out groups by more than the noise level."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

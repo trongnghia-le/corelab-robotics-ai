@@ -1,0 +1,300 @@
+{
+  "id": "ML04-targeted",
+  "topicId": "ML04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "ml04-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nonlinearity"
+      ],
+      "skillLabel": "Stacked linear layers",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "Two dense layers with no nonlinearity between them are equivalent to…",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "An arbitrary nonlinear map, as with more layers",
+        "A quadratic function of the input, from the product",
+        "The first layer alone, as the second is redundant",
+        "One affine layer with W = W₂W₁ and b = W₂b₁ + b₂"
+      ],
+      "answer": "3",
+      "explanation": "W₂(W₁x + b₁) + b₂ = (W₂W₁)x + (W₂b₁ + b₂)."
+    },
+    {
+      "id": "ml04-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dense-layer-shapes"
+      ],
+      "skillLabel": "Weight shape",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A dense layer maps d inputs to h outputs with a column-vector convention. What is the shape of W?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "h × h",
+        "d × d",
+        "h × d",
+        "d × h"
+      ],
+      "answer": "2",
+      "explanation": "z = Wx has h rows, one per output unit, and d columns."
+    },
+    {
+      "id": "ml04-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "activation-choice"
+      ],
+      "skillLabel": "Output activation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A network must predict a motor torque between −20 and +20 N·m. Which output layer is most consistent?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A softmax over one unit, trained with a cross-entropy loss",
+        "A ReLU output, trained with squared-error loss",
+        "A sigmoid output on (0,1) with cross-entropy loss",
+        "A linear output (optionally scaled) with squared-error loss"
+      ],
+      "answer": "3",
+      "explanation": "Sigmoid limits to (0,1) and ReLU cannot produce negative torque; regression needs an unbounded signed output."
+    },
+    {
+      "id": "ml04-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dying-relu"
+      ],
+      "skillLabel": "Dead units",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A hidden ReLU unit has z < 0 for every training input. What happens during gradient descent?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It becomes a linear unit, because the negative side is rescaled",
+        "Its incoming weights get zero gradient, so it cannot recover from these data",
+        "It outputs −1, which pushes the next layer to compensate for it",
+        "Its weights grow quickly, because the error signal stays large for it"
+      ],
+      "answer": "1",
+      "explanation": "The local derivative is 0 for z < 0, so gradients through it vanish."
+    },
+    {
+      "id": "ml04-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dense-layer-shapes"
+      ],
+      "skillLabel": "Parameter count",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A network has layer sizes 10 → 20 → 5 → 1 with biases. How many parameters?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "331",
+      "tolerance": 0.001,
+      "explanation": "220 + 105 + 6 = 331."
+    },
+    {
+      "id": "ml04-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "activation-choice"
+      ],
+      "skillLabel": "Sigmoid value",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "What is sigmoid(1)? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.731059",
+      "tolerance": 0.001,
+      "explanation": "1/(1 + e^{−1}) = 0.731."
+    },
+    {
+      "id": "ml04-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dense-layer-shapes"
+      ],
+      "skillLabel": "Forward pass",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "x = (1, −1), W = [[2, 1], [−1, 3]], b = (0, 1), ReLU. What is the sum of the two hidden outputs?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.001,
+      "explanation": "z = (1, −3); ReLU gives (1, 0); the sum is 1."
+    },
+    {
+      "id": "ml04-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nonlinearity"
+      ],
+      "skillLabel": "Collapsed bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "Layer 1: W₁ = [[1, 0], [0, 2]], b₁ = (1, −1). Layer 2: W₂ = [[3, 1]], b₂ = 2, no activation. What is the bias of the equivalent single layer?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.001,
+      "explanation": "W₂b₁ + b₂ = 3·1 + 1·(−1) + 2 = 4."
+    },
+    {
+      "id": "ml04-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dying-relu"
+      ],
+      "skillLabel": "ReLU derivative",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A single hidden unit has z = −0.3 and output weight v = 2 with error e = 0.5. What is ∂L/∂b for that unit?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0",
+      "tolerance": 0.001,
+      "explanation": "The ReLU derivative is 0 for z < 0, so the gradient e·v·1[z>0] = 0."
+    },
+    {
+      "id": "ml04-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "activation-choice"
+      ],
+      "skillLabel": "Smooth controller",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A controller needs a smooth torque prediction. Explain why you would inspect the activation derivatives and name one choice and its risk.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Smooth activations give a continuous Jacobian for downstream use; ReLU has kinks.",
+        "Names an option such as tanh or softplus and a risk such as saturation or cost.",
+        "Mentions monitoring gradient norms/saturation and checking the Jacobian on test trajectories."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "ml04-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "dying-relu"
+      ],
+      "skillLabel": "Debug a network",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "Your network's loss does not decrease. List a checklist of experiments to separate a bug from a hard problem.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Gradient check by finite differences on a tiny network.",
+        "Overfit a handful of samples to prove the pipeline can learn.",
+        "Inspect activations for dead or saturated units and check learning rate and data scaling."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "ml04-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nonlinearity"
+      ],
+      "skillLabel": "Why nonlinearity",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "Explain why XOR is impossible for a single linear unit but possible with one hidden ReLU layer, in your own words.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "A linear threshold cannot separate the XOR points (middle two plus ends contradiction).",
+        "A hidden layer remaps inputs into a space where they are linearly separable.",
+        "The nonlinearity prevents the layers from collapsing into one."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

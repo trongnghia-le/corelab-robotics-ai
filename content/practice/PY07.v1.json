@@ -1,0 +1,302 @@
+{
+  "id": "PY07-targeted",
+  "topicId": "PY07",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "test-design"
+      ],
+      "skillLabel": "What tests prove",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t1",
+      "kind": "choice",
+      "prompt": "A suite runs every line of a function but contains no assert statements and never fails. Which conclusion is justified?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The tests are good, because coverage is 100% and the suite never fails",
+        "The function is correct on all inputs, since every line of it executed",
+        "Only that the code ran without raising an exception on those inputs",
+        "The function is correct on the inputs that were run, since it did not fail"
+      ],
+      "answer": "2",
+      "explanation": "Coverage shows lines executed, not that results were checked. A suite without assertions can pass for any behaviour (except crashes)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "float-tolerance"
+      ],
+      "skillLabel": "Choosing numeric tolerances",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t2",
+      "kind": "number",
+      "prompt": "A test compares a computed value a to b = 2000 with |a-b| <= atol + rtol*|b|, rtol = 1e-6 and atol = 1e-9. What is the largest allowed absolute difference? Give your answer to 6 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.002",
+      "tolerance": 2e-06,
+      "explanation": "1e-9 + 1e-6*2000 = 0.002000001."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection-debugging"
+      ],
+      "skillLabel": "Locating a regression",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t3",
+      "kind": "number",
+      "prompt": "A regression lies somewhere in 256 commits (the first is good, the last is bad). What is the maximum number of test runs git bisect needs? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "Each run halves the interval: log2(256) = 8."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "flaky-tests"
+      ],
+      "skillLabel": "Flaky test probability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t4",
+      "kind": "number",
+      "prompt": "An unseeded random test fails spuriously in 1% of runs. What is the probability that at least one of 50 independent CI runs fails? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.395",
+      "tolerance": 0.002,
+      "explanation": "1 - 0.99^50 = 0.395."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "float-tolerance"
+      ],
+      "skillLabel": "Exact versus tolerant comparison",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t5",
+      "kind": "choice",
+      "prompt": "Which check should use exact equality instead of a numeric tolerance?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "The distance computed by a square-root formula",
+        "The angle after sin/cos round trips",
+        "The number of lidar returns in a parsed message",
+        "The mean of 1000 float readings"
+      ],
+      "answer": "2",
+      "explanation": "Integer counts are exact; floating-point results of numerical algorithms need a justified tolerance."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mutation-oracle"
+      ],
+      "skillLabel": "Mutation score",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t6",
+      "kind": "number",
+      "prompt": "A suite is run against 12 mutants. 9 are killed and 2 of the 3 survivors are equivalent mutants (no behavioural change). What is the mutation score after excluding equivalent mutants, as a fraction? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.9",
+      "tolerance": 0.005,
+      "explanation": "Valid mutants = 12 - 2 = 10; score = 9/10 = 0.90."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "flaky-tests"
+      ],
+      "skillLabel": "Diagnosing a flaky test",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t7",
+      "kind": "short",
+      "prompt": "A test that checks a filter output against a noisy simulation passes locally but fails about once in thirty CI runs. Describe how you would diagnose and fix it.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Suspects an unseeded random source or timing dependence and reproduces by looping the test or fixing the seed",
+        "Separates the deterministic logic (tested with fixed data and a hand-computed oracle) from the statistical behaviour (tested with a justified bound)",
+        "Does not simply rerun until green or widen the tolerance without computing the failure probability"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "test-design"
+      ],
+      "skillLabel": "Partitioning an input space",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t8",
+      "kind": "short",
+      "prompt": "Design test cases for normalize_angle(theta) that maps any angle in radians to (-pi, pi]. List at least six cases with expected results and say which are boundary cases.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Includes ordinary in-range values and values outside the range by whole turns (for example 3*pi/2 -> -pi/2, -3*pi -> pi)",
+        "Identifies the boundary behaviour at +pi and -pi (the interval is half-open) and at 0 and 2*pi",
+        "Mentions a large magnitude or non-finite input and uses a tolerance for float comparisons"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mutation-oracle"
+      ],
+      "skillLabel": "Independent oracles",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t9",
+      "kind": "choice",
+      "prompt": "You wrote a fast FFT. Which oracle gives the most trustworthy expected values for its tests?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The FFT output from the same function, called a second time",
+        "The output printed on the first run, saved as expected",
+        "A copy of the FFT code pasted into the test",
+        "A naive O(n^2) DFT loop written separately"
+      ],
+      "answer": "3",
+      "explanation": "A slow direct DFT sum is an independent computation of the same mathematical quantity; the other options re-use the code under test or its assumptions."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "flaky-tests"
+      ],
+      "skillLabel": "Seeds and robustness",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t10",
+      "kind": "choice",
+      "prompt": "A test fixes numpy's random seed to 0 and draws 100 samples. What does a pass establish?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The code is statistically unbiased",
+        "The code works for that reproducible sample set",
+        "The test is now independent of the machine's floating-point behaviour",
+        "The code works for any random input"
+      ],
+      "answer": "1",
+      "explanation": "A fixed seed gives repeatability, but it tests one sample set; other seeds or distributions are untested."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "test-design"
+      ],
+      "skillLabel": "Boundary-value analysis",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t11",
+      "kind": "number",
+      "prompt": "An integer sensor ID is valid in the range 10..20 inclusive. Using the standard boundary-value points (just below, on, and just above each end), how many test inputs do you write? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6",
+      "tolerance": 0.01,
+      "explanation": "9, 10, 11, 19, 20, 21."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bisection-debugging"
+      ],
+      "skillLabel": "Preconditions for bisection",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "id": "t12",
+      "kind": "choice",
+      "prompt": "Which condition is required for git bisect to find the first bad commit reliably?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The bug must be in a file that was changed in exactly one commit of the range",
+        "Every commit in the range must have been code reviewed before merging",
+        "The test must run in under one second so each bisect step is fast",
+        "The test result must be deterministic and stay failing for all later commits"
+      ],
+      "answer": "3",
+      "explanation": "Bisection assumes monotonicity: once a commit is bad all later ones are bad, and the test result is deterministic."
+    }
+  ]
+}

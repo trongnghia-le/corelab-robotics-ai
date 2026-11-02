@@ -1,0 +1,207 @@
+{
+  "id": "C15-diagnostic",
+  "topicId": "C15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which statement about a controller is testable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The controller is stable for the nominal plant, so it tolerates small errors.",
+        "The controller is robust and works on the real robot.",
+        "The controller has high gain, which makes it robust.",
+        "For every a in [0.5,1.5] and b in [1.5,2.5] at T=0.1 s, u=-3x gives |1+(a-bk)T|<1."
+      ],
+      "answer": "3",
+      "explanation": "Only a claim tied to an explicit parameter set and an explicit check can be falsified.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "uncertainty-set"
+      ],
+      "skillLabel": "Declare an uncertainty set",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: why this matters",
+          "href": "/lessons/C15#why-this-matters"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Plant x'=ax+bu, a in [0,3], b in [2,4], u=-kx in continuous time. Smallest k (the lower bound of the stabilising window). Give a number, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "k > a_max/b_min = 3/2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "corner-worst-case"
+      ],
+      "skillLabel": "Pick the worst-case corner",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Sampled loop with T=0.05 s, a in [0.5,1.5], b in [1.5,2.5], Euler model. Upper gain bound (2/T + a_min)/b_max. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "16.2",
+      "tolerance": 0.01,
+      "explanation": "(40+0.5)/2.5=16.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sampled-gain-window"
+      ],
+      "skillLabel": "Compute a sampled robust gain window",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Which corner of the (a,b) box limits the UPPER bound on the gain in the sampled loop?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "smallest a, largest b",
+        "the nominal plant",
+        "largest a, smallest b",
+        "largest a, largest b"
+      ],
+      "answer": "0",
+      "explanation": "m = 1+(a-bk)T is most negative for small a and large b.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "corner-worst-case"
+      ],
+      "skillLabel": "Pick the worst-case corner",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Euler-sampled loop, T=0.1 s, k=6, plant corner a=0.5, b=2.5. Compute the multiplier m = 1+(a-bk)T. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.45",
+      "tolerance": 0.001,
+      "explanation": "1+(0.5-15)(0.1)=-0.45; stable.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sampled-gain-window"
+      ],
+      "skillLabel": "Compute a sampled robust gain window",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "In the adaptive law, V decreases and x tends to 0. What can you conclude about the estimate a_hat?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "a_hat converges to the true a, because x tending to 0 forces the error a_hat - a to zero.",
+        "a_hat oscillates forever, because the adaptive law keeps correcting x without ever settling.",
+        "Only that a_hat stays bounded; it need not converge to the true a without persistent excitation.",
+        "a_hat becomes zero, since the adaptation stops when the state error x reaches zero."
+      ],
+      "answer": "2",
+      "explanation": "dV/dt=-lambda x^2 gives boundedness and x->0; convergence of a_hat needs persistent excitation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "adaptation-excitation"
+      ],
+      "skillLabel": "Adaptation versus identification",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A vendor says its arm controller is robust. Write what you would ask for, so that the claim could be tested: the set, the check, and one boundary case.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names the uncertain parameters with ranges (payload, friction, loop rate, delay).",
+        "Describes a check at the extreme combinations or a dense sweep, with a stability or performance criterion.",
+        "Includes a boundary or out-of-set case and says what result would reject the claim."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "uncertainty-set"
+      ],
+      "skillLabel": "Declare an uncertainty set",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/C15#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

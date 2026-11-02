@@ -1,0 +1,175 @@
+{
+  "id": "RL13-diagnostic",
+  "topicId": "RL13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A Gaussian policy sample z is squashed by a = tanh(z). To compute log pi(a) you must",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "add log(1 - tanh(z)^2) to the Gaussian log-density of z",
+        "subtract log(1 - tanh(z)^2) from the Gaussian log-density of z",
+        "divide the log-density by tanh(z)",
+        "use the Gaussian log-density of z unchanged"
+      ],
+      "answer": "1",
+      "explanation": "Change of variables: p_a(a) = p_z(z)/(1 - a^2), so log p_a = log p_z - log(1 - a^2). Adding the term, or omitting it, gives the wrong density.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cc-tanh-logprob"
+      ],
+      "skillLabel": "Apply the log-prob correction",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A normalised action a = 0.5 must be mapped to force limits [-2, 6]. What force results? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.05,
+      "explanation": "-2 + (0.5 + 1)/2 * 8 = -2 + 6 = 4.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-action-scaling"
+      ],
+      "skillLabel": "Scale normalised actions",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "tanh slope 1 - tanh(z)^2 at z = 2: by what factor does the gradient shrink relative to z = 0? Give the slope. (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.071",
+      "tolerance": 0.002,
+      "explanation": "tanh(2) = 0.9640, so 1 - 0.9640^2 = 0.0707.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-saturation"
+      ],
+      "skillLabel": "Quantify saturation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Point mass m = 1 starts at rest. Force 2 for two steps of dt = 0.5 with v += dt*u/m, x += dt*v. Final position? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "Step 1: v = 1, x = 0.5. Step 2: v = 2, x = 1.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-control-cost"
+      ],
+      "skillLabel": "Integrate a force profile",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL13#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Forces 2 and 2, dt = 0.5. What is sum u^2 dt? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.05,
+      "explanation": "(4 + 4) * 0.5 = 4.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-control-cost"
+      ],
+      "skillLabel": "Compute control cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL13#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A policy trained with outputs in [-1, 1] is deployed on a plant that expects newtons with a 4 N limit, but nobody scales the output. What is the most likely symptom?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Faster response, because smaller forces make the plant safer to drive",
+        "The policy saturates at the 4 N limit and behaves like bang-bang control",
+        "No change, because the controller gains adapt automatically online",
+        "Weak control: the plant sees forces of at most 1 N, giving slower, less damped behaviour"
+      ],
+      "answer": "3",
+      "explanation": "The policy believes its commands are scaled; at one quarter strength the closed loop has different damping and a larger overshoot or slower response, as in the worked example.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cc-action-scaling"
+      ],
+      "skillLabel": "Diagnose scale mismatch",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL13#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how a squashed Gaussian policy can stop exploring and how you would detect and counter it.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Notes that for |z| large the tanh slope is near 0, so noise in z barely changes the action",
+        "Detects it by logging mean |z|, saturation fraction or action standard deviation",
+        "Counters with an entropy bonus, a penalty on |z|, smaller initial scale or clipping the mean"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cc-saturation",
+        "cc-tanh-logprob"
+      ],
+      "skillLabel": "Detect saturated exploration",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "id": "ML08-diagnostic",
+  "topicId": "ML08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "For centred data with covariance C, which unit vector v maximizes the variance v^T C v of the projected data?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The eigenvector of C with the largest eigenvalue",
+        "Any vector, since projection preserves variance",
+        "The eigenvector of C with the smallest eigenvalue",
+        "The direction of the largest single data point"
+      ],
+      "answer": "0",
+      "explanation": "v^T C v = Σ λ_j a_j² ≤ λ_max, with equality for the top eigenvector.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "PCA as variance maximization",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Centred covariance C = [[2.5, 1.5],[1.5, 2.5]]. What fraction of total variance does the first principal component explain? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.001,
+      "explanation": "Eigenvalues are 4 and 1; 4/(4+1)=0.8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "PCA as variance maximization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Using the same C, what is the mean squared reconstruction error when keeping only the first component? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.0",
+      "tolerance": 0.001,
+      "explanation": "The error equals the dropped eigenvalue λ₂=1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "PCA as variance maximization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Compute the cosine similarity of u=(1,2,2) and v=(2,1,2). (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.888889",
+      "tolerance": 0.001,
+      "explanation": "u·v=2+2+4=8; both norms are 3; 8/9=0.889.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-similarity"
+      ],
+      "skillLabel": "Cosine similarity of embeddings",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "An embedding table has a vocabulary of 20,000 items and 128 dimensions. How many parameters does it have? (integer, tolerance 1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2560000.0",
+      "tolerance": 1,
+      "explanation": "V·d=20,000·128=2,560,000.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "embedding-table"
+      ],
+      "skillLabel": "Embedding tables",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A frozen PCA encoder is evaluated by training a classifier head on 10 labelled points and testing on held-out points. Which result best supports 'the features are good'?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Higher training accuracy than on raw inputs, measured on one particular labelled set of 10 points",
+        "Higher mean held-out accuracy than the same head on raw inputs, over many labelled-set draws",
+        "The encoder has fewer output dimensions than input dimensions, so it compresses the data usefully",
+        "A low reconstruction error on the training pool, since the code then keeps the information"
+      ],
+      "answer": "1",
+      "explanation": "Quality is a held-out, task-level claim compared with a baseline; training accuracy and reconstruction error do not establish it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "feature-quality"
+      ],
+      "skillLabel": "Judging feature quality",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "PCA features computed from unlabelled sensor data give chance-level accuracy for your classifier. Give two possible explanations and the check you would run for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Variance is dominated by a nuisance factor, so the label-relevant direction was dropped; check by using more components or class-conditional variance.",
+        "The encoder was fitted on a different distribution, or the pipeline has a bug (not centred, wrong projection); check on the worked toy case and invariants.",
+        "Compares with the raw-input baseline over several label draws and states what result would reject each explanation."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "feature-quality",
+        "pca-variance"
+      ],
+      "skillLabel": "Judging feature quality",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

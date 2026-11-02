@@ -1,0 +1,356 @@
+{
+  "id": "E15-targeted",
+  "topicId": "E15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Seen 72/80, unseen 30/60. Gap in success rate? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "generalization-gap"
+      ],
+      "skillLabel": "Generalisation gap with uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.4",
+      "tolerance": 0.005,
+      "explanation": "0.90-0.50=0.40"
+    },
+    {
+      "id": "b2",
+      "prompt": "Same data: standard error of the gap? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "generalization-gap"
+      ],
+      "skillLabel": "Generalisation gap with uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.07274384280931731",
+      "tolerance": 0.001,
+      "explanation": "sqrt(0.9*0.1/80+0.25/60)=0.0727"
+    },
+    {
+      "id": "b3",
+      "prompt": "Same data: lower end of the 95% interval for the gap (gap - 1.96 se)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "generalization-gap"
+      ],
+      "skillLabel": "Generalisation gap with uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ],
+      "answer": "0.25742206809373813",
+      "tolerance": 0.005,
+      "explanation": "0.40-1.96*0.0727=0.257"
+    },
+    {
+      "id": "b4",
+      "prompt": "A 8 h (480 min) deployment has 6 interventions. MTBI in minutes?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "autonomy-metrics"
+      ],
+      "skillLabel": "Autonomy metrics",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "80.0",
+      "tolerance": 0.1,
+      "explanation": "480/6=80"
+    },
+    {
+      "id": "b5",
+      "prompt": "System A has 80% success with 10 interventions per hour; system B has 75% success with 1 intervention per hour. Which statement is best?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "autonomy-metrics"
+      ],
+      "skillLabel": "Autonomy metrics",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q7"
+      ],
+      "options": [
+        "They are identical, because success and intervention rate measure the same thing.",
+        "B is better, because 75% is close enough to 80% that success can be ignored.",
+        "A is better than B, because its success rate is higher and success is what counts.",
+        "They differ on two axes; report both and the cost of an intervention before ranking."
+      ],
+      "answer": "3",
+      "explanation": "Success and autonomy measure different things."
+    },
+    {
+      "id": "b6",
+      "prompt": "Task results 45/50, 2/10, 9/10. Macro average? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aggregation"
+      ],
+      "skillLabel": "Aggregation across tasks",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.6666666666666666",
+      "tolerance": 0.002,
+      "explanation": "(0.9+0.2+0.9)/3=0.667"
+    },
+    {
+      "id": "b7",
+      "prompt": "Interquartile mean of per-task scores [0.1,0.4,0.5,0.6,0.7,0.8,0.9,1.0] (drop 25% at each end)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aggregation"
+      ],
+      "skillLabel": "Aggregation across tasks",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.65",
+      "tolerance": 0.002,
+      "explanation": "core [0.5,0.6,0.7,0.8] -> 0.65"
+    },
+    {
+      "id": "b8",
+      "prompt": "Why prefer the IQM or median over the mean for per-task scores?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "aggregation"
+      ],
+      "skillLabel": "Aggregation across tasks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "It is always larger.",
+        "It uses all trials equally.",
+        "It removes the need for intervals.",
+        "Robustness to a few outlier tasks."
+      ],
+      "answer": "3",
+      "explanation": "Trimming limits the influence of extreme tasks, but intervals are still needed."
+    },
+    {
+      "id": "b9",
+      "prompt": "Which check best detects contamination of an 'unseen' instruction set?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "unseen-split-design"
+      ],
+      "skillLabel": "Unseen-split design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ],
+      "options": [
+        "Check that the evaluation code runs without errors on the unseen instruction set.",
+        "Search the training and tuning data for the unseen names and check similarity to seen tasks.",
+        "Compare learning curves on the seen and unseen sets to see which one is higher.",
+        "Count the number of tasks in the unseen set and compare it with the seen set."
+      ],
+      "answer": "1",
+      "explanation": "Contamination is detected by overlap checks."
+    },
+    {
+      "id": "b10",
+      "prompt": "In a failure table, 40 failed trials: grasp 14, wrong object 12, perception 6, timeout 4, unlabelled 4. What fraction of failures are unlabelled? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "failure-reporting"
+      ],
+      "skillLabel": "Failure reporting",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "answer": "0.1",
+      "tolerance": 0.005,
+      "explanation": "4/40=0.10"
+    },
+    {
+      "id": "b11",
+      "prompt": "Which is the most useful reason to include an 'unlabelled' category?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "failure-reporting"
+      ],
+      "skillLabel": "Failure reporting",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It is required by Wilson intervals to compute the failure rate.",
+        "It shows how much of the failure mass is still unexplained.",
+        "It lets you drop hard trials from the analysis without saying so.",
+        "It reduces the number of failures that have to be analysed."
+      ],
+      "answer": "1",
+      "explanation": "A large unlabelled share means the taxonomy is incomplete."
+    },
+    {
+      "id": "b12",
+      "prompt": "Two systems have the same 70% success. List three further pieces of information you need to decide whether they are equivalent.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "failure-reporting",
+        "autonomy-metrics"
+      ],
+      "skillLabel": "Failure reporting",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "Trial counts and intervals, and the tasks used.",
+        "Failure categories and interventions or time between interventions.",
+        "Whether results are paired on the same tasks/seeds and the split (seen vs unseen)."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Explain how selecting the best of several prompts on the evaluation set biases the reported success, and give two corrections.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "unseen-split-design"
+      ],
+      "skillLabel": "Unseen-split design",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "rubric": [
+        "Explains selection bias / optimism from choosing the maximum on the same data.",
+        "Correction: separate validation family, then single untouched test.",
+        "Correction: report the number of options tried or use a held-out replication."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

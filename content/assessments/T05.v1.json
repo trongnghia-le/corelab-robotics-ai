@@ -1,0 +1,188 @@
+{
+  "id": "T05-diagnostic",
+  "topicId": "T05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "What does a lock file give you that a requirements range such as numpy>=1.20 does not?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Automatic upgrades to the latest version whenever a new release is out",
+        "The exact versions used, so the same environment can be rebuilt later",
+        "Protection from bugs in numpy, because locked versions are fixed",
+        "Faster code, because pinned versions skip the resolver at run time"
+      ],
+      "answer": "1",
+      "explanation": "A range describes what is acceptable; a lock records what was installed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dependency-locking"
+      ],
+      "skillLabel": "Dependency locking",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T02"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Which version satisfies the specifier ~=1.4.2?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "1.4.7",
+        "1.5.0",
+        "2.0.0",
+        "1.4.0"
+      ],
+      "answer": "0",
+      "explanation": "~=1.4.2 means >=1.4.2 and <1.5, so only 1.4.7.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "version-specifiers"
+      ],
+      "skillLabel": "Version specifiers",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Which of these is newer?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "1.10",
+        "1.9",
+        "They are equal",
+        "Cannot be compared"
+      ],
+      "answer": "0",
+      "explanation": "Versions are compared numerically per segment: 10 > 9.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "version-specifiers"
+      ],
+      "skillLabel": "Version specifiers",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Defaults steps=1000; a config file sets steps=500; the environment has EXP_STEPS=200; the command line passes --steps 50. What is the effective steps value? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "50.0",
+      "tolerance": 0.5,
+      "explanation": "defaults < file < environment < command line: 50.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "config-layers"
+      ],
+      "skillLabel": "Configuration layering",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Defaults seed=0; file sets seed=3; env EXP_SEED=7; no CLI value. What is the effective seed? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7.0",
+      "tolerance": 0.5,
+      "explanation": "Environment overrides the file.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "config-layers"
+      ],
+      "skillLabel": "Configuration layering",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Where should an API token used by your experiment live?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Hard-coded as a constant in the script, where it is always available",
+        "In a committed config.yaml, so that everyone on the team has the same value",
+        "In an environment variable or secret store, never committed to the repository",
+        "In the README, so a new user knows which token to request and use"
+      ],
+      "answer": "2",
+      "explanation": "Secrets in Git stay in history; supply them from the environment.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "config-layers",
+        "secrets"
+      ],
+      "skillLabel": "Secrets and configuration",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You must show that an experiment is reproducible from a fresh checkout. Describe the files you commit, the commands you run in a clean directory, and how you decide success.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Commits code, lock file with exact versions (ideally hashed), Python version, config and seed; excludes .venv and secrets.",
+        "Creates a fresh virtual environment from the lock and runs with the recorded config.",
+        "Compares outputs (digest/metrics) and investigates differences in versions, environment variables, data and hardware."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "reproduction-check"
+      ],
+      "skillLabel": "Rebuild-from-scratch verification",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

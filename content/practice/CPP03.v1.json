@@ -1,0 +1,337 @@
+{
+  "id": "CPP03-targeted",
+  "topicId": "CPP03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Locals are declared in the order Tag a, Tag b, Tag c in one scope. In which order do their destructors run?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Unspecified",
+        "Only the last one is destroyed",
+        "a, b, c",
+        "c, b, a"
+      ],
+      "answer": "3",
+      "explanation": "Locals are destroyed in the reverse order of construction.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "raii-lifetime"
+      ],
+      "skillLabel": "Destruction order",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Given std::unique_ptr<int> p = std::make_unique<int>(1); what does 'auto q = p;' do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Compiles; q and p share ownership of the int",
+        "Compiles and silently sets p to null",
+        "Does not compile: unique_ptr is not copyable",
+        "Compiles; the int is deep-copied into q"
+      ],
+      "answer": "2",
+      "explanation": "Exclusive ownership means no copy constructor; you must write std::move(p).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "move-semantics",
+        "ownership-signatures"
+      ],
+      "skillLabel": "Copying a unique_ptr",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "What is the effect of 'return std::move(local);' where local is a local object of the return type?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It prevents copy elision and forces a move, so it is usually a pessimization",
+        "It is required to avoid a copy of the local object on return",
+        "It leaves local valid and unchanged for the caller to use afterwards",
+        "It makes the return faster than plain return local by skipping the move"
+      ],
+      "answer": "0",
+      "explanation": "Plain 'return local;' allows NRVO and otherwise moves automatically.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "move-semantics"
+      ],
+      "skillLabel": "Returning locals",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP03#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "draw(frame) only reads the frame during the call; the caller keeps it afterwards. Which parameter is the clearest contract?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Frame*",
+        "const Frame&",
+        "std::unique_ptr<Frame>",
+        "std::shared_ptr<Frame>"
+      ],
+      "answer": "1",
+      "explanation": "A const reference states a non-owning, non-null, read-only borrow.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ownership-signatures"
+      ],
+      "skillLabel": "Borrowing parameters",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A loop at 10 Hz runs for 1 hour. In one of every 5 cycles an error path skips delete[] on a 1024-double buffer. How many bytes leak? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "58982400",
+      "tolerance": 0.5,
+      "explanation": "36,000 cycles / 5 = 7,200 leaks x 8,192 bytes = 58,982,400.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raii-lifetime"
+      ],
+      "skillLabel": "Leak size arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP03#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A std::vector<double> with 2,000,000 elements is passed by value (no elision) through 3 functions in a chain, copying each time. How many bytes are copied in total? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "48000000",
+      "tolerance": 0.5,
+      "explanation": "Each copy is 16,000,000 bytes; three copies: 48,000,000. Moves would copy no element data.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "move-semantics"
+      ],
+      "skillLabel": "Cost of copying versus moving",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Buffer a(2); Buffer b(std::move(a)); { Buffer c(1); auto p = std::make_unique<Buffer>(3); } -- if Buffer::alive counts constructed-minus-destroyed objects, what is it after the block closes? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "a and b are alive (a is moved-from but still an object): 2. c and the heap Buffer died at the closing brace.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raii-lifetime",
+        "move-semantics"
+      ],
+      "skillLabel": "Tracing object lifetimes",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A vector of a copyable type with a throwing move constructor grows by doubling (capacity 1, 2, 4, 8) while 8 elements are pushed one at a time. How many element copies happen during relocations only? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "Reallocations happen at push 2 (1 element), push 3 (2) and push 5 (4): 1+2+4 = 7 relocations, each a copy.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "move-semantics",
+        "rule-of-five"
+      ],
+      "skillLabel": "Cost of relocation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP03#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Your code review finds 'Frame* latest_;' stored by a subscriber and used from a timer callback. Describe the failure scenario and propose a redesign with explicit ownership.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Describes dangling use: the producer frees or reuses the frame after the callback returns.",
+        "Proposes shared_ptr<const Frame> or an owned copy or a unique_ptr handoff.",
+        "States who owns, when it dies, and the memory or latency cost of the choice."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "ownership-signatures",
+        "raii-lifetime"
+      ],
+      "skillLabel": "Raw pointer lifetime review",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP03#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "A teammate's class holds a raw pointer, defines a destructor, and the program crashes with 'double free' when objects are stored in a std::vector. Explain the cause and give a minimal fix using the rule of zero and another using the rule of five.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Cause: implicit copy shares the pointer; two destructors free it.",
+        "Rule of zero: use std::vector<double> or unique_ptr<double[]> and delete nothing by hand.",
+        "Rule of five: delete copies or deep-copy them and implement noexcept moves that null the source."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "rule-of-five"
+      ],
+      "skillLabel": "Diagnosing a double free",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP03#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Write the move constructor and destructor of 'class Samples { double* p_; size_t n_; ... }' so that the moved-from object is safe to destroy.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Samples(Samples&& o) noexcept : p_(o.p_), n_(o.n_) { o.p_ = nullptr; o.n_ = 0; }",
+        "~Samples() { delete[] p_; } (a delete of nullptr is a no-op).",
+        "Marks it noexcept and explains why the source must be reset."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "rule-of-five",
+        "move-semantics"
+      ],
+      "skillLabel": "Writing a move constructor",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP03#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

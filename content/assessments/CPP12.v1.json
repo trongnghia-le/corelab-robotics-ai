@@ -1,0 +1,198 @@
+{
+  "id": "CPP12-diagnostic",
+  "topicId": "CPP12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "What is the difference between API and ABI compatibility?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "ABI compatibility implies that the source never needs any change at all, ever",
+        "API: source still compiles. ABI: a compiled program still runs with the new binary",
+        "API concerns the headers only, while ABI concerns only the documentation files",
+        "They are two names for the same thing, so keeping one always keeps the other"
+      ],
+      "answer": "1",
+      "explanation": "ABI covers symbol names, calling conventions, type sizes and layouts, and vtables; it matters when binaries are swapped without recompiling.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "API versus ABI",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Which change to a public struct that is passed by pointer across a shared-library boundary is ABI-breaking?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Inserting a new field between two existing fields",
+        "Adding a comment above one of the fields",
+        "Adding a new free function to the same header",
+        "Renaming a parameter of a function in the header"
+      ],
+      "answer": "0",
+      "explanation": "Old binaries use the old offsets, so they read the wrong fields and may overflow their object.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Layout changes",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP12#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "An extern \"C\" library function throws a C++ exception and the caller is Python via ctypes. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Python converts it into a Python exception that ctypes raises to the caller",
+        "The process terminates (undefined behavior): exceptions must not cross the C boundary",
+        "The exception is ignored and execution simply continues after the call",
+        "The C runtime catches it and returns -1 to the Python caller"
+      ],
+      "answer": "1",
+      "explanation": "The caller cannot unwind C++ frames; catch everything at the boundary and return an error code.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "c-boundary-errors"
+      ],
+      "skillLabel": "Exceptions across a C boundary",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP12#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A public struct has 3 doubles and an int, laid out with natural alignment on x86-64 (no reordering). What is sizeof the struct in bytes? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "32",
+      "tolerance": 0.01,
+      "explanation": "3 x 8 = 24 bytes, then the 4-byte int at offset 24, padded to a multiple of the struct alignment (8): 32 bytes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Struct layout arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Frame* grab(); appears in a C++ header with no comment. What does the signature leave unspecified?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Who owns and frees the returned frame and how long it stays valid",
+        "The name of the function and its namespace",
+        "Nothing is left open; raw pointers always mean a borrowed object",
+        "The return type of the function and whether it is a pointer"
+      ],
+      "answer": "0",
+      "explanation": "A raw pointer return can mean new object (caller frees), internal buffer (valid until next call) or shared resource. The contract must be written or encoded in a type.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ownership-audit"
+      ],
+      "skillLabel": "Ownership in signatures",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A library exports these functions: c_add (extern \"C\"), cxx_add(int,int), robot::cxx_add2(int,int), takes_vector(const std::vector<int>&). How many of them can be called from Python ctypes by their plain source name? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "Only the extern \"C\" function keeps its plain symbol name; the other three are mangled.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "c-boundary-errors",
+        "api-vs-abi"
+      ],
+      "skillLabel": "Name mangling",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe the two-layer design for exposing a C++ robot-arm library to users built with different compilers: what is in the binary interface, what is in the wrapper, and who owns what.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Binary interface: extern \"C\" functions, opaque handle with create/destroy, error codes, no exceptions or standard types.",
+        "Header-only C++ wrapper: RAII (unique_ptr with deleter), move-only, translates codes to exceptions.",
+        "Ownership: the creator/wrapper owns the handle; destroy releases it exactly once; documented thread and lifetime rules."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "c-boundary-errors",
+        "ownership-audit"
+      ],
+      "skillLabel": "Layered interface design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP12#reference-implementation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

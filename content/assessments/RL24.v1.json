@@ -1,0 +1,234 @@
+{
+  "id": "RL24-diagnostic",
+  "topicId": "RL24",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "What makes the meta-objective different from the average multi-task loss?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "meta-objective"
+      ],
+      "skillLabel": "Meta-objective vs multi-task loss",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The loss is measured after the adaptation step on each task",
+        "It ignores the task distribution and fits one global model",
+        "It uses a larger learning rate for the outer update step",
+        "It uses more tasks per batch than the average loss does"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL24#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "explanation": "Meta-learning scores the initialisation by post-adaptation performance."
+    },
+    {
+      "id": "q2",
+      "prompt": "Task loss 0.5*c*(w-a)^2 with c=0.5, a=3. One gradient step of size alpha=1 from w=1. New w?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inner-adaptation"
+      ],
+      "skillLabel": "Compute an inner step",
+      "mistakeCategory": "mathematical",
+      "answer": "2",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL24#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "explanation": "w' = 1 - 0.5(1-3) = 2."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same task and step: loss after the step (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inner-adaptation"
+      ],
+      "skillLabel": "Compute an inner step",
+      "mistakeCategory": "mathematical",
+      "answer": "0.25",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL24#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "explanation": "0.5*0.5*(2-3)^2=0.25."
+    },
+    {
+      "id": "q4",
+      "prompt": "With alpha=1, what meta weight c(1-alpha c)^2 does a task with c=1 get?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "meta-weights"
+      ],
+      "skillLabel": "Meta weights",
+      "mistakeCategory": "mathematical",
+      "answer": "0",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL24#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "explanation": "1*(1-1)^2=0: one step solves it."
+    },
+    {
+      "id": "q5",
+      "prompt": "A task has curvature c=5 and the inner step is alpha=1. Repeating the inner step:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "inner-stability"
+      ],
+      "skillLabel": "Inner-loop stability",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Diverges, because |1 - alpha c| = 4 is greater than 1",
+        "Converges slowly, because the curvature c is large",
+        "Converges in one step, because alpha is exactly 1",
+        "Oscillates with constant amplitude, because |1 - alpha c| = 1"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL24#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "explanation": "Convergence needs 0 < alpha c < 2."
+    },
+    {
+      "id": "q6",
+      "prompt": "Which evaluation supports the claim 'the meta-learner adapts quickly to new tasks'?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "held-out-tasks"
+      ],
+      "skillLabel": "Held-out task evaluation",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Loss on the support data of a training task after the inner step",
+        "Post-adaptation performance on tasks not used for meta-training or tuning",
+        "Pre-adaptation loss on the training tasks at the final outer step",
+        "Training loss on the meta-training tasks after many outer steps"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL24#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "explanation": "Only held-out tasks measure adaptation to new tasks."
+    },
+    {
+      "id": "q7",
+      "prompt": "alpha=0.5 and c=1: the fraction of the distance (w-a) left after one inner step?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inner-stability"
+      ],
+      "skillLabel": "Inner-loop stability",
+      "mistakeCategory": "mathematical",
+      "answer": "0.5",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL24#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "explanation": "1 - alpha c = 0.5."
+    },
+    {
+      "id": "q8",
+      "prompt": "Design an evaluation of a meta-learned initialisation for a robot that must adapt to unknown payloads. Say how you split tasks, which baselines you include and what result would reject your claim.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "held-out-tasks",
+        "meta-objective"
+      ],
+      "skillLabel": "Design a meta-learning evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL24#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "rubric": [
+        "Split by task (payload): meta-train, validation, test; test payloads never used for tuning.",
+        "Baselines: zero/random init with the same adaptation steps and multi-task pretraining.",
+        "Reject if post-adaptation performance on held-out payloads is not better than baselines."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

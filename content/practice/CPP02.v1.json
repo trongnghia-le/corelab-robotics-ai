@@ -1,0 +1,300 @@
+{
+  "id": "CPP02-targeted",
+  "topicId": "CPP02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "cpp02-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lifetime-dangling"
+      ],
+      "skillLabel": "Dangling references",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Which function returns a handle that is valid for the caller?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "const int& f() { int x = 3; return x; }",
+        "int f() { int x = 3; return x; }",
+        "int* f() { int x = 3; return &x; }",
+        "const int& f() { int x = 3; const int& r = x; return r; }"
+      ],
+      "answer": "1",
+      "explanation": "Only the by-value return survives; every other option hands back an alias of a destroyed local."
+    },
+    {
+      "id": "cpp02-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "unique-ownership"
+      ],
+      "skillLabel": "Unique ownership",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Why does `auto c = b;` fail to compile when b is a std::unique_ptr<int>?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Smart pointers cannot be deduced by auto, so the type must be written out",
+        "Ownership is exclusive, so the pointer can only be moved, not duplicated",
+        "The pointed-to int must be copied first, and that copy constructor is deleted",
+        "unique_ptr is read-only after initialisation, so it can never be assigned"
+      ],
+      "answer": "1",
+      "explanation": "Copying would create two owners of one object; use std::move to transfer."
+    },
+    {
+      "id": "cpp02-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "vector-invalidation"
+      ],
+      "skillLabel": "Iterator and pointer invalidation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Which operation can invalidate a pointer to an element of a std::vector that is still alive?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "push_back when size equals capacity",
+        "Reading an element with operator[]",
+        "Passing the vector by const reference",
+        "Calling size()"
+      ],
+      "answer": "0",
+      "explanation": "A reallocation moves elements to new storage and frees the old block."
+    },
+    {
+      "id": "cpp02-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "shared-vs-unique"
+      ],
+      "skillLabel": "Cycles",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Parent and child objects each hold a shared_ptr to the other. After all outside handles are dropped, what happens, and what is the usual fix?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Only the parent leaks; the usual fix is unique_ptr in both directions",
+        "The program crashes on exit; the usual fix is a raw pointer in both",
+        "Neither is destroyed (counts stay 1); make the back-reference a weak_ptr",
+        "Both are destroyed because the counts drop to zero; no fix is needed"
+      ],
+      "answer": "2",
+      "explanation": "Mutual shared ownership keeps each count at 1. weak_ptr does not own."
+    },
+    {
+      "id": "cpp02-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "vector-invalidation"
+      ],
+      "skillLabel": "Reallocation count",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A std::vector<int> starts empty and its capacity doubles from 1 (1, 2, 4, ...). How many allocations occur while pushing 100 elements one by one?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "Capacities 1,2,4,8,16,32,64,128: eight allocations. reserve(100) would make it one."
+    },
+    {
+      "id": "cpp02-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lifetime-dangling"
+      ],
+      "skillLabel": "Copy bandwidth",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A function takes a std::vector<double> of 5000 elements by value and is called 50 times per second. How many MB/s are copied (8 bytes per double, 1 MB = 10^6 B)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "40 kB per call × 50 = 2.0 MB/s."
+    },
+    {
+      "id": "cpp02-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "unique-ownership"
+      ],
+      "skillLabel": "Live objects",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "a, b, c are unique_ptr<Tracked> each owning a distinct object. You move b into a vector v, then call c.reset(). How many Tracked objects are alive?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "a's object and b's object (now in v) remain; c's object was destroyed."
+    },
+    {
+      "id": "cpp02-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lifetime-dangling"
+      ],
+      "skillLabel": "Leak size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A raw-new Config of 2 MB leaks on every failure, 5 failures per second. How many MB leak in 10 minutes?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6000",
+      "tolerance": 0.01,
+      "explanation": "2 × 5 × 600 = 6000 MB."
+    },
+    {
+      "id": "cpp02-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "shared-vs-unique"
+      ],
+      "skillLabel": "Reference counts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "shared_ptr p; auto q = p; auto r = q; then q.reset(). What is p.use_count()?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "p and r remain; q was reset."
+    },
+    {
+      "id": "cpp02-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "unique-ownership"
+      ],
+      "skillLabel": "Ownership design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A callback stores a pointer to a temporary sensor buffer. Describe a failure scenario and redesign ownership.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies the buffer destroyed or reused after the callback returns.",
+        "Proposes copying into the callback's own storage or shared_ptr<const Buffer>.",
+        "States who owns the buffer and for how long, and the cost of the choice."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "cpp02-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "vector-invalidation"
+      ],
+      "skillLabel": "Sanitizer experiment",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Describe how you would reproduce and diagnose a suspected use-after-free in a vector-based component without running it on a robot, and what a clean run does and does not prove.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Builds with -fsanitize=address,undefined -g in a test harness.",
+        "Reads allocation and free stack traces to identify the invalidating call.",
+        "States sanitizers only check executed paths, so tests must cover the reallocation case."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "cpp02-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "shared-vs-unique"
+      ],
+      "skillLabel": "Value semantics first",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#alternatives-and-trade-offs"
+        }
+      ],
+      "prompt": "Why does the lesson recommend values and containers before smart pointers? Give two reasons and one case where dynamic ownership is justified.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Values have simple lifetimes and no aliasing or cost of indirection.",
+        "Containers already own their elements and are exception-safe.",
+        "Justified case: polymorphic object or large object shared across components with unclear lifetime."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

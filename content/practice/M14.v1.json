@@ -1,0 +1,377 @@
+{
+  "id": "M14-targeted",
+  "topicId": "M14",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "effective-sample-size"
+      ],
+      "skillLabel": "Effective sample size",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "b1",
+      "kind": "number",
+      "prompt": "AR(1) with phi=0.9, n=190 samples. Large-n effective sample size (nearest integer)?",
+      "answer": "10",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.6,
+      "explanation": "190*(0.1/1.9)=10.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "correlated-errors"
+      ],
+      "skillLabel": "Averaging correlated samples",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "b2",
+      "kind": "number",
+      "prompt": "phi=0.8 and sigma=1. By what factor is the true SE of the mean larger than sigma/sqrt(n) for large n? (1 decimal)",
+      "answer": "3.0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.05,
+      "explanation": "sqrt((1.8)/(0.2))=3.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ar1-process"
+      ],
+      "skillLabel": "AR(1) variance",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "b3",
+      "kind": "number",
+      "prompt": "Driving noise variance 0.19 and phi=0.9. Stationary variance of the AR(1) process (2 decimals)?",
+      "answer": "1.0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "0.19/(1-0.81)=1.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ar1-process"
+      ],
+      "skillLabel": "Sample autocorrelation",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#failure-modes"
+        }
+      ],
+      "id": "b4",
+      "kind": "choice",
+      "prompt": "A sample lag-1 autocorrelation of 0.999 is computed for data near 10 by dividing sum(x[t]*x[t+1]) by sum(x*x). The most likely issue is",
+      "options": [
+        "the lag is too large",
+        "the series is truly almost constant",
+        "the sensor is perfect",
+        "the mean was not subtracted"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Without removing the mean, the large offset dominates the products.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "concentration-bounds"
+      ],
+      "skillLabel": "Hoeffding sample size",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "b5",
+      "kind": "number",
+      "prompt": "Hoeffding for readings in [0,2] (width 2): samples needed for accuracy 0.1 with probability 0.95 (integer)?",
+      "answer": "738",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 2,
+      "explanation": "Width 2 multiplies n by 4: ceil(4*ln(40)/(2*0.01))=738.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "concentration-bounds"
+      ],
+      "skillLabel": "Chebyshev bound",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "b6",
+      "kind": "number",
+      "prompt": "Chebyshev: a quantity has standard deviation 0.5. Upper bound on P(|X-mu|>=2) (3 decimals)?",
+      "answer": "0.0625",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "k=4, bound 1/16.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conditional-independence"
+      ],
+      "skillLabel": "Fusing conditionally independent sensors",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#worked-example"
+        }
+      ],
+      "id": "b7",
+      "kind": "number",
+      "prompt": "Prior 0.5, each sensor correct with probability 0.8, conditionally independent. Posterior after two agreeing readings (3 decimals)?",
+      "answer": "0.941",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "0.64/(0.64+0.04)=0.941.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "conditional-independence"
+      ],
+      "skillLabel": "Markov property",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "b8",
+      "kind": "choice",
+      "prompt": "In the chain x_t -> x_{t+1} -> x_{t+2} of a state-space model, which statement holds?",
+      "options": [
+        "x_{t+1} is independent of both neighbours",
+        "x_t and x_{t+2} are independent given x_{t+1}",
+        "x_t and x_{t+2} are independent",
+        "x_t and x_{t+2} are dependent even given x_{t+1}"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Conditioning on the middle node blocks the chain.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "conditional-independence"
+      ],
+      "skillLabel": "Explaining away",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#exercises"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "Two independent causes Z1, Z2 both trigger a bumper S. Given S=1, learning Z2=1 makes Z1=1",
+      "options": [
+        "more likely, because both occurred",
+        "impossible",
+        "less likely, because Z2 explains S away",
+        "unchanged, because they are independent"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Conditioning on a common effect makes independent causes dependent.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "correlated-errors"
+      ],
+      "skillLabel": "Averaging correlated samples",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "b10",
+      "kind": "number",
+      "prompt": "Exact variance of the mean of n=2 AR(1) samples with phi=0.6 and marginal variance 1 (2 decimals)?",
+      "answer": "0.8",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "(2+2*0.6)/4=0.8.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "effective-sample-size",
+        "correlated-errors"
+      ],
+      "skillLabel": "Averaging correlated samples",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#failure-modes"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "A colleague averages 1000 gyro samples (error autocorrelation 0.95 at lag 1, roughly AR(1)) and reports sigma/sqrt(1000). Estimate how wrong the reported SE is and propose two fixes.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Computes factor sqrt((1+phi)/(1-phi)) about 6.2 or n_eff about 26.",
+        "Notes the independence-based interval will under-cover.",
+        "Proposes modelling the bias state, batch means, subsampling or calibration."
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "concentration-bounds"
+      ],
+      "skillLabel": "Choosing a concentration bound",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "Explain when Hoeffding's inequality is a better choice than the CLT for planning a robot experiment, and when it is not applicable.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "States Hoeffding gives a non-asymptotic guarantee for bounded independent samples.",
+        "Notes it is conservative compared with the CLT.",
+        "Names a violation such as dependent or unbounded samples."
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    }
+  ]
+}

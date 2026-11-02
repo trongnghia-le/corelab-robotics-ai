@@ -1,0 +1,376 @@
+{
+  "id": "V06-targeted",
+  "topicId": "V06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Input width 100, kernel 3, stride 1, no padding. Output width? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conv-output-size"
+      ],
+      "skillLabel": "Convolution output size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "98",
+      "tolerance": 0.01,
+      "explanation": "100-3+1."
+    },
+    {
+      "id": "b2",
+      "prompt": "Input width 15, kernel 3, stride 2, padding 1. Output width? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conv-output-size"
+      ],
+      "skillLabel": "Convolution output size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "floor((15+2-3)/2)+1 = 7+1 = 8."
+    },
+    {
+      "id": "b3",
+      "prompt": "A 5x5 convolution maps 3 channels to 24 channels, with bias. How many parameters? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conv-cost"
+      ],
+      "skillLabel": "Parameters and MACs",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "1824",
+      "tolerance": 0.5,
+      "explanation": "(75+1)*24 = 1824."
+    },
+    {
+      "id": "b4",
+      "prompt": "3x3 convolution, 16 to 32 channels, 14x14 input, stride 1, padding 1. How many MACs? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conv-cost"
+      ],
+      "skillLabel": "Parameters and MACs",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "903168",
+      "tolerance": 0.5,
+      "explanation": "14*14*32*9*16 = 903168."
+    },
+    {
+      "id": "b5",
+      "prompt": "Layers: 7x7 s2, 3x3 s1, 3x3 s1. Receptive field of the last layer? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "receptive-field"
+      ],
+      "skillLabel": "Receptive field",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "15",
+      "tolerance": 0.01,
+      "explanation": "7, then 7+2*2 = 11, then 11+2*2 = 15."
+    },
+    {
+      "id": "b6",
+      "prompt": "A single 3x3 convolution with dilation 4 (stride 1). What receptive field does it have? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "receptive-field"
+      ],
+      "skillLabel": "Receptive field",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "9",
+      "tolerance": 0.01,
+      "explanation": "1 + d(k-1) = 1 + 4*2 = 9."
+    },
+    {
+      "id": "b7",
+      "prompt": "x = [2, 1, 0, 3], kernel w = [1, 2] (cross-correlation, stride 1, valid), upstream gradient g = [1, 1, 2]. What is dL/dw1? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "weight-sharing"
+      ],
+      "skillLabel": "Weight sharing and equivariance",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "dw1 = sum_i g_i x_{i+1} = 1*1 + 1*0 + 2*3 = 7."
+    },
+    {
+      "id": "b8",
+      "prompt": "You double the input image's height and width. How does the parameter count of a 3x3 convolutional layer change?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "weight-sharing"
+      ],
+      "skillLabel": "Weight sharing and equivariance",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "It doubles, because the height and the width both double",
+        "It is halved, because each kernel covers a larger share of the image",
+        "It does not change; the compute (MACs) grows about 4x",
+        "It quadruples, because the number of pixels grows by 4x"
+      ],
+      "answer": "2",
+      "explanation": "Parameters depend on k, Cin and Cout only."
+    },
+    {
+      "id": "b9",
+      "prompt": "Why are three stacked 3x3 stride-1 convolutions often preferred to one 7x7?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "receptive-field"
+      ],
+      "skillLabel": "Receptive field",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "options": [
+        "Fewer MACs only because of the stride, with no change in the parameters",
+        "A larger receptive field than one 7x7 has, using the same parameters",
+        "No need for padding, since three small kernels never shrink the map",
+        "Same receptive field, fewer parameters (27C^2 vs 49C^2) and more nonlinearities"
+      ],
+      "answer": "3",
+      "explanation": "Receptive field is 7 in both cases."
+    },
+    {
+      "id": "b10",
+      "prompt": "A detector must find 80-pixel objects but the last feature map's receptive field is 35 pixels. What is the most likely consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "receptive-field"
+      ],
+      "skillLabel": "Receptive field",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "Each unit sees only part of the object, so large objects are poorly detected",
+        "Nothing: the padding of the layers fixes the small receptive field",
+        "Nothing: the stride compensates for the small receptive field",
+        "The model will overfit, since the large objects are seen too rarely"
+      ],
+      "answer": "0",
+      "explanation": "Add depth/stride/dilation or use feature maps with larger receptive fields for large objects."
+    },
+    {
+      "id": "b11",
+      "prompt": "A microcontroller-class CPU allows 50 million MACs per second at 10 fps for 64x64 grayscale input. Describe how you would size a CNN under this budget (strides, channels) and what you would compute to check it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "conv-cost"
+      ],
+      "skillLabel": "Parameters and MACs",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "rubric": [
+        "Budget per frame is 5 M MACs; uses early stride to cut resolution.",
+        "Computes MACs per layer H_out*W_out*Cout*k^2*Cin and parameters.",
+        "Checks receptive field against the object size."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "How would you test a hand-written convolution layer's backward pass? List the checks.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "weight-sharing"
+      ],
+      "skillLabel": "Weight sharing and equivariance",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "rubric": [
+        "Finite-difference gradient check of the kernel gradient (centred differences).",
+        "Hand-computed small 1-D case and shape checks with stride and padding.",
+        "Equivariance or gradient-sum check and a case with stride 2."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

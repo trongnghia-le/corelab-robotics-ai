@@ -1,0 +1,343 @@
+{
+  "id": "RL18-targeted",
+  "topicId": "RL18",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A line fitted to rewards 0.2, 0.5, 0.8 at actions 0, 1, 2. Estimate at action 4? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.4",
+      "tolerance": 0.05,
+      "explanation": "Slope 0.3, intercept 0.2: 0.2 + 1.2 = 1.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "off-extrapolation"
+      ],
+      "skillLabel": "Extrapolate a fitted line",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL18#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Estimates (0, 0.5, 1.0, 1.5) at actions 0..3, support {0, 1}. Penalty weight needed so action 1 beats action 3 under Q - lambda*distance? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "Action 3 has distance 2 from action 1: (1.5 - 0.5)/2 = 0.5 (action 2: (1.0-0.5)/1 = 0.5 as well).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "off-penalty"
+      ],
+      "skillLabel": "Compute the penalty weight",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL18#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Which of these dataset facts best tells you that a learned action is unsupported?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Its estimated value is high compared to other actions",
+        "Its estimated value is low compared to other actions",
+        "It is chosen by the greedy policy of the learner",
+        "Zero or very few logged samples at nearby state-action pairs"
+      ],
+      "answer": "3",
+      "explanation": "Support is about data coverage, not about the value the model assigns.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "off-extrapolation"
+      ],
+      "skillLabel": "Identify unsupported actions",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL18#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "n = 9 samples, sigma = 0.6, c = 2. Penalty c*sigma/sqrt(n)? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.4",
+      "tolerance": 0.01,
+      "explanation": "2*0.6/3 = 0.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "off-pessimism"
+      ],
+      "skillLabel": "Compute a count-based penalty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL18#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A tabular offline learner initialises unseen Q-values to 0 and all real rewards are negative. What is the likely result of taking max over all actions?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Nothing happens, since defaults are ignored by the maximum",
+        "The learner becomes more conservative about unseen actions",
+        "Unseen actions look best because 0 exceeds every real value",
+        "The Q-values converge to the true values of the policy"
+      ],
+      "answer": "2",
+      "explanation": "Real Q-values are negative, so the unseen default 0 is the maximum and attracts the policy.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "off-extrapolation",
+        "off-pessimism"
+      ],
+      "skillLabel": "Predict the effect of optimistic defaults",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL18#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Target with unsupported default: r = -1, gamma = 0.9, supported Q' = -1.5, unseen default 0. How much larger is the naive target than the supported-only target? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.35",
+      "tolerance": 0.01,
+      "explanation": "Naive: -1; supported-only: -1 - 1.35 = -2.35; difference 1.35.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "off-extrapolation"
+      ],
+      "skillLabel": "Quantify bootstrapped overestimation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL18#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "LCB for mean 1.0 (n = 100) and mean 1.5 (n = 1), sigma = 1. For which value of c do the two LCB scores tie? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.556",
+      "tolerance": 0.003,
+      "explanation": "1.0 - 0.1c = 1.5 - c gives c = 0.5/0.9 = 0.556.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "off-pessimism"
+      ],
+      "skillLabel": "Find the pessimism break-even",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL18#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Setting lambda (or c) very large in a conservative offline method tends to",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "ignore the dataset and follow only the penalty it adds",
+        "find the global optimum, even for actions outside the data",
+        "make the value function exact at every action in the task",
+        "reproduce the best supported choice, like behaviour cloning"
+      ],
+      "answer": "3",
+      "explanation": "With a huge penalty only supported actions can win.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "off-penalty",
+        "off-pessimism"
+      ],
+      "skillLabel": "Know the limit of conservatism",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL18#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Explain why in-distribution validation error of a Q-function cannot reveal extrapolation error.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Validation data come from the same logged distribution",
+        "They contain no samples at unsupported actions",
+        "Extrapolation error only appears for actions or states the dataset does not cover"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "off-extrapolation"
+      ],
+      "skillLabel": "Explain validation limits",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL18#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Write the support-restricted Bellman target for a tabular offline learner and state how you determine the allowed actions.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "y = r + gamma * max over actions a' with count(s', a') > 0 of Q(s', a')",
+        "Counts or a behaviour model decide the allowed actions",
+        "Handles terminals and the case where no action is allowed"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "off-extrapolation",
+        "off-penalty"
+      ],
+      "skillLabel": "Write a support-restricted target",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL18#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "You have two logged datasets of the same robot task: one from 10 human demonstrators and one from a random policy. Which supports offline RL better and why? What would you check?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Coverage versus quality: random data cover widely but with low return, demonstrators are high return with narrow coverage",
+        "A mixture often works best for offline RL since stitching needs coverage of good transitions",
+        "Check support overlap, action diversity, and compare with BC and conservative methods"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "off-pessimism",
+        "off-extrapolation"
+      ],
+      "skillLabel": "Judge dataset quality",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL18#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "The true best action is outside the data. A conservative method picks the best supported action. Compared with the naive greedy action, its regret is",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "undefined",
+        "small and bounded, but not zero",
+        "always larger than the naive greedy regret",
+        "always zero"
+      ],
+      "answer": "1",
+      "explanation": "It loses the gap between the best supported and the best unsupported action, but avoids the potentially unbounded loss of a bad extrapolation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "off-penalty",
+        "off-extrapolation"
+      ],
+      "skillLabel": "Compare regret",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL18#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    }
+  ]
+}

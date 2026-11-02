@@ -1,0 +1,178 @@
+{
+  "id": "RL11-diagnostic",
+  "topicId": "RL11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which part of off-policy learning can importance weights pi(a)/b(a) repair?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A target network that moves too fast during bootstrapped updates",
+        "Rewards that changed in the environment since the data was collected",
+        "Over- or under-representation of actions relative to the target policy",
+        "Actions that the behaviour policy never took in the logged data"
+      ],
+      "answer": "2",
+      "explanation": "Weights re-balance action frequencies where b has support. They cannot fix a changed environment or actions with no data.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "offp-importance-sampling"
+      ],
+      "skillLabel": "Know what IS can fix",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "pi = (0.25, 0.75), b = (0.5, 0.5). What is the importance weight of action 1? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "0.75/0.5 = 1.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-importance-sampling"
+      ],
+      "skillLabel": "Compute importance weights",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL11#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Importance weights (1, 1, 4) with rewards (2, 2, 6). What is the weighted IS estimate? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.67",
+      "tolerance": 0.01,
+      "explanation": "Sum w*r = 2+2+24 = 28; sum w = 6; 28/6 = 4.667.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-weighted-is"
+      ],
+      "skillLabel": "Compute weighted IS",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL11#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Replay buffer FIFO with capacity 300, a reward change at step 500, current time 700. What fraction of the buffer is stale (recorded before step 500)? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.33",
+      "tolerance": 0.01,
+      "explanation": "The buffer holds steps 400 to 700; 100 of 300 are before 500: 0.333.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-staleness"
+      ],
+      "skillLabel": "Compute stale fraction",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Why does DQN compute its regression target with a target network?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It removes the need for a replay buffer, because the delayed copy already decorrelates the samples",
+        "It guarantees that maximization bias disappears from the bootstrapped targets of the online network",
+        "It keeps the target roughly fixed while the online network fits it, rather than chasing its own estimate",
+        "It makes the stored data on-policy, so that importance weights are no longer needed for the update"
+      ],
+      "answer": "2",
+      "explanation": "Bootstrapped targets depend on the weights being trained; a delayed copy stabilises the regression. It does not remove maximization bias or the need for replay.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "offp-target-network"
+      ],
+      "skillLabel": "Explain target networks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Your replay buffer mixes data from before and after a hardware change. Explain why importance weights cannot fix this and describe one remedy and one check.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "States that weights fix only the action distribution, not changed dynamics or rewards",
+        "Remedy: shrink or refresh the buffer, tag and drop old sessions, or fine-tune on new data",
+        "Check: compare errors or mean rewards on old vs new transitions, or validate on a fresh batch"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "offp-staleness"
+      ],
+      "skillLabel": "Reason about stale replay",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Write the double-Q target in plain code or pseudocode and say what changes relative to the standard max target.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Handles terminals: returns r when done",
+        "Selects a = argmax of the online network at s' and evaluates it with the target network",
+        "States that this reduces upward bias compared with max over a single network"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "offp-target-network",
+        "offp-weighted-is"
+      ],
+      "skillLabel": "Implement the double-Q target",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL11#alternatives-and-trade-offs"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

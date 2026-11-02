@@ -1,0 +1,300 @@
+{
+  "id": "M07-targeted",
+  "topicId": "M07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "m07-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "euler-stability"
+      ],
+      "skillLabel": "Euler instability",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "For x' = −kx with k > 0, can explicit Euler produce a growing numerical solution?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Yes, if h k > 2 the multiplier 1 − hk has magnitude above 1",
+        "No, because the exact solution decays, so the numerical one must too",
+        "Only if k is negative, since a positive k always damps",
+        "Only for nonlinear equations, never for linear ones like this"
+      ],
+      "answer": "0",
+      "explanation": "The exact equation is stable, the discretisation is not: |1 − hk| < 1 needs 0 < hk < 2."
+    },
+    {
+      "id": "m07-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "state-space"
+      ],
+      "skillLabel": "State vector",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "To simulate q'' = a(q, v) with a first-order integrator, what is the state?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "(q, a) with q' = a and a' = v",
+        "(v, a) only, with v' = a",
+        "q alone, with q' = a",
+        "(q, v) with q' = v and v' = a"
+      ],
+      "answer": "3",
+      "explanation": "Second-order equations become first-order systems by adding the velocity."
+    },
+    {
+      "id": "m07-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "integrator-choice"
+      ],
+      "skillLabel": "Semi-implicit Euler",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "The update q += h*v; v += h*a(q) (with the updated q) is best described as…",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Backward Euler, which solves an implicit equation at each step",
+        "RK4 with a fixed step and four slope stages per step",
+        "Semi-implicit (symplectic) Euler: not the same as explicit Euler",
+        "Explicit Euler, since it only uses the old state in both updates"
+      ],
+      "answer": "2",
+      "explanation": "Using the new q in the velocity update changes the method and gives bounded energy for oscillators."
+    },
+    {
+      "id": "m07-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "exact-solutions"
+      ],
+      "skillLabel": "Equilibrium",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "T' = −k(T − T_room) with k > 0 settles at which value?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "0, because T' is proportional to −T for k > 0",
+        "T(0), because the temperature stays at its start",
+        "The mean of T(0) and T_room, halfway between them",
+        "T_room, because T' = 0 there and the deviation decays"
+      ],
+      "answer": "3",
+      "explanation": "Shift u = T − T_room to get u' = −ku, so u → 0."
+    },
+    {
+      "id": "m07-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "exact-solutions"
+      ],
+      "skillLabel": "Exact solution",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "x(t) = 3e^(−2t). What is x(0.5)? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.103638",
+      "tolerance": 0.001,
+      "explanation": "3e^{−1} = 1.1036."
+    },
+    {
+      "id": "m07-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "euler-stability"
+      ],
+      "skillLabel": "Euler iterations",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "x' = −5x, x0 = 2, h = 0.1. What is x after 3 Euler steps?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.25",
+      "tolerance": 0.001,
+      "explanation": "Multiplier 1 − 0.5 = 0.5, so 2·0.125 = 0.25."
+    },
+    {
+      "id": "m07-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "euler-stability"
+      ],
+      "skillLabel": "Step limit",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "For k = 8 s⁻¹, what is the strict upper bound on h (seconds) for stable explicit Euler?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.25",
+      "tolerance": 0.001,
+      "explanation": "h < 2/k = 0.25 s."
+    },
+    {
+      "id": "m07-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "exact-solutions"
+      ],
+      "skillLabel": "Half-life",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "A deviation decays with rate k = 0.3 per minute. What is its half-life in minutes? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.310491",
+      "tolerance": 0.01,
+      "explanation": "ln 2 / k = 2.31 min."
+    },
+    {
+      "id": "m07-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "euler-stability"
+      ],
+      "skillLabel": "Multiplier",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "k = 30 s⁻¹ and h = 0.1 s. What is the explicit Euler multiplier 1 − hk?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2",
+      "tolerance": 0.001,
+      "explanation": "1 − 3 = −2: magnitude 2, unstable with alternating sign."
+    },
+    {
+      "id": "m07-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "integrator-choice"
+      ],
+      "skillLabel": "Choose an integrator",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "A simulation has a fast motor mode (k = 1000/s) and slow arm dynamics. Compare explicit Euler, an implicit method and RK4 for a step of 10 ms and recommend one.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes stability limit for explicit Euler (h < 2/k = 2 ms) and notes RK4's limit is also below 10 ms.",
+        "Notes implicit methods are stable for large steps but less accurate/over-damp the fast mode.",
+        "Recommends implicit/stiff or substepping and mentions checking accuracy on the slow dynamics."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m07-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "euler-stability"
+      ],
+      "skillLabel": "Validate a simulator",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "List three checks that would catch a wrong sign, a wrong step size and a method mix-up in a simulated oscillator or decay model.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Compare with the closed-form solution and its decay/oscillation rate.",
+        "Halve h and verify the error ratio matches the method's order.",
+        "Check an invariant (energy or monotone decay) and that stability limits behave as predicted."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m07-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "state-space"
+      ],
+      "skillLabel": "Temperature model",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "prompt": "A motor temperature follows T' = −k(T − T_room). Shift the state to derive the equilibrium and describe how to estimate k from a cooling experiment.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Defines u = T − T_room and solves u' = −ku.",
+        "Finds the equilibrium T_room.",
+        "Estimates k from the slope of ln(T − T_room) versus time, noting noise and ambient assumptions."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

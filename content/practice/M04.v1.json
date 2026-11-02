@@ -1,0 +1,300 @@
+{
+  "id": "M04-targeted",
+  "topicId": "M04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "m04-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rank-independence"
+      ],
+      "skillLabel": "Dependent columns",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A 3×3 matrix has columns c1, c2 and c3 = c1 + c2. Which is true?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Its nullspace contains only the zero vector, so Ax = 0 is unique",
+        "Ax = b is solvable for every b, since the matrix is square",
+        "Its rank is 3 because it is square, so all columns are independent",
+        "Its rank is at most 2 and Ax = 0 has a nonzero solution"
+      ],
+      "answer": "3",
+      "explanation": "c1 + c2 − c3 = 0 gives the nullspace vector (1, 1, −1), so the columns are dependent."
+    },
+    {
+      "id": "m04-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "solve-elimination"
+      ],
+      "skillLabel": "Solvability",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "When does Ax = b have at least one solution?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "When all entries of A are nonzero",
+        "When b lies in the column space of A",
+        "When A is square",
+        "When b has the same length as x"
+      ],
+      "answer": "1",
+      "explanation": "Ax is always a combination of the columns, so b must be one."
+    },
+    {
+      "id": "m04-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "least-squares"
+      ],
+      "skillLabel": "Meaning of the normal equations",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "What do the normal equations AᵀAx = Aᵀb express?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The columns of A are orthonormal, so AᵀA equals the identity",
+        "The residual b − Ax is orthogonal to every column of A",
+        "The residual is as large as possible along each column of A",
+        "x is the exact solution of Ax = b, so the residual is zero"
+      ],
+      "answer": "1",
+      "explanation": "Aᵀ(b − Ax) = 0 means the residual is perpendicular to the column space."
+    },
+    {
+      "id": "m04-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "least-squares"
+      ],
+      "skillLabel": "Numerical choice",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "Why do numerical libraries prefer QR or SVD over forming AᵀA to solve least squares?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "QR needs fewer measurements than the normal equations do",
+        "Forming AᵀA changes the minimiser even in exact arithmetic",
+        "Forming AᵀA squares the condition number and loses accuracy",
+        "AᵀA is never invertible, even when A has full column rank"
+      ],
+      "answer": "2",
+      "explanation": "κ(AᵀA) = κ(A)² for the 2-norm, so rounding errors are amplified."
+    },
+    {
+      "id": "m04-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "solve-elimination"
+      ],
+      "skillLabel": "Solve a 2×2 system",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "Solve x + 2y = 7 and 3x − y = 7. Give y.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "From the second, y = 3x − 7; x + 6x − 14 = 7 gives x = 3 and y = 2."
+    },
+    {
+      "id": "m04-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rank-independence"
+      ],
+      "skillLabel": "Rank",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "What is the rank of [[1,2,3],[2,4,6],[1,0,1]]?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "Row 2 = 2·row 1; rows 1 and 3 are independent: rank 2."
+    },
+    {
+      "id": "m04-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "least-squares"
+      ],
+      "skillLabel": "Constant fit",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "Fit a constant c to the measurements 2, 4, 9 by least squares. What is c?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "A is a column of ones: AᵀA = 3, Aᵀy = 15, so c = 5 (the mean)."
+    },
+    {
+      "id": "m04-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "underdetermined"
+      ],
+      "skillLabel": "Nullspace dimension",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A is 3×5 with rank 3. What is the dimension of its nullspace?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "nullity = columns − rank = 5 − 3 = 2."
+    },
+    {
+      "id": "m04-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "least-squares"
+      ],
+      "skillLabel": "Residual size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "For the line fit to y = (1, 3, 4) at x = (0, 1, 2) the residual is (−1/6, 1/3, −1/6). What is its Euclidean norm? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.408248",
+      "tolerance": 0.001,
+      "explanation": "sqrt(1/36 + 4/36 + 1/36) = sqrt(1/6) ≈ 0.408."
+    },
+    {
+      "id": "m04-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "underdetermined"
+      ],
+      "skillLabel": "Sensor design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "Two sensors measure only the sum of two joint angles. Can you recover both angles? Propose one additional independent measurement and say how you would check the combined system.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States rank 1 so only the sum is determined.",
+        "Adds a measurement with an independent row, such as the difference or one angle.",
+        "Checks the stacked matrix has rank 2 (and a reasonable condition number)."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m04-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "solve-elimination"
+      ],
+      "skillLabel": "Solver test plan",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#theory-and-derivation"
+        }
+      ],
+      "prompt": "List tests for a linear solver: which hand-computed systems, which error cases, and which invariant would catch a missing row swap?",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "A system requiring a row swap and a 3×3 hand solution.",
+        "A singular matrix that must raise rather than divide by zero.",
+        "Residual check A x − b ≈ 0 on random nonsingular systems."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m04-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "least-squares"
+      ],
+      "skillLabel": "Interpreting a fit",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M04#verification"
+        }
+      ],
+      "prompt": "A least-squares calibration returns a small residual. What can you and what can you not conclude about the sensor model?",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Small residual shows the model fits the sampled data.",
+        "It does not show the model is correct outside the range or that noise is unbiased.",
+        "Suggests checking residual plots, held-out data and conditioning."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

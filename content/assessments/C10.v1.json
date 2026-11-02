@@ -1,0 +1,196 @@
+{
+  "id": "C10-diagnostic",
+  "topicId": "C10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "For a candidate V(x) > 0, the derivative along trajectories V-dot is negative for all x in a ball |x| < r (x not zero). What can you conclude?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The origin is asymptotically stable, with a sublevel set of V inside the ball as a region of attraction",
+        "The origin is unstable outside the ball and so unstable overall, because V-dot is unknown there",
+        "Nothing can be concluded unless V-dot is negative on the whole state space, not just a ball",
+        "The origin is globally asymptotically stable, since V decreases along every trajectory in the ball"
+      ],
+      "answer": "0",
+      "explanation": "Local Lyapunov theorem: a sublevel set of V inside the ball is invariant. Global stability would need V-dot < 0 everywhere and V radially unbounded.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "basin"
+      ],
+      "skillLabel": "Basin of attraction and local versus global",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "x' = -x + x^2 with V = x^2/2. Compute V-dot at x = 0.8 (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.128",
+      "tolerance": 0.001,
+      "explanation": "V-dot = -x^2 (1 - x) = -0.64*0.2 = -0.128.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lyapunov-sign"
+      ],
+      "skillLabel": "Sign of the Lyapunov derivative",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Same system: V-dot at x = 3 (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "18",
+      "tolerance": 0.01,
+      "explanation": "-9*(1-3) = +18.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lyapunov-sign"
+      ],
+      "skillLabel": "Sign of the Lyapunov derivative",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "For x' = -x + x^2 starting at x0 = 1.2, the solution blows up at t* = ln(x0/(x0-1)). Compute t* (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.791759",
+      "tolerance": 0.002,
+      "explanation": "ln(6) = 1.792.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "basin"
+      ],
+      "skillLabel": "Basin of attraction and local versus global",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A damped pendulum's energy has V-dot = -b*omega^2 (zero whenever omega = 0). Why can we still conclude the hanging equilibrium is asymptotically stable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Because V-dot = 0 means V is constant forever, and so the pendulum must come to rest by itself",
+        "We cannot conclude it; only Lyapunov stability holds whenever V-dot is merely negative semidefinite",
+        "LaSalle: the only invariant set where omega = 0 is the bottom, so trajectories converge to it",
+        "Because -b*omega^2 is strictly negative at every state, so V decreases at all times everywhere"
+      ],
+      "answer": "2",
+      "explanation": "If omega stays 0 then theta'' = 0 forces sin(theta) = 0; only the bottom is invariant.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lasalle"
+      ],
+      "skillLabel": "Semi-definite derivatives and LaSalle",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Inverted pendulum theta'' = g_l*sin(theta) + a with g_l = 9.81 and a torque limit |a| <= 6. What is the largest angle (rad, 3 decimals) at which gravity can still be cancelled (a >= g_l sin(theta))?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.658108",
+      "tolerance": 0.002,
+      "explanation": "asin(6/9.81) = 0.658 rad.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "feedback-linearization"
+      ],
+      "skillLabel": "Feedback linearisation and its limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Your colleague verified by simulation that a controller stabilises a robot arm from 200 random starts and claims a proof. Explain what is and is not established, and what Lyapunov-style argument would strengthen it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Says simulation samples are evidence for those starts, not a proof for the region.",
+        "Names a candidate V and a check of V-dot over the region/level set.",
+        "Mentions boundary/outside starts, saturation, or model error."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "basin",
+        "lyapunov-sign"
+      ],
+      "skillLabel": "Basin of attraction and local versus global",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

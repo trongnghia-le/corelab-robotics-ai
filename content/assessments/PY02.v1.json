@@ -1,0 +1,201 @@
+{
+  "id": "PY02-diagnostic",
+  "topicId": "PY02",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "list-queue-costs"
+      ],
+      "skillLabel": "Costs of list operations",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "Which operation on a Python list is linear time in the list length?",
+      "options": [
+        "reading xs[i], an element by index",
+        "append(x), adding at the end",
+        "pop(0), removing the first element",
+        "len(xs), reading the stored size"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Removing the first element shifts every other element."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "list-queue-costs"
+      ],
+      "skillLabel": "Queue cost model",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#worked-example"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "Draining a list of 8 items with pop(0) shifts how many elements in total?",
+      "answer": "28",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "7+6+5+4+3+2+1+0=28=8*7/2."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hash-lookup"
+      ],
+      "skillLabel": "Membership with sets and dicts",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "q3",
+      "kind": "choice",
+      "prompt": "You need to test whether message id 4172 was already processed, among 100,000 ids. Best structure?",
+      "options": [
+        "a deque of ids",
+        "a set of ids",
+        "a list of ids",
+        "a sorted list scanned from the start"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Average O(1) lookup versus O(n) scan."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hash-lookup"
+      ],
+      "skillLabel": "Hashable keys",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#failure-modes"
+        }
+      ],
+      "id": "q4",
+      "kind": "choice",
+      "prompt": "Why does {[1, 2]: 'a'} raise a TypeError?",
+      "options": [
+        "keys must be strings, and a list is not a string",
+        "the dict is too small to hold a list-valued key",
+        "lists are mutable and therefore unhashable",
+        "lists have no length, so they cannot be hashed"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Hash must not change while the key is stored, so mutable containers are rejected."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bounded-buffer"
+      ],
+      "skillLabel": "Bounded buffers",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#worked-example"
+        }
+      ],
+      "id": "q5",
+      "kind": "number",
+      "prompt": "A drop-oldest ring buffer with capacity 5 receives 12 messages. How many are dropped?",
+      "answer": "7",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "12-5=7 dropped."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bounded-buffer"
+      ],
+      "skillLabel": "Backlog growth",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "id": "q6",
+      "kind": "number",
+      "prompt": "Producer 20 Hz, consumer 8 Hz, unbounded queue. How many messages wait after 30 s?",
+      "answer": "360",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1,
+      "explanation": "(20-8)*30=360."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "list-queue-costs",
+        "bounded-buffer"
+      ],
+      "skillLabel": "Choosing a queue",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#failure-modes"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "A callback appends every sensor message to a list and later removes the oldest with pop(0). The robot becomes sluggish after a few minutes. Diagnose the problem and propose a fix with a drop policy.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Identifies the quadratic cost of pop(0) and/or unbounded backlog.",
+        "Proposes a deque or ring buffer with maxlen.",
+        "States a drop policy (oldest or newest) and a counter for dropped items."
+      ]
+    }
+  ]
+}

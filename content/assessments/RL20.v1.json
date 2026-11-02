@@ -1,0 +1,202 @@
+{
+  "id": "RL20-diagnostic",
+  "topicId": "RL20",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "An option is defined by:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "option-definition"
+      ],
+      "skillLabel": "Define an option",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "A reward function, a discount factor and a time horizon for the task",
+        "A value function, a policy and a replay buffer used for off-policy learning",
+        "An initiation set, an intra-option policy and a termination condition",
+        "A state space, an action space and a transition model of the environment"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL20#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "Initiation set I, policy pi and termination beta make up the option triple."
+    },
+    {
+      "id": "q2",
+      "prompt": "gamma=0.9, rewards -1 per step. An option lasts 3 steps. What is its discounted reward R? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "option-return"
+      ],
+      "skillLabel": "Discounted option return",
+      "mistakeCategory": "mathematical",
+      "answer": "-2.71",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL20#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "-(1+0.9+0.81)=-2.71."
+    },
+    {
+      "id": "q3",
+      "prompt": "SMDP backup: R=-2.71, tau=3, gamma=0.9, V(s_end)=-4. Value of R + gamma^tau V(s_end)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "smdp-backup"
+      ],
+      "skillLabel": "SMDP backup",
+      "mistakeCategory": "mathematical",
+      "answer": "-5.626",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL20#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "-2.71+0.729*(-4)=-5.626."
+    },
+    {
+      "id": "q4",
+      "prompt": "Why must the backup after an option use gamma^tau?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "smdp-backup"
+      ],
+      "skillLabel": "SMDP backup",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Because options always terminate in one step, so the discount is applied once",
+        "tau is a learning rate that scales the update of the value estimate",
+        "The remaining return starts tau steps later and is discounted for those tau steps",
+        "To make the option policy deterministic during the evaluation of the backup"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL20#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "The return splits at the termination time; the continuation is discounted by gamma^tau."
+    },
+    {
+      "id": "q5",
+      "prompt": "An option terminates with probability 0.2 at every step. Expected duration in steps?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "termination"
+      ],
+      "skillLabel": "Termination and duration",
+      "mistakeCategory": "mathematical",
+      "answer": "5",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL20#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "Geometric: 1/0.2=5."
+    },
+    {
+      "id": "q6",
+      "prompt": "A robot skill 'grasp' has no initiation set check and is started with the gripper already holding an object. This is a failure of:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "option-definition",
+        "termination"
+      ],
+      "skillLabel": "Initiation versus termination",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The precondition (initiation set), which says where the skill may start",
+        "The reward function, which did not penalise starting in this state",
+        "The discount factor, which weighted the future too heavily for the skill",
+        "The termination condition, which should have stopped the skill earlier"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL20#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "The initiation set encodes where the skill is valid to start."
+    },
+    {
+      "id": "q7",
+      "prompt": "Define one reusable skill (for example 'open a drawer') as an option: give its initiation set, intra-option policy, termination (success and failure), and say how you would test it in isolation before using it in a hierarchy.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "option-definition",
+        "termination"
+      ],
+      "skillLabel": "Design a skill as an option",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL20#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "rubric": [
+        "Initiation set: states where the drawer is reachable and closed.",
+        "Termination: success (open by x cm), failure/timeout, and an abort on force limit.",
+        "Test in isolation over many start states and report success rate, duration and failure reasons."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

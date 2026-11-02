@@ -1,0 +1,235 @@
+{
+  "id": "RL23-diagnostic",
+  "topicId": "RL23",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why is epsilon-greedy poor at finding a sparse reward far away?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "directed-exploration"
+      ],
+      "skillLabel": "Why undirected exploration is slow",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "It has no memory of where it has been, so it acts like a random walk and revisits places",
+        "It always picks the greedy action, so it never takes any exploratory step at all",
+        "It needs a learned model of the environment, which a sparse reward does not provide",
+        "It uses too large a discount factor, so a far reward is always valued at zero"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL23#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL06",
+        "ML08"
+      ],
+      "explanation": "Memoryless noise gives diffusive coverage, about distance squared steps."
+    },
+    {
+      "id": "q2",
+      "prompt": "Count bonus beta/sqrt(n) with beta=0.5 and n=16. Value? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "count-bonus"
+      ],
+      "skillLabel": "Compute a count bonus",
+      "mistakeCategory": "mathematical",
+      "answer": "0.125",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL23#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL06",
+        "ML08"
+      ],
+      "explanation": "0.5/4=0.125."
+    },
+    {
+      "id": "q3",
+      "prompt": "UCB1 value Q + c sqrt(ln t / N) with Q=0.4, c=2, t=100, N=4. Value? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "count-bonus"
+      ],
+      "skillLabel": "Compute a count bonus",
+      "mistakeCategory": "mathematical",
+      "answer": "2.545966",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL23#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL06",
+        "ML08"
+      ],
+      "explanation": "0.4+2*sqrt(4.605/4)=2.55."
+    },
+    {
+      "id": "q4",
+      "prompt": "In the noisy-TV problem a prediction-error bonus fails because:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "noisy-tv"
+      ],
+      "skillLabel": "Noisy-TV distraction",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The network is too small, so it can never reduce the error on any frame",
+        "Pure noise stays unpredictable, so the error and the bonus never decay",
+        "The bonus is always negative whenever the screen contains random noise",
+        "Noise lowers the discount factor, so the bonus is discounted away to nothing"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL23#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL06",
+        "ML08"
+      ],
+      "explanation": "Aleatoric randomness cannot be learned away, so error stays high."
+    },
+    {
+      "id": "q5",
+      "prompt": "Two coin hypotheses (heads probability 0.2 or 0.8), prior 0.5/0.5. Expected information gain of one flip in bits? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "information-gain"
+      ],
+      "skillLabel": "Expected information gain",
+      "mistakeCategory": "mathematical",
+      "answer": "0.278072",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL23#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL06",
+        "ML08"
+      ],
+      "explanation": "1 - H(0.8) = 1 - 0.7219 = 0.278."
+    },
+    {
+      "id": "q6",
+      "prompt": "Hypotheses (heads probability 0.5 or 0.5), prior 0.5/0.5. Information gain of a flip in bits?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "information-gain"
+      ],
+      "skillLabel": "Expected information gain",
+      "mistakeCategory": "mathematical",
+      "answer": "0",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL23#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL06",
+        "ML08"
+      ],
+      "explanation": "Both hypotheses predict the same data, so posterior = prior: 0 bits."
+    },
+    {
+      "id": "q7",
+      "prompt": "Which quantity is best suited to ignore pure environment noise when rewarding exploration?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "noisy-tv",
+        "information-gain"
+      ],
+      "skillLabel": "Noisy-TV distraction",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Expected information gain about the model parameters",
+        "The entropy of the policy's action distribution",
+        "Visit counts computed over the raw pixel observations",
+        "Raw next-frame prediction error on the observed pixels"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL23#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL06",
+        "ML08"
+      ],
+      "explanation": "Information gain is zero when observations are independent of the unknown parameters."
+    },
+    {
+      "id": "q8",
+      "prompt": "You add an RND-style novelty bonus to a mobile robot and its task return drops. Describe the evaluation you would run to find out why, including one noise-injection test and what you would report.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "noisy-tv",
+        "directed-exploration"
+      ],
+      "skillLabel": "Design an exploration evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL23#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL06",
+        "ML08"
+      ],
+      "rubric": [
+        "Report extrinsic return and an exploration statistic separately across seeds.",
+        "Noise-injection test: add an unpredictable source and check whether behaviour collapses to it.",
+        "Compare against epsilon-greedy and a decaying bonus; check that the bonus decays on repeated true states."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

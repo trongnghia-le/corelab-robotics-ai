@@ -1,0 +1,297 @@
+{
+  "id": "R03-targeted",
+  "topicId": "R03",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rotation-validity"
+      ],
+      "skillLabel": "Recognising a proper rotation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f1",
+      "kind": "choice",
+      "prompt": "Which 3x3 matrix is a proper rotation?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The matrix with rows (1,0,0), (0,1,0), (0,0,-1)",
+        "The matrix with rows (2,0,0), (0,0.5,0), (0,0,1)",
+        "The matrix with rows (0,-1,0), (1,0,0), (0,0,1)",
+        "The matrix with rows (1,1,0), (0,1,0), (0,0,1)"
+      ],
+      "answer": "2",
+      "explanation": "A rotation must satisfy R^T R = I and det R = +1. The matrix with rows (1,0,0),(0,1,0),(0,0,-1) is a reflection (det -1); the matrix with rows (2,0,0),(0,0.5,0),(0,0,1) has det 1 but stretches; a matrix with an all-ones row is not orthogonal."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rotation-validity"
+      ],
+      "skillLabel": "Trace and angle",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f2",
+      "kind": "number",
+      "prompt": "A rotation matrix turns by 60 degrees about some axis. What is its trace? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.01,
+      "explanation": "tr R = 1 + 2 cos(theta) = 1 + 2(0.5) = 2."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-composition"
+      ],
+      "skillLabel": "Composing transforms",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f3",
+      "kind": "number",
+      "prompt": "T1 rotates 90 degrees about z and translates by (0, 3). T2 is a pure translation by (1, 0). In the product T1*T2, what is the y component of the translation? Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.05,
+      "explanation": "Translation of T1T2 = R1 t2 + t1 = R(1,0) + (0,3) = (0,1) + (0,3) = (0,4)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rigid-inverse"
+      ],
+      "skillLabel": "Inverting a pose",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f4",
+      "kind": "number",
+      "prompt": "T has R = rotation by 90 degrees about z and t = (2, 0, 0). What is the y component of the translation of T^{-1} = (R^T, -R^T t)? Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.05,
+      "explanation": "R^T (2,0,0) = (0,-2,0), so -R^T t = (0,2,0): y = 2."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "frame-composition"
+      ],
+      "skillLabel": "Order of composition",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f5",
+      "kind": "choice",
+      "prompt": "A point p_C is known in the camera frame. The transforms T_WB (base in world) and T_BC (camera in base) are known. Which expression gives the point in world coordinates?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "T_WB * T_BC * p_C",
+        "T_WB^{-1} * T_BC * p_C",
+        "T_BC * p_C only",
+        "T_BC * T_WB * p_C"
+      ],
+      "answer": "0",
+      "explanation": "Adjacent labels must match: T_WB T_BC p_C. The other orders pair mismatched frames."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-composition"
+      ],
+      "skillLabel": "Transforming a point",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f6",
+      "kind": "number",
+      "prompt": "A frame is rotated 30 degrees about z and translated by (1, 1, 0) relative to the world. What is the world x coordinate of the point (2, 0, 0) given in that frame? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.732",
+      "tolerance": 0.002,
+      "explanation": "x = 2 cos30 + 1 = 1.732 + 1 = 2.732."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rotation-noncommutativity"
+      ],
+      "skillLabel": "Rotation order",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f7",
+      "kind": "choice",
+      "prompt": "Which statement about rotations about different coordinate axes is correct?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Order matters only if a and b exceed 90 degrees",
+        "Rx(a) Rz(b) equals a single rotation about x by a+b",
+        "Rx(a) Rz(b) always equals Rz(b) Rx(a)",
+        "Rx(a) Rz(b) generally differs from Rz(b) Rx(a)"
+      ],
+      "answer": "3",
+      "explanation": "3D rotations about different axes generally do not commute; same-axis rotations do."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rotation-validity"
+      ],
+      "skillLabel": "Angle from the trace",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f8",
+      "kind": "number",
+      "prompt": "A rotation matrix has trace 0. What is its rotation angle in degrees? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "120",
+      "tolerance": 0.1,
+      "explanation": "cos(theta) = (0-1)/2 = -1/2, so theta = 120 degrees."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rotation-validity"
+      ],
+      "skillLabel": "Parameter count of a rotation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f9",
+      "kind": "choice",
+      "prompt": "A 3x3 rotation matrix has 9 entries. How many independent parameters does a 3D rotation have?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "3",
+        "4",
+        "6",
+        "9"
+      ],
+      "answer": "0",
+      "explanation": "Orthonormality (R^T R = I) gives 6 independent constraints on the 9 entries, leaving 3 parameters."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rigid-inverse"
+      ],
+      "skillLabel": "Distance preservation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f10",
+      "kind": "number",
+      "prompt": "Two points (0,0,0) and (3,4,0) are mapped by an arbitrary rigid transform. What is the distance between the images? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "Rigid transforms preserve distances: sqrt(9+16) = 5."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "numerical-drift"
+      ],
+      "skillLabel": "Repairing a drifted rotation",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#failure-modes"
+        }
+      ],
+      "id": "f11",
+      "kind": "short",
+      "prompt": "A robot multiplies thousands of small rotation matrices in float32 and after a minute the matrix no longer satisfies R^T R = I. Explain why and describe how you would detect and repair it.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Explains that rounding errors accumulate in each product so R drifts from orthonormality",
+        "Detects it by checking max|R^T R - I| and det R against a tolerance",
+        "Repairs by re-orthonormalising (SVD/QR) periodically or by integrating a unit quaternion and renormalising"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "frame-composition"
+      ],
+      "skillLabel": "Debugging a calibration chain",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "f12",
+      "kind": "short",
+      "prompt": "A robot places its gripper 5 cm from where the camera says the target is. You have T_base_wrist from the kinematics and T_wrist_camera from a calibration. Describe a procedure with frame labels and numerical checks to find whether the error is a wrong order, a missing inverse, or a bad calibration.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Writes the chain with matching adjacent labels (T_base_camera = T_base_wrist T_wrist_camera) and checks the inverse direction explicitly",
+        "Uses invariant checks: T^{-1}T = I, loop closure, and lengths between known points preserved",
+        "Tests with a hand-computed pose (for example a pure 90 degree rotation) and compares residual size to the calibration noise to separate a labelling error from calibration error"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

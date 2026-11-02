@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="Inter, Arial, sans-serif">
+<rect width="760" height="380" fill="#111827" rx="12"/>
+<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">The debugging loop</text>
+<g font-size="14" fill="#e5e7eb" text-anchor="middle">
+<rect x="20" y="55" width="130" height="50" rx="8" fill="none" stroke="#f97316" stroke-width="2"/><text x="85" y="86">failing run</text>
+<rect x="190" y="55" width="130" height="50" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/><text x="255" y="86">reproduce</text>
+<rect x="360" y="55" width="130" height="50" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/><text x="425" y="86">reduce</text>
+<rect x="530" y="55" width="130" height="50" rx="8" fill="none" stroke="#38bdf8" stroke-width="2"/><text x="595" y="86">locate</text>
+<rect x="190" y="150" width="130" height="50" rx="8" fill="none" stroke="#a3e635" stroke-width="2"/><text x="255" y="181">fix</text>
+<rect x="360" y="150" width="130" height="50" rx="8" fill="none" stroke="#a3e635" stroke-width="2"/><text x="425" y="181">regression test</text>
+<rect x="530" y="150" width="130" height="50" rx="8" fill="none" stroke="#a3e635" stroke-width="2"/><text x="595" y="181">re-run sanitizers</text>
+</g>
+<path d="M150 80 H188 M320 80 H358 M490 80 H528" stroke="#e5e7eb" stroke-width="2"/>
+<path d="M595 105 V128 H255 V148" stroke="#e5e7eb" stroke-width="2" fill="none"/>
+<path d="M320 175 H358 M490 175 H528" stroke="#e5e7eb" stroke-width="2"/>
+<text x="20" y="245" font-size="15" font-weight="bold" fill="#e5e7eb">Which tool finds what</text>
+<g font-size="13" fill="#e5e7eb">
+<text x="20" y="272"><tspan fill="#38bdf8">ASan</tspan>  buffer overflow, use-after-free, leaks</text>
+<text x="20" y="295"><tspan fill="#38bdf8">UBSan</tspan>  signed overflow, bad shifts, null use</text>
+<text x="20" y="318"><tspan fill="#38bdf8">TSan</tspan>  data races (separate build)</text>
+<text x="400" y="272"><tspan fill="#f97316">GDB</tspan>  stack and variables at the crash</text>
+<text x="400" y="295"><tspan fill="#f97316">Valgrind</tspan>  uninitialized reads, no rebuild</text>
+<text x="400" y="318"><tspan fill="#f97316">tests</tspan>  expected values, exit code for CI</text>
+</g>
+<text x="20" y="358" font-size="13" fill="#e5e7eb">Build for debugging: -g -O0/-O1 -fno-omit-frame-pointer. Read the FIRST error in a report.</text>
+</svg>

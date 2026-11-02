@@ -1,0 +1,329 @@
+{
+  "id": "RL05-targeted",
+  "topicId": "RL05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "TD(0): V(s) = 5, r = 0, V(s') = 2, gamma = 0.9, alpha = 0.1. New V(s)? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "td-update"
+      ],
+      "skillLabel": "TD(0) update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL05#worked-example"
+        }
+      ],
+      "answer": "4.68",
+      "tolerance": 0.01,
+      "explanation": "target 1.8, delta -3.2, V = 5 - 0.32 = 4.68.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "TD error for V(s) = 3, r = 2, V(s') = 3, gamma = 0.5.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "td-update"
+      ],
+      "skillLabel": "TD(0) update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL05#worked-example"
+        }
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "2 + 1.5 - 3 = 0.5.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "Monte Carlo with alpha = 1/n over returns 4, 8, 6 (V_0 arbitrary). What is the final estimate?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "monte-carlo-estimate"
+      ],
+      "skillLabel": "Monte Carlo estimates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL05#worked-example"
+        }
+      ],
+      "answer": "6",
+      "tolerance": 0.01,
+      "explanation": "The incremental update with alpha = 1/n gives the sample mean 6.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "A terminal state's stored value is wrongly 0.7. A goal transition has r = 10 and gamma = 0.9. What target does TD(0) use (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "terminal-handling"
+      ],
+      "skillLabel": "Terminal handling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: exercise answers",
+          "href": "/lessons/RL05#exercise-answers"
+        }
+      ],
+      "answer": "10.63",
+      "tolerance": 0.01,
+      "explanation": "10 + 0.9*0.7 = 10.63 instead of 10.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "An episode is cut by a time limit while the robot is still mid-task. How should the TD target of the last transition be formed?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "terminal-handling"
+      ],
+      "skillLabel": "Terminal handling",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL05#failure-modes"
+        }
+      ],
+      "options": [
+        "Bootstrap from V of the cut-off state, since the task would have continued.",
+        "Discard the transition, since the time limit makes its target invalid.",
+        "Use r only, as if the cut-off state were a true terminal state.",
+        "Use the max over all states, since the best state sets the target."
+      ],
+      "answer": "0",
+      "explanation": "Truncation is not termination; the state still has a future.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p6",
+      "prompt": "A student says 'TD(0) is unbiased because it uses real observed rewards'. What is the flaw?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bias-variance"
+      ],
+      "skillLabel": "Bias-variance trade-off",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL05#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Its target includes V(s'), an estimate, so it is biased until V is accurate.",
+        "TD never uses the observed rewards, so only the estimates are involved.",
+        "TD has an infinite variance, so any bias does not matter in practice.",
+        "Unbiasedness is irrelevant for TD, since TD is used only for control."
+      ],
+      "answer": "0",
+      "explanation": "Bootstrapping uses the current estimate of the next state.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "As n grows to the remaining length of the episode, the n-step return becomes",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "n-step-return"
+      ],
+      "skillLabel": "n-step returns",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL05#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "the Monte Carlo return, which uses all of the rewards to the episode end",
+        "the optimal return, which no longer depends on the policy being used",
+        "the TD(0) target, which bootstraps from the value of the next state",
+        "zero, because no rewards remain after the end of the episode"
+      ],
+      "answer": "0",
+      "explanation": "With no bootstrap term left, it is the full discounted return.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "Rewards 1, 2, 3 then bootstrap V = 10, gamma = 0.5, n = 3. Compute the 3-step return.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "n-step-return"
+      ],
+      "skillLabel": "n-step returns",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL05#worked-example"
+        }
+      ],
+      "answer": "4.0",
+      "tolerance": 0.01,
+      "explanation": "1 + 0.5*2 + 0.25*3 + 0.125*10 = 4.0.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p9",
+      "prompt": "A constant step size alpha = 0.02 is used. Roughly how many updates is the memory (time constant 1/alpha) of the estimate?",
+      "kind": "number",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "step-size"
+      ],
+      "skillLabel": "Step size and fair comparison",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL05#worked-example"
+        }
+      ],
+      "answer": "50",
+      "tolerance": 0.5,
+      "explanation": "1/alpha = 50 updates.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "p10",
+      "prompt": "Returns of one state have standard deviation 8. What is the standard error of the Monte Carlo mean from 25 independent first-visit returns? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bias-variance"
+      ],
+      "skillLabel": "Bias-variance trade-off",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL05#theory-and-derivation"
+        }
+      ],
+      "answer": "1.6",
+      "tolerance": 0.05,
+      "explanation": "8/sqrt(25) = 1.6.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p11",
+      "prompt": "Write td0 for a list of (s, r, s2) transitions with correct terminal handling and a test that a value stored for the terminal state does not change the result.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "terminal-handling"
+      ],
+      "skillLabel": "Terminal handling",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/RL05#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Uses V.get(s2, 0.0) or a done flag so terminal contributes zero.",
+        "Updates only the visited states with alpha*(target - V[s]).",
+        "Test puts a nonzero terminal value in the table and checks the update is unchanged."
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p12",
+      "prompt": "A robot team has only 20 episodes of a slow task. Argue for Monte Carlo or TD, naming the risk of each and one experiment that would settle it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "step-size",
+        "bias-variance"
+      ],
+      "skillLabel": "Step size and fair comparison",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL05#alternatives-and-trade-offs"
+        }
+      ],
+      "rubric": [
+        "Mentions the variance of MC with few episodes and the bias of TD from the initial table.",
+        "Notes TD works online and does not need episode ends.",
+        "Proposes an experiment: many seeds with matched step-size tuning against a reference value."
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

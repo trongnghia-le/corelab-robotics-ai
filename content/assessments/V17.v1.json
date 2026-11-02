@@ -1,0 +1,182 @@
+{
+  "id": "V17-diagnostic",
+  "topicId": "V17",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A trajectory is evaluated with ATE. Why is a rigid alignment applied first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gauge-and-ate"
+      ],
+      "skillLabel": "Gauge freedom and ATE",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V11"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V17#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It converts radians into degrees, so that the estimate and the reference share the same units.",
+        "The world origin and orientation are a free choice not observable from images, so alignment removes that gauge.",
+        "Alignment is needed only for lidar, since camera trajectories are always in the world frame.",
+        "Alignment lowers the noise of the camera, so the remaining error shows only the algorithm's accuracy."
+      ],
+      "answer": "1",
+      "explanation": "Images cannot fix the global frame; alignment removes only that freedom."
+    },
+    {
+      "id": "q2",
+      "prompt": "A robot drives a 40 m loop and ends 2.678 m from the start. What is the drift as a percentage of path length (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "drift-metrics"
+      ],
+      "skillLabel": "Drift as a percentage of path length",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V17#worked-example"
+        }
+      ],
+      "answer": "6.7",
+      "tolerance": 0.02,
+      "explanation": "2.678/40 = 0.06695 -> 6.70 %."
+    },
+    {
+      "id": "q3",
+      "prompt": "Heading bias of 0.01 rad is added at each of 40 steps of a square loop. What total heading error (rad) accumulates by the end?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "heading-drift"
+      ],
+      "skillLabel": "Heading error accumulation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V17#worked-example"
+        }
+      ],
+      "answer": "0.4",
+      "tolerance": 0.005,
+      "explanation": "40 x 0.01."
+    },
+    {
+      "id": "q4",
+      "prompt": "A heading bias gives RPE of 0 over one step but large RPE over 40 steps. The best explanation is",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "drift-metrics"
+      ],
+      "skillLabel": "Relative error versus interval",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V17#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The local translation per step is unchanged, but the errors accumulate over longer intervals.",
+        "RPE ignores translation, so only rotation errors can make it grow with the interval.",
+        "The trajectory was not aligned first, so the interval error is dominated by the offset.",
+        "The metric is broken, because a zero value over one step cannot occur on real data."
+      ],
+      "answer": "0",
+      "explanation": "Heading bias rotates later motions in the world frame; the per-step translation in its own frame is unchanged."
+    },
+    {
+      "id": "q5",
+      "prompt": "Pose composition for a planar robot must express the delta motion in",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pose-composition"
+      ],
+      "skillLabel": "Composing relative poses",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V17#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "image coordinates, since the motion is measured from the camera",
+        "an arbitrary frame chosen separately for each step of the trajectory",
+        "the robot's current frame, rotated into the world by theta",
+        "the world frame, since all poses are stored there and deltas can be added directly"
+      ],
+      "answer": "2",
+      "explanation": "x += cos(th) dx - sin(th) dy etc."
+    },
+    {
+      "id": "q6",
+      "prompt": "A robot at pose (0,0,pi/2) moves delta (dx,dy,dth) = (1,0,0) in its own frame. What is the new world y coordinate?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pose-composition"
+      ],
+      "skillLabel": "Composing relative poses",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V17#worked-example"
+        }
+      ],
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "y = sin(pi/2)*1 = 1."
+    },
+    {
+      "id": "q7",
+      "prompt": "Explain what loop closure adds to visual odometry, and give one way a false loop closure can occur and one safeguard.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "loop-closure"
+      ],
+      "skillLabel": "Loop closure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V17#failure-modes"
+        }
+      ],
+      "rubric": [
+        "States that a loop closure is a constraint between two distant poses that reduces accumulated drift.",
+        "Names perceptual aliasing (similar-looking places) as a cause of false closures.",
+        "Names a safeguard such as geometric verification or robust optimisation."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

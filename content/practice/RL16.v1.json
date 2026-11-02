@@ -1,0 +1,370 @@
+{
+  "id": "RL16-targeted",
+  "topicId": "RL16",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A friction coefficient of 0.4 is uncertain by a factor of 2. What is the upper end of its range? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.02,
+      "explanation": "Upper end = 2 * 0.4 = 0.8 (lower end 0.2).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-ranges"
+      ],
+      "skillLabel": "Derive a multiplicative range",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Four randomized parameters, each with 3 grid values. How many grid points?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "81",
+      "tolerance": 0.01,
+      "explanation": "3^4 = 81.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-coverage"
+      ],
+      "skillLabel": "Count grid points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Random samples needed so that the probability of missing a region of 10% of the volume is at most 5% (round up)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "29",
+      "tolerance": 0.5,
+      "explanation": "ln 0.05 / ln 0.9 = 28.4, so 29.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-coverage"
+      ],
+      "skillLabel": "Compute samples for coverage",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A randomized policy has the same mean cost inside the box as a nominal policy but a much lower worst-case cost on held-out corners. This shows",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "that the simulator is exact",
+        "that the nominal policy is better",
+        "that held-out corners are irrelevant",
+        "robustness that the mean cost alone hides"
+      ],
+      "answer": "3",
+      "explanation": "Equal means can hide very different tails; the held-out worst case is where the difference shows.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dr-robustness-tradeoff",
+        "dr-held-out-evaluation"
+      ],
+      "skillLabel": "Interpret mean versus worst case",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL16#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q5"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Controller A costs (0.24, 0.30, 1.17) on three plants and B costs (0.60, 0.68, 0.78). What is the worst-case cost of the better worst-case controller? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.78",
+      "tolerance": 0.01,
+      "explanation": "max A = 1.17, max B = 0.78; B has the lower worst case.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-robustness-tradeoff"
+      ],
+      "skillLabel": "Compare worst cases",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL16#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A sampler calls random.Random(0) inside the loop that draws each parameter set. What is the consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Nothing, since 0 is a valid seed",
+        "The samples are correlated but still cover the box",
+        "The samples are better stratified",
+        "Every sample is identical, so there is no randomization"
+      ],
+      "answer": "3",
+      "explanation": "Re-seeding with the same value resets the generator and reproduces the same numbers each time.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dr-coverage"
+      ],
+      "skillLabel": "Spot a sampling bug",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL16#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Average cost over 5 plants is (0.4 + 0.5 + 0.45 + 0.5 + 1.15) / 5. What is the mean and what is the worst-case cost? Give the worst case. (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.15",
+      "tolerance": 0.01,
+      "explanation": "The mean is 0.60 but the worst case is 1.15, which a mean-only report would hide.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-robustness-tradeoff"
+      ],
+      "skillLabel": "Report mean and worst case",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL16#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Coverage of a 2-parameter box by 3 random samples that fall in 3 distinct cells of a 4 x 4 grid? (four decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1875",
+      "tolerance": 0.001,
+      "explanation": "3 / 16 = 0.1875.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dr-coverage"
+      ],
+      "skillLabel": "Compute coverage fraction",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A real robot's payload turns out to be 5 kg, while the training box was 1 to 3 kg. Which diagnosis is most accurate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Domain randomization failed, because it samples the parameters using random numbers",
+        "The deployment is outside the support of the training distribution, so no robustness is expected",
+        "The critic is overestimating the value of the policy at the heavier payload of 5 kg",
+        "The learning rate was too low, so the policy never covered the whole 1 to 3 kg box"
+      ],
+      "answer": "1",
+      "explanation": "Randomization gives robustness only inside (and a little around) the sampled box.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dr-ranges",
+        "dr-held-out-evaluation"
+      ],
+      "skillLabel": "Diagnose an out-of-range failure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL16#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "List three parameters you would randomize for a vision-based grasping policy trained in simulation, with a justification for each range.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names plausible parameters (lighting, camera pose, object texture or mass, friction)",
+        "Gives a range or tolerance with a source",
+        "Notes one parameter to hold out or to test at the extremes"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "dr-ranges"
+      ],
+      "skillLabel": "Plan visual and physical randomization",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL16#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Your randomized policy fails at the lightest, lowest-friction corner but works elsewhere. Give two possible causes and one experiment for each.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Corner outside the training box, or too few samples near it (coverage)",
+        "Gains too aggressive for the light plant (delay or damping), trade-off from heavier plants",
+        "Experiment: widen or add the corner to the box and re-test; or evaluate gains over a mass sweep"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dr-robustness-tradeoff",
+        "dr-held-out-evaluation"
+      ],
+      "skillLabel": "Diagnose a corner failure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL16#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write code or pseudocode for a coverage check of N parameter samples with k bins per axis and say what value should alarm you.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Maps each sample to a cell index per axis with clamping at the upper edge",
+        "Counts distinct cells divided by k^d",
+        "Alarm: a fraction far below 1 for the number of samples, or a very low fraction in high dimension"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "dr-coverage"
+      ],
+      "skillLabel": "Implement a coverage check",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL16#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "You randomize mass and friction but not actuator latency, and the real robot oscillates. What is the most plausible explanation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A dominant source of the gap (latency) was not randomized, so the policy never saw it",
+        "The mass range was too wide, so the policy became too cautious in its actions",
+        "Domain randomization cannot handle oscillation of any kind, whatever is randomized",
+        "The random seeds were identical, so no variation was actually sampled in training"
+      ],
+      "answer": "0",
+      "explanation": "Robustness only covers the varied factors; unmodelled effects like delay need to be identified and randomized.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dr-ranges",
+        "dr-robustness-tradeoff"
+      ],
+      "skillLabel": "Find the unrandomized parameter",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL16#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ]
+    }
+  ]
+}

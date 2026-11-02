@@ -1,0 +1,366 @@
+{
+  "id": "RL08-targeted",
+  "topicId": "RL08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Three actions with probabilities (0.2, 0.4, 0.4). Action 2 is sampled. What is component 1 of the score grad log pi(2) with respect to the logits? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.4",
+      "tolerance": 0.01,
+      "explanation": "1[1=2] - pi_1 = 0 - 0.4 = -0.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-score-function"
+      ],
+      "skillLabel": "Know the softmax score",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Probabilities (0.2, 0.4, 0.4) and rewards (0, 5, 10). What is dJ/dtheta_2? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.6",
+      "tolerance": 0.01,
+      "explanation": "J = 0 + 2 + 4 = 6; dJ/dtheta_2 = 0.4*(10-6) = 1.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-exact-gradient"
+      ],
+      "skillLabel": "Compute an exact policy gradient",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Why must the exact gradient of J with respect to softmax logits sum to zero?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Adding the same constant to every logit does not change the policy or J",
+        "Rewards are always centred by the environment before learning",
+        "Only the best action's logit ever changes during an update",
+        "The probabilities sum to one, so the rewards cancel in the sum"
+      ],
+      "answer": "0",
+      "explanation": "J depends on logits only through softmax, which is invariant to a common shift, so the directional derivative along the all-ones vector is zero.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pg-exact-gradient"
+      ],
+      "skillLabel": "Interpret the gradient structure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "pi = (0.25, 0.75), rewards (1, 3), baseline b = J = 2.5. What is the total variance of the one-sample estimator? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.375",
+      "tolerance": 0.002,
+      "explanation": "Computed by enumerating both actions: second moment minus squared mean norm gives 0.375 (versus 0.84375 at b = 0).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-baseline"
+      ],
+      "skillLabel": "Compute estimator variance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A teammate says: 'a baseline lowers variance but biases the gradient, so use it only when you have lots of data.' What is the correct response?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "True: the bias is small if the baseline is near J, so use lots of data",
+        "False: a baseline raises the variance but removes the bias",
+        "A baseline that does not depend on the action leaves the mean gradient unchanged",
+        "True for REINFORCE, but not for actor-critic methods"
+      ],
+      "answer": "2",
+      "explanation": "The expected score is zero, so subtracting an action-independent baseline changes only the variance.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pg-baseline"
+      ],
+      "skillLabel": "Correct a baseline misconception",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "pi = (0.25, 0.75), rewards (1, 3). What constant baseline minimises the total variance of the one-sample estimator? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "b* = sum pi r |s|^2 / sum pi |s|^2 with |s_0|^2 = 1.125 and |s_1|^2 = 0.125: (0.28125+0.28125)/(0.28125+0.09375) = 1.5. It differs from J = 2.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-baseline"
+      ],
+      "skillLabel": "Find the optimal baseline",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Your analytic gradient is (-0.5, 0.5) and the central finite difference is (0.5, -0.5). What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The finite-difference step h is too small",
+        "The rewards need normalising",
+        "A sign error in the analytic gradient or the check",
+        "The policy is deterministic"
+      ],
+      "answer": "2",
+      "explanation": "Equal magnitudes with opposite signs point to a sign error; a bad h gives small, noisy discrepancies, not an exact reversal.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pg-gradient-check"
+      ],
+      "skillLabel": "Interpret a gradient check",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL08#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Explain in two or three sentences why using reward-to-go instead of the whole-episode return keeps the policy gradient unbiased and why it helps.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Action a_t cannot affect rewards before t, so those terms have zero expected contribution",
+        "Dropping them keeps the mean gradient unchanged",
+        "Fewer random terms means lower variance"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pg-baseline"
+      ],
+      "skillLabel": "Explain reward-to-go",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b9",
+      "prompt": "Write a numerically stable softmax and the sampled REINFORCE update for logits theta, sampled action a, reward r and baseline b. Name one line where a sign error would silently minimise the return.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Subtracts max(theta) before exponentiating and normalises",
+        "Updates theta += alpha*(r-b)*(onehot(a) - pi)",
+        "Names the update sign (plus for ascent) or the missing -pi term as the risky line"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "pg-score-function"
+      ],
+      "skillLabel": "Implement the score update",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL08#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Rewards are (1000, 1002) with pi = (0.5, 0.5). What is dJ/dtheta_0? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.5",
+      "tolerance": 0.01,
+      "explanation": "J = 1001, gradient = 0.5*(1000-1001) = -0.5; adding a constant to rewards does not change the exact gradient.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-exact-gradient",
+        "pg-baseline"
+      ],
+      "skillLabel": "Use shift invariance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q5"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Logits (0, 0), rewards (1, 3). Take one gradient-ascent step with alpha = 0.1 on the exact gradient (-0.5, 0.5). What is J afterwards? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.05",
+      "tolerance": 0.005,
+      "explanation": "New logits (-0.05, 0.05), gap 0.1, J = 1 + 2*sigmoid(0.1) = 2.0500.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-exact-gradient"
+      ],
+      "skillLabel": "Verify ascent improves J",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL08#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Training stalls: pi(best action) = 0.999 but the return is poor because a better action exists. Diagnose using the gradient formula and give a plan with a check that could prove your diagnosis wrong.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Gradient pi_i(R_i - J) is near zero at a near-deterministic policy for every action",
+        "Plan: entropy bonus, restart with a more uniform policy, or force exploration",
+        "Check: measure gradient norm and the return of the unexplored action under forced sampling"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "pg-vanishing-gradient"
+      ],
+      "skillLabel": "Diagnose vanishing gradients",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL08#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Which statement about the REINFORCE gradient estimate is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is biased for grad J unless the rewards are first normalised to the range [0, 1]",
+        "It has zero variance whenever the policy is stochastic, since the samples average out",
+        "It is unbiased for grad J, and its variance grows with reward scale unless a baseline is used",
+        "It needs the derivative of the reward with respect to the action, as in a backpropagated update"
+      ],
+      "answer": "2",
+      "explanation": "The log-derivative trick gives an unbiased estimator that never needs dR/da; its variance grows with the reward magnitude without a baseline.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pg-baseline",
+        "pg-score-function"
+      ],
+      "skillLabel": "Interpret the estimator",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q5"
+      ]
+    }
+  ]
+}

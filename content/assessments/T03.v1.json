@@ -1,0 +1,188 @@
+{
+  "id": "T03-diagnostic",
+  "topicId": "T03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A script runs `open('config.json')`. From which directory is that path resolved?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The process's current working directory",
+        "The user's home directory",
+        "The Python installation directory",
+        "The folder containing the script file"
+      ],
+      "answer": "0",
+      "explanation": "Relative paths are resolved against the process cwd, not the script's location, unless you build them from __file__.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "working-directory"
+      ],
+      "skillLabel": "Working directory and relative paths",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "In a VS Code launch.json, which value for 'args' is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "\"--lr 0.1\", as a single string",
+        "{\"--lr\": \"0.1\"}",
+        "[\"--lr: 0.1\"]",
+        "[\"--lr\", \"0.1\"]"
+      ],
+      "answer": "3",
+      "explanation": "args is a list of strings; a single string becomes one argument.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "launch-config"
+      ],
+      "skillLabel": "Launch configurations",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Which debugger action executes the current line without entering any function it calls?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Step into",
+        "Continue",
+        "Step out",
+        "Step over"
+      ],
+      "answer": "3",
+      "explanation": "Step over runs the whole line; step into enters the callee; step out finishes the current function; continue runs to the next breakpoint.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stepping"
+      ],
+      "skillLabel": "Stepping and inspection",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A loop runs for i in range(6) and does total += i*i. A conditional breakpoint with condition i == 3 stops before that iteration's update. What is total at that moment? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.0",
+      "tolerance": 0.5,
+      "explanation": "Before the update at i=3 the total holds 0²+1²+2²=5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stepping"
+      ],
+      "skillLabel": "Stepping and inspection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A pipeline has 1,000,000 stages. Once a stage corrupts the data, every later stage is corrupted. At most how many probes (not counting the first end-check) does a binary search need to find the first corrupting stage? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20.0",
+      "tolerance": 0.5,
+      "explanation": "ceil(log2(10^6))=20.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection"
+      ],
+      "skillLabel": "Narrowing a bug by bisection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "The same program imports numpy in your terminal but fails under the editor's debug run. What should you check first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Whether the file is saved in UTF-8, since encoding breaks import statements",
+        "Which interpreter each uses (sys.executable) and whether it has the package",
+        "The screen resolution of the monitor, which affects the debugger's startup",
+        "The editor's font size and theme, since they change how imports are resolved"
+      ],
+      "answer": "1",
+      "explanation": "Different interpreters/virtual environments have different installed packages.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "interpreter-environment"
+      ],
+      "skillLabel": "Interpreter and environment",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how you would turn 'my training script crashes sometimes' into a fixed bug with a regression test.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Makes the failure deterministic (seed, inputs, args, cwd, interpreter) and records the environment.",
+        "Minimizes and narrows with a predicate and bisection or a conditional breakpoint, inspecting state at the first bad step.",
+        "Fixes and adds a regression test that fails before the fix, with the debug configuration documented."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "bisection",
+        "interpreter-environment"
+      ],
+      "skillLabel": "Narrowing a bug by bisection",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

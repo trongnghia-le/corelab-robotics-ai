@@ -1,0 +1,184 @@
+{
+  "id": "T02-diagnostic",
+  "topicId": "T02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "What is a Git branch?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A movable label pointing at a commit",
+        "A full copy of the working directory",
+        "A remote server",
+        "A list of changed files"
+      ],
+      "answer": "0",
+      "explanation": "A branch is just a reference (a name) to a commit; committing moves it forward.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "branches-dag"
+      ],
+      "skillLabel": "Branches and the commit graph",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "What determines a commit's id?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The wall-clock time at which the commit was created, to the second",
+        "A counter that is incremented each time any commit is made",
+        "A hash of its content, including tree, parents, author and message",
+        "The name of the branch on which the commit was made"
+      ],
+      "answer": "2",
+      "explanation": "The id is the SHA-1 of the commit object; any change, including a parent id, changes it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "commit-objects"
+      ],
+      "skillLabel": "Commits as content-addressed snapshots",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "History: C0←C1←C2 on main and C1←C3←C4 on feature. How many commits does feature have that main lacks? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.5,
+      "explanation": "C3 and C4 are reachable from feature but not from main.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "branches-dag"
+      ],
+      "skillLabel": "Branches and the commit graph",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "For the history of the previous question, is `git merge feature` from main a fast-forward?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Yes: they share C1, which is enough for Git to fast-forward",
+        "No: main's tip C2 is not an ancestor of C4, so a merge commit is created",
+        "No: Git cannot merge diverged branches without first rebasing one of them",
+        "Yes: feature has more commits, so Git simply moves the main pointer forward"
+      ],
+      "answer": "1",
+      "explanation": "A fast-forward needs the current tip to be an ancestor of the other branch's tip.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "branches-dag"
+      ],
+      "skillLabel": "Branches and the commit graph",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A unified diff hunk has 3 lines starting with '+' and 1 line starting with '-' (the rest are context). By how many lines does the file's length change? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.5,
+      "explanation": "3 added minus 1 removed = +2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reading-diffs"
+      ],
+      "skillLabel": "Reading diffs",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "You edit train.py, run `git add train.py`, then edit it again. Which content does `git commit` record?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The version at the time of git add",
+        "Nothing, until you run git add again",
+        "The latest working-tree version",
+        "Both versions"
+      ],
+      "answer": "0",
+      "explanation": "The index holds the content as it was staged; later edits stay unstaged.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "staging-area"
+      ],
+      "skillLabel": "The staging area",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You must be able to reproduce the number in your results table in six months. Describe exactly what you commit, what your result file records, and how you detect that a result came from uncommitted code.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Commits code, config (and seed), environment declaration and small result summaries; ignores secrets, caches and large data.",
+        "Result file records commit id, config, seed and data version, and a dirty flag (git status --porcelain).",
+        "Refuses or flags dirty runs, and verifies reproducibility by re-running from a clean checkout of the recorded commit."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "experiment-provenance"
+      ],
+      "skillLabel": "Experiment provenance",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

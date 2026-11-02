@@ -1,0 +1,196 @@
+{
+  "id": "CPP06-diagnostic",
+  "topicId": "CPP06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "template <class T> T add(T a, T b); What happens with add(1, 2.5)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "T becomes double and the result is 3.5",
+        "The call compiles but is undefined behavior",
+        "Compile error: T is deduced as both int and double",
+        "T becomes int and the result is 3"
+      ],
+      "answer": "2",
+      "explanation": "Each function parameter must deduce the same T; int and double conflict. Use add<double>(...) or two template parameters.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "template-deduction"
+      ],
+      "skillLabel": "Template argument deduction",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Welford's algorithm processes {2, 4, 6}. What is the sample variance (divide by n-1)? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.005,
+      "explanation": "Mean 4; squared deviations 4+0+4 = 8; 8/(3-1) = 4.00.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "numerical-stability"
+      ],
+      "skillLabel": "Welford statistics",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        },
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP06#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Which declaration can be used as the size of a std::array?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "const int& n = m;",
+        "int n = 12;",
+        "const int n = read_sensor();",
+        "constexpr int n = 3 * 4;"
+      ],
+      "answer": "3",
+      "explanation": "An array size is a template argument and must be a constant expression; a run-time const is not.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "constexpr-evaluation"
+      ],
+      "skillLabel": "constexpr versus const",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A constexpr table of int squares is built with make_squares<250>(). How many bytes does the array occupy (4-byte int)? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1000",
+      "tolerance": 0.5,
+      "explanation": "250 elements x 4 bytes = 1000 bytes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "constexpr-evaluation"
+      ],
+      "skillLabel": "Compile-time table size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "What does 'if constexpr' do in a template?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It evaluates the condition at run time but caches the result for later calls",
+        "It discards the untaken branch at compile time, so that branch need not be valid for T",
+        "It forces the condition to be true and ignores the else branch for every T",
+        "It makes the whole enclosing function constexpr and callable at compile time"
+      ],
+      "answer": "1",
+      "explanation": "Discarded statements are not instantiated, which lets one template body handle types with different valid operations.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "template-constraints"
+      ],
+      "skillLabel": "if constexpr",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A function template is declared in util.h and its body is only in util.cpp. main.cpp calls it with int. What do you most likely get?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A linker error: undefined reference to the int instantiation",
+        "A run-time exception thrown on the first call",
+        "It works, because the linker instantiates it on demand",
+        "A compile error inside util.cpp when it is built"
+      ],
+      "answer": "0",
+      "explanation": "The compiler could not instantiate the template while compiling main.cpp because it did not see the body.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "template-deduction"
+      ],
+      "skillLabel": "Templates in headers",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP06#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Your generic mean(const Container&) is called with a std::vector<std::string> and prints a 40-line error. Show how to improve the diagnostic in C++17 and name the C++20 feature that improves it further.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Adds static_assert(std::is_arithmetic_v<value_type>, \"message\") at the top.",
+        "Explains that the message states the unmet assumption in one line.",
+        "Names C++20 concepts / requires clauses, which report an unsatisfied constraint at the call site."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "template-constraints"
+      ],
+      "skillLabel": "Constraining templates",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP06#alternatives-and-trade-offs"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

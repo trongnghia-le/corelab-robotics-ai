@@ -1,0 +1,380 @@
+{
+  "id": "C08-targeted",
+  "topicId": "C08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A lidar mounted at (0.3, 0.0, 0) sees a point at (2.0, 1.0) in its frame. x coordinate in the base frame (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.3",
+      "tolerance": 0.01,
+      "explanation": "No rotation: x = 0.3 + 2.0 = 2.3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "alignment"
+      ],
+      "skillLabel": "Frame and time alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A sensor mounted with yaw +90 deg at the origin sees a point at (1, 0). The base-frame y coordinate (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "Rotating (1,0) by 90 degrees gives (0,1).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "alignment"
+      ],
+      "skillLabel": "Frame and time alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Samples at t = 2.0 s (value 10) and t = 2.2 s (value 14). Interpolated value at t = 2.05 s (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "11",
+      "tolerance": 0.01,
+      "explanation": "10 + (0.05/0.2)*4 = 11.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "alignment"
+      ],
+      "skillLabel": "Frame and time alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Independent fusion of 1.8 (var 0.09) and 1.5 (var 0.01). Fused variance (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.009",
+      "tolerance": 0.0005,
+      "explanation": "1/(11.11+100) = 0.009.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "weighted-fusion"
+      ],
+      "skillLabel": "Inverse-variance fusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Same fusion: fused mean (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.53",
+      "tolerance": 0.001,
+      "explanation": "(1.8*11.11+1.5*100)/111.11 = 1.53.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "weighted-fusion"
+      ],
+      "skillLabel": "Inverse-variance fusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "sigma1 = 1, sigma2 = 2, correlation 0.5. Optimal weight on sensor 1 (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "c = 1, w = (4-1)/(1+4-2) = 1: sensor 2 adds nothing.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "correlation"
+      ],
+      "skillLabel": "Correlated errors and overconfidence",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Equal sensors (variance 4 each), correlation 0.5. Optimal fused variance (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "c=2; (16-4)/(8-4) = 3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "correlation"
+      ],
+      "skillLabel": "Correlated errors and overconfidence",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "When would you choose covariance intersection over an independent Kalman update?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "When the measurements arrive at the same rate, so both can be fused with no interpolation",
+        "When the cross-correlation of two estimates is unknown and consistency matters more than optimality",
+        "When the sensors have identical variances, so the two estimates can be averaged directly",
+        "When you want the smallest possible covariance, accepting that it may be overconfident"
+      ],
+      "answer": "1",
+      "explanation": "CI never underestimates the covariance for any correlation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "correlation"
+      ],
+      "skillLabel": "Correlated errors and overconfidence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "An EKF output (which includes the IMU) is fused again with the raw IMU as if independent. What is the problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The EKF cannot accept IMU data, so the second fusion step fails to run",
+        "The IMU has the wrong units when it is fed through the EKF a second time",
+        "Double counting: the IMU error appears twice, so the result is overconfident",
+        "The fused result is biased by exactly the IMU bias, so it is underconfident"
+      ],
+      "answer": "2",
+      "explanation": "The shared measurement makes the inputs correlated.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "correlation"
+      ],
+      "skillLabel": "Correlated errors and overconfidence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "In ROS REP 105 terms, which frame is continuous but drifts, and which is globally consistent but can jump?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "base_link is global and consistent; map is local and drifts",
+        "map is continuous but drifts; odom is globally consistent but can jump",
+        "odom is continuous but drifts; map is globally consistent but can jump",
+        "Both are identical, since both are fixed to the world frame"
+      ],
+      "answer": "2",
+      "explanation": "The map->odom transform absorbs jumps from global corrections.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "alignment"
+      ],
+      "skillLabel": "Frame and time alignment",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "A complementary filter's time constant is increased. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The filter becomes unstable, since a larger time constant puts the pole outside the unit circle",
+        "Higher crossover: more trust in the accelerometer, less gyro drift, more accelerometer noise",
+        "Lower crossover: more trust in the gyro, larger steady error from gyro bias, less accelerometer noise",
+        "No effect on the bias error: only the noise level changes, and the crossover stays the same"
+      ],
+      "answer": "2",
+      "explanation": "error = tau*bias grows; the accelerometer path is cut off at a lower frequency.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "complementary-filter"
+      ],
+      "skillLabel": "Complementary filtering and consistent fusion",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Design the timestamp handling for fusing a 5 Hz GPS (40 ms latency) into a 100 Hz odometry-based filter. What do you do with each measurement and what do you log to verify?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Uses the measurement time (not arrival), compensates latency by delayed update or state interpolation.",
+        "Mentions buffering/replay or interpolation, not extrapolation.",
+        "Names a check: innovation spikes after turns or speed-dependent bias."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "alignment",
+        "weighted-fusion"
+      ],
+      "skillLabel": "Frame and time alignment",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

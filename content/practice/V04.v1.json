@@ -1,0 +1,376 @@
+{
+  "id": "V04-targeted",
+  "topicId": "V04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Residuals (du, dv): (2, 0), (0, 0), (0, 2), (2, 2). Give the RMS in pixels (precision 0.01).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reprojection-rms"
+      ],
+      "skillLabel": "Reprojection RMS",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "sqrt((4+0+4+8)/4)=2."
+    },
+    {
+      "id": "b2",
+      "prompt": "f = 1000 px, k1 = -0.05, k2 = 0. How many pixels does a point at normalised radius 0.8 shift (f*r*|k1|*r^2)? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "radial-distortion"
+      ],
+      "skillLabel": "Radial distortion",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "25.6",
+      "tolerance": 0.1,
+      "explanation": "1000*0.8*0.05*0.64 = 25.6."
+    },
+    {
+      "id": "b3",
+      "prompt": "Distort x = 0.5, y = 0 with k1 = -0.2, k2 = 0, then project with f = 400, cx = 320. What is u? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "radial-distortion"
+      ],
+      "skillLabel": "Radial distortion",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "510",
+      "tolerance": 0.1,
+      "explanation": "factor 1-0.2*0.25 = 0.95; xd = 0.475; u = 400*0.475+320 = 510."
+    },
+    {
+      "id": "b4",
+      "prompt": "A 7x10-corner board is seen in 8 views. How many scalar residuals does the reprojection objective have? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dof-counting"
+      ],
+      "skillLabel": "Residuals versus parameters",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "1120",
+      "tolerance": 0.5,
+      "explanation": "2*70*8=1120."
+    },
+    {
+      "id": "b5",
+      "prompt": "Model: 4 intrinsics, 3 radial coefficients and 6 pose values for each of 10 views. How many parameters? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dof-counting"
+      ],
+      "skillLabel": "Residuals versus parameters",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "67",
+      "tolerance": 0.5,
+      "explanation": "4+3+60=67."
+    },
+    {
+      "id": "b6",
+      "prompt": "Corner positions have independent noise of 0.25 px per axis and the model is correct. About what RMS reprojection error should you expect (sigma*sqrt(2))? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reprojection-rms"
+      ],
+      "skillLabel": "Reprojection RMS",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.35",
+      "tolerance": 0.01,
+      "explanation": "0.25*1.414 = 0.354 (slightly lower after fitting)."
+    },
+    {
+      "id": "b7",
+      "prompt": "Undistortion by fixed-point iteration: xd = 0.45, y = 0, k1 = -0.2, start at x = xd. What is x after one iteration (x = xd / (1 + k1 r^2) with the current x)? (precision 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "radial-distortion"
+      ],
+      "skillLabel": "Radial distortion",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.469",
+      "tolerance": 0.001,
+      "explanation": "r^2 = 0.2025; factor 0.9595; 0.45/0.9595 = 0.4690."
+    },
+    {
+      "id": "b8",
+      "prompt": "You tune a distortion coefficient until the error on your 'test' images is lowest, then report that error as the calibration quality. What went wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Fit versus held-out error",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "The coefficient is unitless, so it cannot be tuned on image data",
+        "RMS was the wrong metric; a mean of the lengths should be reported",
+        "Nothing: test images are exactly what should be used to tune coefficients",
+        "Leakage: the test images influenced the fit, so the number is optimistic"
+      ],
+      "answer": "3",
+      "explanation": "Held-out data must not influence the fit or the model selection."
+    },
+    {
+      "id": "b9",
+      "prompt": "Adding k2 to a model fitted on the same data. What can you say about the training RMS?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Fit versus held-out error",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "It must decrease strictly, because every new parameter fits some noise",
+        "It cannot increase (nested model), but held-out error may worsen",
+        "It is always better on held-out data too, since the model is richer",
+        "It stays identical, because k2 is only used at the image corners"
+      ],
+      "answer": "1",
+      "explanation": "More parameters fit at least as well on the same data."
+    },
+    {
+      "id": "b10",
+      "prompt": "Residual vectors from a calibration point radially outward and grow toward the image corners. What does this suggest?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "radial-distortion"
+      ],
+      "skillLabel": "Radial distortion",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "options": [
+        "A missing or insufficient radial distortion term in the model",
+        "Rolling shutter, which skews the residuals along the scan direction",
+        "Gaussian noise on the corners, which has no spatial structure",
+        "A wrong principal point only, which shifts all residuals the same way"
+      ],
+      "answer": "0",
+      "explanation": "Structured radial residuals are a model error, not noise."
+    },
+    {
+      "id": "b11",
+      "prompt": "Plan the image set for calibrating a 1280x720 wide-angle camera: how many images, which poses, what coverage, and when do you re-shoot?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "calibration-coverage"
+      ],
+      "skillLabel": "Calibration coverage",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "About 15-25 images with tilts up to 45 degrees and several distances.",
+        "Corners and edges of the image covered; sharp, fixed focus.",
+        "Re-shoot if held-out RMS is much larger than training RMS or parameters change between sessions."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write the tests for an undistort(xd, yd, k1) function implemented by fixed-point iteration (inputs, expected results, convergence check).",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "radial-distortion"
+      ],
+      "skillLabel": "Radial distortion",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "rubric": [
+        "Round trip: undistort(distort(x,y)) returns (x,y) within a tolerance for several radii.",
+        "Zero distortion k1 = 0 returns the input; origin maps to origin.",
+        "Checks behaviour or failure for large radius where the iteration may not converge."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

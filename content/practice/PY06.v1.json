@@ -1,0 +1,370 @@
+{
+  "id": "PY06-targeted",
+  "topicId": "PY06",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "training-loop"
+      ],
+      "skillLabel": "Training loop order",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "b1",
+      "kind": "choice",
+      "prompt": "In the standard training step, which order is correct?",
+      "options": [
+        "step, zero_grad, forward, loss, backward",
+        "backward, forward, loss, zero_grad, step",
+        "forward, loss, step, backward, zero_grad",
+        "zero_grad, forward, loss, backward, step"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Gradients must be cleared before backward and used before the next clear."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grad-accumulation"
+      ],
+      "skillLabel": "Gradient accumulation",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#worked-example"
+        }
+      ],
+      "id": "b2",
+      "kind": "number",
+      "prompt": "w=2 (requires_grad), L=3*w**2. After 2 backward() calls without zeroing, w.grad equals?",
+      "answer": "24",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "Each backward gives 6w=12.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "autograd-gradient"
+      ],
+      "skillLabel": "Hand-derived neuron gradient",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "b3",
+      "kind": "number",
+      "prompt": "Neuron with y=0.8 and target t=1 and L=0.5*(y-t)^2. dL/dz (4 decimals; negative)?",
+      "answer": "-0.032",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.0005,
+      "explanation": "(y-t) y (1-y)=-0.2*0.16.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "autograd-gradient"
+      ],
+      "skillLabel": "Chain rule on a graph",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#exercises"
+        }
+      ],
+      "id": "b4",
+      "kind": "number",
+      "prompt": "f=(x*y+z)**2 at x=2,y=-3,z=10: df/dz?",
+      "answer": "8",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "2q=8.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "detach-inplace",
+        "autograd-gradient"
+      ],
+      "skillLabel": "detach and the graph",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#worked-example"
+        }
+      ],
+      "id": "b5",
+      "kind": "number",
+      "prompt": "w=2,x=3, z=(w*x).detach()*w. What is dz/dw as autograd computes it?",
+      "answer": "6",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "The detached factor is a constant 6.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "detach-inplace"
+      ],
+      "skillLabel": "In-place operations",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#failure-modes"
+        }
+      ],
+      "id": "b6",
+      "kind": "choice",
+      "prompt": "c = a.exp(); c.mul_(2); c.sum().backward() fails because",
+      "options": [
+        "backward of exp needs its output, which was modified in place",
+        "c has no grad_fn, so backward cannot start",
+        "exp cannot be applied to a tensor that has requires_grad",
+        "mul_ is not a differentiable operation in PyTorch"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Saved tensors must stay unchanged."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lr-stability"
+      ],
+      "skillLabel": "Learning-rate stability",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#worked-example"
+        }
+      ],
+      "id": "b7",
+      "kind": "number",
+      "prompt": "Fitting y=ax+b with MSE on x in [-1,1] gives Hessian eigenvalues 0.74 and 2.0. Largest stable lr?",
+      "answer": "1.0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "2/2.0.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lr-stability"
+      ],
+      "skillLabel": "Learning-rate stability",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#worked-example"
+        }
+      ],
+      "id": "b8",
+      "kind": "choice",
+      "prompt": "At learning rate exactly 2/lambda_max on a quadratic, the iteration",
+      "options": [
+        "diverges geometrically in the stiffest direction",
+        "converges fastest in the stiffest direction",
+        "converges monotonically in every direction",
+        "oscillates without converging in the stiffest direction"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Factor (1-lr*lambda)=-1.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "tensor-shapes"
+      ],
+      "skillLabel": "dtypes",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "torch.tensor([1,2,3]).mean() raises an error because",
+      "options": [
+        "mean needs requires_grad=True on the tensor",
+        "tensors have no mean method; numpy must be used",
+        "the tensor is too small to define a mean",
+        "the dtype is int64 and mean requires a floating dtype"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Cast with .float().",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "autograd-gradient"
+      ],
+      "skillLabel": "Gradient checking",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#exercises"
+        }
+      ],
+      "id": "b10",
+      "kind": "number",
+      "prompt": "float32 has unit roundoff about 6e-8. With eps=1e-4 the roundoff error of a central difference is about roundoff/eps. Give it in units of 1e-4 (1 decimal).",
+      "answer": "6.0",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.5,
+      "explanation": "6e-8/1e-4=6e-4=6.0 in units of 1e-4.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "training-loop"
+      ],
+      "skillLabel": "Debugging a training loop",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#failure-modes"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "Your loss stays flat for the first epochs. List four things you check in the loop and the quick experiment that separates a data problem from a code problem.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Checks zero_grad, backward before step, parameters in the optimizer and learning rate.",
+        "Checks that grads are not None and shapes/dtypes are right.",
+        "Runs an overfit-one-batch experiment."
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "autograd-gradient"
+      ],
+      "skillLabel": "Verification strategy",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#verification"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "Explain why you would test a custom autograd-based loss against both a hand derivation and a finite-difference check instead of trusting one.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Notes the hand derivation can share a conceptual mistake with the implementation.",
+        "Notes finite differences are independent but limited by precision.",
+        "Concludes agreement of independent oracles gives confidence."
+      ]
+    }
+  ]
+}

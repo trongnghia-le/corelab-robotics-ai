@@ -1,0 +1,179 @@
+{
+  "id": "E13-diagnostic",
+  "topicId": "E13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A task has 8 stages, each succeeding 95% of the time independently. Roughly what is the end-to-end success?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": true,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-compounding"
+      ],
+      "skillLabel": "Compounding over stages",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "About 76%",
+        "About 95%",
+        "About 40%",
+        "About 66%"
+      ],
+      "answer": "3",
+      "explanation": "0.95^8=0.663."
+    },
+    {
+      "id": "q2",
+      "prompt": "Per-stage success needed so that 5 equal independent stages give 80% overall? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-compounding"
+      ],
+      "skillLabel": "Compounding over stages",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "answer": "0.956352499790037",
+      "tolerance": 0.002,
+      "explanation": "0.8^(1/5)=0.956."
+    },
+    {
+      "id": "q3",
+      "prompt": "In a log, 40 episodes reached stage 3 and 30 of them succeeded at it. What is the conditional success rate of stage 3? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "per-stage-measurement"
+      ],
+      "skillLabel": "Per-stage measurement",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "answer": "0.75",
+      "tolerance": 0.005,
+      "explanation": "30/40=0.75."
+    },
+    {
+      "id": "q4",
+      "prompt": "A stage was reached by 100 of 500 episodes and succeeded in 80 of those. Its unconditional share s/N is 0.16. What does the conditional rate say that the share does not?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "per-stage-measurement"
+      ],
+      "skillLabel": "Per-stage measurement",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Nothing new; the two quantities are identical for every stage in the pipeline.",
+        "The overall task success, which is the product of all earlier stage shares.",
+        "How many episodes started the task, which is the number of attempts in total.",
+        "How reliable the stage is when it is reached (0.80)."
+      ],
+      "answer": "3",
+      "explanation": "Conditional rate = successes / reached."
+    },
+    {
+      "id": "q5",
+      "prompt": "One stage: p=0.8, detection d=1.0, up to R=3 attempts (independent). Probability of true success? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "detection-and-retry"
+      ],
+      "skillLabel": "State checking and retries",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "answer": "0.992",
+      "tolerance": 0.002,
+      "explanation": "1-0.2^3=0.992."
+    },
+    {
+      "id": "q6",
+      "prompt": "With detection probability d=0, what do retries achieve?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "detection-and-retry"
+      ],
+      "skillLabel": "State checking and retries",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "They halve the failure rate, whatever the number of retries R allowed.",
+        "They raise the success probability to 1-(1-p)^R, as if every failure were retried.",
+        "They raise the success probability to p^R, since each retry must succeed again.",
+        "Nothing: no failure is ever flagged, so no retry occurs and success stays p."
+      ],
+      "answer": "3",
+      "explanation": "Retries are triggered only by detected failures."
+    },
+    {
+      "id": "q7",
+      "prompt": "Two skills each work 95% of the time alone but the chained task works only 70%. List two explanations and a measurement for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "skill-composition"
+      ],
+      "skillLabel": "Skill composition",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Distribution shift between the end states of skill A and the start states B was trained on, measured by testing B from A's end states.",
+        "Correlated or silent failures that the independence model ignores, measured by per-stage conditional rates and silent-failure counts.",
+        "Each explanation comes with a measurable prediction."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

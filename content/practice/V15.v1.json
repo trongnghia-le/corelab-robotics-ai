@@ -1,0 +1,281 @@
+{
+  "id": "V15-targeted",
+  "topicId": "V15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "A 384x640 image is processed with 16x16 patches and no CLS token. How many tokens?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "token-counting"
+      ],
+      "skillLabel": "Counting patch tokens",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V15#worked-example"
+        }
+      ],
+      "answer": "960",
+      "tolerance": 0.5,
+      "explanation": "24*40=960.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "Same image, one head. How many entries does the attention matrix have?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-cost"
+      ],
+      "skillLabel": "Attention cost scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V15#worked-example"
+        }
+      ],
+      "answer": "921600",
+      "tolerance": 1,
+      "explanation": "960^2 = 921,600.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "Patch size is halved from 16 to 8 on the same image. By what factor does attention cost per head grow?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-cost"
+      ],
+      "skillLabel": "Attention cost scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V15#worked-example"
+        }
+      ],
+      "answer": "16",
+      "tolerance": 0.1,
+      "explanation": "Tokens grow 4x, cost 16x.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "Scores for token 3 are (0, 0, 0.7071) over three tokens. What weight does it give itself (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "scaled-attention"
+      ],
+      "skillLabel": "Scaled dot-product attention",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V15#worked-example"
+        }
+      ],
+      "answer": "0.503",
+      "tolerance": 0.002,
+      "explanation": "e^0.7071=2.0281; 2.0281/(1+1+2.0281)=0.5035.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "What is the main reason for dividing QK^T by sqrt(d)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scaled-attention"
+      ],
+      "skillLabel": "Scaled dot-product attention",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V15#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It makes the attention matrix symmetric, so queries and keys can share weights.",
+        "It normalises each row of the matrix to unit Euclidean length.",
+        "The dot product variance grows with d; scaling keeps the softmax out of saturation.",
+        "It reduces the number of tokens that are attended to in each layer."
+      ],
+      "answer": "2",
+      "explanation": "Without scaling large scores give a near one-hot softmax with tiny gradients.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p6",
+      "prompt": "A student shuffles the patches of a test image and the ViT (with learned position codes) gives a different prediction. A colleague says this is a bug. Is it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "position-encoding"
+      ],
+      "skillLabel": "Why position encodings are needed",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V15#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Yes: the CLS token should not depend on the order of the input patches",
+        "No: position codes tie each patch to its slot, so the shuffle changes the input",
+        "Yes: attention is permutation-invariant, so shuffled patches must give the same output.",
+        "No: shuffling the patches can never change a prediction made by a transformer"
+      ],
+      "answer": "1",
+      "explanation": "With codes added per slot the model is not equivariant; moved patches look like a different image.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "Which statement about inductive bias is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "vit-vs-cnn"
+      ],
+      "skillLabel": "ViT versus CNN trade-offs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/V15#alternatives-and-trade-offs"
+        }
+      ],
+      "options": [
+        "Inductive biases are irrelevant once a model has been pretrained on large data.",
+        "A CNN builds in locality and translation equivariance; a ViT assumes little and needs more data.",
+        "Both architectures have identical inductive biases and need equal amounts of data.",
+        "A ViT assumes locality and translation equivariance more strongly than a CNN, so it needs less data."
+      ],
+      "answer": "1",
+      "explanation": "This is why ViTs rely on large data or augmentation.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "Write the code for patchify (row-major, flattened patches) and one test that would catch the common bug of returning image rows instead of square patches.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "token-counting"
+      ],
+      "skillLabel": "Counting patch tokens",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/V15#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Loops over row blocks and column blocks and gathers p*p pixels.",
+        "Flattens in a fixed order and the length equals p*p*C.",
+        "The test uses a small known image (e.g. 4x4, p=2) with expected patches."
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p9",
+      "prompt": "Explain why a bag of patches with no position codes can classify an image of a cat reasonably but cannot localise it, in terms of what attention preserves.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "position-encoding"
+      ],
+      "skillLabel": "Why position encodings are needed",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V15#theory-and-derivation"
+        }
+      ],
+      "rubric": [
+        "Attention outputs are permutation-equivariant, so the set of patch features is kept.",
+        "The arrangement information is missing, so where something is cannot be recovered.",
+        "Gives an example task that needs position, e.g. locating a grasp point."
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p10",
+      "prompt": "You need to double the input resolution for small-object detection but the attention memory is exceeded. List and compare two options.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "vit-vs-cnn"
+      ],
+      "skillLabel": "ViT versus CNN trade-offs",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/V15#alternatives-and-trade-offs"
+        }
+      ],
+      "rubric": [
+        "Names options such as windowed attention, larger patches or a convolutional stem.",
+        "Compares cost versus accuracy risk for each.",
+        "Says how to validate on the small-object task."
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "id": "S07-diagnostic",
+  "topicId": "S07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Where should a command-timeout check run so that it still works when commands stop arriving?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Only when a new sensor message arrives.",
+        "Once at startup.",
+        "Inside the command callback, before applying the command.",
+        "On an independent timer that compares now with the last command stamp."
+      ],
+      "answer": "3",
+      "explanation": "A check inside the data callback never runs when data stops.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "timeout-monitor"
+      ],
+      "skillLabel": "Command timeout monitoring",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "v=1.0 m/s, deceleration 2 m/s^2, total reaction time 0.1 s. Stopping distance in m, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.35",
+      "tolerance": 0.001,
+      "explanation": "0.1+1/4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stopping-distance"
+      ],
+      "skillLabel": "Stopping distance and speed limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Clearance 1.5 m, deceleration 2 m/s^2, reaction time 0.1 s. Maximum speed in m/s, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.2576",
+      "tolerance": 0.001,
+      "explanation": "-0.2+sqrt(0.04+6).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stopping-distance"
+      ],
+      "skillLabel": "Stopping distance and speed limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Hazard with severity 3 (of 4) and likelihood 4 (of 5). Risk score S x L.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12",
+      "tolerance": 0.01,
+      "explanation": "12: 'high' in the lesson's scale.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "hazard-risk"
+      ],
+      "skillLabel": "Hazard analysis and risk",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A range sensor returns NaN. What should the safety layer do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Average it with the next valid sample so the control loop sees no gap.",
+        "Treat it as a fault and go to the safe response; never clip or ignore it.",
+        "Replace it with the previous valid value silently and keep the controller running.",
+        "Clip it to the maximum range and continue, since that is the safest reading."
+      ],
+      "answer": "1",
+      "explanation": "Invalid data must not become plausible data.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sensor-validity"
+      ],
+      "skillLabel": "Sensor validity checks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "After a timeout fault, valid commands start arriving again. What should happen?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Resume at once using the new command, because the fault condition has ended.",
+        "Stay stopped until an explicit reset, then require fresh valid data.",
+        "Restart the whole computer so every process begins from a clean state.",
+        "Resume at the last speed before the fault, since it was known to be safe."
+      ],
+      "answer": "1",
+      "explanation": "Latching prevents surprise restart.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "safe-state-latching"
+      ],
+      "skillLabel": "Safe states and latching",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Write a four-row hazard table for a small mobile robot (cause, harm, S, L, class, mitigation) and mark which mitigations remove, protect or warn.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Each row has a concrete cause and harm with severity and likelihood.",
+        "Classes follow a stated scale.",
+        "Mitigations are ordered remove > protect > warn, including at least one software limit and one non-software measure."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "hazard-risk"
+      ],
+      "skillLabel": "Hazard analysis and risk",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: why this matters",
+          "href": "/lessons/S07#why-this-matters"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

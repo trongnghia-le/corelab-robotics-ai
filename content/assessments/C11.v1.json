@@ -1,0 +1,203 @@
+{
+  "id": "C11-diagnostic",
+  "topicId": "C11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In MPC, what is done with the planned input sequence U = (u0, ..., u_{N-1}) at each control step?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The whole sequence is applied open-loop before the next measurement is taken",
+        "The average of all planned inputs is applied, then the problem is re-solved",
+        "Only u0 is applied, then the problem is re-solved from the new measured state",
+        "Only the last input u_{N-1} is applied, since it is the most refined plan"
+      ],
+      "answer": "2",
+      "explanation": "Re-solving each step turns open-loop planning into feedback.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "receding-horizon"
+      ],
+      "skillLabel": "Receding-horizon operation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Scalar plant x+ = x + u, Q = R = P = 1, N = 1. Unconstrained optimal first input from x0 = 6 (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-3",
+      "tolerance": 0.01,
+      "explanation": "d/du [u^2 + (x+u)^2] = 0 gives u = -x/2 = -3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "qp-formulation"
+      ],
+      "skillLabel": "Condensed quadratic-program formulation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Same plant with |u| <= 2: the applied input from x0 = 6 (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2",
+      "tolerance": 0.01,
+      "explanation": "Convex 1-D problem: clip -3 to -2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "constraints-feasibility"
+      ],
+      "skillLabel": "Constraints, bounds and feasibility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "N = 2 condensed matrices for that scalar plant are H = [[3, 1],[1, 2]] and M = [2, 1]^T. For x0 = 2 the gradient of U'HU + 2U'M x0 w.r.t. u0 at U = (0, 0) is 2*(H U + M x0)_0. Give its value (2 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "M x0 = [4, 2], gradient = 2*4 = 8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "qp-formulation"
+      ],
+      "skillLabel": "Condensed quadratic-program formulation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A cart with |a| <= 2.5 m/s^2 moves at 5 m/s toward a wall. Minimum stopping distance (m, 2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "v^2/(2a) = 25/5 = 5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "constraints-feasibility"
+      ],
+      "skillLabel": "Constraints, bounds and feasibility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "With constraints inactive and the terminal cost equal to the Riccati matrix, MPC with any horizon N >= 1 produces:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A larger first input than LQR, since the horizon is finite and less cautious",
+        "An unstable closed loop, because any finite horizon loses stability guarantees",
+        "The same first input as the infinite-horizon LQR",
+        "A smaller input than LQR, but only when the horizon N is short"
+      ],
+      "answer": "2",
+      "explanation": "The terminal cost summarises the infinite-horizon tail exactly, so the finite problem has the LQR solution.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "horizon-terminal"
+      ],
+      "skillLabel": "Horizon length and terminal cost",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A mobile robot's MPC runs at 20 Hz and sometimes the solver does not finish in 50 ms. Describe how you would handle this safely and what you would log.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Gives a fallback (previous plan shifted, braking/safe controller) and iteration cap.",
+        "Mentions warm start or smaller horizon to reduce solve time.",
+        "Names logs: solve time, iterations, constraint margins, fallback activations."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "receding-horizon",
+        "constraints-feasibility"
+      ],
+      "skillLabel": "Receding-horizon operation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

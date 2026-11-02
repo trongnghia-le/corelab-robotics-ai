@@ -1,0 +1,178 @@
+{
+  "id": "RL14-diagnostic",
+  "topicId": "RL14",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which shaping term preserves the optimal policy for discount gamma?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A fixed +1 each time the robot enters a chosen state",
+        "phi(s') - phi(s) with the discount dropped",
+        "gamma*phi(s') - phi(s) for any potential phi (zero at terminals)",
+        "The distance travelled in the last step"
+      ],
+      "answer": "2",
+      "explanation": "Only the discounted potential difference telescopes along any trajectory. A repeatable bonus or an undiscounted difference can be farmed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rew-potential-shaping"
+      ],
+      "skillLabel": "Recognise potential-based shaping",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL14#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Repeating the reward cycle [1.9, -0.1] forever with gamma = 0.95: what is the discounted value? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "18.5",
+      "tolerance": 0.1,
+      "explanation": "(1.9 - 0.095)/(1 - 0.9025) = 18.51.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rew-loop-value"
+      ],
+      "skillLabel": "Compute the value of a loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL14#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Goal reward 10, step cost 0.1, gamma = 0.95. What is the smallest repeatable checkpoint bonus that makes the 2-cycle loop beat finishing? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.17",
+      "tolerance": 0.01,
+      "explanation": "b* = G(1 - gamma^2) + c(1 + gamma) = 0.975 + 0.195 = 1.17.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rew-loop-value"
+      ],
+      "skillLabel": "Compute the bonus threshold",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL14#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "phi(s) = -(5 - s), gamma = 1, the path goes from s = 0 to the terminal goal. By how much does the shaped return exceed the true return? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.0",
+      "tolerance": 0.05,
+      "explanation": "Shaping adds -phi(s0) = 5 for any terminating path.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rew-potential-shaping"
+      ],
+      "skillLabel": "Use the telescoping identity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL14#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A robot's training return keeps rising but a ground-truth success rate stays at zero. What is the most likely explanation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The discount factor is too high for the success signal to arrive",
+        "The learning rate is too low for the return to translate into success",
+        "The success metric must be wrong, since return is the true objective",
+        "The policy is exploiting the reward rather than doing the task"
+      ],
+      "answer": "3",
+      "explanation": "The proxy and the intended objective have diverged; check traces, not return.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rew-evaluation"
+      ],
+      "skillLabel": "Interpret return versus success",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL14#verification"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Explain why a bonus for entering a checkpoint state can lead to an endless loop but gamma*phi(s') - phi(s) cannot.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "The bonus is paid on every entry, so a cycle that re-enters collects it repeatedly",
+        "A potential difference gives back on leaving what it gave on entering, so cycles pay nothing (telescoping)",
+        "Mentions that the loop beats finishing when the bonus exceeds the threshold determined by goal reward and discount"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rew-potential-shaping",
+        "rew-loop-value"
+      ],
+      "skillLabel": "Explain loopholes and potentials",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL14#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design an evaluation for a manipulation policy trained with a shaped reward that detects reward hacking.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Measures task success from environment state independent of the training reward",
+        "Adds side-effect or behaviour metrics (release height or speed, contact force, time, repeated visits)",
+        "Reviews trajectories or uses scripted farm/do-nothing policies as controls"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "rew-evaluation"
+      ],
+      "skillLabel": "Design a hack-detecting evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL14#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

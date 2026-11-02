@@ -1,0 +1,305 @@
+{
+  "id": "V13-targeted",
+  "topicId": "V13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "A least-squares fit is run on 100 pairs; 3 targets are displaced by 2 m. What best reduces the damage?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "outlier-sensitivity"
+      ],
+      "skillLabel": "Outlier sensitivity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V13#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Increase the voxel size so that the outliers are averaged away.",
+        "Run many more iterations of plain least squares until it converges.",
+        "Use a trimmed or Huber-loss fit so large residuals get little weight.",
+        "Rescale all points to the unit cube before fitting the transform."
+      ],
+      "answer": "2",
+      "explanation": "Robust losses or trimming limit the influence of large residuals; more iterations of the same loss converge to the same compromised answer.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "In a translation-only fit using the mean offset, 20 pairs are exact except one displaced by 4 m along x. By how many metres is the estimated translation off?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "outlier-sensitivity"
+      ],
+      "skillLabel": "Outlier sensitivity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V13#worked-example"
+        }
+      ],
+      "answer": "0.2",
+      "tolerance": 0.005,
+      "explanation": "4/20 = 0.2.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "A mapping run uses 0.1 m voxels. Points (-0.04,0.0) and (0.04,0.0) are given. How many occupied voxels exist when indices use floor? Give the integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "voxel-downsampling"
+      ],
+      "skillLabel": "Voxel downsampling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V13#worked-example"
+        }
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "floor(-0.4)=-1 and floor(0.4)=0: different cells. Using int() would give 1.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "Centred correspondences have sum of dots = 3 and sum of crosses = 3 (same units). Give the rotation angle in degrees.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kabsch-rotation"
+      ],
+      "skillLabel": "Rotation from dot and cross sums",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V13#theory-and-derivation"
+        }
+      ],
+      "answer": "45",
+      "tolerance": 0.01,
+      "explanation": "atan2(3,3)=45 degrees.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "Neighbourhood covariance has eigenvalues 9, 1 (2D). Compute the surface variation lambda_min/(sum), 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "surface-variation"
+      ],
+      "skillLabel": "Local normal and surface variation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V13#theory-and-derivation"
+        }
+      ],
+      "answer": "0.1",
+      "tolerance": 0.005,
+      "explanation": "1/(9+1)=0.1."
+    },
+    {
+      "id": "p6",
+      "prompt": "A scan of a smooth sphere is registered with ICP. What is the central difficulty?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "degenerate-geometry"
+      ],
+      "skillLabel": "Degenerate geometry",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V13#failure-modes"
+        }
+      ],
+      "options": [
+        "A sphere has no centroid, so the two point sets cannot be centred before the fit.",
+        "Voxel grids cannot represent spheres, so the cloud cannot be downsampled before matching.",
+        "ICP cannot handle any curved surface, because the surface normals vary across the cloud.",
+        "Rotation about the sphere centre is unconstrained by geometry, so the pose is not unique."
+      ],
+      "answer": "3",
+      "explanation": "A sphere is rotationally symmetric, so rotations about its centre leave the cloud unchanged; the registration is degenerate in those directions.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "You have two scans taken 40 degrees apart and no odometry. Which is the best plan?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "icp-local-minimum"
+      ],
+      "skillLabel": "ICP initialisation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/V13#alternatives-and-trade-offs"
+        }
+      ],
+      "options": [
+        "Point-to-plane ICP with a huge iteration count, starting from the identity.",
+        "ICP directly from the identity pose, with enough iterations to converge.",
+        "Feature matching (e.g. FPFH) with RANSAC for a coarse pose, then ICP to refine.",
+        "Average the two clouds point by point and use the mean as the pose."
+      ],
+      "answer": "2",
+      "explanation": "Large offsets need a global method to initialise the local refinement.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "What does the determinant term in the 3D Kabsch solution prevent?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kabsch-rotation"
+      ],
+      "skillLabel": "Rotation from dot and cross sums",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V13#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Noise in the correspondences from corrupting the result",
+        "A reflection being returned instead of a rotation",
+        "Scaling of the cloud being absorbed into the rotation",
+        "Translation errors from an offset between the centroids"
+      ],
+      "answer": "1",
+      "explanation": "Without it the SVD can return an orthogonal matrix with determinant -1 (a mirror image).",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p9",
+      "prompt": "Explain in your own words why the best translation maps centroid to centroid, and what that implies for the order of the Kabsch steps.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kabsch-translation"
+      ],
+      "skillLabel": "Translation from centroids",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V13#theory-and-derivation"
+        }
+      ],
+      "rubric": [
+        "Setting the gradient of the squared error w.r.t. t to zero gives t = mean(q) - R mean(p).",
+        "Therefore centre both clouds first, then find the rotation alone.",
+        "Mentions that skipping centring makes the rotation depend on the origin."
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p10",
+      "prompt": "Write the pseudocode or code for a trimmed rigid fit and state its failure condition.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "outlier-sensitivity"
+      ],
+      "skillLabel": "Outlier sensitivity",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/V13#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Fit, compute residuals, keep the best fraction, refit, repeat.",
+        "States that it fails if the outlier fraction exceeds 1-keep.",
+        "Notes the correspondences are assumed known."
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p11",
+      "prompt": "An ICP run reports RMSE 0.012 m but pose error of 0.40 m along the corridor axis. How many times larger is the pose error than the RMSE (1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "degenerate-geometry"
+      ],
+      "skillLabel": "Degenerate geometry",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V13#verification"
+        }
+      ],
+      "answer": "33.3",
+      "tolerance": 0.2,
+      "explanation": "0.40/0.012 = 33.3.",
+      "equivalentTo": [
+        "q7"
+      ]
+    }
+  ]
+}

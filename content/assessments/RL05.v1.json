@@ -1,0 +1,178 @@
+{
+  "id": "RL05-diagnostic",
+  "topicId": "RL05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Rewards 2, 0, 4 arrive at steps 1, 2, 3 and then the episode ends, gamma = 0.5. Compute G_0.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "return-computation"
+      ],
+      "skillLabel": "Computing returns",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "RL03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL05#worked-example"
+        }
+      ],
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "2 + 0 + 0.25*4 = 3."
+    },
+    {
+      "id": "q2",
+      "prompt": "A state is visited twice in one episode with returns 5 and 9. What is the every-visit Monte Carlo estimate from this episode?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "monte-carlo-estimate"
+      ],
+      "skillLabel": "Monte Carlo estimates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL05#worked-example"
+        }
+      ],
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "(5+9)/2 = 7; first-visit would give 5."
+    },
+    {
+      "id": "q3",
+      "prompt": "TD(0): V(s) = 2, r = 1, V(s') = 4, gamma = 0.9, alpha = 0.5. What is the new V(s)? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "td-update"
+      ],
+      "skillLabel": "TD(0) update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL05#worked-example"
+        }
+      ],
+      "answer": "3.3",
+      "tolerance": 0.01,
+      "explanation": "target 1 + 0.9*4 = 4.6; delta = 2.6; V = 2 + 0.5*2.6 = 3.3."
+    },
+    {
+      "id": "q4",
+      "prompt": "Which statement about the estimators is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bias-variance"
+      ],
+      "skillLabel": "Bias-variance trade-off",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL05#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Monte Carlo returns are unbiased but high-variance; the TD(0) target is biased by V yet lower-variance.",
+        "Both estimators have zero variance once the value table is initialised to zero everywhere.",
+        "TD(0) is unbiased and has high variance, while Monte Carlo is biased by the current value table.",
+        "Monte Carlo bootstraps from V(s'), so its target already contains the current estimate."
+      ],
+      "answer": "0",
+      "explanation": "MC uses real complete returns; TD's target contains the estimate V(s')."
+    },
+    {
+      "id": "q5",
+      "prompt": "A TD(0) update lands on a transition into a terminal state. What should the target be?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "terminal-handling"
+      ],
+      "skillLabel": "Terminal handling",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL05#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "0",
+        "r",
+        "r + gamma * V(terminal), using whatever is stored",
+        "r + gamma * max V"
+      ],
+      "answer": "1",
+      "explanation": "A terminal has no future: V(terminal) = 0, so the target is r."
+    },
+    {
+      "id": "q6",
+      "prompt": "Two rewards 1 and 1 follow, then the table value V(s_{t+2}) = 10, gamma = 0.9. What is the 2-step return?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "n-step-return"
+      ],
+      "skillLabel": "n-step returns",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL05#theory-and-derivation"
+        }
+      ],
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "1 + 0.9 + 0.81*10 = 10.0."
+    },
+    {
+      "id": "q7",
+      "prompt": "You compare Monte Carlo and TD(0) for a robot task. Describe how you would choose the step size, fix the seeds, and decide which estimator wins, including a check that could reject your conclusion.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "step-size",
+        "bias-variance"
+      ],
+      "skillLabel": "Step size and fair comparison",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL05#verification"
+        }
+      ],
+      "rubric": [
+        "Tunes the step size separately for each method on separate seeds.",
+        "Reports mean and spread over several fixed seeds against exact or reference values.",
+        "Includes a rejection check such as error not decreasing or a wrong terminal convention."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

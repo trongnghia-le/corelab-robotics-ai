@@ -1,0 +1,202 @@
+{
+  "id": "V09-diagnostic",
+  "topicId": "V09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A track is at x = 100 px with velocity +5 px/frame. Under constant velocity, what is the predicted x one frame later? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "motion-prediction"
+      ],
+      "skillLabel": "Motion prediction",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V08",
+        "C07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V09#worked-example"
+        }
+      ],
+      "answer": "105",
+      "tolerance": 0.01,
+      "explanation": "x + vx*dt = 100 + 5."
+    },
+    {
+      "id": "q2",
+      "prompt": "Position noise has sigma = 2 px. Using the 95% chi-square value 5.991 for 2 degrees of freedom, what is the circular gate radius in pixels? (precision 0.05)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gating"
+      ],
+      "skillLabel": "Gating",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V08",
+        "C07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V09#theory-and-derivation"
+        }
+      ],
+      "answer": "4.9",
+      "tolerance": 0.05,
+      "explanation": "sqrt(5.991)*2 = 4.895."
+    },
+    {
+      "id": "q3",
+      "prompt": "Why can a nearest-neighbour tracker that matches detections to the LAST positions swap identities when two objects cross?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "motion-prediction"
+      ],
+      "skillLabel": "Motion prediction",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V08",
+        "C07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V09#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "After they move, the detection nearest A's old position can be B's new position",
+        "The detector outputs the wrong class for one of the two crossing objects",
+        "Detections arrive unordered, so the matcher cannot keep the track order stable",
+        "The gate is always too large, so every detection is accepted by every track"
+      ],
+      "answer": "0",
+      "explanation": "Predicting forward before matching removes most such swaps."
+    },
+    {
+      "id": "q4",
+      "prompt": "Cost matrix [[1, 2], [2, 10]] with gate 20. What is the total cost of the greedy (smallest-first) assignment? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "assignment"
+      ],
+      "skillLabel": "Assignment",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V08",
+        "C07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V09#worked-example"
+        }
+      ],
+      "answer": "11",
+      "tolerance": 0.01,
+      "explanation": "Greedy takes (0,0)=1 then (1,1)=10."
+    },
+    {
+      "id": "q5",
+      "prompt": "A sequence has 500 ground-truth instances, 30 misses, 10 false positives and 10 identity switches. Compute MOTA (precision 0.001).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "tracking-metrics"
+      ],
+      "skillLabel": "Tracking metrics",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V08",
+        "C07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V09#worked-example"
+        }
+      ],
+      "answer": "0.9",
+      "tolerance": 0.001,
+      "explanation": "1 - 50/500."
+    },
+    {
+      "id": "q6",
+      "prompt": "A tracker deletes a track after its first missed detection. What happens when an object is occluded for two frames?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "track-management"
+      ],
+      "skillLabel": "Track management",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V08",
+        "C07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V09#failure-modes"
+        }
+      ],
+      "options": [
+        "The tracker crashes because no detection is matched",
+        "The object reappears with a new ID (fragmentation)",
+        "Nothing happens, the identity is kept through the gap",
+        "The velocity estimate doubles over the missing frames"
+      ],
+      "answer": "1",
+      "explanation": "Allow several misses while predicting, then delete."
+    },
+    {
+      "id": "q7",
+      "prompt": "A robot follows one person in a corridor with others. Describe how you keep the right identity through a short occlusion and what the robot does if the identity is lost.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "track-management"
+      ],
+      "skillLabel": "Track management",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V08",
+        "C07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V09#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Keeps predicting the lost track for a few frames and gates the reappearing detection.",
+        "Uses appearance and not only distance for association.",
+        "Defines a safe behaviour when the target is lost (stop or search) rather than switching to the nearest person."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

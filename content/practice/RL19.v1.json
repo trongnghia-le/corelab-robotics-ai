@@ -1,0 +1,387 @@
+{
+  "id": "RL19-targeted",
+  "topicId": "RL19",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which measurement is performed with teacher forcing?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding model error",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Ensemble disagreement between the learned models",
+        "Open-loop error accumulated over 20 steps",
+        "The gap between predicted and real return",
+        "One-step error evaluated from true states"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Teacher forcing starts each prediction from the real state, which is the definition of one-step error."
+    },
+    {
+      "id": "b2",
+      "prompt": "Plant s'=s+0.5a, model s'=1.01 s+0.5a, a=1, s0=0, 10 steps. Open-loop error |model-true| at step 10? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "open-loop-rollout"
+      ],
+      "skillLabel": "Compute an open-loop rollout",
+      "mistakeCategory": "mathematical",
+      "answer": "0.2311",
+      "tolerance": 0.0005,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL19#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "model s10=0.5(1.01^10-1)/0.01; truth 5."
+    },
+    {
+      "id": "b3",
+      "prompt": "L=1.05, eps=0.02. Bound eps(L^k-1)/(L-1) at k=10? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-bound"
+      ],
+      "skillLabel": "Apply the compounding bound",
+      "mistakeCategory": "mathematical",
+      "answer": "0.2516",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "0.02*(1.05^10-1)/0.05."
+    },
+    {
+      "id": "b4",
+      "prompt": "With L=1 and eps=0.03, what is the bound on error after 40 steps? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-bound"
+      ],
+      "skillLabel": "Apply the compounding bound",
+      "mistakeCategory": "mathematical",
+      "answer": "1.2",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "With L=1 the error is at most k*eps=1.2."
+    },
+    {
+      "id": "b5",
+      "prompt": "A colleague trains the model and tests it on the same transitions: RMSE 0.001. What is the main problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "model-evaluation"
+      ],
+      "skillLabel": "Design a model evaluation",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Training error does not show generalisation; use held-out transitions and trajectories",
+        "The model must be nonlinear, since a linear model cannot reach 0.001",
+        "Held-out testing only applies to classification, not to regression models",
+        "An RMSE below 0.01 is impossible, so the number must be wrong"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL19#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Training error measures fit, not performance on states the policy will visit."
+    },
+    {
+      "id": "b6",
+      "prompt": "gamma=0.99, eps=0.005, Rmax=1. Value-error bound? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "value-error-bound"
+      ],
+      "skillLabel": "Value error from model error",
+      "mistakeCategory": "mathematical",
+      "answer": "49.5",
+      "tolerance": 0.1,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "0.99*0.005/1e-4=49.5, compared with max value 100."
+    },
+    {
+      "id": "b7",
+      "prompt": "Which change most directly shrinks the simulation-lemma bound without a better model?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "value-error-bound"
+      ],
+      "skillLabel": "Value error from model error",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "A larger batch size for each model update",
+        "A larger replay buffer of real transitions",
+        "A shorter effective horizon (smaller gamma or short model rollouts)",
+        "A deeper network for the dynamics model"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "The bound scales as 1/(1-gamma)^2."
+    },
+    {
+      "id": "b8",
+      "prompt": "Ensemble members agree closely on state A and disagree strongly on state B. A cautious planner should:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "model-exploitation"
+      ],
+      "skillLabel": "Recognise model exploitation",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Prefer B because uncertainty means high reward",
+        "Retrain with a bigger learning rate",
+        "Penalise or avoid plans that pass through B",
+        "Ignore disagreement and average predictions"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL19#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Disagreement estimates epistemic uncertainty, where the model is likely wrong."
+    },
+    {
+      "id": "b9",
+      "prompt": "Explain why predicting the change s'-s instead of s' can help a learned model, and one situation where it does not.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "model-evaluation"
+      ],
+      "skillLabel": "Design a model evaluation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "Changes are small and near zero, so targets are better scaled and the identity is the default.",
+        "Errors then add to the state instead of replacing it.",
+        "It does not help if the state includes discontinuous quantities such as contact flags or angle wraps."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "A rollout-based method trains a model-free agent on 50-step imagined rollouts and performance gets worse. Give a diagnosis plan and two fixes.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "mpc-replanning",
+        "model-exploitation"
+      ],
+      "skillLabel": "Diagnose imagined-rollout failure",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL19#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "rubric": [
+        "Measure open-loop error at 50 steps versus 5 steps and the predicted-vs-real return gap.",
+        "Fix: shorter rollouts branching from real states (MBPO).",
+        "Fix: uncertainty penalty or ensemble, or mix real data into the buffer."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "The pure integrator plant has L=1 in the state. A model with gain 1.00 but action gain 0.55 instead of 0.50 has the error that grows:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding model error",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Linearly with the horizon",
+        "Geometrically",
+        "Not at all, since the state gain is correct",
+        "Only at the first step"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Each step adds 0.05*a to the error and nothing damps it: e_k=0.05 k a."
+    },
+    {
+      "id": "b12",
+      "prompt": "The model of b11 with a=1 for 10 steps from 0: error at step 10? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "open-loop-rollout"
+      ],
+      "skillLabel": "Compute an open-loop rollout",
+      "mistakeCategory": "mathematical",
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL19#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "0.55*10-0.5*10=0.5."
+    }
+  ]
+}

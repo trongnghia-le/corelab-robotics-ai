@@ -1,0 +1,381 @@
+{
+  "id": "S02-targeted",
+  "topicId": "S02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A model has two free-joint bodies and one hinge. How many velocity coordinates nv? ",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "13",
+      "tolerance": 0.01,
+      "explanation": "6+6+1=13 (nq would be 15).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mjcf-defaults"
+      ],
+      "skillLabel": "MJCF defaults and coordinates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A sphere of radius 0.03 m with density 2500 kg/m^3. Mass in kg, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.283",
+      "tolerance": 0.001,
+      "explanation": "4/3 pi (0.03)^3 * 2500=0.2827.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inertia-from-geometry"
+      ],
+      "skillLabel": "Inertia and mass from geometry",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Sphere m=1 kg, r=0.04 m, center at L=0.8 m from the hinge. Pivot inertia in kg m^2, precision 0.0005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.6406",
+      "tolerance": 0.0005,
+      "explanation": "0.4*0.0016+0.64.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inertia-from-geometry"
+      ],
+      "skillLabel": "Inertia and mass from geometry",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Same pendulum (m=1, r=0.04, L=0.8, g=9.81). Small-angle period in s, precision 0.002.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.795",
+      "tolerance": 0.002,
+      "explanation": "2 pi sqrt(I/(m g L)) with I=0.6406.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "energy-validation"
+      ],
+      "skillLabel": "Validate energy and period",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Position actuator kp=100, kv=4, ctrl=0.3, q=0.5, qdot=1.0, forcerange +-15. Applied torque (N m), precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-15",
+      "tolerance": 0.01,
+      "explanation": "100(-0.2)-4=-24, clipped to -15.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "actuator-law"
+      ],
+      "skillLabel": "Actuator laws and limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "solref time constant 0.01 s, timestep 0.008 s, reference safety on. Effective time constant (s), precision 0.0005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.016",
+      "tolerance": 0.0005,
+      "explanation": "max(0.01,0.016).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contact-softness"
+      ],
+      "skillLabel": "Soft contacts and time scale",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A pendulum hinge in your MJCF is missing axis and the link never swings. Best first check?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Switch the integrator to RK4 so the small hinge torque is not lost.",
+        "Increase the geom density so gravity produces a larger torque on the link.",
+        "Increase the timestep so the pendulum has enough time to start swinging.",
+        "The default hinge axis is z; add axis='0 1 0' (or the intended axis)."
+      ],
+      "answer": "3",
+      "explanation": "Gravity gives no torque about a vertical hinge axis.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mjcf-defaults"
+      ],
+      "skillLabel": "MJCF defaults and coordinates",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S02#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Why is a thin-rod pendulum with the same hinge and length not equal to a point mass in MuJoCo?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Rods have less mass than point masses of the same length, so they swing faster.",
+        "The rod shifts the gravity constant because its centre of mass lies off the hinge.",
+        "MuJoCo ignores geometry shape for dynamics, using only the body's total mass.",
+        "The inertia about the hinge depends on mass distribution, e.g. mL^2/3 for a rod."
+      ],
+      "answer": "3",
+      "explanation": "Mass distribution enters the pivot inertia.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "inertia-from-geometry"
+      ],
+      "skillLabel": "Inertia and mass from geometry",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "The simulated pendulum energy oscillates by +-0.3% around E0 with no trend over 100 s. What is the best conclusion?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The result proves the contact model is correct, since the energy stays within 0.3%.",
+        "Energy must show a steady downward trend, otherwise the damping is not being applied.",
+        "A bounded band is expected for semi-implicit integration; check it shrinks with dt.",
+        "The simulation is wrong, because energy must be exactly constant in any correct simulation."
+      ],
+      "answer": "2",
+      "explanation": "Bounded oscillation vs trend is the diagnostic.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "energy-validation"
+      ],
+      "skillLabel": "Validate energy and period",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A position actuator with forcerange +-5 is commanded far from the current angle. What is the physically correct description?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It behaves as an ideal infinite-torque servo until it hits the target.",
+        "It ignores ctrl once the target is farther than the force range.",
+        "It is a spring-damper whose torque saturates at the limit.",
+        "It reaches the target instantly, since a position actuator is ideal."
+      ],
+      "answer": "2",
+      "explanation": "Torque = kp(u-q)-kv qdot, clipped.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "actuator-law"
+      ],
+      "skillLabel": "Actuator laws and limits",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Write a test (in words, with numbers) that checks a compiled MJCF model mass and inertia for a 1 kg, r=0.05 m sphere 1 m from the hinge.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes expected mass 1 and pivot inertia 1.001 by hand.",
+        "Compares model.body_mass and body_inertia (plus m L^2 for the pivot) with a tolerance.",
+        "Includes a negative test (change radius or remove mass) that the check must reject."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "inertia-from-geometry"
+      ],
+      "skillLabel": "Inertia and mass from geometry",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/S02#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "A teammate raises contact stiffness by setting a very small solref time constant with the default timestep. What do you predict and what would you check?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States that the effective time constant is floored at 2*timestep (or becomes unstable if safety is off).",
+        "Proposes lowering the timestep or accepting softness, with a penetration test.",
+        "Describes a measurable check such as resting penetration versus timestep."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "contact-softness"
+      ],
+      "skillLabel": "Soft contacts and time scale",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S02#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S01",
+        "R02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

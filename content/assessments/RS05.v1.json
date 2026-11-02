@@ -1,0 +1,245 @@
+{
+  "id": "RS05-diagnostic",
+  "topicId": "RS05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A classifier has 8% overall error on a test set split into several subgroups. Which statement must be true?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Every subgroup has error close to 8%, because the average pulls all groups together.",
+        "At least one subgroup has error at or above 8% and at least one at or below 8%.",
+        "The largest subgroup has the error rate closest to 8%, because it dominates the average.",
+        "The smallest subgroup has the highest error rate, since small groups get less training data."
+      ],
+      "answer": "1",
+      "explanation": "The overall rate is a weighted average of the subgroup rates, so it lies between the smallest and largest subgroup rate. Nothing forces the groups to be equal or the smallest to be worst.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "subgroup-rates"
+      ],
+      "skillLabel": "Aggregate versus subgroup error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A grasping log has two object types: 600 attempts with 18 failures, and 400 attempts with 22 failures. What is the overall failure rate, as a percentage with one decimal?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.05,
+      "explanation": "(18+22)/(600+400) = 40/1000 = 4.0%. Pool counts; do not average 3% and 5.5% unweighted (that gives 4.25%).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "subgroup-rates"
+      ],
+      "skillLabel": "Pool counts into an overall rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "True distances are y = [10, 12, 9] m and a sensor model predicts [11, 11, 11] m. What is the mean residual (observed minus predicted) in metres, to 2 decimals?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.67",
+      "tolerance": 0.01,
+      "explanation": "Residuals are -1, +1, -2; their mean is -4/3 = -0.67 m, so the model over-predicts on average.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "residual-analysis"
+      ],
+      "skillLabel": "Compute and read residuals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A detector errs on 20% of dark images and 5% of bright images. Most dark images are also far from the camera. Within the far images the two lighting groups both err at 26%, and within near images both err at 2%. What is the best conclusion?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The test set is too small to conclude anything about either lighting or distance, so collect more first.",
+        "Darkness is the cause of the extra errors, so the team should add more night images to training.",
+        "Distance, not lighting, explains the gap in this data; the lighting gap is a composition effect.",
+        "The data prove that darkness has no effect on any detector, so lighting can be ignored from now on."
+      ],
+      "answer": "2",
+      "explanation": "Once distance is held fixed the lighting gap vanishes, so distance explains it here. That does not prove darkness never matters, only that this data does not support it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confounding-stratification"
+      ],
+      "skillLabel": "Stratify before blaming a condition",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked-example",
+          "href": "/lessons/RS05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "3 failures occurred in 10 trials of a rare condition. What is the lower end of the 95% Wilson interval (z = 1.96) for the failure rate? Give a decimal to 3 places.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.108",
+      "tolerance": 0.002,
+      "explanation": "Centre (0.3+0.1920)/1.3841 = 0.3555; half-width 0.2477; lower bound 0.108.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "small-group-uncertainty"
+      ],
+      "skillLabel": "Wilson interval for a small group",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "You think a navigation stack fails more in corridors than in open rooms. Describe how you would test this explanation so that it could be rejected, including one confounder you would control.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States the explanation as a prediction with a baseline (overall or open-room failure rate) and a measurable metric.",
+        "Names a confounder (for example speed, map size, sensor type) and stratifies or matches on it.",
+        "States what result would reject the explanation and checks it on held-out or new runs, reporting group sizes."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "confounding-stratification"
+      ],
+      "skillLabel": "Design a test that can reject an explanation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Which failure-taxonomy label is best for analysing a grasp detector?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Image looked dark and low-quality to the reviewer, so the model failed",
+        "The model was confused by the scene and made the wrong prediction here",
+        "Predicted box too small (class right, overlap with ground truth below threshold)",
+        "Needs more training data and a longer schedule to fix this kind of error"
+      ],
+      "answer": "2",
+      "explanation": "A good label is observable from the case itself and points to a fix. The others are guesses about causes.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "failure-taxonomy"
+      ],
+      "skillLabel": "Write observable, actionable failure categories",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "Sketch (code or pseudocode) a function that, given a list of records with a 0/1 'error' field and a condition field, returns the error rate and count for every condition, and explain which edge case it must handle.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Accumulates count and error sum per group, then divides (no unweighted averaging of rates).",
+        "Returns n alongside the rate so small groups are visible.",
+        "Handles an empty or very small group (division by zero, minimum size, or interval)."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "subgroup-rates",
+        "small-group-uncertainty"
+      ],
+      "skillLabel": "Implement grouped error rates",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference-implementation",
+          "href": "/lessons/RS05#reference-implementation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01",
+        "RS02",
+        "M09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

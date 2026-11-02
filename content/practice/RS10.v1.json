@@ -1,0 +1,429 @@
+{
+  "id": "RS10-targeted",
+  "topicId": "RS10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which statement is a hypothesis rather than a topic or question?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Why is SLAM hard? which asks for an explanation rather than a testable, measurable claim.",
+        "Does fusion reduce drift? which poses a question without any prediction or threshold given.",
+        "Robot grasping in clutter, a research area that names no claim, metric or comparison at all.",
+        "Fusing wheel odometry cuts final position error by 20% or more on three warehouse logs versus lidar-only SLAM."
+      ],
+      "answer": "3",
+      "explanation": "Only the last names an intervention, comparison, metric, population and minimum effect.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "research-question"
+      ],
+      "skillLabel": "Distinguish topic, question and hypothesis",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Run-to-run sd is 6 and the minimum effect is 4. How many runs per method (5% level, 80% power, round up)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "36",
+      "tolerance": 0.5,
+      "explanation": "2*(2.8*6/4)^2 = 35.28, so 36.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sample-size"
+      ],
+      "skillLabel": "Size an experiment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "If the minimum effect halves (and sd stays the same), by what factor does the required number of runs change?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.1,
+      "explanation": "n is proportional to 1/delta^2, so halving delta multiplies n by 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sample-size"
+      ],
+      "skillLabel": "Scaling of sample size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q5"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "With power raised to 90% (z = 1.96 + 1.28 = 3.24) instead of 80% (z = 2.8), sd 3 and minimum effect 2, how many runs per method (round up)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "48",
+      "tolerance": 0.5,
+      "explanation": "2*(3.24*3/2)^2 = 2*23.62 = 47.2, so 48.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sample-size"
+      ],
+      "skillLabel": "Effect of power on sample size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Idea keywords {event, camera, slam, dynamic}; prior work {event, camera, slam, static, outdoor}. What is the novelty score 1 - Jaccard? Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.5",
+      "tolerance": 0.005,
+      "explanation": "Intersection 3, union 6, Jaccard 0.5, novelty 0.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "novelty-assessment"
+      ],
+      "skillLabel": "Keyword novelty score",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Five baseline runs give failure rates 10, 12, 11, 13, 12 and the new method gives 8, 9, 8, 10, 9. What is the mean reduction (baseline minus new)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.799999999999999",
+      "tolerance": 0.01,
+      "explanation": "Means 11.6 and 8.8; reduction 2.8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "decision-rule"
+      ],
+      "skillLabel": "Compute the effect",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "For those runs, what is the lower end of the 95% CI of the reduction (Welch SE, t = 2.776 for 4 df)? Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.04",
+      "tolerance": 0.02,
+      "explanation": "Variances 1.3 and 0.7; SE = sqrt(0.26+0.14) = 0.632; half-width 1.756; lower end 2.8 - 1.756 = 1.04.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "decision-rule"
+      ],
+      "skillLabel": "Confidence interval of the effect",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "With a minimum effect of 2 points and an interval of [1.04, 4.56] for the reduction, what is the decision?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Supported, because the interval excludes zero and so the reduction is real.",
+        "Rejected, because the lower end of the interval is below the minimum effect of 2.",
+        "Inconclusive: the interval straddles the minimum effect, so more runs are needed.",
+        "Supported, because the mean of the interval is above the minimum effect of 2."
+      ],
+      "answer": "2",
+      "explanation": "Supported needs the lower end at or above 2; rejected needs the upper end below 2; neither holds.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "decision-rule"
+      ],
+      "skillLabel": "Apply a pre-registered rule",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked-example",
+          "href": "/lessons/RS10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which plan has a forking-path problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Report all pre-declared metrics with intervals.",
+        "Fix the metric, maps and number of runs, then run once and report.",
+        "Run the experiment, then pick the metric and maps where the method looks best.",
+        "State the exclusion rule before collecting data."
+      ],
+      "answer": "2",
+      "explanation": "Choosing analysis details after seeing results inflates false positives.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "risks-falsifier"
+      ],
+      "skillLabel": "Spot forking paths",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS10#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Your method beats the default baseline but not a simple tuned heuristic. What can you conclude?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The method is the state of the art, since it beats the baseline that most papers use as a reference.",
+        "The gain over the default may come from tuning, not your idea; it is not shown against the stronger baseline.",
+        "The tuned heuristic must be cheating, since a simple rule should not beat a learned method at all.",
+        "Baselines are irrelevant to novelty, which depends only on the new method itself."
+      ],
+      "answer": "1",
+      "explanation": "Beating only a weak baseline is weak evidence.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "baselines"
+      ],
+      "skillLabel": "Interpret baseline results",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives-and-trade-offs",
+          "href": "/lessons/RS10#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Choose four comparisons for a learned grasp-pose predictor and say what each one tests.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Includes the default method and a strong simple/heuristic baseline with equal tuning effort.",
+        "Includes an ablation of the claimed ingredient and optionally an oracle upper bound.",
+        "Says what a win against each one would show or rule out."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "baselines"
+      ],
+      "skillLabel": "Select baselines",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "A pilot gives a 3.8-point reduction with CI [1.7, 5.9] and your pre-registered minimum effect is 5. Explain what you conclude, and what you do next.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Concludes inconclusive: neither supported nor rejected.",
+        "Next: run the pre-registered sample size or compute runs needed from the observed sd.",
+        "Does not change the threshold or metric after seeing the data (or labels any change as exploratory)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "decision-rule",
+        "risks-falsifier"
+      ],
+      "skillLabel": "Interpret an inconclusive pilot",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: worked-example",
+          "href": "/lessons/RS10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q4",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "A decide() function returns 'supported' for a CI of [-0.5, 6] with minimum effect 5. Find the likely bug and give a test that would catch it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies that it compares the point estimate or upper bound rather than the lower bound with the minimum effect.",
+        "Fix: supported only if lower >= min_effect.",
+        "Test: CI [-0.5, 6] with min_effect 5 must return inconclusive."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "decision-rule"
+      ],
+      "skillLabel": "Debug a decision function",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS10#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

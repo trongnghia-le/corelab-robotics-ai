@@ -1,0 +1,387 @@
+{
+  "id": "S12-targeted",
+  "topicId": "S12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A 2 ms controller (period 10 ms, higher priority) and a 15 ms planner (period 50 ms) share one non-preemptive executor. Give the worst-case response time of the controller in ms (precision 0.5).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "executor-blocking"
+      ],
+      "skillLabel": "Executor blocking",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "17",
+      "tolerance": 0.5,
+      "explanation": "B=15 (planner), no higher priority: w=15, R=15+2=17 > 10, so the 10 ms deadline is missed."
+    },
+    {
+      "id": "b2",
+      "prompt": "The controller in b1 misses its period. Which change fixes the cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "executor-blocking"
+      ],
+      "skillLabel": "Executor blocking",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Lower the controller priority so that the planner has the thread when it needs it",
+        "Increase the queue depth of the planner's input so that no message is dropped while it blocks",
+        "Increase the controller timer frequency so that it fires more often than the planner blocks",
+        "Run the planner in a separate callback group on a multithreaded executor (or another process)"
+      ],
+      "answer": "3",
+      "explanation": "The blocking comes from sharing one thread; faster timers or deeper queues do not remove it."
+    },
+    {
+      "id": "b3",
+      "prompt": "Lidar chain: lidar period 100 ms with 25 ms capture delay; an event-driven filter with 20 ms worst response; a timer node with period 20 ms and response 5 ms; a driver timer with period 10 ms and response 2 ms. Give the maximum data age in ms (precision 0.5).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "chain-latency"
+      ],
+      "skillLabel": "End-to-end latency bound",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "182",
+      "tolerance": 0.5,
+      "explanation": "(100+25)+20+(20+5)+(10+2)=182 ms."
+    },
+    {
+      "id": "b4",
+      "prompt": "RM tasks (C,T): (2,10), (3,15), (4,30), preemptive. Response time of the third task in ms (precision 0.5)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "utilization-response-time"
+      ],
+      "skillLabel": "Utilization and response time",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "9",
+      "tolerance": 0.5,
+      "explanation": "r=4 -> 4+2+3=9 -> ceil(9/10)=1, ceil(9/15)=1: 9."
+    },
+    {
+      "id": "b5",
+      "prompt": "Messages arrive at 30 per second and spend on average 0.2 s in a node's input queue plus processing. By Little's law, how many messages are in the node on average? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-age"
+      ],
+      "skillLabel": "Queue depth and data age",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "6",
+      "tolerance": 0.1,
+      "explanation": "N = lambda W = 30 x 0.2 = 6."
+    },
+    {
+      "id": "b6",
+      "prompt": "A command is stamped at t=100 ms and arrives at 120 ms. The controller ticks at 130, 150, 170, 190 ms and finds no newer command. What is the age (ms) the gate sees at the tick at 190 ms?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stale-gate"
+      ],
+      "skillLabel": "Stale-data gate",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "90",
+      "tolerance": 0.5,
+      "explanation": "age = now - stamp = 190 - 100 = 90 ms (the arrival time does not matter)."
+    },
+    {
+      "id": "b7",
+      "prompt": "A task set has U = 0.85 for n = 3 tasks under rate-monotonic priorities. What does the Liu-Layland bound (0.78) tell you?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "utilization-response-time"
+      ],
+      "skillLabel": "Utilization and response time",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ],
+      "options": [
+        "Nothing conclusive: the bound is only sufficient, so run an exact response-time test",
+        "The set is certainly unschedulable, since U is above the bound of 0.78",
+        "The set is certainly schedulable because U < 1, which is the only requirement",
+        "The set is schedulable only if the periods are harmonic, whatever the value of U"
+      ],
+      "answer": "0",
+      "explanation": "Above the bound the test is inconclusive (and U<=1 is necessary, not sufficient)."
+    },
+    {
+      "id": "b8",
+      "prompt": "Two nodes both publish velocity commands to the same actuator topic: a teleoperation node and an autonomy node. The robot jerks. Best structural fix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stale-gate"
+      ],
+      "skillLabel": "Stale-data gate",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "Increase both publish rates so that each node's command is refreshed sooner",
+        "One owner node for the actuator command that arbitrates or muxes requests",
+        "Use a deeper queue at the actuator so that no command is lost",
+        "Make both publishers best-effort so that stale commands are dropped on arrival"
+      ],
+      "answer": "1",
+      "explanation": "Single writer: arbitration is explicit instead of 'last message wins'."
+    },
+    {
+      "id": "b9",
+      "prompt": "A low-priority logger holds a mutex needed by the control task; a medium-priority task preempts the logger. What is this and what helps?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "executor-blocking"
+      ],
+      "skillLabel": "Executor blocking",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Deadlock; add more threads so that the logger can always run",
+        "Priority inversion; priority inheritance or not sharing the lock",
+        "Cache thrashing; pin the thread to a core so the logger runs faster",
+        "Starvation of the logger only; it can be ignored for the control task"
+      ],
+      "answer": "1",
+      "explanation": "The control task waits on the logger which cannot run; inheritance boosts the holder."
+    },
+    {
+      "id": "b10",
+      "prompt": "You measure a mean control period of 10.1 ms for a 10 ms loop. The 99.9th percentile is 38 ms. Which statement is right?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "utilization-response-time"
+      ],
+      "skillLabel": "Utilization and response time",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "The loop is fine because the mean of 10.1 ms is near the nominal period",
+        "The loop is fine if the median is 10 ms, since the median is robust to outliers",
+        "The tail does not matter for control, because rare late samples are averaged out",
+        "The mean hides a tail that can break the loop; judge against deadlines using tail or maximum"
+      ],
+      "answer": "3",
+      "explanation": "Deadlines are broken by worst cases."
+    },
+    {
+      "id": "b11",
+      "prompt": "Compare composing perception and control nodes in one process (intra-process) versus separate processes. Give two advantages of each and one rule you would follow.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "queue-age"
+      ],
+      "skillLabel": "Composition trade-offs",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "Intra-process: no serialization or copies, lower latency; but shared executor blocking and shared fate on a crash.",
+        "Separate processes: fault isolation and independent priorities; but serialization/copy cost and extra latency.",
+        "A rule such as: keep the hard-timing loop in its own executor/process and let best-effort parts feed it through a bounded latest-wins buffer."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write (pseudocode or Python) a stale-data gate for a velocity command and say which tests you would write for it.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "stale-gate"
+      ],
+      "skillLabel": "Stale-data gate",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "rubric": [
+        "Computes age = now - stamp, returns valid only if 0 <= age <= max_age, and outputs a declared fallback otherwise.",
+        "Tests the boundary (age == max_age), one step past it, a future stamp and a missing command.",
+        "States which clock domain the stamp and now share."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

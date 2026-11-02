@@ -1,0 +1,387 @@
+{
+  "id": "C05-targeted",
+  "topicId": "C05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Bryson's rule picks Q_ii = 1/(x_i,max)^2. A state with a tolerance of 1 mm is measured in metres. What weight does the rule suggest?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "1e-6",
+        "1",
+        "1000",
+        "1e6"
+      ],
+      "answer": "3",
+      "explanation": "x_max = 0.001 m, so Q_ii = 1/(1e-3)^2 = 1e6.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lqr-cost"
+      ],
+      "skillLabel": "LQR cost and the roles of Q and R",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Bryson's rule for a torque limit of 4 N·m: R = 1/u_max^2 (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0625",
+      "tolerance": 0.001,
+      "explanation": "1/16 = 0.0625.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lqr-cost"
+      ],
+      "skillLabel": "LQR cost and the roles of Q and R",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Scalar plant x' = x + u, q = 1, r = 0.25. Give K (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.236068",
+      "tolerance": 0.001,
+      "explanation": "P = (0.25+sqrt(0.0625+0.25)) = 0.8090, K = P/r = 3.236.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "riccati"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q4"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Plant x' = x + u, q = 1, r = 0.25. Closed-loop pole (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2.236068",
+      "tolerance": 0.001,
+      "explanation": "1 - 3.236 = -2.236.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gain-tradeoff",
+        "riccati"
+      ],
+      "skillLabel": "Gain and closed loop versus input penalty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Plant x' = 3x + 2u, q = 1, r = 4. Give P (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.162278",
+      "tolerance": 0.001,
+      "explanation": "b^2 P^2 / r - 2aP - q = 0: P^2 - 6P - 1 = 0, P = 3 + sqrt(10) = 6.162.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "riccati"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "As r grows without bound for the unstable plant x' = a x + b u (a > 0), the closed-loop pole approaches:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "0, the boundary between stable and unstable",
+        "+a, the open-loop pole itself, unchanged",
+        "-a, the mirror image of the open-loop pole",
+        "minus infinity, since the cost on x dominates"
+      ],
+      "answer": "2",
+      "explanation": "LQR moves the unstable pole only as far as needed: it reflects it across the imaginary axis.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gain-tradeoff"
+      ],
+      "skillLabel": "Gain and closed loop versus input penalty",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A student iterates P <- Q + A'PA + A'PB (R + B'PB)^-1 B'PA and P grows without bound. What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A must be transposed twice",
+        "The iteration needs P0 = 0 exactly",
+        "The last term must be subtracted",
+        "R must be zero"
+      ],
+      "answer": "2",
+      "explanation": "The Riccati update subtracts the term A'PB K.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "riccati"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A friend says: 'LQR guarantees stability margins, so I do not need to simulate delay.' Best response?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The margins apply only when R is large, and then any delay can be ignored safely",
+        "The margins hold for the ideal continuous loop; a 50 ms delay or sampling can remove them",
+        "Correct, because LQR margins include any delay as part of the guaranteed phase margin",
+        "The margins hold only for two-state systems, so a larger plant needs simulation"
+      ],
+      "answer": "1",
+      "explanation": "Delay adds phase lag; the textbook margins assume no unmodelled dynamics.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lqr-properties"
+      ],
+      "skillLabel": "Properties and checks of an LQR design",
+      "mistakeCategory": "retention",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Discrete LQR: x0 = (1, 0), P00 = 17.8349 and the simulated sum of costs over 200 steps is 17.8349. If x0 were (2, 0), the optimal cost would be (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "71.3396",
+      "tolerance": 0.01,
+      "explanation": "J = x0' P x0 scales with the square: 4 P00.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lqr-properties"
+      ],
+      "skillLabel": "Properties and checks of an LQR design",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "The discrete scalar example has K = 0.618. Starting at x0 = 2, what is the state after one step of x_{k+1} = x_k + u_k, u_k = -K x_k (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.763932",
+      "tolerance": 0.001,
+      "explanation": "2*(1-0.618) = 0.764.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lqr-properties"
+      ],
+      "skillLabel": "Properties and checks of an LQR design",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Your LQR for a drone attitude loop leaves a steady offset under a constant wind torque. Explain why, and how you would fix it within the LQR framework.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States that state feedback has no integral action so a constant disturbance gives an offset.",
+        "Proposes augmenting the state with the integral of the error and re-running LQR.",
+        "Names a check: step disturbance simulation and the effect on peak input."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "gain-tradeoff",
+        "lqr-properties"
+      ],
+      "skillLabel": "Gain and closed loop versus input penalty",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Describe how you would validate a Riccati solver you wrote, using only properties of the solution (no reference library).",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Mentions the fixed-point residual or one more iteration.",
+        "Mentions closed-loop stability (eigenvalues) and symmetry of P.",
+        "Mentions the cost identity x0'Px0 against simulation or a scalar closed form."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "riccati",
+        "lqr-properties"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

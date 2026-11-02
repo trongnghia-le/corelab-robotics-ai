@@ -1,0 +1,383 @@
+{
+  "id": "C09-targeted",
+  "topicId": "C09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Forward Euler is used for y' = -a y with a = 80 1/s. Largest stable step T (s, 4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.025",
+      "tolerance": 0.0001,
+      "explanation": "|1 - aT| < 1 so T < 2/a = 0.025.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "zoh-discretization"
+      ],
+      "skillLabel": "ZOH discretisation and pole mapping",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "y' = -10 y + 10 u discretised with ZOH and T = 0.1 s. B_d (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.632121",
+      "tolerance": 0.0005,
+      "explanation": "B_d = (10/10)(1 - e^{-1}) = 0.6321.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "zoh-discretization"
+      ],
+      "skillLabel": "ZOH discretisation and pole mapping",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Integrator loop with d = 2 samples of delay: stable iff K*T < 2 sin(pi/10). Give the limit on K*T (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.618034",
+      "tolerance": 0.002,
+      "explanation": "2 sin(18 deg) = 0.618.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "delay-stability"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Integrator loop, no delay, T = 0.02 s. Largest stable K (1/s)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "100",
+      "tolerance": 0.5,
+      "explanation": "K T < 2 so K < 100.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "delay-stability"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Delay margin of the continuous loop y' = -K y(t - tau) is tau < pi/(2K). For K = 20, tau_max (ms, 1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "78.539816",
+      "tolerance": 0.1,
+      "explanation": "pi/40 = 78.5 ms.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "delay-stability"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A ZOH adds about T/2. With T = 20 ms, compute latency 5 ms and a driver latency 3 ms, total effective delay (ms)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "18",
+      "tolerance": 0.1,
+      "explanation": "10 + 5 + 3 = 18 ms.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sampling-choice"
+      ],
+      "skillLabel": "Choosing a sampling rate and latency budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Why does a zero-order hold behave approximately like a delay of T/2?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Because the hold halves the gain of the signal, which lowers the phase by T/2",
+        "On average the held value is T/2 old compared with the continuous signal",
+        "Because the hold samples at twice the rate, so the signal lags by half a period",
+        "Because the hold removes high frequencies, which delays the signal by T/2"
+      ],
+      "answer": "1",
+      "explanation": "The hold produces a staircase that lags the underlying signal by about T/2.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "delay-stability"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A pole at s = -50 and T = 0.1 s is mapped to z = exp(sT). Which statement is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "z is outside the unit circle, so the sampled system is unstable",
+        "The pole is lost by sampling, so it no longer affects the response",
+        "z = -50*0.1 = -5, which is outside the unit circle, so it is unstable",
+        "z = 0.0067 is inside the unit circle: stable, and very fast at the samples"
+      ],
+      "answer": "3",
+      "explanation": "e^{-5} = 0.0067.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "zoh-discretization"
+      ],
+      "skillLabel": "ZOH discretisation and pole mapping",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "The simulated step response looks fine but a real encoder with coarse resolution leaves a constant small offset that integral-free feedback never removes. Most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "An unstable pole of the plant, which drifts to a constant small value",
+        "Euler instability of the discretisation, which settles on a small offset",
+        "Aliasing of the encoder signal, which adds a constant offset at low speed",
+        "Quantisation dead zone: commands near zero round to zero"
+      ],
+      "answer": "3",
+      "explanation": "When |K y| < q/2 the quantised command is zero, so the loop stops.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "quantization"
+      ],
+      "skillLabel": "Quantisation and dead zones",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "You write the motor command after sleeping the rest of the period instead of right after computing it. What is the main effect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It cancels the ZOH delay, since the command is then held for less time",
+        "It adds almost one extra sample of delay and jitter, lowering the stable gain",
+        "It only affects the logging of the control signals and not the closed loop",
+        "It improves the timing, because the command is applied at the exact period edge"
+      ],
+      "answer": "1",
+      "explanation": "The output is one period older than necessary.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sampling-choice"
+      ],
+      "skillLabel": "Choosing a sampling rate and latency budget",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Explain how you would choose a sample rate for a joint loop with a closed-loop bandwidth of 5 Hz and a computed delay budget, including one check you would run on the real system.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Gives a rule (10-30x bandwidth) and also a latency budget against the delay margin.",
+        "Accounts for ZOH T/2 plus compute/communication latency.",
+        "Names a check: measure actual latency/jitter and verify with a gain sweep."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "sampling-choice",
+        "delay-stability"
+      ],
+      "skillLabel": "Choosing a sampling rate and latency budget",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "A teammate designs a discrete controller by plugging continuous gains into code running at 20 Hz for a plant with a 10 Hz bandwidth. Predict what goes wrong and what two redesign options exist.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Notes the sample rate is too low (about 2x bandwidth), huge T/2 delay and aliasing.",
+        "Option: raise rate or redesign in discrete time with the exact model.",
+        "Option: compensate the delay or lower the gain."
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "delay-stability",
+        "sampling-choice"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

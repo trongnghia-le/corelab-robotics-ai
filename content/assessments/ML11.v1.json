@@ -1,0 +1,183 @@
+{
+  "id": "ML11-diagnostic",
+  "topicId": "ML11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Data {1, 3}, model N(μ=2, σ²=1). What is the average log-likelihood per point? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-1.418939",
+      "tolerance": 0.001,
+      "explanation": "Each point has (x−μ)²=1: −½[ln(2π)+1]=−1.4189.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "log-likelihood"
+      ],
+      "skillLabel": "Computing log-likelihoods",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M08"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Why can't we maximize the mixture log-likelihood in closed form?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The likelihood is not differentiable in the means, so no stationary point exists",
+        "The log of a sum over the hidden component does not separate per component",
+        "Each component's weight is fixed in advance, so only the means can be fitted",
+        "The likelihood is flat in the parameters because components can be swapped freely"
+      ],
+      "answer": "1",
+      "explanation": "log Σ_k w_k N(x; μ_k, σ_k²) couples all components; EM works with expected complete-data likelihood instead.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "latent-variables-em"
+      ],
+      "skillLabel": "Latent variables and EM",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Mixture 0.5·N(0,1)+0.5·N(3,1), observation x=1. What is the responsibility of component 1? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.817574",
+      "tolerance": 0.001,
+      "explanation": "e^-0.5=0.6065 vs e^-2=0.1353 → 0.6065/0.7418=0.8176.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "latent-variables-em"
+      ],
+      "skillLabel": "Latent variables and EM",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A single Gaussian is fit to data with three well-separated clusters. What is the main problem with the resulting generative model?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It puts probability mass in the empty regions between clusters",
+        "Its likelihood is undefined when the clusters are well separated",
+        "It overfits by memorising each training point inside its own cluster",
+        "It cannot be sampled from once the data have more than one mode"
+      ],
+      "answer": "0",
+      "explanation": "One bell cannot model three modes, so samples fall in the gaps and held-out likelihood is poor.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "likelihood-evaluation",
+        "latent-variables-em"
+      ],
+      "skillLabel": "Latent variables and EM",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A VAE encoder gives q(z|x)=N(0, 1) for every input (μ=0, σ²=1) and the prior is N(0,1). What is the KL term? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0",
+      "tolerance": 0.001,
+      "explanation": "½(1+0−1−ln1)=0. The code carries no information about x (posterior collapse).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "elbo"
+      ],
+      "skillLabel": "The ELBO and its KL term",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "You pick the number of mixture components using the training log-likelihood. What will happen?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It cannot be computed, because the likelihood needs the hidden labels first",
+        "It selects the true K exactly, because the likelihood peaks at the generating value",
+        "It favours ever-larger K, because training likelihood keeps rising with capacity",
+        "It selects K=1, because a single component has the lowest model complexity"
+      ],
+      "answer": "2",
+      "explanation": "More components always fit the training data at least as well; use held-out likelihood.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "likelihood-evaluation"
+      ],
+      "skillLabel": "Held-out evaluation of generative models",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A generative model for robot depth images produces sharp, realistic samples but all of them show the same type of scene. Name the failure and describe two measurements you would add to the evaluation.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names mode collapse (low diversity/coverage) despite high realism.",
+        "Measures coverage, e.g. cluster/mode proportions of samples vs data or nearest-neighbour recall in a feature space.",
+        "Adds held-out likelihood or reconstruction where available and compares to the data distribution, not just visual inspection."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "sample-diversity"
+      ],
+      "skillLabel": "Reconstruction vs diversity",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,337 @@
+{
+  "id": "CPP05-targeted",
+  "topicId": "CPP05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "std::accumulate(v.begin(), v.end(), 0) is applied to a vector<double> {0.6, 0.7, 0.8}. What is the result?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "0 (integer arithmetic)",
+        "2.1 (double arithmetic)",
+        "Compile error (type mismatch)",
+        "2 (rounded sum)"
+      ],
+      "answer": "0",
+      "explanation": "The init type decides the accumulator type: each partial sum is truncated back to int (0+0.6 -> 0, ...). Use 0.0.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "erase-remove",
+        "binary-search"
+      ],
+      "skillLabel": "accumulate init type",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP05#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A std::set uses a comparator written as a <= b. What does the standard say?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It works but silently sorts the keys in descending order",
+        "It works only when the keys are integers, not floating point",
+        "Undefined behavior: the comparator must be a strict weak ordering",
+        "It works, but equal keys are stored twice in the tree"
+      ],
+      "answer": "2",
+      "explanation": "With <=, comp(a,a) is true, which violates irreflexivity; the tree invariants can break.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-choice"
+      ],
+      "skillLabel": "Strict weak ordering",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP05#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A sliding window of the latest 200 readings: push at the back, pop at the front. Which container fits best without extra bookkeeping?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "std::set",
+        "std::vector with erase(begin())",
+        "std::deque",
+        "std::map"
+      ],
+      "answer": "2",
+      "explanation": "deque supports O(1) push_back and pop_front; erasing the front of a vector is O(n).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-choice"
+      ],
+      "skillLabel": "FIFO container",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP05#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "After std::nth_element(v.begin(), v.begin()+k, v.end()), which is guaranteed?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The whole vector is fully sorted in ascending order, so every position is final and stable",
+        "Only v[k] is changed by the call; every other element stays exactly where it was before",
+        "v[0] is the minimum and v.back() is the maximum of the range after the call returns",
+        "v[k] is the element sorted order would put there; before it none is greater, after it none smaller"
+      ],
+      "answer": "3",
+      "explanation": "It is a partial partition, expected O(n), enough for a median or percentile.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "binary-search"
+      ],
+      "skillLabel": "nth_element guarantee",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A vector grows by factor g = 1.5 and 300,000 elements are pushed one by one. Using the bound g/(g-1)*n, what is the maximum number of elements moved during reallocations? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "900000",
+      "tolerance": 0.5,
+      "explanation": "1.5/0.5 = 3, times 300,000 = 900,000.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "benchmarking",
+        "container-choice"
+      ],
+      "skillLabel": "Amortized growth",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Samples (t=2.0, v=5.0) and (t=2.5, v=9.0) bracket the query t=2.2. What is the interpolated value? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.6",
+      "tolerance": 0.005,
+      "explanation": "5 + 4*(0.2/0.5) = 6.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "binary-search"
+      ],
+      "skillLabel": "Linear interpolation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP05#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A series has 100 samples at t = 0, 10, 20, ..., 990 ms. How many samples satisfy 250 <= t <= 600 (both ends inclusive)? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "36",
+      "tolerance": 0.01,
+      "explanation": "The first is 260 and the last 600: (600-260)/10+1 = 35.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "binary-search"
+      ],
+      "skillLabel": "Counting a closed range",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP05#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A vector holds 40,000 samples of 24 bytes each. Inserting one sample into the exact middle moves the samples after it. How many bytes are moved? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "480000",
+      "tolerance": 0.5,
+      "explanation": "20,000 elements x 24 B = 480,000 bytes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "container-choice"
+      ],
+      "skillLabel": "Cost of middle insertion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP05#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A loop 'for (auto it = v.begin(); it != v.end(); ++it) if (bad(*it)) v.erase(it);' sometimes skips elements and sometimes crashes. Explain why and rewrite it in two correct ways.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "erase invalidates the iterator and shifts later elements, so ++it is undefined and skips one.",
+        "Fix 1: it = v.erase(it) in the bad branch, ++it otherwise.",
+        "Fix 2: v.erase(std::remove_if(first, last, bad), v.end())."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "iterator-invalidation",
+        "erase-remove"
+      ],
+      "skillLabel": "Fixing erase in a loop",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP05#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Choose a container for caching the latest pose of each of about 50 tracked objects looked up by integer id, updated at 30 Hz. Justify, and say what would change your answer.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Proposes unordered_map<int,Pose> (or a vector indexed by id when ids are small and dense).",
+        "Notes that 50 elements make any choice cheap, so simplicity and clarity dominate.",
+        "Names a trigger for revisiting: needing ordered iteration, range queries, or millions of entries."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "container-choice"
+      ],
+      "skillLabel": "Selecting a container",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP05#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Write the code that removes all negative values from std::vector<double> v and prints how many were removed, using the erase-remove idiom.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "auto e = std::remove_if(v.begin(), v.end(), [](double x){ return x < 0; });",
+        "Computes removed = v.end() - e before erasing and calls v.erase(e, v.end()).",
+        "Mentions O(n) and that remove_if alone does not change size()."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "erase-remove"
+      ],
+      "skillLabel": "Erase-remove idiom",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP05#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

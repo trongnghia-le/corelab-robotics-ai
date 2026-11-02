@@ -1,0 +1,347 @@
+{
+  "id": "T03-targeted",
+  "topicId": "T03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A launch configuration has no `cwd`. What working directory does the debugged program get by default?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The workspace folder",
+        "The Python installation folder",
+        "The root directory /",
+        "The folder of the active file"
+      ],
+      "answer": "0",
+      "explanation": "VS Code defaults cwd to ${workspaceFolder}.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "working-directory",
+        "launch-config"
+      ],
+      "skillLabel": "Working directory and relative paths",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "`open('data/in.csv')` works when you run from /w/exp but fails when launched from /w. What is the most robust fix inside the code?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Run only from /w/exp and tell nobody",
+        "Rename the file",
+        "Build the path from Path(__file__).parent",
+        "Add `import os` at the top"
+      ],
+      "answer": "2",
+      "explanation": "Paths relative to the module's own location do not depend on cwd.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "working-directory"
+      ],
+      "skillLabel": "Working directory and relative paths",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "What does `${fileBasenameNoExtension}` expand to for the file /home/u/proj/exp/train.py?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "/home/u/proj/exp",
+        "train.py",
+        "train",
+        "exp"
+      ],
+      "answer": "2",
+      "explanation": "It is the file name without directory and extension.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "launch-config"
+      ],
+      "skillLabel": "Launch configurations",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Which launch.json entry will be rejected or misbehave?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "\"env\": {\"SEED\": \"42\"}",
+        "\"cwd\": \"${workspaceFolder}\"",
+        "\"env\": {\"SEED\": 42}",
+        "\"args\": [\"--epochs\", \"3\"]"
+      ],
+      "answer": "2",
+      "explanation": "env values must be strings.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "launch-config"
+      ],
+      "skillLabel": "Launch configurations",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "In pdb, a breakpoint `b f.py:11, i == 3` is set for a loop `for i in range(10): total += i` (line 11 is the update). What is total when it stops? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.0",
+      "tolerance": 0.5,
+      "explanation": "Before adding i=3: 0+1+2=3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stepping"
+      ],
+      "skillLabel": "Stepping and inspection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A loop has 5,000 iterations and a conditional breakpoint `i == 4000`. How many times is the condition evaluated before it stops? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4001.0",
+      "tolerance": 0.5,
+      "explanation": "Iterations 0..4000 are evaluated: 4001 evaluations (the last is true).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stepping"
+      ],
+      "skillLabel": "Stepping and inspection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "How many probes (excluding the first end-check) can a bisection need for 300 commits? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9.0",
+      "tolerance": 0.5,
+      "explanation": "ceil(log2(300))=9.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection"
+      ],
+      "skillLabel": "Narrowing a bug by bisection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Bisection over 2^k steps needs about k probes. For 4,096 steps, what is k? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12.0",
+      "tolerance": 0.5,
+      "explanation": "2^12=4096.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection"
+      ],
+      "skillLabel": "Narrowing a bug by bisection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A bisection assumes which property of the 'bad' predicate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "True at exactly one step, so the search needs only one probe",
+        "Monotone: false up to the first bad step and true afterwards",
+        "Constant: its value never changes as n grows through the range",
+        "Random: each step is independently bad with some fixed probability"
+      ],
+      "answer": "1",
+      "explanation": "Bisection discards half the range using the monotone structure.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bisection"
+      ],
+      "skillLabel": "Narrowing a bug by bisection",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "`python -c 'import sys; print(sys.executable)'` prints different paths in the terminal and in the editor's integrated debug console. What does this prove?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The editor is out of date, so it prints a stale interpreter path",
+        "Both sessions use the same interpreter, so the path is merely a display issue",
+        "The code has a syntax error that appears only in the debug console",
+        "The two sessions use different interpreters, so installed packages can differ"
+      ],
+      "answer": "3",
+      "explanation": "sys.executable identifies the interpreter running the code.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "interpreter-environment"
+      ],
+      "skillLabel": "Interpreter and environment",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Write the documentation you would put next to a launch configuration so a teammate can run it correctly (what to state and why).",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States the working directory and why it is chosen (which relative paths depend on it).",
+        "Lists interpreter/environment, arguments and environment variables, and any required files.",
+        "Gives a command-line equivalent and a way to check it worked (an expected output)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "launch-config",
+        "working-directory"
+      ],
+      "skillLabel": "Launch configurations",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain, step by step, how you would use pdb to investigate an uncaught exception in a script, and which commands you would use.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Run `python -m pdb script.py` and continue (`c`) to the post-mortem stop at the failing line.",
+        "Inspect locals with `p`, the stack with `w`/`u`/`d`, and re-run with a conditional breakpoint if needed.",
+        "Record the finding and write a regression test."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "stepping"
+      ],
+      "skillLabel": "Stepping and inspection",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

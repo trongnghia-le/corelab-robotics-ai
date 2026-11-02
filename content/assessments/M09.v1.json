@@ -1,0 +1,196 @@
+{
+  "id": "M09-diagnostic",
+  "topicId": "M09",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "unbiased-variance"
+      ],
+      "skillLabel": "Unbiased sample variance",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M09#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "Why does the sample variance divide by n-1 instead of n?",
+      "options": [
+        "Because one reading out of n is always discarded as an outlier before the variance is computed.",
+        "Deviations are measured from the sample mean, fitted to the same data, so dividing by n is biased low.",
+        "With n-1 the estimate is always larger than with n, which is the safer choice for noisy sensors.",
+        "Dividing by n-1 turns the result into a standard deviation instead of a variance, as needed."
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "The sample mean sits closer to the data than the true mean does, so squared deviations from it are too small on average; E[SS]=(n-1)sigma^2."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "unbiased-variance"
+      ],
+      "skillLabel": "Unbiased sample variance",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M09#worked-example"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "Readings 4.1, 3.9, 4.3, 4.5. Compute the unbiased sample variance. Give the answer to 3 decimals.",
+      "answer": "0.0667",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "Mean 4.2; squared deviations 0.01+0.09+0.01+0.09=0.2; divide by 3."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "standard-error"
+      ],
+      "skillLabel": "Standard error of the mean",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M09#theory-and-derivation"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "100 independent readings have sample standard deviation s=0.3 m. What is the estimated standard error of their mean, in metres (2 decimals)?",
+      "answer": "0.03",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "SE=s/sqrt(n)=0.3/10."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "standard-error"
+      ],
+      "skillLabel": "Standard error of the mean",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M09#theory-and-derivation"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "A mean of 25 readings has standard error 0.2. How many independent readings give a standard error of 0.05?",
+      "answer": "400",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.5,
+      "explanation": "SE scales as 1/sqrt(n); quartering it needs 16 times more readings: 25*16=400."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confidence-interval"
+      ],
+      "skillLabel": "Interpreting confidence intervals",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M09#theory-and-derivation"
+        }
+      ],
+      "id": "q5",
+      "kind": "choice",
+      "prompt": "A 95% confidence interval for a mean is [9.84, 10.29]. Which statement is correct?",
+      "options": [
+        "The sample mean lies inside this interval with probability 95%, as a random reading would.",
+        "If repeated many times, about 95% of intervals built this way would contain the true mean.",
+        "There is a 95% probability that the true mean lies between 9.84 and 10.29 for this interval.",
+        "95% of the individual readings lie between 9.84 and 10.29, since it covers the data spread."
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Coverage is a property of the procedure over repeated samples; the true mean is fixed, and the sample mean is always the interval centre."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "estimator-fusion"
+      ],
+      "skillLabel": "Inverse-variance fusion",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M09#theory-and-derivation"
+        }
+      ],
+      "id": "q6",
+      "kind": "number",
+      "prompt": "Two independent unbiased estimates have variances 2 and 6. What is the variance of their optimal inverse-variance fusion? (1 decimal)",
+      "answer": "1.5",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "1/v=1/2+1/6=2/3, so v=1.5."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "independence-assumption",
+        "standard-error"
+      ],
+      "skillLabel": "Bias versus random error",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M09#failure-modes"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "A distance sensor has a constant +0.3 cm calibration bias. A student averages 10,000 readings and reports a very small standard error. Explain what is wrong and how you would detect the problem.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "States that averaging reduces only random independent error, not a constant bias.",
+        "Notes the tight interval is centred on the wrong value so coverage of the true value fails.",
+        "Proposes a check, such as comparing with a known target or an independent sensor."
+      ]
+    }
+  ]
+}

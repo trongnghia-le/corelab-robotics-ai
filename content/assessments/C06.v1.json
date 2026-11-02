@@ -1,0 +1,203 @@
+{
+  "id": "C06-diagnostic",
+  "topicId": "C06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In the model z_k = x_k + n_k, x_{k+1} = x_k + v dt + w_k, what is the role of the prediction step?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It replaces the new measurement with the model output whenever the sensor reading looks noisy",
+        "It removes the noise n_k from the sensor reading by averaging it with the previous raw measurement",
+        "It propagates the previous estimate through the motion model, giving an expected reading to compare with z",
+        "It guarantees the estimate is unbiased, whatever the motion model, by cancelling the process noise w_k"
+      ],
+      "answer": "2",
+      "explanation": "The prediction gives the expected measurement; the residual z minus prediction is what the correction acts on.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "predict-correct"
+      ],
+      "skillLabel": "Predict-correct update by hand",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "dt = 0.1, state (x, v) = (5.0, 1.0), alpha = 0.4, beta = 0.2, reading z = 5.30. New x estimate (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.18",
+      "tolerance": 0.001,
+      "explanation": "x_pred = 5.1, r = 0.2, x = 5.1 + 0.08 = 5.18.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "predict-correct"
+      ],
+      "skillLabel": "Predict-correct update by hand",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Same step: new velocity estimate (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.4",
+      "tolerance": 0.001,
+      "explanation": "v = 1 + (0.2/0.1)*0.2 = 1.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "predict-correct"
+      ],
+      "skillLabel": "Predict-correct update by hand",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Position noise sigma = 0.01 m, dt = 0.05 s. Standard deviation of a two-sample finite-difference velocity (m/s, 3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.282843",
+      "tolerance": 0.001,
+      "explanation": "sqrt(2)*0.01/0.05 = 0.283.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "You raise alpha and beta of an alpha-beta velocity filter. What is the usual consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Nothing changes if the target moves at constant velocity",
+        "Less lag during acceleration but more noise in the velocity estimate",
+        "Both lag and noise fall",
+        "More lag and less noise"
+      ],
+      "answer": "1",
+      "explanation": "Higher gains trust the sensor more: faster tracking, less smoothing.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "The error-matrix determinant equals 1 - alpha. For alpha = 0.7, what is the product of the two eigenvalues?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.3",
+      "tolerance": 0.001,
+      "explanation": "det Phi = 1 - 0.7 = 0.3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-dynamics"
+      ],
+      "skillLabel": "Estimation-error dynamics and stability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A robot's lidar position fix arrives 80 ms late, while its velocity estimate looks smooth and plausible. How would you detect the delay problem and handle it?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Notes that a delayed measurement produces a consistent lag in position estimate (velocity x delay).",
+        "Proposes a test (compare with an independent reference or use timestamps/step changes).",
+        "Proposes a fix: timestamp buffer or predicting to the measurement time."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "measurement-model",
+        "noise-lag"
+      ],
+      "skillLabel": "Measurement and process models",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

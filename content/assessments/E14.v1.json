@@ -1,0 +1,182 @@
+{
+  "id": "E14-diagnostic",
+  "topicId": "E14",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why simulate a plan symbolically on the newly observed scene before executing it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "plan-validity"
+      ],
+      "skillLabel": "Plan validity under scene change",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E09"
+      ],
+      "options": [
+        "It finds the first step whose preconditions fail without moving the robot.",
+        "It guarantees that the plan will succeed physically on the real robot.",
+        "It removes the need for perception, since the symbolic state is exact.",
+        "It makes the plan shorter by merging redundant steps automatically."
+      ],
+      "answer": "0",
+      "explanation": "Symbolic validation is cheap and detects precondition violations early, but cannot guarantee physical success."
+    },
+    {
+      "id": "q2",
+      "prompt": "A plan reads 6 externally perceived facts, each correct with probability 0.95 independently. Probability that all are correct? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grounding-uncertainty"
+      ],
+      "skillLabel": "Grounding uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "answer": "0.7350918906249998",
+      "tolerance": 0.002,
+      "explanation": "0.95^6=0.735."
+    },
+    {
+      "id": "q3",
+      "prompt": "What per-fact confidence is needed so that 5 independent facts are all correct with probability 0.85? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grounding-uncertainty"
+      ],
+      "skillLabel": "Grounding uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#worked-example"
+        }
+      ],
+      "answer": "0.9680187850024814",
+      "tolerance": 0.002,
+      "explanation": "0.85^(1/5)=0.967."
+    },
+    {
+      "id": "q4",
+      "prompt": "In plan a1..a4, a1 adds clear(A) and a3 needs clear(A). What is this relation called, and what threatens it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "causal-links"
+      ],
+      "skillLabel": "Causal links and threats",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "A goal condition; a1 threatens it by adding clear(A) twice.",
+        "A causal link; a2 would threaten it if a2 deletes clear(A).",
+        "A precondition of a1; a3 threatens it by needing clear(A).",
+        "A conflict link; a4 would threaten it by deleting clear(A) after a3."
+      ],
+      "answer": "1",
+      "explanation": "A causal link is producer-fact-consumer; a step between them that deletes the fact is a threat."
+    },
+    {
+      "id": "q5",
+      "prompt": "Logs show an object is lifted 95% of the time when 'gripper closed' is on, but a person also lifts objects by hand. Which statement is right?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "causal-links"
+      ],
+      "skillLabel": "Intervention versus observation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Nothing can be learned from logs at all, so only new experiments are of any use.",
+        "The effect of closing the gripper on lifting is 0.95, as read directly from the logs.",
+        "The lift causes the gripper to close, so the causal arrow points the other way here.",
+        "The conditional frequency is not the effect of commanding the gripper; use an intervention."
+      ],
+      "answer": "3",
+      "explanation": "Conditioning on the signal mixes the robot's effect with other causes; intervention isolates the effect."
+    },
+    {
+      "id": "q6",
+      "prompt": "A blind replay executes a 7-step plan whose first invalid step has index 4 (0-based) in the changed scene. How many steps are physically executed before the failure is hit?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "plan-validity"
+      ],
+      "skillLabel": "Plan validity under scene change",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#worked-example"
+        }
+      ],
+      "answer": "4.0",
+      "tolerance": 0.01,
+      "explanation": "Steps 0..3 execute; index 4 fails."
+    },
+    {
+      "id": "q7",
+      "prompt": "Predicted state after step 2 contains ontable(C) but the camera reports on(C,B). Describe what the robot should do and what information it uses.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "execution-feedback"
+      ],
+      "skillLabel": "Execution feedback",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E14#theory-and-derivation"
+        }
+      ],
+      "rubric": [
+        "Computes the difference between predicted and observed facts (missing ontable(C), extra on(C,B)).",
+        "Updates the symbolic state to the observation and replans from it.",
+        "Names a way to check the cause (re-detect, re-grasp) and avoid repeating the failure."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

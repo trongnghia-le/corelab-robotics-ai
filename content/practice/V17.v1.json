@@ -1,0 +1,280 @@
+{
+  "id": "V17-targeted",
+  "topicId": "V17",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "A monocular VO output has the right shape but is half the true size. Which unobservable quantity is responsible?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gauge-and-ate"
+      ],
+      "skillLabel": "Gauge freedom and ATE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V17#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Global translation",
+        "Global rotation",
+        "Scale",
+        "Frame rate"
+      ],
+      "answer": "2",
+      "explanation": "A single camera cannot recover metric scale without extra information.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "A rigidly moved copy of the true trajectory is evaluated. What is its aligned ATE in metres?",
+      "kind": "number",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gauge-and-ate"
+      ],
+      "skillLabel": "Gauge freedom and ATE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V17#verification"
+        }
+      ],
+      "answer": "0",
+      "tolerance": 0.001,
+      "explanation": "The shifted copy differs from the truth only by a gauge transform; alignment recovers it exactly.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "A robot travels 80 m and ends 2 m from the correct end point. Drift in percent (1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "drift-metrics"
+      ],
+      "skillLabel": "Drift as a percentage of path length",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V17#worked-example"
+        }
+      ],
+      "answer": "2.5",
+      "tolerance": 0.05,
+      "explanation": "2/80 = 2.5 %.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "A robot at pose (1,1,0) moves delta (2,0,0.5) in its own frame. What is its new heading (rad)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pose-composition"
+      ],
+      "skillLabel": "Composing relative poses",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V17#worked-example"
+        }
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "th + dth = 0 + 0.5.",
+      "equivalentTo": [
+        "q5",
+        "q6"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "A robot at pose (0,0,pi) moves delta (1,0,0). What is its new x coordinate?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pose-composition"
+      ],
+      "skillLabel": "Composing relative poses",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V17#worked-example"
+        }
+      ],
+      "answer": "-1",
+      "tolerance": 0.01,
+      "explanation": "x = cos(pi)*1 = -1.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p6",
+      "prompt": "A per-step heading bias of 0.02 rad acts for 25 steps. Total heading error in degrees (1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "heading-drift"
+      ],
+      "skillLabel": "Heading error accumulation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V17#worked-example"
+        }
+      ],
+      "answer": "28.6",
+      "tolerance": 0.1,
+      "explanation": "25*0.02 = 0.5 rad = 28.65 degrees.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "In the linear loop-closure correction a pose halfway along the loop is moved by",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "loop-closure"
+      ],
+      "skillLabel": "Loop closure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V17#worked-example"
+        }
+      ],
+      "options": [
+        "the full end-point error",
+        "half the end-point error",
+        "the error divided by path length",
+        "none of it"
+      ],
+      "answer": "1",
+      "explanation": "Pose i loses the fraction i/n of the end error.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "Two corridors look alike and the system claims a loop closure between them. What is the likely effect on a linear correction?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "loop-closure"
+      ],
+      "skillLabel": "Loop closure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V17#failure-modes"
+        }
+      ],
+      "options": [
+        "The scale becomes exact, because the loop closure fixes the length",
+        "Only the last pose moves, because the loop closure is an edge to it",
+        "The whole trajectory is dragged to satisfy a wrong constraint.",
+        "None; loop closures never hurt, since they only add information"
+      ],
+      "answer": "2",
+      "explanation": "A false constraint distributes a wrong error over the path.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "p9",
+      "prompt": "Write the code for composing a body-frame motion onto a world pose and a test that a naive world-frame addition would fail.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "pose-composition"
+      ],
+      "skillLabel": "Composing relative poses",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/V17#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Uses cos and sin of the current heading to rotate (dx, dy) into the world frame.",
+        "Updates the heading by dth.",
+        "Test uses a heading of pi/2 so the naive result has x and y swapped."
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p10",
+      "prompt": "A teammate reports a VO result as 'ATE 0.3 m'. List what you need to know before you can compare it with another system.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "drift-metrics"
+      ],
+      "skillLabel": "Drift metrics reporting",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V17#verification"
+        }
+      ],
+      "rubric": [
+        "Alignment type (rigid or similarity, or none).",
+        "Sequence length or path length, and the ground-truth source.",
+        "Whether one run or several seeds, and the intervals if RPE is used."
+      ],
+      "equivalentTo": [
+        "q2",
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

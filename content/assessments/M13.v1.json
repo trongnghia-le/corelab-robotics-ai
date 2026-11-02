@@ -1,0 +1,202 @@
+{
+  "id": "M13-diagnostic",
+  "topicId": "M13",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kkt-active-constraints"
+      ],
+      "skillLabel": "Active constraints and complementary slackness",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "At the optimum of a convex problem, a constraint has multiplier zero. What does that tell you?",
+      "options": [
+        "The constraint is violated at the optimum by a small margin",
+        "The problem is infeasible because the multiplier cannot be zero",
+        "Dropping that constraint would not change the optimal solution",
+        "The objective is not convex, so the multiplier is meaningless"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Complementary slackness: zero multiplier means the constraint does not bind at the optimum."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "convexity-test"
+      ],
+      "skillLabel": "Testing convexity",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#theory-and-derivation"
+        }
+      ],
+      "id": "q2",
+      "kind": "choice",
+      "prompt": "Which function is convex on the plane?",
+      "options": [
+        "f(x,y)=x^2+2xy+3y^2",
+        "f(x,y)=x*y",
+        "f(x,y)=-x^2-y^2",
+        "f(x,y)=x^2+4xy+y^2"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Convex iff the Hessian is positive semidefinite: [[2,2],[2,6]] has eigenvalues of trace 8, det 8 > 0; the others have a negative eigenvalue."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lagrange-multipliers"
+      ],
+      "skillLabel": "Solving with Lagrange multipliers",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#worked-example"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "Minimize x^2+y^2 subject to x+2y=5. What is the optimal value?",
+      "answer": "5",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "y=2x, x=1, y=2, f=1+4=5."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bounded-allocation"
+      ],
+      "skillLabel": "Bounded allocation",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#worked-example"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "Allocate total force 12 to three thrusters with limits (3,10,10), minimizing sum u^2/2. What is u_2?",
+      "answer": "4.5",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "Equal split 4 exceeds 3, so u1=3 and the rest share 9: u2=u3=4.5."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kkt-active-constraints",
+        "bounded-allocation"
+      ],
+      "skillLabel": "Active constraints and multipliers",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#worked-example"
+        }
+      ],
+      "id": "q5",
+      "kind": "number",
+      "prompt": "In the previous allocation (limits 3,10,10, total 12), what is the multiplier of the bound u1<=3? ",
+      "answer": "1.5",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "lambda=4.5 and mu1=lambda-u1=4.5-3=1.5."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "convexity-test"
+      ],
+      "skillLabel": "Why convexity matters",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#theory-and-derivation"
+        }
+      ],
+      "id": "q6",
+      "kind": "choice",
+      "prompt": "For a convex problem, a local minimum is",
+      "options": [
+        "possibly worse than other local minima",
+        "a saddle point",
+        "only global if the constraints are inactive",
+        "also a global minimum"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Convexity makes every local minimum global."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "convexity-test",
+        "bounded-allocation"
+      ],
+      "skillLabel": "Non-convex requirements",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "A minimum-thrust rule says each thruster is either off or produces at least 1 unit. Explain why this breaks convexity and propose a way to solve the allocation anyway.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "States that the feasible set {0} union [1,inf) is not convex.",
+        "Notes that local methods can then return a non-global solution.",
+        "Proposes mixed-integer formulation, enumerating on/off patterns, or a convex relaxation."
+      ]
+    }
+  ]
+}

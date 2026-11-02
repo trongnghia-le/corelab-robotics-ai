@@ -1,0 +1,183 @@
+{
+  "id": "E15-diagnostic",
+  "topicId": "E15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "To claim a policy generalises to NEW OBJECTS, which split is appropriate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "unseen-split-design"
+      ],
+      "skillLabel": "Unseen-split design",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E13"
+      ],
+      "options": [
+        "Hold out whole objects (never used in training or tuning) and test on them.",
+        "Reuse the training objects but present them in new orders and new positions.",
+        "Hold out the last 20% of frames of each episode and test on those later frames.",
+        "Randomly hold out 20% of trials and test on them, which samples every object."
+      ],
+      "answer": "0",
+      "explanation": "Random trial splits leak object identity."
+    },
+    {
+      "id": "q2",
+      "prompt": "Seen: 45/50 successes. Unseen: 25/50. What is the generalisation gap (seen minus unseen rate)? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "generalization-gap"
+      ],
+      "skillLabel": "Generalisation gap with uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "answer": "0.4",
+      "tolerance": 0.005,
+      "explanation": "0.90-0.50=0.40."
+    },
+    {
+      "id": "q3",
+      "prompt": "For the same data, the standard error of the gap sqrt(ps(1-ps)/ns + pu(1-pu)/nu)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "generalization-gap"
+      ],
+      "skillLabel": "Generalisation gap with uncertainty",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "answer": "0.0824621125123532",
+      "tolerance": 0.002,
+      "explanation": "sqrt(0.0018+0.005)=0.0825."
+    },
+    {
+      "id": "q4",
+      "prompt": "A system runs 5 hours (300 min) of operation with 12 human interventions. Mean time between interventions in minutes?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "autonomy-metrics"
+      ],
+      "skillLabel": "Autonomy metrics",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#worked-example"
+        }
+      ],
+      "answer": "25.0",
+      "tolerance": 0.1,
+      "explanation": "300/12=25."
+    },
+    {
+      "id": "q5",
+      "prompt": "Task A: 90/100 successes, task B: 1/10. The average over tasks (macro) is 0.5 while the pooled rate (micro) is 0.827. Which should you report for 'average task performance'?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "aggregation"
+      ],
+      "skillLabel": "Aggregation across tasks",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The micro average only, since it is higher and uses all of the trials.",
+        "Either one, without saying which, as both describe average performance.",
+        "Neither average; report only the best task, since it shows the capability.",
+        "The macro average, and also state the micro value and trial counts."
+      ],
+      "answer": "3",
+      "explanation": "Macro weights tasks equally; micro weights trials equally; state which one the claim uses."
+    },
+    {
+      "id": "q6",
+      "prompt": "A team tunes its prompt on the same 12 'unseen' tasks and reports success on them. What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "unseen-split-design"
+      ],
+      "skillLabel": "Unseen-split design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Selection on the test set inflates the estimate; use a separate validation family.",
+        "Twelve tasks is too many for a prompt study, so the number should be cut to three.",
+        "Prompts cannot be tuned at all, since they are fixed text rather than parameters.",
+        "Nothing is wrong; tuning a prompt is free and does not affect the reported success."
+      ],
+      "answer": "0",
+      "explanation": "Selecting on the evaluation set is leakage."
+    },
+    {
+      "id": "q7",
+      "prompt": "Write a benchmark protocol for 'the policy handles unseen objects autonomously'. Include the split, trial counts, metrics, failure reporting and a result that would reject the claim.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "unseen-split-design",
+        "autonomy-metrics"
+      ],
+      "skillLabel": "Benchmark protocol design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E15#verification"
+        }
+      ],
+      "rubric": [
+        "Held-out objects with contamination checks and stated trial/seed counts.",
+        "Metrics: success with intervals, interventions or MTBI, and a failure table including unlabelled.",
+        "A pre-registered rejecting outcome (e.g. Wilson upper bound below the target)."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

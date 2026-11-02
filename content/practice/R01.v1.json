@@ -1,0 +1,297 @@
+{
+  "id": "R01-targeted",
+  "topicId": "R01",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "newton-second-law"
+      ],
+      "skillLabel": "Net force and motion",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m1",
+      "kind": "choice",
+      "prompt": "A delivery robot drives along a flat floor at a constant 2 m/s. What is the net force on it?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Zero",
+        "Equal to the drive force alone",
+        "Equal to its weight",
+        "Proportional to 2 m/s"
+      ],
+      "answer": "0",
+      "explanation": "Constant velocity means zero acceleration, so the net force is zero: drive balances friction and drag. A large velocity does not need a net force."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "newton-second-law"
+      ],
+      "skillLabel": "Computing acceleration from forces",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m2",
+      "kind": "number",
+      "prompt": "A 4 kg cart has drive u = 10 N and viscous drag c = 2 kg/s. At v = 3 m/s what is its acceleration in m/s^2? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.0",
+      "tolerance": 0.01,
+      "explanation": "a = (u - c v)/m = (10 - 6)/4 = 1.0 m/s^2."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "energy-power"
+      ],
+      "skillLabel": "Kinetic energy",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m3",
+      "kind": "number",
+      "prompt": "What is the kinetic energy (in J) of the 4 kg cart moving at 3 m/s? Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "18.0",
+      "tolerance": 0.05,
+      "explanation": "K = 0.5*4*9 = 18 J."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "units-dimensions"
+      ],
+      "skillLabel": "Units of the drag coefficient",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m4",
+      "kind": "choice",
+      "prompt": "In m dv/dt = u - c v, what are the SI units of c?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "kg m/s",
+        "kg/s",
+        "N",
+        "N s^2/m"
+      ],
+      "answer": "1",
+      "explanation": "c v must be a force (N = kg m/s^2); with v in m/s, c is kg/s."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kinematics-constant-acceleration"
+      ],
+      "skillLabel": "Constant-acceleration distance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m5",
+      "kind": "number",
+      "prompt": "A cart starts from rest and accelerates at a constant 1.5 m/s^2 for 5 s. How far does it travel, in metres? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "18.75",
+      "tolerance": 0.01,
+      "explanation": "x = 0.5 a t^2 = 0.5*1.5*25 = 18.75 m."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "energy-power"
+      ],
+      "skillLabel": "Terminal velocity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m6",
+      "kind": "number",
+      "prompt": "A cart is driven by a constant 12 N against viscous drag c = 3 kg/s. What is its terminal speed in m/s? Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.05,
+      "explanation": "At terminal velocity u = c v, so v = 12/3 = 4 m/s."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "numerical-stability"
+      ],
+      "skillLabel": "Step-size stability limit",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m7",
+      "kind": "number",
+      "prompt": "Explicit Euler for m dv/dt = -c v is stable and non-oscillating only if c dt/m < 1, and energy-decreasing if c dt/m < 2. For m = 5 kg and c = 2 kg/s, what is the largest dt (in seconds) for which kinetic energy is guaranteed to decrease each step? Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.0",
+      "tolerance": 0.05,
+      "explanation": "The factor 1 - c dt/m must satisfy |.| < 1, i.e. dt < 2m/c = 5 s."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "friction-model"
+      ],
+      "skillLabel": "Identifying a drag model",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m8",
+      "kind": "choice",
+      "prompt": "A cart coasts with its motor off. Its speed halves every 3 s regardless of the starting speed. Which friction model fits?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "Viscous drag proportional to velocity",
+        "No friction; the motor is still driving",
+        "Coulomb (constant-force) friction",
+        "Quadratic drag proportional to velocity squared"
+      ],
+      "answer": "0",
+      "explanation": "A fixed fraction lost per fixed time is exponential decay: viscous drag. Coulomb friction removes a fixed amount of speed per time, and quadratic drag slows fast motion more."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "friction-model"
+      ],
+      "skillLabel": "Traction on a ramp",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m9",
+      "kind": "number",
+      "prompt": "A robot's wheels have friction coefficient 0.35 against a ramp. What is the steepest angle (degrees) it can hold without sliding? Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "19.3",
+      "tolerance": 0.1,
+      "explanation": "tan(theta) = mu, theta = atan(0.35) = 19.3 degrees. Mass cancels."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "energy-power"
+      ],
+      "skillLabel": "Power balance at terminal velocity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m10",
+      "kind": "choice",
+      "prompt": "At the terminal velocity of the driven cart, which statement about power is correct?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The drive supplies no power",
+        "The drag dissipates nothing",
+        "Kinetic energy is increasing at rate u v",
+        "Drive power equals power dissipated by drag"
+      ],
+      "answer": "3",
+      "explanation": "Kinetic energy is constant, so u v = c v^2: the drive power equals the dissipated power."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "free-body-diagrams"
+      ],
+      "skillLabel": "Free-body diagram for a ramp",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m11",
+      "kind": "short",
+      "prompt": "A 3 kg robot is driven up a 10 degree ramp by a wheel force F. Describe the free-body diagram, the axes and sign convention you choose, and the equation of motion along the ramp.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Lists the forces on the robot only: weight mg, normal force perpendicular to the ramp, drive/friction force along the ramp (and drag if modelled)",
+        "Chooses axes along and perpendicular to the ramp and states the positive direction",
+        "Writes m a = F - m g sin(10 deg) - drag along the ramp, with N = m g cos(10 deg) perpendicular"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "numerical-stability"
+      ],
+      "skillLabel": "Checking a simulation",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "m12",
+      "kind": "short",
+      "prompt": "Your coast-down simulation of a cart looks plausible but you suspect an error. Name two physical checks you can code and what each would reveal.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Kinetic energy must not increase when the motor is off (catches a sign error or too large a time step)",
+        "Comparison with the closed form v0*exp(-c t/m) and halving the step to see the error halve (catches order/step problems)",
+        "Mentions units or terminal velocity u/c as a further check"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

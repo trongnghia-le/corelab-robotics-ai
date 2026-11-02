@@ -1,0 +1,364 @@
+{
+  "id": "E02-targeted",
+  "topicId": "E02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A* node with g = 12 and h = 3.25. f?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "astar-bookkeeping"
+      ],
+      "skillLabel": "A* bookkeeping",
+      "mistakeCategory": "mathematical",
+      "answer": "15.25",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "12 + 3.25."
+    },
+    {
+      "id": "b2",
+      "prompt": "Open (g,h): X (4,4), Y (6,1), Z (3,6). f of the node A* pops first?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "astar-bookkeeping"
+      ],
+      "skillLabel": "A* bookkeeping",
+      "mistakeCategory": "mathematical",
+      "answer": "7",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "f: X=8, Y=7, Z=9."
+    },
+    {
+      "id": "b3",
+      "prompt": "Dijkstra (h=0) pops the lowest g. Using the same open set as b2, which g does it pop first?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "astar-bookkeeping"
+      ],
+      "skillLabel": "A* bookkeeping",
+      "mistakeCategory": "mathematical",
+      "answer": "3",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Lowest g is 3 (node Z)."
+    },
+    {
+      "id": "b4",
+      "prompt": "Which heuristic is admissible for a 4-connected grid with unit step cost?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "admissible-heuristic"
+      ],
+      "skillLabel": "Admissible heuristics",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Manhattan distance",
+        "Manhattan distance plus the number of walls",
+        "Twice the Manhattan distance",
+        "Euclidean distance times 3"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Manhattan is the cost with no walls, a relaxation."
+    },
+    {
+      "id": "b5",
+      "prompt": "On a 4-connected grid every step costs at least 2 (terrain varies, walls possible). What multiplier k of the Manhattan distance is guaranteed admissible on every such grid (take the largest such k)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "admissible-heuristic"
+      ],
+      "skillLabel": "Admissible heuristics",
+      "mistakeCategory": "mathematical",
+      "answer": "2",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Scale by the minimum step cost: k=2, since every cell on any path costs at least 2."
+    },
+    {
+      "id": "b6",
+      "prompt": "With a consistent heuristic, the sequence of f-values of expanded states is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "consistent-heuristic"
+      ],
+      "skillLabel": "Consistency check",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Constant, equal to the optimal cost",
+        "Strictly decreasing along the expansion order",
+        "Random, with no fixed order for the f-values",
+        "Non-decreasing along the expansion order"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "f(b) = g(a)+c+h(b) >= g(a)+h(a) = f(a)."
+    },
+    {
+      "id": "b7",
+      "prompt": "Edges with (c, h(a), h(b)): e1 (1,3,2), e2 (2,5,2), e3 (1,1,1). How many violate consistency?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "consistent-heuristic"
+      ],
+      "skillLabel": "Consistency check",
+      "mistakeCategory": "mathematical",
+      "answer": "1",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "e2: 5 > 2+2=4 violates; e1: 3 <= 3; e3: 1 <= 2."
+    },
+    {
+      "id": "b8",
+      "prompt": "An admissible but inconsistent heuristic with a permanent closed set may return:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "consistent-heuristic"
+      ],
+      "skillLabel": "Consistency check",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "An invalid path",
+        "A suboptimal path",
+        "The optimal path always",
+        "No path ever"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E02#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "A state expanded with a non-optimal g is never corrected."
+    },
+    {
+      "id": "b9",
+      "prompt": "Weighted A* with f = g + 2h (h admissible) returns a path whose cost is:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "weighted-astar"
+      ],
+      "skillLabel": "Weighted A*",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Exactly the optimum, as for w = 1",
+        "At least three times the optimum",
+        "Unbounded, with no guarantee at all",
+        "At most twice the optimum"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/E02#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "Cost <= w * C*."
+    },
+    {
+      "id": "b10",
+      "prompt": "Weighted A* with w = 1.5 on a problem with optimal cost 40. Worst-case guaranteed bound on the returned cost?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "weighted-astar"
+      ],
+      "skillLabel": "Weighted A*",
+      "mistakeCategory": "mathematical",
+      "answer": "60",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "1.5 * 40 = 60."
+    },
+    {
+      "id": "b11",
+      "prompt": "A colleague's planner reports 'no path' after 5000 expansions on a big map. What do you check before believing it?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "astar-stopping"
+      ],
+      "skillLabel": "A* stopping rule",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E02#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q4",
+        "q6"
+      ],
+      "rubric": [
+        "Whether the open set was empty or the budget ran out.",
+        "Whether the start or goal cell is enclosed, with a flood fill.",
+        "Whether the heuristic or successor function is wrong."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain why choosing the state definition is part of planning correctness, using the three-shelf visiting task.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "search-formulation"
+      ],
+      "skillLabel": "Formulate a search problem",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "rubric": [
+        "Position alone does not record which shelves are done.",
+        "Missing information makes the search loop or return wrong plans.",
+        "Add the visited set; the state space becomes positions times subsets."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "id": "RL17-diagnostic",
+  "topicId": "RL17",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A cloned policy reaches 99% accuracy on held-out expert states yet fails often when run. What is the most likely reason?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Behaviour cloning cannot be used with neural network policies",
+        "The validation set is too small to give a reliable accuracy estimate",
+        "Its own small errors take it to states the demonstrations never covered",
+        "The expert was too good for the learner to imitate at all"
+      ],
+      "answer": "2",
+      "explanation": "Held-out expert states measure error under the expert's state distribution. In closed loop the learner visits its own distribution.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "il-distribution-shift"
+      ],
+      "skillLabel": "Recognise covariate shift",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Per-step error 0.05 over 20 steps. Probability of at least one mistake? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.642",
+      "tolerance": 0.002,
+      "explanation": "1 - 0.95^20 = 0.6415.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-compounding-error"
+      ],
+      "skillLabel": "Compute the probability of a mistake",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Ditch model with eps = 0.02, no recovery (q = 0), T = 10. Expected steps off the demonstrated path? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.04",
+      "tolerance": 0.01,
+      "explanation": "Sum over t = 1..10 of 1 - 0.98^t = 1.0366.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-compounding-error"
+      ],
+      "skillLabel": "Compute compounding cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL17#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "In DAgger, who supplies the action labels for the states the learner visits?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A copy of the learner trained a step earlier",
+        "The learner itself, from its current policy",
+        "The expert, queried at the learner's states",
+        "The reward function"
+      ],
+      "answer": "2",
+      "explanation": "Self-labelling would reproduce the current policy. The point of DAgger is expert labels where the learner actually goes.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "il-dagger"
+      ],
+      "skillLabel": "Know the DAgger labelling step",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Off-path recovery probability q = 0.18 per step and error eps = 0.02. Steady-state probability of being off the path eps/(eps+q)? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1",
+      "tolerance": 0.005,
+      "explanation": "0.02/(0.02 + 0.18) = 0.10.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "il-dagger",
+        "il-compounding-error"
+      ],
+      "skillLabel": "Compute the steady-state off-path probability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL17#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Explain why one-step accuracy on held-out expert data is not enough to judge a behaviour-cloned policy, and name the measurement that is.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Accuracy is measured under the expert's state distribution, not the learner's",
+        "Mistakes compound: a small error can lead to unseen states and failures",
+        "Measure closed-loop success over many rollouts with an interval"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "il-closed-loop-eval",
+        "il-distribution-shift"
+      ],
+      "skillLabel": "Evaluate imitation in closed loop",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL17#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "You have 50 teleoperated demonstrations and a simulator. Describe how you would evaluate a cloned policy and decide whether DAgger-style correction is worth it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Splits by episode and holds out demonstrations for one-step error",
+        "Runs the policy in closed loop for many trials and reports success with an interval",
+        "Compares the gap between one-step accuracy and success, and collects corrective data if it is large"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "il-closed-loop-eval",
+        "il-dagger"
+      ],
+      "skillLabel": "Plan an imitation evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL17#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

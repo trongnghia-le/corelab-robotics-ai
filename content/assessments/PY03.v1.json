@@ -1,0 +1,203 @@
+{
+  "id": "PY03-diagnostic",
+  "topicId": "PY03",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Aliasing in nested lists",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#worked-example"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "After g = [[0]*3]*3 and g[1][1] = 7, what is g?",
+      "options": [
+        "an IndexError",
+        "[[0, 0, 0], [0, 7, 0], [0, 0, 0]]",
+        "[[0, 0, 0], [0, 0, 0], [0, 7, 0]]",
+        "[[0, 7, 0], [0, 7, 0], [0, 7, 0]]"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "The outer repetition repeats one reference to one row."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mutability"
+      ],
+      "skillLabel": "In-place operators",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "a = [1, 2]; b = a; b += [3]; c = a + [4]. What is len(a)?",
+      "answer": "3",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "b += [3] mutates the shared list, so a has 3 elements; c is a new list."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mutability",
+        "default-arguments"
+      ],
+      "skillLabel": "Mutable default arguments",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#failure-modes"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "def add(x, acc=[]): acc.append(x); return acc. After calls add(1), add(2), add(3), what is len(add(4))?",
+      "answer": "4",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "The default list is shared and now holds 1,2,3,4."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scope"
+      ],
+      "skillLabel": "Scope and LEGB",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "id": "q4",
+      "kind": "choice",
+      "prompt": "Why does x = 10 inside a function not change a global x?",
+      "options": [
+        "assignment makes x a new local name in that function",
+        "Python copies all globals into every function call",
+        "integers are passed by value, never by reference",
+        "global names are read-only inside every function"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Assignment creates a local binding unless declared global."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "scope",
+        "closures"
+      ],
+      "skillLabel": "Late binding",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#failure-modes"
+        }
+      ],
+      "id": "q5",
+      "kind": "number",
+      "prompt": "fs = [lambda: i for i in range(4)]; what does fs[0]() return?",
+      "answer": "3",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "All lambdas read the final value of i."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "copying"
+      ],
+      "skillLabel": "Shallow versus deep copy",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "id": "q6",
+      "kind": "choice",
+      "prompt": "Which statement about a = [[1, 2], [3, 4]]; b = a.copy() is true?",
+      "options": [
+        "a == b is False",
+        "b[0] is not a[0]",
+        "b[0] is a[0]",
+        "b is a"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "copy() makes a new outer list but shares the inner lists."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "aliasing",
+        "copying"
+      ],
+      "skillLabel": "Fixing an aliasing bug",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#failure-modes"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "A path planner stores visited cells in a grid built with [[False]*n]*n and the second planning call returns nonsense. Reproduce the bug in a few lines, explain it with identity, and give the fix and a regression test.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Shows a minimal reproduction and uses id() or is to show the shared row.",
+        "Fixes it with a comprehension that builds distinct rows.",
+        "Adds a test asserting rows are distinct objects or that changing one row leaves others unchanged."
+      ]
+    }
+  ]
+}

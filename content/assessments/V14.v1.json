@@ -1,0 +1,179 @@
+{
+  "id": "V14-diagnostic",
+  "topicId": "V14",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A frozen encoder is used with a linear probe. What does the probe's held-out accuracy measure?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "probe-evaluation"
+      ],
+      "skillLabel": "Evaluating an embedding with a probe",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: intuition",
+          "href": "/lessons/V14#intuition"
+        }
+      ],
+      "options": [
+        "The number of parameters in the encoder.",
+        "How well the training loss of the encoder decreased.",
+        "How readable the downstream task is from the embedding.",
+        "Whether the images are the same size."
+      ],
+      "answer": "2",
+      "explanation": "A probe isolates the representation: a simple model reads the task from frozen features."
+    },
+    {
+      "id": "q2",
+      "prompt": "Compute cos(a,b) for a=(3,4), b=(4,3). Give 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V14#theory-and-derivation"
+        }
+      ],
+      "answer": "0.96",
+      "tolerance": 0.002,
+      "explanation": "24/(5*5)=0.96."
+    },
+    {
+      "id": "q3",
+      "prompt": "InfoNCE with tau=0.5, one positive (cos 0.8) and two negatives (cos 0 and -1). Give the loss to 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V14#worked-example"
+        }
+      ],
+      "answer": "0.206",
+      "tolerance": 0.002,
+      "explanation": "logits 1.6, 0, -2; loss = -ln(e^1.6/(e^1.6+1+e^-2)) = 0.2064."
+    },
+    {
+      "id": "q4",
+      "prompt": "A contrastive encoder collapses so every image maps to the same vector. With 1 positive and 7 negatives, the InfoNCE loss is",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V14#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "1/8",
+        "0",
+        "ln 8",
+        "ln 7"
+      ],
+      "answer": "2",
+      "explanation": "All logits are equal, so the positive has probability 1/8 and the loss is ln 8."
+    },
+    {
+      "id": "q5",
+      "prompt": "You have 300 labelled images from a domain very different from ImageNet. Which is the most defensible first experiment?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "transfer-strategy"
+      ],
+      "skillLabel": "Choosing a transfer strategy",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V14#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Train a new network from scratch on the 300 images with heavy augmentation.",
+        "Fine-tune all layers with a large learning rate on the 300 labelled images.",
+        "Skip evaluation of transfer, since pretraining always transfers to any domain.",
+        "Linear probe on frozen features from several layers, compared with an untrained-encoder baseline."
+      ],
+      "answer": "1",
+      "explanation": "Small data and a different domain: avoid destroying pretrained features, use probes and baselines."
+    },
+    {
+      "id": "q6",
+      "prompt": "A frozen probe scores 0.94 on a random split of the source domain and 0.61 on a different camera. Give the in-domain minus shifted gap (2 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "domain-shift-gap"
+      ],
+      "skillLabel": "Domain shift gap",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V14#verification"
+        }
+      ],
+      "answer": "0.33",
+      "tolerance": 0.005,
+      "explanation": "0.94-0.61=0.33."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design a held-out-domain evaluation for an encoder that will be used on a gripper camera. State the sets, baseline, metric and a rejection rule.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "domain-shift-gap"
+      ],
+      "skillLabel": "Domain shift gap",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V14#verification"
+        }
+      ],
+      "rubric": [
+        "Names an in-domain set and a genuinely different held-out set.",
+        "Includes a baseline (majority-class or untrained encoder) and the metric.",
+        "States a rejection rule or boundary case for the shifted accuracy."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

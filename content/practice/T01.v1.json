@@ -1,0 +1,334 @@
+{
+  "id": "T01-targeted",
+  "topicId": "T01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Convert rw-r----- to octal (digits as an integer). (tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "640.0",
+      "tolerance": 0.5,
+      "explanation": "6,4,0 → 640.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "permission-modes"
+      ],
+      "skillLabel": "Permission modes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "With umask 022, what mode (octal digits as an integer) does a new directory requested with 777 get? (tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "755.0",
+      "tolerance": 0.5,
+      "explanation": "777 with 022 cleared: 7,5,5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "permission-modes"
+      ],
+      "skillLabel": "Permission modes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "What is the octal mode of rwxrwxr-x? (integer digits, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "775.0",
+      "tolerance": 0.5,
+      "explanation": "7,7,5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "permission-modes"
+      ],
+      "skillLabel": "Permission modes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A script has mode 644 and starts with a correct shebang. What happens on ./script.sh?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It runs, but as root, because the shebang names the interpreter",
+        "It runs normally, because the shebang names a valid interpreter",
+        "Permission denied (status 126): there is no execute bit",
+        "Command not found (status 127): the path is not searched"
+      ],
+      "answer": "2",
+      "explanation": "Execution requires an x bit; the shell reports 126.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "exit-status",
+        "permission-modes"
+      ],
+      "skillLabel": "Exit status and pipelines",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A command is not found in PATH. What exit status does the shell report? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "127.0",
+      "tolerance": 0.5,
+      "explanation": "127 = command not found.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "exit-status"
+      ],
+      "skillLabel": "Exit status and pipelines",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A process receives SIGTERM (15). Exit status reported for a killed process? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "143.0",
+      "tolerance": 0.5,
+      "explanation": "128+15=143.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "exit-status"
+      ],
+      "skillLabel": "Exit status and pipelines",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "File mode 0604 owned by alice, group robots, and Bob is in robots. Can Bob read it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Yes: the other class grants read (4), so Bob can read",
+        "Yes: the group and other permissions are combined, giving read",
+        "No: Bob is in the file's group, so the group class (0) denies",
+        "Only if Bob is root, since only root can override the group"
+      ],
+      "answer": "2",
+      "explanation": "Bob is in the file's group, so the group class (0) is the first match and denies; the other class is not consulted.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "access-decision"
+      ],
+      "skillLabel": "Access decision by class",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "`set -e` is on. Which line in a script does NOT stop it when it fails?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A failing command that stands on its own line in the script",
+        "A failing last command of the script, which sets the exit status",
+        "A failing command used as the condition of an if statement",
+        "A failing assignment from a command substitution on its own line"
+      ],
+      "answer": "2",
+      "explanation": "Commands tested by if/while/&&/|| are exempt from errexit, a known exception.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "exit-status"
+      ],
+      "skillLabel": "Exit status and pipelines",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "The command `ls /missing 2>&1 > out.txt` is run. Where does the error message go?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Into out.txt and the terminal, since 2>&1 duplicates it to both places",
+        "It is discarded, since the two redirections cancel each other out in effect",
+        "Into out.txt, since both streams are redirected to the file by the command",
+        "To the terminal: stderr was copied to the old stdout before stdout moved to the file"
+      ],
+      "answer": "3",
+      "explanation": "2>&1 is evaluated first, duplicating stderr onto the terminal.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "redirection"
+      ],
+      "skillLabel": "Redirection order",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "The pipeline `producer | filter | consumer` has stage statuses 3, 0, 0. With pipefail, what is the pipeline status? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.0",
+      "tolerance": 0.5,
+      "explanation": "pipefail returns the right-most non-zero status: 3. Without it: 0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "exit-status"
+      ],
+      "skillLabel": "Exit status and pipelines",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Write a safe version of `cd $1; rm -rf *` and explain every change.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "set -euo pipefail so failures stop the script.",
+        "Validate and quote the argument (dir=${1:?usage}; cd -- \"$dir\") and avoid a bare glob, e.g. rm -rf -- ./* only after a successful cd (or delete a named subdirectory).",
+        "Mentions testing the script on a scratch directory and refusing dangerous paths such as / or the home directory."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "repeatable-command"
+      ],
+      "skillLabel": "Repeatable project commands",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Design the checklist you would apply before saying a script is a repeatable project command.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Runs from any directory and from a clean environment (env -i), with no aliases or history.",
+        "Has shebang, exec bit, strict mode, argument validation with defaults, deterministic output location and logging.",
+        "Returns meaningful exit codes and has at least a success test and a failure test."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "repeatable-command"
+      ],
+      "skillLabel": "Repeatable project commands",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

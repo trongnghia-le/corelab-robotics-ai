@@ -1,0 +1,207 @@
+{
+  "id": "RL19-diagnostic",
+  "topicId": "RL19",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A learned model has 0.02 one-step RMSE on real transitions. What can you conclude about a 30-step open-loop plan?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding model error",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Nothing yet: errors compound, so measure open-loop error at the planning horizon",
+        "Its error is about 30 x 0.02 = 0.6 exactly, with no variation across rollouts",
+        "It is safe, because model predictive control always corrects model errors",
+        "Its error is at most 0.02, because one-step errors average out over the horizon"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "explanation": "Predictions are fed back, so error recursion e_{k+1} <= L e_k + eps applies; one-step error is only the per-step input to it."
+    },
+    {
+      "id": "q2",
+      "prompt": "Model s'=1.02 s+0.5 a, plant s'=s+0.5 a, a=1 each step, s0=0. Open-loop model state after 10 steps? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "open-loop-rollout"
+      ],
+      "skillLabel": "Compute an open-loop rollout",
+      "mistakeCategory": "mathematical",
+      "answer": "5.47486",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL19#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "explanation": "s_k=0.5(1.02^k-1)/0.02, giving 5.4749 at k=10."
+    },
+    {
+      "id": "q3",
+      "prompt": "Error recursion bound e_{k+1} <= L e_k + eps with L=1.1, eps=0.05, e_0=0. Bound on e_5? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-bound"
+      ],
+      "skillLabel": "Apply the compounding bound",
+      "mistakeCategory": "mathematical",
+      "answer": "0.30526",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "explanation": "eps (L^5-1)/(L-1)=0.05*0.61051/0.1=0.3053."
+    },
+    {
+      "id": "q4",
+      "prompt": "MPC replans every step. Why does this reduce the harm from model error compared with executing the whole planned sequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mpc-replanning"
+      ],
+      "skillLabel": "Why replanning helps",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "It restarts planning from the observed real state, so predictions never compound past the horizon",
+        "It makes the model more accurate, because each replan adds data to the model online",
+        "It guarantees the cost is minimised in the real system, because the model is refit every step",
+        "It removes the need to learn a model, because the real state replaces all predictions"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: intuition",
+          "href": "/lessons/RL19#intuition"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "explanation": "Only the first action of each plan is executed, and the next plan starts from the measured state."
+    },
+    {
+      "id": "q5",
+      "prompt": "Simulation lemma: gamma=0.95, eps=0.01 (L1 transition error), Rmax=1. Value-error bound gamma*eps*Rmax/(1-gamma)^2? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "value-error-bound"
+      ],
+      "skillLabel": "Value error from model error",
+      "mistakeCategory": "mathematical",
+      "answer": "3.8",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL19#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "explanation": "0.95*0.01/0.0025=3.8."
+    },
+    {
+      "id": "q6",
+      "prompt": "A planner finds a plan with predicted return 100 but real return 12. The most likely cause is:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "model-exploitation"
+      ],
+      "skillLabel": "Recognise model exploitation",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The policy is stochastic, so the sampled actions differ between planning and execution",
+        "The discount factor is above 1, so the predicted return is inflated by later steps",
+        "The learning rate was too small, so the model had not yet converged to the data",
+        "Model exploitation: the optimiser chose actions where the model is wrong in its favour"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL19#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "explanation": "A maximiser over a model selects for positive model error; the gap between predicted and real return is its signature."
+    },
+    {
+      "id": "q7",
+      "prompt": "You must report the quality of a learned dynamics model for a robot that plans 15 steps ahead. Describe the evaluation: what data, which two errors, what baseline, and what would make you reject the model.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "model-evaluation"
+      ],
+      "skillLabel": "Design a model evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL19#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "ML06"
+      ],
+      "rubric": [
+        "Held-out real trajectories; report one-step and 15-step open-loop error separately.",
+        "Compare with a trivial baseline such as s'=s and test out-of-training-range states.",
+        "Reject if open-loop error at the horizon is comparable to the baseline or predicted-vs-real return gap is large."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

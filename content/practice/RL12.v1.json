@@ -1,0 +1,362 @@
+{
+  "id": "RL12-targeted",
+  "topicId": "RL12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Per-seed standard deviation 8; target 95% half-width 2. Seeds needed (z = 1.96, round up)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "62",
+      "tolerance": 0.5,
+      "explanation": "(1.96*8/2)^2 = 61.47, rounded up to 62.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-seeds-needed"
+      ],
+      "skillLabel": "Compute the number of seeds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "sigma_s = 8, sigma_e = 24, S = 16 seeds, m = 9 episodes per seed. Variance of the grand mean? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8.0",
+      "tolerance": 0.05,
+      "explanation": "64/16 + 576/(16*9) = 4 + 4 = 8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-two-level-variance"
+      ],
+      "skillLabel": "Compute grand-mean variance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "True gap 10, per-seed sigma 20, n = 8 seeds per method. Probability that the worse method's mean is at least the better one's? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.159",
+      "tolerance": 0.003,
+      "explanation": "sd of the difference = 20*sqrt(2/8) = 10; z = -1; Phi(-1) = 0.1587.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-seeds-needed"
+      ],
+      "skillLabel": "Compute the wrong-ranking probability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Per-seed returns 4, 6, 8, 10. Standard error of the mean (n-1 denominator)? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.291",
+      "tolerance": 0.003,
+      "explanation": "Mean 7, sample variance 20/3 = 6.667, sd 2.582, se = 2.582/2 = 1.291.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-summary"
+      ],
+      "skillLabel": "Compute a standard error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Eight seeds give 90, 92, 91, 93, 89, 92, 91 and 20 (one run failed). Which summary is least affected by the failed run?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Standard deviation",
+        "Interquartile mean",
+        "Arithmetic mean",
+        "Maximum"
+      ],
+      "answer": "1",
+      "explanation": "The IQM discards the extreme quarters on each side; the mean and standard deviation move a lot, and the maximum ignores the failure entirely.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rlx-summary"
+      ],
+      "skillLabel": "Choose a robust statistic",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL12#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "When bootstrapping a confidence interval for a method's mean return you should resample",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "hyper-parameter settings of each run",
+        "single time steps within each episode",
+        "whole seeds, because episodes within a seed are dependent",
+        "individual episodes pooled across all the seeds"
+      ],
+      "answer": "2",
+      "explanation": "The seed is the independent unit; resampling pooled episodes produces intervals that are too narrow.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rlx-two-level-variance"
+      ],
+      "skillLabel": "Resample the independent unit",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL12#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Per-seed returns 10, 20, 30, 40, 50, 60, 70, 300. What is the interquartile mean (mean of the middle 50%)? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "45.0",
+      "tolerance": 0.1,
+      "explanation": "Drop the lowest two and highest two; the mean of 30, 40, 50, 60 is 45.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-summary"
+      ],
+      "skillLabel": "Compute the IQM",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Evaluation noise has sd 6. You pick the best of 5 equally good checkpoints on the same episodes (expected maximum of 5 standard normals is 1.163). By roughly how much is the reported value inflated? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7.0",
+      "tolerance": 0.1,
+      "explanation": "1.163 * 6 = 6.98.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-leakage"
+      ],
+      "skillLabel": "Estimate selection inflation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A script uses seeds 0 to 4 both to train the agents and to evaluate them. What is wrong and what should the protocol say instead?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Evaluation randomness is correlated with training randomness, so the test is not independent",
+        "Fix: use disjoint training and evaluation seed sets declared in advance",
+        "Optionally notes that held-out initial states or environments are needed to claim generalisation"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rlx-leakage"
+      ],
+      "skillLabel": "Spot seed overlap",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Your 3-seed pilot suggests sigma = 12. You plan the main experiment with the formula n = (1.96 sigma / h)^2. How should you treat the result?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "As a lower bound, since sigma from 3 seeds is uncertain and tends to be underestimated",
+        "As an upper bound, because small pilots tend to overestimate the true sigma",
+        "As an exact number, because the sample-size formula itself is an exact identity",
+        "As irrelevant to planning, since the number of pilot seeds does not matter here"
+      ],
+      "answer": "0",
+      "explanation": "The standard deviation from 3 seeds has large relative error and is more often too small; plan margin.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rlx-seeds-needed"
+      ],
+      "skillLabel": "Treat pilot estimates with caution",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "You have a budget of 1000 GPU-hours; a seed costs 20 and an evaluation episode 0.5. Describe how you would choose seeds and episodes per seed, and what you would report.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Writes the variance formula and tabulates a few (S, m) pairs under the budget",
+        "Argues that seeds dominate when sigma_s is large, so evaluation episodes beyond a small m add little",
+        "Reports interval over seeds, the number of seeds and episodes, and the protocol"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "rlx-two-level-variance",
+        "rlx-seeds-needed"
+      ],
+      "skillLabel": "Plan a compute budget",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Budget 600, training cost 40 per seed, 1 per evaluation episode, m = 20 episodes per seed. How many seeds fit?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.5,
+      "explanation": "Cost per seed = 40 + 20 = 60, so 600/60 = 10 seeds.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-two-level-variance"
+      ],
+      "skillLabel": "Count seeds in a budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Using the same environment seeds for both methods (pairing) narrows the comparison's interval when",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "the methods use different step counts, so their outcomes are already independent",
+        "the number of seeds is just one for each method, so the pairing adds data",
+        "the evaluation set is the same as the training set, so the methods look alike",
+        "the methods' per-seed outcomes are positively correlated through the environment"
+      ],
+      "answer": "3",
+      "explanation": "The variance of the difference is 2 sigma^2 (1 - rho); positive correlation rho cuts it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rlx-seeds-needed",
+        "rlx-summary"
+      ],
+      "skillLabel": "Know when pairing helps",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL12#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q7"
+      ]
+    }
+  ]
+}

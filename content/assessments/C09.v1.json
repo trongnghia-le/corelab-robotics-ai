@@ -1,0 +1,198 @@
+{
+  "id": "C09-diagnostic",
+  "topicId": "C09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A controller is stable for every gain in the continuous model of an integrator plant. After sampling with a zero-order hold and one sample of computation delay, why can a large gain become unstable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A digital controller cannot implement proportional gain exactly, so large gains saturate the arithmetic and diverge",
+        "Sampling removes the plant integrator, so the discrete loop has no integral action and a high gain becomes unsafe",
+        "The zero-order hold flips the sign of the feedback at every sample, so any gain at all becomes unstable",
+        "The hold and the delay add lag (about 1.5 samples of delay), so a gain that is too high pushes against stale information"
+      ],
+      "answer": "3",
+      "explanation": "Delay adds phase lag proportional to frequency; with high gain the loop crosses over where the lag exceeds the margin.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "delay-stability"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "ZOH discretise y' = -3y + 6u with T = 0.05 s. Give A_d (4 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.860708",
+      "tolerance": 0.0005,
+      "explanation": "A_d = exp(-0.15) = 0.8607.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "zoh-discretization"
+      ],
+      "skillLabel": "ZOH discretisation and pole mapping",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Same system: B_d (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.278584",
+      "tolerance": 0.0005,
+      "explanation": "B_d = (6/3)(1 - 0.8607) = 0.2786.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "zoh-discretization"
+      ],
+      "skillLabel": "ZOH discretisation and pole mapping",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Continuous pole s = -20 and T = 0.02 s. Where does it map in the z-plane (z = e^{sT}), 4 decimals?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.67032",
+      "tolerance": 0.0005,
+      "explanation": "exp(-0.4) = 0.6703.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "zoh-discretization"
+      ],
+      "skillLabel": "ZOH discretisation and pole mapping",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Sampled integrator with u = -K y and d = 1 sample of delay is stable iff K*T < 1. For T = 0.04 s, what is the largest stable K (1/s)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "25",
+      "tolerance": 0.01,
+      "explanation": "K < 1/T = 25.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "delay-stability"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Command quantisation step q = 0.1 and gain K = 20 on a position loop with an integrator plant. Size of the dead zone |y| <= q/(2K) (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0025",
+      "tolerance": 0.0001,
+      "explanation": "q/(2K) = 0.1/40 = 0.0025.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quantization"
+      ],
+      "skillLabel": "Quantisation and dead zones",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A motor loop that worked in simulation oscillates on the robot at about the sample frequency divided by 3. List the digital effects you would check, in order, with one measurement for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names latency/delay (timestamps of read, compute and write) and hold.",
+        "Names sample-time jitter or rate and quantisation.",
+        "Proposes lowering the gain or reducing latency and re-measuring the oscillation."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "delay-stability",
+        "sampling-choice"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

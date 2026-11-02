@@ -1,0 +1,382 @@
+{
+  "id": "M11-targeted",
+  "topicId": "M11",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "condition-number"
+      ],
+      "skillLabel": "Condition number of a function",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#theory-and-derivation"
+        }
+      ],
+      "id": "b1",
+      "kind": "number",
+      "prompt": "Relative condition number of f(x)=sqrt(x) at x=9 (3 decimals).",
+      "answer": "0.5",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "kappa=|x/(2 sqrt(x) sqrt(x))|=1/2.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "float-spacing"
+      ],
+      "skillLabel": "Floating-point spacing",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#theory-and-derivation"
+        }
+      ],
+      "id": "b2",
+      "kind": "choice",
+      "prompt": "In double precision, 1e16 + 1 evaluates to",
+      "options": [
+        "1e16, because the spacing of doubles near 1e16 is 2",
+        "1e16 + 1 exactly, because doubles store all integers precisely",
+        "an overflow error, because the sum exceeds the largest double",
+        "1.0000000000000002e16, since one unit goes into the last digit"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Doubles near 1e16 are 2 apart, so +1 rounds back (ties to even).",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "float-spacing"
+      ],
+      "skillLabel": "Floating-point spacing",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#worked-example"
+        }
+      ],
+      "id": "b3",
+      "kind": "number",
+      "prompt": "float32 spacing near 20,000 m is 2^-9. Express it in millimetres (3 decimals).",
+      "answer": "1.953",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "2^-9 m = 0.001953 m = 1.953 mm.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "condition-number"
+      ],
+      "skillLabel": "Digits lost to conditioning",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#theory-and-derivation"
+        }
+      ],
+      "id": "b4",
+      "kind": "number",
+      "prompt": "kappa=1e9, double precision machine epsilon 2.22e-16. Roughly how many decimal digits of the answer remain correct (nearest integer)?",
+      "answer": "7",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.6,
+      "explanation": "16-9=7 digits.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "residual-vs-error"
+      ],
+      "skillLabel": "Residual versus error",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#verification"
+        }
+      ],
+      "id": "b5",
+      "kind": "choice",
+      "prompt": "A colleague says: 'The residual is 1e-15, so the parameter estimates are accurate to 15 digits.' The best reply is",
+      "options": [
+        "Only float128 arithmetic can verify the accuracy, so the residual proves nothing",
+        "Residual and error are always equal, so a 1e-15 residual means a 1e-15 error",
+        "The residual is meaningless and should be ignored in favour of the parameter values",
+        "Residual measures the algorithm; accuracy of x also depends on the condition number"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Check kappa; error can be kappa times larger than the residual.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cancellation",
+        "condition-number"
+      ],
+      "skillLabel": "Cancellation",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#failure-modes"
+        }
+      ],
+      "id": "b6",
+      "kind": "number",
+      "prompt": "Two nearby voltages 5.0001 V and 5.0000 V each have relative error up to 1e-6. The relative error of their difference is about (in percent, nearest integer).",
+      "answer": "5",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 1,
+      "explanation": "kappa=5.0001/0.0001=5e4; error ~5e4*1e-6=5e-2=5%.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stable-algorithm"
+      ],
+      "skillLabel": "Problem versus algorithm",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b7",
+      "kind": "choice",
+      "prompt": "Which statement distinguishes an unstable algorithm from an ill-conditioned problem?",
+      "options": [
+        "Ill-conditioning is sensitivity of the problem itself; instability is avoidable error added by the algorithm",
+        "They are the same thing: a problem is ill-conditioned exactly when an algorithm is unstable on it",
+        "Ill-conditioning occurs only for singular matrices; instability occurs only for nearly singular ones",
+        "Instability is caused by the user's data; ill-conditioning is caused by the chosen algorithm"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Conditioning belongs to the problem; stability belongs to the algorithm."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "condition-number",
+        "stable-algorithm"
+      ],
+      "skillLabel": "Normal equations squaring",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#theory-and-derivation"
+        }
+      ],
+      "id": "b8",
+      "kind": "number",
+      "prompt": "In the normal equations kappa(X^T X) = kappa(X)^2. If kappa(X)=1e5, how many digits (log10) can be lost in double precision? Give kappa(X^T X) exponent.",
+      "answer": "10",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.1,
+      "explanation": "kappa squared = 1e10.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "float-rounding"
+      ],
+      "skillLabel": "Comparing floats",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#verification"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "Which is the best way to compare two floats a and b in a unit test?",
+      "options": [
+        "assert a == b, using exact binary equality",
+        "math.isclose(a, b, rel_tol=1e-9, abs_tol=1e-12)",
+        "str(a) == str(b), comparing printed forms",
+        "abs(a - b) == 0.0, an exact zero difference"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Use a tolerance scaled to the expected error.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "float-rounding"
+      ],
+      "skillLabel": "Rounding error",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#worked-example"
+        }
+      ],
+      "id": "b10",
+      "kind": "number",
+      "prompt": "Summing 10 copies of 0.1 gives 0.9999999999999999. What is the absolute error, in units of 1e-16 (1 decimal)?",
+      "answer": "1.1",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.15,
+      "explanation": "1-0.9999999999999999 = 1.1e-16.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "residual-vs-error",
+        "stable-algorithm"
+      ],
+      "skillLabel": "Choosing a solver",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "You must choose between inv(A)@b and a pivoted solve for a calibration matrix whose condition number you estimate as 1e10. Explain what you would do and how you would report the result.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Prefers a pivoted solve (or QR/SVD) over forming the inverse.",
+        "Reports kappa and expected digits lost, about 6 digits left in double precision.",
+        "Suggests a verification such as perturbing the data or comparing with higher precision."
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "float-spacing",
+        "float-rounding"
+      ],
+      "skillLabel": "Absorption in accumulation",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#failure-modes"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "A float32 odometry accumulator stops changing after the robot has driven far from the origin. Predict the cause and propose two code changes.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Identifies absorption: increments smaller than half the spacing are rounded away.",
+        "Proposes float64 or a local origin / separate accumulator.",
+        "Mentions compensated summation or a test with large offsets."
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    }
+  ]
+}

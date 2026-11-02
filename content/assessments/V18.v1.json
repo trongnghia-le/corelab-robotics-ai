@@ -1,0 +1,182 @@
+{
+  "id": "V18-diagnostic",
+  "topicId": "V18",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "What does the temperature tau change in CLIP-style zero-shot classification?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "zero-shot-scoring"
+      ],
+      "skillLabel": "Zero-shot scoring and temperature",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V14"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V18#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The number of classes that the model can distinguish in the prompt set",
+        "The arg-max class, because the temperature rescales the logits unevenly",
+        "The embedding dimension of the image and text encoders",
+        "The sharpness of the probabilities, not which class has the highest score"
+      ],
+      "answer": "3",
+      "explanation": "Dividing all cosines by tau preserves their order, so the label is unchanged, but the gaps and the confidence change."
+    },
+    {
+      "id": "q2",
+      "prompt": "Image and text embeddings are unit vectors with cosines 0.9 (class A) and 0.8 (class B), tau = 0.1. What is P(A)? Give 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "zero-shot-scoring"
+      ],
+      "skillLabel": "Zero-shot scoring and temperature",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V18#worked-example"
+        }
+      ],
+      "answer": "0.731",
+      "tolerance": 0.002,
+      "explanation": "logits 9 and 8: 1/(1+e^-1)=0.731."
+    },
+    {
+      "id": "q3",
+      "prompt": "Two prompts for the same class give different predictions on one image. What is the sound response?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "prompt-sensitivity"
+      ],
+      "skillLabel": "Prompt sensitivity and ensembles",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V18#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Conclude that the model is broken, since the prompts should not change a prediction.",
+        "Treat prompts as hyperparameters: choose or ensemble them on a validation split.",
+        "Pick whichever prompt gives the best accuracy on the test set, then report that number.",
+        "Lower the temperature to zero so that the prompt wording no longer matters at all."
+      ],
+      "answer": "1",
+      "explanation": "Selecting on the test set leaks; ensembling or validation-based selection is the standard fix."
+    },
+    {
+      "id": "q4",
+      "prompt": "A test set has 90 images of class A and 10 of class B; the model always predicts A. What is its macro accuracy (mean per-class recall)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "per-class-evaluation"
+      ],
+      "skillLabel": "Per-class recall and macro accuracy",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V18#worked-example"
+        }
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "Recall A = 1, recall B = 0, mean 0.5 (accuracy would be 0.9)."
+    },
+    {
+      "id": "q5",
+      "prompt": "How many test images give a 95% normal-approximation half-width of 0.05 when p = 0.5? Round up to an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "test-set-size"
+      ],
+      "skillLabel": "Test-set size and intervals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V18#worked-example"
+        }
+      ],
+      "answer": "385",
+      "tolerance": 1,
+      "explanation": "1.96^2*0.25/0.05^2 = 384.16 -> 385."
+    },
+    {
+      "id": "q6",
+      "prompt": "34 of 40 held-out images are correct. Which statement is best supported?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "test-set-size"
+      ],
+      "skillLabel": "Test-set size and intervals",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V18#worked-example"
+        }
+      ],
+      "options": [
+        "The true accuracy is exactly 85%, because 34 of 40 is 0.85.",
+        "The true accuracy is plausibly anywhere from about 71% to 93%.",
+        "The model is better than any model that scores 80% on another set.",
+        "The model is certainly above 90%, since most images were right."
+      ],
+      "answer": "1",
+      "explanation": "The 95% Wilson interval is [0.709, 0.929]."
+    },
+    {
+      "id": "q7",
+      "prompt": "A foundation model scores well on a public benchmark. Describe how you would test whether it transfers to your robot's camera, including baselines, metrics and a rejection rule.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "transfer-evaluation"
+      ],
+      "skillLabel": "Transfer evaluation protocol",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V18#verification"
+        }
+      ],
+      "rubric": [
+        "Uses a held-out set from the robot's own cameras that was not used to choose prompts or heads.",
+        "Includes baselines (majority class, small supervised model) and per-class metrics with intervals.",
+        "States a rejection rule such as a lower bound below a required recall."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

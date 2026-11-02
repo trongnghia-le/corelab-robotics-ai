@@ -1,0 +1,183 @@
+{
+  "id": "E07-diagnostic",
+  "topicId": "E07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A behavior-cloned policy has very low error on a held-out set of demonstrations but fails during rollouts. What is the primary reason?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "covariate-shift"
+      ],
+      "skillLabel": "Rollout shift and covariate shift",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#intuition"
+        }
+      ],
+      "relatedPrerequisites": [
+        "ML09"
+      ],
+      "options": [
+        "Supervised learning cannot fit continuous actions, so the policy outputs are wrong in every state.",
+        "The expert demonstrations were too smooth, so the loss is low but the policy cannot imitate them.",
+        "The held-out set was too small, so its loss estimate is noisy and hides the true error of the policy.",
+        "During rollouts the policy visits states from its own distribution, which differ from the expert's training states."
+      ],
+      "answer": "3",
+      "explanation": "Training and held-out data both come from the expert's state distribution; rollouts follow the learner's, so small errors push it into poorly covered states (covariate shift)."
+    },
+    {
+      "id": "q2",
+      "prompt": "Behavior-cloning first-mistake bound: epsilon*T*(T+1)/2 with T=20 and epsilon=0.01. Give the bound (1 decimal).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#worked-example"
+        }
+      ],
+      "answer": "2.1",
+      "tolerance": 0.01,
+      "explanation": "0.01*20*21/2 = 2.1."
+    },
+    {
+      "id": "q3",
+      "prompt": "Mistakes occur independently with probability 0.02 per step. What is the probability of at least one mistake in 50 steps? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#worked-example"
+        }
+      ],
+      "answer": "0.6358303199128832",
+      "tolerance": 0.002,
+      "explanation": "1-0.98^50 = 0.636."
+    },
+    {
+      "id": "q4",
+      "prompt": "Demonstrations at one observation split evenly between action +1 (pass left) and -1 (pass right). What does an MSE-trained deterministic policy output there?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "multimodal-actions"
+      ],
+      "skillLabel": "Multimodal action averaging",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "+1, because positive errors are penalised more.",
+        "About 0, an action neither demonstrator took.",
+        "Randomly +1 or -1 with equal probability.",
+        "Whichever mode appears first in the dataset."
+      ],
+      "answer": "1",
+      "explanation": "MSE is minimised by the conditional mean, which is 0 for two equal modes."
+    },
+    {
+      "id": "q5",
+      "prompt": "At one observation 80% of demonstrations choose action +1 and 20% choose -1. What constant action minimises mean squared error? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "multimodal-actions"
+      ],
+      "skillLabel": "Multimodal action averaging",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#worked-example"
+        }
+      ],
+      "answer": "0.6",
+      "tolerance": 0.01,
+      "explanation": "Mean = 0.8-0.2 = 0.6."
+    },
+    {
+      "id": "q6",
+      "prompt": "What does DAgger change compared with plain behavior cloning?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "covariate-shift",
+        "compounding-error"
+      ],
+      "skillLabel": "DAgger idea",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It adds noise to the policy outputs at test time so the learner explores states the expert never saw.",
+        "It trains only on the most recent demonstration, discarding older data to avoid covariate shift.",
+        "It replaces the imitation loss by a reward function and trains the policy by trial and error instead.",
+        "It labels the states visited by the learner with expert actions and aggregates them into the training set."
+      ],
+      "answer": "3",
+      "explanation": "DAgger fixes the data distribution mismatch by querying the expert on the learner's own states."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design a test of whether a cloned policy can recover from states absent from the demonstrations. Say how you create such states, what you measure, the baseline and what result would reject 'the policy recovers'.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "recovery-evaluation"
+      ],
+      "skillLabel": "Evaluating recovery",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#verification"
+        }
+      ],
+      "rubric": [
+        "Perturbs or starts the robot outside the demonstrated range and reports how far the starts are from the data.",
+        "Compares against the expert baseline using steps-to-goal or success rate over many seeds.",
+        "States a falsifier fixed in advance, e.g. success below a threshold from out-of-support starts."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

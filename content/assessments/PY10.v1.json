@@ -1,0 +1,192 @@
+{
+  "id": "PY10-diagnostic",
+  "topicId": "PY10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Given it = iter([4, 5, 6]), you run list(it) and then list(it) again. What does the second call return?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "[6]",
+        "[]",
+        "[4, 5, 6]",
+        "StopIteration is raised to the caller"
+      ],
+      "answer": "1",
+      "explanation": "A list iterator is exhausted after the first pass; list() swallows StopIteration and returns an empty list. Only the list itself, an iterable, can produce a fresh iterator.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "iterator-protocol"
+      ],
+      "skillLabel": "Iterators are one-shot",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A lazy reader hands a controller batches of 100 scans, each with 360 float64 ranges. How many bytes does one batch hold (payload only)? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "288000",
+      "tolerance": 0.5,
+      "explanation": "100 scans x 360 values x 8 bytes = 288,000 bytes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lazy-evaluation"
+      ],
+      "skillLabel": "Memory held by a lazy batch",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        },
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/PY10#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A naive sliding mean sums every window from scratch. For 10 samples and window size 4, how many individual elements are summed in total across all windows? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "28",
+      "tolerance": 0.5,
+      "explanation": "There are 10-4+1 = 7 full windows and each sums 4 elements: 28.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lazy-evaluation"
+      ],
+      "skillLabel": "Cost of sliding windows",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A class has a data descriptor d and the instance __dict__ also contains the key 'd'. What does obj.d return?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "AttributeError, because the name is ambiguous",
+        "Whatever the descriptor's __get__ returns",
+        "The value in the instance __dict__",
+        "The class attribute object itself"
+      ],
+      "answer": "1",
+      "explanation": "Data descriptors on the type take priority over the instance dictionary. A non-data descriptor would lose to the instance dictionary.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "descriptor-lookup"
+      ],
+      "skillLabel": "Attribute lookup order",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A Bounded descriptor stores the accepted value in self.value. Two Joint objects each assign a different legal angle. What goes wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Nothing goes wrong; each instance gets its own private copy of the descriptor",
+        "The second assignment raises ValueError because a value is already stored",
+        "Reading raises AttributeError for the first joint after the second write",
+        "Both joints read the last written value, because one descriptor serves the whole class"
+      ],
+      "answer": "3",
+      "explanation": "The descriptor is a single class attribute, so anything stored on self is shared. Store values in the instance (obj.__dict__) instead.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "descriptor-state"
+      ],
+      "skillLabel": "Per-instance state in descriptors",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/PY10#failure-modes"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "class Base defines __init_subclass__. A module defines subclasses A(Base), B(Base), C(Base) and D(A). How many times does Base.__init_subclass__ run in total? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "It runs once for every class statement that creates a descendant of Base, including indirect descendants: A, B, C, D = 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-hooks"
+      ],
+      "skillLabel": "When __init_subclass__ runs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A colleague's function returns a generator over rows of a 5 GB CSV. Write a short lifetime note: who owns the open file, how many passes are allowed, and what happens if the consumer stops after 10 rows.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States that the generator owns the file handle and it stays open until exhaustion, close() or garbage collection.",
+        "States that only one pass is possible; a second needs a new generator (or a re-iterable wrapper).",
+        "Explains early stop: the file stays open unless close()/with is used, and names a deterministic fix such as a context manager."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "iterator-protocol",
+        "lazy-evaluation"
+      ],
+      "skillLabel": "Documenting iterator lifetime",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/PY10#failure-modes"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

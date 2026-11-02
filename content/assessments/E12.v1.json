@@ -1,0 +1,177 @@
+{
+  "id": "E12-diagnostic",
+  "topicId": "E12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A VLA succeeds on 'put the cup on the plate' in 19 of 20 trials in a scene with exactly one cup and one plate. What can you conclude about instruction understanding?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "instruction-grounding"
+      ],
+      "skillLabel": "Instruction grounding tests",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E07"
+      ],
+      "options": [
+        "That it understands all object-placement instructions, since 95% success covers the task family.",
+        "Little: the scene may determine the task without the instruction; a counterfactual instruction test is needed.",
+        "That language is irrelevant to the policy, because it succeeded without any extra language data.",
+        "That it generalises to new objects and new scenes, because success was this high."
+      ],
+      "answer": "1",
+      "explanation": "Success does not show the instruction was used."
+    },
+    {
+      "id": "q2",
+      "prompt": "Actions in [-1,1] are quantised into 128 bins. What is the worst-case reconstruction error? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "action-tokenization"
+      ],
+      "skillLabel": "Action tokenisation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#theory-and-derivation"
+        }
+      ],
+      "answer": "0.0078125",
+      "tolerance": 0.0002,
+      "explanation": "(2)/(2*128)=0.0078."
+    },
+    {
+      "id": "q3",
+      "prompt": "Bin index of a=0.6 with range [-1,1] and 16 bins (integer, bins numbered from 0)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "action-tokenization"
+      ],
+      "skillLabel": "Action tokenisation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "answer": "12.0",
+      "tolerance": 0.01,
+      "explanation": "floor((0.6+1)/2*16)=floor(12.8)=12."
+    },
+    {
+      "id": "q4",
+      "prompt": "A 7-token action is decoded at 28 tokens per second, one action per call. What is the control rate in Hz?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "action-tokenization"
+      ],
+      "skillLabel": "Action tokenisation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "answer": "4.0",
+      "tolerance": 0.01,
+      "explanation": "28/7=4."
+    },
+    {
+      "id": "q5",
+      "prompt": "Wilson 95% interval for 8 successes in 10 trials: what is the LOWER bound? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "generalization-evaluation"
+      ],
+      "skillLabel": "Evaluating generalisation with intervals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#worked-example"
+        }
+      ],
+      "answer": "0.49015684672072335",
+      "tolerance": 0.01,
+      "explanation": "Wilson lower bound = 0.490."
+    },
+    {
+      "id": "q6",
+      "prompt": "Which is the best way to attribute a performance drop to 'new objects'?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "generalization-evaluation"
+      ],
+      "skillLabel": "Evaluating generalisation with intervals",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Compare training-scene success with success reported by a different lab on its own held-out scenes.",
+        "Compare two policies trained on different data, one on seen objects and one on new objects.",
+        "Compare seen and held-out objects in the same scenes with the same instruction template and equal trials.",
+        "Use many more trials only on held-out objects, and keep the seen-object trial count small."
+      ],
+      "answer": "2",
+      "explanation": "Controls must change one axis at a time."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design an experiment to test whether a VLA follows the language instruction rather than the scene layout. Specify the manipulation, metric and what outcome rejects 'it follows the instruction'.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "instruction-grounding"
+      ],
+      "skillLabel": "Instruction grounding tests",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E12#verification"
+        }
+      ],
+      "rubric": [
+        "Holds the scene fixed and varies only the instruction (and the reverse control).",
+        "Metric such as action difference or target-object success, with repeated trials.",
+        "States in advance a result (e.g. same action for conflicting instructions) that rejects the claim."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

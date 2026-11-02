@@ -1,0 +1,370 @@
+{
+  "id": "PY03-targeted",
+  "topicId": "PY03",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mutability"
+      ],
+      "skillLabel": "In-place operators",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "id": "b1",
+      "kind": "choice",
+      "prompt": "x = [1]; y = x; y = y + [2]. What is x?",
+      "options": [
+        "[1, 2]",
+        "[1]",
+        "[2]",
+        "an error"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "y + [2] creates a new list that is rebound to y.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mutability"
+      ],
+      "skillLabel": "In-place operators",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "id": "b2",
+      "kind": "number",
+      "prompt": "x = [1]; y = x; y += [2, 3]. What is len(x)?",
+      "answer": "3",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "+= extends in place.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "default-arguments"
+      ],
+      "skillLabel": "Mutable default arguments",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#failure-modes"
+        }
+      ],
+      "id": "b3",
+      "kind": "choice",
+      "prompt": "def f(x, acc=None): if acc is None: acc = []; acc.append(x); return acc. f(1) then f(2) return",
+      "options": [
+        "[1] then [1, 2]",
+        "[1, 2] both times",
+        "[1] then [2]",
+        "an error"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "A fresh list is created per call.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Aliasing in nested lists",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#worked-example"
+        }
+      ],
+      "id": "b4",
+      "kind": "number",
+      "prompt": "grid = [[0]*4 for _ in range(3)]; grid[2][3] = 1. How many cells equal 1 in the whole grid?",
+      "answer": "1",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "Rows are distinct.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Aliasing in nested lists",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#worked-example"
+        }
+      ],
+      "id": "b5",
+      "kind": "number",
+      "prompt": "grid = [[0]*4]*3; grid[2][3] = 1. How many cells equal 1 in the whole grid?",
+      "answer": "3",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "One row shared by three positions.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "copying"
+      ],
+      "skillLabel": "Shallow versus deep copy",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "id": "b6",
+      "kind": "choice",
+      "prompt": "Which call creates a fully independent copy of a nested list a?",
+      "options": [
+        "a.copy(), which copies the list and every inner list as well",
+        "copy.deepcopy(a), which recursively copies the inner lists too",
+        "a[:], which slices out new copies of each of the inner lists",
+        "list(a), which builds a list containing copies of the inner lists"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Only deepcopy recurses.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "closures",
+        "scope"
+      ],
+      "skillLabel": "Late binding",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#failure-modes"
+        }
+      ],
+      "id": "b7",
+      "kind": "number",
+      "prompt": "fs = [lambda i=i: i for i in range(5)]; what does fs[2]() return?",
+      "answer": "2",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "The default argument binds the value at definition time.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scope"
+      ],
+      "skillLabel": "Scope and LEGB",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#failure-modes"
+        }
+      ],
+      "id": "b8",
+      "kind": "choice",
+      "prompt": "A function contains the line total += 1 but never assigns total otherwise; a global total exists. Calling it raises",
+      "options": [
+        "NameError at import time, because total is not defined in the function",
+        "nothing; the global total is increased, because it is visible in the function",
+        "UnboundLocalError, because the augmented assignment makes total local",
+        "TypeError, because an integer cannot be changed inside a function"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Assignment makes total local; it is read before assignment.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mutability"
+      ],
+      "skillLabel": "Hashable keys",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "Which is a valid dict key?",
+      "options": [
+        "{1, 2}",
+        "(1, 2)",
+        "{'a': 1}",
+        "[1, 2]"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Only immutable (hashable) objects."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "copying"
+      ],
+      "skillLabel": "Shallow versus deep copy",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#worked-example"
+        }
+      ],
+      "id": "b10",
+      "kind": "number",
+      "prompt": "a = [[1, 2], [3, 4]]; b = a.copy(); a[0][0] = 99. What is b[0][0]?",
+      "answer": "99",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "Inner list shared.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "mutability",
+        "aliasing"
+      ],
+      "skillLabel": "Function contracts and mutation",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "A colleague writes normalize(path) that sorts and rescales the list passed in and also returns it. Explain the risk and propose a clearer contract with a unit test.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Notes that mutating and returning the same object invites accidental aliasing.",
+        "Proposes either returning a new list (and not mutating) or mutating and returning None.",
+        "Gives a test that deep-copies the input and asserts it is unchanged."
+      ]
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Detecting aliasing",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#verification"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "Write a short function that detects whether any two rows of a grid are the same list object, and explain why comparing rows with == would not do.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Uses id() or is to compare identities.",
+        "Explains == compares values so equal but distinct rows would be flagged falsely.",
+        "Mentions a test with both an aliased and a clean grid."
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    }
+  ]
+}

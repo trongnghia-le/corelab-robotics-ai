@@ -1,0 +1,202 @@
+{
+  "id": "V05-diagnostic",
+  "topicId": "V05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "The structure tensor of a window has eigenvalues 900 and 5. What does the window contain?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "harris-response"
+      ],
+      "skillLabel": "Harris response",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V02",
+        "V03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V05#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "A straight edge: one dominant gradient direction",
+        "A flat region: weak gradients in every direction",
+        "A corner: strong gradients in two independent directions",
+        "A blob: equal gradients in all directions, symmetric"
+      ],
+      "answer": "0",
+      "explanation": "One large and one small eigenvalue means change in one direction only."
+    },
+    {
+      "id": "q2",
+      "prompt": "Structure tensor sums Sxx = 500, Syy = 300, Sxy = 100, k = 0.04. Compute the Harris response R (integer, precision 1).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "harris-response"
+      ],
+      "skillLabel": "Harris response",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V02",
+        "V03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V05#worked-example"
+        }
+      ],
+      "answer": "114400",
+      "tolerance": 1,
+      "explanation": "det = 150000-10000 = 140000; k*tr^2 = 0.04*640000 = 25600; R = 114400."
+    },
+    {
+      "id": "q3",
+      "prompt": "The image contrast is doubled (I -> 2I). By what factor does the Harris response R change? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "feature-invariance"
+      ],
+      "skillLabel": "Invariance to brightness and rotation",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V02",
+        "V03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V05#theory-and-derivation"
+        }
+      ],
+      "answer": "16",
+      "tolerance": 0.01,
+      "explanation": "M scales by g^2, R by g^4 = 16."
+    },
+    {
+      "id": "q4",
+      "prompt": "Normalise the patch [4, 8, 12, 16] to zero mean and unit norm. Give the first component (precision 0.001).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "descriptor-normalisation"
+      ],
+      "skillLabel": "Descriptor normalisation",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V02",
+        "V03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V05#worked-example"
+        }
+      ],
+      "answer": "-0.671",
+      "tolerance": 0.001,
+      "explanation": "mean 10, centred [-6,-2,2,6], norm sqrt(80)=8.944, -6/8.944 = -0.6708."
+    },
+    {
+      "id": "q5",
+      "prompt": "Which change makes a raw (unnormalised, unrotated) pixel-patch descriptor fail to match the same physical point?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "feature-invariance"
+      ],
+      "skillLabel": "Invariance to brightness and rotation",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V02",
+        "V03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V05#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "A translation of the image by 20 pixels, since patches store absolute positions",
+        "A reduction of the image file size by a stronger compression of the pixels",
+        "A 90 degree image rotation (and also a brightness change)",
+        "Nothing: patches are invariant to every geometric or photometric change"
+      ],
+      "answer": "2",
+      "explanation": "Raw patches change under rotation and under intensity change; translation is handled by the keypoint position."
+    },
+    {
+      "id": "q6",
+      "prompt": "Binary descriptors 11001010 and 10101110. What is the Hamming distance? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "descriptor-distance"
+      ],
+      "skillLabel": "Descriptor distances",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V02",
+        "V03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V05#worked-example"
+        }
+      ],
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "They differ at bit positions 2, 3 and 6."
+    },
+    {
+      "id": "q7",
+      "prompt": "Explain the nearest-neighbour ratio test: what is compared, what threshold is typical, and what kind of wrong match does it remove that an absolute distance threshold does not?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "matching-ratio-test"
+      ],
+      "skillLabel": "Ratio test matching",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V02",
+        "V03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V05#theory-and-derivation"
+        }
+      ],
+      "rubric": [
+        "Compares the nearest and second-nearest descriptor distances; accepts if d1 < rho * d2 with rho about 0.8.",
+        "Ambiguous/repeated features have d1 close to d2 and are rejected.",
+        "Contrasts with an absolute threshold that cannot tell distinctive from ambiguous matches."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

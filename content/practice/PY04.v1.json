@@ -1,0 +1,297 @@
+{
+  "id": "PY04-targeted",
+  "topicId": "PY04",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "broadcasting-shapes"
+      ],
+      "skillLabel": "Broadcasting shape rules",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n1",
+      "kind": "choice",
+      "prompt": "Arrays A and B have shapes (4,1,3) and (5,1). What is the shape of A + B?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "(5,4,3)",
+        "Error: shapes are incompatible",
+        "(4,5,3)",
+        "(4,1,3)"
+      ],
+      "answer": "0",
+      "explanation": "Align from the right: 3 vs 1 gives 3, 1 vs 5 gives 5, and 4 is paired with a missing dimension. Result (4,5,3)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "axis-reductions"
+      ],
+      "skillLabel": "Axis reductions and output sizes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n2",
+      "kind": "number",
+      "prompt": "X has shape (6,4). How many entries does X.std(axis=1) contain? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6",
+      "tolerance": 0.01,
+      "explanation": "axis=1 reduces the 4 columns and leaves one value per row: 6 entries."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "vectorized-normalization"
+      ],
+      "skillLabel": "Standardising features",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n3",
+      "kind": "number",
+      "prompt": "One feature column holds [2, 4, 6, 8]. After standardising with the population standard deviation (ddof=0), what is the value that replaces 8? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.342",
+      "tolerance": 0.002,
+      "explanation": "Mean 5, deviations -3,-1,1,3, variance 5, std 2.236; (8-5)/2.236 = 1.342."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "views-vs-copies"
+      ],
+      "skillLabel": "Views versus copies",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n4",
+      "kind": "choice",
+      "prompt": "After a = np.arange(6.); b = a[1:4]; b[0] = 99, and separately c = a[[1,2,3]]; c[0] = -5, which statement is true about a?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Both writes change a",
+        "Only the write through b changes a",
+        "Neither write changes a",
+        "Only the write through c changes a"
+      ],
+      "answer": "1",
+      "explanation": "Basic slicing returns a view (writes go through to a); fancy indexing with a list returns a copy."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dtype-memory"
+      ],
+      "skillLabel": "Estimating array memory",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n5",
+      "kind": "number",
+      "prompt": "A broadcast pairwise difference of N=2000 3D points creates an (N,N,3) float64 temporary. How many megabytes (1 MB = 10^6 bytes) does it use? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "96",
+      "tolerance": 0.5,
+      "explanation": "2000*2000*3*8 B = 96,000,000 B = 96 MB."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "vectorized-normalization"
+      ],
+      "skillLabel": "Cosine similarity of rows",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n6",
+      "kind": "number",
+      "prompt": "Rows u=[1,2,2] and v=[2,1,2] are normalised to unit length and then multiplied with a dot product. What is the result? Give 4 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8889",
+      "tolerance": 0.0005,
+      "explanation": "Norms are 3 and 3; dot product is 2+2+4=8; 8/9 = 0.8889."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "axis-reductions"
+      ],
+      "skillLabel": "Axis choice for image batches",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n7",
+      "kind": "short",
+      "prompt": "An image batch X has shape (N,224,224,3) and a colleague standardises it with (X - X.mean(axis=0)) / X.std(axis=0). Explain what this computes, why it is probably not what was intended, and write the correct reductions.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Says axis=0 gives a separate mean/std for every pixel position and channel (shape (224,224,3)), not per channel",
+        "Says the intended per-channel statistics need axis=(0,1,2) with keepdims=True (shape (1,1,1,3))",
+        "Mentions guarding against zero std or checking mean~0 and std~1 per channel on non-square test data"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "vectorized-normalization"
+      ],
+      "skillLabel": "Contract for row normalisation",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n8",
+      "kind": "short",
+      "prompt": "Design the contract of normalize_rows(X) for an (N,D) float batch that may contain all-zero rows: inputs, output shape, the zero-row policy, and three tests you would write.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States output shape (N,D), unit L2 rows, input not modified, uses keepdims=True for the norms",
+        "Chooses and documents an explicit zero-row policy (stay zero, or raise ValueError) instead of letting 0/0 produce NaN",
+        "Lists tests including a hand-computed row such as [3,4]->[0.6,0.8], a zero row, and a norm-equals-1 property on random data"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "broadcasting-shapes"
+      ],
+      "skillLabel": "Row-stored points and matrix products",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n9",
+      "kind": "choice",
+      "prompt": "Points are stored as rows of P with shape (N,3) and a rotation R acts on column vectors as p' = R p. Which expression rotates every point?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "P @ R",
+        "R * P",
+        "R.T @ P",
+        "P @ R.T"
+      ],
+      "answer": "3",
+      "explanation": "(Rp)^T = p^T R^T, so row vectors are multiplied by R transposed."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "axis-reductions"
+      ],
+      "skillLabel": "Moving-average windows",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n10",
+      "kind": "number",
+      "prompt": "A signal [4, 8, 6, 2, 10] is smoothed with a window of 2 (mean of consecutive pairs, no padding). What is the third output value?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "Windows: (4,8)=6, (8,6)=7, (6,2)=4, (2,10)=6; the third is 4."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dtype-memory"
+      ],
+      "skillLabel": "Integer dtype truncation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n11",
+      "kind": "choice",
+      "prompt": "x = np.zeros(3, dtype=int); x[:] = 1.9; print(x). What is printed?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "An error is raised",
+        "[1.9 1.9 1.9]",
+        "[1 1 1]",
+        "[2 2 2]"
+      ],
+      "answer": "2",
+      "explanation": "Assigning floats into an int array truncates toward zero: [1 1 1]."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dtype-memory"
+      ],
+      "skillLabel": "Estimating array memory",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "n12",
+      "kind": "number",
+      "prompt": "A batch of 64 RGB images of size 224x224 is stored as float32. How many megabytes (10^6 bytes) does the array need? Give one decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "38.5",
+      "tolerance": 0.1,
+      "explanation": "64*224*224*3*4 B = 38,535,168 B = 38.5 MB."
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "id": "E05-diagnostic",
+  "topicId": "E05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In STRIPS, how is an operator applied to a state?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "strips-semantics"
+      ],
+      "skillLabel": "STRIPS operator semantics",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Remove the delete list, then add the add list, if all preconditions hold",
+        "Replace the whole state by the add list, if all preconditions hold",
+        "Add the add list first, then remove the delete list, whatever the preconditions",
+        "Remove the preconditions from the state, then add the add list"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "s' = (s minus del) union add; a fact in both ends up true."
+    },
+    {
+      "id": "q2",
+      "prompt": "The state is {at_robot(A), at(cup,A), handempty}. Operator pick(cup,A) has pre {at_robot(A), at(cup,A), handempty}, add {holding(cup)}, delete {at(cup,A), handempty}. The result is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "strips-semantics"
+      ],
+      "skillLabel": "STRIPS operator semantics",
+      "mistakeCategory": "mathematical",
+      "options": [
+        "{at_robot(A), handempty, holding(cup)}",
+        "{holding(cup), at(cup,A)}",
+        "{at_robot(A), at(cup,A), holding(cup)}",
+        "{at_robot(A), holding(cup)}"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "Remove at(cup,A) and handempty, add holding(cup)."
+    },
+    {
+      "id": "q3",
+      "prompt": "One gripper, two objects, three locations, capacity one per location. In how many ways can both objects sit on the table (different locations, robot not considered)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "state-counting"
+      ],
+      "skillLabel": "Count symbolic states",
+      "mistakeCategory": "mathematical",
+      "answer": "6",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "3 * 2 = 6."
+    },
+    {
+      "id": "q4",
+      "prompt": "Same domain: how many states have the robot holding one object, counting which object (2), the other object's location (3), and robot position (3)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "state-counting"
+      ],
+      "skillLabel": "Count symbolic states",
+      "mistakeCategory": "mathematical",
+      "answer": "18",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "2 * 3 * 3 = 18."
+    },
+    {
+      "id": "q5",
+      "prompt": "The goal fact g is not in the delete-relaxed reachable set. What can you conclude?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "relaxed-reachability"
+      ],
+      "skillLabel": "Delete-relaxed reachability",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The goal is truly unreachable",
+        "The goal is reachable with more steps",
+        "The relaxation was wrong",
+        "The planner needs a heuristic"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "The relaxation over-approximates what is reachable, so exclusion is a proof."
+    },
+    {
+      "id": "q6",
+      "prompt": "Goal facts holding(cup) and holding(box) are both in the relaxed reachable set, yet no real plan exists with one gripper. Why?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "relaxed-reachability"
+      ],
+      "skillLabel": "Delete-relaxed reachability",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The planner has a bug in how it counts the number of grippers",
+        "The two goal facts contradict each other in the relaxed problem",
+        "Breadth-first search cannot return plans that need two pickups",
+        "The relaxation ignores deletes, so handempty is never lost"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "After picking one object, handempty is deleted."
+    },
+    {
+      "id": "q7",
+      "prompt": "Plan: move(A,B), pick(box,B), move(B,C), place(box,C). Each step costs 1. What is the plan cost?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "plan-validation"
+      ],
+      "skillLabel": "Validate a symbolic plan",
+      "mistakeCategory": "mathematical",
+      "answer": "4",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "Four unit-cost operators."
+    },
+    {
+      "id": "q8",
+      "prompt": "A user asks a planner to place a cup on a shelf slot that never becomes free in the model. Explain how you would diagnose why no plan exists and what you would report back.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "relaxed-reachability",
+        "plan-validation"
+      ],
+      "skillLabel": "Diagnose an impossible task",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "rubric": [
+        "Run reachability to find that the goal fact is not producible.",
+        "Identify the blocking precondition (e.g. free(slot)) that no operator can establish.",
+        "Report the missing fact and fix the model or declare the task impossible."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,381 @@
+{
+  "id": "S11-targeted",
+  "topicId": "S11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Forward-mode AD: derivative of x^2 sin x at x=1. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.2232",
+      "tolerance": 0.001,
+      "explanation": "2 sin1 + cos1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ad-vs-fd"
+      ],
+      "skillLabel": "Automatic vs finite differences",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "PGS one sweep on A=[[2,-1],[-1,2]], b=[-1,-1] from zero. lambda_2 after the sweep.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.75",
+      "tolerance": 0.001,
+      "explanation": "lam1=0.5; lam2=0.75.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "solver-convergence"
+      ],
+      "skillLabel": "Convergence of an iterative contact solver",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Error factor per sweep (c/a)^2 for A=[[4,-2],[-2,4]].",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.25",
+      "tolerance": 0.001,
+      "explanation": "(2/4)^2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "solver-convergence"
+      ],
+      "skillLabel": "Convergence of an iterative contact solver",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Central-difference error of sin at x=1 with h=0.1 (absolute, precision 0.0001).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0009",
+      "tolerance": 0.0001,
+      "explanation": "~ h^2/6 cos... = 9e-4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ad-vs-fd"
+      ],
+      "skillLabel": "Automatic vs finite differences",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Batched step cost = t0 + N t1 with t0=50 us, t1=0.5 us, N=1000. Throughput in world-steps per second (precision 5000).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1818182",
+      "tolerance": 5000,
+      "explanation": "1000/550e-6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "batched-equivalence"
+      ],
+      "skillLabel": "Batched equals per-world",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Same costs: a Python loop pays t0+t1 per world. Speed-up of batching for N=1000 (precision 0.5).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "91.8",
+      "tolerance": 0.5,
+      "explanation": "50.5 ms / 0.55 ms.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "batched-equivalence"
+      ],
+      "skillLabel": "Batched equals per-world",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A batched step modifies its input arrays in place. Which bug appears?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Results depend on call order and the caller's data is corrupted, so batch-equals-loop tests fail.",
+        "None: in-place updates are always both faster and safe, so no bug can appear in the results.",
+        "The physics changes order of accuracy because the update uses overwritten values.",
+        "Gradients become exactly zero, because the in-place writes detach the arrays."
+      ],
+      "answer": "0",
+      "explanation": "Aliasing.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "batched-equivalence"
+      ],
+      "skillLabel": "Batched equals per-world",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Symptom of too few solver iterations in a box stack?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Higher energy accuracy because the solver is more exact",
+        "Smoother contact forces because the solver averages them",
+        "Lower memory use because fewer constraint rows are stored",
+        "Boxes sink or creep because the contact impulses are not converged"
+      ],
+      "answer": "3",
+      "explanation": "Residual constraint violation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "solver-convergence"
+      ],
+      "skillLabel": "Convergence of an iterative contact solver",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Why do researchers soften contact when they want gradients?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "To make the simulation run faster, because softened contacts need no solver iterations.",
+        "A smooth contact force has a usable derivative, at the price of bias relative to hard contact.",
+        "To remove the effect of gravity on the dynamics so that the loss landscape becomes smooth.",
+        "To avoid needing a time step, since smooth forces can be integrated exactly in closed form."
+      ],
+      "answer": "1",
+      "explanation": "Smoothing trades bias for gradient signal.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gradient-horizon"
+      ],
+      "skillLabel": "Gradient quality and horizon",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A long-horizon gradient near an unstable equilibrium is correct but huge. What is a sensible remedy?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Increase the learning rate so that the large gradient is averaged away.",
+        "Disable gravity so the unstable equilibrium no longer amplifies errors.",
+        "Use a smaller finite-difference step to get a more accurate gradient.",
+        "Shorten the horizon, truncate backpropagation or use multiple shooting."
+      ],
+      "answer": "3",
+      "explanation": "Reduce the amplification.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gradient-horizon"
+      ],
+      "skillLabel": "Gradient quality and horizon",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Describe a test that checks an AD implementation against finite differences at several points, including a point where it should fail.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Chooses smooth points and an h near 1e-6 with a stated tolerance.",
+        "Includes a non-smooth point (kink or contact switch) where AD and FD disagree and explains why.",
+        "Includes a constant function (zero gradient) and a case with mixed number types."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "ad-vs-fd"
+      ],
+      "skillLabel": "Automatic vs finite differences",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S11#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "A team reports their simulator is '3x faster' after reducing iterations. What additional evidence do you ask for?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Asks for error against a reference with the same metric before and after.",
+        "Asks for penetration or residual statistics and stability on hard cases (stacks, fast impacts).",
+        "Asks for the cost/accuracy trade-off curve, not a single point."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "solver-comparison"
+      ],
+      "skillLabel": "Compare solver settings to a reference",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

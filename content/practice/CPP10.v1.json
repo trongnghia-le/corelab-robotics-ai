@@ -1,0 +1,329 @@
+{
+  "id": "CPP10-targeted",
+  "topicId": "CPP10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which of these is NOT a data race?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Two threads call fetch_add on one std::atomic<int>",
+        "Two threads push_back to the same std::vector without a lock",
+        "One thread writes a bool, another polls it in a loop",
+        "Two threads write the same int without synchronization"
+      ],
+      "answer": "0",
+      "explanation": "Atomic operations are race-free by definition; the other three have conflicting unsynchronized accesses.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "data-races"
+      ],
+      "skillLabel": "Recognizing races",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Why is a std::thread that goes out of scope without join() a bug?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The thread keeps running on as a detached daemon thread",
+        "The destructor of a joinable thread calls std::terminate",
+        "The destructor silently detaches the thread so it finishes",
+        "The compiler refuses to compile such a program at all"
+      ],
+      "answer": "1",
+      "explanation": "Join or detach explicitly, or use std::jthread in C++20.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "data-races",
+        "queue-contract"
+      ],
+      "skillLabel": "Thread lifetime",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A consumer uses cv.wait(lk) without a predicate and sometimes pops from an empty queue. Which explanation is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "notify_one wakes zero threads whenever the queue is currently found to be empty",
+        "pop is not declared const, so it cannot be called while the lock is being held",
+        "The mutex was recursive, so the lock was acquired twice by the same consumer",
+        "wait can return without a notification, and another consumer may have taken the item"
+      ],
+      "answer": "3",
+      "explanation": "The condition must be re-checked in a loop or with a predicate.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "condition-variables"
+      ],
+      "skillLabel": "Spurious wake-ups",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "if (q.size() < cap) q.push(x); on a shared queue is wrong because?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "size() is O(n), so the check alone already costs too much on a shared queue",
+        "The state can change between the check and the push; one atomic try_push avoids it",
+        "push is not exception-safe, so it can never be used on a queue shared by threads",
+        "cap is const, so the comparison with it is always stale after any later push call"
+      ],
+      "answer": "1",
+      "explanation": "Each call locks separately, so the two steps are not one critical section.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "queue-contract",
+        "data-races"
+      ],
+      "skillLabel": "Check-then-act race",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q7"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A thread pool counter is incremented 250,000 times by each of 8 threads without a lock and the final value is 1,873,114. How many increments were lost? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "126886",
+      "tolerance": 0.5,
+      "explanation": "8 x 250,000 = 2,000,000; 2,000,000 - 1,873,114 = 126,886.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "data-races"
+      ],
+      "skillLabel": "Counting lost updates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A sensor emits 120 items/s for 0.5 s as a burst; the consumer handles 100 items/s. What is the minimum queue capacity so the producer never blocks (backlog at the end of the burst)? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.5,
+      "explanation": "Produced 60, consumed 50 during the burst, backlog 10.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-contract"
+      ],
+      "skillLabel": "Queue sizing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Backlog is 40 items and the consumer handles 160 items/s with no new input. How many seconds to drain it? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.25",
+      "tolerance": 0.005,
+      "explanation": "40 / 160 = 0.25 s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-contract"
+      ],
+      "skillLabel": "Drain time",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Four threads each run 3 pushes and 3 pops on a queue whose consumers use a predicate. After all threads join, what must size() be if every push is matched by a pop? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0",
+      "tolerance": 0.01,
+      "explanation": "Items in = items out, so the queue is empty: 0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-contract"
+      ],
+      "skillLabel": "Final-state invariant",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP10#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Rewrite 'm.lock(); if (done) return; work(); m.unlock();' so that it is exception-safe and releases the mutex on every path. Explain why.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Uses std::lock_guard<std::mutex> lk(m); (or unique_lock) at the top of the scope.",
+        "The destructor unlocks on return and on exception.",
+        "Mentions that manual lock/unlock leaves the mutex locked on the early return."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "data-races",
+        "deadlock"
+      ],
+      "skillLabel": "RAII locking",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Two mutexes protect two accounts. Write the code to transfer money without risking deadlock and say how it works.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "std::scoped_lock lk(from.m, to.m); then update both balances.",
+        "scoped_lock acquires all mutexes using a deadlock-avoidance algorithm, independent of argument order.",
+        "Alternative: a global lock order (by address or id)."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "deadlock"
+      ],
+      "skillLabel": "Avoiding lock-order deadlock",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "A control loop must use the latest sensor reading and never wait for a slow producer. Compare a bounded queue with a latest-value mailbox and choose.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "A mailbox overwrites old values, so the controller always reads the freshest data and the producer never blocks.",
+        "A queue preserves every item but risks stale data and back-pressure; needed for logging, not control.",
+        "Names a contract: one mutex, set overwrites, get copies the value (and perhaps a version/timestamp)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "queue-contract"
+      ],
+      "skillLabel": "Queue versus mailbox",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP10#alternatives-and-trade-offs"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7",
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

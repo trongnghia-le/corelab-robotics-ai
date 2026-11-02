@@ -1,0 +1,407 @@
+{
+  "id": "R10-targeted",
+  "topicId": "R10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A gearbox with 45 N m peak output torque is bolted to a flange. An emergency stop can transmit that torque. How should the load envelope treat it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "load-cases"
+      ],
+      "skillLabel": "Load cases and envelope",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Load cases and envelope",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Ignore it, since the payload weight alone governs the design of the flange",
+        "Use half the torque, because emergency stops are rare events in service",
+        "Include it as a load case, since the actuator limit sets the maximum load",
+        "Include it only in the fatigue check, not in the static strength check"
+      ],
+      "answer": "2",
+      "explanation": "Actuator peak torque bounds the load the structure can see."
+    },
+    {
+      "id": "b2",
+      "prompt": "Rectangle 20 mm wide, 6 mm deep. Second moment of area I in units of 1e-10 m^4 (one decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bending-stress"
+      ],
+      "skillLabel": "Bending stress",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Bending stress",
+          "href": "/lessons/R10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "3.6",
+      "tolerance": 0.05,
+      "explanation": "b h^3/12 = 0.02 x 2.16e-7 / 12 = 3.6e-10."
+    },
+    {
+      "id": "b3",
+      "prompt": "Tip load 50 N, L = 0.20 m, b = 0.025 m, h = 0.010 m. Root bending stress in MPa (one decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bending-stress"
+      ],
+      "skillLabel": "Bending stress",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Bending stress",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "24.0",
+      "tolerance": 0.1,
+      "explanation": "6FL/(bh^2) = 60/2.5e-6 = 24.0 MPa."
+    },
+    {
+      "id": "b4",
+      "prompt": "Steel (E = 200 GPa) cantilever, F = 100 N, L = 0.30 m, b = 0.03 m, h = 0.01 m. Tip deflection in mm (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "deflection-stiffness"
+      ],
+      "skillLabel": "Deflection and stiffness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Deflection and stiffness",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "answer": "1.8",
+      "tolerance": 0.02,
+      "explanation": "I = 2.5e-9; delta = 100*0.027/(3*200e9*2.5e-9) = 1.8 mm."
+    },
+    {
+      "id": "b5",
+      "prompt": "A plate with a small hole (K_t = 3) has nominal stress 60 MPa. FoS against sigma_y = 250 MPa (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "factor-of-safety",
+        "combined-stress"
+      ],
+      "skillLabel": "Stress concentration",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Stress concentration",
+          "href": "/lessons/R10#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "1.388889",
+      "tolerance": 0.01,
+      "explanation": "Peak 180 MPa; 250/180 = 1.39."
+    },
+    {
+      "id": "b6",
+      "prompt": "A bracket under case B has sigma = 98.1 MPa. A requirement is FoS >= 1.5 for sigma_y = 276 MPa. What is the margin of safety (FoS/FoS_req - 1, two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "factor-of-safety"
+      ],
+      "skillLabel": "Factor of safety",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Factor of safety",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.875637",
+      "tolerance": 0.01,
+      "explanation": "FoS = 2.81; MS = 2.81/1.5 - 1 = 0.88."
+    },
+    {
+      "id": "b7",
+      "prompt": "A student computes cantilever stress with c = h instead of c = h/2. What is the result and consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bending-stress"
+      ],
+      "skillLabel": "Bending stress",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Bending stress",
+          "href": "/lessons/R10#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "Stress is 2x too high (conservative but wasteful)",
+        "Stress is 2x too low, which makes the design unsafe",
+        "Stress is 4x too high, since c enters squared",
+        "No change, since c cancels with the moment of inertia"
+      ],
+      "answer": "0",
+      "explanation": "sigma = M c / I, so c = h doubles the stress."
+    },
+    {
+      "id": "b8",
+      "prompt": "Why is von Mises stress used for ductile metals under combined loading?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "combined-stress"
+      ],
+      "skillLabel": "Combined stress",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Combined stress",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "It maps combined normal and shear stress to an equivalent tensile stress for yield",
+        "It is the arithmetic average of the principal stresses at that point",
+        "It sums the normal stresses only, ignoring any shear components that are present",
+        "It ignores shear, since shear never causes yield in ductile metals"
+      ],
+      "answer": "0",
+      "explanation": "The von Mises criterion predicts yield under multi-axial stress states."
+    },
+    {
+      "id": "b9",
+      "prompt": "Halve h of a bracket whose tip deflection is 0.5 mm. New deflection in mm?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "scaling-laws",
+        "deflection-stiffness"
+      ],
+      "skillLabel": "Scaling with thickness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Scaling with thickness",
+          "href": "/lessons/R10#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "4",
+      "tolerance": 0.05,
+      "explanation": "delta ~ 1/h^3, so x8 = 4 mm."
+    },
+    {
+      "id": "b10",
+      "prompt": "Cantilever stiffness 118,000 N/m carries a 3 kg tip mass. Natural frequency in Hz (one decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "deflection-stiffness"
+      ],
+      "skillLabel": "Deflection and stiffness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Deflection and stiffness",
+          "href": "/lessons/R10#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "answer": "31.564616",
+      "tolerance": 0.2,
+      "explanation": "f = sqrt(k/m)/(2 pi) = 31.6 Hz."
+    },
+    {
+      "id": "b11",
+      "prompt": "A hand calculation and a finite-element result differ by 40%. What is the best next step?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "independent-check"
+      ],
+      "skillLabel": "Independent verification",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Independent verification",
+          "href": "/lessons/R10#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "Find the discrepancy (boundary conditions, mesh, units) before accepting either result",
+        "Average the two results, since the true stress probably lies somewhere between them",
+        "Trust the FEA, because a computer solves the full geometry without simplifications",
+        "Trust the hand calculation, because it is simple and every step can be checked"
+      ],
+      "answer": "0",
+      "explanation": "Disagreement signals an error in at least one of the two models."
+    },
+    {
+      "id": "b12",
+      "prompt": "A bracket passes the yield check with FoS = 1.6 but the arm vibrates visibly. Which additional verification was missed and how would you check it?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "deflection-stiffness",
+        "independent-check"
+      ],
+      "skillLabel": "Stiffness verification",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Stiffness verification",
+          "href": "/lessons/R10#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "rubric": [
+        "Identifies stiffness / natural-frequency verification, not only stress.",
+        "Calculates k = 3EI/L^3 and f = sqrt(k/m)/(2 pi), compares with control bandwidth.",
+        "Proposes a physical test (tap test or deflection measurement) or modal FEA."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "b13",
+      "prompt": "Explain why the worst case for strength is not always the case with the largest force, and give an example.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "load-cases"
+      ],
+      "skillLabel": "Load cases and envelope",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Load cases and envelope",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "rubric": [
+        "States a case can load a different section or direction, or involve stress concentration or fatigue.",
+        "Gives a concrete example such as a smaller force at a hole or a cyclic load that governs by fatigue.",
+        "Concludes each case must be evaluated against its own allowable."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

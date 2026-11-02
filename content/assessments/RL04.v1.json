@@ -1,0 +1,182 @@
+{
+  "id": "RL04-diagnostic",
+  "topicId": "RL04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Value iteration on the slippery corridor from V = 0: state 3 goes right with success probability 0.8 (reward +10 on reaching the goal) and slips with probability 0.2 (reward -1, stays). What is V_1(3) (1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bellman-backup"
+      ],
+      "skillLabel": "One Bellman backup",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "RL03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL04#worked-example"
+        }
+      ],
+      "answer": "7.8",
+      "tolerance": 0.05,
+      "explanation": "0.8*10 + 0.2*(-1) = 7.8."
+    },
+    {
+      "id": "q2",
+      "prompt": "One sweep of value iteration changes the table by at most 1e-4 and gamma = 0.9. What is the guaranteed bound on max |V - V*|? Give 6 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stopping-bound"
+      ],
+      "skillLabel": "Stopping rule and error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL04#worked-example"
+        }
+      ],
+      "answer": "0.0009",
+      "tolerance": 1e-05,
+      "explanation": "gamma*theta/(1-gamma) = 0.9e-4/0.1 = 9e-4."
+    },
+    {
+      "id": "q3",
+      "prompt": "Which statement about the contraction property is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "contraction"
+      ],
+      "skillLabel": "Contraction and convergence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL04#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Contraction means the table reaches the fixed point after one full sweep over all states.",
+        "The Bellman optimality backup shrinks the max-norm distance between two tables by a factor of at least gamma.",
+        "Contraction holds only when gamma = 1, so discounted problems need a different argument.",
+        "The backup preserves the max-norm distance between any two tables, so errors neither grow nor shrink."
+      ],
+      "answer": "1",
+      "explanation": "|T V - T W|_inf <= gamma |V - W|_inf."
+    },
+    {
+      "id": "q4",
+      "prompt": "In policy iteration, after evaluating pi we form the greedy policy pi'. If pi' equals pi, then",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "policy-iteration"
+      ],
+      "skillLabel": "Policy iteration",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL04#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "pi is optimal",
+        "the model is wrong",
+        "gamma is too large",
+        "pi must be improved further"
+      ],
+      "answer": "0",
+      "explanation": "No improving action exists, so the Bellman optimality equation holds."
+    },
+    {
+      "id": "q5",
+      "prompt": "Slip-free corridor: V(3) = 10 (one step to the goal) and each other step costs -1, gamma = 0.9. Compute V(1) (1 decimal).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bellman-backup"
+      ],
+      "skillLabel": "One Bellman backup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL04#worked-example"
+        }
+      ],
+      "answer": "6.2",
+      "tolerance": 0.05,
+      "explanation": "V(2) = -1+0.9*10 = 8; V(1) = -1+0.9*8 = 6.2."
+    },
+    {
+      "id": "q6",
+      "prompt": "A coder updates V[s] in place inside the sweep and still calls it synchronous. What is true?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sweep-order"
+      ],
+      "skillLabel": "Synchronous versus in-place sweeps",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL04#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It converges to a different fixed point, because later states see partly updated values.",
+        "It cannot converge, because the backup is no longer a contraction once updates are in place.",
+        "It is a Gauss-Seidel sweep: same fixed point, but sweep counts and intermediate tables differ.",
+        "It is identical to the synchronous method in every sweep, since the same backup is applied."
+      ],
+      "answer": "2",
+      "explanation": "In-place and synchronous updates share the fixed point; the iterates differ."
+    },
+    {
+      "id": "q7",
+      "prompt": "You must plan for a robot whose state space is a 6D pose discretised at 100 values per dimension. Explain whether dynamic programming is feasible and what you would do instead.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "dp-cost"
+      ],
+      "skillLabel": "Cost and limits of dynamic programming",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL04#alternatives-and-trade-offs"
+        }
+      ],
+      "rubric": [
+        "Counts the table size (10^12 states) and the per-sweep cost.",
+        "Names the model requirement and the curse of dimensionality.",
+        "Suggests a remedy such as coarser or factored states, function approximation, sampling or sampling-based methods."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

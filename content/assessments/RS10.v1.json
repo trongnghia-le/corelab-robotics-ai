@@ -1,0 +1,245 @@
+{
+  "id": "RS10-diagnostic",
+  "topicId": "RS10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which is the best-scoped research question?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Is navigation important enough to justify a long and expensive project by our research group?",
+        "How can we improve robot navigation in indoor environments across many settings and robots?",
+        "Does a learned cost map cut failure rate by 5+ points over a tuned inflation layer on 3 unseen maps?",
+        "Does using neural networks for navigation work better than the other available methods?"
+      ],
+      "answer": "2",
+      "explanation": "It names the intervention, comparison, metric, population, minimum effect and a fairness condition, so it can be answered and failed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "research-question"
+      ],
+      "skillLabel": "Scope a research question",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Run-to-run sd is 3 points and the minimum effect is 2 points. How many runs per method are needed for 5% level and 80% power, n >= 2(2.8*sd/delta)^2 (round up)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "36",
+      "tolerance": 0.5,
+      "explanation": "2*(2.8*3/2)^2 = 2*17.64 = 35.28, so 36.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sample-size"
+      ],
+      "skillLabel": "Size an experiment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "An idea has keywords {a, b, c, d}; the closest prior work has {c, d, e}. What is the Jaccard similarity? Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.4",
+      "tolerance": 0.005,
+      "explanation": "Intersection {c, d} = 2; union {a, b, c, d, e} = 5; 2/5 = 0.40.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "novelty-assessment"
+      ],
+      "skillLabel": "Keyword overlap",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Your pre-registered minimum effect is a 5-point reduction. The final 95% CI for the reduction is [1.0, 3.0]. What is the decision?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Supported, because the interval excludes zero and so shows an effect.",
+        "Rejected: the whole interval is below the minimum effect.",
+        "Inconclusive, because the interval is narrow and still near the threshold.",
+        "Supported, because the interval is narrow enough to be trusted."
+      ],
+      "answer": "1",
+      "explanation": "The hypothesis was a reduction of at least 5; the upper end 3.0 is below 5, so the hypothesis is rejected (even though some reduction exists).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "decision-rule"
+      ],
+      "skillLabel": "Apply a pre-registered rule",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "With sd 3 and a minimum effect of 4 points, how many runs per method are needed (same formula, round up)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9",
+      "tolerance": 0.5,
+      "explanation": "2*(2.8*3/4)^2 = 2*4.41 = 8.82, so 9.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sample-size"
+      ],
+      "skillLabel": "Size an experiment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "State the hypothesis 'a new filter reduces localisation error' as a falsifiable statement with a minimum effect and write its falsifier.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names metric, baseline, population of cases and a minimum effect size.",
+        "Falsifier: concrete outcome (e.g. upper end of CI below the minimum effect) written before the data.",
+        "Fixes number of runs and analysis in advance."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "decision-rule",
+        "risks-falsifier"
+      ],
+      "skillLabel": "Write a falsifier",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Why include a strong simple baseline, tuned with the same effort as your method?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Because reviewers like longer tables and more rows of numbers in the comparison section.",
+        "Without it, a gain may show only that the default is badly tuned, not that your idea helps.",
+        "Because strong baselines are always cheaper to run than the new methods being compared.",
+        "To make the proposed method look worse on purpose, so that the reader trusts the paper."
+      ],
+      "answer": "1",
+      "explanation": "A fair, well-tuned simple baseline makes a positive result meaningful.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "baselines"
+      ],
+      "skillLabel": "Choose meaningful baselines",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "Describe how you would implement a function decide(baseline_runs, new_runs, min_effect) returning supported, rejected or inconclusive, and what must be fixed before calling it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes the confidence interval of the reduction (difference of means with a standard error and a t critical value).",
+        "Returns supported if the lower bound >= min_effect, rejected if the upper bound < min_effect, else inconclusive.",
+        "States that min_effect, the metric, the number of runs and the exclusion rules are fixed before seeing the data."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "decision-rule"
+      ],
+      "skillLabel": "Implement a decision rule",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference-implementation",
+          "href": "/lessons/RS10#reference-implementation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS03",
+        "RS08",
+        "RS06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

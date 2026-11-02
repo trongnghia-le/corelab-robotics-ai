@@ -1,0 +1,330 @@
+{
+  "id": "ML11-targeted",
+  "topicId": "ML11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Data {0, 2, 4} under N(2, 8/3) (the MLE). What is the average log-likelihood? (decimal, tolerance 0.002)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-1.909353",
+      "tolerance": 0.002,
+      "explanation": "σ²=8/3; each point's quadratic term averages to 1: −½[ln(2π·2.667)+1]=−1.909.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "log-likelihood"
+      ],
+      "skillLabel": "Computing log-likelihoods",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "The MLE variance (divisor n) of the data {2, 4, 6, 8}. (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.0",
+      "tolerance": 0.001,
+      "explanation": "mean 5; squared deviations 9+1+1+9=20; 20/4=5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "log-likelihood"
+      ],
+      "skillLabel": "Computing log-likelihoods",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "0.4·N(−1,1)+0.6·N(2,1), x=0. What is the responsibility of component 1? (decimal, tolerance 0.002)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.749235",
+      "tolerance": 0.002,
+      "explanation": "0.4e^-0.5=0.2426, 0.6e^-2=0.0812: 0.749.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "latent-variables-em"
+      ],
+      "skillLabel": "Latent variables and EM",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "In an M-step, responsibilities for points (1, 2, 6) are (0.5, 0.25, 0.25). What is the updated mean? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.5",
+      "tolerance": 0.001,
+      "explanation": "n_k=1.0; Σ r x=0.5+0.5+1.5=2.5; μ=2.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "latent-variables-em"
+      ],
+      "skillLabel": "Latent variables and EM",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "After an EM iteration, the training log-likelihood goes down. What does that indicate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The learning rate is too high for the M step",
+        "A bug (EM is guaranteed not to decrease the likelihood)",
+        "Normal EM behaviour, as the likelihood can oscillate",
+        "The model is overfitting the training data"
+      ],
+      "answer": "1",
+      "explanation": "Each full E+M iteration cannot decrease the likelihood, so a decrease signals an implementation error.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "latent-variables-em"
+      ],
+      "skillLabel": "Latent variables and EM",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "KL(N(μ=0, σ²=4) ‖ N(0,1)) = ½(σ²+μ²−1−ln σ²). Compute it. (decimal, tolerance 0.002)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.806853",
+      "tolerance": 0.002,
+      "explanation": "½(4−1−1.3863)=0.8069.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "elbo"
+      ],
+      "skillLabel": "The ELBO and its KL term",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Which statement about the ELBO is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It does not depend on the decoder p(x|z), only on the encoder",
+        "It upper-bounds log p(x); the gap is KL(p(z|x) ‖ q(z|x))",
+        "It equals log p(x) for any encoder q(z|x) that is normalised",
+        "It lower-bounds log p(x); the gap is KL(q(z|x) ‖ p(z|x))"
+      ],
+      "answer": "3",
+      "explanation": "log p(x)=ELBO+KL(q‖p(z|x)) and KL≥0.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "elbo"
+      ],
+      "skillLabel": "The ELBO and its KL term",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Training log-likelihoods −2.1 and held-out −2.5 for K=10; K=3 gives train −2.2 and held-out −2.25. By how many nats per point does K=3 beat K=10 on held-out data? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.25",
+      "tolerance": 0.001,
+      "explanation": "−2.25−(−2.5)=0.25: K=10 overfits.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "likelihood-evaluation"
+      ],
+      "skillLabel": "Held-out evaluation of generative models",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A generator always outputs samples near one data mode. Which pair of measurements describes it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Low gap fraction (realistic) but one mode with nearly all the sample proportion",
+        "High held-out likelihood, since the modes it covers are modelled well",
+        "Low reconstruction error, since a generator must reproduce the inputs",
+        "High gap fraction (unrealistic) and roughly uniform mode proportions"
+      ],
+      "answer": "0",
+      "explanation": "Mode collapse yields realistic samples with almost no diversity.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sample-diversity"
+      ],
+      "skillLabel": "Reconstruction vs diversity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A generator's samples have mode proportions (0.7, 0.3, 0.0) while the true data weights are (0.3, 0.4, 0.3). What is the total variation distance ½Σ|p−q|? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.4",
+      "tolerance": 0.001,
+      "explanation": "½(0.4+0.1+0.3)=0.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sample-diversity"
+      ],
+      "skillLabel": "Reconstruction vs diversity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "A mixture fit gives training log-likelihood +∞ for one run. Diagnose and fix.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "A component's variance collapsed onto one point so its density diverges.",
+        "Fix: variance floor, a prior on the variance, fewer components or restarts.",
+        "Check: held-out likelihood should fall for that run, and the minimum variance should be monitored during EM."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "latent-variables-em"
+      ],
+      "skillLabel": "Latent variables and EM",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Describe the evaluation report you would produce to compare two generative models of sensor data, and how you would choose the winner.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Held-out likelihood (or its bound), reconstruction error and sample realism/diversity measures, all on held-out data.",
+        "Baselines (single Gaussian, collapsed generator) and several seeds with spread.",
+        "States the decision rule and a falsifier (e.g. ranking changes on a second data split)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "likelihood-evaluation",
+        "sample-diversity"
+      ],
+      "skillLabel": "Held-out evaluation of generative models",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

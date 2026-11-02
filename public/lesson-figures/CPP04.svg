@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="Inter, Arial, sans-serif">
+<rect width="760" height="360" fill="#111827" rx="12"/>
+<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Encapsulation: the public functions are the gate</text>
+<rect x="20" y="50" width="330" height="270" rx="10" fill="none" stroke="#e5e7eb" stroke-width="2"/>
+<text x="185" y="74" font-size="14" text-anchor="middle" fill="#e5e7eb" font-weight="bold">class JointState</text>
+<rect x="40" y="90" width="290" height="100" rx="8" fill="#1f2937" stroke="#f97316" stroke-width="2"/>
+<text x="185" y="114" font-size="14" text-anchor="middle" fill="#f97316">private state</text>
+<text x="185" y="138" font-size="13" text-anchor="middle" fill="#e5e7eb">q_, v_, lo_, hi_, vmax_</text>
+<text x="185" y="164" font-size="13" text-anchor="middle" fill="#e5e7eb">invariant: lo &lt;= q &lt;= hi, |v| &lt;= vmax</text>
+<rect x="40" y="210" width="290" height="90" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<text x="185" y="234" font-size="14" text-anchor="middle" fill="#a3e635">public gate</text>
+<text x="185" y="258" font-size="13" text-anchor="middle" fill="#e5e7eb">try_set_position(q, dt) -&gt; bool</text>
+<text x="185" y="282" font-size="13" text-anchor="middle" fill="#e5e7eb">position() const, velocity() const</text>
+<path d="M185 210 V192" stroke="#e5e7eb" stroke-width="2"/>
+<text x="20" y="344" font-size="13" fill="#e5e7eb">Rejected call: state unchanged. Accepted call: invariant still true.</text>
+<text x="400" y="74" font-size="14" fill="#e5e7eb" font-weight="bold">Abstract interface, virtual dispatch</text>
+<rect x="470" y="90" width="230" height="64" rx="8" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="585" y="114" font-size="14" text-anchor="middle" fill="#38bdf8">Controller (abstract)</text>
+<text x="585" y="136" font-size="13" text-anchor="middle" fill="#e5e7eb">compute(error) = 0</text>
+<rect x="400" y="230" width="150" height="56" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/>
+<text x="475" y="254" font-size="14" text-anchor="middle" fill="#e5e7eb">PController</text>
+<text x="475" y="274" font-size="13" text-anchor="middle" fill="#e5e7eb">kp * e</text>
+<rect x="580" y="230" width="150" height="56" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/>
+<text x="655" y="254" font-size="14" text-anchor="middle" fill="#e5e7eb">PIDController</text>
+<text x="655" y="274" font-size="13" text-anchor="middle" fill="#e5e7eb">P + I + D terms</text>
+<path d="M475 230 L560 156 M655 230 L610 156" stroke="#38bdf8" stroke-width="2"/>
+<text x="585" y="214" font-size="13" text-anchor="middle" fill="#e5e7eb">is-a (override)</text>
+<text x="400" y="324" font-size="13" fill="#e5e7eb">step(JointState&amp;, const Controller&amp;, ...) accepts either</text>
+</svg>

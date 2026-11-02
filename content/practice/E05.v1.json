@@ -1,0 +1,381 @@
+{
+  "id": "E05-targeted",
+  "topicId": "E05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Operator o has add list {p, q} and delete list {q}. Applying it makes q:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "strips-semantics"
+      ],
+      "skillLabel": "STRIPS operator semantics",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "True: deletes are applied first and then adds, so q is re-added",
+        "Undefined: an operator may not list the same atom in both lists",
+        "Unknown: the planner cannot tell without knowing the order of effects",
+        "False: the delete list always removes the atom after the add list"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Delete is applied before add, so q ends in the state."
+    },
+    {
+      "id": "b2",
+      "prompt": "State {a, b, c}. Operator pre {a, d}. Applicable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "strips-semantics"
+      ],
+      "skillLabel": "STRIPS operator semantics",
+      "mistakeCategory": "procedural",
+      "options": [
+        "Yes, provided that b is true in the state as well",
+        "No, because precondition d is missing from the state",
+        "Yes, because most of the preconditions are true in the state",
+        "Only after a previous step adds d to the state"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "All preconditions must hold."
+    },
+    {
+      "id": "b3",
+      "prompt": "State {x,y}. Op: pre {x}, add {z}, delete {x}. Result?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "strips-semantics"
+      ],
+      "skillLabel": "STRIPS operator semantics",
+      "mistakeCategory": "mathematical",
+      "options": [
+        "{y}: the add list is ignored when an atom is deleted",
+        "{y, z}: x is deleted, y is untouched, and z is added",
+        "{z}: only the added atom remains afterwards",
+        "{x, y, z}: deleting x has no effect once z is added"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Remove x, add z."
+    },
+    {
+      "id": "b4",
+      "prompt": "3 locations, 3 objects, capacity one per location, all on the table. How many ways to place the objects (different locations)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "state-counting"
+      ],
+      "skillLabel": "Count symbolic states",
+      "mistakeCategory": "mathematical",
+      "answer": "6",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "3 * 2 * 1 = 6."
+    },
+    {
+      "id": "b5",
+      "prompt": "4 locations, 2 objects on the table at different locations, robot at any of the 4 places, hand empty. Number of states?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "state-counting"
+      ],
+      "skillLabel": "Count symbolic states",
+      "mistakeCategory": "mathematical",
+      "answer": "48",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "4*3*4=48."
+    },
+    {
+      "id": "b6",
+      "prompt": "4 locations, 2 objects, robot holds one (2 choices), the other at one of the 4 locations, robot at one of 4 places. Number of states?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "state-counting"
+      ],
+      "skillLabel": "Count symbolic states",
+      "mistakeCategory": "mathematical",
+      "answer": "32",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "2*4*4=32."
+    },
+    {
+      "id": "b7",
+      "prompt": "A relaxed reachable set contains the goal. The conclusion:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "relaxed-reachability"
+      ],
+      "skillLabel": "Delete-relaxed reachability",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The goal is certainly reachable, so a plan must exist",
+        "The goal is certainly unreachable in the real problem",
+        "The goal might be reachable; run a full search to find out",
+        "The plan has length zero, since the goal is already true"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "The relaxation is optimistic; it cannot prove feasibility."
+    },
+    {
+      "id": "b8",
+      "prompt": "Heuristic h = number of unsatisfied goal facts. State holds cup at C with free(C); goal {at(cup,C), handempty}. h = ? (true remaining cost is 1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "relaxed-reachability"
+      ],
+      "skillLabel": "Delete-relaxed reachability",
+      "mistakeCategory": "mathematical",
+      "answer": "2",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Both facts are false, so h=2 > 1: inadmissible."
+    },
+    {
+      "id": "b9",
+      "prompt": "Which model feature prevents two objects from being placed on the same location?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "strips-semantics"
+      ],
+      "skillLabel": "STRIPS operator semantics",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The move operator, because it moves only one object each time",
+        "The goal, which forbids having two objects at one place",
+        "The initial state only, since it starts with distinct places",
+        "A free(l) precondition that place deletes when it is applied"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/E05#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Capacity is expressed as a consumable fact."
+    },
+    {
+      "id": "b10",
+      "prompt": "A plan is returned. Which check is the most direct validation?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "plan-validation"
+      ],
+      "skillLabel": "Validate a symbolic plan",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Run it twice and see that the result comes out the same both times",
+        "Check its length against the shortest plan found by any earlier search",
+        "Execute it operator by operator, checking preconditions and the goal",
+        "Check that it uses all of the objects that appear in the problem"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Symbolic simulation of the plan checks every step."
+    },
+    {
+      "id": "b11",
+      "prompt": "Explain why the delete relaxation is sound for proving impossibility but cannot prove possibility.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "relaxed-reachability"
+      ],
+      "skillLabel": "Delete-relaxed reachability",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q5",
+        "q6"
+      ],
+      "rubric": [
+        "Relaxed reachable facts contain every real reachable fact (induction).",
+        "So a fact outside the set is unreachable.",
+        "A fact inside may still be blocked by deletes, e.g. a single gripper."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Describe how you would check a symbolic pick-and-place model against reality before using it on a robot.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "plan-validation"
+      ],
+      "skillLabel": "Validate a symbolic plan",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "equivalentTo": [
+        "q7",
+        "q8"
+      ],
+      "rubric": [
+        "Execute plans in a simulator and compare the symbolic and physical outcomes.",
+        "Test each operator's precondition and effect on its own with the real skill (E04).",
+        "List constraints the model omits (geometry, collisions) and add tests for them."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "id": "M12-targeted",
+  "topicId": "M12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "m12-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "homogeneous-coordinates"
+      ],
+      "skillLabel": "Points versus directions",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "In homogeneous coordinates which statement is correct?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A direction has last coordinate 1 because it is a unit vector",
+        "A point has last coordinate 1 and a direction has last coordinate 0",
+        "The last coordinate is always the distance from the origin",
+        "Both points and directions have last coordinate 1"
+      ],
+      "answer": "1",
+      "explanation": "The last coordinate switches the translation column on (points) or off (directions)."
+    },
+    {
+      "id": "m12-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "inverse-transform"
+      ],
+      "skillLabel": "Inverse of a rotation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "For a proper rotation matrix R, which is true?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "R⁻¹ = R",
+        "R⁻¹ = −R",
+        "R⁻¹ = R / det R²",
+        "R⁻¹ = Rᵀ"
+      ],
+      "answer": "3",
+      "explanation": "Orthonormal columns give RᵀR = I."
+    },
+    {
+      "id": "m12-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "composition-order"
+      ],
+      "skillLabel": "Chain order",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "With frames world W, robot R and lidar L, a lidar point p_L is expressed in the world frame by…",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "p_W = T_RL T_WR p_L",
+        "p_W = T_LR T_RW p_L",
+        "p_W = T_WR T_RL p_L",
+        "p_W = T_WR + T_RL + p_L"
+      ],
+      "answer": "2",
+      "explanation": "Each transform maps from the right-hand frame to the left-hand frame; the rightmost acts first."
+    },
+    {
+      "id": "m12-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "frame-transform"
+      ],
+      "skillLabel": "Velocity transform",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "How should a velocity measured in the robot frame be rotated into the world frame?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Add the position only",
+        "Multiply by R and add the position",
+        "Multiply by R only; do not add the robot's position",
+        "Multiply by Rᵀ and subtract the position"
+      ],
+      "answer": "2",
+      "explanation": "A velocity is a direction; translation does not affect it."
+    },
+    {
+      "id": "m12-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-transform"
+      ],
+      "skillLabel": "Rotate and translate x",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "Rotate (3, 1) by +90° and then translate by (−1, 2). What is the x coordinate of the result?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2",
+      "tolerance": 0.001,
+      "explanation": "R(3,1) = (−1, 3); adding (−1, 2) gives (−2, 5)."
+    },
+    {
+      "id": "m12-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-transform"
+      ],
+      "skillLabel": "Rotate and translate y",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "For the same transformation of (3, 1), what is the y coordinate?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.001,
+      "explanation": "y = 3 + 2 = 5."
+    },
+    {
+      "id": "m12-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inverse-transform"
+      ],
+      "skillLabel": "Recover a B coordinate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "Frame B has R = R(90°) and t = (1, 2) in A. A point has A-coordinates (1, 4). What is its x coordinate in B?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.001,
+      "explanation": "Rᵀ(pA − t) = Rᵀ(0, 2) = (2, 0), so x = 2."
+    },
+    {
+      "id": "m12-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "composition-order"
+      ],
+      "skillLabel": "Angle composition",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "A planar rotation by 30° followed by one by 60°. What is the total rotation angle in degrees?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "90",
+      "tolerance": 0.001,
+      "explanation": "Planar rotation angles add."
+    },
+    {
+      "id": "m12-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-transform"
+      ],
+      "skillLabel": "Pointing error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "A 2° heading error and a target 3 m away. What is the lateral position error in metres (3 sin 2°)? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.104698",
+      "tolerance": 0.001,
+      "explanation": "3 sin 2° = 0.105 m."
+    },
+    {
+      "id": "m12-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "frame-transform"
+      ],
+      "skillLabel": "Calibration quantities",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "A camera reports a point 2 m along its x axis. State which calibration quantities are needed to express the point in a robot base frame and how you would validate them.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names the extrinsic rotation and translation from camera to base.",
+        "Mentions kinematics/joint angles if the camera is on a moving arm and time synchronisation.",
+        "Validates with a known target and a round-trip or reprojection check."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m12-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "composition-order"
+      ],
+      "skillLabel": "Test a transform class",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#theory-and-derivation"
+        }
+      ],
+      "prompt": "List tests for a 2D rigid transform class covering inverse, composition, points versus directions and angle wrap.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "T·T⁻¹ = I and associativity on random transforms.",
+        "A direction ignores translation; a point does not.",
+        "Order-dependence example and angles near ±π."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m12-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "homogeneous-coordinates"
+      ],
+      "skillLabel": "Why homogeneous",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M12#alternatives-and-trade-offs"
+        }
+      ],
+      "prompt": "Explain what homogeneous coordinates buy you compared with storing a rotation matrix and a translation vector separately, and one cost.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Single matrix multiplication composes rigid transforms.",
+        "Handles chains and inverses uniformly.",
+        "Cost: larger matrices and the need to keep the last row [0 0 1] and the rotation orthonormal."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

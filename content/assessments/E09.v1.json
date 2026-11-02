@@ -1,0 +1,180 @@
+{
+  "id": "E09-diagnostic",
+  "topicId": "E09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why can't you score slot masks by comparing slot i with ground-truth object i?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "permutation-matching"
+      ],
+      "skillLabel": "Permutation-invariant evaluation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "V13"
+      ],
+      "options": [
+        "Slots are an unordered set, so the pairing must be found by an assignment (e.g. Hungarian) before scoring.",
+        "Slots have a different dimensionality from objects, so their masks cannot be put in a common space.",
+        "Slot i always captures the background, so comparing it with object i would double count it.",
+        "Masks and slots live in different coordinate frames, so they cannot be compared pixel by pixel."
+      ],
+      "answer": "0",
+      "explanation": "Slot order is arbitrary; evaluation must be permutation invariant."
+    },
+    {
+      "id": "q2",
+      "prompt": "Slot attention with identity projections, d=2, slots s1=(1,0), s2=(0,1), input x=(2,0). What attention weight does x give slot 1 after the softmax over slots? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "slot-attention"
+      ],
+      "skillLabel": "Slot attention computation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#worked-example"
+        }
+      ],
+      "answer": "0.8044296825069569",
+      "tolerance": 0.002,
+      "explanation": "logits (1.414, 0): e^1.414/(e^1.414+1)=0.804."
+    },
+    {
+      "id": "q3",
+      "prompt": "Two slots, inputs get slot-1 attention (0.9, 0.5, 0.1). After normalising over inputs, what weight does the first input have in slot 1's update? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "slot-attention"
+      ],
+      "skillLabel": "Slot attention computation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#worked-example"
+        }
+      ],
+      "answer": "0.6",
+      "tolerance": 0.002,
+      "explanation": "0.9/(0.9+0.5+0.1)=0.6."
+    },
+    {
+      "id": "q4",
+      "prompt": "In slot attention, which normalisation makes slots compete for input features?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "slot-attention"
+      ],
+      "skillLabel": "Slot attention computation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Dropout on the attention.",
+        "A softmax over the input axis for each slot.",
+        "A softmax over the slot axis for each input feature.",
+        "Layer normalisation of the slots."
+      ],
+      "answer": "2",
+      "explanation": "Each input divides its attention among slots, so a slot gains only at the expense of others."
+    },
+    {
+      "id": "q5",
+      "prompt": "A track predicts a detection with variance 0.04 per axis. A detection is 0.3 m off in x and 0.3 m in y. What is the squared Mahalanobis distance (isotropic)? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "data-association-gating"
+      ],
+      "skillLabel": "Gating and data association",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "V14"
+      ],
+      "answer": "4.5",
+      "tolerance": 0.05,
+      "explanation": "(0.09+0.09)/0.04=4.5."
+    },
+    {
+      "id": "q6",
+      "prompt": "A constant-velocity track was last seen at x=1.0 m with velocity 0.5 m/frame. It is occluded for 3 frames. What is its predicted x on the 4th frame after the last sighting (m, 1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "identity-tracking"
+      ],
+      "skillLabel": "Identity through occlusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#theory-and-derivation"
+        }
+      ],
+      "answer": "3.0",
+      "tolerance": 0.05,
+      "explanation": "1.0+4*0.5=3.0."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design a test of whether an object-centric representation keeps an object's identity when it is occluded. State the setup, metric, baseline and what outcome would reject the claim.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "identity-tracking"
+      ],
+      "skillLabel": "Identity through occlusion",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#verification"
+        }
+      ],
+      "rubric": [
+        "Setup with an object hidden for a controlled number of frames and known ground-truth identity.",
+        "Metric such as identity errors versus occlusion length, compared to a no-memory or position-only baseline.",
+        "A falsifier fixed in advance, e.g. errors not lower than the baseline beyond a given occlusion length."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

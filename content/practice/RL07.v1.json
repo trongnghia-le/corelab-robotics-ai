@@ -1,0 +1,359 @@
+{
+  "id": "RL07-targeted",
+  "topicId": "RL07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "After one update at state s with alpha = 0.2 and delta = 0.5, features are phi(s) = [1, 3] and phi(t) = [1, 1]. By how much does V-hat(t) change? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.4",
+      "tolerance": 0.01,
+      "explanation": "Change = alpha*delta*phi(t).phi(s) = 0.1*(1+3) = 0.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fa-interference"
+      ],
+      "skillLabel": "Interference between states",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "ML04"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "The true values are not in the span of your features. You change the state weighting d from uniform to the on-policy visit distribution. What changes?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Only the TD fixed point moves, never the projection itself",
+        "The value of gamma implied by the logged data",
+        "Nothing, because the projection does not depend on the weighting d",
+        "The best-fit weights, because the error at rarely visited states counts less"
+      ],
+      "answer": "3",
+      "explanation": "The minimiser of the d-weighted error depends on d unless V lies in the span; changing d moves the compromise.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fa-projection"
+      ],
+      "skillLabel": "Project onto a feature space",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Two-state divergence example: phi = 1 and 2, updates only at s1, gamma = 0.8, alpha = 0.25. By what factor does w grow per update? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.15",
+      "tolerance": 0.001,
+      "explanation": "1 + alpha*(2*gamma - 1) = 1 + 0.25*0.6 = 1.15.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fa-stability"
+      ],
+      "skillLabel": "Know when bootstrapping diverges",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "ML04"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A TD fixed point has value error 0.0030 and the least-squares projection of the same value function has error 0.0034, both in the same weighted norm. What do you conclude?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The weighting differs between the two, which is expected and harmless",
+        "The result is plausible, because TD has the lower error by design",
+        "One of the two computations is wrong, because the projection is the minimiser",
+        "The features must be tabular"
+      ],
+      "answer": "2",
+      "explanation": "The projection minimises the weighted error over the span, so nothing in the span, including the TD point, can beat it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fa-projection",
+        "fa-semi-gradient-td"
+      ],
+      "skillLabel": "Compare TD point and projection",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Semi-gradient TD update: w = (0, 0), phi(s) = [1, 2], r = 1, terminal transition, alpha = 0.1. What is the first weight after the update? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1",
+      "tolerance": 0.001,
+      "explanation": "delta = r - 0 = 1, so w0 += 0.1*1*1 = 0.1 (and w1 += 0.2).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fa-semi-gradient-td"
+      ],
+      "skillLabel": "Compute the TD error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "ML04"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Which change removes the 'bootstrapping' vertex of the deadly triad?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Add a constant bias feature to the features",
+        "Use a smaller learning rate for the updates",
+        "Average the results over many more seeds",
+        "Use full Monte Carlo returns as the targets"
+      ],
+      "answer": "3",
+      "explanation": "Monte Carlo targets do not use the current estimate of the next state, so they are not bootstrapped.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fa-stability"
+      ],
+      "skillLabel": "Know when bootstrapping diverges",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL07#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "ML04"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Linear features [1, i] and w = (-0.05, 0.16). For which smallest integer state i is the estimate at least 0.5? Give i.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "-0.05+0.16i >= 0.5 gives i >= 3.44, so i = 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fa-linear-estimate"
+      ],
+      "skillLabel": "Evaluate a linear estimate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "ML04"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A colleague reports that adding a bias feature made the value error drop from 0.02 to 0.01 but the greedy policy got worse. Give two explanations consistent with the theory.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Value error is weighted by d and may be small where actions do not matter",
+        "Small errors at decision-critical states can flip the greedy action",
+        "Names a check, such as comparing greedy actions or returns"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fa-projection"
+      ],
+      "skillLabel": "Relate value error to policy quality",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL07#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b9",
+      "prompt": "Write a short function (or pseudocode) for one semi-gradient TD(0) update with linear features that handles terminal transitions, and say which line a common bug breaks.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Computes delta = r + gamma*w.phi(s') - w.phi(s), with the bootstrap term dropped when done",
+        "Updates w += alpha*delta*phi(s) without differentiating the target",
+        "Names a bug such as bootstrapping at terminals or mutating the weights in place"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "fa-semi-gradient-td"
+      ],
+      "skillLabel": "Implement semi-gradient TD",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL07#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "You have 10 states and 3 features. The least-squares fit has a large error at a state the policy visits only 1% of the time. Is this evidence of a bug?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Not by itself: the d-weighted objective barely penalises it",
+        "No: weighted error is only defined for terminal states",
+        "Yes: tabular features should have been used with TD",
+        "Yes: the projection must be exact at every state"
+      ],
+      "answer": "0",
+      "explanation": "With fewer parameters than states the fit trades off errors in proportion to d; a rare state can be poorly fit by design.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fa-projection",
+        "fa-linear-estimate"
+      ],
+      "skillLabel": "Interpret a weighted fit",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "With gamma = 0.95 the TD fixed-point error bound multiplies the best achievable error by 1/(1-gamma). What factor is that?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20",
+      "tolerance": 0.01,
+      "explanation": "1/(1-0.95) = 20.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fa-semi-gradient-td"
+      ],
+      "skillLabel": "Use the TD error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "ML04"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Design a check that could reject the claim 'the linear estimate is as good as the table' on a small chain.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes exact values and the weighted error of both estimators under the same d",
+        "States a numerical threshold or boundary case (tabular features must give zero error)",
+        "Examines states with rare visits or per-state error, not only the mean"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "fa-linear-estimate",
+        "fa-interference"
+      ],
+      "skillLabel": "Design a rejecting check",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

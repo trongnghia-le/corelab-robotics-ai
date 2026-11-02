@@ -1,0 +1,207 @@
+{
+  "id": "V07-diagnostic",
+  "topicId": "V07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Logits [2, 1, 0.1]. Softmax gives probabilities [0.659, 0.242, 0.099]. What is the cross-entropy loss if the true class is index 0? (precision 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "softmax-cross-entropy"
+      ],
+      "skillLabel": "Softmax and cross-entropy",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#worked-example"
+        }
+      ],
+      "answer": "0.417",
+      "tolerance": 0.001,
+      "explanation": "-ln(0.659) = 0.417."
+    },
+    {
+      "id": "q2",
+      "prompt": "Confusion matrix rows (true) healthy/damaged, columns predicted: [[40, 10],[5, 45]]. Recall of 'damaged' as a decimal (precision 0.01).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confusion-matrix-metrics"
+      ],
+      "skillLabel": "Confusion matrix metrics",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#theory-and-derivation"
+        }
+      ],
+      "answer": "0.9",
+      "tolerance": 0.01,
+      "explanation": "45/(5+45) = 0.90."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same matrix. Precision of 'damaged' as a decimal (precision 0.001).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confusion-matrix-metrics"
+      ],
+      "skillLabel": "Confusion matrix metrics",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#theory-and-derivation"
+        }
+      ],
+      "answer": "0.818",
+      "tolerance": 0.001,
+      "explanation": "45/(10+45) = 0.818."
+    },
+    {
+      "id": "q4",
+      "prompt": "On a test set with 97% non-defective items, a defect classifier reaches 98% accuracy. What is the most important next step?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "majority-baseline"
+      ],
+      "skillLabel": "Majority-class baseline",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#failure-modes"
+        }
+      ],
+      "options": [
+        "Compare with the majority baseline (97%) and compute defect recall and precision",
+        "Report 98% as the headline number, since it is higher than random guessing",
+        "Increase the number of epochs until accuracy rises above 99% on the test set",
+        "Convert the model to float16 to check whether the accuracy stays stable"
+      ],
+      "answer": "0",
+      "explanation": "The always-fine classifier already scores 97%."
+    },
+    {
+      "id": "q5",
+      "prompt": "You augment training images for a left-arrow versus right-arrow sign classifier. Which augmentation is NOT label-preserving?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "augmentation-labels"
+      ],
+      "skillLabel": "Label-preserving augmentation",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#failure-modes"
+        }
+      ],
+      "options": [
+        "Horizontal flip",
+        "Mild Gaussian noise",
+        "Small brightness jitter",
+        "Random crop that keeps the whole arrow"
+      ],
+      "answer": "0",
+      "explanation": "A mirrored left arrow is a right arrow."
+    },
+    {
+      "id": "q6",
+      "prompt": "5,000 frames come from 20 video recordings. A random 80/20 frame split gives 99% test accuracy. What is the main problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "split-leakage"
+      ],
+      "skillLabel": "Splits and leakage",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#failure-modes"
+        }
+      ],
+      "options": [
+        "The test set is too large relative to training, so accuracy is overestimated",
+        "The images are too small, so the classifier can only learn lighting differences",
+        "Near-duplicate frames from the same recording land in both train and test (leakage)",
+        "Accuracy cannot be computed on video frames because they are not independent images"
+      ],
+      "answer": "2",
+      "explanation": "Split by recording, day or location instead."
+    },
+    {
+      "id": "q7",
+      "prompt": "A 3-class classifier (box, person, cone) has overall accuracy 0.86 but cone recall 0.5, and cones are rare but dangerous. Which numbers do you report, what baseline do you compare with, and what would you change?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "confusion-matrix-metrics"
+      ],
+      "skillLabel": "Confusion matrix metrics",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#exercises"
+        }
+      ],
+      "rubric": [
+        "Reports per-class recall/precision, balanced accuracy and the confusion matrix, not only accuracy.",
+        "Compares with the majority-class baseline (accuracy and balanced accuracy 1/K).",
+        "Proposes class weights/more rare-class data/threshold tuning and a larger test set for the rare class."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

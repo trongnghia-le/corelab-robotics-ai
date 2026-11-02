@@ -1,0 +1,215 @@
+{
+  "id": "C04-diagnostic",
+  "topicId": "C04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which statement about a linear system x' = Ax + Bu is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It can be unstable and still be controllable, and then state feedback can stabilise it.",
+        "Poles depend on B, so changing the actuator moves the open-loop poles.",
+        "If all poles of A are stable the system is automatically controllable.",
+        "Controllable implies stable, because the input can always drive the state to zero."
+      ],
+      "answer": "0",
+      "explanation": "Open-loop poles are eigenvalues of A only. Controllability says the input reaches every mode, so feedback can move all poles, including unstable ones.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "controllability"
+      ],
+      "skillLabel": "Controllability rank test",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A = [[0, 1], [-6, -5]]. What is the pole closest to zero (a real number)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2",
+      "tolerance": 0.01,
+      "explanation": "lambda^2 + 5 lambda + 6 = (lambda+2)(lambda+3).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "poles-stability"
+      ],
+      "skillLabel": "Poles and stability of a linear model",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A = [[0, 1], [-6, -5]], B = [0, 1]^T. Compute det[B AB].",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-1",
+      "tolerance": 0.01,
+      "explanation": "AB = [1, -5]^T; det [[0,1],[1,-5]] = -1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "controllability"
+      ],
+      "skillLabel": "Controllability rank test",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "For the double integrator x'' = u with state (x, v), which single sensor makes the pair observable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Position x",
+        "Neither; a double integrator is never observable",
+        "Velocity v",
+        "Either one alone, since x and v are linked by v = x'"
+      ],
+      "answer": "0",
+      "explanation": "With C=[1 0], O=[[1,0],[0,1]]. With C=[0 1], CA=[0 0] so position is invisible (a constant offset gives the same velocity record).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "observability"
+      ],
+      "skillLabel": "Observability rank test",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A = [[-1, 0], [0, -3]], B = [1, 2]^T. Compute det[B AB].",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-4",
+      "tolerance": 0.01,
+      "explanation": "AB=[-1,-6]^T; det [[1,-1],[2,-6]] = -6+2 = -4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "controllability"
+      ],
+      "skillLabel": "Controllability rank test",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Two identical motors share one command line. The state is the pair of motor speeds. The controllability matrix has rank 1. What does this mean?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The rank test was applied to the wrong matrix and says nothing about the system.",
+        "The motors are unstable, because the same command drives both with equal gain.",
+        "The input can change the average speed but never the difference between the motors.",
+        "The sensors are insufficient to reconstruct both speeds from a single measurement."
+      ],
+      "answer": "2",
+      "explanation": "The difference of two identical modes is annihilated by the common input: an uncontrollable direction.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mode-meaning"
+      ],
+      "skillLabel": "Physical meaning of uncontrollable or unobservable modes",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A mobile robot has states (x, y, heading) and only wheel-encoder odometry (distance travelled) as sensor, no compass. Argue whether a linear observer can be built, and what you would add.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States what observability requires (rank of O) for a model with the encoder output.",
+        "Explains that heading/absolute position are unobservable from relative increments.",
+        "Proposes a sensor or a model change and a rank check to confirm."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "observability",
+        "mode-meaning"
+      ],
+      "skillLabel": "Observability rank test",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C04#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

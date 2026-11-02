@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="Inter, Arial, sans-serif">
+<rect width="760" height="380" fill="#111827" rx="12"/>
+<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Bounded blocking queue</text>
+<rect x="20" y="60" width="110" height="60" rx="8" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="75" y="86" font-size="14" fill="#38bdf8" text-anchor="middle">producer</text>
+<text x="75" y="106" font-size="13" fill="#e5e7eb" text-anchor="middle">push(x)</text>
+<rect x="170" y="50" width="200" height="80" rx="8" fill="#1f2937" stroke="#e5e7eb" stroke-width="2"/>
+<g stroke="#e5e7eb" stroke-width="1.5" fill="none"><rect x="185" y="72" width="36" height="32"/><rect x="221" y="72" width="36" height="32"/><rect x="257" y="72" width="36" height="32"/><rect x="293" y="72" width="36" height="32"/></g>
+<text x="203" y="94" font-size="13" fill="#a3e635" text-anchor="middle">1</text><text x="239" y="94" font-size="13" fill="#a3e635" text-anchor="middle">2</text><text x="275" y="94" font-size="13" fill="#a3e635" text-anchor="middle">3</text>
+<text x="270" y="146" font-size="13" fill="#e5e7eb" text-anchor="middle">capacity 4, mutex m_ guards all</text>
+<rect x="410" y="60" width="110" height="60" rx="8" fill="none" stroke="#f97316" stroke-width="2"/>
+<text x="465" y="86" font-size="14" fill="#f97316" text-anchor="middle">consumer</text>
+<text x="465" y="106" font-size="13" fill="#e5e7eb" text-anchor="middle">pop()</text>
+<path d="M130 90 H168 M370 90 H408" stroke="#e5e7eb" stroke-width="2"/>
+<text x="75" y="156" font-size="13" fill="#38bdf8" text-anchor="middle">waits on not_full</text>
+<text x="465" y="156" font-size="13" fill="#f97316" text-anchor="middle">waits on not_empty</text>
+<text x="560" y="86" font-size="13" fill="#e5e7eb">close(): notify_all,</text>
+<text x="560" y="106" font-size="13" fill="#e5e7eb">pop drains then nullopt</text>
+<line x1="20" y1="185" x2="740" y2="185" stroke="#374151" stroke-width="2"/>
+<text x="20" y="215" font-size="16" font-weight="bold" fill="#e5e7eb">Data race: lost update with ++counter</text>
+<text x="20" y="245" font-size="14" fill="#38bdf8">Thread A</text>
+<text x="20" y="300" font-size="14" fill="#f97316">Thread B</text>
+<g font-size="13" fill="#e5e7eb" text-anchor="middle">
+<rect x="120" y="228" width="120" height="26" rx="4" fill="#1f2937" stroke="#38bdf8"/><text x="180" y="246">load 5</text>
+<rect x="250" y="228" width="120" height="26" rx="4" fill="#1f2937" stroke="#38bdf8"/><text x="310" y="246">add: 6</text>
+<rect x="380" y="228" width="120" height="26" rx="4" fill="#1f2937" stroke="#38bdf8"/><text x="440" y="246">store 6</text>
+<rect x="185" y="283" width="120" height="26" rx="4" fill="#1f2937" stroke="#f97316"/><text x="245" y="301">load 5</text>
+<rect x="315" y="283" width="120" height="26" rx="4" fill="#1f2937" stroke="#f97316"/><text x="375" y="301">add: 6</text>
+<rect x="445" y="283" width="120" height="26" rx="4" fill="#1f2937" stroke="#f97316"/><text x="505" y="301">store 6</text>
+</g>
+<text x="20" y="345" font-size="14" fill="#e5e7eb">Two increments, final value 6 instead of 7. Fixes: std::atomic, mutex, or per-thread counters.</text>
+</svg>

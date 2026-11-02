@@ -1,0 +1,384 @@
+{
+  "id": "C11-targeted",
+  "topicId": "C11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Scalar plant, N = 1, Q = R = P = 1, x0 = 10, |u| <= 1. After applying the first MPC input the state is (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9",
+      "tolerance": 0.01,
+      "explanation": "u = -5 clipped to -1; x1 = 9.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "constraints-feasibility"
+      ],
+      "skillLabel": "Constraints, bounds and feasibility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Same system, how many steps until the bound stops being active (x with |x/2| <= 1) starting from x0 = 10? (count of saturated steps)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.1,
+      "explanation": "x: 10,9,...,2: u=-x/2 exceeds 1 while x > 2: x=10..3 are 8 states; at x=2 u=-1 exactly.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "constraints-feasibility"
+      ],
+      "skillLabel": "Constraints, bounds and feasibility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "H = R I + sum G_k'Q G_k + G_N'P G_N. For a scalar system A = B = 1, Q = P = 2, R = 1, N = 1, give H (2 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "G_1 = [1]; H = 1 + 2 = 3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "qp-formulation"
+      ],
+      "skillLabel": "Condensed quadratic-program formulation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q4"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Cart with |a| <= 1.5 m/s^2, speed 3 m/s. Stopping time (s, 2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "v/a = 2 s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "constraints-feasibility"
+      ],
+      "skillLabel": "Constraints, bounds and feasibility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "With dt = 0.1 s, the minimum horizon N covering that 2 s stopping time (steps)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20",
+      "tolerance": 0.1,
+      "explanation": "2/0.1 = 20.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "horizon-terminal"
+      ],
+      "skillLabel": "Horizon length and terminal cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "LQR gain K = [2.4146, 2.3264], x0 = (0.2, -0.1). LQR/MPC unconstrained first input (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.25028",
+      "tolerance": 0.001,
+      "explanation": "-(0.48292 - 0.23264) = -0.2503.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "horizon-terminal"
+      ],
+      "skillLabel": "Horizon length and terminal cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Why is the condensed QP strictly convex when R > 0?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Because Q is diagonal, which makes every term of the cost convex",
+        "H >= R I is positive definite, so the cost has a unique minimiser",
+        "Because the plant is stable, so the prediction matrices are bounded",
+        "Because the constraints are linear, which makes any quadratic cost convex"
+      ],
+      "answer": "1",
+      "explanation": "Every term in H is positive semi-definite and R I is positive definite.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "qp-formulation"
+      ],
+      "skillLabel": "Condensed quadratic-program formulation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A hard constraint on position is added and the cart starts too fast to stop in time. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The constraint is ignored automatically until the cart can stop",
+        "The solver silently returns the unconstrained LQR solution instead",
+        "The cart stops instantly, since the QP may exceed the input bound",
+        "The QP is infeasible: no input sequence satisfies all constraints"
+      ],
+      "answer": "3",
+      "explanation": "Infeasibility is possible with state constraints; soft constraints and fallbacks are standard fixes.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "constraints-feasibility"
+      ],
+      "skillLabel": "Constraints, bounds and feasibility",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A very short horizon with terminal cost = stage cost causes an MPC cart to hover near but never reach the target. The most direct remedy is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Make R exactly zero so the controller can use unlimited input effort",
+        "Remove the input constraint, keeping the same horizon and terminal cost",
+        "Use the Riccati matrix as terminal cost and/or lengthen the horizon",
+        "Increase the sample rate only, keeping the same horizon and terminal cost"
+      ],
+      "answer": "2",
+      "explanation": "The terminal cost should represent the cost beyond the horizon.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "horizon-terminal"
+      ],
+      "skillLabel": "Horizon length and terminal cost",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Which statement about clipping an LQR output at the actuator limit versus MPC is right?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "They are identical, because clipping the LQR input is the same as solving a constrained QP",
+        "Clipping is always optimal, because the saturated input is the best feasible choice",
+        "MPC cannot use the same quadratic cost as LQR, so the two controllers cannot be compared",
+        "Clipping ignores the future effect of the limit; MPC plans around it and can be safer"
+      ],
+      "answer": "3",
+      "explanation": "MPC optimises with the bound inside the problem.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "receding-horizon"
+      ],
+      "skillLabel": "Receding-horizon operation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "List the steps to verify an MPC implementation without hardware, and the bug each check would catch.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Hand-computed condensed matrices (index/transposes).",
+        "Optimality via perturbations or comparison with LQR when unconstrained (solver/terminal cost).",
+        "Closed-loop constraint satisfaction and convergence tests (receding-horizon logic)."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "qp-formulation",
+        "receding-horizon"
+      ],
+      "skillLabel": "Condensed quadratic-program formulation",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Compare MPC with clipped LQR for a drone attitude loop with 20% saturation margin. State when each is acceptable and name a metric to compare them.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Says clipped LQR is fine when saturation is rare; MPC when constraints are active often.",
+        "Names a metric (peak error, settling time, cost, constraint violation, solve time).",
+        "Mentions compute budget or a fallback."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "constraints-feasibility",
+        "horizon-terminal"
+      ],
+      "skillLabel": "Constraints, bounds and feasibility",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

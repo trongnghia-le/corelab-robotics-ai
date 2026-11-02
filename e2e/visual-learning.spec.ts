@@ -79,21 +79,29 @@ test("blocked player, offline media and external lecture pages retain local lear
 }) => {
   await page.route("https://**/*", (route) => route.abort());
   await page.goto("/lessons/M02");
+  // M02 now lists several curated videos; exercise the first player.
   await page
     .getByRole("button", { name: "Load video player", exact: true })
+    .first()
     .click();
   await expect(
-    page.getByText(
-      "If playback is blocked or unavailable, open the original or continue below.",
-      { exact: true },
-    ),
+    page
+      .getByText(
+        "If playback is blocked or unavailable, open the original or continue below.",
+        { exact: true },
+      )
+      .first(),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Open original video", exact: true }),
+    page
+      .getByRole("link", { name: "Open original video", exact: true })
+      .first(),
   ).toBeVisible();
   await page.reload();
   await expect(
-    page.getByRole("button", { name: "Load video player", exact: true }),
+    page
+      .getByRole("button", { name: "Load video player", exact: true })
+      .first(),
   ).toBeVisible();
   await page.evaluate(() => {
     Object.defineProperty(navigator, "onLine", {
@@ -103,7 +111,9 @@ test("blocked player, offline media and external lecture pages retain local lear
     window.dispatchEvent(new Event("offline"));
   });
   await expect(
-    page.getByRole("button", { name: "Load video player", exact: true }),
+    page
+      .getByRole("button", { name: "Load video player", exact: true })
+      .first(),
   ).toBeDisabled();
   await page
     .getByRole("slider", { name: "Vector x coordinate", exact: true })
@@ -125,12 +135,8 @@ test("blocked player, offline media and external lecture pages retain local lear
     page.getByRole("link", { name: "Open original video", exact: true }),
   ).toHaveAttribute("href", /ocw.mit.edu.*lecture-1-the-geometry/);
   expect(await page.locator("iframe").count()).toBe(0);
+  // Every topic now has curated video; M01 still renders its mathematics.
   await page.goto("/lessons/M01");
-  await expect(
-    page.getByText("No verified video is curated for this topic yet.", {
-      exact: false,
-    }),
-  ).toBeVisible();
   await expect(page.locator(".katex").first()).toBeVisible();
 });
 

@@ -1,0 +1,381 @@
+{
+  "id": "C15-targeted",
+  "topicId": "C15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A gain tuned on the nominal plant is shown stable in simulation. Which additional evidence best supports a robustness claim?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Closed-loop results at the extreme combinations of every uncertain parameter.",
+        "A lower sample time with the same plant, to show the result is converged.",
+        "A plot showing that the nominal step response looks smooth and well damped.",
+        "A longer simulation of the same nominal plant, with a higher number of steps."
+      ],
+      "answer": "0",
+      "explanation": "Robustness is about the declared set, so evidence must come from its extremes.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "uncertainty-set"
+      ],
+      "skillLabel": "Declare an uncertainty set",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: why this matters",
+          "href": "/lessons/C15#why-this-matters"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Continuous time u=-kx, a in [1,4], b in [0.5,2]. Smallest stabilising k. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "4/0.5=8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "corner-worst-case"
+      ],
+      "skillLabel": "Pick the worst-case corner",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "T=0.2 s, a in [0.5,1.5], b in [1.5,2.5]. Upper bound of the gain window. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.2",
+      "tolerance": 0.01,
+      "explanation": "(10+0.5)/2.5=4.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sampled-gain-window"
+      ],
+      "skillLabel": "Compute a sampled robust gain window",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "a in [0.5,1.5], b in [1.5,2.5], k=3, continuous time. Worst-case 2% settling time estimate 4/sigma_min, in seconds. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.33",
+      "tolerance": 0.01,
+      "explanation": "sigma_min=4.5-1.5=3; 4/3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "corner-worst-case"
+      ],
+      "skillLabel": "Pick the worst-case corner",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "T=0.1 s, plant corner a=1.5, b=2.5, gain k=9. Multiplier m. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-1.1",
+      "tolerance": 0.001,
+      "explanation": "1+(1.5-22.5)(0.1)=-1.1: unstable.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sampled-gain-window"
+      ],
+      "skillLabel": "Compute a sampled robust gain window",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Plant a=1, b=2 with b uncertain by +-30% (b in [1.4,2.6]), T=0.1 s. Robust window lower bound a/b_min. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.714",
+      "tolerance": 0.001,
+      "explanation": "1/1.4=0.714.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "corner-worst-case"
+      ],
+      "skillLabel": "Pick the worst-case corner",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A colleague computed the gain window as (a_min/b_min, (2/T+a_max)/b_max). What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Each bound uses the wrong extreme of a, so it accepts gains that fail at a corner.",
+        "Nothing is wrong; both bounds are evaluated at the nominal corner of the parameters.",
+        "It should use only b, since a never matters for the stability window.",
+        "The upper bound should not depend on T, since the delay does not limit the gain."
+      ],
+      "answer": "0",
+      "explanation": "Lower bound needs a_max,b_min; upper needs a_min,b_max.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "corner-worst-case"
+      ],
+      "skillLabel": "Pick the worst-case corner",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "In a simulation with a=1 the adaptive controller drives x to 0 but a_hat ends at 2.2. Which is the best interpretation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The simulation has a bug, since a_hat must equal the true a once regulation has succeeded.",
+        "gamma was too small, so the estimate has not yet reached its final value in the simulation.",
+        "a must really be 2.2, because the estimate is what the controller believes about the plant.",
+        "Regulation succeeded; with x near 0 there is no excitation, so a_hat stopped where it was."
+      ],
+      "answer": "3",
+      "explanation": "The Lyapunov argument does not give parameter convergence.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "adaptation-excitation"
+      ],
+      "skillLabel": "Adaptation versus identification",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which situation breaks the 'check only the corners' argument?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The parameters are constant during a run, so only their extreme values matter.",
+        "The closed-loop multiplier is affine in each parameter, so the extremes bound it.",
+        "A matrix closed loop whose eigenvalues move non-monotonically with a payload parameter.",
+        "The scalar loop has monotone dependence on a and b, so the worst case is at a corner."
+      ],
+      "answer": "2",
+      "explanation": "Interior points of a non-monotone dependence can be worse than the corners.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "corner-worst-case"
+      ],
+      "skillLabel": "Pick the worst-case corner",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "In the adaptive law with a=1, b=2, lambda=1, gamma=5, dt=0.1, x0=1, a_hat0=0 perform one Euler step. Give x after step 1. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.0",
+      "tolerance": 0.001,
+      "explanation": "u=-0.5, x=1+0.1(1-1)=1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "adaptation-excitation"
+      ],
+      "skillLabel": "Adaptation versus identification",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/C15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Your adaptive joint controller regulates well on a constant payload task but a_hat is wrong. A later task changes payload mid-run. Predict what happens and propose a test.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Notes that a wrong a_hat starting point means the controller starts from a mismatched model after the change.",
+        "Mentions need for excitation or a reference signal, and possible transient.",
+        "Proposes a simulation sweeping payload steps with a pass criterion."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "adaptation-excitation"
+      ],
+      "skillLabel": "Adaptation versus identification",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/C15#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Implement-in-words: describe how you would write a test that fails if someone swaps a_min and a_max in a robust-window function.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Picks an asymmetric set so that the swap changes the result.",
+        "Uses a hand-computed expected window, such as (1, 8.2).",
+        "Adds a check that an accepted gain is stable at all four corners."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "sampled-gain-window"
+      ],
+      "skillLabel": "Compute a sampled robust gain window",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/C15#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "C10",
+        "C11"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

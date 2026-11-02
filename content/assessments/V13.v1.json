@@ -1,0 +1,186 @@
+{
+  "id": "V13-diagnostic",
+  "topicId": "V13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which statement about a point cloud is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "point-cloud-basics"
+      ],
+      "skillLabel": "Point cloud properties",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: intuition",
+          "href": "/lessons/V13#intuition"
+        }
+      ],
+      "options": [
+        "The order of the points carries the neighbourhood information, as in an image.",
+        "It is always a dense grid of depth values.",
+        "Every cloud has the same density regardless of sensor distance.",
+        "The points are an unordered set, so neighbours must be computed from geometry."
+      ],
+      "answer": "3",
+      "explanation": "A point cloud is an unordered set; shuffling rows changes nothing, so neighbours come from a k-d tree or voxel grid."
+    },
+    {
+      "id": "q2",
+      "prompt": "Points (0.12,0.31),(0.18,0.39),(0.55,0.02),(0.58,0.07) are voxel-downsampled with voxel size 0.2. How many voxels are occupied?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "voxel-downsampling"
+      ],
+      "skillLabel": "Voxel downsampling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V13#worked-example"
+        }
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "Cells (0,1),(0,1),(2,0),(2,0): two cells."
+    },
+    {
+      "id": "q3",
+      "prompt": "Source centroid is (1,0), target centroid (2,1), rotation is 30 degrees. Give the x component of t = c_Q - R c_P to 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kabsch-translation",
+        "kabsch-rotation"
+      ],
+      "skillLabel": "Rigid fit from centroids",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V13#theory-and-derivation"
+        }
+      ],
+      "answer": "1.134",
+      "tolerance": 0.002,
+      "explanation": "R c_P = (cos30, sin30)=(0.866,0.5); t_x = 2-0.866 = 1.134."
+    },
+    {
+      "id": "q4",
+      "prompt": "Why does a least-squares rigid fit with known pairs get dragged by one gross outlier?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "outlier-sensitivity"
+      ],
+      "skillLabel": "Outlier sensitivity",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "PY05"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V13#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Squared residuals give a large residual a large weight, so the minimiser moves toward it.",
+        "Kabsch averages the residuals instead of squaring them, so every point has equal weight.",
+        "Centroids ignore the outlier automatically, but the rotation is then chosen at random.",
+        "Kabsch discards pairs with residual above 1, so an outlier changes which points are kept."
+      ],
+      "answer": "0",
+      "explanation": "Squared error grows quadratically with residual, so the fit compromises toward the outlier. Centroids are means, which are not robust either."
+    },
+    {
+      "id": "q5",
+      "prompt": "ICP converged with a small final RMSE but the pose is 20 degrees off. Most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "icp-local-minimum"
+      ],
+      "skillLabel": "ICP convergence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V13#failure-modes"
+        }
+      ],
+      "options": [
+        "It converged to a local minimum from a poor initial guess or degenerate geometry.",
+        "The cost can only decrease, so a small RMSE implies correct pose.",
+        "Nearest-neighbour search is exact, so ICP is globally optimal.",
+        "Point clouds cannot be rotated."
+      ],
+      "answer": "0",
+      "explanation": "ICP is a local method; a good-looking residual does not prove global correctness."
+    },
+    {
+      "id": "q6",
+      "prompt": "Ten pairs agree under translation (1,0) except one target displaced a further 5 in x. The estimate is the mean offset. What x translation is estimated?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "outlier-sensitivity"
+      ],
+      "skillLabel": "Outlier sensitivity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: exercise answers",
+          "href": "/lessons/V13#exercise-answers"
+        }
+      ],
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "(9*1+6)/10 = 1.5."
+    },
+    {
+      "id": "q7",
+      "prompt": "You must register a lidar scan of a long straight corridor to the previous one. Describe what could go wrong and how you would detect and mitigate it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "degenerate-geometry"
+      ],
+      "skillLabel": "Degenerate geometry in registration",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V13#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Names the degeneracy: no constraint along the corridor axis, so ICP slides.",
+        "Gives a detection method, for example the eigenvalues of the constraint matrix or comparison against odometry.",
+        "Gives a mitigation: other sensors or priors, structure with axial features, or rejecting the update."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "id": "ML10-diagnostic",
+  "topicId": "ML10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "InfoNCE with N=2: z1=z1'=(1,0), z2=z2'=(0,1), tau=1. What is the loss? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.313262",
+      "tolerance": 0.001,
+      "explanation": "Anchor 1: -log(e/(e+1))=log(1+e^-1)=0.3133; anchor 2 is identical.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "infonce-loss"
+      ],
+      "skillLabel": "Computing the InfoNCE loss",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "ML08"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "If an encoder collapses and maps every input to the same vector, what is the InfoNCE loss for a batch of N=64 (any tau)? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.158883",
+      "tolerance": 0.001,
+      "explanation": "All logits equal, so each softmax is 1/64 and the loss is ln 64=4.159.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "infonce-loss",
+        "collapse"
+      ],
+      "skillLabel": "Collapse and negatives",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Why do contrastive methods with an InfoNCE-type loss need negatives (or another collapse-prevention mechanism)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Without them, mapping all inputs to one point makes the two views trivially agree",
+        "They reduce the batch size that is needed, so that each training step is cheaper",
+        "Negatives make the gradients larger, which in turn speeds up the optimisation",
+        "Negatives provide the class labels that the contrastive loss needs in order to learn"
+      ],
+      "answer": "0",
+      "explanation": "Agreement alone is minimized by a constant encoder; negatives make that solution cost log N.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "collapse"
+      ],
+      "skillLabel": "Collapse and negatives",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "BERT-style masking selects 15% of a 200-token sequence. How many tokens are selected for prediction? (integer, tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "30.0",
+      "tolerance": 0.01,
+      "explanation": "0.15·200=30.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "masked-prediction"
+      ],
+      "skillLabel": "Masked prediction setup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "In masked prediction, on which positions is the loss usually computed?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Only the unmasked positions",
+        "Only the masked positions",
+        "All positions equally",
+        "Only the first position"
+      ],
+      "answer": "1",
+      "explanation": "Computing the loss on visible tokens rewards copying; the task is to infer hidden content.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "masked-prediction"
+      ],
+      "skillLabel": "Masked prediction setup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "You train a contrastive model on signals whose downstream label is the signal's dominant frequency. Which augmentation is dangerous?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Flipping the sign of the signal, so that it is inverted in amplitude",
+        "Adding small Gaussian noise with a low amplitude to each sample",
+        "Circular time shift of the signal by a random number of samples",
+        "Time-stretching by a factor of 2"
+      ],
+      "answer": "3",
+      "explanation": "Stretching changes the frequency, which is the label itself; the others keep it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "augmentation-semantics"
+      ],
+      "skillLabel": "Choosing semantics-preserving augmentations",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You will pretrain with contrastive learning on a robot's camera frames to later recognise object categories. Describe how you would choose and validate the augmentations, and what failure you would look for.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Lists augmentations tied to nuisance factors (crop, lighting, blur) and excludes ones that change the label (e.g. colour jitter if colour identifies the class, flips if handedness matters).",
+        "Validates with a probe set of known labels (preserved fraction) and a downstream linear probe versus raw baseline over several seeds.",
+        "Looks for shortcuts, false negatives from near-duplicate frames, and collapse (loss stuck at log N)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "augmentation-semantics"
+      ],
+      "skillLabel": "Choosing semantics-preserving augmentations",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

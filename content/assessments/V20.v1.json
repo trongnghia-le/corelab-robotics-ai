@@ -1,0 +1,179 @@
+{
+  "id": "V20-diagnostic",
+  "topicId": "V20",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A camera reads 4.0 m with variance 0.25 and a lidar reads 3.6 m with variance 0.04. What is the inverse-variance fused depth (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inverse-variance-fusion"
+      ],
+      "skillLabel": "Inverse-variance fusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V20#worked-example"
+        }
+      ],
+      "answer": "3.6552",
+      "tolerance": 0.001,
+      "explanation": "(4*4.0+25*3.6)/29 = 3.6552."
+    },
+    {
+      "id": "q2",
+      "prompt": "What is the variance of that fused estimate (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inverse-variance-fusion"
+      ],
+      "skillLabel": "Inverse-variance fusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V20#worked-example"
+        }
+      ],
+      "answer": "0.0345",
+      "tolerance": 0.0005,
+      "explanation": "1/(4+25) = 0.0345."
+    },
+    {
+      "id": "q3",
+      "prompt": "Two sensors disagree with d^2 = 13.8 against the 3.84 threshold. What is the correct reading of this?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "consistency-gating"
+      ],
+      "skillLabel": "Consistency gating",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V20#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Both sensors are certainly fine, since the disagreement is within normal noise.",
+        "The lidar is the faulty sensor, since it disagrees more with the camera.",
+        "The fused variance should be halved, because two sensors agree on average.",
+        "At least one sensor is biased, blinded or has understated variance; the test cannot say which."
+      ],
+      "answer": "0",
+      "explanation": "d^2 > 3.84 is rare (5%) for consistent noise; the test flags inconsistency, not the culprit."
+    },
+    {
+      "id": "q4",
+      "prompt": "A model says it is 95% confident on average but is right 80% of the time. It is",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "calibration"
+      ],
+      "skillLabel": "Calibration and ECE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V20#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "underconfident",
+        "overconfident",
+        "perfectly calibrated",
+        "a regression model"
+      ],
+      "answer": "1",
+      "explanation": "Confidence exceeds accuracy by 0.15."
+    },
+    {
+      "id": "q5",
+      "prompt": "Five predictions: confidences 0.9, 0.9, 0.8, 0.6, 0.6 and outcomes 1, 1, 0, 1, 0. Compute ECE with two bins split at 0.75 (2 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "calibration"
+      ],
+      "skillLabel": "Calibration and ECE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V20#worked-example"
+        }
+      ],
+      "answer": "0.16",
+      "tolerance": 0.01,
+      "explanation": "High bin gap 0.2 x 3/5 = 0.12; low bin gap 0.1 x 2/5 = 0.04; total 0.16."
+    },
+    {
+      "id": "q6",
+      "prompt": "An evaluation reports mean accuracy over clean, occlusion, noise and fog of 0.77. Why is this a weak summary for a safety-relevant robot?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "robustness-suite"
+      ],
+      "skillLabel": "Robustness evaluation suites",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V20#verification"
+        }
+      ],
+      "options": [
+        "Fog is never relevant to the safety of a robot in operation.",
+        "The mean can hide a single condition in which the system fails badly.",
+        "The mean is not defined for a set of exactly four numbers.",
+        "Accuracy values cannot be averaged across different conditions."
+      ],
+      "answer": "1",
+      "explanation": "Report the worst case and per-condition numbers."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design an evaluation suite for a perception module that fuses a camera and a lidar. Name the shifts and severities, the metrics, the baseline, a boundary case and a rejection rule.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "robustness-suite"
+      ],
+      "skillLabel": "Robustness evaluation suites",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V20#verification"
+        }
+      ],
+      "rubric": [
+        "Names concrete shifts with severities (occlusion, noise, fog, sensor dropout).",
+        "Reports per-condition and worst-case metrics against a clean baseline and a single-sensor baseline.",
+        "Includes the boundary case of all sensors failing and a rejection rule."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

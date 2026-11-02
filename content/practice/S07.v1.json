@@ -1,0 +1,386 @@
+{
+  "id": "S07-targeted",
+  "topicId": "S07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Timeout 0.3 s, speed 0.8 m/s, reaction 0.05 s, deceleration 1.6 m/s^2. Total distance from the last valid command to standstill, m. Precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.48",
+      "tolerance": 0.005,
+      "explanation": "0.24+0.04+0.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stopping-distance"
+      ],
+      "skillLabel": "Stopping distance and speed limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Clearance 2.0 m, deceleration 4 m/s^2, reaction 0.05 s. Maximum speed in m/s, precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.805",
+      "tolerance": 0.005,
+      "explanation": "-0.2+sqrt(0.04+16).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stopping-distance"
+      ],
+      "skillLabel": "Stopping distance and speed limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "v=2 m/s, a=5 m/s^2, reaction 0.2 s. Stopping distance in m, precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.005,
+      "explanation": "0.4+0.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stopping-distance"
+      ],
+      "skillLabel": "Stopping distance and speed limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Command timeout 0.25 s at 1.5 m/s: distance travelled before the stop is even triggered (m).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.375",
+      "tolerance": 0.001,
+      "explanation": "1.5*0.25.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "timeout-monitor"
+      ],
+      "skillLabel": "Command timeout monitoring",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Severity 4 and likelihood 5 on the lesson's scale (score = S x L). Give the score.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20",
+      "tolerance": 0.01,
+      "explanation": "4*5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "hazard-risk"
+      ],
+      "skillLabel": "Hazard analysis and risk",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A command arrives exactly 250 ms after the previous one and the timeout is 250 ms with a 'greater than' test. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "No fault: the age equals the limit and the test is strict.",
+        "The robot restarts, because the watchdog fires at the limit.",
+        "A timeout fault, because the age has reached the limit.",
+        "The command is clipped, because it arrives at the limit."
+      ],
+      "answer": "0",
+      "explanation": "Boundary semantics must be specified and tested.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "timeout-monitor"
+      ],
+      "skillLabel": "Command timeout monitoring",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Which response to an out-of-range sensor value follows fail-safe design?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Reject as a fault and move to the safe state.",
+        "Switch to the last good value indefinitely.",
+        "Clip to range and keep moving.",
+        "Ignore until three values in a row are invalid."
+      ],
+      "answer": "0",
+      "explanation": "A range violation is evidence of a failure.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sensor-validity"
+      ],
+      "skillLabel": "Sensor validity checks",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Why can a software timeout alone not be the only protection for a robot that can injure a person?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Software can crash, hang or be starved, and the output path can fail; add hardware safety.",
+        "Python is too slow to check a timeout reliably, so a faster language is needed.",
+        "Software cannot read the clocks that a timeout is measured with, so it is unsafe.",
+        "Timeouts are not allowed on robots that can come into contact with a person."
+      ],
+      "answer": "0",
+      "explanation": "Common-cause and monitor failures.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "safe-state-latching"
+      ],
+      "skillLabel": "Safe states and latching",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which design change reduces a hazard rather than controlling it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Adding a warning label to the robot, so that people keep away.",
+        "Adding a timeout in the software, so that stale commands are dropped.",
+        "Using a lighter, lower-torque motor so contact cannot cause injury.",
+        "Adding a software speed clip, so that commands stay below a limit."
+      ],
+      "answer": "2",
+      "explanation": "Remove > protect > warn.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hazard-risk"
+      ],
+      "skillLabel": "Hazard analysis and risk",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Reset after a fault restores the old stored command. What is the risk?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "None: the old command is a safe value to go back to after a fault.",
+        "The sensors are recalibrated, which hides the cause of the original fault.",
+        "The timeout becomes longer, since the old command resets the clock.",
+        "The robot jumps to the stale command; reset must zero it and require fresh data."
+      ],
+      "answer": "3",
+      "explanation": "Reset must not restart motion by itself.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "safe-state-latching"
+      ],
+      "skillLabel": "Safe states and latching",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Design a simulated test list for command timeout and invalid sensor data with expected outputs and the boundary cases.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Lists nominal, clip, timeout at exactly the limit and one tick later, NaN, out-of-range, stale, latch and reset.",
+        "Gives expected state, speed and reason for each.",
+        "Notes that passing tests validates the model, not the real robot."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "timeout-monitor"
+      ],
+      "skillLabel": "Command timeout monitoring",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "A teammate wants to set the timeout to 2 s to avoid false stops. Argue using distances and propose a better method.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Converts the timeout to travelled distance at the maximum speed and compares with clearance.",
+        "Proposes a shorter timeout tied to the command period or a lower speed limit.",
+        "Mentions reducing false stops by fixing the cause (rate, jitter) not lengthening the timeout."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "stopping-distance"
+      ],
+      "skillLabel": "Stopping distance and speed limits",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S07#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

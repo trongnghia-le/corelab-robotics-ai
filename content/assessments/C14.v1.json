@@ -1,0 +1,196 @@
+{
+  "id": "C14-diagnostic",
+  "topicId": "C14",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In a strict task hierarchy, what does the secondary task command do to the primary task?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It scales the primary gain by the size of the secondary error",
+        "It overrides the primary task whenever the primary error is large enough",
+        "Nothing: it acts only in the primary task's null space, so the primary is unaffected",
+        "It is added with a smaller weight, so the primary is only slightly disturbed"
+      ],
+      "answer": "2",
+      "explanation": "J1 N1 = 0: motions in the null space leave task 1 unchanged.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "task-priority"
+      ],
+      "skillLabel": "Strict priority and null-space projection",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A foot presses with normal force 150 N, friction coefficient 0.6. Maximum tangential force before slipping (N)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "90",
+      "tolerance": 0.5,
+      "explanation": "mu*fn = 0.6*150 = 90.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contact-constraints"
+      ],
+      "skillLabel": "Contact forces, friction and CoP",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Body 30 kg with COM 0.01 m ahead of the ankle; payload 6 kg held with COM 0.5 m ahead. Static CoP position (m, 4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.091667",
+      "tolerance": 0.0005,
+      "explanation": "(0.3+3.0)/36 = 0.0917.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contact-constraints"
+      ],
+      "skillLabel": "Contact forces, friction and CoP",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "For the CoP in q3, the foot extends 0.08 m ahead of the ankle. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The friction cone is violated, so the foot starts to slip forward",
+        "Nothing; the CoP is irrelevant for a static pose, only the COM matters",
+        "The robot is stable because the CoP stays inside the support polygon",
+        "The CoP leaves the foot, so the robot tips unless it moves its COM or steps"
+      ],
+      "answer": "3",
+      "explanation": "0.0917 > 0.08: outside the support region.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "contact-constraints"
+      ],
+      "skillLabel": "Contact forces, friction and CoP",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Two tasks: J1 = [1, 0], J2 = [1, 0], e1 = 0.2, e2 = -0.2. Strict-priority joint step dq1 (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.005,
+      "explanation": "The primary gets dq = (0.2, 0); the secondary has no free direction.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "task-priority"
+      ],
+      "skillLabel": "Strict priority and null-space projection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Shoulder torque limit 12 N m, straight arm weight torque 19.62 cos(elevation). Minimum elevation (rad, 3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.912689",
+      "tolerance": 0.002,
+      "explanation": "acos(12/19.62) = 0.912 rad.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wbc-dynamics"
+      ],
+      "skillLabel": "Whole-body dynamics and actuation limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A mobile manipulator must keep a tray level (primary) while reaching to a shelf (secondary). It sometimes tilts the tray when the reach is far. Explain why this can happen with weighted tasks and how a strict hierarchy changes the behaviour and its failure mode.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Weighted sum shares error, so the tray task is compromised when conflicting.",
+        "Strict priority protects the tray and sacrifices reach.",
+        "Mentions a consequence (reach failure/discontinuity) or a monitoring signal."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "conflicts",
+        "task-priority"
+      ],
+      "skillLabel": "Resolving conflicting tasks",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

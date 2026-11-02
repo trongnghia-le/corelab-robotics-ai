@@ -1,0 +1,183 @@
+{
+  "id": "ML07-diagnostic",
+  "topicId": "ML07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A dataset has 2% positives. A model that predicts negative for every case has which property?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "98% precision and 98% recall",
+        "50% accuracy and 100% recall",
+        "98% accuracy and 100% recall",
+        "98% accuracy and 0 recall"
+      ],
+      "answer": "3",
+      "explanation": "Always-negative gets every negative right (98%) and misses every positive (recall 0). Accuracy alone hides this.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "metric-selection"
+      ],
+      "skillLabel": "Choosing metrics under imbalance",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "TP=45, FP=15, FN=5, TN=935. What is the precision? (decimal, 3 places, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.75",
+      "tolerance": 0.001,
+      "explanation": "45/(45+15)=0.75.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "precision-recall"
+      ],
+      "skillLabel": "Precision, recall and F1",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Same counts (TP=45, FP=15, FN=5, TN=935). What is the F1 score? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.818182",
+      "tolerance": 0.001,
+      "explanation": "Recall=45/50=0.9. F1=2·0.75·0.9/1.65=0.8182.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "precision-recall"
+      ],
+      "skillLabel": "Precision, recall and F1",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A calibrated classifier. A false negative costs 4 and a false positive costs 1. At what probability should you start predicting positive? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.001,
+      "explanation": "Predict positive when p·4>(1−p)·1, i.e. p>1/5=0.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cost-threshold"
+      ],
+      "skillLabel": "Cost-based decision threshold",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "You evaluate 30 configurations on the validation set, choose the best and report its validation score as the expected performance. What is the main problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Nothing is wrong: validation data is by definition unbiased for the chosen model.",
+        "The learning rate should have been larger, so the search must be repeated.",
+        "The best of many noisy scores is optimistically biased; report on untouched test data.",
+        "The score is pessimistic, because the chosen model saw less training data than the others."
+      ],
+      "answer": "2",
+      "explanation": "Selection on the validation set uses it up; the maximum of many noisy estimates overstates true performance.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "held-out-evaluation"
+      ],
+      "skillLabel": "Held-out evaluation and selection bias",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M09"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Probabilities from a model have an ECE of 0.18 on the test set. What does this say?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "On average, stated confidence differs from observed frequency by about 0.18 across bins.",
+        "The model overfits: the training loss is 0.18 lower than the loss on the test set.",
+        "The ranking of the examples is wrong, since ECE measures how well scores order the cases.",
+        "The accuracy is 82%, since ECE equals one minus the accuracy of the model on the test set."
+      ],
+      "answer": "0",
+      "explanation": "ECE is a weighted average gap between confidence and observed frequency; it says nothing directly about accuracy or ranking.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "calibration"
+      ],
+      "skillLabel": "Calibration and ECE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Your detector reports precision 0.9 on a balanced test set. It will run where positives are 1% of the cases. What do you check and report before deployment?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Explains that precision depends on prevalence and recomputes it (Bayes) or re-evaluates on data with deployment prevalence.",
+        "Reports recall/false-alarm rate and the cost of each error, and a trivial baseline.",
+        "Checks calibration or recalibrates scores for the new prior, and names a way the result could be rejected."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "precision-recall",
+        "calibration"
+      ],
+      "skillLabel": "Prevalence and deployment shift",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -23,7 +23,8 @@ describe("curated media sidecars", () => {
           );
       }
     }
-    expect(mediaFor("M01")).toEqual({
+    // Every curriculum topic now has curated video; an unmapped id stays empty.
+    expect(mediaFor("ZZ99")).toEqual({
       videos: [],
       visualizations: [],
       illustrations: [],

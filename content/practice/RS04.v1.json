@@ -1,0 +1,373 @@
+{
+  "id": "RS04-targeted",
+  "topicId": "RS04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Per-run SD 6, mean of 12 seeds reported. Standard error? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-variance-tolerance"
+      ],
+      "skillLabel": "Seed variance and tolerance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "1.7320508075688774",
+      "tolerance": 0.002,
+      "explanation": "6/sqrt(12)=1.732"
+    },
+    {
+      "id": "b2",
+      "prompt": "Per-run SD 2, mean of 10 seeds. 95% tolerance for the difference between two independent re-runs? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-variance-tolerance"
+      ],
+      "skillLabel": "Seed variance and tolerance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "1.753077294359835",
+      "tolerance": 0.02,
+      "explanation": "1.96*sqrt(2)*2/sqrt(10)=1.75"
+    },
+    {
+      "id": "b3",
+      "prompt": "How many seeds per run set are needed so two re-runs agree within 1 point (95%) when sigma=2? Use n >= (1.96*sqrt(2)*sigma/1)^2, rounded up.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-variance-tolerance"
+      ],
+      "skillLabel": "Seed variance and tolerance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "31.0",
+      "tolerance": 0.5,
+      "explanation": "(3.92*1.414)^2=30.7 -> 31"
+    },
+    {
+      "id": "b4",
+      "prompt": "A replication differs from your result by 1.0 point; your 95% tolerance is 2.5. How should you read this?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "seed-variance-tolerance"
+      ],
+      "skillLabel": "Seed variance and tolerance",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "options": [
+        "A failed replication, since the numbers are not identical to the original.",
+        "Proof the replication was wrong, because it differs from the reported number.",
+        "Consistent with the original within seed variability.",
+        "Proof the original was wrong, because the results do not agree exactly."
+      ],
+      "answer": "2",
+      "explanation": "Difference inside the tolerance is expected."
+    },
+    {
+      "id": "b5",
+      "prompt": "Which statement about floating-point addition is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sources-of-nondeterminism"
+      ],
+      "skillLabel": "Sources of non-determinism",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "It is not associative, so the order of a parallel reduction can change low-order digits.",
+        "It is exact for all doubles, so the order of a reduction never changes the sum.",
+        "Its order never matters, since the result is rounded to the same value at the end.",
+        "Only integers have rounding errors, since floating-point values are stored exactly."
+      ],
+      "answer": "0",
+      "explanation": "Rounding makes (a+b)+c differ from a+(b+c)."
+    },
+    {
+      "id": "b6",
+      "prompt": "In double precision, what does sum([1e16, -1e16, 1.0]) evaluate to?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sources-of-nondeterminism"
+      ],
+      "skillLabel": "Sources of non-determinism",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "1.0",
+      "tolerance": 0.0001,
+      "explanation": "1e16-1e16=0, then +1.0 = 1.0."
+    },
+    {
+      "id": "b7",
+      "prompt": "Setting random.seed(0) is not enough to make a PyTorch training run reproducible because:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sources-of-nondeterminism"
+      ],
+      "skillLabel": "Sources of non-determinism",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "Python ignores seeds when it is run on a GPU, so the run changes every time.",
+        "Seeds are only meant for testing, and a training run cannot be made deterministic.",
+        "Other generators (NumPy, framework, workers) and GPU kernels have their own randomness.",
+        "random.seed has no effect on any number generator, so seeds cannot make runs repeat."
+      ],
+      "answer": "2",
+      "explanation": "Each library keeps its own generator state."
+    },
+    {
+      "id": "b8",
+      "prompt": "Which environment specification best supports reproducibility?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "artifact-hashing"
+      ],
+      "skillLabel": "Hashing artifacts",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q7"
+      ],
+      "options": [
+        "Exact versions in a lock file (ideally with hashes), or a container pinned by digest.",
+        "A screenshot of the package list, which shows the versions that were installed.",
+        "'pip install latest', which always gives the newest and therefore best-tested version.",
+        "A note saying 'Python 3', since the interpreter version is the only thing that matters."
+      ],
+      "answer": "0",
+      "explanation": "Floating specifications change under you."
+    },
+    {
+      "id": "b9",
+      "prompt": "A new team builds its own robot, collects new data, and finds the same effect. This is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reproducibility-terms"
+      ],
+      "skillLabel": "Repeatability, reproducibility, replicability",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Data leakage",
+        "Replicability",
+        "Reproducibility",
+        "Repeatability"
+      ],
+      "answer": "1",
+      "explanation": "New data and setup: replication."
+    },
+    {
+      "id": "b10",
+      "prompt": "A manifest lists 4 files. One data file was edited and one script was deleted. How many names does verify_manifest report?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "artifact-hashing"
+      ],
+      "skillLabel": "Hashing artifacts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "2.0",
+      "tolerance": 0.01,
+      "explanation": "Both the modified and the missing file are flagged."
+    },
+    {
+      "id": "b11",
+      "prompt": "A figure was edited by hand in a drawing program after plotting. What is the main reproducibility issue?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "artifact-hashing"
+      ],
+      "skillLabel": "Hashing artifacts",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "The final figure cannot be regenerated from raw data by script.",
+        "The file is too large to be stored together with the code in the repository.",
+        "The colours changed, so the figure no longer matches the one in the paper.",
+        "None; the plot was produced by a script, so the result is still reproducible."
+      ],
+      "answer": "0",
+      "explanation": "Manual steps leave no record."
+    },
+    {
+      "id": "b12",
+      "prompt": "Design a 'clean-room' reproduction test for your experiment: what you run, on what, and what counts as pass or fail.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "artifact-hashing",
+        "seed-variance-tolerance"
+      ],
+      "skillLabel": "Hashing artifacts",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ],
+      "rubric": [
+        "Fresh clone/venv or container, locked environment and verified manifest.",
+        "One command regenerates the figure data; compares outputs to reported numbers.",
+        "Pass/fail defined by hash equality or a stated tolerance with sigma and n."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Explain bitwise versus statistical reproducibility and when each is the right claim.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sources-of-nondeterminism",
+        "seed-variance-tolerance"
+      ],
+      "skillLabel": "Sources of non-determinism",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q6"
+      ],
+      "rubric": [
+        "Bitwise: identical outputs given the same inputs, seeds and environment.",
+        "Statistical: results agree within seed variance, e.g. GPU or parallel reductions.",
+        "Says which to claim for the experiment and documents the tolerance."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

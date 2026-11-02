@@ -1,0 +1,362 @@
+{
+  "id": "RL09-targeted",
+  "topicId": "RL09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Q(s,a0) = 5, Q(s,a1) = 10 and pi(.|s) = (0.4, 0.6). What is the advantage of a0? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-3.0",
+      "tolerance": 0.01,
+      "explanation": "V = 0.4*5 + 0.6*10 = 8, so A(a0) = 5 - 8 = -3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-advantage"
+      ],
+      "skillLabel": "Compute an advantage",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Under pi = (0.25, 0.75), action 0 has advantage +2. What advantage must action 1 have? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.667",
+      "tolerance": 0.002,
+      "explanation": "0.25*2 + 0.75*A1 = 0, so A1 = -0.6667.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-advantage"
+      ],
+      "skillLabel": "Use zero-mean advantage",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A critic has error e(s) = +1 at state s and exact values at every successor state. How does this affect the ranking of actions at s?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It has no effect on the delta of any action at that state, since the successors are exact",
+        "It reverses the ranking of the actions at that state, because the sign of every delta flips",
+        "It makes the TD error zero for every action at that state, because the critic is now consistent",
+        "It shifts every action's delta by the same amount, so the ranking is unchanged but the update is biased"
+      ],
+      "answer": "3",
+      "explanation": "The term -e(s) is common to all actions; only the gamma*E[e(s')] term depends on the action.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ac-critic-bias"
+      ],
+      "skillLabel": "Spot the harmless critic error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q6"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Terminal transition: r = 3, V(s) = 1.5. What is delta? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "No bootstrap at a terminal state: delta = 3 - 1.5 = 1.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-td-error"
+      ],
+      "skillLabel": "Handle terminal transitions",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Rewards (2, 1), gamma = 0.5, V(s0) = 1. What is the lambda = 1 GAE advantage at step 0 (return minus value)? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "G0 = 2 + 0.5*1 = 2.5; A = 2.5 - 1 = 1.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-gae"
+      ],
+      "skillLabel": "Relate GAE(1) to return minus value",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Moving lambda in GAE from 1 toward 0 does what?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Lowers variance and increases bias when the critic is wrong",
+        "Turns the method into off-policy learning of the critic",
+        "Raises variance and removes the bias when the critic is wrong",
+        "Leaves both the bias and the variance unchanged"
+      ],
+      "answer": "0",
+      "explanation": "lambda = 0 is the one-step TD error (critic-dependent, low variance); lambda = 1 is return minus baseline (unbiased, high variance).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ac-gae"
+      ],
+      "skillLabel": "Know the GAE trade-off",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL09#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "pi = (0.25, 0.75), action 1 sampled, alpha = 0.2, delta = -1. By how much does logit 1 change? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.05",
+      "tolerance": 0.001,
+      "explanation": "0.2*(-1)*(1 - 0.75) = -0.05.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-actor-update"
+      ],
+      "skillLabel": "Apply the actor update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Critic value V(s) = 2, beta = 0.1, delta = -0.5. What is V(s) after the critic update? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.95",
+      "tolerance": 0.001,
+      "explanation": "2 + 0.1*(-0.5) = 1.95.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-td-error"
+      ],
+      "skillLabel": "Apply the critic update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Find the flaw: the training step first does V[s] += beta*delta (delta computed from the old V) and then recomputes delta = r + gamma*V[s2] - V[s] for the actor. What goes wrong, and how big is the error?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Identifies that the second delta uses the updated V(s)",
+        "States that the reused delta is (1 - beta) times the true one",
+        "Fix: compute delta once and use it for both updates"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "ac-actor-update",
+        "ac-td-error"
+      ],
+      "skillLabel": "Debug a training step",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL09#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "An episode ends because a 200-step time limit is reached, not because the robot failed or succeeded. How should the last TD target be computed?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Bootstrap from V(s') because the state is not truly terminal",
+        "Skip the update, since the episode ended without a result",
+        "Use r only, as at a terminal state, since the episode ended",
+        "Set V(s') to the maximum value seen in the batch"
+      ],
+      "answer": "0",
+      "explanation": "A time limit is an artifact of the experiment; the future value of the state still exists, so bootstrapping is correct.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ac-td-error"
+      ],
+      "skillLabel": "Treat truncation correctly",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL09#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Return is flat and the critic loss grows over training. Give a likely cause related to the actor-critic coupling and a step-by-step diagnosis that could prove you wrong.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Policy changes too fast for the critic, or non-stationary targets, or step-size mismatch",
+        "Plan: reduce actor step or freeze the actor and check that the critic converges",
+        "A falsifying check: exact values on a small instance, or critic error with the actor frozen"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "ac-critic-bias"
+      ],
+      "skillLabel": "Diagnose a failing critic",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL09#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Critic errors: e(s) = 0.5, E[e(s')|s,a] = 2 for some action a, gamma = 0.9. By how much does the critic shift E[delta|s,a] from the true advantage? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.3",
+      "tolerance": 0.01,
+      "explanation": "Shift = gamma*E[e(s')] - e(s) = 1.8 - 0.5 = 1.3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-critic-bias"
+      ],
+      "skillLabel": "Quantify critic-induced bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Which pair of logs best separates actor problems from critic problems?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Critic error against exact or Monte Carlo values, and the policy's return gap or entropy",
+        "Total training time and the batch size used in each of the update steps of the run",
+        "Only the episode return, averaged over several seeds and plotted against the step count",
+        "The size of the replay buffer and the learning rate value used by the optimiser"
+      ],
+      "answer": "0",
+      "explanation": "Return alone mixes both; a critic-quality metric and an actor-quality metric are needed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ac-critic-bias",
+        "ac-advantage"
+      ],
+      "skillLabel": "Choose diagnostic metrics",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL09#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    }
+  ]
+}

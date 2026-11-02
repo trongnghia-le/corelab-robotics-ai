@@ -1,0 +1,183 @@
+{
+  "id": "E10-diagnostic",
+  "topicId": "E10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A bag-of-words style text encoder is tested on 100 forced-choice pairs 'A left of B' vs 'B left of A' for the same image. What accuracy do you expect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "spatial-grounding"
+      ],
+      "skillLabel": "Grounding spatial relations",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "ML09"
+      ],
+      "options": [
+        "About 100%, because the image alone decides which sentence matches it.",
+        "About 25%, because only one of four word orders can match the image.",
+        "It depends only on the image encoder size, not on how the text is encoded.",
+        "About 50%, because both sentences get the same embedding."
+      ],
+      "answer": "3",
+      "explanation": "Order-insensitive pooling gives identical text vectors, so the model cannot prefer either."
+    },
+    {
+      "id": "q2",
+      "prompt": "Unit vectors u=(0.6,0.8) and v=(0.8,0.6). What is their cosine similarity? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contrastive-alignment"
+      ],
+      "skillLabel": "Contrastive alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "answer": "0.96",
+      "tolerance": 0.005,
+      "explanation": "0.48+0.48=0.96."
+    },
+    {
+      "id": "q3",
+      "prompt": "Two image-caption pairs with sim matrix [[0.8,0.6],[0.6,0.8]] and tau=0.5. What is the image-to-text InfoNCE loss? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contrastive-alignment"
+      ],
+      "skillLabel": "Contrastive alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "answer": "0.5130152523999527",
+      "tolerance": 0.003,
+      "explanation": "Row logits (1.6,1.2): loss=ln(1+e^-0.4)=0.513."
+    },
+    {
+      "id": "q4",
+      "prompt": "Reducing the temperature tau in the contrastive softmax does what?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "contrastive-alignment"
+      ],
+      "skillLabel": "Contrastive alignment",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Changes the number of negatives that appear in each contrastive batch.",
+        "Sharpens the softmax so margins between similarities are amplified.",
+        "Has no effect on the loss, since tau only rescales the final embedding.",
+        "Flattens the softmax toward uniform so margins between similarities shrink."
+      ],
+      "answer": "1",
+      "explanation": "Logits are s/tau; smaller tau amplifies differences."
+    },
+    {
+      "id": "q5",
+      "prompt": "Prompt A is right only on 8 questions and prompt B only on 2 (all others agree). What is the exact two-sided sign-test p-value? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "paired-prompt-comparison"
+      ],
+      "skillLabel": "Paired prompt comparison",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "answer": "0.109375",
+      "tolerance": 0.002,
+      "explanation": "2*(1+10+45)/1024=0.109"
+    },
+    {
+      "id": "q6",
+      "prompt": "Which analysis is appropriate for comparing two prompts evaluated on the same 60 questions?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "paired-prompt-comparison"
+      ],
+      "skillLabel": "Paired prompt comparison",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "A paired test on discordant questions (McNemar / exact sign test).",
+        "Average the two accuracies and report the mean as the common score.",
+        "Compare the two accuracies as if they came from independent samples.",
+        "Pick the prompt with the higher accuracy, since 60 questions are enough."
+      ],
+      "answer": "0",
+      "explanation": "Same questions mean paired data; only discordant pairs carry information."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design an evaluation of whether a vision-language model understands 'left of' for a robot. Specify the data, chance baseline, prompt variations and how you would report uncertainty.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "spatial-grounding",
+        "paired-prompt-comparison"
+      ],
+      "skillLabel": "Grounding spatial relations",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#verification"
+        }
+      ],
+      "rubric": [
+        "Minimal pairs with swapped relations on the same images, with a stated chance level.",
+        "Several paraphrased prompts and a paired comparison.",
+        "Exact or bootstrap intervals and a falsifier fixed beforehand."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

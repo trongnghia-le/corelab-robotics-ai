@@ -1,0 +1,385 @@
+{
+  "id": "C12-targeted",
+  "topicId": "C12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "x ~ N(2, 0.25), y = x^2. Exact variance of y (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.125",
+      "tolerance": 0.001,
+      "explanation": "4 mu^2 var + 2 var^2 = 4 + 0.125 = 4.125.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ekf-linearization"
+      ],
+      "skillLabel": "EKF linearisation and its bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Same input: the EKF variance (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.001,
+      "explanation": "(2 mu)^2 var = 4.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ekf-linearization"
+      ],
+      "skillLabel": "EKF linearisation and its bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Unscented transform (kappa = 2, n = 1) of g(x) = x^2 with N(0, 1): the sigma points are 0, +-sqrt(3). UT mean of y (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.001,
+      "explanation": "2/3*0 + 1/6*(3+3) = 1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sigma-points"
+      ],
+      "skillLabel": "Sigma points and the unscented transform",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q4",
+        "q5"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "exp(x), x ~ N(0, 1): exact mean e^{0.5}. By how much (absolute, 2 decimals) does the EKF value 1 miss it?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.648721",
+      "tolerance": 0.01,
+      "explanation": "1.6487 - 1 = 0.65.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ekf-linearization"
+      ],
+      "skillLabel": "EKF linearisation and its bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Range-sensor EKF update: prior x = 4 (var 1), z = 5.2, h(4) = 5, H = 0.8, R = 0.04. Kalman gain (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.176471",
+      "tolerance": 0.001,
+      "explanation": "K = 0.8/0.68 = 1.176.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nonlinear-update"
+      ],
+      "skillLabel": "Nonlinear measurement updates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Same update: posterior mean (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.235294",
+      "tolerance": 0.001,
+      "explanation": "4 + 1.1765*0.2 = 4.235.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nonlinear-update"
+      ],
+      "skillLabel": "Nonlinear measurement updates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A bearing measurement is near +pi while the predicted bearing is near -pi. What must the filter do before using the innovation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Switch to degrees",
+        "Nothing; the sign is irrelevant",
+        "Wrap the difference to (-pi, pi]",
+        "Multiply by the Jacobian twice"
+      ],
+      "answer": "2",
+      "explanation": "Otherwise the innovation is about 2*pi and corrupts the state.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nonlinear-update"
+      ],
+      "skillLabel": "Nonlinear measurement updates",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "For which g is the three-point unscented transform (kappa = 2, Gaussian input) exact in mean and variance?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Any quadratic",
+        "Only linear maps",
+        "Only maps with g'' = 0",
+        "Any smooth map"
+      ],
+      "answer": "0",
+      "explanation": "The sigma points match the first four moments of the Gaussian, enough for quadratics.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sigma-points"
+      ],
+      "skillLabel": "Sigma points and the unscented transform",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q4",
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which statement about EKF and UKF consistency is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The EKF is exact whenever the noise is Gaussian, so its covariance can be trusted",
+        "Neither filter needs any tuning, as the covariance adapts to the true errors",
+        "Both are approximations and can become overconfident; check NIS in operation",
+        "The UKF is always consistent, so no check of its innovations is ever needed"
+      ],
+      "answer": "2",
+      "explanation": "Approximation errors can make P too small.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gaussian-limits"
+      ],
+      "skillLabel": "Limits of Gaussian beliefs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A robot in a symmetric corridor receives a measurement consistent with two distant places. A single-Gaussian filter will:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It will always represent both places with one wide, correct Gaussian",
+        "It will average the two places into a poor estimate or pick one arbitrarily",
+        "It will become exact, because a symmetric measurement removes the error",
+        "It will lose the Jacobian, so the covariance update can no longer run"
+      ],
+      "answer": "1",
+      "explanation": "A unimodal belief cannot represent two separated hypotheses.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gaussian-limits"
+      ],
+      "skillLabel": "Limits of Gaussian beliefs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Choose between EKF, UKF and particle filter for (a) a 6-DOF IMU/GPS navigation filter, (b) a global-localisation (kidnapped robot) problem. Justify with the nonlinearity and belief shape, and name a check for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Picks EKF/UKF for (a) with small uncertainty and quasi-unimodal belief.",
+        "Picks particle/mixture filter for (b) due to multimodality.",
+        "Names consistency checks (NIS, effective sample size, comparison with ground truth)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "gaussian-limits",
+        "ekf-linearization"
+      ],
+      "skillLabel": "Limits of Gaussian beliefs",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain how you would validate a scalar UKF implementation using only quadratic and exponential test functions, and what each test would catch.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Quadratic test exact mean and variance (weights/sigma-point scaling).",
+        "Exponential or sine against closed form (error trend with sigma).",
+        "Zero-Jacobian or linear-map test (cross-covariance and update formulas)."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "sigma-points",
+        "nonlinear-update"
+      ],
+      "skillLabel": "Sigma points and the unscented transform",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

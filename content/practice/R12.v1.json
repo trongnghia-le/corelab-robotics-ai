@@ -1,0 +1,401 @@
+{
+  "id": "R12-targeted",
+  "topicId": "R12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "In RNEA, why is the base given an upward acceleration g?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "recursive-newton-euler"
+      ],
+      "skillLabel": "Recursive Newton-Euler structure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Recursive Newton-Euler structure",
+          "href": "/lessons/R12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "To model a flying robot whose base accelerates upward in the world",
+        "To make the joint torques zero in the static case of the robot",
+        "To cancel Coriolis forces, which are of the same size as gravity",
+        "To add the gravity force on each link without extra terms"
+      ],
+      "answer": "3",
+      "explanation": "Accelerating the base by +g is equivalent to a gravity field -g."
+    },
+    {
+      "id": "b2",
+      "prompt": "Arm hangs straight down (q = (-pi/2, 0)) and is static. Torque at joint 1 in N m (round to 2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "static-gravity-torque"
+      ],
+      "skillLabel": "Static gravity torque",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Static gravity torque",
+          "href": "/lessons/R12#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0",
+      "tolerance": 0.01,
+      "explanation": "cos(q1) = cos(q1+q2) = 0, so gravity torque is zero."
+    },
+    {
+      "id": "b3",
+      "prompt": "Same arm, q = (0, 0), velocities and accelerations zero, g = 0. What are the joint torques? Give tau1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "static-gravity-torque"
+      ],
+      "skillLabel": "Static gravity torque",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Static gravity torque",
+          "href": "/lessons/R12#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0",
+      "tolerance": 0.001,
+      "explanation": "With no gravity and no motion, torques are zero."
+    },
+    {
+      "id": "b4",
+      "prompt": "M11 at q2 = pi/2 for I1 = 0.04, I2 = 0.02, m1 = 2, lc1 = 0.25, m2 = 1.5, l1 = 0.5, lc2 = 0.2 (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mass-matrix-from-id"
+      ],
+      "skillLabel": "Mass matrix",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Mass matrix",
+          "href": "/lessons/R12#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "0.62",
+      "tolerance": 0.002,
+      "explanation": "0.04 + 0.02 + 0.125 + 1.5(0.25 + 0.04 + 0) = 0.62."
+    },
+    {
+      "id": "b5",
+      "prompt": "For n = 30 joints, how many times more work (unit constants) is the O(n^3/3) solve than one O(n) recursive call?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "algorithm-cost"
+      ],
+      "skillLabel": "Algorithm cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Algorithm cost",
+          "href": "/lessons/R12#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "answer": "300",
+      "tolerance": 1,
+      "explanation": "(30^3/3)/30 = 300."
+    },
+    {
+      "id": "b6",
+      "prompt": "Static poses (zero velocity and acceleration) cannot identify a1, a2, a3 because:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "parameter-identification"
+      ],
+      "skillLabel": "Excitation for identification",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Excitation for identification",
+          "href": "/lessons/R12#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "The gravity terms are zero in the static case, so they carry no information",
+        "They are equal to each other, so the regressor columns are dependent",
+        "They need non-zero gravity, which a static pose does not provide",
+        "Their regressor columns multiply accelerations and velocities, which vanish"
+      ],
+      "answer": "3",
+      "explanation": "Columns 1-3 of Y contain qdd and qd terms only."
+    },
+    {
+      "id": "b7",
+      "prompt": "With l1 = 0.5 known, b2 = 0.30 gives the consistency value a3 = l1 b2. What is it?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-identification"
+      ],
+      "skillLabel": "Inertial parameter identification",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Inertial parameter identification",
+          "href": "/lessons/R12#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "0.15",
+      "tolerance": 0.002,
+      "explanation": "0.5 x 0.30."
+    },
+    {
+      "id": "b8",
+      "prompt": "Power balance: tau = (13.4718, 1.3439) N m and qdot = (1.0, -0.5) rad/s. Input power in W (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dynamics-validation"
+      ],
+      "skillLabel": "Power balance check",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Power balance check",
+          "href": "/lessons/R12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "answer": "12.79985",
+      "tolerance": 0.02,
+      "explanation": "q_dot . tau = 13.4718 - 0.67195 = 12.80 W."
+    },
+    {
+      "id": "b9",
+      "prompt": "A student's RNEA matches the closed form on all static tests but fails when joints move. Most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dynamics-validation"
+      ],
+      "skillLabel": "Validating dynamics code",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Validating dynamics code",
+          "href": "/lessons/R12#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "Missing or wrong velocity-dependent (centripetal/Coriolis) terms",
+        "A bad base frame, which would also show in the static tests",
+        "Wrong link masses, which would show up in the static tests as well",
+        "Rounding in pi, which affects only the moving cases of the test"
+      ],
+      "answer": "0",
+      "explanation": "Static tests have zero velocity and acceleration."
+    },
+    {
+      "id": "b10",
+      "prompt": "Which algorithm gives forward dynamics in O(n) without forming the mass matrix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "algorithm-cost"
+      ],
+      "skillLabel": "Algorithm cost",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Algorithm cost",
+          "href": "/lessons/R12#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "options": [
+        "Finite differences",
+        "Gaussian elimination on M",
+        "Articulated-body algorithm",
+        "Composite-rigid-body algorithm"
+      ],
+      "answer": "2",
+      "explanation": "ABA propagates articulated-body inertias recursively."
+    },
+    {
+      "id": "b11",
+      "prompt": "Identification: a trajectory gives Y^T Y with minimum eigenvalue 1e-4 and the noise standard deviation is 0.05 N m per sample. Roughly what is the standard deviation of the corresponding parameter-combination estimate (0.05 / sqrt(lambda_min), one decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-identification"
+      ],
+      "skillLabel": "Excitation for identification",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Excitation for identification",
+          "href": "/lessons/R12#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "answer": "5",
+      "tolerance": 0.1,
+      "explanation": "0.05/sqrt(1e-4) = 5.0: poorly excited direction amplifies noise."
+    },
+    {
+      "id": "b12",
+      "prompt": "You want to identify the mass and centre of mass of an unknown payload carried by an arm. Describe the experiment: poses/trajectory, data, regression and a check that could reject the result.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "parameter-identification"
+      ],
+      "skillLabel": "Payload identification",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Payload identification",
+          "href": "/lessons/R12#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "Uses linear-in-parameters model tau = Y pi with and without payload (difference isolates the payload).",
+        "Uses exciting motions and checks conditioning / residuals on held-out data.",
+        "Notes that only identifiable combinations (m, m*lc) are recovered and states a rejection rule."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "b13",
+      "prompt": "Why is it useful to keep a tiny closed-form model next to a fast recursive library for a 7-DoF arm?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dynamics-validation"
+      ],
+      "skillLabel": "Validating dynamics code",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Validating dynamics code",
+          "href": "/lessons/R12#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "The closed form for a reduced configuration serves as an independent test oracle.",
+        "Recursive library is used in production for speed.",
+        "Agreement on special cases / limit cases is evidence of correctness; disagreement reveals bugs."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

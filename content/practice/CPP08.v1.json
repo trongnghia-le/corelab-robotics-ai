@@ -1,0 +1,329 @@
+{
+  "id": "CPP08-targeted",
+  "topicId": "CPP08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which bug is detected by -fsanitize=undefined but NOT by AddressSanitizer?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Use after free",
+        "Heap buffer overflow",
+        "Signed integer overflow",
+        "Double free"
+      ],
+      "answer": "2",
+      "explanation": "Signed overflow is arithmetic undefined behavior, which is UBSan's domain.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sanitizer-selection"
+      ],
+      "skillLabel": "Sanitizer coverage",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "An ASan report contains 'heap-use-after-free ... freed by thread T0 here'. What does the second stack trace tell you?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Which thread owns the heap",
+        "Where the leak will be reported",
+        "Where the memory was freed",
+        "Where the program was compiled"
+      ],
+      "answer": "2",
+      "explanation": "The report gives the access site, the free site and the allocation site.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sanitizer-reports"
+      ],
+      "skillLabel": "Reading free sites",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A test compares two doubles with a tolerance written as 'if (!(fabs(a-b) > tol)) pass;'. What goes wrong when a is NaN?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The test crashes when it evaluates the NaN",
+        "It depends on the compiler flags only, never on the value",
+        "NaN passes the test because the comparison is false",
+        "The test fails correctly, since NaN is rejected"
+      ],
+      "answer": "2",
+      "explanation": "Write fabs(a-b) <= tol: it is false for NaN, so NaN fails.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "test-regression"
+      ],
+      "skillLabel": "NaN in tolerance checks",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP08#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Why is asserting on expected VALUES stronger than 'the program did not crash'?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Undefined behavior can produce wrong results without any crash",
+        "Sanitizers cannot see values, so they would miss a wrong result",
+        "Values are always faster to compute than detecting a crash",
+        "Crashes are impossible in C++, so only values can be checked"
+      ],
+      "answer": "0",
+      "explanation": "In this lesson the buggy program ran to completion and printed wrong numbers.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "test-regression",
+        "sanitizer-reports"
+      ],
+      "skillLabel": "Value assertions",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q5"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A heap buffer holds 12 doubles (96 bytes). ASan says the access is 0 bytes to the right of the region. Which zero-based index was accessed? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12",
+      "tolerance": 0.01,
+      "explanation": "Indices 0-11 are valid; the access is index 12.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sanitizer-reports"
+      ],
+      "skillLabel": "Reading sanitizer reports",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "git bisect over 5000 commits: maximum number of builds? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "13",
+      "tolerance": 0.01,
+      "explanation": "ceil(log2 5000) = ceil(12.29) = 13.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection-reduction"
+      ],
+      "skillLabel": "Bisection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A race makes a test fail with probability 0.01 per run. How many runs give at least 95% chance of seeing one failure? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "299",
+      "tolerance": 0.01,
+      "explanation": "n >= ln 0.05 / ln 0.99 = 298.07, so 299.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection-reduction"
+      ],
+      "skillLabel": "Repetitions for rare failures",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A moving-average loop with window 3 over 8 samples is written with 'k <= w' instead of 'k < w'. At the last window, what is the largest index read? Integer (zero-based)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "Last window i = 8-3 = 5; k goes to 3, so index 5+3 = 8, one past the end (valid 0-7).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sanitizer-reports",
+        "test-regression"
+      ],
+      "skillLabel": "Locating an off-by-one",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Write three regression test cases (input and expected output) for moving_average(v, w) that would catch an off-by-one in the window loop, and state how each one fails on the buggy code.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Case such as {1,2,3,4,5}, w=2 -> {1.5,2.5,3.5,4.5}; buggy code returns 3 as the first value.",
+        "Case w=1 returns the input; buggy sums two elements per window.",
+        "Boundary case w equal to size returns one mean, or w larger than size returns empty; all with hand-computed values."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "test-regression"
+      ],
+      "skillLabel": "Designing regression tests",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        },
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Explain why ASan and TSan are run as separate CI jobs and what each protects against.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "They instrument memory differently and cannot be combined in one binary.",
+        "ASan: memory errors (overflow, use after free, leaks); TSan: data races.",
+        "Mentions cost (TSan slower) and running the concurrency tests under TSan."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "sanitizer-selection"
+      ],
+      "skillLabel": "CI sanitizer jobs",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP08#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "A GDB session shows 'frame = std::unique_ptr<Frame> = {get() = 0x0}' and a segmentation fault at the line 'frame->id'. State the diagnosis and the commands you used.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Diagnosis: null unique_ptr, most likely moved from earlier.",
+        "Commands: gdb -batch -ex run -ex bt -ex 'info locals' ./prog (or run, bt, info locals interactively).",
+        "Fix idea: do not use after move, or pass by reference."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "sanitizer-selection",
+        "bisection-reduction"
+      ],
+      "skillLabel": "Using GDB",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

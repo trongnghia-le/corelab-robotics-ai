@@ -1,0 +1,335 @@
+{
+  "id": "ML12-targeted",
+  "topicId": "ML12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "w=(3,−2,1), b=0.5, x=(1,0,2), label +1. What is the worst-case margin at ε=0.25? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.001,
+      "explanation": "Margin 5.5; ‖w‖₁=6; 5.5−1.5=4.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "robust-margin"
+      ],
+      "skillLabel": "Worst-case margin of a linear classifier",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A 3072-input image model has |w_j|≈0.02 for all inputs. What is the worst-case score change for max-norm ε=0.05? (decimal, tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.072",
+      "tolerance": 0.01,
+      "explanation": "ε‖w‖₁=0.05·3072·0.02=3.072.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "robust-margin"
+      ],
+      "skillLabel": "Worst-case margin of a linear classifier",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q2"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "An attack function adds ε·sign(w) to inputs of a +1-labelled example. What happens to the accuracy-under-attack curve?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It stays constant, since the perturbation is a fixed direction and size",
+        "It rises with ε because the sign is wrong: the attack should subtract, not add",
+        "It falls with ε as designed, since the perturbation grows with the budget",
+        "It oscillates randomly, because the sign of w changes with each example"
+      ],
+      "answer": "1",
+      "explanation": "The worst case moves against the margin: x − t·ε·sign(w).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "robust-margin"
+      ],
+      "skillLabel": "Worst-case margin of a linear classifier",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "|H|=100, δ=0.1, n=2000. What is the Hoeffding gap? (decimal, tolerance 0.0005)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.043592",
+      "tolerance": 0.0005,
+      "explanation": "(4.605+2.996)/4000=1.9e-3; sqrt=0.0436.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "uniform-convergence"
+      ],
+      "skillLabel": "Uniform-convergence bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "How many samples guarantee a gap of at most 0.05 for |H|=10⁴ and δ=0.05? (integer, tolerance 2)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2580.0",
+      "tolerance": 2,
+      "explanation": "(9.210+3.689)/0.005=2580.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "uniform-convergence"
+      ],
+      "skillLabel": "Uniform-convergence bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "The Hoeffding bound for a deep network class is vacuous (larger than 1). What can you conclude about the network's test performance?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The network must generalize well, because the bound is only an upper limit",
+        "The test accuracy is exactly 50%, because the bound exceeds one",
+        "The network must overfit, since a vacuous bound means it memorises",
+        "Nothing directly: the bound is loose, so measure held-out performance"
+      ],
+      "answer": "3",
+      "explanation": "A vacuous bound is an absence of a guarantee, not evidence of failure.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "uniform-convergence"
+      ],
+      "skillLabel": "Uniform-convergence bound",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Learning-curve points (n=1,000, loss 0.40) and (n=100,000, loss 0.10) on a pure power law. What loss does it predict at n=10⁷? (decimal, tolerance 0.003)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.025",
+      "tolerance": 0.003,
+      "explanation": "Loss falls 4× per 100× data (α=0.301); another 100× gives 0.10/4=0.025.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "scaling-law-fit"
+      ],
+      "skillLabel": "Fitting and extrapolating scaling laws",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Compute C ≈ 6ND (in units of 10²¹ FLOPs) for N=2×10⁹ parameters and D=40×10⁹ tokens. (decimal, tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.48",
+      "tolerance": 0.01,
+      "explanation": "6·2e9·4e10=4.8e20 FLOPs = 0.48 ×10²¹.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "scaling-law-fit"
+      ],
+      "skillLabel": "Fitting and extrapolating scaling laws",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "You fit loss ∝ n^−α to data that actually follow c + a·n^−α with c>0, using only small n. What is the typical result?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A flatter apparent slope and over-optimistic or inconsistent extrapolation",
+        "A steeper apparent slope, and over-pessimistic extrapolation to large n",
+        "An undefined exponent, because the log of c + a·n^−α cannot be taken",
+        "An exact fit, because a pure power law contains the floor as a special case"
+      ],
+      "answer": "0",
+      "explanation": "The floor bends the log-log curve toward horizontal; the straight-line fit mixes both effects.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scaling-law-fit"
+      ],
+      "skillLabel": "Fitting and extrapolating scaling laws",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Your reproduction of a paper's headline number is 6 points lower. List the steps you take before concluding that the claim does not replicate.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Check that dataset, preprocessing, metric, hyperparameters and evaluation protocol match; run the boundary case.",
+        "Repeat over several seeds to see whether 6 points is within seed spread and test with the original code/checkpoint if possible.",
+        "Report the result with the falsifier you fixed beforehand and what differs from the paper."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "claim-reproduction"
+      ],
+      "skillLabel": "Reproducing a claim with a falsifier",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Write a falsifier for the claim 'test error of nearest-centroid on this dataset follows n^-0.5', and the experiment that tests it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Specifies range of n, number of seeds and the metric, with a fixed held-out set.",
+        "Falsifier: fitted slope differs from −0.5 by more than a stated tolerance, or the curve bends/floors inside the range.",
+        "Includes a boundary case or baseline and states the fit method (log-log least squares with spread across seeds)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "claim-reproduction",
+        "scaling-law-fit"
+      ],
+      "skillLabel": "Reproducing a claim with a falsifier",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7",
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain why the Hoeffding union bound is loose when many hypotheses in H are nearly identical, and name a capacity measure that avoids this.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "The union bound adds failure probabilities as if they were disjoint, but correlated hypotheses fail together.",
+        "The bound grows with ln|H| even if the effective number of distinct behaviours on the sample is small.",
+        "Names VC dimension, growth function, Rademacher complexity or PAC-Bayes as alternatives."
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "uniform-convergence"
+      ],
+      "skillLabel": "Uniform-convergence bound",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

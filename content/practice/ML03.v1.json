@@ -1,0 +1,326 @@
+{
+  "id": "ML03-targeted",
+  "topicId": "ML03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Training MSE as a function of polynomial degree for fixed data (least squares) is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Non-increasing, because the models are nested",
+        "Constant",
+        "Always increasing",
+        "Decreasing then increasing like test error"
+      ],
+      "answer": "0",
+      "explanation": "A higher-degree family contains the lower one, so its best training fit is at least as good.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "overfitting-diagnosis"
+      ],
+      "skillLabel": "Training error versus capacity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Collecting 10 times more data helps most when the learning curves show:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A large gap that shrinks as n grows (high variance)",
+        "Converging high errors on both curves (high bias)",
+        "Zero training error and zero test error already",
+        "A test error that is already below the noise floor"
+      ],
+      "answer": "0",
+      "explanation": "More data reduces variance, not bias.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "learning-curves"
+      ],
+      "skillLabel": "When more data helps",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A cubic fitted on x in [-1, 0.5] is evaluated on x in [0.5, 1]. What is expected?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Lower error, because the function is flatter out there",
+        "Undefined, because the fit refuses to run outside the range",
+        "The same error, since the function is smooth everywhere",
+        "Much larger error than on the training range (extrapolation)"
+      ],
+      "answer": "3",
+      "explanation": "Polynomials extrapolate poorly; this is covariate shift. In the lesson the MSE grew from 0.095 to 0.687.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "distribution-shift"
+      ],
+      "skillLabel": "Extrapolation error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "In ridge regression, increasing lambda from 0 to a large value has what effect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Both bias and variance decrease",
+        "No effect on coefficients",
+        "Variance decreases and bias increases",
+        "Variance increases and bias decreases"
+      ],
+      "answer": "2",
+      "explanation": "Coefficients are shrunk toward zero: more bias, less variance.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bias-variance"
+      ],
+      "skillLabel": "Effect of regularization",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Noise standard deviation is 0.5, and a model has test MSE 0.40. What is the maximum possible improvement (reducible error)? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.15000000000000002",
+      "tolerance": 0.005,
+      "explanation": "Floor = 0.25; reducible = 0.15.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bias-variance"
+      ],
+      "skillLabel": "Noise floor arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Prediction errors at one input from four models are summarized by predictions 0.7, 1.1, 0.9, 1.3 with true value 1.0. What is the variance of the predictions (population variance, divide by 4)? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.05",
+      "tolerance": 0.005,
+      "explanation": "Mean 1.0; squared deviations 0.09, 0.01, 0.01, 0.09 sum 0.20; /4 = 0.05.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bias-variance"
+      ],
+      "skillLabel": "Variance of predictions",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q2"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A test accuracy of 0.85 is measured on 400 independent test items. What is the half-width of the 95% confidence interval (1.96 standard errors)? Give a number with 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.03499299929985997",
+      "tolerance": 0.002,
+      "explanation": "SE = sqrt(0.85*0.15/400) = 0.01785; times 1.96 = 0.035.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "distribution-shift",
+        "cv-leakage"
+      ],
+      "skillLabel": "Confidence interval for accuracy",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "103 samples, 10-fold CV with fold sizes as equal as possible. How many folds have 11 samples? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "103 = 10*10 + 3, so 3 folds have 11 samples and 7 have 10.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cv-leakage"
+      ],
+      "skillLabel": "Fold bookkeeping",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Explain how to estimate the generalization error of a model whose hyperparameter lambda is tuned by cross-validation, without optimistic bias.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Hold out a test set before tuning and touch it once at the end, or use nested cross-validation.",
+        "Tune lambda (and all preprocessing) using only training folds.",
+        "Notes that the best CV score is optimistic because it was selected."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "cv-leakage",
+        "overfitting-diagnosis"
+      ],
+      "skillLabel": "Honest evaluation after tuning",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        },
+        {
+          "label": "Review: verification",
+          "href": "/lessons/ML03#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Given the table (n, train, val): (10, 0.04, 0.40), (50, 0.06, 0.18), (250, 0.08, 0.11), diagnose the model and recommend two actions.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "High variance (large initial gap) that is closing with more data.",
+        "Action: gather more data and/or add regularization or simplify the model.",
+        "Notes the curves are converging so the model class is adequate."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "learning-curves",
+        "overfitting-diagnosis"
+      ],
+      "skillLabel": "Interpreting a learning curve",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Write the steps (pseudocode) of k-fold cross-validation that selects the polynomial degree and avoids leakage when the inputs are standardized.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Split indices into k folds first.",
+        "For each fold and degree: compute the mean/std on the training folds only, standardize both parts with those, fit on training, score on validation.",
+        "Average over folds, choose the degree with the lowest average, then refit on all training data and evaluate once on the test set."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "cv-leakage"
+      ],
+      "skillLabel": "Leak-free CV procedure",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/ML03#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

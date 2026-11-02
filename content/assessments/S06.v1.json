@@ -1,0 +1,202 @@
+{
+  "id": "S06-diagnostic",
+  "topicId": "S06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A 16-bit encoder counter is read as 65530 and then 4. What is the right treatment of the difference?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Take the difference modulo 2^16 mapped to a signed range: +10.",
+        "Discard the sample as invalid and keep the old velocity.",
+        "Use 4 - 65530; large negative values show reverse motion.",
+        "Reset the counter to zero and ignore the step."
+      ],
+      "answer": "0",
+      "explanation": "The modular delta is +10 counts.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "counter-unwrap"
+      ],
+      "skillLabel": "Unwrap free-running counters",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "512-line quadrature encoder (x4 decoding), gearbox 10:1. Counts per output revolution.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20480",
+      "tolerance": 0.5,
+      "explanation": "4*512*10.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counts-to-units"
+      ],
+      "skillLabel": "Convert counts to SI units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "For that joint, the smallest angle step in radians. Precision 1e-6.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.000306796",
+      "tolerance": 1e-06,
+      "explanation": "2 pi / 20480.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counts-to-units"
+      ],
+      "skillLabel": "Convert counts to SI units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "8-bit counter read as 250 then 6. Signed delta (counts).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12",
+      "tolerance": 0.01,
+      "explanation": "(6-250) mod 256 = 12.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counter-unwrap"
+      ],
+      "skillLabel": "Unwrap free-running counters",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Frame payload [10,20,30], checksum = (length + payload bytes) mod 256. Checksum value?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "63",
+      "tolerance": 0.01,
+      "explanation": "3+10+20+30=63.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "framing-checksum"
+      ],
+      "skillLabel": "Frames and checksums",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A sensor cable falls out; the driver keeps returning the last value flagged 'ok'. What is the best fix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Reboot the driver every minute so that a stale value is never kept for very long.",
+        "Lower the control gain so that stale values have less effect on the commanded output.",
+        "Increase the filter time constant so that the last value decays more slowly over time.",
+        "Track the sample age, mark it stale after a few missed periods, and command a safe action."
+      ],
+      "answer": "3",
+      "explanation": "Staleness must be detected and acted on.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "freshness-timeout"
+      ],
+      "skillLabel": "Freshness and timeouts",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how a driver should map a speed command in rad/s to an 8-bit PWM value safely, and which inputs it must reject.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Normalizes by the maximum speed, clamps to [-1,1], scales and rounds.",
+        "Rejects NaN/infinite values and invalid limits instead of letting max/min pass them.",
+        "Defines the output on timeout or stale input (zero command) and tests the boundaries."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "command-mapping"
+      ],
+      "skillLabel": "Safe command mapping",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

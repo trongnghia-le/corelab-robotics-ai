@@ -1,0 +1,297 @@
+{
+  "id": "R07-targeted",
+  "topicId": "R07",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pendulum-eom"
+      ],
+      "skillLabel": "Sign of the gravity torque",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e1",
+      "kind": "choice",
+      "prompt": "A pendulum with q measured from the downward vertical is released at rest at q = +60 degrees with no torque and no damping. What is the sign of its initial angular acceleration?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Zero, because the velocity is zero at the instant of the release",
+        "Negative: it accelerates back toward the downward vertical",
+        "Positive: it accelerates away from the vertical, since q is positive",
+        "Positive for the first half period only, then it turns negative"
+      ],
+      "answer": "1",
+      "explanation": "With V = m g l (1 - cos q), the gravity term m g l sin q is positive and the acceleration is -(g/l) sin q: negative, restoring toward q = 0."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "units-inertia"
+      ],
+      "skillLabel": "Joint inertia",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e2",
+      "kind": "number",
+      "prompt": "A 3 kg point mass sits 0.2 m from a joint axis. What is its joint inertia m l^2 in kg m^2? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.12",
+      "tolerance": 0.005,
+      "explanation": "3 * 0.2^2 = 0.12 kg m^2."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gravity-torque"
+      ],
+      "skillLabel": "Holding torque",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e3",
+      "kind": "number",
+      "prompt": "A 1.5 kg tool is held 0.6 m from the joint with the link horizontal (g = 9.81). What joint torque is needed in N m? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8.83",
+      "tolerance": 0.02,
+      "explanation": "tau = m g l = 1.5 * 9.81 * 0.6 = 8.829 N m."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "energy-balance"
+      ],
+      "skillLabel": "Power balance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e4",
+      "kind": "number",
+      "prompt": "For a damped joint, dE/dt = tau*qd - b*qd^2. With tau = 2 N m, qd = 3 rad/s and b = 0.5 N m s/rad, what is dE/dt in W? Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.05,
+      "explanation": "2*3 - 0.5*9 = 6 - 4.5 = 1.5 W."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "integrator-choice"
+      ],
+      "skillLabel": "Choosing an integrator",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "e5",
+      "kind": "choice",
+      "prompt": "You must simulate an undamped pendulum for a long time and care about bounded energy error at low cost per step. Which method is the best fit?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "Explicit Euler with a large step",
+        "Explicit Euler with a small step",
+        "Semi-implicit (symplectic) Euler",
+        "No integration; use the small-angle formula only"
+      ],
+      "answer": "2",
+      "explanation": "Symplectic (semi-implicit) Euler keeps the energy error bounded and costs one force evaluation per step; explicit Euler gains energy, RK4 is accurate but still drifts slowly and costs four evaluations."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pendulum-eom"
+      ],
+      "skillLabel": "Small-angle period",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e6",
+      "kind": "number",
+      "prompt": "What is the small-angle period of a pendulum with l = 1 m (g = 9.81) in seconds? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.006",
+      "tolerance": 0.003,
+      "explanation": "T = 2 pi sqrt(l/g) = 2 pi * 0.3193 = 2.006 s."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gravity-torque"
+      ],
+      "skillLabel": "Gravity torque at an angle",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e7",
+      "kind": "number",
+      "prompt": "A single link has a 2 kg point mass at l = 0.5 m, with the joint angle q measured from the horizontal. What is the gravity torque m g l cos q at q = 60 degrees in N m? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.905",
+      "tolerance": 0.01,
+      "explanation": "2 * 9.81 * 0.5 * cos(60 deg) = 9.81 * 0.5 = 4.905 N m."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mass-matrix"
+      ],
+      "skillLabel": "Properties of M(q)",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e8",
+      "kind": "choice",
+      "prompt": "Which statement about the manipulator mass matrix M(q) is correct?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is constant for all configurations of the arm",
+        "It is diagonal for any serial arm, so the joints never couple",
+        "It can have negative eigenvalues for some poses of the arm",
+        "It is symmetric positive definite and varies with the configuration"
+      ],
+      "answer": "3",
+      "explanation": "M(q) is symmetric positive definite and depends on the configuration (for example on q2 for a 2R arm)."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "units-inertia"
+      ],
+      "skillLabel": "Motor torque through a gearbox",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e9",
+      "kind": "choice",
+      "prompt": "A joint needs a holding torque tau_j. The gearbox has ratio N (motor turns N times per joint turn) and efficiency eta. What torque must the motor supply?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "tau_j / N^2",
+        "tau_j * eta / N",
+        "tau_j * N * eta",
+        "tau_j / (N * eta)"
+      ],
+      "answer": "3",
+      "explanation": "The gearbox multiplies torque by N and loses a fraction to inefficiency: tau_m = tau_j / (N eta)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pendulum-eom"
+      ],
+      "skillLabel": "Instability rate of the inverted pendulum",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e10",
+      "kind": "number",
+      "prompt": "Near the upright position the deviation of a pendulum grows like exp(sqrt(g/l) t). For l = 0.5 m and g = 9.81, what is the growth rate in 1/s? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.43",
+      "tolerance": 0.02,
+      "explanation": "sqrt(9.81/0.5) = sqrt(19.62) = 4.43."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mass-matrix"
+      ],
+      "skillLabel": "Why fixed-gain control fails when the payload changes",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "e11",
+      "kind": "short",
+      "prompt": "A joint controller tuned with an empty gripper oscillates when the arm carries a heavy payload, and drifts when the arm is stretched out. Use M(q) and g(q) to explain both effects and propose a fix.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Payload and posture change the effective inertia M(q), so the loop gain/bandwidth and damping change (oscillation)",
+        "Gravity torque g(q) acts as a constant-like disturbance that depends on posture and payload, causing steady-state error with a PD law",
+        "Proposes gravity compensation / feedforward, computed-torque control using M(q), or an integral term plus gain scheduling"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "energy-balance"
+      ],
+      "skillLabel": "Energy as a debugging tool",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#verification"
+        }
+      ],
+      "id": "e12",
+      "kind": "short",
+      "prompt": "Explain how you would use energy as a diagnostic for a pendulum simulation, and name two causes of non-conservation that are not model errors.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes E = K + V along the trajectory and checks dE/dt = tau*qd - b*qd^2 (constant for no torque/damping)",
+        "Names numerical causes such as integrator type, step size, or round-off, and says to halve the step to see whether the drift scales as expected",
+        "Notes that a gravity sign or unit error shows up as a large, step-size independent energy violation"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

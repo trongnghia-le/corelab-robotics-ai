@@ -1,0 +1,368 @@
+{
+  "id": "RS02-targeted",
+  "topicId": "RS02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Cell means m00=50, m10=58, m01=55, m11=56. Main effect of B? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "factorial-effects"
+      ],
+      "skillLabel": "Factorial effects",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "1.5",
+      "tolerance": 0.05,
+      "explanation": "((55-50)+(56-58))/2=1.5"
+    },
+    {
+      "id": "b2",
+      "prompt": "Same cell means: interaction effect? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "factorial-effects"
+      ],
+      "skillLabel": "Factorial effects",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "-3.5",
+      "tolerance": 0.05,
+      "explanation": "(56+50-58-55)/2=-3.5"
+    },
+    {
+      "id": "b3",
+      "prompt": "The interaction in the previous data is strongly negative (-3.5). What does it mean?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "factorial-effects"
+      ],
+      "skillLabel": "Factorial effects",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "options": [
+        "A helps a lot alone but little once B is present: the gains are partly redundant.",
+        "A and B always add exactly, so there is no overlap in what they fix.",
+        "The experiment failed, because a negative number cannot be an interaction.",
+        "B has no effect, so the combined result equals that of A alone."
+      ],
+      "answer": "0",
+      "explanation": "Negative interaction = redundancy."
+    },
+    {
+      "id": "b4",
+      "prompt": "sigma=2.5, r=5. Standard error of a factorial effect? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "replicates-and-noise"
+      ],
+      "skillLabel": "Replicates and noise",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "1.118033988749895",
+      "tolerance": 0.002,
+      "explanation": "2.5/sqrt(5)=1.118"
+    },
+    {
+      "id": "b5",
+      "prompt": "sigma=5, detect delta=2. Replicates per cell by r=ceil(7.84 sigma^2/delta^2)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "replicates-and-noise"
+      ],
+      "skillLabel": "Replicates and noise",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "49.0",
+      "tolerance": 0.01,
+      "explanation": "49 -> 49"
+    },
+    {
+      "id": "b6",
+      "prompt": "If you halve the effect size you want to detect (same sigma), how do the required replicates change?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "replicates-and-noise"
+      ],
+      "skillLabel": "Replicates and noise",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "They halve.",
+        "They double.",
+        "They quadruple.",
+        "They are unchanged."
+      ],
+      "answer": "2",
+      "explanation": "r scales with 1/delta^2."
+    },
+    {
+      "id": "b7",
+      "prompt": "Method 1 was trained on GPU 1 on Monday (seeds 0-4); method 2 on GPU 2 on Tuesday (seeds 5-9). What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confounding"
+      ],
+      "skillLabel": "Confounding",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Seeds should never be used in comparisons between methods.",
+        "Five runs per method is always too few for any comparison.",
+        "Nothing: random seeds fix every source of difference.",
+        "Method is confounded with machine, day and seeds."
+      ],
+      "answer": "3",
+      "explanation": "Everything varies together with the method."
+    },
+    {
+      "id": "b8",
+      "prompt": "Which design detects an interaction between two components?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "factorial-effects"
+      ],
+      "skillLabel": "Factorial effects",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3",
+        "q7"
+      ],
+      "options": [
+        "A full 2x2 factorial.",
+        "Running only the baseline.",
+        "Running only the full system.",
+        "Changing one component at a time from the baseline only."
+      ],
+      "answer": "0",
+      "explanation": "Interaction needs the combination cell and the single-factor cells."
+    },
+    {
+      "id": "b9",
+      "prompt": "Correlation between the factor columns of the design [(0,0),(1,1)]*4 ? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confounding"
+      ],
+      "skillLabel": "Confounding",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "1.0",
+      "tolerance": 0.05,
+      "explanation": "The columns are identical, correlation 1."
+    },
+    {
+      "id": "b10",
+      "prompt": "In a randomised 2x2 design with r=3 replicates per cell, how many runs have A on and B on?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "randomization"
+      ],
+      "skillLabel": "Randomisation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "3.0",
+      "tolerance": 0.01,
+      "explanation": "Each cell appears r=3 times."
+    },
+    {
+      "id": "b11",
+      "prompt": "Running all baseline runs first and all new-method runs afterwards risks what?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "randomization"
+      ],
+      "skillLabel": "Randomisation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "Nothing, since the order of runs cannot change the measured results.",
+        "Drift (hardware, library, data) aligned with the method looking like an effect.",
+        "Lower variance within each condition, which makes the gap look more precise.",
+        "Higher statistical power, since each condition gets more consistent runs."
+      ],
+      "answer": "1",
+      "explanation": "Randomising the order spreads drift across conditions."
+    },
+    {
+      "id": "b12",
+      "prompt": "A paper shows 'removing component C lowers accuracy by 5 points' and concludes C adds 5 points to any system. What is wrong, and what extra runs would you ask for?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "factorial-effects",
+        "confounding"
+      ],
+      "skillLabel": "Factorial effects",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q7"
+      ],
+      "rubric": [
+        "Removal from the full system is not the same as adding to the baseline when there is an interaction.",
+        "Asks for the factorial or at least the add-to-baseline cell.",
+        "Asks for replicates/intervals."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Explain why a single run per condition is not an experiment you can learn from, and how many replicates you would plan and why.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "replicates-and-noise"
+      ],
+      "skillLabel": "Replicates and noise",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q6"
+      ],
+      "rubric": [
+        "Without replicates there is no estimate of within-condition noise.",
+        "Uses r = 7.84 sigma^2/delta^2 with a plausible sigma and target effect.",
+        "Mentions seeds as replicates and randomised order."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

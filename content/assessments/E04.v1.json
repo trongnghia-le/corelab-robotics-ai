@@ -1,0 +1,226 @@
+{
+  "id": "E04-diagnostic",
+  "topicId": "E04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which set lists the parts of a skill contract?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "skill-contract"
+      ],
+      "skillLabel": "Skill contract",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "A reward signal, a discount factor, and a fixed planning horizon for the whole episode",
+        "Preconditions, a postcondition (success), and named failure/termination statuses",
+        "A sensor model, an actuator limit table, and a battery budget checked before every call",
+        "A state map, a global planner, and a cost function evaluated over every candidate path"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "A skill states when it may start, what it achieves and how it ends."
+    },
+    {
+      "id": "q2",
+      "prompt": "Proportional controller, error multiplied by (1-k) per step, k=0.5, e0=0.5. Error after 3 steps? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "closed-form-duration"
+      ],
+      "skillLabel": "Closed-form skill duration",
+      "mistakeCategory": "mathematical",
+      "answer": "0.0625",
+      "tolerance": 0.0005,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "0.5*0.5^3=0.0625."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same controller (k=0.5, e0=0.5), tolerance 0.02. First step n with error <= tolerance?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "closed-form-duration"
+      ],
+      "skillLabel": "Closed-form skill duration",
+      "mistakeCategory": "mathematical",
+      "answer": "5",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "e_4=0.03125 > 0.02, e_5=0.0156."
+    },
+    {
+      "id": "q4",
+      "prompt": "Success requires the error to stay inside the tolerance for 3 consecutive steps. If the error is first inside at step 5, at which step is SUCCEEDED reported?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "closed-form-duration"
+      ],
+      "skillLabel": "Closed-form skill duration",
+      "mistakeCategory": "mathematical",
+      "answer": "7",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "5 + 3 - 1 = 7."
+    },
+    {
+      "id": "q5",
+      "prompt": "A reaching skill loops until the error is small and then returns SUCCEEDED after the loop, even if the loop ended by hitting max_steps. What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "failure-statuses"
+      ],
+      "skillLabel": "Terminal statuses",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "max_steps is too small, so the loop should simply be given many more iterations to finish",
+        "It reports success on timeout; the postcondition was never checked after the loop ended",
+        "The tolerance is too large, so the loop exits early and the error is never really small",
+        "Nothing is wrong, since a loop that ends always means the error reached the tolerance"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "Success must be tied to the postcondition, not to loop exit."
+    },
+    {
+      "id": "q6",
+      "prompt": "The goal is 1.5 m from the base and the arm can reach 1.0 m. The correct skill behavior is:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "skill-contract"
+      ],
+      "skillLabel": "Skill contract",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "REFUSE before moving, with a reason such as goal_out_of_reach",
+        "Start moving and time out, since the reach check only happens during the motion",
+        "Run toward the goal and report SUCCEEDED once the arm is as close as it can get",
+        "Move halfway to the goal, then stop and report a partial success to the caller"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "Preconditions are checked before any motion."
+    },
+    {
+      "id": "q7",
+      "prompt": "Reach skill ends one step with postcondition tolerance 1 cm, next skill needs 0.5 cm. What is the largest tolerance (in cm) the first skill may use for the sequence to be valid?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "skill-composition"
+      ],
+      "skillLabel": "Skill composition",
+      "mistakeCategory": "mathematical",
+      "answer": "0.5",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "explanation": "The postcondition must imply the next precondition: tolerance <= 0.5 cm."
+    },
+    {
+      "id": "q8",
+      "prompt": "Design the contract for a 'pick up the cup' skill: preconditions, postcondition, effects and at least four failure statuses with detectors. Say how you would test each status.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "skill-contract",
+        "failure-statuses"
+      ],
+      "skillLabel": "Design a skill contract",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E04#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "rubric": [
+        "Preconditions: cup visible and reachable, gripper empty, no collision at the pregrasp pose.",
+        "Postcondition and effects: cup held (force/width check), gripper full.",
+        "Failure statuses with detectors (collision, slip, timeout, stall) and one test that triggers each."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

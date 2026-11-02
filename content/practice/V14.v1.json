@@ -1,0 +1,331 @@
+{
+  "id": "V14-targeted",
+  "topicId": "V14",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "Which statement about the InfoNCE temperature tau is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V14#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "A smaller tau flattens the softmax, so all candidates become about equally likely.",
+        "Tau changes the number of negatives that the softmax is computed over.",
+        "A smaller tau sharpens the softmax, so hard negatives with high similarity are penalised more.",
+        "Tau matters only when the embeddings are not normalised to unit length."
+      ],
+      "answer": "2",
+      "explanation": "Logits are cos/tau: dividing by a small tau widens differences between candidates, so a hard negative close to the positive costs much more.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "InfoNCE with tau=1, positive cos 0.8, negatives with cos 0 and -1. Give the loss to 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V14#worked-example"
+        }
+      ],
+      "answer": "0.479",
+      "tolerance": 0.002,
+      "explanation": "logits 0.8, 0, -1: -ln(2.2255/3.5934)=0.4791.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "One positive and 15 negatives, all cosines equal. What is the InfoNCE loss (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V14#theory-and-derivation"
+        }
+      ],
+      "answer": "2.773",
+      "tolerance": 0.005,
+      "explanation": "ln 16 = 2.7726.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "A team reports 97% accuracy for a frozen probe, evaluated on a random 20% split of the same photo collection used for pretraining. What is the right reading?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "probe-evaluation"
+      ],
+      "skillLabel": "Evaluating an embedding with a probe",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V14#verification"
+        }
+      ],
+      "options": [
+        "It shows the representation transfers to new cameras.",
+        "It is invalid because probes cannot be evaluated on held-out data.",
+        "It proves the encoder has no shortcuts.",
+        "It shows in-domain readability only; transfer needs a held-out domain."
+      ],
+      "answer": "3",
+      "explanation": "A random split shares the source's lighting, camera and backgrounds, so shift stays invisible.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "Cosine similarity of (1,1,0) and (0,1,1)? Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V14#theory-and-derivation"
+        }
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "dot 1, norms sqrt2 each: 1/2.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p6",
+      "prompt": "A frozen probe gets 0.88 in-domain and 0.55 on a shifted camera; the majority-class baseline is 0.50. By how many percentage points does the shifted result exceed the baseline?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "domain-shift-gap"
+      ],
+      "skillLabel": "Domain shift gap",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V14#verification"
+        }
+      ],
+      "answer": "5",
+      "tolerance": 0.1,
+      "explanation": "55-50 = 5 points; most of the in-domain gain disappears (gap is 33 points).",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "You have 50,000 labelled images from a domain similar to the pretraining domain. According to the standard guidance, what is reasonable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "transfer-strategy"
+      ],
+      "skillLabel": "Choosing a transfer strategy",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V14#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Fine-tune the whole network at a small learning rate.",
+        "Skip validation.",
+        "Train from scratch with a very large learning rate.",
+        "Only use a linear probe on the last layer."
+      ],
+      "answer": "0",
+      "explanation": "Large and similar data: fine-tune the whole network carefully.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "Why should a paper report a majority-class baseline and an untrained-encoder baseline next to a pretrained probe?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "probe-evaluation"
+      ],
+      "skillLabel": "Evaluating an embedding with a probe",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V14#verification"
+        }
+      ],
+      "rubric": [
+        "Majority-class sets the floor for imbalanced labels.",
+        "An untrained encoder shows how much accuracy the probe and architecture give without pretraining.",
+        "Gains of the pretrained encoder are meaningful only relative to these baselines."
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p9",
+      "prompt": "Write the function body or pseudocode of a nearest-class-mean probe on unit-normalised embeddings, and say what goes wrong if you compare raw dot products against unnormalised means.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/V14#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Computes class means of normalised embeddings and predicts by highest cosine.",
+        "States that mean vectors of scattered classes are shorter, so a raw dot product favours long means.",
+        "Mentions an edge case such as an empty class."
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p10",
+      "prompt": "The toy six-point dataset is rotated 60 degrees and the frozen nearest-mean probe is applied. How many of the six points are classified correctly?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "domain-shift-gap"
+      ],
+      "skillLabel": "Domain shift gap",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/V14#reference-implementation"
+        }
+      ],
+      "answer": "3",
+      "tolerance": 0.1,
+      "explanation": "The reference code reports accuracy 0.5 at 60 degrees, 3 of 6.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p11",
+      "prompt": "An encoder gives 95% in-domain and near chance when the background colour changes. How would you diagnose a shortcut feature and what would you change in pretraining or evaluation?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "domain-shift-gap"
+      ],
+      "skillLabel": "Domain shift gap",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V14#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Proposes a controlled test that changes only the background.",
+        "Identifies shortcut features as the cause when accuracy tracks the background.",
+        "Suggests augmentation or data changes and a held-out domain in the evaluation."
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p12",
+      "prompt": "InfoNCE with tau=0.1, positive cos 0.8, negatives cos 0 and -1. Give the loss to 4 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-infonce"
+      ],
+      "skillLabel": "Cosine similarity and InfoNCE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V14#worked-example"
+        }
+      ],
+      "answer": "0.0003",
+      "tolerance": 0.0001,
+      "explanation": "logits 8, 0, -10: loss = ln(1+e^-8+e^-18)=0.000335.",
+      "equivalentTo": [
+        "q3"
+      ]
+    }
+  ]
+}

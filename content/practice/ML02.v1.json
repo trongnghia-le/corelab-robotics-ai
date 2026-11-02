@@ -1,0 +1,300 @@
+{
+  "id": "ML02-targeted",
+  "topicId": "ML02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "ml02-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "linear-regression-gradient"
+      ],
+      "skillLabel": "Baseline fit set",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Which samples should be used to fit the baseline mean predictor?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Training samples only",
+        "All samples, including test",
+        "Validation and test samples",
+        "Test samples only"
+      ],
+      "answer": "0",
+      "explanation": "The baseline is a model too; fitting it on test data would leak."
+    },
+    {
+      "id": "ml02-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "residual-diagnostics"
+      ],
+      "skillLabel": "Residual patterns",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A linear fit's residuals plotted against x form a clear U shape. What is the most likely cause?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The learning rate is too small",
+        "The data have too few samples to compute a mean",
+        "The relationship is curved and the model is missing a nonlinear feature",
+        "The bias term has been penalised"
+      ],
+      "answer": "2",
+      "explanation": "Residuals should look patternless; structure means unmodelled systematic effects."
+    },
+    {
+      "id": "ml02-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ridge-regularization"
+      ],
+      "skillLabel": "Ridge and the bias",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "In ridge regression, why is the bias usually left out of the penalty?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The bias shifts predictions and is not a sensitivity; penalising it would pull predictions toward zero",
+        "The bias is always zero after scaling",
+        "Penalising it makes the loss non-convex",
+        "The bias has no gradient"
+      ],
+      "answer": "0",
+      "explanation": "Weights are shrunk to reduce sensitivity; the offset must stay free to match the mean target."
+    },
+    {
+      "id": "ml02-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "normal-equation"
+      ],
+      "skillLabel": "Closed-form oracle",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Why is the least-squares solution a good test for a gradient-descent implementation?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It applies to every neural network",
+        "It is an independent exact answer the iterates must approach",
+        "It is always faster for any model",
+        "It never needs a design matrix"
+      ],
+      "answer": "1",
+      "explanation": "Agreement between two independent methods catches sign and scaling bugs."
+    },
+    {
+      "id": "ml02-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "linear-regression-gradient"
+      ],
+      "skillLabel": "Gradient wrt w",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "x = [1, 3], y = [2, 8], w = b = 0, J = (1/2N) Σ e². What is ∂J/∂w?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-13",
+      "tolerance": 0.001,
+      "explanation": "e = [−2, −8]; (1·(−2) + 3·(−8))/2 = −13."
+    },
+    {
+      "id": "ml02-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "linear-regression-gradient"
+      ],
+      "skillLabel": "Gradient wrt b",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "For the same data, what is ∂J/∂b?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-5",
+      "tolerance": 0.001,
+      "explanation": "mean(e) = (−2 − 8)/2 = −5."
+    },
+    {
+      "id": "ml02-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "normal-equation"
+      ],
+      "skillLabel": "Exact line slope",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Fit y = w x + b exactly through (0, 2) and (1, 5). What is w?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.001,
+      "explanation": "Slope = (5 − 2)/(1 − 0) = 3."
+    },
+    {
+      "id": "ml02-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ridge-regularization"
+      ],
+      "skillLabel": "Ridge gradient term",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "The data gradient wrt w is −0.8, λ = 0.4 and w = 1.5. What is the total ridge gradient?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.2",
+      "tolerance": 0.001,
+      "explanation": "∇ = −0.8 + λ w = −0.8 + 0.6 = −0.2."
+    },
+    {
+      "id": "ml02-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "linear-regression-gradient"
+      ],
+      "skillLabel": "Parameter count",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A linear model has 12 features and one bias. How many trainable parameters?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "13",
+      "tolerance": 0.001,
+      "explanation": "12 weights + 1 bias."
+    },
+    {
+      "id": "ml02-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "residual-diagnostics"
+      ],
+      "skillLabel": "Nonlinear sensor error",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A range sensor has nonlinear error at long distance. Inspect a residual plot and propose either features or a different model class. What would you refuse to claim?",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Describes residual versus distance structure.",
+        "Proposes features such as d² or a piecewise/nonlinear model, with validation at long range.",
+        "Refuses to extrapolate beyond measured distances."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "ml02-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "linear-regression-gradient"
+      ],
+      "skillLabel": "Check a gradient",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Describe how you would check a hand-derived gradient for linear regression with ridge, including the test data and tolerance.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Compares with central differences at random parameters.",
+        "Uses a hand-computed tiny dataset such as two points.",
+        "Compares gradient descent with the closed-form solution."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "ml02-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "normal-equation"
+      ],
+      "skillLabel": "Feature scaling",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML02#failure-modes"
+        }
+      ],
+      "prompt": "Two features differ in scale by a factor of 1000. Explain what goes wrong for gradient descent and for ridge, and the fix.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "The step must be small for the stiff direction, so the other learns slowly.",
+        "Ridge penalty depends on scale, so it penalises features unequally.",
+        "Standardise features using training statistics."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "id": "E01-diagnostic",
+  "topicId": "E01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why can the optimal action in a state depend on the number of steps remaining?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "decision-horizon"
+      ],
+      "skillLabel": "Horizon-dependent decisions",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Immediate reward and future payoff trade off differently with different remaining time",
+        "The discount factor is drawn at random at each step, so the value of a state varies",
+        "The state itself changes as steps pass, so the same action is evaluated in a new place",
+        "The transition probabilities drift with time, so the model used for planning is different at each step"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "With one step left only immediate reward counts; with more steps, future payoff can dominate."
+    },
+    {
+      "id": "q2",
+      "prompt": "V_0=0. State B: work pays 3 and stays in B. Optimal value V_3(B)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "backward-induction"
+      ],
+      "skillLabel": "Backward induction",
+      "mistakeCategory": "mathematical",
+      "answer": "9",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "3 per step for 3 steps = 9."
+    },
+    {
+      "id": "q3",
+      "prompt": "Walk succeeds with probability p=0.5 (else stays in A, reward 0), V_1(B)=3, V_1(A)=1. Value of walking in A with 2 steps to go?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "backward-induction"
+      ],
+      "skillLabel": "Backward induction",
+      "mistakeCategory": "mathematical",
+      "answer": "2",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "0.5*3+0.5*1=2."
+    },
+    {
+      "id": "q4",
+      "prompt": "A fixed open-loop plan is compared with a closed-loop policy on a stochastic system. Which is always true?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "open-vs-closed-loop"
+      ],
+      "skillLabel": "Open vs closed loop",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The open-loop plan is better because it is simpler",
+        "They always tie",
+        "The closed-loop optimum is at least as good as every open-loop plan",
+        "The closed-loop optimum is worse because it needs sensing"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "An open-loop plan is a special policy that ignores feedback."
+    },
+    {
+      "id": "q5",
+      "prompt": "Belief (A=1). Walk: A stays with 0.2, B 0.8. Sensor: P('a'|A)=0.9, P('a'|B)=0.1. Posterior P(A) after seeing 'a'? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "belief-update"
+      ],
+      "skillLabel": "Bayes belief update",
+      "mistakeCategory": "mathematical",
+      "answer": "0.692308",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "0.18/(0.18+0.08)=0.692."
+    },
+    {
+      "id": "q6",
+      "prompt": "An open-loop plan succeeds only if a 0.8-probability step succeeds; then it earns 9, else 0. Expected return?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "open-vs-closed-loop"
+      ],
+      "skillLabel": "Open vs closed loop",
+      "mistakeCategory": "mathematical",
+      "answer": "7.2",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "0.8*9=7.2."
+    },
+    {
+      "id": "q7",
+      "prompt": "A robot reads a noisy sensor and always treats the last reading as the true state. The main risk is:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "belief-update"
+      ],
+      "skillLabel": "Bayes belief update",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Violating the Markov property of the sensor, which makes any filtering approach invalid",
+        "Planning over a longer horizon, because stale readings accumulate over successive steps",
+        "Using too much memory, because the controller must store every past reading of the sensor",
+        "Acting confidently on an error; a belief would keep the uncertainty"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "explanation": "The last reading is wrong with probability related to the sensor error."
+    },
+    {
+      "id": "q8",
+      "prompt": "Compare a greedy choice with a multi-step plan for a robot choosing between grabbing a nearby object and walking to a better station. State what you would compute, the horizon dependence and how you would check that planning helps.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "decision-horizon",
+        "backward-induction"
+      ],
+      "skillLabel": "Compare greedy and planned decisions",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E01#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02"
+      ],
+      "rubric": [
+        "Compute the expected return of both over the task horizon with backward induction.",
+        "Identify the horizon at which the preferred action switches.",
+        "Check against a greedy baseline and a brute-force enumeration of plans."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

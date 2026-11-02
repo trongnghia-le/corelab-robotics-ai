@@ -1,0 +1,330 @@
+{
+  "id": "CPP11-targeted",
+  "topicId": "CPP11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "M = M.transpose(); on a non-square or non-symmetric Eigen matrix in a -O2 -DNDEBUG build most likely results in?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A correct transposed matrix, since Eigen buffers the result",
+        "A thrown exception reporting that the operands overlap",
+        "A compile error because assignment to itself is forbidden",
+        "A silently wrong matrix because source and destination alias"
+      ],
+      "answer": "3",
+      "explanation": "Use M.transposeInPlace() or M = M.transpose().eval(); Debug builds assert instead.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "eigen-pitfalls"
+      ],
+      "skillLabel": "Aliasing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Why should you prefer A.colPivHouseholderQr().solve(b) to A.inverse() * b?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "solve returns a lazy expression, which is always the cheaper option to evaluate",
+        "It is faster and numerically more accurate; an explicit inverse is rarely needed",
+        "Inverse is only defined for small matrices of size 2x2 or 3x3 in Eigen",
+        "Inverse does not exist for double matrices in Eigen, only for float matrices"
+      ],
+      "answer": "1",
+      "explanation": "Factorize and solve; forming the inverse costs more and adds error.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "solver-selection"
+      ],
+      "skillLabel": "Do not invert",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "At the least-squares solution x, which identity must hold?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "x^T x = 1",
+        "A (A x - b) = 0",
+        "b^T b = 0",
+        "A^T (A x - b) = 0"
+      ],
+      "answer": "3",
+      "explanation": "The residual is perpendicular to the column space of A.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "least-squares-solution"
+      ],
+      "skillLabel": "Orthogonality of the residual",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q6"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "What does ridge regularization (A^T A + lambda I) do to the condition number?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Makes it exactly 1 for every positive lambda",
+        "Leaves it unchanged, since lambda I is a constant shift",
+        "Raises it, because lambda enlarges the largest eigenvalue",
+        "Lowers it, at the cost of a bias toward zero"
+      ],
+      "answer": "3",
+      "explanation": "Eigenvalues become sigma^2 + lambda, so the smallest is lifted and the ratio shrinks.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "normal-equations-conditioning"
+      ],
+      "skillLabel": "Ridge and conditioning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "cond(A) = 1e4. Using digits lost ~ log10 of the condition number the solver sees, how many accurate digits (of 16) do the normal equations keep? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.5,
+      "explanation": "cond(A^T A) = 1e8, so about 16-8 = 8 digits remain.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "normal-equations-conditioning"
+      ],
+      "skillLabel": "Digits lost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q1"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Least-squares line through (0,1), (1,1), (2,4). What does the fitted line predict at t = 3? Give a number with 1 decimal.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.05,
+      "explanation": "A^T A = [[3,3],[3,5]], A^T b = [6,9] gives a = 0.5, b = 1.5; at t = 3: 0.5 + 4.5 = 5.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "least-squares-solution"
+      ],
+      "skillLabel": "Hand-solving normal equations",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Cholesky costs about n^3/3 flops. How many for n = 30? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9000",
+      "tolerance": 0.5,
+      "explanation": "30^3/3 = 27000/3 = 9000.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "solver-selection"
+      ],
+      "skillLabel": "Cost model",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A has sigma_max = 2 and sigma_min = 0.01. With ridge lambda = 0.01, what is the condition number of A^T A + lambda I? Give an integer (round).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "397",
+      "tolerance": 1.0,
+      "explanation": "(4+0.01)/(0.0001+0.01) = 4.01/0.0101 = 397.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "normal-equations-conditioning"
+      ],
+      "skillLabel": "Ridge condition number",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q2"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Your C++ coefficients differ from NumPy's in the 6th digit for an ill-conditioned fit. Is that a bug? What would you compare instead?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Not necessarily: with cond ~ 1e8 coefficient differences of cond*eps are expected.",
+        "Compare residual norms, fitted values and the orthogonality A^T r.",
+        "Print cond(A), and set tolerance relative to it."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "oracle-verification"
+      ],
+      "skillLabel": "Interpreting oracle differences",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP11#verification"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "You must solve a 7x7 dense least-squares problem 1000 times per second for inverse kinematics, and sometimes the Jacobian is nearly singular. Choose a method and justify it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "SVD or damped least squares (ridge) because near-singular Jacobians need rank handling.",
+        "Notes that a 7x7 problem is tiny: cost is negligible at 1 kHz, so robustness wins over speed.",
+        "Avoids forming J^T J without damping and avoids explicit inverses."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "solver-selection",
+        "normal-equations-conditioning"
+      ],
+      "skillLabel": "Selecting a solver",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP11#alternatives-and-trade-offs"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Write the Eigen lines that solve min ||A x - b|| by QR into an explicit VectorXd and print the residual norm.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Eigen::VectorXd x = A.colPivHouseholderQr().solve(b); (not auto).",
+        "double r = (A * x - b).norm();",
+        "Optionally checks A.rows() >= A.cols() and A^T(Ax-b) ~ 0."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "least-squares-solution",
+        "eigen-pitfalls"
+      ],
+      "skillLabel": "Writing the solve",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP11#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

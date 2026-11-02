@@ -1,0 +1,207 @@
+{
+  "id": "S03-diagnostic",
+  "topicId": "S03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A node publishes Twist on /cmd_vel; another subscribes to /cmd_vel expecting TwistStamped. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The subscriber receives the Twist converted automatically with a zero stamp.",
+        "The endpoints do not match: no data flows and your code sees no exception.",
+        "ROS 2 delivers it, but with the stamp field set to zero.",
+        "The publisher raises a TypeError at startup because the types disagree."
+      ],
+      "answer": "1",
+      "explanation": "Name and type must match for endpoints to connect.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "topic-matching"
+      ],
+      "skillLabel": "Topic name and type matching",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A Twist has 6 doubles (48 bytes payload). Payload bandwidth at 20 Hz in bytes/s?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "960",
+      "tolerance": 0.5,
+      "explanation": "48*20.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "interface-choice"
+      ],
+      "skillLabel": "Choose topic, service or action",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "41 stamps span exactly 2.0 s. Average rate (n-1)/span in Hz. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20",
+      "tolerance": 0.01,
+      "explanation": "40 intervals / 2.0 s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Stamps in ms: 0, 50, 100, 250, period 50 ms. How many messages are missing?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "Gap 150 ms = 3 periods, so 2 missing.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rate-from-stamps"
+      ],
+      "skillLabel": "Rates, stamps and gaps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Which interface fits 'navigate to this pose, report progress, allow cancel'?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A service with a 10-minute timeout",
+        "An action",
+        "A parameter",
+        "A topic published at 100 Hz"
+      ],
+      "answer": "1",
+      "explanation": "Long-running goal with feedback and cancel is an action.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "interface-choice"
+      ],
+      "skillLabel": "Choose topic, service or action",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Which is a valid ROS 2 topic name?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "/robot//cmd_vel",
+        "/2d/lidar/scan",
+        "/arm_1/joint_states",
+        "/cmd_vel/filtered/"
+      ],
+      "answer": "2",
+      "explanation": "No token may start with a digit, no empty token, no trailing slash.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "topic-names"
+      ],
+      "skillLabel": "Topic naming rules",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Write the interface table (topic, type, units, frame, rate) for a mobile robot's velocity command and wheel odometry, and say what could still go wrong although the types match.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Lists topic names, standard types, SI units and frames (REP 103).",
+        "States rates and the timestamp source.",
+        "Names unit mismatch, wrong frame or stale data as errors the type system cannot catch."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "units-conventions"
+      ],
+      "skillLabel": "Units and frame conventions",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S03#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

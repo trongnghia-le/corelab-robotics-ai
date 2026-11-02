@@ -1,0 +1,188 @@
+{
+  "id": "ML03-diagnostic",
+  "topicId": "ML03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A model has 2% training error and 25% validation error. What is the most likely diagnosis?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Overfitting (high variance): the model memorizes the training set",
+        "Irreducible noise that no model could ever remove",
+        "The validation set is mislabeled, while training itself is fine",
+        "Underfitting (high bias): the model is too simple for the data"
+      ],
+      "answer": "0",
+      "explanation": "A large gap with low training error indicates high variance. Remedies: more data, regularization, a simpler model.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "overfitting-diagnosis"
+      ],
+      "skillLabel": "Reading train versus validation error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Observations have noise standard deviation 0.4. A model achieves test MSE 0.25. How much of the test MSE is reducible (above the irreducible noise floor)? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.09",
+      "tolerance": 0.005,
+      "explanation": "Irreducible error is sigma^2 = 0.16; reducible = 0.25 - 0.16 = 0.09 (bias^2 + variance).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bias-variance"
+      ],
+      "skillLabel": "Noise floor arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Both training and validation error plateau at 0.28 as the training set grows, while the target is 0.10. What should you do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Add stronger regularization to reduce the remaining variance",
+        "Collect ten times more data, because the validation gap will close",
+        "Increase model capacity or improve features; more data will not help",
+        "Shuffle the test set again so the plateau moves lower"
+      ],
+      "answer": "2",
+      "explanation": "Converging high errors are the signature of high bias.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "learning-curves"
+      ],
+      "skillLabel": "Learning curve diagnosis",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "At one input the true value is 1.0. Models fitted on four training sets predict 0.9, 1.3, 1.1, 1.1. What is the bias squared of the average model? Give a number with 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.01",
+      "tolerance": 0.0005,
+      "explanation": "The mean prediction is 1.1; bias = 0.1 so bias^2 = 0.010.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bias-variance"
+      ],
+      "skillLabel": "Bias squared",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "You pick the 10 best features from 1000 using all labels, then run 5-fold CV on those 10 features. The labels are random. What does CV report?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Accuracy far above chance, because the selection used the validation labels",
+        "About 50%, because with random labels no feature can help",
+        "Exactly 50%, because cross-validation always balances random labels",
+        "An error, because scikit-learn forbids selecting features before CV"
+      ],
+      "answer": "0",
+      "explanation": "Selection must be repeated inside each training fold, otherwise validation information leaks.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cv-leakage"
+      ],
+      "skillLabel": "Leakage in selection",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/ML03#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "103 samples are split into 5 folds with sizes as equal as possible. How many samples are in the smallest training set used by the five fits? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "82",
+      "tolerance": 0.01,
+      "explanation": "Folds: 21,21,21,20,20. Training sizes are 103-21 = 82 or 103-20 = 83; the smallest is 82.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cv-leakage"
+      ],
+      "skillLabel": "Fold bookkeeping",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A grasp-success classifier scores 98% on a random split of robot trials but 71% when tested on a new robot. Give two possible causes and explain how you would distinguish them and change the evaluation protocol.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names distribution shift (hardware, lighting, gripper) and/or leakage from near-duplicate trials in the random split.",
+        "Distinguishes them: domain classifier AUC, group-wise split by robot/session, compare train/val on the old robot.",
+        "Proposes group splits (by robot, site, date), a final untouched test set, and reporting with confidence intervals."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "distribution-shift",
+        "cv-leakage"
+      ],
+      "skillLabel": "Diagnosing a train-test mismatch",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/ML03#alternatives-and-trade-offs"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

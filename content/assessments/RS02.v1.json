@@ -1,0 +1,178 @@
+{
+  "id": "RS02-diagnostic",
+  "topicId": "RS02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A run with augmentation AND more data scores 9 points above baseline. Which statement is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confounding"
+      ],
+      "skillLabel": "Confounding",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "options": [
+        "Augmentation caused 4.5 points and data caused 4.5 points, since the two effects split evenly.",
+        "The 9 points cannot be attributed to either change without runs that vary them separately.",
+        "The result is invalid and must be discarded because it combined two changes in one run.",
+        "Data caused all 9 points, because more data is always more important than augmentation."
+      ],
+      "answer": "1",
+      "explanation": "With two factors changing together they are confounded."
+    },
+    {
+      "id": "q2",
+      "prompt": "Cell means: m00=60, m10=66, m01=63, m11=71. Main effect of A? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "factorial-effects"
+      ],
+      "skillLabel": "Factorial effects",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "answer": "7.0",
+      "tolerance": 0.05,
+      "explanation": "((66-60)+(71-63))/2=7.0."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same cell means: interaction E_AB = (m11+m00-m10-m01)/2? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "factorial-effects"
+      ],
+      "skillLabel": "Factorial effects",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "answer": "1.0",
+      "tolerance": 0.05,
+      "explanation": "(71+60-66-63)/2=1.0."
+    },
+    {
+      "id": "q4",
+      "prompt": "Why randomise the run order of a factorial experiment?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "randomization"
+      ],
+      "skillLabel": "Randomisation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "To remove the need for replicates, since random order already averages out the noise.",
+        "To make the effects larger by averaging out the noise inside each condition.",
+        "To prevent drifting conditions (time, hardware state) from lining up with a factor.",
+        "To reduce the number of runs by letting random order skip some factor combinations."
+      ],
+      "answer": "2",
+      "explanation": "Randomisation breaks accidental alignment between nuisance variables and factors."
+    },
+    {
+      "id": "q5",
+      "prompt": "Within-cell standard deviation sigma=4 and r=4 replicates per cell in a 2x2 design. Standard error of a factorial effect? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "replicates-and-noise"
+      ],
+      "skillLabel": "Replicates and noise",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "answer": "2.0",
+      "tolerance": 0.05,
+      "explanation": "sigma/sqrt(r)=4/2=2."
+    },
+    {
+      "id": "q6",
+      "prompt": "Replicates per cell needed to detect delta=2 with sigma=3 (r=ceil(7.84 sigma^2/delta^2))? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "replicates-and-noise"
+      ],
+      "skillLabel": "Replicates and noise",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#worked-example"
+        }
+      ],
+      "answer": "18.0",
+      "tolerance": 0.01,
+      "explanation": "7.84*9/4=17.64 -> 18."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design the smallest experiment that separates the effect of a new loss from the effect of a new data augmentation, and say what you would report.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "confounding",
+        "factorial-effects"
+      ],
+      "skillLabel": "Factorial effects",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS02#verification"
+        }
+      ],
+      "rubric": [
+        "A 2x2 factorial (old/new loss by old/new augmentation) with several seeds per cell in randomised order.",
+        "Reports main effects, interaction and intervals.",
+        "States a result that would reject the claim that the loss helps."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

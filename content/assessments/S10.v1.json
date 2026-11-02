@@ -1,0 +1,207 @@
+{
+  "id": "S10-diagnostic",
+  "topicId": "S10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Two controllers both write joint1/velocity. What does ros2_control allow?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Both can be active, but each one only receives half of the gain",
+        "Both can be active at once, and the one that writes last wins",
+        "Only one can be active; the other cannot claim the command interface",
+        "Both can be active if their commands use the same message type"
+      ],
+      "answer": "2",
+      "explanation": "A command interface has at most one active owner.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "resource-ownership"
+      ],
+      "skillLabel": "Resource ownership of interfaces",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "update_rate is 200 Hz. Period in ms.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "1000/200.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "update-timing"
+      ],
+      "skillLabel": "Update-loop timing budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "update_rate 500 Hz and a cycle (read+update+write) of 1.8 ms. Utilization (fraction of the period). Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.9",
+      "tolerance": 0.01,
+      "explanation": "1.8/2.0 - dangerously high.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "update-timing"
+      ],
+      "skillLabel": "Update-loop timing budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "PID with kp=3, ki=2, kd=0, dt=0.05, error 1, integral starts at 0 and no saturation. Output u. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.1",
+      "tolerance": 0.001,
+      "explanation": "3 + 2*0.05.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pid-windup"
+      ],
+      "skillLabel": "Discrete PID and anti-windup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A mock hardware interface returns the commanded velocity as the measured velocity even when the joint sits on a limit. What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The velocity should be filtered, so that the controller never sees a sudden jump at a limit.",
+        "Nothing is wrong; the commanded velocity is the best available estimate of the measured velocity.",
+        "Velocity should always be zero in a mock, so that the controller never reacts to it.",
+        "State must report actual motion (displacement per period), or the controller thinks a stuck joint is moving."
+      ],
+      "answer": "3",
+      "explanation": "State consistency.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "state-consistency"
+      ],
+      "skillLabel": "Consistent state from a mock interface",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A strict controller switch request fails because one activation conflicts. What is the state afterwards?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Only the deactivations were applied; the new activations failed.",
+        "Unchanged: all previously active controllers remain active.",
+        "Only the first activation was applied, before the conflict was found.",
+        "All controllers are stopped until the request is retried."
+      ],
+      "answer": "1",
+      "explanation": "Atomic switching leaves the system unchanged on failure.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "atomic-switch"
+      ],
+      "skillLabel": "Atomic controller switching",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Where would you enforce velocity and position limits in a ros2_control setup and what would a mock test check? Mention state consistency.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Discusses limits in the hardware interface and in controllers with their pros and cons.",
+        "Lists mock invariants: clamped command, position in range, finite commands only.",
+        "Includes state consistency: velocity equals actual displacement over the period."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "state-consistency"
+      ],
+      "skillLabel": "Consistent state from a mock interface",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/S10#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S05",
+        "S06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,393 @@
+{
+  "id": "RL13-targeted",
+  "topicId": "RL13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "z = 0.5 with u_max = 6. What force does u_max*tanh(z) give? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.77",
+      "tolerance": 0.01,
+      "explanation": "tanh(0.5) = 0.4621; 6*0.4621 = 2.773.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-saturation"
+      ],
+      "skillLabel": "Evaluate a squashed force",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Normalised action -0.5 and limits [0, 10]. What force results? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.5",
+      "tolerance": 0.01,
+      "explanation": "0 + (-0.5 + 1)/2 * 10 = 2.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-action-scaling"
+      ],
+      "skillLabel": "Scale normalised actions",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "z = 0 drawn from N(0, 1), a = tanh z. What is log pi(a) including the correction? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.919",
+      "tolerance": 0.002,
+      "explanation": "Gaussian part -0.9189; correction log(1 - 0) = 0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-tanh-logprob"
+      ],
+      "skillLabel": "Compute a squashed log-density",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "z = 1 from N(0, 1). Gaussian log-density is -1.4189. What is the squashed log pi(a)? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.551",
+      "tolerance": 0.003,
+      "explanation": "Correction -log(1 - tanh^2 1) = -log(0.41997) = +0.8676; total -1.4189 + 0.8676 = -0.5513.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-tanh-logprob"
+      ],
+      "skillLabel": "Compute a squashed log-density",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Which reward best discourages bang-bang control while keeping the task?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "-(x - x*)^2 - lambda*u^2 with lambda > 0 tuned on the task",
+        "-(x - x*)^2 only, with no term on the action",
+        "+u^2 to encourage the policy to keep moving",
+        "a bonus whenever the action equals the actuator limit"
+      ],
+      "answer": "0",
+      "explanation": "A quadratic effort penalty trades tracking against effort; without it the optimum can be bang-bang, and rewarding limit actions encourages saturation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cc-control-cost"
+      ],
+      "skillLabel": "Choose a control-cost term",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL13#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q5"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Why is hard clipping of sampled Gaussian actions inside the environment a poor fit for policy-gradient training?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Samples beyond the limit have identical effects but different log-probabilities, so gradients carry no signal",
+        "Clipping removes the need for a critic, so the value learning stalls during training",
+        "Clipping makes the executed actions discrete, which breaks the Gaussian assumption of the policy",
+        "Clipping raises the actuator limit, so the plant is driven harder than the policy intended"
+      ],
+      "answer": "0",
+      "explanation": "The policy's distribution is not the distribution of executed actions, so the score no longer matches the effect.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cc-saturation",
+        "cc-tanh-logprob"
+      ],
+      "skillLabel": "Understand clipping versus squashing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL13#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Forces [3, 3, 3, 3], dt = 0.1. Control cost sum u^2 dt? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.6",
+      "tolerance": 0.05,
+      "explanation": "4 * 9 * 0.1 = 3.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-control-cost"
+      ],
+      "skillLabel": "Compute control cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Mass 2, force 4 for 2 steps of dt = 0.5 from rest (v += dt*u/m; x += dt*v). Final velocity? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.01,
+      "explanation": "Each step adds 0.5*4/2 = 1; velocity 2.0 (position 1.5).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-control-cost"
+      ],
+      "skillLabel": "Integrate a force profile",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Forces [4, -4, 3.9, 0, 4]. With u_max = 4 what fraction of steps are saturated? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.6",
+      "tolerance": 0.01,
+      "explanation": "Three of five commands have |u| = 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cc-saturation"
+      ],
+      "skillLabel": "Compute the saturation fraction",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL13#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A colleague trains in simulation with action range [-1, 1] mapped by a = low + u*(high-low) with u in [-1, 1]. Find the flaw and compute the output for u = -1, low = 0, high = 10.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Identifies that the formula assumes u in [0, 1]",
+        "For u = -1 it returns -10, outside [0, 10]",
+        "Fix: low + (u + 1)/2*(high - low) and clip u to [-1, 1]"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "cc-action-scaling"
+      ],
+      "skillLabel": "Debug an action map",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL13#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Design an evaluation for a learned point-mass controller that detects both reward hacking through effort and unsafe saturation. List the metrics and a threshold for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Reports tracking cost and control cost separately, not only total return",
+        "Reports saturation fraction (and peak command) with a stated threshold such as under 10%",
+        "Compares with a hand-tuned PD baseline on the same task and seeds"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "cc-control-cost",
+        "cc-saturation"
+      ],
+      "skillLabel": "Design a continuous-control evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL13#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain why the action noise of a tanh-squashed policy depends on the mean, and what this means for exploration schedules.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Action noise is approximately u_max*(1 - tanh^2 z)*sigma, so it shrinks as |z| grows",
+        "Therefore a saturated policy explores much less",
+        "Mentions an entropy bonus or an explicit noise floor as a remedy"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cc-saturation"
+      ],
+      "skillLabel": "Explain state-dependent exploration",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "A squashed policy's pre-squash mean has drifted to z = 3 and returns stop improving. What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The discount factor is too small for the reward to propagate",
+        "The critic is overestimating, so the actor is pushed to the limit",
+        "The log-prob correction is too large and cancels the gradient",
+        "The squash slope is about 0.01, so gradients and exploration noise are tiny"
+      ],
+      "answer": "3",
+      "explanation": "At z = 3, 1 - tanh^2 z = 0.0099: the policy barely changes its action under gradient steps or noise.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cc-saturation"
+      ],
+      "skillLabel": "Diagnose a saturated policy",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL13#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q7"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "Gains tuned in simulation with a 4 N limit are run on hardware that delivers only 2 N for the same command. What do you expect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Identical behaviour, because the gains in the controller are exactly the same as before",
+        "More saturation, larger overshoot or slower settling, since the loop is weaker and less damped",
+        "Exact tracking of the reference, because the tanh squash adapts itself to the hardware",
+        "Lower cost and better behaviour, because the smaller forces are cheaper to produce"
+      ],
+      "answer": "1",
+      "explanation": "The closed loop depends on the product of gain and actuator authority, so halving authority changes damping and speed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cc-action-scaling"
+      ],
+      "skillLabel": "Anticipate scale mismatch on hardware",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL13#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    }
+  ]
+}

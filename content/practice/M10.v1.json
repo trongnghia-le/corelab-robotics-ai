@@ -1,0 +1,300 @@
+{
+  "id": "M10-targeted",
+  "topicId": "M10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "m10-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stationary-points"
+      ],
+      "skillLabel": "Zero gradient",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "At a point where ∇J = 0, what can you conclude?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It is a local minimum, as long as J is differentiable at the point",
+        "It is a stationary point: a minimum, maximum or saddle; check the curvature",
+        "The loss must be zero there, since the gradient vanishes at the point",
+        "It is a global minimum of J, since the slope is zero there"
+      ],
+      "answer": "1",
+      "explanation": "Zero gradient only says the first-order change vanishes; J(x) = −x² has a stationary maximum."
+    },
+    {
+      "id": "m10-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "step-size"
+      ],
+      "skillLabel": "Learning rate",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "On J = (θ − 3)², why can a large step size increase the loss even though −∇J points downhill?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The gradient is computed wrongly whenever the step size alpha is large",
+        "The gradient changes sign after the step, so the update turns uphill",
+        "The first-order model is only valid locally, so a long step overshoots",
+        "Descent directions exist only for alpha < 0.1, so large steps go uphill"
+      ],
+      "answer": "2",
+      "explanation": "The step moves past the valley floor; error multiplies by 1 − 2α, magnitude above 1 when α > 1."
+    },
+    {
+      "id": "m10-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "step-size"
+      ],
+      "skillLabel": "Update sign",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "Which update performs gradient descent on J?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "θ ← α∇J(θ) with α > 0, which replaces θ by the scaled gradient",
+        "θ ← θ + α∇J(θ) with α > 0, which follows the slope",
+        "θ ← θ − α/∇J(θ) with α > 0, which divides by the slope",
+        "θ ← θ − α∇J(θ) with α > 0, which steps against the gradient"
+      ],
+      "answer": "3",
+      "explanation": "Adding the gradient climbs the loss; dividing by it is meaningless."
+    },
+    {
+      "id": "m10-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "conditioning"
+      ],
+      "skillLabel": "Conditioning",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "For J = ½(λ₁θ₁² + λ₂θ₂²) with λ₂ ≫ λ₁, what limits the convergence speed of plain gradient descent?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The flat direction diverges first, which stops the iteration for good",
+        "Gradient descent converges in just two steps on any quadratic J",
+        "The gradient is exactly zero along the flat direction, so nothing moves",
+        "The step must be small for the stiff direction, so the flat one crawls"
+      ],
+      "answer": "3",
+      "explanation": "α < 2/λ₂ for stability but the slow factor is 1 − αλ₁, close to 1."
+    },
+    {
+      "id": "m10-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "step-size"
+      ],
+      "skillLabel": "One update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "J = (θ − 5)², θ₀ = 1, α = 0.2. What is θ₁?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.6",
+      "tolerance": 0.001,
+      "explanation": "Gradient 2(1−5) = −8; θ₁ = 1 + 1.6 = 2.6."
+    },
+    {
+      "id": "m10-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "step-size"
+      ],
+      "skillLabel": "Loss after update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "For the same problem (θ₁ = 2.6), what is J(θ₁)? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.76",
+      "tolerance": 0.01,
+      "explanation": "(2.6 − 5)² = 5.76."
+    },
+    {
+      "id": "m10-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conditioning"
+      ],
+      "skillLabel": "Stability bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "J = ½(2θ₁² + 40θ₂²). What is the strict upper bound on α for stable gradient descent?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.05",
+      "tolerance": 0.0001,
+      "explanation": "α < 2/λ_max = 2/40 = 0.05."
+    },
+    {
+      "id": "m10-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conditioning"
+      ],
+      "skillLabel": "Condition number",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "For J = ½(2θ₁² + 40θ₂²) what is the optimal fixed step 2/(λ_min + λ_max)? Give 4 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.047619",
+      "tolerance": 0.0001,
+      "explanation": "2/42 = 0.0476."
+    },
+    {
+      "id": "m10-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "step-size"
+      ],
+      "skillLabel": "Iteration count",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "The error factor per step is 0.9. How many steps until the error is at most 1% of its start? (round up)",
+      "dimension": "M",
+      "critical": false,
+      "answer": "44",
+      "tolerance": 0.01,
+      "explanation": "ln(0.01)/ln(0.9) = 43.7, so 44 steps."
+    },
+    {
+      "id": "m10-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "stationary-points"
+      ],
+      "skillLabel": "Closed-form oracle",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "You fit a sensor offset from squared residuals. Derive the closed-form optimum and explain how to use it to test a gradient-descent implementation.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Derives b* = mean of the residuals from setting the gradient to zero.",
+        "Runs gradient descent and compares the final b with b* within a tolerance.",
+        "Also checks the loss trace is non-increasing and that a too-large α fails as predicted."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m10-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "step-size"
+      ],
+      "skillLabel": "Debugging divergence",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "A training loop's loss rises for the first ten iterations. List three checks, in order, to find the cause.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Checks the update sign and that the gradient is for the same loss.",
+        "Runs a finite-difference gradient check.",
+        "Reduces the learning rate and compares against the stability bound; inspects data scaling."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m10-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stationary-points"
+      ],
+      "skillLabel": "Stopping criteria",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#verification"
+        }
+      ],
+      "prompt": "Why is 'the update became tiny' a weak stopping criterion, and which quantities would you log instead?",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Tiny learning rate or flat region can make updates small without convergence.",
+        "Log gradient norm, objective trace and relative change.",
+        "Mentions initialisation and maximum iterations."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

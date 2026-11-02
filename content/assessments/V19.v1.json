@@ -1,0 +1,180 @@
+{
+  "id": "V19-diagnostic",
+  "topicId": "V19",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Three samples with sigma = (0, 2, 5), delta = 0.5 along a ray. What is the total transmittance exp(-sum sigma delta)? Give 4 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "volume-rendering"
+      ],
+      "skillLabel": "Volume rendering quadrature",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V13"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "answer": "0.0302",
+      "tolerance": 0.0005,
+      "explanation": "sum sigma*delta = 3.5; e^-3.5 = 0.0302."
+    },
+    {
+      "id": "q2",
+      "prompt": "For the same ray with colours (0.1, 0.5, 0.9), compute the pixel colour to 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "volume-rendering"
+      ],
+      "skillLabel": "Volume rendering quadrature",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "answer": "0.62",
+      "tolerance": 0.01,
+      "explanation": "w = (0, 0.6321, 0.3377); C = 0.316+0.304 = 0.620."
+    },
+    {
+      "id": "q3",
+      "prompt": "A rendering function computes pixel colour as sum(alpha_i * c_i) with alpha_i = 1 - exp(-sigma_i delta_i). What is missing?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "volume-rendering"
+      ],
+      "skillLabel": "Volume rendering quadrature",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V19#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The transmittance of the samples in front, so occluded samples are over-counted.",
+        "A normalisation by the number of samples, so colour does not depend on sampling density.",
+        "The viewing direction, so view-dependent colour can be computed for each sample.",
+        "A positional encoding of the sample positions, so fine detail can be represented."
+      ],
+      "answer": "0",
+      "explanation": "w_i = T_i alpha_i; without T_i colour can exceed 1 and hidden samples leak through."
+    },
+    {
+      "id": "q4",
+      "prompt": "A neural field reaches 33 dB PSNR on a training view, but expected depth is 0.8 m off. The most accurate conclusion is",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "photometric-vs-geometric"
+      ],
+      "skillLabel": "Photometric versus geometric error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "options": [
+        "Photometric agreement does not guarantee geometric accuracy; geometry needs its own metric.",
+        "PSNR is not defined for photographs, so the 33 dB figure carries no meaning here.",
+        "The camera poses are certainly correct, since the training view is reproduced so well.",
+        "The geometry must be correct because the rendered images match the photographs so well."
+      ],
+      "answer": "0",
+      "explanation": "On a ray only the opacity-weighted colour is constrained; fog and surfaces can agree."
+    },
+    {
+      "id": "q5",
+      "prompt": "A 3D point is encoded with L = 10 sin/cos frequencies per coordinate (no raw coordinates). How many numbers?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "positional-encoding"
+      ],
+      "skillLabel": "Positional encoding",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML11"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V19#theory-and-derivation"
+        }
+      ],
+      "answer": "60",
+      "tolerance": 0.5,
+      "explanation": "3 coordinates x 2 x 10 = 60."
+    },
+    {
+      "id": "q6",
+      "prompt": "Compute PSNR (peak 1) for an MSE of 0.0025, 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "photometric-vs-geometric"
+      ],
+      "skillLabel": "Photometric versus geometric error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "answer": "26.02",
+      "tolerance": 0.02,
+      "explanation": "10 log10(1/0.0025) = 26.02 dB."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design an evaluation comparing novel-view quality with geometric accuracy for a neural field that a grasping robot will use. Give held-out data, metrics, baseline and a rejection rule.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "photometric-vs-geometric"
+      ],
+      "skillLabel": "Photometric versus geometric error",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V19#verification"
+        }
+      ],
+      "rubric": [
+        "Holds out viewpoints and uses a depth reference (sensor or scan).",
+        "Reports PSNR together with a geometric metric (depth RMSE or chamfer distance).",
+        "States a baseline and a rejection rule tied to the grasping tolerance."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

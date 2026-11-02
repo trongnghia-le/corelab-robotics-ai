@@ -1,0 +1,182 @@
+{
+  "id": "ML12-diagnostic",
+  "topicId": "ML12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Linear classifier w=(2,−1,0.5), b=0, input x=(1,1,1), label +1. What is the smallest max-norm perturbation ε that can flip the prediction (the margin divided by ‖w‖₁)? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.428571",
+      "tolerance": 0.001,
+      "explanation": "Margin 1.5, ‖w‖₁=3.5, so ε* = 0.4286.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "robust-margin"
+      ],
+      "skillLabel": "Worst-case margin of a linear classifier",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M14"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Why are high-dimensional linear classifiers easy to attack with tiny per-coordinate perturbations?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Gradients vanish in high dimensions, so no small perturbation can change the score",
+        "Adversarial examples exist only for deep networks, not for linear classifiers",
+        "Tiny perturbations always change the true label, so they are not really attacks",
+        "The effect eps*||w||_1 adds up over all coordinates, growing with dimension"
+      ],
+      "answer": "3",
+      "explanation": "Each coordinate shifts the score by ε|w_j| in the worst direction, so the total grows with the number of coordinates.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "robust-margin"
+      ],
+      "skillLabel": "Worst-case margin of a linear classifier",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A finite hypothesis class has |H|=1000, δ=0.05 and n=10,000 samples. What is the Hoeffding/union-bound gap sqrt((ln|H|+ln(2/δ))/(2n))? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.023018",
+      "tolerance": 0.001,
+      "explanation": "(6.908+3.689)/20000=5.30e-4; square root 0.0230.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "uniform-convergence"
+      ],
+      "skillLabel": "Uniform-convergence bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "If you want to halve the Hoeffding generalization gap, roughly how much more data do you need (everything else fixed)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Four times as much",
+        "The same amount",
+        "Half as much",
+        "Twice as much"
+      ],
+      "answer": "0",
+      "explanation": "The gap scales as 1/√n, so halving it needs 4× n.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "uniform-convergence"
+      ],
+      "skillLabel": "Uniform-convergence bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "On log-log axes a learning curve passes through (n=100, loss=0.2) and (n=10,000, loss=0.02). What is the exponent α in loss ∝ n^−α? (decimal, tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "Loss falls 10× over a 100× increase in n: α=log(10)/log(100)=0.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "scaling-law-fit"
+      ],
+      "skillLabel": "Fitting and extrapolating scaling laws",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A power-law fit to learning-curve data from n=10³ to 10⁵ predicts a loss of 0.04 at n=10⁷, but the data's label noise puts a floor at 0.08. What is the lesson?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The fit should have been done on linear axes, which removes the label-noise floor",
+        "Power laws never apply to learning curves, so the prediction should be discarded entirely",
+        "A lower predicted loss is always the safe choice, so the fit can be trusted as it is",
+        "Extrapolating beyond the fitted range can break the irreducible floor; model it or gather larger n"
+      ],
+      "answer": "3",
+      "explanation": "A pure power law ignores the irreducible term and can predict values the problem cannot reach.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scaling-law-fit"
+      ],
+      "skillLabel": "Fitting and extrapolating scaling laws",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A paper claims that a new defence makes a classifier robust. Describe a narrow, falsifiable reproduction: the baseline, a boundary case, the attack, and the falsifier.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names a baseline (undefended model under the same attack) and a boundary case (ε=0 clean accuracy matches the reported number).",
+        "Uses a strong, multi-step attack and a range of ε; several seeds with spread.",
+        "States the falsifier before running (e.g. robust accuracy below a threshold, or a stronger attack erases the gain)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "claim-reproduction"
+      ],
+      "skillLabel": "Reproducing a claim with a falsifier",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

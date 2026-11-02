@@ -1,0 +1,198 @@
+{
+  "id": "C08-diagnostic",
+  "topicId": "C08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Two sensors share a mounting bracket that vibrates, so a large part of their errors is common. A designer fuses them as independent. What is the consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The stated variance is smaller than the true error variance (overconfidence)",
+        "The fused estimate becomes biased, because the common vibration shifts its mean",
+        "Nothing, as long as both sensors have the same variance as each other",
+        "The stated variance is larger than the truth, so the filter is too cautious"
+      ],
+      "answer": "0",
+      "explanation": "Common error does not average out, but the independent formula assumes it does.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "correlation"
+      ],
+      "skillLabel": "Correlated errors and overconfidence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Independent fusion of 5.0 (variance 2) and 6.0 (variance 1). Fused mean (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.666667",
+      "tolerance": 0.001,
+      "explanation": "Weights 0.5 and 1: (2.5+6)/1.5 = 5.667.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "weighted-fusion"
+      ],
+      "skillLabel": "Inverse-variance fusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Same fusion: fused variance (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.666667",
+      "tolerance": 0.001,
+      "explanation": "1/(0.5+1) = 0.667.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "weighted-fusion"
+      ],
+      "skillLabel": "Inverse-variance fusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Two equal sensors with variance 1 and error correlation 0.6, averaged with equal weights. True variance of the average (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.01,
+      "explanation": "(1+1+1.2)/4 = 0.8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "correlation"
+      ],
+      "skillLabel": "Correlated errors and overconfidence",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A camera frame is stamped at arrival, 50 ms after exposure, while the robot moves at 1.6 m/s. Position error from this latency (m, 3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.08",
+      "tolerance": 0.001,
+      "explanation": "v*latency = 1.6*0.05 = 0.08.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "alignment"
+      ],
+      "skillLabel": "Frame and time alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A complementary filter has time constant tau = 0.8 s and the gyro has a constant bias of 0.01 rad/s. Steady-state angle error (rad, 4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.008",
+      "tolerance": 0.0005,
+      "explanation": "error = tau*bias = 0.008 rad.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "complementary-filter"
+      ],
+      "skillLabel": "Complementary filtering and consistent fusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A mobile robot fuses wheel odometry and a lidar scan matcher that uses the same odometry as its initial guess. Explain the dependence risk and how you would fuse them safely.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies shared information (the odometry prior) so errors are correlated.",
+        "Says independent fusion would double count / be overconfident.",
+        "Proposes a fix: covariance intersection, or fuse the scan matcher's relative correction, or model the dependence."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "correlation",
+        "weighted-fusion"
+      ],
+      "skillLabel": "Correlated errors and overconfidence",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C08#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

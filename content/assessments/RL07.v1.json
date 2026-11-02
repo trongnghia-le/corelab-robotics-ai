@@ -1,0 +1,184 @@
+{
+  "id": "RL07-diagnostic",
+  "topicId": "RL07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A table (one-hot features) is updated with semi-gradient TD(0) at state 7. Which estimates change?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The estimates at states 6, 7 and 8",
+        "Only states reachable from state 7 in one step",
+        "Every state's estimate, by a smaller amount",
+        "Only the estimate at state 7"
+      ],
+      "answer": "3",
+      "explanation": "With one-hot features the gradient of V(7) is the unit vector for state 7, so only that weight moves. Sharing appears only when features overlap.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fa-interference"
+      ],
+      "skillLabel": "Interference between states",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Linear estimate with phi(i) = [1, i] and w = (0.2, 0.1). What is V-hat(4)? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.6",
+      "tolerance": 0.01,
+      "explanation": "0.2 + 0.1*4 = 0.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fa-linear-estimate"
+      ],
+      "skillLabel": "Evaluate a linear estimate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "ML04"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Semi-gradient TD(0) error: r = 0, gamma = 0.9, V-hat(s) = 0.5, V-hat(s') = 0.8, non-terminal. Compute delta. (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.22",
+      "tolerance": 0.01,
+      "explanation": "delta = 0 + 0.9*0.8 - 0.5 = 0.22.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fa-semi-gradient-td"
+      ],
+      "skillLabel": "Compute the TD error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Which combination is the 'deadly triad' that can make value learning diverge?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Replay buffer, exploration noise and aggressive reward scaling",
+        "Function approximation, bootstrapping and off-policy (off-distribution) updates",
+        "Large discount factor, tiny step size and purely tabular features",
+        "Monte Carlo targets, linear features and strictly on-policy sampling"
+      ],
+      "answer": "1",
+      "explanation": "Removing any one of the three (tabular, Monte Carlo targets, on-policy distribution) restores the guarantees; the other options are not the triad.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fa-stability"
+      ],
+      "skillLabel": "Know when bootstrapping diverges",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Two states share one aggregate feature. Their true values are 0.2 and 0.5 and their weights d are 3 and 1. What constant minimises the d-weighted squared error? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.275",
+      "tolerance": 0.001,
+      "explanation": "The weighted mean (3*0.2 + 1*0.5)/4 = 0.275.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fa-projection"
+      ],
+      "skillLabel": "Project onto a feature space",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "ML04"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A robot value estimate uses shared features. Explain why a TD update at one state can change the estimate at another, and give one benefit and one risk.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "States that the change is alpha*delta*phi(t).phi(s), non-zero when features overlap",
+        "Names a benefit: generalisation to unvisited states",
+        "Names a risk: an update at one state distorts values elsewhere or breaks convergence"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fa-interference"
+      ],
+      "skillLabel": "Explain interference",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL07#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "You must approximate values for a corridor robot with a doorway. Describe which features and which state weighting you would choose, and one test that could show the choice is bad.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Chooses features able to represent the door effect (e.g. tiles or a step feature) and justifies them",
+        "Chooses the weighting as the states the policy visits, or argues for another",
+        "Proposes a held-out error check near the door or on returns"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "fa-linear-estimate",
+        "fa-projection"
+      ],
+      "skillLabel": "Choose features and weighting",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL07#alternatives-and-trade-offs"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

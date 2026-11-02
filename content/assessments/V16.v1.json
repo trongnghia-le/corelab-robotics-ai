@@ -1,0 +1,182 @@
+{
+  "id": "V16-diagnostic",
+  "topicId": "V16",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "An object's x-position over five frames is 0,1,2,3,4 in clip A and 4,3,2,1,0 in clip B. Which feature separates the clips?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "temporal-vs-frame"
+      ],
+      "skillLabel": "Frame-only versus temporal evidence",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V09"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V16#worked-example"
+        }
+      ],
+      "options": [
+        "The maximum x over the clip.",
+        "The mean difference between consecutive frames.",
+        "The mean of the per-frame x (bag of frames).",
+        "The number of frames."
+      ],
+      "answer": "1",
+      "explanation": "The bag mean is 2 for both and the max is 4 for both; the mean consecutive difference is +1 versus -1."
+    },
+    {
+      "id": "q2",
+      "prompt": "A 150-frame clip is sampled with 6 segment-centre indices. What is the last index?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-sampling"
+      ],
+      "skillLabel": "Choosing frames from a clip",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V16#worked-example"
+        }
+      ],
+      "answer": "137",
+      "tolerance": 0.5,
+      "explanation": "floor(5.5*25)=137."
+    },
+    {
+      "id": "q3",
+      "prompt": "A 28 Hz periodic motion is filmed at 30 fps. What apparent frequency (Hz) does it have?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Aliasing and the sampling rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V16#theory-and-derivation"
+        }
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "|28-30|=2."
+    },
+    {
+      "id": "q4",
+      "prompt": "To avoid aliasing a 12 Hz periodic motion, the camera rate must be",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Aliasing and the sampling rate",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V16#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "above 24 fps",
+        "exactly 12 fps",
+        "above 6 fps",
+        "any rate, since video is continuous"
+      ],
+      "answer": "0",
+      "explanation": "Nyquist: sample at more than twice the highest frequency."
+    },
+    {
+      "id": "q5",
+      "prompt": "Stride-3 sampling of 8 frames at 30 fps starting at frame 0 covers how many seconds? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-sampling"
+      ],
+      "skillLabel": "Choosing frames from a clip",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V16#theory-and-derivation"
+        }
+      ],
+      "answer": "0.733",
+      "tolerance": 0.002,
+      "explanation": "(7*3+1)/30 = 22/30 = 0.733 s."
+    },
+    {
+      "id": "q6",
+      "prompt": "A Lucas-Kanade window lies on a long straight vertical edge. What is the consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "optical-flow"
+      ],
+      "skillLabel": "Optical flow and the aperture problem",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V16#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The flow is recovered exactly, since the edge gives strong gradients.",
+        "The window is too small, so the 2x2 matrix is dominated by noise.",
+        "Only the flow component normal to the edge is recoverable (aperture problem).",
+        "Only the component along the edge is measured, so the flow is vertical."
+      ],
+      "answer": "2",
+      "explanation": "All gradients are parallel, so the 2x2 matrix is singular."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design an experiment that shows whether a robot task (e.g. recognising a door opening versus closing) needs a temporal model. State the baseline, the test set, a boundary case and a rejection rule.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "temporal-vs-frame"
+      ],
+      "skillLabel": "Frame-only versus temporal evidence",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V16#verification"
+        }
+      ],
+      "rubric": [
+        "Defines a frame-only baseline and a temporal model on the same frames.",
+        "Includes a reversal or ambiguity test set and a still-scene boundary case.",
+        "States that if the frame-only model matches on the ambiguity set, time is not needed."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

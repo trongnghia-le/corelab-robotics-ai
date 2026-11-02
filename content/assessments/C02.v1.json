@@ -1,0 +1,215 @@
+{
+  "id": "C02-diagnostic",
+  "topicId": "C02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "For x' = -x^3 the linearization about x = 0 has slope 0. What can you conclude about stability from it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "linearization-stability"
+      ],
+      "skillLabel": "Stability from linearization",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Stability from linearization",
+          "href": "/lessons/C02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "options": [
+        "It is stable, because a slope of 0 means the state does not move away",
+        "It is unstable, because a zero slope gives no restoring force at all",
+        "It is a saddle, because a zero eigenvalue splits stable and unstable parts",
+        "Nothing: the zero eigenvalue makes the linearization inconclusive"
+      ],
+      "answer": "3",
+      "explanation": "A zero eigenvalue leaves the cubic term to decide."
+    },
+    {
+      "id": "q2",
+      "prompt": "m v' = u - c v^2 with m = 10 kg, c = 2, u = 50 N. Equilibrium speed in m/s?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "equilibrium"
+      ],
+      "skillLabel": "Finding equilibria",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Finding equilibria",
+          "href": "/lessons/C02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "v* = sqrt(u/c) = 5."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same system: the slope a = f'(v*) = -2 c v*/m in 1/s (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "linearization-stability"
+      ],
+      "skillLabel": "Linearization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Linearization",
+          "href": "/lessons/C02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "answer": "-2",
+      "tolerance": 0.01,
+      "explanation": "-2 x 2 x 5/10 = -2."
+    },
+    {
+      "id": "q4",
+      "prompt": "Same system: time constant of the linearized model in seconds (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "time-constant"
+      ],
+      "skillLabel": "Time constant",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Time constant",
+          "href": "/lessons/C02#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "tau = -1/a = 0.5 s."
+    },
+    {
+      "id": "q5",
+      "prompt": "The initial deviation from the equilibrium is halved. What happens to the error of the linear model compared with the nonlinear trajectory?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "linearization-error"
+      ],
+      "skillLabel": "Linearization error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Linearization error",
+          "href": "/lessons/C02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "options": [
+        "It divides by about 8, because the error grows with the deviation cubed",
+        "It divides by about 4, because the error grows with the deviation squared",
+        "It stays the same, because the Taylor term does not depend on the start",
+        "It halves, because the error is proportional to the deviation"
+      ],
+      "answer": "1",
+      "explanation": "The leading error is the second-order Taylor term, proportional to the deviation squared."
+    },
+    {
+      "id": "q6",
+      "prompt": "A damped pendulum's Jacobian at the upright position has determinant -9.81. The equilibrium is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "state-space-classification"
+      ],
+      "skillLabel": "Classifying equilibria",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Classifying equilibria",
+          "href": "/lessons/C02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "options": [
+        "A stable focus, because damping gives complex eigenvalues with negative real part",
+        "A stable node, because both eigenvalues are real and negative",
+        "A saddle, unstable, because the eigenvalues are real with opposite signs",
+        "A centre, because the eigenvalues are purely imaginary and orbits close"
+      ],
+      "answer": "2",
+      "explanation": "Negative determinant gives real eigenvalues of opposite sign."
+    },
+    {
+      "id": "q7",
+      "prompt": "A teammate linearizes m v' = u - c v^2 about the initial speed v = 0 and says the robot accelerates at 5 m/s^2 forever. Explain the mistake and give the right procedure.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "linearization-stability",
+        "equilibrium"
+      ],
+      "skillLabel": "Choosing the linearization point",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Choosing the linearization point",
+          "href": "/lessons/C02#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "rubric": [
+        "Identifies that linearization must be about an equilibrium where f(x*) = 0 (or include the constant term and its limits).",
+        "Gives the procedure: find v*, compute a = f'(v*), model the deviation delta' = a delta.",
+        "Notes the resulting prediction (v = 5 t) ignores drag, which dominates, and states the validity range."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

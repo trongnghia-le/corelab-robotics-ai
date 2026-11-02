@@ -1,0 +1,376 @@
+{
+  "id": "V11-targeted",
+  "topicId": "V11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Rectified stereo, R = I, t = (-B, 0, 0). A feature has normalised coordinates x1 = (0.2, 0.1). With f = 500 and cy = 240, which image row v does its epipolar line have in image 2? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "epipolar-constraint"
+      ],
+      "skillLabel": "Epipolar constraint",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "290",
+      "tolerance": 0.5,
+      "explanation": "y2 = y1 = 0.1, v = 500*0.1 + 240 = 290."
+    },
+    {
+      "id": "b2",
+      "prompt": "Rectified stereo, f = 400 px, B = 0.1 m, x1 = 0.20, x2 = 0.15 (normalised). Depth in metres? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stereo-depth"
+      ],
+      "skillLabel": "Stereo depth from disparity",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "d = 400*(0.20-0.15) = 20 px; Z = 400*0.1/20 = 2.0."
+    },
+    {
+      "id": "b3",
+      "prompt": "f = 500, B = 0.1 m, Z = 3 m, disparity error 0.25 px. First-order depth error in metres (precision 0.001)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "depth-error-baseline"
+      ],
+      "skillLabel": "Depth error and baseline",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.045",
+      "tolerance": 0.001,
+      "explanation": "9*0.25/(500*0.1) = 0.045."
+    },
+    {
+      "id": "b4",
+      "prompt": "What baseline (m) is needed for a depth error of at most 0.1 m at Z = 4 m with f = 500 and disparity error 0.5 px? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "depth-error-baseline"
+      ],
+      "skillLabel": "Depth error and baseline",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.16",
+      "tolerance": 0.01,
+      "explanation": "B >= Z^2 sigma_d/(f sigma_Z) = 16*0.5/(500*0.1) = 0.16."
+    },
+    {
+      "id": "b5",
+      "prompt": "By what factor does the first-order depth error grow when the distance doubles (same rig)? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "depth-error-baseline"
+      ],
+      "skillLabel": "Depth error and baseline",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "sigma_Z is proportional to Z^2."
+    },
+    {
+      "id": "b6",
+      "prompt": "Baseline 0.12 m, point at 3 m. Parallax angle in degrees (precision 0.01)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "depth-error-baseline"
+      ],
+      "skillLabel": "Depth error and baseline",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "2.29",
+      "tolerance": 0.01,
+      "explanation": "2*atan(0.02) = 2.291."
+    },
+    {
+      "id": "b7",
+      "prompt": "R = I, t = (-0.2, 0, 0). x1 = (0.1, 0.05), x2 = (0.05, 0.07). Compute the epipolar residual x2^T E x1 (precision 0.0005).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "epipolar-constraint"
+      ],
+      "skillLabel": "Epipolar constraint",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.004",
+      "tolerance": 0.0005,
+      "explanation": "E x1 = (0, 0.2, -0.01); residual = 0.07*0.2 - 0.01 = 0.004 (not zero: the match is off the row)."
+    },
+    {
+      "id": "b8",
+      "prompt": "You compute x2^T E x1 with raw pixel coordinates for a perfect match and get a huge value. What is the likely mistake?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "epipolar-constraint"
+      ],
+      "skillLabel": "Epipolar constraint",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Noise in the match, which is amplified by the pixel scale of the image",
+        "The images are not rectified, so the epipolar lines are not horizontal",
+        "The baseline is too small, so the epipolar constraint is not satisfied",
+        "E needs normalised coordinates (or use the fundamental matrix F)"
+      ],
+      "answer": "3",
+      "explanation": "E acts on calibrated rays; F = K2^-T E K1^-1 acts on pixels."
+    },
+    {
+      "id": "b9",
+      "prompt": "For a rotated stereo rig you use t as the position of camera 2 in camera 1's frame. What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stereo-depth"
+      ],
+      "skillLabel": "Stereo depth from disparity",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "It should be the transpose of t",
+        "t is correct",
+        "The camera-2 centre is -R^T t",
+        "It should be R t"
+      ],
+      "answer": "2",
+      "explanation": "t is the position of camera 1's centre in camera 2's frame."
+    },
+    {
+      "id": "b10",
+      "prompt": "A visual odometry system estimates a camera trajectory with unit step length. Which statement is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scale-ambiguity"
+      ],
+      "skillLabel": "Scale ambiguity",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "The rotations are unobservable, since only the translations are visible from the images",
+        "The shape of the path is observable but its metric scale is not, without extra information",
+        "Only the first frame is ambiguous, and every later frame fixes the scale of the path",
+        "The metric scale is exact, because the unit steps between frames fix the length of the path"
+      ],
+      "answer": "1",
+      "explanation": "Use stereo, IMU, wheel odometry or a known object."
+    },
+    {
+      "id": "b11",
+      "prompt": "Choose the baseline and focal length for a stereo rig that must measure depth between 0.5 m and 5 m with at most 5% error. State the equations you use and the trade-offs.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "depth-error-baseline"
+      ],
+      "skillLabel": "Depth error and baseline",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "Uses sigma_Z = Z^2 sigma_d/(f B) at the largest range to bound B.",
+        "Checks disparity range / minimum range and overlap at 0.5 m.",
+        "Discusses matching difficulty, occlusion and calibration accuracy for large baselines."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "List the checks you would apply to a triangulation routine (cases and invariants).",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "scale-ambiguity"
+      ],
+      "skillLabel": "Scale ambiguity",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "V04",
+        "M04"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V11#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "rubric": [
+        "Noise-free synthetic point is recovered; reprojection error near zero in both views.",
+        "Scaling t and the point by the same factor gives identical image observations.",
+        "Parallel rays/zero baseline return a failure; point must lie in front of both cameras."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

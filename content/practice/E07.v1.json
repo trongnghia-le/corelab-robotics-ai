@@ -1,0 +1,341 @@
+{
+  "id": "E07-targeted",
+  "topicId": "E07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A teleoperated policy slips (unrecoverably) with probability 0.3% per control step and a trial lasts 300 steps. What is the trial success probability? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.4060200622917274",
+      "tolerance": 0.002,
+      "explanation": "0.997^300 = 0.406."
+    },
+    {
+      "id": "b2",
+      "prompt": "Apply the first-mistake bound epsilon*T*(T+1)/2 to T=100, epsilon=0.004. (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "20.200000000000003",
+      "tolerance": 0.01,
+      "explanation": "0.004*100*101/2 = 20.2."
+    },
+    {
+      "id": "b3",
+      "prompt": "If per-step error is halved but the horizon is doubled, how does the worst-case bound epsilon*T^2 change?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "It halves.",
+        "It doubles.",
+        "It quadruples.",
+        "It stays the same."
+      ],
+      "answer": "1",
+      "explanation": "(e/2)*(2T)^2 = 2 e T^2: doubles."
+    },
+    {
+      "id": "b4",
+      "prompt": "Grasp-yaw demonstrations for a symmetric object: 60% are +0.5 rad, 40% are -0.5 rad. What yaw (rad, 2 decimals) minimises MSE?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "multimodal-actions"
+      ],
+      "skillLabel": "Multimodal action averaging",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.1",
+      "tolerance": 0.005,
+      "explanation": "0.6*0.5-0.4*0.5 = 0.10."
+    },
+    {
+      "id": "b5",
+      "prompt": "For the same data (60% at +0.5, 40% at -0.5), what is the minimum achievable MSE of a single deterministic output? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "multimodal-actions"
+      ],
+      "skillLabel": "Multimodal action averaging",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.24",
+      "tolerance": 0.002,
+      "explanation": "E[a^2]=0.25, mean 0.1, var = 0.25-0.01 = 0.24."
+    },
+    {
+      "id": "b6",
+      "prompt": "Which model class can represent two equally valid grasp approaches at the same observation without averaging them?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "multimodal-actions"
+      ],
+      "skillLabel": "Multimodal action averaging",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "A deterministic MLP with a larger hidden layer.",
+        "A regressor trained with L2 weight decay.",
+        "A linear regressor trained with MSE.",
+        "A mixture-of-Gaussians or diffusion policy head."
+      ],
+      "answer": "3",
+      "explanation": "Only generative or mixture heads can place probability on separate modes; a bigger deterministic net still outputs one value."
+    },
+    {
+      "id": "b7",
+      "prompt": "A cloned policy tracks a lane well but oscillates off the road after a gust pushes the robot sideways. The demonstrations never left the lane centre. Which fix targets the cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "covariate-shift"
+      ],
+      "skillLabel": "Rollout shift and covariate shift",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ],
+      "options": [
+        "Increase the camera resolution so the policy sees the lane markings more precisely.",
+        "Train longer on the same centred demonstrations until the training loss is smaller.",
+        "Collect demonstrations with recoveries from offsets, or run DAgger from perturbed starts.",
+        "Lower the learning rate so the policy fits the centred demonstrations more closely."
+      ],
+      "answer": "2",
+      "explanation": "The cause is missing state coverage, so the data must cover off-lane states."
+    },
+    {
+      "id": "b8",
+      "prompt": "In a DAgger round the engineer labels each visited state with the learner's own action to save expert time. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "covariate-shift"
+      ],
+      "skillLabel": "DAgger idea",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "The policy converges faster, because every label now matches its own behaviour.",
+        "The error bound becomes linear in the horizon, as with an expert labeller.",
+        "The policy becomes multimodal, because it is trained on its own outputs.",
+        "No new information enters the dataset, so retraining reproduces the same policy."
+      ],
+      "answer": "3",
+      "explanation": "Labels must come from the expert; self-labels only repeat the learner."
+    },
+    {
+      "id": "b9",
+      "prompt": "A 1-NN policy knows only demos (0.0, 0.0) and (0.4, -0.4) in the system x'=x+a with goal |x|<=0.05. How many steps does it need from x0=2.0? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "recovery-evaluation"
+      ],
+      "skillLabel": "Evaluating recovery",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "answer": "5.0",
+      "tolerance": 0.01,
+      "explanation": "Each step subtracts 0.4 until x reaches about 0: 5 steps (2.0, 1.6, 1.2, 0.8, 0.4, 0.0)."
+    },
+    {
+      "id": "b10",
+      "prompt": "Your cloned policy reaches the goal from start states inside the demonstration range but not outside it. Propose a protocol that distinguishes 'needs more coverage' from 'wrong model class', including a baseline and a falsifier.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "recovery-evaluation",
+        "covariate-shift"
+      ],
+      "skillLabel": "Evaluating recovery",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "Measures success against distance-from-data using many seeds and an expert baseline.",
+        "Varies coverage (more or recovery demos) while keeping the model fixed, then varies the model while keeping data fixed.",
+        "States in advance what outcome would reject the coverage hypothesis."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Explain, with a numeric example, why a policy with 99% per-step accuracy can still fail most 200-step trials, and name two ways to reduce the effect.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compounding-error",
+        "covariate-shift"
+      ],
+      "skillLabel": "Compounding error bound",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "rubric": [
+        "Computes the trial success, e.g. 0.99^200 = 0.134, from the per-step slip probability.",
+        "Explains that errors move the learner off the training distribution so they compound.",
+        "Names two remedies such as DAgger, recovery demonstrations, noise injection or action chunking."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Action chunking with k=10 reduces the number of decisions in a T=500 step episode to 50. Why can the real gain still be smaller than the factor-100 bound improvement?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compounding-error"
+      ],
+      "skillLabel": "Compounding error bound",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "Chunking requires a reward function, which the imitation setting does not provide to the learner",
+        "Chunking increases the effective horizon, so the number of decisions actually grows at test time",
+        "Chunks make the policy deterministic, which removes the benefit of the stated error bound",
+        "Per-chunk error is usually larger than per-step error, and disturbances inside a chunk go uncorrected"
+      ],
+      "answer": "3",
+      "explanation": "The bound assumes the same epsilon; a chunk is a harder prediction target and runs open loop."
+    }
+  ]
+}

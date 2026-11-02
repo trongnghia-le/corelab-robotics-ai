@@ -1,0 +1,297 @@
+{
+  "id": "R06-targeted",
+  "topicId": "R06",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "singularity-meaning"
+      ],
+      "skillLabel": "What a singular Jacobian means",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#reasoning-and-assumptions"
+        }
+      ],
+      "id": "j1",
+      "kind": "choice",
+      "prompt": "A planar 2R arm is exactly stretched out (q2 = 0). What does the rank-deficient Jacobian imply?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The arm cannot reach any point, since the workspace collapses to a line",
+        "No tip velocity along the arm direction can be produced",
+        "The tip position is undefined, so the forward kinematics cannot be evaluated",
+        "The joints cannot move at all, since both joint axes are locked"
+      ],
+      "answer": "1",
+      "explanation": "Both columns point perpendicular to the arm, so no joint motion can move the tip along the arm; the forward kinematics is still defined and the joints can still move."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "jacobian-construction"
+      ],
+      "skillLabel": "Building the 2R Jacobian",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#intuition-and-definitions"
+        }
+      ],
+      "id": "j2",
+      "kind": "number",
+      "prompt": "For l1 = l2 = 1 and q = (90 deg, 0), what is the entry J11 = -l1 sin(q1) - l2 sin(q1+q2)? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2",
+      "tolerance": 0.01,
+      "explanation": "sin(90 deg) = 1 and sin(90 deg + 0) = 1, so J11 = -1 - 1 = -2."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "singularity-meaning"
+      ],
+      "skillLabel": "Determinant of the Jacobian",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#reasoning-and-assumptions"
+        }
+      ],
+      "id": "j3",
+      "kind": "number",
+      "prompt": "A 2R arm has l1 = 0.6 m, l2 = 0.4 m and q2 = 30 degrees. What is det J = l1 l2 sin(q2)? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.12",
+      "tolerance": 0.001,
+      "explanation": "0.6*0.4*sin(30 deg) = 0.24*0.5 = 0.120."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "velocity-mapping"
+      ],
+      "skillLabel": "Joint rates to tip velocity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#worked-example"
+        }
+      ],
+      "id": "j4",
+      "kind": "number",
+      "prompt": "J = [[-1,-1],[1,0]] and the joint rates are (0.2, 0.3) rad/s. What is the x component of the tip velocity in m/s? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.5",
+      "tolerance": 0.005,
+      "explanation": "v_x = (-1)(0.2) + (-1)(0.3) = -0.5 m/s."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "statics-torque"
+      ],
+      "skillLabel": "Joint torques from a tip force",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#reasoning-and-assumptions"
+        }
+      ],
+      "id": "j5",
+      "kind": "number",
+      "prompt": "With J = [[-1,-1],[1,0]] the tip pushes with force F = (2, 0) N. Using tau = J^T F, what is the torque on joint 2 in N m? Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2.0",
+      "tolerance": 0.05,
+      "explanation": "J^T = [[-1,1],[-1,0]]; tau_2 = (-1)(2) + 0*0 = -2 N m."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "damped-least-squares"
+      ],
+      "skillLabel": "Choosing a rate solver",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#misconceptions-and-alternatives"
+        }
+      ],
+      "id": "j6",
+      "kind": "choice",
+      "prompt": "A resolved-rate controller drives a 2R arm toward a nearly stretched pose and the commanded joint rates spike. What is the most appropriate fix?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "Switch to damped least squares (and slow the task near the singularity)",
+        "Use the exact matrix inverse with double precision",
+        "Use a smaller integration time step only",
+        "Increase the joint-rate limits so the commands are accepted"
+      ],
+      "answer": "0",
+      "explanation": "Damped least squares bounds the rates near singularities at the cost of tracking accuracy. Reducing the time step does not remove the 1/sin(q2) amplification; ignoring the pose is unsafe."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "numerical-verification"
+      ],
+      "skillLabel": "Finite-difference error scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#implementation-and-verification"
+        }
+      ],
+      "id": "j7",
+      "kind": "number",
+      "prompt": "A central-difference Jacobian check has truncation error proportional to h^2. If the step is reduced from 1e-2 to 1e-3 (and round-off is negligible), by what factor does the error shrink? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "100",
+      "tolerance": 0.5,
+      "explanation": "Error ~ h^2, so reducing h by 10 reduces the error by 100."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "damped-least-squares"
+      ],
+      "skillLabel": "Limits of the pseudoinverse",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#misconceptions-and-alternatives"
+        }
+      ],
+      "id": "j8",
+      "kind": "choice",
+      "prompt": "Which statement about the pseudoinverse solution qdot = J^+ v is correct?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It gives the minimum-norm joint rates for v, but does not enforce limits",
+        "It automatically respects joint limits, because the rates are minimal",
+        "It never produces large joint rates, even close to a singularity",
+        "It avoids collisions with obstacles, because it minimises the motion"
+      ],
+      "answer": "0",
+      "explanation": "The pseudoinverse minimises joint-rate norm for the task, but it knows nothing about joint limits or obstacles, and it still produces large rates near singularities."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "manipulability"
+      ],
+      "skillLabel": "Velocity ellipse area",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#reasoning-and-assumptions"
+        }
+      ],
+      "id": "j9",
+      "kind": "number",
+      "prompt": "For the 2R arm of question j3 (det J = 0.12 m^2), what is the area of the velocity ellipse reached by unit-norm joint rates, pi*|det J|, in m^2/s^2? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.377",
+      "tolerance": 0.002,
+      "explanation": "pi * 0.12 = 0.377."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "redundancy-nullspace"
+      ],
+      "skillLabel": "Null space size",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#misconceptions-and-alternatives"
+        }
+      ],
+      "id": "j10",
+      "kind": "choice",
+      "prompt": "A 7-joint arm controls only the 3D position of its hand. What is the dimension of the null space of the 3x7 position Jacobian (assuming full rank)?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "3",
+        "4",
+        "7",
+        "10"
+      ],
+      "answer": "1",
+      "explanation": "7 joints minus rank 3 leaves 4 independent self-motions that do not move the hand."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "numerical-verification"
+      ],
+      "skillLabel": "Testing a Jacobian implementation",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#implementation-and-verification"
+        }
+      ],
+      "id": "j11",
+      "kind": "short",
+      "prompt": "List three independent tests for a function that returns the Jacobian of a planar arm, and say which kind of bug each catches.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Compares against a central finite-difference Jacobian at non-trivial joint values (catches wrong derivative terms, swapped rows or columns, angle offsets)",
+        "Checks a hand-computed pose such as q = (0, pi/2) and the singular pose q2 = 0 (catches sign errors and checks rank deficiency)",
+        "Checks the determinant formula or the shape/linearity J(q) u (catches missing lengths or incorrect dimensions); uses non-zero q1 and unequal link lengths"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "damped-least-squares"
+      ],
+      "skillLabel": "Singularity handling",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#misconceptions-and-alternatives"
+        }
+      ],
+      "id": "j12",
+      "kind": "short",
+      "prompt": "Describe how you would monitor and handle singularities in a resolved-rate controller for a 6-joint arm, including what you would log and what the controller does near a singularity.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Monitors a measure such as the smallest singular value, condition number or manipulability against a threshold",
+        "Applies damping (DLS) or slows/stops the task near the threshold, and limits joint rates",
+        "Logs the measure and joint rates, and notes that damping trades tracking accuracy for bounded rates"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

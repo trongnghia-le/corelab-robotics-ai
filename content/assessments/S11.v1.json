@@ -1,0 +1,207 @@
+{
+  "id": "S11-diagnostic",
+  "topicId": "S11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which property must a correct batched simulator satisfy?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Worlds in the batch share their randomized parameters so that memory use stays small.",
+        "The batch size must be a power of two so that the memory layout stays aligned for the kernels.",
+        "The batch result may differ slightly from per-world results if the batch runs faster.",
+        "World i in the batch gives the same trajectory as world i simulated alone; inputs are not mutated."
+      ],
+      "answer": "3",
+      "explanation": "Batching changes speed, not physics.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "batched-equivalence"
+      ],
+      "skillLabel": "Batched equals per-world",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Symmetric two-contact PGS with A=[[5,-3],[-3,5]]. Error factor per sweep (c/a)^2. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.36",
+      "tolerance": 0.001,
+      "explanation": "(3/5)^2=0.36.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "solver-convergence"
+      ],
+      "skillLabel": "Convergence of an iterative contact solver",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A residual of 1.0 shrinks by a factor 0.2 per sweep. Smallest whole number of sweeps to get below 1e-3.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "0.2^5=3.2e-4 < 1e-3 (0.2^4=1.6e-3).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "solver-convergence"
+      ],
+      "skillLabel": "Convergence of an iterative contact solver",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Central difference of f(x)=x^3 at x=2 with h=0.1. Value, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12.01",
+      "tolerance": 0.001,
+      "explanation": "(9.261-6.859)/0.2=12.01 (exact 12; error h^2).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ad-vs-fd"
+      ],
+      "skillLabel": "Automatic vs finite differences",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "One scalar loss and 10,000 policy parameters through a differentiable rollout. Which gradient method is appropriate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Central finite differences, 20,000 rollouts.",
+        "Forward-mode AD, one pass per parameter.",
+        "Reverse-mode AD: one backward pass for all parameters.",
+        "Random search only."
+      ],
+      "answer": "2",
+      "explanation": "Reverse mode costs a small multiple of one rollout.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ad-vs-fd"
+      ],
+      "skillLabel": "Automatic vs finite differences",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A ball hits a wall; the outcome (which side it ends on) is decided by a hard contact. What does the gradient of the final position with respect to launch angle look like?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Always equal to the finite-difference value for any step size h you choose.",
+        "Undefined only for h < 1e-12, and smooth and informative for all larger values.",
+        "Always large and positive, because a bigger angle always moves the ball further.",
+        "Zero almost everywhere with jumps at the switching angle, so it carries no useful signal."
+      ],
+      "answer": "3",
+      "explanation": "Piecewise constant outcome.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gradient-horizon"
+      ],
+      "skillLabel": "Gradient quality and horizon",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Design a comparison of contact-solver settings for a grasping simulation against a reference: reference, settings, metrics, cost and decision rule.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Defines a reference (smaller step, tight tolerance or analytic) and a set of settings.",
+        "Chooses metrics (trajectory RMSE, penetration, energy) and cost (time per step) and plots error vs cost.",
+        "States a decision rule (Pareto knee under an error limit) and a check that could reject a setting."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "solver-comparison"
+      ],
+      "skillLabel": "Compare solver settings to a reference",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/S11#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "PY06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

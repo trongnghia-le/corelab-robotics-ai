@@ -1,0 +1,206 @@
+{
+  "id": "CPP05-diagnostic",
+  "topicId": "CPP05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "After v.erase(std::remove_if(...), v.end()) is replaced by just std::remove_if(...) on a vector, what is true?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Only the first matching element is removed and the rest keep their positions",
+        "The size is unchanged; kept elements are moved to the front, tail unspecified",
+        "The matching elements are erased from the vector and its size shrinks",
+        "The call fails to compile because remove_if needs the container itself"
+      ],
+      "answer": "1",
+      "explanation": "Algorithms see iterators, not the container; only erase changes the size.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "erase-remove"
+      ],
+      "skillLabel": "Algorithms cannot resize containers",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP05#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "How many comparisons at most does std::lower_bound need on a sorted vector of 100,000 elements? Give an integer (ceil of log2(n+1)).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "17",
+      "tolerance": 0.01,
+      "explanation": "log2(100001) = 16.61, so at most 17 comparisons.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "binary-search"
+      ],
+      "skillLabel": "Binary search cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "You must return the sample nearest in time to an arbitrary query t from a log of 10^6 samples built once. Which structure is the most suitable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A vector sorted by time, searched with lower_bound",
+        "A std::set<int> holding only the sample ids",
+        "An unordered_map keyed by the exact timestamp value",
+        "A std::list scanned linearly from the first element"
+      ],
+      "answer": "0",
+      "explanation": "Nearest-key queries need an ordering; a sorted contiguous vector gives O(log n) and the best locality. A hash map only supports exact keys.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-choice"
+      ],
+      "skillLabel": "Choosing a container for nearest-key queries",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP05#alternatives-and-trade-offs"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Samples (t=4, v=12) and (t=8, v=20) bracket the query t=5. What is the linearly interpolated value? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "14",
+      "tolerance": 0.005,
+      "explanation": "12 + 8*(1/4) = 14.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "binary-search"
+      ],
+      "skillLabel": "Linear interpolation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP05#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Which operation can invalidate every iterator, pointer and reference into a std::vector?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Calling size() on the vector",
+        "A push_back that triggers a reallocation",
+        "Calling begin() on the vector",
+        "Reading an element through operator[]"
+      ],
+      "answer": "1",
+      "explanation": "Reallocation moves the elements to new storage, leaving the old addresses dangling.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "iterator-invalidation"
+      ],
+      "skillLabel": "Iterator invalidation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP05#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "double kp = params[\"kp\"]; where params is a std::map<std::string,double> that has no \"kp\" key. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "An std::out_of_range exception is thrown by the lookup",
+        "A key \"kp\" with value 0.0 is inserted and 0.0 is returned",
+        "The behavior is undefined because the key does not exist",
+        "An empty optional is returned and kp is left uninitialized"
+      ],
+      "answer": "1",
+      "explanation": "operator[] default-constructs a missing value; use find or at for read-only access.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-choice",
+        "iterator-invalidation"
+      ],
+      "skillLabel": "map operator[] inserts",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP05#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how you would benchmark vector+lower_bound against std::map for 10^6 samples so that the result is trustworthy. Mention at least four controls.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Optimization on (-O2), same pre-generated random queries for both, warm-up pass.",
+        "Consumes the results (e.g. accumulates and prints) so the optimizer cannot delete the loop.",
+        "Repeats several times, reports the median, and states the machine; varies N to see the trend."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "benchmarking",
+        "container-choice"
+      ],
+      "skillLabel": "Benchmark design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP05#verification"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

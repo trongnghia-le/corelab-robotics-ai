@@ -1,0 +1,384 @@
+{
+  "id": "E06-targeted",
+  "topicId": "E06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Arm l1=0.6, l2=0.4. Maximum reach?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reach-ring"
+      ],
+      "skillLabel": "Reach ring",
+      "mistakeCategory": "mathematical",
+      "answer": "1",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "0.6+0.4."
+    },
+    {
+      "id": "b2",
+      "prompt": "Arm l1=0.6, l2=0.4. Minimum reach without limits?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reach-ring"
+      ],
+      "skillLabel": "Reach ring",
+      "mistakeCategory": "mathematical",
+      "answer": "0.2",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "|0.6-0.4|."
+    },
+    {
+      "id": "b3",
+      "prompt": "Base at (1,1), target (1.5, 1.5) in world coordinates. Distance r in the arm frame? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-conversion"
+      ],
+      "skillLabel": "World versus arm frame",
+      "mistakeCategory": "mathematical",
+      "answer": "0.707107",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "sqrt(0.5)=0.707."
+    },
+    {
+      "id": "b4",
+      "prompt": "Base at (0.9, 0), target (1.3, -0.4). Distance r in the arm frame? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-conversion"
+      ],
+      "skillLabel": "World versus arm frame",
+      "mistakeCategory": "mathematical",
+      "answer": "0.565685",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "sqrt(0.32)=0.566."
+    },
+    {
+      "id": "b5",
+      "prompt": "l1=0.8, l2=0.5, elbow limit 2.2 rad. Inner radius r_min? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "joint-limits"
+      ],
+      "skillLabel": "Joint limits shrink the reach",
+      "mistakeCategory": "mathematical",
+      "answer": "0.647456",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "cos 2.2 = -0.5885, so r_min = sqrt(0.89 - 0.4708) = 0.647."
+    },
+    {
+      "id": "b6",
+      "prompt": "A point lies at r=0.4 from a base. Ring is [0.3, 1.3] but the elbow limit gives r_min=0.452. Is it reachable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "joint-limits"
+      ],
+      "skillLabel": "Joint limits shrink the reach",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Only with the other branch",
+        "Only at lower speed",
+        "No: the joint limit excludes it",
+        "Yes: it is inside the ring"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Limits override the plain ring test."
+    },
+    {
+      "id": "b7",
+      "prompt": "A TAMP bug: the checker converts every pick/place pose to the arm frame using the START base even after move_base. Consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "frame-conversion"
+      ],
+      "skillLabel": "World versus arm frame",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The symbolic planner fails with a type error at once",
+        "Wrong accept/reject decisions for every pose after a base move",
+        "Plans become shorter, since fewer poses need checking",
+        "None, because the base position does not affect arm-frame poses"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "The base at that step must be used."
+    },
+    {
+      "id": "b8",
+      "prompt": "With K = 3 base poses and the generator of the lesson (no move, one move before pick or before place, two moves), how many candidate plans per object?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "symbolic-geometric-coupling"
+      ],
+      "skillLabel": "Count candidate plans",
+      "mistakeCategory": "mathematical",
+      "answer": "9",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "K^2 = 9."
+    },
+    {
+      "id": "b9",
+      "prompt": "Adding the symbolic precondition base_ok(o, b) computed by the geometry layer mainly serves to:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "symbolic-geometric-coupling"
+      ],
+      "skillLabel": "Symbolic-geometric coupling",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Make plans longer by adding extra base moves",
+        "Remove the need for IK in the geometry layer",
+        "Prune infeasible plans before they are generated",
+        "Replace motion planning with a purely symbolic search"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/E06#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Geometric predicates are pushed into the symbolic domain."
+    },
+    {
+      "id": "b10",
+      "prompt": "The reach test says reachable, the straight tool path crosses an obstacle. The correct status is:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "necessary-not-sufficient"
+      ],
+      "skillLabel": "Necessary but not sufficient",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Pose feasible, path infeasible: reachability was necessary only",
+        "Unreachable, because the reach test must have been wrong",
+        "Symbolically invalid, because the plan violates a precondition",
+        "Fully feasible, since the reach test is the only constraint"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Collisions are separate constraints."
+    },
+    {
+      "id": "b11",
+      "prompt": "Explain why a TAMP result of 'no plan' with a finite list of base poses is not a proof that the task is impossible.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "symbolic-geometric-coupling"
+      ],
+      "skillLabel": "Symbolic-geometric coupling",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q1",
+        "q8"
+      ],
+      "rubric": [
+        "The continuous choices were discretised to the listed poses.",
+        "A base pose outside the list (for example the midpoint) may be in both reach annuli.",
+        "Report it as no plan with these choices; sample or optimise the base."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Describe a verification plan for your reachability function: tests at the edges, inside the hole, with limits, and a cross-check with an independent method.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "reach-ring",
+        "joint-limits"
+      ],
+      "skillLabel": "Verify reachability code",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E06#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q6"
+      ],
+      "rubric": [
+        "Edge tests at r_max and r_min, outside, and inside the hole.",
+        "A limit-only rejection and verification of each IK branch by forward kinematics.",
+        "Cross-check against random joint-space sampling of the arm."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

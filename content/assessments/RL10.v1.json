@@ -1,0 +1,179 @@
+{
+  "id": "RL10-diagnostic",
+  "topicId": "RL10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A sample has positive advantage and ratio r = 1.5 with eps = 0.2. What is its gradient contribution in PPO-clip?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Twice the usual gradient",
+        "A restoring gradient that lowers r",
+        "Zero: the clipped term is the minimum",
+        "A·∇r, because the advantage is positive"
+      ],
+      "answer": "2",
+      "explanation": "For A > 0 and r > 1+eps the objective equals (1+eps)A, which is constant in theta, so the gradient is zero. The unclipped term would only be the minimum for r < 1+eps.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ppo-clip-rule"
+      ],
+      "skillLabel": "Apply the clip rule",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "eps = 0.2, ratio r = 1.35, advantage A = 3. Value of the clipped objective min(rA, clip(r)A)? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.6",
+      "tolerance": 0.05,
+      "explanation": "rA = 4.05 and clip(r)A = 1.2*3 = 3.6; the minimum is 3.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-clipped-objective"
+      ],
+      "skillLabel": "Evaluate the clipped objective",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "eps = 0.2, ratio r = 0.7, advantage A = -3. Value of the clipped objective? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2.4",
+      "tolerance": 0.05,
+      "explanation": "rA = -2.1 and clip(r)A = 0.8*(-3) = -2.4; the minimum is -2.4 (clipped).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-clipped-objective"
+      ],
+      "skillLabel": "Evaluate the clipped objective",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Old log-prob -0.7 and new log-prob -0.5 for the same action. What is the ratio pi_new/pi_old? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.221",
+      "tolerance": 0.002,
+      "explanation": "exp(-0.5 - (-0.7)) = exp(0.2) = 1.2214.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ppo-ratio"
+      ],
+      "skillLabel": "Compute the ratio from log-probs",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Why does PPO discard a batch after a few epochs instead of reusing it indefinitely?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The advantages and ratios describe the policy that collected the data, which updates move away from",
+        "Replay buffers are forbidden in PPO by definition, so each batch has to be thrown away at once",
+        "The clip range shrinks automatically every epoch until the surrogate gradient becomes exactly zero",
+        "The critic cannot be trained on data from an older policy, so reused batches give a wrong baseline"
+      ],
+      "answer": "0",
+      "explanation": "The surrogate is only a good model near the data-collecting policy. Reusing a batch indefinitely makes every ratio far from 1 and the gradient is zero or misleading.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ppo-on-policy"
+      ],
+      "skillLabel": "Explain the on-policy requirement",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A colleague says 'eps = 0.2 guarantees the new policy is within 20% of the old one'. Explain what is wrong, with a mechanism and a diagnostic.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Clipping only removes the incentive to move further; one large step or many minibatch steps can overshoot",
+        "Gives a mechanism such as a big learning rate, unnormalised advantages, or the min leaving unclipped gradients for wrong-direction samples",
+        "Names a diagnostic: approximate KL, clip fraction, or early stopping on KL"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ppo-clip-rule",
+        "ppo-kl"
+      ],
+      "skillLabel": "Know that clipping is not a trust region",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL10#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design the logging and a stop rule for a PPO run on a simulated robot so that a too-aggressive update is caught within one iteration.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Logs approximate KL and clip fraction per iteration (and entropy or returns)",
+        "States a threshold such as KL > 0.02 to 0.05 or clip fraction > 0.3",
+        "Stops epochs early or lowers learning rate / checks the ratio is exactly 1 at epoch 0"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "ppo-kl",
+        "ppo-on-policy"
+      ],
+      "skillLabel": "Monitor PPO updates",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL10#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,336 @@
+{
+  "id": "E08-targeted",
+  "topicId": "E08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A scalar model has true gain 0.8 and learned gain 0.85. With zero actions and x0=3, what is the prediction error after 5 steps? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compounding-model-error"
+      ],
+      "skillLabel": "Compounding model error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.3480759374999996",
+      "tolerance": 0.003,
+      "explanation": "3*(0.85^5-0.8^5)"
+    },
+    {
+      "id": "b2",
+      "prompt": "True gain 0.95, learned gain 1.02, x0=1, zero actions. Relative error |xhat_k - x_k|/|x_k| at k=20? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compounding-model-error"
+      ],
+      "skillLabel": "Compounding model error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "3.1450648493943434",
+      "tolerance": 0.1,
+      "explanation": "(1.02^20-0.95^20)/0.95^20"
+    },
+    {
+      "id": "b3",
+      "prompt": "A learned gain of 1.02 for a truly stable system (gain 0.95) most seriously affects which use?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compounding-model-error"
+      ],
+      "skillLabel": "Compounding model error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "Computing the mean of the data.",
+        "Choosing between two actions one step ahead.",
+        "Long open-loop imagined rollouts.",
+        "One-step prediction on logged data."
+      ],
+      "answer": "2",
+      "explanation": "Errors compound geometrically with rollout length when the learned system is unstable."
+    },
+    {
+      "id": "b4",
+      "prompt": "A planner uses N=500 samples, H=12, I=5 CEM iterations at 20 Hz replanning. Model evaluations per second?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "planning-with-models"
+      ],
+      "skillLabel": "Planning cost with a model",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "600000.0",
+      "tolerance": 5,
+      "explanation": "500*12*5=30000 per plan, times 20 Hz = 600000."
+    },
+    {
+      "id": "b5",
+      "prompt": "Next-state variance 0.8; model MSE 0.016. Explained variance? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "prediction-vs-control"
+      ],
+      "skillLabel": "Prediction quality vs control usefulness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.98",
+      "tolerance": 0.005,
+      "explanation": "1-0.016/0.8=0.98"
+    },
+    {
+      "id": "b6",
+      "prompt": "A video model lowers pixel MSE by 20% but the grasp planner using it succeeds less often. Which is the most plausible explanation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "prediction-vs-control"
+      ],
+      "skillLabel": "Prediction quality vs control usefulness",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "options": [
+        "The gain is in static background, while the object's response to actions got worse.",
+        "Pixel MSE is computed on features rather than images, so the 20% is not comparable",
+        "The model was trained for too few steps for any improvement to be real",
+        "The planner has too few joints to exploit the more accurate video predictions"
+      ],
+      "answer": "0",
+      "explanation": "Pixel loss weights large static regions; what the planner needs is the action-dependent object change."
+    },
+    {
+      "id": "b7",
+      "prompt": "Which statement about MPC is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mpc-replanning"
+      ],
+      "skillLabel": "MPC and replanning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "Only the first action(s) of each plan are executed before replanning.",
+        "The whole plan is executed open loop for robustness to model error.",
+        "It requires a perfect model, otherwise the plan cannot be executed.",
+        "It removes the need for a cost function by imitating demonstrations."
+      ],
+      "answer": "0",
+      "explanation": "MPC re-plans from the observed state each step."
+    },
+    {
+      "id": "b8",
+      "prompt": "A policy trained on 50-step imagined rollouts performs much worse on the real robot than on the model, while with 5-step rollouts the gap is small. This is evidence of:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compounding-model-error",
+        "planning-with-models"
+      ],
+      "skillLabel": "Compounding model error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "The policy exploiting model errors that compound over long imagined horizons.",
+        "Underfitting of the encoder, which hurts short rollouts equally as much.",
+        "A bug where the reward is negative in the imagined rollouts.",
+        "Overfitting to the real robot's data during the real-world training."
+      ],
+      "answer": "0",
+      "explanation": "Longer imagination allows more drift and more exploitation of optimistic errors."
+    },
+    {
+      "id": "b9",
+      "prompt": "Open-loop MPC comparison: with learned B 30% too small (0.35 vs 0.5) and A correct (0.9), a one-step MPC aims to reach goal 1.0 from x=0 using a = (goal - A x)/Bhat. What real x1 results? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mpc-replanning"
+      ],
+      "skillLabel": "MPC and replanning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "1.4285714285714286",
+      "tolerance": 0.002,
+      "explanation": "a=1/0.35=2.857; real x1 = 0.5*2.857 = 1.429; replanning then corrects the overshoot."
+    },
+    {
+      "id": "b10",
+      "prompt": "Continuing b9: from x1=1.429 the MPC replans with the same Bhat: a=(1-0.9*1.429)/0.35. What is the real x2? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mpc-replanning"
+      ],
+      "skillLabel": "MPC and replanning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "0.8775510204081631",
+      "tolerance": 0.003,
+      "explanation": "x1=1.4286; a=(1-1.2857)/0.35=-0.8163; x2=0.9*1.4286+0.5*(-0.8163)=0.8776; error shrinks from 0.429 to 0.122: feedback shrinks the error by |1-B/Bhat|=0.43."
+    },
+    {
+      "id": "b11",
+      "prompt": "A colleague reports that a world model with explained variance 0.97 'is ready for planning'. Write three concrete checks you would run before agreeing.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "prediction-vs-control",
+        "planning-with-models"
+      ],
+      "skillLabel": "Prediction quality vs control usefulness",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "Planning-level test: real cost after planning versus a random baseline.",
+        "Rollout-horizon error plot and action-sensitivity (does the prediction change with the action?).",
+        "Evaluation on held-out and planner-chosen states, with several seeds."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain in your own words why MPC reduces the effect of model error, and give one case where it still fails.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mpc-replanning"
+      ],
+      "skillLabel": "MPC and replanning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "rubric": [
+        "Replanning from the observed state removes accumulated error beyond the horizon.",
+        "The model must still rank first actions correctly (action effect sign and scale).",
+        "Failure case such as a wrong-sign action effect, or compute too slow for the control rate."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

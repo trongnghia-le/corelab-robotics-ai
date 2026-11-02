@@ -1,0 +1,300 @@
+{
+  "id": "M06-targeted",
+  "topicId": "M06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "m06-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "jacobian-shape"
+      ],
+      "skillLabel": "Jacobian shape",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "A map g from R⁴ to R³ has a Jacobian of which shape?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "1×4 like a gradient",
+        "3×4: one row per output, one column per input",
+        "4×3: one row per input",
+        "3×3 regardless of dimensions"
+      ],
+      "answer": "1",
+      "explanation": "J_ij = ∂g_i/∂x_j, so J is m×n with m = 3 outputs and n = 4 inputs."
+    },
+    {
+      "id": "m06-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "chain-rule-jacobian"
+      ],
+      "skillLabel": "Chain rule",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "h = f∘g with g: Rⁿ→Rᵐ and f: Rᵐ→R. Which expression gives ∇ₓh?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "∇f multiplied entrywise by J_g",
+        "J_g ∇f",
+        "(∇f)ᵀ J_gᵀ",
+        "J_gᵀ ∇f evaluated at g(x)"
+      ],
+      "answer": "3",
+      "explanation": "Dimensions force the transpose: J_gᵀ is n×m and ∇f is m×1."
+    },
+    {
+      "id": "m06-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "partial-derivatives"
+      ],
+      "skillLabel": "Partial derivative meaning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "What does ∂f/∂x mean for f(x, y) = x²y?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The change in x when f is held constant",
+        "The total change as x and y both vary",
+        "The rate of change in x with y treated as a constant",
+        "The derivative after replacing y by x"
+      ],
+      "answer": "2",
+      "explanation": "All other independent inputs are held fixed: ∂f/∂x = 2xy."
+    },
+    {
+      "id": "m06-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "linearization"
+      ],
+      "skillLabel": "Steepest descent",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "At a point where ∇f ≠ 0, which unit direction decreases f fastest locally?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "−∇f/‖∇f‖",
+        "Any direction perpendicular to ∇f",
+        "∇f/‖∇f‖",
+        "The direction toward the global minimum"
+      ],
+      "answer": "0",
+      "explanation": "The directional derivative ∇fᵀu is most negative when u points opposite the gradient. Perpendicular directions keep f constant to first order."
+    },
+    {
+      "id": "m06-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "partial-derivatives"
+      ],
+      "skillLabel": "Partial derivative",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "f(x, y) = x²y + y³. Compute ∂f/∂y at (2, 1).",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "∂f/∂y = x² + 3y² = 4 + 3 = 7."
+    },
+    {
+      "id": "m06-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "jacobian-shape"
+      ],
+      "skillLabel": "Jacobian entry",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "g(x, y) = (x²y, x + y²). What is J₂₂ at (1, 2)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "J₂₂ = ∂(x + y²)/∂y = 2y = 4."
+    },
+    {
+      "id": "m06-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "linearization"
+      ],
+      "skillLabel": "Linear prediction",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "f(x, y) = xy. Use the local linear model at (1, 3) to predict f(1.02, 2.99). Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.05",
+      "tolerance": 0.001,
+      "explanation": "∇f = (y, x) = (3, 1); 3 + 3(0.02) + 1(−0.01) = 3.05."
+    },
+    {
+      "id": "m06-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "partial-derivatives"
+      ],
+      "skillLabel": "Directional derivative",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "f(x, y) = x² + y². What is the directional derivative at (3, 4) along the unit vector (0.6, 0.8)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.001,
+      "explanation": "∇f = (6, 8); (6, 8)·(0.6, 0.8) = 3.6 + 6.4 = 10."
+    },
+    {
+      "id": "m06-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "jacobian-shape"
+      ],
+      "skillLabel": "Counting entries",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "A map R⁶→R⁴ has a Jacobian. How many entries does it have?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "24",
+      "tolerance": 0.01,
+      "explanation": "4 × 6 = 24."
+    },
+    {
+      "id": "m06-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "jacobian-shape"
+      ],
+      "skillLabel": "Calibration Jacobian",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "For a two-output sensor calibration depending on three parameters, give the Jacobian shape. Explain which products and transposes you need to propagate an error from outputs back to parameters.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States 2×3.",
+        "Uses Jᵀ (3×2) to map an output-space gradient/residual to the parameter space.",
+        "Mentions the Jacobian is evaluated at the current parameters (local)."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m06-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "linearization"
+      ],
+      "skillLabel": "Verify an analytic Jacobian",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "prompt": "Describe how you would verify a hand-derived Jacobian in code, including the step size choice, the shape check, and what mismatch pattern reveals a transposed result.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Compares with central differences at several random points.",
+        "Checks shape (m×n) and relative error with a step near 1e-6.",
+        "Notes a transposed result matches only when m = n or fails shape checks, and entries mirrored across the diagonal."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m06-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "chain-rule-jacobian"
+      ],
+      "skillLabel": "Singular Jacobian",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#failure-modes"
+        }
+      ],
+      "prompt": "A 2-link arm is fully stretched and the Jacobian determinant is zero. What does this mean for velocities the tip can achieve, and what happens if a controller inverts J?",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Rank drops so some tip directions cannot be produced instantly.",
+        "Inverting gives very large joint rates near the singularity.",
+        "Mentions damped least squares or avoiding singular configurations."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

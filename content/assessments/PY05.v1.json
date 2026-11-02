@@ -1,0 +1,203 @@
+{
+  "id": "PY05-diagnostic",
+  "topicId": "PY05",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "residual-analysis"
+      ],
+      "skillLabel": "Residual analysis",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "After fitting a first-order model, the residuals form a smooth wave around zero although their RMS is small. This most likely means",
+      "options": [
+        "the noise is perfectly random, so the small RMS is all that matters",
+        "the data should be averaged first, since the wave comes from sampling alone",
+        "the optimizer did not run, so the parameters are still at their initial guess",
+        "the model structure is missing dynamics, even if the parameters look reasonable"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Systematic residual structure is evidence of model misspecification."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ode-model"
+      ],
+      "skillLabel": "First-order step response",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#worked-example"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "Motor with tau=0.5 s, K=2 rad/s/V, u=3 V. Speed at t=1.0 s in rad/s (3 decimals)?",
+      "answer": "5.188",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.005,
+      "explanation": "6(1-e^{-2})."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ode-model"
+      ],
+      "skillLabel": "First-order step response",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#worked-example"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "Time in seconds for a first-order system with tau=0.2 s to reach 95% of its final value (3 decimals)?",
+      "answer": "0.599",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.005,
+      "explanation": "t=tau ln 20."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-uncertainty"
+      ],
+      "skillLabel": "Uncertainty from the Jacobian",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "A fit has sigma_hat=0.2 rad/s and sqrt of the (J^T J)^-1 entry for tau equal to 0.05 s per rad/s. Standard error of tau in seconds (3 decimals)?",
+      "answer": "0.01",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.0005,
+      "explanation": "SE=sigma_hat*sqrt((J^T J)^-1_tau)=0.2*0.05."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-uncertainty"
+      ],
+      "skillLabel": "Noise estimate",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "q5",
+      "kind": "number",
+      "prompt": "Sum of squared residuals 0.28 from 30 points and 2 fitted parameters. What is sigma_hat in rad/s (3 decimals)?",
+      "answer": "0.1",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "sqrt(0.28/(30-2))=0.1."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fitting-workflow"
+      ],
+      "skillLabel": "Bounds and scaling",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#failure-modes"
+        }
+      ],
+      "id": "q6",
+      "kind": "choice",
+      "prompt": "Why should the time constant tau be bounded away from zero and negative values in the fit?",
+      "options": [
+        "a negative tau is physically correct for a decaying system and should be allowed",
+        "a negative tau makes the ODE unstable and the solver can overflow or fail",
+        "bounds are required by solve_ivp, which refuses to run without them",
+        "bounds make the fit faster in every case, which is their only purpose here"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Trial steps outside the physical region can produce nan or crashes."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "identifiability",
+        "fitting-workflow"
+      ],
+      "skillLabel": "Identifiability",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#failure-modes"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "A colleague fits a gain K to step-response data but applied 0 V in the experiment. Explain what the Jacobian looks like, what the optimizer returns and how you would fix the experiment.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "States the output does not depend on K when u=0, so the Jacobian column is zero (rank deficient).",
+        "Notes the fit stays at the initial guess and the covariance is undefined.",
+        "Proposes a nonzero input and checks matrix_rank or the covariance."
+      ]
+    }
+  ]
+}

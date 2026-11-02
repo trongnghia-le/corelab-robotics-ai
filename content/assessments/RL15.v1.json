@@ -1,0 +1,178 @@
+{
+  "id": "RL15-diagnostic",
+  "topicId": "RL15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A curriculum run shows many more goal reaches in training than the fixed-start baseline, yet it fails from the true start at test time. What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Q-learning cannot be combined with any curriculum of starts",
+        "The goal reward was too large for the harder stages",
+        "The schedule never trained from the target start distribution",
+        "The learning rate was too high once the curriculum advanced"
+      ],
+      "answer": "2",
+      "explanation": "Training hits measure the training distribution. If the target starts are never practised, their Q-values stay at their initial values.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cur-target-distribution"
+      ],
+      "skillLabel": "Check that the schedule ends on the target",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL15#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Symmetric random walk on cells 0..10, left at cell 0 stays, goal at cell 10. Expected steps from cell 0, T = (L - i)(L + i + 1)? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "110",
+      "tolerance": 0.5,
+      "explanation": "L(L+1) = 10*11 = 110.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-difficulty"
+      ],
+      "skillLabel": "Compute expected steps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL15#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Budget 2000 split into 4 equal stages: which stage index (0-based) is active at t = 1500?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "int(4*1500/2000) = int(3.0) = 3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-schedule"
+      ],
+      "skillLabel": "Compute the stage index",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL15#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "To compare a curriculum with a fixed-distribution baseline fairly you should give both",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "the same number of stages, with every stage given an equal share of the training time",
+        "the same number of episodes, whatever the length of each episode in environment steps",
+        "the same number of environment steps, seeds and evaluation on the target distribution",
+        "the same final training return, each measured on its own training start distribution"
+      ],
+      "answer": "2",
+      "explanation": "Episode length differs between stages, so episodes are not an equal cost; training return is measured on different distributions.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cur-equal-budget"
+      ],
+      "skillLabel": "Choose equal-budget accounting",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL15#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Reverse curriculum: budget 1500, 3 stages, corridor length 12, width 4. Start cell at t = 700 (max(0, length - width*(k+1)))? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "k = int(3*700/1500) = 1; start = 12 - 4*2 = 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-schedule"
+      ],
+      "skillLabel": "Compute a reverse-curriculum start",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL15#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Why does starting near the goal help a sparse-reward learner, and what quantity would you compute to check that stage 1 is easier?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Rewards are seen far more often under random exploration, giving a learning signal",
+        "Values then spread outward as the start moves back",
+        "Quantity: probability of reaching the goal within the episode cap (or expected steps) from the stage's start"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cur-difficulty"
+      ],
+      "skillLabel": "Explain reward visibility",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: intuition",
+          "href": "/lessons/RL15#intuition"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design a comparison of a curriculum against baselines for a manipulation task. State the budget accounting, baselines, evaluation distribution and a check on the schedule.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Equal environment steps, same learner and seeds",
+        "Includes a fixed hardest task and a mixed distribution as baselines",
+        "Evaluates on the target distribution and audits that the schedule ends there"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "cur-equal-budget",
+        "cur-target-distribution"
+      ],
+      "skillLabel": "Design a fair curriculum comparison",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL15#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

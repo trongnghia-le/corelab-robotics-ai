@@ -1,0 +1,342 @@
+{
+  "id": "E09-targeted",
+  "topicId": "E09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Same slots (1,0),(0,1), input x=(0,3), d=2. Attention weight of x on slot 1 after softmax over slots? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "slot-attention"
+      ],
+      "skillLabel": "Slot attention computation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.10704180146517042",
+      "tolerance": 0.002,
+      "explanation": "logits (0, 2.121): weight on slot 1 = 1/(1+e^2.121)=0.107."
+    },
+    {
+      "id": "b2",
+      "prompt": "Slot-1 attention over four inputs is (0.2,0.2,0.4,0.2). After normalising over inputs, the third input's weight? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "slot-attention"
+      ],
+      "skillLabel": "Slot attention computation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.4",
+      "tolerance": 0.005,
+      "explanation": "0.4/1.0"
+    },
+    {
+      "id": "b3",
+      "prompt": "If you remove the softmax over slots and normalise only over inputs, the most likely outcome is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "slot-attention"
+      ],
+      "skillLabel": "Slot attention computation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "Training becomes deterministic, since the slot initialisation is no longer sampled.",
+        "Slots will each bind exactly one object, since inputs compete more strongly.",
+        "Several slots copy the same dominant object because nothing forces them to specialise.",
+        "The attention maps become uniform, because the normalisation removes all slot differences."
+      ],
+      "answer": "2",
+      "explanation": "Competition is what encourages separation."
+    },
+    {
+      "id": "b4",
+      "prompt": "A model gets mean IoU 0.15 with slot i vs object i, and 0.78 after Hungarian matching. What does this indicate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "permutation-matching"
+      ],
+      "skillLabel": "Permutation-invariant evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "The IoU is computed incorrectly in both cases, so neither number is usable.",
+        "The matching leaks labels into the predictions, so 0.78 is not a valid score.",
+        "The slots are good but ordered arbitrarily; the first evaluation was wrong.",
+        "The model is overfit to the training set, so the IoU drops in the first evaluation."
+      ],
+      "answer": "2",
+      "explanation": "Slots are unordered; optimal matching is the legitimate protocol."
+    },
+    {
+      "id": "b5",
+      "prompt": "Matching cost matrix (rows objects, cols slots) [[0.2,0.9,0.8],[0.8,0.1,0.7],[0.9,0.6,0.3]]. Minimum total cost of an injective assignment? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "permutation-matching"
+      ],
+      "skillLabel": "Permutation-invariant evaluation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.6000000000000001",
+      "tolerance": 0.005,
+      "explanation": "Diagonal: 0.2+0.1+0.3=0.6 is optimal."
+    },
+    {
+      "id": "b6",
+      "prompt": "Squared Mahalanobis distance: variance 0.01 per axis, offsets 0.1 m in x and 0.2 m in y. (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "data-association-gating"
+      ],
+      "skillLabel": "Gating and data association",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "5.0",
+      "tolerance": 0.05,
+      "explanation": "(0.01+0.04)/0.01=5.0"
+    },
+    {
+      "id": "b7",
+      "prompt": "A gate at chi-square 5.99 (2 dof) rejects a detection with squared Mahalanobis distance 7.4. What should the tracker do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "data-association-gating"
+      ],
+      "skillLabel": "Gating and data association",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "Double the covariance and retry in the same frame until the gate accepts it.",
+        "Treat the detection as a new object or clutter and let the track coast.",
+        "Delete the track immediately, because the object has clearly disappeared.",
+        "Assign it anyway because it is the nearest detection to the track."
+      ],
+      "answer": "1",
+      "explanation": "Gating prevents wrong assignments after long occlusions."
+    },
+    {
+      "id": "b8",
+      "prompt": "A track moving at 0.2 m/frame was last seen at x=0.5 m; it is hidden for 5 frames. Predicted x at the first frame after the occlusion (6th frame after last sighting)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "identity-tracking"
+      ],
+      "skillLabel": "Identity through occlusion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "1.7000000000000002",
+      "tolerance": 0.01,
+      "explanation": "0.5+6*0.2=1.7"
+    },
+    {
+      "id": "b9",
+      "prompt": "Two identical objects cross; a position-only tracker swaps them. Which change fixes this most directly?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "identity-tracking"
+      ],
+      "skillLabel": "Identity through occlusion",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "options": [
+        "Match with a higher learning rate so that the identity updates faster.",
+        "Use more slots so that each object gets its own dedicated slot.",
+        "Predict each object's next position using its velocity before matching.",
+        "Increase the image resolution so the two objects look different enough."
+      ],
+      "answer": "2",
+      "explanation": "Identical appearance leaves motion as the identity cue."
+    },
+    {
+      "id": "b10",
+      "prompt": "Find the flaw: a report says 'slots track objects' after showing high mask IoU on single frames. What does this miss?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "identity-tracking"
+      ],
+      "skillLabel": "Identity through occlusion",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "Masks cannot have IoU.",
+        "Slots can only be evaluated on videos longer than a minute.",
+        "Identity consistency across frames and occlusion was never tested.",
+        "IoU should be computed on the background."
+      ],
+      "answer": "2",
+      "explanation": "Per-frame segmentation does not show persistent identity."
+    },
+    {
+      "id": "b11",
+      "prompt": "Your slot model segments CLEVR-like scenes with 3-6 objects well but fails on scenes with 10 objects. Give two hypotheses and one test for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "slot-attention",
+        "permutation-matching"
+      ],
+      "skillLabel": "Slot attention computation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "rubric": [
+        "Hypothesis involving number of slots K versus object count, with a test varying K.",
+        "Hypothesis involving training distribution (never saw 10 objects), with a held-out count test.",
+        "Each hypothesis has a measurable prediction (e.g. FG-ARI vs object count)."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Describe how you would implement and evaluate data association with a gate for a track that is hidden for 8 frames, including what the covariance should do while hidden.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "data-association-gating",
+        "identity-tracking"
+      ],
+      "skillLabel": "Gating and data association",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E09#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ],
+      "rubric": [
+        "Predict with a motion model and grow the covariance each hidden frame.",
+        "Match with an optimal assignment on gated candidates only.",
+        "Report identity errors against a position-only baseline across occlusion lengths."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

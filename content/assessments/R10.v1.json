@@ -1,0 +1,208 @@
+{
+  "id": "R10-diagnostic",
+  "topicId": "R10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A bracket has FoS = 11 under its static payload. What does this prove about the design?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "load-cases"
+      ],
+      "skillLabel": "Load cases and envelope",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Load cases and envelope",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "options": [
+        "Nothing about other load cases: each declared case needs its own check, and the worst governs",
+        "The design is verified for all load cases, because 11 is far above one in this case",
+        "It can be given a factor of safety of 11 in every other load case too, by the same margin",
+        "It proves that the stiffness is adequate, since the stress and the stiffness agree here"
+      ],
+      "answer": "0",
+      "explanation": "Verification is relative to the declared load envelope; dynamic and actuator-peak cases may govern."
+    },
+    {
+      "id": "q2",
+      "prompt": "Cantilever, F = 29.43 N, L = 0.10 m, b = 0.020 m, h = 0.006 m. Root bending stress in MPa (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bending-stress"
+      ],
+      "skillLabel": "Bending stress",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Bending stress",
+          "href": "/lessons/R10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "answer": "24.525",
+      "tolerance": 0.01,
+      "explanation": "6FL/(b h^2) = 17.658 / 7.2e-7 = 24.525 MPa."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same bracket, aluminium sigma_y = 276 MPa under F = 294.3 N. Factor of safety (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "factor-of-safety"
+      ],
+      "skillLabel": "Factor of safety",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Factor of safety",
+          "href": "/lessons/R10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "answer": "1.125382",
+      "tolerance": 0.005,
+      "explanation": "sigma = 245.25 MPa, FoS = 1.125."
+    },
+    {
+      "id": "q4",
+      "prompt": "sigma = 100 MPa and tau = 50 MPa at a point. Von Mises stress in MPa (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "combined-stress"
+      ],
+      "skillLabel": "Combined stress",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Combined stress",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "answer": "132.287566",
+      "tolerance": 0.02,
+      "explanation": "sqrt(100^2 + 3*50^2) = 132.29."
+    },
+    {
+      "id": "q5",
+      "prompt": "The thickness h of a rectangular cantilever is halved with everything else equal. What happens to the bending stress and tip deflection?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "scaling-laws"
+      ],
+      "skillLabel": "Scaling with thickness",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Scaling with thickness",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "options": [
+        "Stress x8, deflection x4",
+        "Stress x4, deflection x8",
+        "Stress x2, deflection x2",
+        "Stress x2, deflection x4"
+      ],
+      "answer": "1",
+      "explanation": "sigma ~ 1/h^2 and delta ~ 1/h^3."
+    },
+    {
+      "id": "q6",
+      "prompt": "Which check is an INDEPENDENT verification of a hand-calculated bracket stress?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "independent-check"
+      ],
+      "skillLabel": "Independent verification",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Independent verification",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "options": [
+        "A strain-gauge test or a separate FEA with a different formulation",
+        "Re-running the same spreadsheet with the same inputs and formulas",
+        "Asking the author to review their own numbers once more by hand",
+        "Copying the formula into a second cell and comparing the two results"
+      ],
+      "answer": "0",
+      "explanation": "Independence means a different method or person, not a repeat of the same calculation."
+    },
+    {
+      "id": "q7",
+      "prompt": "List four load cases you would declare for a robot wrist bracket and for each the source of the load and the check you would perform.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "load-cases",
+        "independent-check"
+      ],
+      "skillLabel": "Load envelope design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Load envelope design",
+          "href": "/lessons/R10#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ],
+      "rubric": [
+        "Names distinct cases such as static payload, operating acceleration, emergency stop at actuator peak torque, collision/impact, fatigue cycles.",
+        "Gives each case's source (gravity, motion profile, motor peak torque from the gearbox, impact energy).",
+        "Pairs each with an allowable (FoS, deflection) and an independent check."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

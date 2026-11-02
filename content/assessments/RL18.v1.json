@@ -1,0 +1,179 @@
+{
+  "id": "RL18-diagnostic",
+  "topicId": "RL18",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In offline RL, why is a maximum over all actions in the Bellman target risky?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It only works for continuous action spaces, so discrete tasks cannot use a maximum at all",
+        "It makes the target independent of the next state, so learning from the data stalls entirely",
+        "It forces the learned policy to be deterministic, which removes all of its remaining stochasticity",
+        "It selects actions whose value estimates are extrapolations that the dataset can never correct"
+      ],
+      "answer": "3",
+      "explanation": "The maximum seeks the largest estimate, which tends to be at unsupported actions where estimates are unconstrained by data and cannot be corrected by new experience.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "off-extrapolation"
+      ],
+      "skillLabel": "Know why max over unsupported actions is risky",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL18#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A line fitted to rewards 0.1, 0.3, 0.5 at actions 0, 1, 2 is used to estimate the reward at action 5. Estimate? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.1",
+      "tolerance": 0.05,
+      "explanation": "Slope 0.2, intercept 0.1: 0.1 + 0.2*5 = 1.1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "off-extrapolation"
+      ],
+      "skillLabel": "Extrapolate a fitted line",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL18#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Estimated rewards (0, 0.4, 0.8, 1.2, 1.6); support {0, 1, 2}. Penalty weight lambda needed so that action 2 beats unsupported action 4 under Q - lambda*distance? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.4",
+      "tolerance": 0.01,
+      "explanation": "Action 4 has distance 2: (1.6 - 0.8)/2 = 0.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "off-penalty"
+      ],
+      "skillLabel": "Compute the penalty weight",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL18#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Mean reward 1.2 from n = 4 samples, sigma = 1, c = 1. What is the lower confidence bound mean - c*sigma/sqrt(n)? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.7",
+      "tolerance": 0.01,
+      "explanation": "1.2 - 1/2 = 0.7.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "off-pessimism"
+      ],
+      "skillLabel": "Compute a count-based LCB",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL18#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Which statement about conservative offline RL is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It requires much more online interaction with the real environment to stay safe",
+        "It removes the need for any value function or critic in the learning procedure",
+        "It always matches the optimal policy of the task, even for actions outside the data",
+        "It trades some regret inside the data for protection from errors outside it"
+      ],
+      "answer": "3",
+      "explanation": "Conservatism cannot find value that lies outside the data; it avoids relying on unreliable estimates there.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "off-pessimism",
+        "off-penalty"
+      ],
+      "skillLabel": "State the cost of conservatism",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL18#alternatives-and-trade-offs"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Explain how an overestimate at an unsupported action at step 2 can spoil the value of a supported action at step 1.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "The target of step 1 uses a max over step-2 actions",
+        "The max picks the overestimated unsupported action",
+        "The inflated target is assigned to the supported step-1 action and repeated backups accumulate it"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "off-extrapolation"
+      ],
+      "skillLabel": "Explain error propagation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL18#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "You must deploy a policy learned from logged robot data. Describe how you would check support and choose the level of conservatism without running the robot extensively.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Measures how many policy actions lie near logged data (support)",
+        "Sweeps conservatism (lambda or c) and looks for stable choices, compares with behaviour cloning",
+        "Gates deployment with limited, safe real trials and abort rules"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "off-pessimism",
+        "off-penalty"
+      ],
+      "skillLabel": "Plan conservative offline deployment",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL18#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

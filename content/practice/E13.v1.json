@@ -1,0 +1,361 @@
+{
+  "id": "E13-targeted",
+  "topicId": "E13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A 12-stage task has p=0.97 per stage. End-to-end success? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-compounding"
+      ],
+      "skillLabel": "Compounding over stages",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.6938423609954377",
+      "tolerance": 0.002,
+      "explanation": "0.97^12=0.694"
+    },
+    {
+      "id": "b2",
+      "prompt": "Per-stage success required for 90% over 20 equal stages? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-compounding"
+      ],
+      "skillLabel": "Compounding over stages",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.9947458259305311",
+      "tolerance": 0.0003,
+      "explanation": "0.9^(1/20)=0.9947"
+    },
+    {
+      "id": "b3",
+      "prompt": "The weakest stage of a 5-stage chain has p=0.6, the others 0.98. Which change most improves end-to-end success?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "error-compounding"
+      ],
+      "skillLabel": "Compounding over stages",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Reducing control latency.",
+        "Raising the weakest stage from 0.6 to 0.8.",
+        "Raising each strong stage from 0.98 to 0.99.",
+        "Collecting more data for the strongest stage."
+      ],
+      "answer": "1",
+      "explanation": "Product: weakest factor dominates (0.6->0.8 multiplies by 1.33)."
+    },
+    {
+      "id": "b4",
+      "prompt": "Episode log, 3 stages: [T,T,T], [T,F], [T,T,F], [T,T,T], [F]. Conditional success rate of stage 2? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "per-stage-measurement"
+      ],
+      "skillLabel": "Per-stage measurement",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.75",
+      "tolerance": 0.002,
+      "explanation": "reached 4 (episodes 1-4), succeeded 3 -> 0.75"
+    },
+    {
+      "id": "b5",
+      "prompt": "Same log: end-to-end success rate? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "per-stage-measurement"
+      ],
+      "skillLabel": "Per-stage measurement",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.4",
+      "tolerance": 0.005,
+      "explanation": "2 of 5 episodes completed all stages"
+    },
+    {
+      "id": "b6",
+      "prompt": "p=0.9, d=0.5, R=2: probability of true success on a stage? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "detection-and-retry"
+      ],
+      "skillLabel": "State checking and retries",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.9450000000000001",
+      "tolerance": 0.0005,
+      "explanation": "q=0.05; 0.9*(1+0.05)=0.945"
+    },
+    {
+      "id": "b7",
+      "prompt": "Same stage (p=0.9, d=0.5, R=2): probability of a silent failure? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "detection-and-retry"
+      ],
+      "skillLabel": "State checking and retries",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.05249999999999999",
+      "tolerance": 0.0005,
+      "explanation": "0.1*0.5*1.05=0.0525"
+    },
+    {
+      "id": "b8",
+      "prompt": "Once R>=2, which usually raises end-to-end task success more: increasing detection d or increasing R?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "detection-and-retry"
+      ],
+      "skillLabel": "State checking and retries",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "Increasing d, because silent failures are never retried and are the dominant loss.",
+        "Neither affects true success, since the outcome is fixed by the first attempt.",
+        "They are equivalent, since both raise the number of successful attempts equally.",
+        "Increasing R, because retries are free and rescue every failed attempt."
+      ],
+      "answer": "0",
+      "explanation": "Silent failures are never retried; extra attempts add little."
+    },
+    {
+      "id": "b9",
+      "prompt": "Skill B works only if the object is within 2 cm of nominal. Skill A leaves a position error with SD 1 cm (normal). Roughly what fraction of chains start B in its working range?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "skill-composition"
+      ],
+      "skillLabel": "Skill composition",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "About 68%",
+        "About 95%",
+        "About 99.7%",
+        "About 50%"
+      ],
+      "answer": "1",
+      "explanation": "P(|Z|<=2)=0.9545."
+    },
+    {
+      "id": "b10",
+      "prompt": "A planner combines a language model's skill probability with a success probability by multiplication. What does this prevent?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "skill-composition"
+      ],
+      "skillLabel": "Skill composition",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "Any hallucination by the language model, since low scores are removed.",
+        "Choosing a plausible step that the robot can rarely execute successfully.",
+        "The compounding of errors over a long sequence of executed steps.",
+        "Choosing a step that the language model itself finds very unlikely."
+      ],
+      "answer": "1",
+      "explanation": "Affordance multiplies the LM score down for infeasible skills."
+    },
+    {
+      "id": "b11",
+      "prompt": "LM scores (0.4,0.4,0.2), success probabilities (0.9,0.3,0.8). Highest product score? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "skill-composition"
+      ],
+      "skillLabel": "Skill composition",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "answer": "0.36",
+      "tolerance": 0.005,
+      "explanation": "0.36, 0.12, 0.16 -> 0.36"
+    },
+    {
+      "id": "b12",
+      "prompt": "Describe how you would decide whether to invest in a better success detector or more retries for a 10-stage task, with the data you need and the computation.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "detection-and-retry",
+        "error-compounding"
+      ],
+      "skillLabel": "State checking and retries",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q6"
+      ],
+      "rubric": [
+        "Measures per-stage success p, detection d and silent-failure rate from logs.",
+        "Computes task success with the model for candidate d and R values and compares gains.",
+        "Checks the independence assumption against observed end-to-end success and names a falsifier."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Explain why a stage's unconditional failure share and its conditional failure rate answer different questions, using a numeric example.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "per-stage-measurement"
+      ],
+      "skillLabel": "Per-stage measurement",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E13#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ],
+      "rubric": [
+        "Gives numbers, e.g. reached 100 of 500 episodes with 20 failures: share 0.04, conditional 0.20.",
+        "Share tells where most failed episodes are lost; conditional tells reliability when reached.",
+        "States which one guides data collection."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

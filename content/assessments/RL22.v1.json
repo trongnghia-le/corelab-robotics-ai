@@ -1,0 +1,208 @@
+{
+  "id": "RL22-diagnostic",
+  "topicId": "RL22",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "From one learner's viewpoint, why is a multi-agent environment nonstationary?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nonstationarity"
+      ],
+      "skillLabel": "Nonstationarity",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The state space is continuous, so the transition function cannot stay fixed over time",
+        "The discount factor changes as more agents join, so returns are rescaled during training",
+        "The other agents' policies change as they learn, so the effective transition and reward change",
+        "Rewards are always random in multi-agent games, so the expected return keeps shifting"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL22#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "RL10"
+      ],
+      "explanation": "The effective transition sums over the partners' policy, which changes during learning."
+    },
+    {
+      "id": "q2",
+      "prompt": "Climbing game rows (11,-30,0), (-30,7,6), (0,0,5). Alice's expected payoff of action 0 when Bob plays uniformly over his 3 actions? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "best-response"
+      ],
+      "skillLabel": "Best response to a partner",
+      "mistakeCategory": "mathematical",
+      "answer": "-6.333333",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL22#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "RL10"
+      ],
+      "explanation": "(11-30+0)/3=-6.33."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same game. Number of pure Nash equilibria?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nash-equilibrium"
+      ],
+      "skillLabel": "Find pure Nash equilibria",
+      "mistakeCategory": "mathematical",
+      "answer": "2",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL22#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "RL10"
+      ],
+      "explanation": "(0,0) and (1,1) are equilibria; (2,2) is not because Alice gains by switching to 1."
+    },
+    {
+      "id": "q4",
+      "prompt": "Which describes centralised training with decentralised execution?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ctde"
+      ],
+      "skillLabel": "CTDE",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "All agents share one network and see the full joint state at run time as well as training",
+        "Agents never see each other's rewards in training and learn fully independent value functions",
+        "A critic may use joint information in training, while at run time each agent acts on its own observation",
+        "Training happens only on the real robots, with simulation used afterwards for execution"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL22#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "RL10"
+      ],
+      "explanation": "The centralised critic is a training-time tool and is discarded at run time."
+    },
+    {
+      "id": "q5",
+      "prompt": "Climbing game, difference reward for Alice at (1,1) with default action 2: G(1,1)-G(2,1)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "credit-assignment"
+      ],
+      "skillLabel": "Counterfactual credit assignment",
+      "mistakeCategory": "mathematical",
+      "answer": "7",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL22#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "RL10"
+      ],
+      "explanation": "7-0=7."
+    },
+    {
+      "id": "q6",
+      "prompt": "In the climbing game, why do independent greedy learners often end at (2,2) or (1,1) instead of (0,0)?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nonstationarity",
+        "best-response"
+      ],
+      "skillLabel": "Relative overgeneralisation",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "(0,0) is not a Nash equilibrium, so greedy learners have no reason to converge to it",
+        "Q-learning cannot represent the negative rewards that appear in the payoff matrix at all",
+        "The payoff matrix is wrong, since the joint reward at (0,0) is lower than at (2,2)",
+        "Action 0 has a poor average payoff when the partner is uncertain, so it is avoided"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL22#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "RL10"
+      ],
+      "explanation": "Averaging over an exploring partner makes the risky optimum look bad."
+    },
+    {
+      "id": "q7",
+      "prompt": "Two robots will carry a table. Training uses a simulator with both robots' states. Explain what a centralised critic may use, what the deployed actors may use, and one test that verifies decentralised execution.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "ctde"
+      ],
+      "skillLabel": "CTDE",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL22#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL02",
+        "RL10"
+      ],
+      "rubric": [
+        "Critic may use the joint state/actions in training only.",
+        "Actors use only local observations (and delivered messages).",
+        "Test by masking other robots' observations and comparing behaviour or checking actor input dimensions."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

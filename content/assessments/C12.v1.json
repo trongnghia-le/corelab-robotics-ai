@@ -1,0 +1,198 @@
+{
+  "id": "C12-diagnostic",
+  "topicId": "C12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "The EKF propagates N(mu, var) through y = g(x) by using:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "g(mu) for the mean and g'(mu)^2 * var for the variance",
+        "The exact mean and variance of g(x), computed by integration",
+        "The sample mean and variance of many random draws of g(x)",
+        "Three sigma points pushed through g and recombined with weights"
+      ],
+      "answer": "0",
+      "explanation": "First-order linearisation at the mean.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ekf-linearization"
+      ],
+      "skillLabel": "EKF linearisation and its bias",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "x ~ N(3, 0.09), y = x^2. Exact mean of y (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9.09",
+      "tolerance": 0.001,
+      "explanation": "mu^2 + var = 9.09.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ekf-linearization"
+      ],
+      "skillLabel": "EKF linearisation and its bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Same: the EKF mean of y (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9",
+      "tolerance": 0.001,
+      "explanation": "g(mu) = 9: bias = var = 0.09.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ekf-linearization"
+      ],
+      "skillLabel": "EKF linearisation and its bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "n = 1 and kappa = 2: weight of the centre sigma point (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.666667",
+      "tolerance": 0.001,
+      "explanation": "kappa/(n+kappa) = 2/3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sigma-points"
+      ],
+      "skillLabel": "Sigma points and the unscented transform",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "N(1, 0.25), kappa = 2: the upper sigma point is mu + sqrt((n+kappa) var). Give it (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.866025",
+      "tolerance": 0.001,
+      "explanation": "1 + sqrt(0.75) = 1.866.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sigma-points"
+      ],
+      "skillLabel": "Sigma points and the unscented transform",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Range sensor h(x) = sqrt(x^2 + 9) at the prior mean x = 4. Jacobian H = x/h (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.001,
+      "explanation": "4/5 = 0.8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nonlinear-update"
+      ],
+      "skillLabel": "Nonlinear measurement updates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You use an EKF with measurement z = x^2 (a squared quantity) and the state estimate sits at x = 0. Explain what happens and what you would use instead.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Says the Jacobian is zero so the filter ignores the measurement.",
+        "Notes the true belief is bimodal (sign ambiguity) so a Gaussian is wrong.",
+        "Proposes particle filter, mixture, or reparametrising / additional sensor."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "gaussian-limits",
+        "nonlinear-update"
+      ],
+      "skillLabel": "Limits of Gaussian beliefs",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C12#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C07",
+        "C06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

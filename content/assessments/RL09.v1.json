@@ -1,0 +1,184 @@
+{
+  "id": "RL09-diagnostic",
+  "topicId": "RL09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "With the exact value function as critic, what does the one-step TD error delta = r + gamma V(s') - V(s) estimate (in expectation over the next state and reward, given s and a)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The advantage Q(s,a) - V(s) of the action taken",
+        "The action-value Q(s,a) itself, without the baseline",
+        "The probability the policy assigns to the action taken",
+        "The state value V(s) itself, averaged over all actions"
+      ],
+      "answer": "0",
+      "explanation": "E[delta|s,a] = Q(s,a) - V(s) = A(s,a) when V = V^pi. It is a surprise relative to the baseline, not the value or Q itself.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ac-advantage"
+      ],
+      "skillLabel": "Link TD error to advantage",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "RL03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "r = 1, gamma = 0.95, V(s') = 2, V(s) = 2.5 (non-terminal). Compute the TD error delta. (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.4",
+      "tolerance": 0.01,
+      "explanation": "1 + 0.95*2 - 2.5 = 0.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-td-error"
+      ],
+      "skillLabel": "Compute the TD error",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "RL03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL09#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "TD errors (1, 2, -1), gamma = 0.9, lambda = 0.5. What is the GAE advantage at the first step? (four decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.6975",
+      "tolerance": 0.001,
+      "explanation": "A2 = -1; A1 = 2 + 0.45*(-1) = 1.55; A0 = 1 + 0.45*1.55 = 1.6975.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-gae"
+      ],
+      "skillLabel": "Compute GAE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Every step has reward -1 and the critic outputs 0 for every state. What does the one-step actor-critic update do at a state?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The best action is reinforced the most, because all of the observed rewards are negative",
+        "The critic is corrected first, so the actor update is skipped for the rest of the step",
+        "Nothing happens at all, because delta is zero whenever the critic outputs exactly zero",
+        "Every action gets delta = -1, so none is preferred and the sampled action is pushed down"
+      ],
+      "answer": "3",
+      "explanation": "With V = 0, delta = r + 0 - 0 = -1 for all actions. The update alpha*delta*(e_a - pi) lowers the sampled action's probability regardless of its merit.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ac-critic-bias"
+      ],
+      "skillLabel": "Predict the effect of a wrong critic",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL09#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Softmax actor, pi = (0.25, 0.75), action 0 sampled, alpha = 0.2, delta = 1.5. By how much does logit 0 change? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.225",
+      "tolerance": 0.001,
+      "explanation": "alpha*delta*(1 - pi_0) = 0.2*1.5*0.75 = 0.225.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ac-actor-update"
+      ],
+      "skillLabel": "Apply the actor update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Explain why a biased critic can make the actor worse even though the actor update rule is implemented correctly.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Says delta equals the advantage only for the exact critic; otherwise delta contains critic error terms",
+        "Notes that the action-dependent term gamma*E[e(s')] can change the apparent ranking of actions",
+        "Concludes the actor follows a wrong signal, so it can degrade, e.g. with a zero or frozen critic"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ac-critic-bias"
+      ],
+      "skillLabel": "Explain critic bias",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL09#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Your actor-critic run has flat return. Which two quantities would you log to decide whether the actor or the critic is at fault, and what result would indicate each?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Logs a critic error (e.g. loss, error vs exact values, explained variance)",
+        "Logs an actor-side quantity (entropy, advantage statistics, or return gap to optimum)",
+        "States that large critic error with small actor change points to the critic; small critic error with a stuck actor points to step size or exploration"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "ac-critic-bias",
+        "ac-advantage"
+      ],
+      "skillLabel": "Separate actor and critic failures",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL09#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

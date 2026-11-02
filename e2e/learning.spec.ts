@@ -178,14 +178,12 @@ test("remaining pages, honest overview, keyboard/mobile layout, invalid import a
       );
     expect(accessibleCopy).not.toMatch(vietnameseText);
   }
+  // Every curriculum topic now has a complete lesson, so the overview-only
+  // fallback no longer has a real topic to render; check the authored page.
   await page.goto("/lessons/E15");
   await expect(
-    page.getByText("Overview · This topic does not yet have a complete lesson"),
-  ).toBeVisible();
-  await expect(
     page.getByRole("heading", {
-      name: "Advanced Embodied Intelligence",
-      exact: true,
+      name: /^Advanced embodied intelligence$/i,
     }),
   ).toBeVisible();
   await page.goto("/settings");

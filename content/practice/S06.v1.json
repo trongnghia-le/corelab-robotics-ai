@@ -1,0 +1,381 @@
+{
+  "id": "S06-targeted",
+  "topicId": "S06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Encoder 256 lines (x4), gear 50:1. Counts per output revolution.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "51200",
+      "tolerance": 0.5,
+      "explanation": "4*256*50.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counts-to-units"
+      ],
+      "skillLabel": "Convert counts to SI units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "With 51200 counts per revolution, 2000 counts correspond to how many radians? Precision 0.0005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2454",
+      "tolerance": 0.0005,
+      "explanation": "2000/51200*2 pi.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counts-to-units"
+      ],
+      "skillLabel": "Convert counts to SI units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "12-bit counter read 4090 then 10. Signed delta.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "16",
+      "tolerance": 0.01,
+      "explanation": "(10-4090) mod 4096=16.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counter-unwrap"
+      ],
+      "skillLabel": "Unwrap free-running counters",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "10-byte frames at 200 Hz on a 115200 baud 8N1 link. Link load as a fraction, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1736",
+      "tolerance": 0.001,
+      "explanation": "10*10*200/115200.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "framing-checksum"
+      ],
+      "skillLabel": "Frames and checksums",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Command w=-3 rad/s, w_max=12 rad/s, full scale 255. Integer output (round).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-64",
+      "tolerance": 0.01,
+      "explanation": "-0.25*255=-63.75 -> -64.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "command-mapping"
+      ],
+      "skillLabel": "Safe command mapping",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "To turn the counts read in one sample into rad/s, which expression is right (N = counts per output revolution, dt = sample period)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "delta * N / (2*pi * dt)",
+        "delta / (N * 2*pi * dt)",
+        "delta * 2*pi / (N * dt)",
+        "delta * dt * 2*pi / N"
+      ],
+      "answer": "2",
+      "explanation": "Angle is delta/N*2 pi; divide by dt.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "counts-to-units"
+      ],
+      "skillLabel": "Convert counts to SI units",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Data arrives every 20 ms. Which stale limit is sensible for a safety-relevant input?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "10 s: avoid false alarms, since a safety stop is costly",
+        "About 3 periods (60 ms): tolerates jitter and still bounds age",
+        "20 ms: any jitter must trip it, which is the safest choice",
+        "Never: use the last value forever, since the input is already validated"
+      ],
+      "answer": "1",
+      "explanation": "A few periods balances false trips and exposure.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "freshness-timeout"
+      ],
+      "skillLabel": "Freshness and timeouts",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "10-bit ADC (0..1023) with 5 V reference reads 700 from a current sensor with 2.5 V zero-current output and 0.185 V/A. Current in A, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.98",
+      "tolerance": 0.01,
+      "explanation": "V=3.4213; (3.4213-2.5)/0.185.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counts-to-units"
+      ],
+      "skillLabel": "Convert counts to SI units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which defect is NOT caught by a simple sum-mod-256 checksum?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A single flipped byte value",
+        "A wrong length byte",
+        "Two payload bytes swapped",
+        "A missing last byte"
+      ],
+      "answer": "2",
+      "explanation": "A sum is order independent.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "framing-checksum"
+      ],
+      "skillLabel": "Frames and checksums",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "`max(-1, min(1, w/w_max))` is applied to w=NaN. Result?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "-1, because a NaN compares as smaller than every number",
+        "0, because a NaN is treated as zero by the min and max functions",
+        "It raises an exception in Python, because a NaN cannot be compared",
+        "It can pass NaN through, so an explicit check is needed."
+      ],
+      "answer": "3",
+      "explanation": "Comparisons with NaN are false; the clamp may return NaN.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "command-mapping"
+      ],
+      "skillLabel": "Safe command mapping",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Write a test plan for a frame parser that proves it rejects every single-byte corruption of a known frame.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Builds a known frame with a hand-computed checksum.",
+        "Loops over each byte position and flips bits, expecting rejection (note the swap case).",
+        "Includes empty and truncated frames and the passing control."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "framing-checksum"
+      ],
+      "skillLabel": "Frames and checksums",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S06#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "A velocity estimate from count differences is noisy at 1 kHz. Explain why, give the formula for the noise, and list two remedies with their costs.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States quantization sigma = q/sqrt(12) and the finite-difference factor sqrt(2)/dt.",
+        "Notes noise grows as dt shrinks.",
+        "Remedies: low-pass filter (lag), period-based or drive-reported velocity (latency, units), with costs."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "counts-to-units"
+      ],
+      "skillLabel": "Convert counts to SI units",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "R09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

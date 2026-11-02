@@ -1,0 +1,183 @@
+{
+  "id": "RL08-diagnostic",
+  "topicId": "RL08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "For a softmax policy, what is the gradient of log pi(a) with respect to the logits?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The probability pi(a) multiplied by the observed reward signal",
+        "The vector of probabilities pi, the same for every action taken",
+        "The one-hot vector of the action minus the vector of probabilities",
+        "The one-hot vector of the action taken, with no probability term"
+      ],
+      "answer": "2",
+      "explanation": "d log pi(a)/d theta_i = 1[i=a] - pi_i. The other options drop the -pi term or confuse the score with pi itself.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pg-score-function"
+      ],
+      "skillLabel": "Know the softmax score",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "ML05"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Two actions, logits (0, 0), rewards (2, 6). What is the exact gradient component dJ/dtheta_1? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.0",
+      "tolerance": 0.01,
+      "explanation": "pi=(.5,.5), J=4, dJ/dtheta_1 = 0.5*(6-4)=1.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-exact-gradient"
+      ],
+      "skillLabel": "Compute an exact policy gradient",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL08#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Logits (0, ln 3), rewards (4, 0). What is J? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.0",
+      "tolerance": 0.01,
+      "explanation": "pi = (0.25, 0.75), so J = 0.25*4 = 1.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-exact-gradient"
+      ],
+      "skillLabel": "Compute expected return",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Which baseline b keeps the policy gradient estimate unbiased?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A constant, or the state value, that does not depend on the sampled action",
+        "Any function of the sampled action, if it is small",
+        "The reward of the action just sampled",
+        "The largest reward observed so far in the same batch, per action"
+      ],
+      "answer": "0",
+      "explanation": "The expected score is zero, so subtracting something independent of the action leaves the mean unchanged. Action-dependent terms add -sum b(a) grad pi(a).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pg-baseline"
+      ],
+      "skillLabel": "Choose an unbiased baseline",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "One-sample estimator with rewards (1, 3) at logits (0, 0) and baseline b = 0 has total variance 2.0. Rewards are shifted to (101, 103) with b = 0. Total variance? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5202.0",
+      "tolerance": 0.5,
+      "explanation": "Samples 101(0.5,-0.5) and 103(-0.5,0.5): second moment 0.5*(101^2*0.5)+0.5*(103^2*0.5)=5202.5; subtract the squared norm of the mean, 0.5, to get 5202.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pg-baseline"
+      ],
+      "skillLabel": "Predict variance under a reward shift",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL08#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A policy network's output is almost deterministic and training stalls. Using the form pi_i (R_i - J), explain why, and name one remedy.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Notes that pi_i -> 1 makes J -> R_i so the gradient factors go to zero",
+        "Notes the other actions have pi_j -> 0 and are almost never tried",
+        "Names a remedy such as an entropy bonus, smaller steps or a more uniform initial policy"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pg-vanishing-gradient"
+      ],
+      "skillLabel": "Explain vanishing policy gradients",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL08#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe an independent numerical check for your policy-gradient code on a two-action problem and say what result would make you reject it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Compares the analytic gradient with central finite differences of J",
+        "States a tolerance (about 1e-5) or a relative error criterion",
+        "Rejects on sign error, order-one mismatch, or gradient components not summing to zero"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "pg-gradient-check"
+      ],
+      "skillLabel": "Verify a gradient numerically",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL08#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "id": "ML06-diagnostic",
+  "topicId": "ML06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Gradient descent runs on f(θ)=½λθ² with learning rate η. For which η do the iterates converge to the minimum?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Any η > 0, because the gradient always points downhill",
+        "0 < η < 1/λ",
+        "0 < η < 2/λ",
+        "0 < η < 2λ"
+      ],
+      "answer": "2",
+      "explanation": "θ_{t+1}=(1−ηλ)θ_t converges iff |1−ηλ|<1, i.e. 0<η<2/λ. The direction is downhill, but a long step can overshoot by more than it started with.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "learning-rate-stability"
+      ],
+      "skillLabel": "Learning-rate stability limit",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M10"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "f(θ)=½λθ² with λ=10. Start at θ₀=2 and take one gradient-descent step with η=0.15. What is θ₁? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-1.0",
+      "tolerance": 0.001,
+      "explanation": "θ₁=(1−0.15·10)·2=(−0.5)·2=−1. The sign flips because ηλ>1 but ηλ<2, so it still converges.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "learning-rate-stability"
+      ],
+      "skillLabel": "Learning-rate stability limit",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "N=5000 training samples, batch size 96, the short last batch is kept. How many parameter updates are in one epoch? (integer, tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "53.0",
+      "tolerance": 0.01,
+      "explanation": "5000/96=52.08, rounded up to 53: 52 full batches (4992 samples) plus one batch of 8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "epoch-batch-arithmetic"
+      ],
+      "skillLabel": "Epoch and batch arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A ReLU layer has 200 inputs. What standard deviation does He initialization use for its weights? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1",
+      "tolerance": 0.001,
+      "explanation": "std=sqrt(2/n_in)=sqrt(0.01)=0.1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "weight-initialization"
+      ],
+      "skillLabel": "Weight initialization scale",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "ML05"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Every weight in a hidden layer is initialized to the same constant value. What goes wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The learning rate must be doubled to compensate, since identical units learn at half speed.",
+        "All hidden units receive identical gradients and stay identical, so the layer acts like one unit.",
+        "The network cannot compute a forward pass, because identical weights make activations undefined.",
+        "All gradients in the output layer are exactly zero, so no weight ever updates at all."
+      ],
+      "answer": "1",
+      "explanation": "Symmetry: identical weights give identical activations and identical backward signals, so the updates never differentiate them.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "weight-initialization"
+      ],
+      "skillLabel": "Weight initialization scale",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Minibatch size is multiplied by 4 with everything else fixed. What happens to the standard deviation of the minibatch gradient noise?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is halved.",
+        "It is divided by 4.",
+        "It is unchanged, because the gradient is unbiased.",
+        "It doubles."
+      ],
+      "answer": "0",
+      "explanation": "Noise std scales as σ/√B, so B×4 gives half the std. Unbiasedness says nothing about the variance.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "minibatch-noise"
+      ],
+      "skillLabel": "Minibatch gradient noise",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You must decide between learning rates 0.1 and 0.01 for a small network. Describe an experiment whose conclusion another person could rerun and reject: what do you fix, what do you vary, what do you report, and what result would reject your conclusion?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Fixes seed(s), data split, batch size, epoch budget and metric; changes only the learning rate.",
+        "Chooses on a validation set, repeats over several seeds, and reports spread, not a single run.",
+        "Names a falsifier, e.g. the ranking flips on another split or the gap is below the seed spread."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "fair-comparison"
+      ],
+      "skillLabel": "Reproducible learning-rate comparison",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

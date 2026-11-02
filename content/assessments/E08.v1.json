@@ -1,0 +1,180 @@
+{
+  "id": "E08-diagnostic",
+  "topicId": "E08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A learned model explains 99% of the variance of next states in logged data. What can you conclude about its usefulness for planning?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "prediction-vs-control"
+      ],
+      "skillLabel": "Prediction quality vs control usefulness",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It will beat any other model that has a lower explained variance in the logs.",
+        "Nothing yet: planning depends on how it ranks actions, which only planning tests.",
+        "It must have learned the effect of the actions correctly, since the fit is good.",
+        "It is safe to plan with it over any horizon, because the fit is so high."
+      ],
+      "answer": "1",
+      "explanation": "High explained variance can come from the action-independent part of the dynamics; usefulness is a decision-level property."
+    },
+    {
+      "id": "q2",
+      "prompt": "True x'=0.9x, learned x'=0.95x, zero actions, x0=2. What is the open-loop prediction error (learned minus true) after 10 steps? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compounding-model-error"
+      ],
+      "skillLabel": "Compounding model error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#worked-example"
+        }
+      ],
+      "answer": "0.5001169982767572",
+      "tolerance": 0.005,
+      "explanation": "(0.95^10-0.9^10)*2 = 0.500."
+    },
+    {
+      "id": "q3",
+      "prompt": "CEM planning uses N=200 samples, horizon H=10 and 3 iterations. How many model evaluations (single-step predictions) per replan?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "planning-with-models"
+      ],
+      "skillLabel": "Planning cost with a model",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "answer": "6000.0",
+      "tolerance": 0.5,
+      "explanation": "200*10*3 = 6000."
+    },
+    {
+      "id": "q4",
+      "prompt": "Why does model predictive control (replanning every step) tolerate model errors better than executing a long open-loop plan?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mpc-replanning"
+      ],
+      "skillLabel": "MPC and replanning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It uses a more accurate model, so every prediction contains much less error to begin with.",
+        "It does not need a model at all, since it only reacts to the latest observation.",
+        "It plans over much longer horizons, so the prediction errors average out over time.",
+        "Each plan starts from the real observed state, so errors cannot build up past the horizon."
+      ],
+      "answer": "3",
+      "explanation": "Feedback resets the state estimate every step."
+    },
+    {
+      "id": "q5",
+      "prompt": "A one-step model has MSE 0.02 on next states whose variance is 0.5. What is its explained variance? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "prediction-vs-control"
+      ],
+      "skillLabel": "Prediction quality vs control usefulness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#worked-example"
+        }
+      ],
+      "answer": "0.96",
+      "tolerance": 0.005,
+      "explanation": "1-0.02/0.5 = 0.96."
+    },
+    {
+      "id": "q6",
+      "prompt": "A model ignores the action input entirely. When a random-shooting planner evaluates 100 candidate action sequences with it, what happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "planning-with-models",
+        "prediction-vs-control"
+      ],
+      "skillLabel": "Planning with a model",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The planner picks the best candidate by the chance of small noise in the model.",
+        "The planner picks the candidate with the smallest actions, since they cost least.",
+        "All candidates get the same predicted outcome, so selection is arbitrary.",
+        "The planner selects the longest sequence, since it has the most steps to evaluate."
+      ],
+      "answer": "2",
+      "explanation": "Identical predictions mean no ranking information."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design an experiment to decide between two world models, one with lower pixel/state prediction error and one with higher. State the metric, the baseline, a held-out condition and what would reject your preferred model.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "prediction-vs-control"
+      ],
+      "skillLabel": "Prediction quality vs control usefulness",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E08#verification"
+        }
+      ],
+      "rubric": [
+        "Uses a decision-level metric (real task success or cost after planning), not just prediction error.",
+        "Includes a baseline (random or no-model) and several seeds or start states.",
+        "States in advance a result that would reject the preference, e.g. the lower-error model failing to beat the baseline."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

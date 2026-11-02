@@ -1,0 +1,208 @@
+{
+  "id": "RL21-diagnostic",
+  "topicId": "RL21",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A policy satisfies E[episode cost] <= 1.5. What follows?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "expected-vs-violation"
+      ],
+      "skillLabel": "Expected cost vs violation rate",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "At most 1.5% of the episodes exceed a cost of 1.5 in total",
+        "The policy is risk-averse, because it controls the average cost",
+        "Nothing about how often a single episode exceeds 1.5; the tail can be large",
+        "No single episode exceeds 1.5, because the average is bounded by it"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL21#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "explanation": "An expectation constrains the mean only; a binomial tail can still put a large fraction of episodes over budget."
+    },
+    {
+      "id": "q2",
+      "prompt": "Actions: A (r=1, p=0), B (r=2, p=0.1), C (r=3, p=0.4). A policy uses B with probability 0.7 and C with 0.3. Expected incident probability per step? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cmdp-formulation"
+      ],
+      "skillLabel": "Evaluate a mixture against a budget",
+      "mistakeCategory": "mathematical",
+      "answer": "0.19",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL21#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "explanation": "0.7*0.1+0.3*0.4=0.19."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same actions, budget d=0.15. Dual bound g(lambda)=max_a(r-lambda p)+lambda d at lambda=1? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lagrangian-dual"
+      ],
+      "skillLabel": "Lagrangian dual bound",
+      "mistakeCategory": "mathematical",
+      "answer": "2.75",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL21#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "explanation": "max(1,1.9,2.6)+0.15=2.75."
+    },
+    {
+      "id": "q4",
+      "prompt": "In a primal-dual method the measured cost exceeds the limit. The multiplier lambda should:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lagrangian-dual"
+      ],
+      "skillLabel": "Multiplier update direction",
+      "mistakeCategory": "procedural",
+      "options": [
+        "Increase, penalising cost more",
+        "Decrease, so that the policy may spend more cost on reward",
+        "Stay unchanged, since the measured cost has no effect on it",
+        "Reset to zero, since the constraint is already being violated"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL21#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "explanation": "lambda <- max(0, lambda + eta (J_C - d)) rises when J_C > d."
+    },
+    {
+      "id": "q5",
+      "prompt": "Incidents occur independently with probability 0.05 per step. Probability of at least one incident in a 20-step episode? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "expected-vs-violation"
+      ],
+      "skillLabel": "Episode violation probability",
+      "mistakeCategory": "mathematical",
+      "answer": "0.641514",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL21#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "explanation": "1-0.95^20=0.6415."
+    },
+    {
+      "id": "q6",
+      "prompt": "A joint-angle limit must never be exceeded on a real arm. The most appropriate mechanism is:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "safe-exploration"
+      ],
+      "skillLabel": "Layers of safe exploration",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "More exploration noise, so the arm learns where the limit is",
+        "A hard shield or clamp that overrides unsafe actions",
+        "A larger discount factor, so future violations count for more",
+        "A small reward penalty for violating the limit, learned over time"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL21#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "explanation": "Known hard constraints are enforced by a shield; penalties only discourage."
+    },
+    {
+      "id": "q7",
+      "prompt": "A robot arm will learn to push objects near a fragile glass. Describe how you would evaluate and report safety, and which layers of protection you would use during exploration.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "safe-exploration",
+        "expected-vs-violation"
+      ],
+      "skillLabel": "Design a safety evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL21#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "rubric": [
+        "Report return, mean cost and the violation rate separately, with seeds, and also during training.",
+        "Name layers: conservative start/demonstrations, shield or hard limits, learned cost estimate with a safe backup.",
+        "State what each layer does not cover and the check that would reject 'safe'."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

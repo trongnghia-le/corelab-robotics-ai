@@ -1,0 +1,381 @@
+{
+  "id": "S08-targeted",
+  "topicId": "S08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Peaks 1.0 and 0.4 one damped period apart. Log decrement delta = ln(p1/p2). Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.9163",
+      "tolerance": 0.001,
+      "explanation": "ln 2.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "log-decrement"
+      ],
+      "skillLabel": "Damping from free decay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "I=1.5 kg m^2, peaks 1.0 and 0.9, damped period 0.8 s. Damping b in N m s/rad (b = I*2*delta/Td). Precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.395",
+      "tolerance": 0.005,
+      "explanation": "1.5*2*0.10536/0.8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "log-decrement"
+      ],
+      "skillLabel": "Damping from free decay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Single frequency w=3 rad/s, I=1.5, c=12. The identifiable combination c - w^2 I equals? Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-1.5",
+      "tolerance": 0.01,
+      "explanation": "12-9*1.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "excitation-identifiability"
+      ],
+      "skillLabel": "Excitation and identifiability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A standard error is 0.002 with sigma=0.001 and N=1000. Predict it for sigma=0.002 and N=4000 (se ~ sigma/sqrt(N)). Precision 0.0002.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.002",
+      "tolerance": 0.0002,
+      "explanation": "x2 for sigma, /2 for sqrt(N).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Validate on held-out data",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "RMSE between predictions [1,2,3] and measurements [1,2,5]. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.1547",
+      "tolerance": 0.001,
+      "explanation": "sqrt((0+0+4)/3).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Validate on held-out data",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "theta=(2,0.5,10), qdd=1.2, qd=-2, sin q=0.25. Torque, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.9",
+      "tolerance": 0.01,
+      "explanation": "2.4-1.0+2.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "regression-form"
+      ],
+      "skillLabel": "Write a model linear in its parameters",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Why does the damping coefficient stay identifiable under single-frequency excitation while I and c do not?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The noise is smaller on velocity than on acceleration, so its column is better conditioned.",
+        "Damping always has a larger magnitude than inertia, so its column dominates the fit.",
+        "Damping is measured separately by the motor driver, so it never enters the regression.",
+        "qdot is 90 degrees out of phase with q, qdd and sin q, so its column stays independent."
+      ],
+      "answer": "3",
+      "explanation": "Independent column.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "excitation-identifiability"
+      ],
+      "skillLabel": "Excitation and identifiability",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "The least-squares residual vector r satisfies which property at the solution?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Y^T r = 0 (orthogonal to every regressor column)",
+        "r has equal positive and negative values",
+        "r is parallel to the first column",
+        "r = 0 exactly for noisy data"
+      ],
+      "answer": "0",
+      "explanation": "Normal equations.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "regression-form"
+      ],
+      "skillLabel": "Write a model linear in its parameters",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A fit uses the same chirp trajectory for fitting and testing and reports RMSE 1e-4. What is the right criticism?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Least squares fits cannot be tested, only the regressors can be.",
+        "It only shows the model fits seen data; test on a different trajectory.",
+        "The chirp is too short, so a longer excitation must be used instead.",
+        "The RMSE should be exactly zero, so the model is missing a term."
+      ],
+      "answer": "1",
+      "explanation": "Training error is not evidence of prediction.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Validate on held-out data",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Raising the sampling rate from 100 Hz to 1 kHz with the same position noise, what happens to a second-difference acceleration estimate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Noise is unchanged.",
+        "Noise decreases by 100x.",
+        "Noise decreases by 10x.",
+        "Noise increases by 100x."
+      ],
+      "answer": "3",
+      "explanation": "sigma_a ~ 1/dt^2.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "noise-differentiation"
+      ],
+      "skillLabel": "Noise from differentiation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Describe how you would test an identification script on synthetic data before using robot data, including the cases that must pass and fail.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Generates noise-free data from known parameters and expects recovery to tolerance.",
+        "Adds noise and checks the covariance; includes a one-frequency case that must show a large condition number.",
+        "Validates on a held-out trajectory and checks residual orthogonality."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "regression-form"
+      ],
+      "skillLabel": "Write a model linear in its parameters",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S08#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Your fitted damping differs by 40% between a slow and a fast experiment. List three explanations and one test for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Coulomb or speed-dependent friction not in the model; test by adding a sign(qd) column.",
+        "Poor excitation or noise in differentiation; test with condition number, standard errors, filtering.",
+        "Temperature or load changes (nonstationarity); repeat the experiment in different order and compare."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Validate on held-out data",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/S08#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

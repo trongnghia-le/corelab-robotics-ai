@@ -1,0 +1,304 @@
+{
+  "id": "RL04-targeted",
+  "topicId": "RL04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "Gamma = 0.99 and a sweep changes V by less than 1e-6. What is the error bound (5 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stopping-bound"
+      ],
+      "skillLabel": "Stopping rule and error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL04#worked-example"
+        }
+      ],
+      "answer": "9.9e-05",
+      "tolerance": 1e-06,
+      "explanation": "0.99e-6/0.01 = 9.9e-5.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "Gamma = 0.5 and theta = 0.01. What is the error bound (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stopping-bound"
+      ],
+      "skillLabel": "Stopping rule and error bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL04#worked-example"
+        }
+      ],
+      "answer": "0.01",
+      "tolerance": 0.001,
+      "explanation": "0.5*0.01/0.5 = 0.01.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "Sweeps needed so that gamma^k * 8.8 < 1e-3 for gamma = 0.9? Give the integer k.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contraction"
+      ],
+      "skillLabel": "Contraction and convergence",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: exercise answers",
+          "href": "/lessons/RL04#exercise-answers"
+        }
+      ],
+      "answer": "87",
+      "tolerance": 1,
+      "explanation": "k > ln(1.136e-4)/ln(0.9) = 86.2.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "State s has two actions: Q = 5 for 'a', Q = 3 for 'b', current V(s) = 4. What is the optimality residual at s?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bellman-backup"
+      ],
+      "skillLabel": "One Bellman backup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL04#theory-and-derivation"
+        }
+      ],
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "|max Q - V| = |5-4| = 1.",
+      "equivalentTo": [
+        "q1",
+        "q5"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "A deterministic step: reward -1, next state value 8, gamma = 0.9. What is the backed-up value?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bellman-backup"
+      ],
+      "skillLabel": "One Bellman backup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL04#worked-example"
+        }
+      ],
+      "answer": "6.2",
+      "tolerance": 0.05,
+      "explanation": "-1 + 0.9*8 = 6.2.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p6",
+      "prompt": "A function evaluating a stochastic policy uses max over actions in its backup. What does it compute?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "policy-iteration"
+      ],
+      "skillLabel": "Policy iteration",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL04#failure-modes"
+        }
+      ],
+      "options": [
+        "The values of the greedy policy, not of pi.",
+        "V^pi, correctly, since the max is taken over the actions of pi.",
+        "The advantage of the best action, relative to the mean value.",
+        "Nothing meaningful, because the backup mixes two different policies."
+      ],
+      "answer": "0",
+      "explanation": "max is the optimality backup; evaluation needs the pi-weighted average.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "Why does value iteration converge from any initial table?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "contraction"
+      ],
+      "skillLabel": "Contraction and convergence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL04#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The policy is fixed, so each sweep evaluates the same linear system and converges geometrically.",
+        "The rewards are positive, so the values can only increase and are bounded by their upper limit.",
+        "The backup is a gamma-contraction in the max norm, so by Banach's theorem iterates approach the unique fixed point.",
+        "The initial table is always zero, so every run starts from the same point and ends at the same table."
+      ],
+      "answer": "2",
+      "explanation": "The fixed point is unique and each sweep shrinks the distance.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "Compared with synchronous sweeps, Gauss-Seidel sweeps usually",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sweep-order"
+      ],
+      "skillLabel": "Synchronous versus in-place sweeps",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL04#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "need a model-free setting, since the sweep order is not defined otherwise",
+        "converge in fewer sweeps to the same fixed point",
+        "never converge, since the update order breaks the contraction",
+        "converge in fewer sweeps but to a different fixed point"
+      ],
+      "answer": "1",
+      "explanation": "Later states in a sweep use fresher values.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p9",
+      "prompt": "A table has 10^12 states, 10 actions and 3 successors per pair. How many successor evaluations does one sweep need, in units of 10^12?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dp-cost"
+      ],
+      "skillLabel": "Cost and limits of dynamic programming",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL04#worked-example"
+        }
+      ],
+      "answer": "30",
+      "tolerance": 0.5,
+      "explanation": "10^12 x 10 x 3 = 3x10^13 = 30 x 10^12.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "p10",
+      "prompt": "Write the code of a value-iteration loop with the correct residual computation and a test that detects the 'delta is always zero' bug.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "bellman-backup"
+      ],
+      "skillLabel": "One Bellman backup",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/RL04#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Computes the new value from the old table, compares, then stores.",
+        "Test checks that more than one sweep runs and the result is a fixed point (residual below theta).",
+        "Asserts terminal value 0 and probability sums."
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p11",
+      "prompt": "A teammate wants to use the greedy policy extracted after only 3 sweeps of value iteration. What can go wrong and what check would you require?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "stopping-bound"
+      ],
+      "skillLabel": "Stopping rule and error bound",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL04#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Near-ties or unconverged values can pick a suboptimal action.",
+        "Residual or error bound should be checked first.",
+        "Compare with policy iteration or re-evaluate the extracted policy exactly."
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

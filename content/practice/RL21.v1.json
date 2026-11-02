@@ -1,0 +1,384 @@
+{
+  "id": "RL21-targeted",
+  "topicId": "RL21",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Actions A (1,0), B (2,0.1), C (3,0.4). Mixture 0.5 A, 0.5 C. Expected incident probability? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cmdp-formulation"
+      ],
+      "skillLabel": "Evaluate a mixture against a budget",
+      "mistakeCategory": "mathematical",
+      "answer": "0.2",
+      "tolerance": 0.005,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL21#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "0.5*0+0.5*0.4=0.2."
+    },
+    {
+      "id": "b2",
+      "prompt": "Budget d=0.25 with the same actions. Best constrained value per step (mix B and C)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cmdp-formulation"
+      ],
+      "skillLabel": "Solve a small CMDP",
+      "mistakeCategory": "mathematical",
+      "answer": "2.5",
+      "tolerance": 0.005,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL21#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "w=(0.25-0.1)/0.3=0.5, value 2+0.5=2.5."
+    },
+    {
+      "id": "b3",
+      "prompt": "Dual bound at lambda=2, d=0.15 (same actions)? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lagrangian-dual"
+      ],
+      "skillLabel": "Lagrangian dual bound",
+      "mistakeCategory": "mathematical",
+      "answer": "2.5",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL21#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "max(1,1.8,2.2)+0.3=2.5."
+    },
+    {
+      "id": "b4",
+      "prompt": "Weak duality states that for every lambda >= 0:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lagrangian-dual"
+      ],
+      "skillLabel": "Lagrangian dual bound",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "g(lambda) equals the constrained optimum",
+        "g(lambda) is at least the constrained optimum",
+        "g(lambda) is negative",
+        "g(lambda) is at most the unconstrained optimum minus d"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL21#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "For feasible policies lambda(J_C-d)<=0, so the Lagrangian dominates the return."
+    },
+    {
+      "id": "b5",
+      "prompt": "Per-step incident probability 0.02, H=30 steps. Expected incidents per episode?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "expected-vs-violation"
+      ],
+      "skillLabel": "Episode violation probability",
+      "mistakeCategory": "mathematical",
+      "answer": "0.6",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL21#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "30*0.02=0.6."
+    },
+    {
+      "id": "b6",
+      "prompt": "Same as b5: probability of at least one incident in an episode? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "expected-vs-violation"
+      ],
+      "skillLabel": "Episode violation probability",
+      "mistakeCategory": "mathematical",
+      "answer": "0.454516",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL21#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "1-0.98^30=0.4545."
+    },
+    {
+      "id": "b7",
+      "prompt": "H=10, q=0.1, limit 1 incident. P(more than 1 incident)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "expected-vs-violation"
+      ],
+      "skillLabel": "Episode violation probability",
+      "mistakeCategory": "mathematical",
+      "answer": "0.263901",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL21#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q1",
+        "q5"
+      ],
+      "explanation": "1-0.9^10-10*0.1*0.9^9=0.2639."
+    },
+    {
+      "id": "b8",
+      "prompt": "The multiplier update is lambda <- max(0, lambda + eta (d - J_C)). What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lagrangian-dual"
+      ],
+      "skillLabel": "Multiplier update direction",
+      "mistakeCategory": "procedural",
+      "options": [
+        "The constraint is never enforced, because lambda falls when the cost is too high",
+        "It enforces the constraint faster, because lambda grows with the violation",
+        "It is equivalent to the correct rule, since max(0, .) clips the update",
+        "lambda becomes negative, which turns the penalty into a bonus for cost"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL21#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "The sign is reversed; the multiplier shrinks when violations occur."
+    },
+    {
+      "id": "b9",
+      "prompt": "A training log reports only average return. Which addition best supports a safety claim?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "expected-vs-violation"
+      ],
+      "skillLabel": "Design a safety evaluation",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Entropy of the policy per update, to show that exploration is kept",
+        "Mean cost and the fraction of episodes above the budget, per seed",
+        "Number of parameters of the policy, to show the model is big enough",
+        "Value-function loss over training, to show that the critic has converged"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL21#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "explanation": "Safety claims need cost and violation rate reported separately."
+    },
+    {
+      "id": "b10",
+      "prompt": "Which is the strongest reason to prefer a shield over a reward penalty for a known hard limit?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "safe-exploration"
+      ],
+      "skillLabel": "Layers of safe exploration",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "A shield can guarantee the limit regardless of the learned policy",
+        "Shields remove the need for any model or definition of the limit",
+        "Penalties cannot be negative, so they cannot discourage violations",
+        "Shields speed up the gradient steps of the underlying learner"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL21#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "A shield overrides the action; a penalty only influences learning."
+    },
+    {
+      "id": "b11",
+      "prompt": "Explain why the optimal constrained policy for one cost constraint can be stochastic, with the three-action example.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cmdp-formulation"
+      ],
+      "skillLabel": "Solve a small CMDP",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL21#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "rubric": [
+        "The budget lies between two actions' costs, so neither alone is optimal.",
+        "Mixing them on the convex hull meets the budget exactly with higher reward than any feasible single action.",
+        "The mixture weight is (d-p1)/(p2-p1)."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "A teammate says 'we added a penalty of 50 per collision, so the robot is safe'. Write the review comments you would give and the measurements you would request.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "safe-exploration",
+        "expected-vs-violation"
+      ],
+      "skillLabel": "Design a safety evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL21#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "S07"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "Penalty does not bound collision rate; depends on reward scale and tuning.",
+        "Request collision rate with seeds, rate during training, tail/CVaR.",
+        "Suggest a constraint or shield for the hard cases."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

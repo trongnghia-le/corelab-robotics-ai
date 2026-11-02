@@ -1,0 +1,371 @@
+{
+  "id": "RL15-targeted",
+  "topicId": "RL15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Symmetric random walk on cells 0..12 (left at cell 0 stays), goal at 12. Expected steps from cell 6? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "114",
+      "tolerance": 0.5,
+      "explanation": "(L - i)(L + i + 1) = 6 * 19 = 114.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-difficulty"
+      ],
+      "skillLabel": "Compute expected steps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Budget 3000, 5 stages. Stage index at t = 999 (0-based)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "int(5*999/3000) = int(1.665) = 1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-schedule"
+      ],
+      "skillLabel": "Compute the stage index",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Which comparison is NOT fair to the fixed-distribution baseline?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Evaluating both on the target start distribution",
+        "Using the same seeds and the same evaluation episodes",
+        "Giving the curriculum 4000 environment steps and the baseline 2000",
+        "Using the same learner and hyper-parameters"
+      ],
+      "answer": "2",
+      "explanation": "Unequal steps hand the curriculum extra experience, so the difference cannot be attributed to the schedule.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cur-equal-budget"
+      ],
+      "skillLabel": "Spot unfair budget accounting",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL15#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Optimal Q at a cell 10 steps from the goal (reward 1 on arrival) with gamma = 0.9: gamma^9. Value? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.387",
+      "tolerance": 0.002,
+      "explanation": "0.9^9 = 0.3874; the value is moderate, so difficulty comes from reward visibility.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-difficulty"
+      ],
+      "skillLabel": "Estimate the optimal value at distance d",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A curriculum's last stage is a very narrow range of easy starts. After training, the policy performs well on that range and poorly on the full range. This is best described as",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "a mismatch between the final training distribution and the target distribution",
+        "reward hacking of the goal reward, exploited through the easy starts of that stage",
+        "an overestimation bias caused by the maximum in the bootstrapped Q-learning target",
+        "an exploration bonus problem caused by the last curriculum stage of the schedule"
+      ],
+      "answer": "0",
+      "explanation": "The schedule ended away from p*, so performance on the full range was never trained or checked.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cur-target-distribution"
+      ],
+      "skillLabel": "Recognise distribution mismatch",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL15#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Budget 1200 steps, episodes capped at 40 steps (30 episodes), probability of reaching the goal within the cap from the fixed start is 0.05. Expected number of goal hits? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.05,
+      "explanation": "30 * 0.05 = 1.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-difficulty",
+        "cur-equal-budget"
+      ],
+      "skillLabel": "Estimate reward visibility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Corridor length 9, width 3, 3 stages, budget 900. Start cell at t = 899 (max(0, length - width*(k+1)))? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0",
+      "tolerance": 0.01,
+      "explanation": "k = int(3*899/900) = 2; 9 - 3*3 = 0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-schedule"
+      ],
+      "skillLabel": "Compute a reverse-curriculum start",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL15#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Closer start states are 'easier' in this lesson because",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "their optimal values are larger by orders of magnitude than far starts",
+        "a random walk from there is far more likely to reach the goal within the episode cap",
+        "the reward is multiplied by the distance to the goal",
+        "the transition dynamics differ close to the goal region"
+      ],
+      "answer": "1",
+      "explanation": "The optimal values are similar in size (gamma^19 versus gamma^4); the difference is how often exploration finds the reward.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cur-difficulty"
+      ],
+      "skillLabel": "Define difficulty operationally",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: intuition",
+          "href": "/lessons/RL15#intuition"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A schedule uses k = t // (budget // stages) with stages = 3 and budget = 2000, and indexes a list of 3 starts. Find the bug and fix it.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "budget // stages = 666 and t = 1998 gives k = 3, an IndexError",
+        "The last steps fall outside the list; remainder steps are mis-assigned",
+        "Fix: k = min(stages - 1, int(stages * t / budget))"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "cur-schedule"
+      ],
+      "skillLabel": "Debug a stage index",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL15#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Write the three conditions of a schedule audit and the failure each one catches.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Total steps equals the baseline budget (unequal-budget)",
+        "Target start included in the schedule (never reaches target)",
+        "Stage ordering is easy to hard / non-increasing distance (wrong ordering)"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "cur-target-distribution",
+        "cur-equal-budget"
+      ],
+      "skillLabel": "Audit a schedule",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL15#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Give two situations in which a curriculum can hurt compared with training directly on the target task.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "The difficulty ordering is wrong (easy tasks that teach a behaviour that fails on the target)",
+        "Forgetting or overfitting to early stages, or stages that never return to the target",
+        "Design/tuning cost, or a privileged reset not available at test time"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "cur-target-distribution",
+        "cur-difficulty"
+      ],
+      "skillLabel": "Know when curricula fail",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL15#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Budget 2400 steps divided into 6 equal stages. How many steps per stage?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "400",
+      "tolerance": 0.5,
+      "explanation": "2400/6 = 400.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cur-equal-budget",
+        "cur-schedule"
+      ],
+      "skillLabel": "Compute stage budgets",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL15#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Why is a mixed start distribution (all difficulties from the start) a useful baseline for a curriculum?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It always outperforms the curriculum, so it is the best choice for a final method",
+        "It tests whether the ordering of the stages, not just easy-task exposure, causes the gain",
+        "It uses fewer environment steps than the staged schedule of the curriculum does",
+        "It removes the need for any separate evaluation of the policy on the target starts"
+      ],
+      "answer": "1",
+      "explanation": "If a mixed distribution matches the curriculum, the staging added nothing; if not, ordering matters.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cur-equal-budget"
+      ],
+      "skillLabel": "Choose a meaningful baseline",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL15#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q7"
+      ]
+    }
+  ]
+}

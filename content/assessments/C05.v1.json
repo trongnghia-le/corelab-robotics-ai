@@ -1,0 +1,203 @@
+{
+  "id": "C05-diagnostic",
+  "topicId": "C05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In the LQR cost J = integral(x'Qx + u'Ru) dt, what is the effect of making R larger while Q stays fixed?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The closed loop becomes unstable because the inputs are limited too much",
+        "The controller reacts faster because large inputs become more heavily penalised",
+        "Only the steady-state error changes, while the speed of response is unaffected",
+        "The controller uses smaller inputs and responds more slowly"
+      ],
+      "answer": "3",
+      "explanation": "A larger R makes effort expensive, so the optimal gain falls and the poles move less far to the left.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lqr-cost"
+      ],
+      "skillLabel": "LQR cost and the roles of Q and R",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Scalar plant x' = x + u with q = 1, r = 1. Give the Riccati solution P (4 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.414214",
+      "tolerance": 0.001,
+      "explanation": "P^2 - 2P - 1 = 0, P = 1 + sqrt(2).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "riccati"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Same plant and weights. Give the closed-loop pole a - bK (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-1.414214",
+      "tolerance": 0.001,
+      "explanation": "K = bP/r = 2.4142, pole = 1 - 2.4142 = -1.4142.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "riccati"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Plant x' = 2x + u, q = 1, r = 1. Give the LQR gain K (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.236068",
+      "tolerance": 0.001,
+      "explanation": "P^2 - 4P - 1 = 0, P = 2 + sqrt(5) = 4.236 = K.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "riccati"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "You double both Q and R. What happens to the optimal gain K?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is unchanged, because only the ratio of the weights matters",
+        "It is unchanged only for scalar systems; matrices would change K",
+        "It halves, because the larger input penalty R makes the controller more cautious",
+        "It doubles, because both weights scale the cost and the gain scales with them"
+      ],
+      "answer": "0",
+      "explanation": "Scaling the whole cost by a constant does not change the minimiser.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lqr-properties"
+      ],
+      "skillLabel": "Properties and checks of an LQR design",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "For the discrete scalar system x_{k+1} = x_k + u_k with q = r = 1 the fixed point is P = 1.618. What is the optimal cost from x0 = 3 (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "14.562306",
+      "tolerance": 0.002,
+      "explanation": "J = P x0^2 = 1.618*9 = 14.562.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lqr-properties"
+      ],
+      "skillLabel": "Properties and checks of an LQR design",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A balancing robot's LQR design commands 6 N·m for a 0.05 rad tilt, but the motors saturate at 3 N·m. Explain what you would change, what you would check by simulation, and one thing LQR cannot do for you here.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Raises R or lowers the angle weight, citing the gain-versus-effort trade-off.",
+        "Checks peak torque on realistic disturbances and the stability margin after the change.",
+        "Notes that LQR ignores constraints (use MPC or anti-windup) or the model mismatch."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "gain-tradeoff",
+        "lqr-cost"
+      ],
+      "skillLabel": "Gain and closed loop versus input penalty",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

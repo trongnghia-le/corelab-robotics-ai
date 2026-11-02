@@ -1,0 +1,208 @@
+{
+  "id": "R13-diagnostic",
+  "topicId": "R13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A biped's feet each have duty factor 0.35 with a 0.5 phase offset. This gait is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gait-classification"
+      ],
+      "skillLabel": "Gait from duty factor",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Gait from duty factor",
+          "href": "/lessons/R13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "options": [
+        "Impossible, because a duty factor must be at least 0.5",
+        "Running, with flight phases when both feet are airborne",
+        "Walking, with double-support phases when both feet are down",
+        "Standing, because each foot is down for part of the cycle"
+      ],
+      "answer": "1",
+      "explanation": "Duty below 0.5 means the feet are down less than half the cycle, so both are airborne part of the time."
+    },
+    {
+      "id": "q2",
+      "prompt": "Fraction of the cycle with both feet airborne for duty factor 0.35 (offset 0.5; two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gait-classification"
+      ],
+      "skillLabel": "Gait from duty factor",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Gait from duty factor",
+          "href": "/lessons/R13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "answer": "0.3",
+      "tolerance": 0.005,
+      "explanation": "1 - 2 x 0.35 = 0.30."
+    },
+    {
+      "id": "q3",
+      "prompt": "LIP with z0 = 0.9 m, g = 9.81. omega in 1/s (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lip-capture-point"
+      ],
+      "skillLabel": "LIP and capture point",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: LIP and capture point",
+          "href": "/lessons/R13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "answer": "3.301515",
+      "tolerance": 0.003,
+      "explanation": "sqrt(9.81/0.9) = 3.302."
+    },
+    {
+      "id": "q4",
+      "prompt": "Same robot at x = 0 with v = 0.6 m/s. Capture point in m (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lip-capture-point"
+      ],
+      "skillLabel": "LIP and capture point",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: LIP and capture point",
+          "href": "/lessons/R13#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "answer": "0.181735",
+      "tolerance": 0.003,
+      "explanation": "xi = x + v/omega = 0.1817."
+    },
+    {
+      "id": "q5",
+      "prompt": "The foot extends from -0.05 m to 0.12 m about the ankle. The capture point is 0.18 m. What is the correct response?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "push-recovery"
+      ],
+      "skillLabel": "Push recovery",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Push recovery",
+          "href": "/lessons/R13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "options": [
+        "Do nothing: the capture point is close enough to the foot",
+        "Shift the pressure centre inside the foot; no step is needed",
+        "Take a step: the capture point lies beyond the toe",
+        "Lean back and lift the toe so the COM moves behind the ankle"
+      ],
+      "answer": "2",
+      "explanation": "Pressure centre cannot leave the foot, so the robot cannot stop in place."
+    },
+    {
+      "id": "q6",
+      "prompt": "Why is LIP motion described by cosh and sinh rather than cos and sin?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lip-capture-point"
+      ],
+      "skillLabel": "LIP and capture point",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: LIP and capture point",
+          "href": "/lessons/R13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "options": [
+        "Because gravity changes sign when the COM passes over the pivot, flipping the force",
+        "It is inverted: the COM accelerates away from the pivot, so motion diverges exponentially",
+        "Because the foot friction damps the motion, so energy leaves the system exponentially",
+        "Because it oscillates: the COM swings back and forth about the pivot like a hanging pendulum"
+      ],
+      "answer": "2",
+      "explanation": "x'' = +omega^2 (x - p) has hyperbolic solutions."
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe the contact sequence of a walking biped and a running biped for one stride, and a balance failure each can have.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "gait-classification",
+        "hybrid-modes"
+      ],
+      "skillLabel": "Contact sequences",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Contact sequences",
+          "href": "/lessons/R13#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "rubric": [
+        "Walking: alternating single support with double-support overlap (duty > 0.5); running has flight (duty < 0.5).",
+        "Names a balance failure such as capture point outside the foot / insufficient step length for walking, or landing with excessive velocity/flight for running.",
+        "Mentions mode transitions triggered by touchdown/liftoff (hybrid system)."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

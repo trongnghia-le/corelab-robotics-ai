@@ -1,0 +1,342 @@
+{
+  "id": "RL14-targeted",
+  "topicId": "RL14",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Cycle [2.9, -0.1] repeated forever, gamma = 0.9. Discounted value? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "14.79",
+      "tolerance": 0.05,
+      "explanation": "(2.9 - 0.09)/(1 - 0.81) = 2.81/0.19 = 14.79.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rew-loop-value"
+      ],
+      "skillLabel": "Compute the value of a loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "G = 5, c = 0.2, gamma = 0.9. Smallest repeatable bonus for which the 2-cycle loop beats finishing? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.33",
+      "tolerance": 0.005,
+      "explanation": "5*(1 - 0.81) + 0.2*1.9 = 0.95 + 0.38 = 1.33.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rew-loop-value"
+      ],
+      "skillLabel": "Compute the bonus threshold",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "With a repeatable bonus of 2 and G = 10, c = 0.1, lowering gamma from 0.95 to 0.8 will",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "remove the loophole, because the threshold bonus rises and 2 falls below it",
+        "create the loophole, because every reward is then smaller",
+        "change nothing, since the repeatable bonus is fixed at 2",
+        "make finishing impossible, since the horizon becomes too short"
+      ],
+      "answer": "0",
+      "explanation": "b* = 10(1-0.64)+0.1*1.8 = 3.78 > 2, so finishing wins at gamma = 0.8.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rew-loop-value"
+      ],
+      "skillLabel": "Predict discount dependence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Shaping with F = phi(s') - phi(s) without gamma, phi(s) = -(5-s), loop 2->3->2->3... with gamma = 0.9. Discounted sum of F per loop start? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.526",
+      "tolerance": 0.003,
+      "explanation": "F alternates +1, -1: sum = 1/(1 + gamma) = 1/1.9 = 0.526.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rew-potential-shaping"
+      ],
+      "skillLabel": "Evaluate a broken shaping term",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL14#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Which evaluation is most informative about whether a learned policy actually does the task?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Success rate and side-effect metrics computed from the world state on held-out episodes",
+        "The entropy of the policy, averaged over the states visited in the training episodes",
+        "The critic's value estimate at the start state, averaged over the training episodes",
+        "The average training return, reported over the last iterations of the training run"
+      ],
+      "answer": "0",
+      "explanation": "Only task-level and state-derived metrics can detect a policy that exploits the training reward.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rew-evaluation"
+      ],
+      "skillLabel": "Choose an evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL14#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "phi(s) = -(8 - s), gamma = 1. For a terminating path starting at s = 2, by how much does the shaped return differ from the true return? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.0",
+      "tolerance": 0.05,
+      "explanation": "-phi(2) = 6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rew-potential-shaping"
+      ],
+      "skillLabel": "Use the telescoping identity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL14#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A bonus is paid only the first time the checkpoint is entered in an episode. Compared with a repeatable bonus, this",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "makes the problem non-Markov and therefore unsolvable by any reinforcement learner",
+        "removes the farming loop but requires the state to include whether the bonus was collected",
+        "is equivalent to a potential difference between the two states, so nothing changes",
+        "still allows farming through episode resets and repeated entries into the checkpoint"
+      ],
+      "answer": "1",
+      "explanation": "A flag in the state restores the Markov property and closes the loop.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rew-loop-value",
+        "rew-potential-shaping"
+      ],
+      "skillLabel": "Evaluate a one-time bonus",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL14#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Along a goal-reaching path of 5 steps with c = 0.1, G = 10 paid on the last step and gamma = 1, what is the undiscounted true return? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9.6",
+      "tolerance": 0.05,
+      "explanation": "Four step costs of 0.1 then +10: 10 - 0.4 = 9.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rew-evaluation"
+      ],
+      "skillLabel": "Compute the baseline return",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL14#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A drone is rewarded for each waypoint reached within 0.5 m. It learns to hover near two adjacent waypoints and oscillate. Explain and propose two changes.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Waypoint rewards are repeatable and the oscillation re-collects them",
+        "Fix 1: pay each waypoint once (flag in state) or use potential-based progress",
+        "Fix 2: evaluate on mission completion and waypoint order, not return"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rew-loop-value",
+        "rew-evaluation"
+      ],
+      "skillLabel": "Diagnose a waypoint loop",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL14#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Write code or pseudocode that detects the checkpoint loophole from a state trace, and say what the boundary case is.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Counts entries to the checkpoint state and checks whether the last state is the goal",
+        "Flags a hack when not successful and entries >= 2 (or a chosen threshold)",
+        "Boundary: a timeout with one entry is a failure but not a loop"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "rew-evaluation"
+      ],
+      "skillLabel": "Implement a hack detector",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL14#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Your shaped reward uses phi = -distance to goal, but the robot is slower than with the sparse reward. List two non-hacking reasons and a test for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Potential has local minima or wrong scale versus the other terms",
+        "Shaping weight too high relative to the success reward, or the potential ignores obstacles",
+        "Tests: plot phi along the optimal path and compare returns, or ablate the shaping weight"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "rew-potential-shaping",
+        "rew-evaluation"
+      ],
+      "skillLabel": "Diagnose shaping that does not help",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL14#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "You want to speed up learning on a sparse-reward arm task without changing which policy is optimal. Which addition is safe?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "gamma*phi(s') - phi(s) with phi = minus the distance from gripper to object",
+        "a bonus proportional to the end-effector speed, to encourage fast reaching",
+        "+1 every time the gripper touches the object, to guide the arm toward it",
+        "+0.1 per step to encourage the arm to stay alive until it succeeds"
+      ],
+      "answer": "0",
+      "explanation": "Only the potential difference is guaranteed to preserve the optimal policy; touch, living and speed bonuses can be farmed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rew-potential-shaping"
+      ],
+      "skillLabel": "Choose a safe shaping term",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL14#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "id": "S12-diagnostic",
+  "topicId": "S12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "One single-threaded executor runs a 4 ms control timer (period 20 ms) and a subscription callback that can take 30 ms. What can happen to the control timer?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "executor-blocking"
+      ],
+      "skillLabel": "Executor blocking",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It is dropped permanently after the first period that it misses in the executor queue",
+        "Nothing: timers always preempt a running subscription callback in the executor thread",
+        "Its callbacks can start up to about 30 ms late, since the long callback cannot be preempted",
+        "It runs faster, because the executor batches the pending callbacks into one call"
+      ],
+      "answer": "2",
+      "explanation": "Callbacks run to completion on one thread, so the timer waits behind the long callback."
+    },
+    {
+      "id": "q2",
+      "prompt": "Three periodic tasks (C,T) in ms: (2,8), (3,12), (4,16). Give the total utilization U as a decimal (precision 0.001).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "utilization-response-time"
+      ],
+      "skillLabel": "Utilization and response time",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#theory-and-derivation"
+        }
+      ],
+      "answer": "0.75",
+      "tolerance": 0.001,
+      "explanation": "2/8+3/12+4/16=0.25+0.25+0.25=0.75."
+    },
+    {
+      "id": "q3",
+      "prompt": "Rate-monotonic fixed priorities, preemptive: tasks (C,T) = (1,3), (1,5), (2,10) ms in priority order. Give the response time of the third task in ms (precision 0.01).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "utilization-response-time"
+      ],
+      "skillLabel": "Utilization and response time",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#worked-example"
+        }
+      ],
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "r=2 -> 2+1+1=4 -> 2+ceil(4/3)+ceil(4/5)=2+2+1=5 -> 2+2+1=5."
+    },
+    {
+      "id": "q4",
+      "prompt": "Chain: camera period 50 ms with 10 ms capture delay (periodic stage); detector event-driven with worst response 20 ms; controller timer period 10 ms with response 3 ms. Using the bound sum of (period if periodic + response), give the maximum data age in ms (precision 0.5).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "chain-latency"
+      ],
+      "skillLabel": "End-to-end latency bound",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#theory-and-derivation"
+        }
+      ],
+      "answer": "93",
+      "tolerance": 0.5,
+      "explanation": "(50+10)+20+(10+3)=93 ms."
+    },
+    {
+      "id": "q5",
+      "prompt": "A consumer needs 50 ms per message, the producer sends one every 33 ms, and the subscription uses KEEP_LAST with depth 50. What does the consumer see in steady state?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "queue-age"
+      ],
+      "skillLabel": "Queue depth and data age",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Messages that are roughly 2.5 s old, with no error reported",
+        "Messages about 33 ms old, because the producer rate sets the age",
+        "Always the newest message, because KEEP_LAST history keeps the latest one",
+        "An exception when the queue becomes full, so the fault is reported"
+      ],
+      "answer": "0",
+      "explanation": "The queue stays full; each message waits about 50 x 50 ms = 2.5 s. Old data is dropped silently once full."
+    },
+    {
+      "id": "q6",
+      "prompt": "A stale-data gate computes `now - stamp <= max_age`. The stamp comes from another computer whose clock is 2 s ahead, max_age is 0.2 s. What is wrong?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stale-gate"
+      ],
+      "skillLabel": "Stale-data gate",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#failure-modes"
+        }
+      ],
+      "options": [
+        "The gate will stop the robot constantly, since every single sample looks too old to use",
+        "The age is negative, so old data passes; require 0 <= age and fix the clock domain",
+        "The gate should compare the stamp against max_age directly, rather than comparing the age",
+        "Nothing is wrong: a smaller or even negative age is always the safe case for the gate"
+      ],
+      "answer": "1",
+      "explanation": "Negative age passes the one-sided test even though the stamp is not trustworthy."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design: a vision detector (30 Hz, up to 40 ms) feeds a 100 Hz velocity controller. Describe how data crosses from the detector to the controller and what the controller does if the detector stalls.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "stale-gate"
+      ],
+      "skillLabel": "Stale-data gate",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "S10",
+        "CPP10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/S12#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Latest-wins hand-off (depth 1) carrying a capture stamp; the controller never blocks on the detector.",
+        "Age check against a max_age chosen from the latency bound plus margin, accepting only 0 <= age <= max_age.",
+        "Declared fallback on stale input (hold, decay to zero or stop) and a log/alert of the stall."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

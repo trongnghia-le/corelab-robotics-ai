@@ -1,0 +1,376 @@
+{
+  "id": "V08-targeted",
+  "topicId": "V08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Compute the IoU of (2,2,12,8) and (4,3,14,9) as a decimal (precision 0.01).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "iou-computation"
+      ],
+      "skillLabel": "Computing IoU",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "Intersection 8x5 = 40; each area 60; union 80; 0.5."
+    },
+    {
+      "id": "b2",
+      "prompt": "Boxes in (x, y, w, h) format: (10, 20, 30, 40) and (20, 20, 30, 40). Compute their IoU (precision 0.01).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "iou-computation"
+      ],
+      "skillLabel": "Computing IoU",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "As xyxy: (10,20,40,60) and (20,20,50,60); intersection 800, union 1600."
+    },
+    {
+      "id": "b3",
+      "prompt": "For equal squares, what fraction d/s of the side can a box be shifted before IoU falls to 0.6? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "iou-computation"
+      ],
+      "skillLabel": "Computing IoU",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "0.25",
+      "tolerance": 0.01,
+      "explanation": "d/s = (1 - tau)/(1 + tau) = 0.4/1.6 = 0.25."
+    },
+    {
+      "id": "b4",
+      "prompt": "N = 5 ground truths and ranked flags [1, 0, 1, 1, 0, 0]. What is the recall after all six detections? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "precision-recall"
+      ],
+      "skillLabel": "Precision and recall",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "0.6",
+      "tolerance": 0.01,
+      "explanation": "3 TP / 5 ground truths."
+    },
+    {
+      "id": "b5",
+      "prompt": "N = 2 ground truths and ranked flags [1, 0, 0, 1]. Compute the all-point AP (precision 0.001).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "average-precision"
+      ],
+      "skillLabel": "Average precision",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.75",
+      "tolerance": 0.001,
+      "explanation": "Recall 0.5,0.5,0.5,1; precision 1,0.5,0.333,0.5; envelope 1,0.5,0.5,0.5; AP = 0.5*1 + 0.5*0.5."
+    },
+    {
+      "id": "b6",
+      "prompt": "N = 7 ground-truth objects; the matcher produced 5 true positives. How many false negatives? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "precision-recall"
+      ],
+      "skillLabel": "Precision and recall",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "FN = N - TP."
+    },
+    {
+      "id": "b7",
+      "prompt": "COCO's AP averages over IoU thresholds 0.50, 0.55, ..., 0.95. How many thresholds is that? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "average-precision"
+      ],
+      "skillLabel": "Average precision",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "Ten thresholds."
+    },
+    {
+      "id": "b8",
+      "prompt": "In a crowd of people standing shoulder to shoulder, a hard NMS with a low IoU threshold (0.3) tends to...",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nms-matching"
+      ],
+      "skillLabel": "Matching and duplicates",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "options": [
+        "Raise recall, because only exact duplicates are ever suppressed",
+        "Suppress boxes of real neighbouring people, lowering recall",
+        "Change nothing, since the boxes of people never overlap at all",
+        "Keep many duplicate boxes, since a low threshold removes very few"
+      ],
+      "answer": "1",
+      "explanation": "Neighbouring true boxes overlap enough to be suppressed; consider a higher threshold or Soft-NMS."
+    },
+    {
+      "id": "b9",
+      "prompt": "A matcher processes detections sorted by increasing score instead of decreasing. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nms-matching"
+      ],
+      "skillLabel": "Matching and duplicates",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "options": [
+        "The IoU values change, because the boxes are scored in another order",
+        "Low-confidence boxes claim the ground truth first, so AP drops",
+        "Recall exceeds 1, since each ground truth is matched more than once",
+        "Nothing changes, because matching order does not affect the result"
+      ],
+      "answer": "1",
+      "explanation": "The ranking defines the precision-recall curve."
+    },
+    {
+      "id": "b10",
+      "prompt": "Which information does AP not tell you about a deployed detector?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "average-precision"
+      ],
+      "skillLabel": "Average precision",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "The precision and recall at the particular score threshold you will use",
+        "Whether localisation is good on average across the matched detections",
+        "How well it ranks true detections above false ones across thresholds",
+        "Whether duplicate detections of one object are penalised in the score"
+      ],
+      "answer": "0",
+      "explanation": "AP integrates over thresholds; the robot lives at one."
+    },
+    {
+      "id": "b11",
+      "prompt": "A pick-and-place robot uses detections to grasp 10 cm boxes. Which thresholds (IoU for evaluation, NMS, score) do you choose and how do you check that detections are good enough to grasp?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "average-precision"
+      ],
+      "skillLabel": "Average precision",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "Evaluates at several IoU thresholds (0.5 and 0.75) and ties them to the grasp tolerance.",
+        "Chooses the score threshold from the PR curve at the required recall and false-alarm cost.",
+        "Verifies with grasp success rate versus IoU/box error."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "List the tests you would write for an IoU function (cases and properties).",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "iou-computation"
+      ],
+      "skillLabel": "Computing IoU",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "rubric": [
+        "Identical, disjoint, touching-edge and nested boxes with known IoU values.",
+        "Properties: symmetry, range [0,1], scale invariance.",
+        "Coordinate-format check, e.g. (x,y,w,h) conversion."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

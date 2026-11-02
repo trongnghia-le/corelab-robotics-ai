@@ -1,0 +1,237 @@
+{
+  "id": "RS07-diagnostic",
+  "topicId": "RS07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which rewrite of 'Our method significantly outperforms the baseline' is best supported by 5-seed data with a 1.8-point mean gain whose 95% interval is [-1.2, 4.8]?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Our method clearly outperforms the baseline, since the mean gain of 1.8 points is positive.",
+        "Our method scores 1.8 points higher on average (95% CI -1.2 to 4.8, n=5 seeds), within seed noise.",
+        "Our method is comparable to the baseline, so no numbers or intervals need to be reported.",
+        "Our method is slightly but significantly better, with a gain of 1.8 points over the baseline."
+      ],
+      "answer": "1",
+      "explanation": "The interval includes zero, so 'significantly' is unjustified; the honest sentence reports the number, the interval and n.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "vague-language",
+        "uncertainty-reporting"
+      ],
+      "skillLabel": "Match wording strength to evidence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS06",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Four runs scored 70, 74, 72, 76. What is the sample standard deviation (divide by n-1)? Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.58",
+      "tolerance": 0.01,
+      "explanation": "Mean 73, deviations -3, 1, -1, 3, sum of squares 20, variance 20/3, sd = 2.58.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "uncertainty-reporting"
+      ],
+      "skillLabel": "Sample standard deviation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS06",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "For the same four runs (70, 74, 72, 76), what is the half-width of the 95% confidence interval of the mean, using t = 3.182 for 3 degrees of freedom? Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.11",
+      "tolerance": 0.02,
+      "explanation": "half-width = 3.182 * 2.582 / sqrt(4) = 4.11.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "uncertainty-reporting"
+      ],
+      "skillLabel": "Confidence interval half-width",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS06",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A bar chart of two methods (71 and 72.8) uses a y-axis that starts at 70 and shows no error bars. What is the main problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Bars should always be replaced by pie charts, because they show proportions better.",
+        "The colours are not taken from a standard palette, so readers cannot compare them.",
+        "The chart is missing a title, so the reader cannot tell which metric it shows.",
+        "Bar heights no longer reflect the values, and without error bars a small gap looks large."
+      ],
+      "answer": "3",
+      "explanation": "Bars encode value by length, so a truncated axis exaggerates differences; showing the data points with intervals avoids this.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "figure-design"
+      ],
+      "skillLabel": "Spot a misleading figure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS06",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A truncated bar chart starts its axis at 60 and shows bars for 62 and 65. What is the ratio of the bar heights (taller/shorter)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.5",
+      "tolerance": 0.01,
+      "explanation": "Heights are 2 and 5, ratio 2.5, while the true ratio of values is 65/62 = 1.05.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "figure-design"
+      ],
+      "skillLabel": "Quantify visual exaggeration",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS06",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A paper only tested a gripper in simulation. Write one specific limitation sentence and say how you would test it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names what was not tested (real friction, sensing, actuation) rather than vague 'more work needed'.",
+        "Says why it could change the conclusion.",
+        "Gives a concrete test (hardware trials, parameter sweep) with a measurable outcome."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "limitations"
+      ],
+      "skillLabel": "Write a specific limitation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS06",
+        "RS02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "A result is written as '72.8 ± 1.9'. What must the text or caption add?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Nothing; plus-minus always means one standard deviation, so the reader can infer it.",
+        "Only the units of the measured quantity, since the interval convention is standard.",
+        "Whether 1.9 is a standard deviation, a standard error or a CI half-width, and what n is.",
+        "Only the colour and line style of the error bars drawn in the figure."
+      ],
+      "answer": "2",
+      "explanation": "Different conventions give very different widths. State which and give n.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "uncertainty-reporting"
+      ],
+      "skillLabel": "Define the plus-minus",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS06",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "Describe how you would implement a check that flags vague claims in a results paragraph and what it cannot detect.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Splits into sentences and looks for vague words (significantly, robust, state-of-the-art) without a number in the same sentence.",
+        "Optionally checks for sample size and a limitation statement.",
+        "Admits it cannot judge whether the numbers are correct or the argument is sound."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "vague-language"
+      ],
+      "skillLabel": "Automate a vague-claim check",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference-implementation",
+          "href": "/lessons/RS07#reference-implementation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS06",
+        "RS02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

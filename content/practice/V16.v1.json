@@ -1,0 +1,275 @@
+{
+  "id": "V16-targeted",
+  "topicId": "V16",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "A propeller turns at 50 Hz and is filmed at 30 fps. Apparent frequency in Hz?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Aliasing and the sampling rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V16#worked-example"
+        }
+      ],
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "|50-60|=10.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "A roller turns at 61 Hz and the camera runs at 60 fps. Apparent frequency in Hz?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Aliasing and the sampling rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V16#worked-example"
+        }
+      ],
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "|61-60|=1.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "A 100-frame clip is sampled with step = 100//8. What is the last index used?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-sampling"
+      ],
+      "skillLabel": "Choosing frames from a clip",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V16#worked-example"
+        }
+      ],
+      "answer": "84",
+      "tolerance": 0.5,
+      "explanation": "step 12, last 7*12=84; frames 85-99 never seen.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "A 150-frame clip, k=8 segments. What is the third segment-centre index (j=2)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-sampling"
+      ],
+      "skillLabel": "Choosing frames from a clip",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V16#worked-example"
+        }
+      ],
+      "answer": "46",
+      "tolerance": 0.5,
+      "explanation": "floor(2.5*18.75)=46.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "Lucas-Kanade: window gradients (2,0,-4),(1,0,-2),(3,0,-6). Estimate u (x flow) in pixels per frame.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "optical-flow"
+      ],
+      "skillLabel": "Optical flow and the aperture problem",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V16#worked-example"
+        }
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "u = -sum(IxIt)/sum(Ix^2)=28/14=2; v is unobservable."
+    },
+    {
+      "id": "p6",
+      "prompt": "Opening and closing a door produce the same set of frames in reverse order. A model that averages per-frame features and classifies the average will",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "temporal-vs-frame"
+      ],
+      "skillLabel": "Frame-only versus temporal evidence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: intuition",
+          "href": "/lessons/V16#intuition"
+        }
+      ],
+      "options": [
+        "succeed if trained longer",
+        "succeed because the frames are the same",
+        "be at chance on the pair",
+        "succeed only at high resolution"
+      ],
+      "answer": "2",
+      "explanation": "The average is identical for both, so the label cannot be a function of it.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "Which is a likely cause of inflated test accuracy on a video benchmark?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "temporal-vs-frame"
+      ],
+      "skillLabel": "Frame-only versus temporal evidence",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/V16#verification"
+        }
+      ],
+      "options": [
+        "Reporting accuracy per clip instead of per frame in the test set.",
+        "Using a lower frame rate when the frames are sampled for testing.",
+        "Using a larger test set than the one used in the training split.",
+        "Frames from the same clip appear in both training and test splits."
+      ],
+      "answer": "3",
+      "explanation": "Neighbouring frames are almost identical, so the split must be by clip, actor or scene.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "A SlowFast network gives the fast pathway fewer channels than the slow one. Why is that reasonable?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "temporal-vs-frame"
+      ],
+      "skillLabel": "Frame-only versus temporal evidence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: exercise answers",
+          "href": "/lessons/V16#exercise-answers"
+        }
+      ],
+      "options": [
+        "Fast pathways cannot have many channels because they run at a high frame rate.",
+        "Appearance needs a high frame rate, so the slow path should have fewer channels.",
+        "Motion needs fine temporal sampling but little spatial detail; appearance changes slowly.",
+        "It reduces aliasing in the slow pathway by removing most of its channels."
+      ],
+      "answer": "2",
+      "explanation": "Each path specialises: slow for appearance, fast for motion.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p9",
+      "prompt": "Write code for segment-centre frame sampling and a test showing which frames a naive len//k stride never sees.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "frame-sampling"
+      ],
+      "skillLabel": "Choosing frames from a clip",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/V16#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Computes int((j+0.5)*n/k) for j in range(k).",
+        "Test uses a concrete n and k (e.g. 100 and 8) and shows frames after index 84 are missing for the stride rule.",
+        "Handles k greater than n or empty clips."
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p10",
+      "prompt": "A camera on a conveyor sees a wheel appearing to turn backwards. Explain why and give two ways to fix it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "aliasing"
+      ],
+      "skillLabel": "Aliasing and the sampling rate",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V16#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Aliasing: the wheel's frequency is above half the frame rate.",
+        "Fix by raising the frame rate above twice the motion frequency or using shorter exposure or a strobe.",
+        "Mentions checking by computing the alias frequency."
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

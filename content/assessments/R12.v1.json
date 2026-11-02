@@ -1,0 +1,202 @@
+{
+  "id": "R12-diagnostic",
+  "topicId": "R12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In the recursive Newton-Euler algorithm, what is the order of the two passes?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "recursive-newton-euler"
+      ],
+      "skillLabel": "Recursive Newton-Euler structure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Recursive Newton-Euler structure",
+          "href": "/lessons/R12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "options": [
+        "Backward pass tip-to-base accumulating forces first, then a forward pass computing motion",
+        "Both computations in one single pass from base to tip, so no second pass is needed",
+        "A backward pass only, because accelerations are not needed to find joint torques",
+        "Forward pass base-to-tip computing motion, then backward pass tip-to-base accumulating forces"
+      ],
+      "answer": "0",
+      "explanation": "Accelerations propagate outward; forces needed to produce them accumulate inward."
+    },
+    {
+      "id": "q2",
+      "prompt": "Planar 2R arm held static and horizontal (q = 0): l1 = 0.5, m1 = 2, lc1 = 0.25, m2 = 1.5, lc2 = 0.2, g = 9.81. Torque at joint 2 in N m (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "static-gravity-torque"
+      ],
+      "skillLabel": "Static gravity torque",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Static gravity torque",
+          "href": "/lessons/R12#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "answer": "2.943",
+      "tolerance": 0.005,
+      "explanation": "m2 lc2 g = 2.943."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same arm: torque at joint 1 in N m (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "static-gravity-torque"
+      ],
+      "skillLabel": "Static gravity torque",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Static gravity torque",
+          "href": "/lessons/R12#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "answer": "15.2055",
+      "tolerance": 0.01,
+      "explanation": "(m1 lc1 + m2 l1) g + m2 lc2 g = 12.2625 + 2.943 = 15.2055."
+    },
+    {
+      "id": "q4",
+      "prompt": "Inverse dynamics is used to build a mass matrix column by column. For a 7-joint arm, how many inverse-dynamics calls build the whole matrix (zero velocity, gravity off)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mass-matrix-from-id"
+      ],
+      "skillLabel": "Mass matrix from inverse dynamics",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Mass matrix from inverse dynamics",
+          "href": "/lessons/R12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "One call per column, n = 7."
+    },
+    {
+      "id": "q5",
+      "prompt": "Which statement about the inertial parameters of a robot arm is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "parameter-identification"
+      ],
+      "skillLabel": "Inertial parameter identification",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Inertial parameter identification",
+          "href": "/lessons/R12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "options": [
+        "Torque is nonlinear in the inertial parameters, so they cannot be fit by linear least squares",
+        "Parameters can be identified from a single sample if the measurement noise is small",
+        "Torque is linear in a minimal set of parameter combinations, so regression identifies them from exciting data",
+        "Static poses alone are enough to identify all inertias, so no motion is needed"
+      ],
+      "answer": "0",
+      "explanation": "tau = Y(q, qd, qdd) pi with pi the parameter combinations; excitation is needed."
+    },
+    {
+      "id": "q6",
+      "prompt": "The arm above (l1 = 0.5, m2 = 1.5, lc2 = 0.2). Compute the identifiable parameter a3 = m2 l1 lc2 (three decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-identification"
+      ],
+      "skillLabel": "Inertial parameter identification",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Inertial parameter identification",
+          "href": "/lessons/R12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "answer": "0.15",
+      "tolerance": 0.002,
+      "explanation": "1.5 x 0.5 x 0.2 = 0.15."
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe two independent checks you would use to validate an inverse-dynamics implementation for a new arm, and what each would catch.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "dynamics-validation"
+      ],
+      "skillLabel": "Validating dynamics code",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Validating dynamics code",
+          "href": "/lessons/R12#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "rubric": [
+        "Names a closed-form/analytic or second-library comparison on random states with non-zero velocity.",
+        "Names power balance (q_dot . tau = dE/dt) or M symmetric positive definite or FD(ID)=identity.",
+        "Explains what error each catches (centripetal term missing, wrong gravity sign, mass matrix error)."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

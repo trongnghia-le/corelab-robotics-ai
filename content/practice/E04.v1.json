@@ -1,0 +1,375 @@
+{
+  "id": "E04-targeted",
+  "topicId": "E04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "k=0.2, e0=1.0. Error after 4 steps? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "closed-form-duration"
+      ],
+      "skillLabel": "Closed-form skill duration",
+      "mistakeCategory": "mathematical",
+      "answer": "0.4096",
+      "tolerance": 0.0005,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "0.8^4=0.4096."
+    },
+    {
+      "id": "b2",
+      "prompt": "k=0.5, e0=1.0, tolerance 0.01. First step n with error <= tolerance?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "closed-form-duration"
+      ],
+      "skillLabel": "Closed-form skill duration",
+      "mistakeCategory": "mathematical",
+      "answer": "7",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "0.5^7=0.0078<=0.01; 0.5^6=0.0156>0.01."
+    },
+    {
+      "id": "b3",
+      "prompt": "Same controller, hold=4. Step at which SUCCEEDED is reported?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "closed-form-duration"
+      ],
+      "skillLabel": "Closed-form skill duration",
+      "mistakeCategory": "mathematical",
+      "answer": "10",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "7 + 4 - 1 = 10."
+    },
+    {
+      "id": "b4",
+      "prompt": "Unclamped, k=0.25, tolerance 0.02, window 10: largest stall threshold delta that avoids false stalls (min gain just outside the tolerance)? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "failure-statuses"
+      ],
+      "skillLabel": "Terminal statuses",
+      "mistakeCategory": "mathematical",
+      "answer": "0.018874",
+      "tolerance": 0.0005,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "delta < eps (1-(1-k)^w) = 0.02*0.9437=0.0189."
+    },
+    {
+      "id": "b5",
+      "prompt": "Speed-limited reach: k=0.5, v_max=0.2. At what error does the controller leave the linear (speed-limited) phase?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "closed-form-duration"
+      ],
+      "skillLabel": "Closed-form skill duration",
+      "mistakeCategory": "mathematical",
+      "answer": "0.4",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "k e = v_max gives e=0.4."
+    },
+    {
+      "id": "b6",
+      "prompt": "A single in-tolerance sample is declared success. With noisy sensing this can cause:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "failure-statuses"
+      ],
+      "skillLabel": "Terminal statuses",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Perfect tracking, since a single sample is enough to confirm the arm settled",
+        "False success: the arm crosses the tolerance band momentarily",
+        "A longer horizon, because the arm must then wait for the next sample",
+        "Reduced reach, because the arm stops as soon as one sample is in tolerance"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "A hold window protects against single noisy samples."
+    },
+    {
+      "id": "b7",
+      "prompt": "The robot steps 0.3 m per control step and an obstacle is 0.1 m thick. A check only at step endpoints can miss it. This is called:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "failure-statuses"
+      ],
+      "skillLabel": "Terminal statuses",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Aliasing of the goal",
+        "Overshoot",
+        "Tunnelling",
+        "Stalling"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Check along the segment or limit the step."
+    },
+    {
+      "id": "b8",
+      "prompt": "Why report a reason with the failure status?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "skill-contract"
+      ],
+      "skillLabel": "Skill contract",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "To save memory, since reasons are stored in a more compact form than text",
+        "To avoid timeouts, because the caller then waits for the reason before retrying",
+        "To make the log shorter, since a reason replaces the full error message",
+        "A caller can choose the right recovery (retry, replan, ask for help)"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/E04#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Different reasons need different recoveries."
+    },
+    {
+      "id": "b9",
+      "prompt": "Skill A ends with the gripper within 2 cm of the pose, skill B requires 1 cm. The sequence A;B:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "skill-composition"
+      ],
+      "skillLabel": "Skill composition",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Is valid if B has a longer timeout, since B then has time to converge",
+        "Is invalid: A's postcondition does not imply B's precondition",
+        "Is valid if A runs twice, because the second run tightens the pose",
+        "Is always valid, since a sequence only needs both skills to exist"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Postcondition must imply precondition."
+    },
+    {
+      "id": "b10",
+      "prompt": "In a behavior tree a Fallback node whose first child skill returns REFUSED will:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "skill-composition"
+      ],
+      "skillLabel": "Skill composition",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Try its next child",
+        "Stop with success",
+        "Repeat the first child forever",
+        "Cancel the tree"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/E04#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "A Fallback tries alternatives until one succeeds."
+    },
+    {
+      "id": "b11",
+      "prompt": "Explain with an example why timeout, stall and collision need different statuses.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "failure-statuses"
+      ],
+      "skillLabel": "Terminal statuses",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "Each has a different cause and a different appropriate recovery.",
+        "Example: collision needs replanning; stall needs a stronger controller or a check of the target; timeout needs a longer budget or a decomposition.",
+        "The caller cannot choose a recovery from a single 'failed' status."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Describe a test plan for a reach skill that checks every terminal status and the invariants 'exactly one status' and 'REFUSED implies no motion'.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "skill-contract",
+        "closed-form-duration"
+      ],
+      "skillLabel": "Test a skill implementation",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E04#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E01"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "rubric": [
+        "One triggering test per status plus a negative test.",
+        "Property tests over randomised goals checking the invariants.",
+        "Compare simulated duration with the closed form."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

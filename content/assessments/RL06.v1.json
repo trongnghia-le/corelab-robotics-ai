@@ -1,0 +1,178 @@
+{
+  "id": "RL06-diagnostic",
+  "topicId": "RL06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Q(s',.) = (1, 4, 2), r = 0, gamma = 0.9, alpha = 0.5, Q(s,a) = 2. What is Q(s,a) after a Q-learning update (1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "q-learning-update"
+      ],
+      "skillLabel": "Q-learning and SARSA updates",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "RL05"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "2.8",
+      "tolerance": 0.02,
+      "explanation": "target 3.6; 2 + 0.5*1.6 = 2.8."
+    },
+    {
+      "id": "q2",
+      "prompt": "Same transition, but the behaviour policy chose a' = 2 (value 2). What is Q(s,a) after a SARSA update (1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "q-learning-update"
+      ],
+      "skillLabel": "Q-learning and SARSA updates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "answer": "1.9",
+      "tolerance": 0.02,
+      "explanation": "target 1.8; 2 + 0.5*(1.8-2) = 1.9."
+    },
+    {
+      "id": "q3",
+      "prompt": "In the cliff-walking task, which description matches the learned behaviour?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "on-vs-off-policy"
+      ],
+      "skillLabel": "On-policy versus off-policy learning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL06#worked-example"
+        }
+      ],
+      "options": [
+        "SARSA learns the edge path with the worse online return, and Q-learning learns the longer, safer path with a better online return.",
+        "Q-learning learns the shortest edge path but a worse online return; SARSA learns a longer, safer path with a better online return.",
+        "Neither can learn the cliff path without a model of the environment, since it needs planning.",
+        "Both learn the same path along the edge, so their online returns are equal after enough training."
+      ],
+      "answer": "1",
+      "explanation": "Q-learning values the greedy policy; SARSA's values include its own exploration."
+    },
+    {
+      "id": "q4",
+      "prompt": "n = 4 actions, epsilon = 0.2, exactly two tied greedy actions. What probability does each tied greedy action get? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "epsilon-greedy"
+      ],
+      "skillLabel": "Epsilon-greedy probabilities",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL06#theory-and-derivation"
+        }
+      ],
+      "answer": "0.45",
+      "tolerance": 0.002,
+      "explanation": "0.2/4 + 0.8/2 = 0.05 + 0.4 = 0.45."
+    },
+    {
+      "id": "q5",
+      "prompt": "An episode ends because of a 300-step time limit, not because the goal was reached. What should the TD target of the last transition be?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "terminal-vs-truncated"
+      ],
+      "skillLabel": "Terminated versus truncated",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL06#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "max over all states of the learned value table",
+        "r only, because the episode has ended",
+        "r + gamma * (bootstrap from the next state), as usual",
+        "0, since the time limit removes all future value"
+      ],
+      "answer": "2",
+      "explanation": "A time limit is truncation; the state still has a future."
+    },
+    {
+      "id": "q6",
+      "prompt": "Final online returns -10, -14, -12 and -12 on four declared seeds. What is the sample standard deviation (n-1)? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-statistics"
+      ],
+      "skillLabel": "Reporting over seeds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL06#verification"
+        }
+      ],
+      "answer": "1.63",
+      "tolerance": 0.02,
+      "explanation": "mean -12; squared deviations 4,4,0,0 sum 8; s = sqrt(8/3) = 1.633."
+    },
+    {
+      "id": "q7",
+      "prompt": "A teammate runs one seed of SARSA and one of Q-learning on a risky task and reports Q-learning as better because its greedy path is shorter. Explain what is missing and how you would redo the comparison.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "seed-statistics",
+        "on-vs-off-policy"
+      ],
+      "skillLabel": "Reporting over seeds and on/off-policy choice",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL06#verification"
+        }
+      ],
+      "rubric": [
+        "Names the missing multiple declared seeds with mean, sd and se.",
+        "Separates online return from greedy-policy return and says which matters for the task.",
+        "Gives a rejection check, e.g. report seeds that fail and use the same training budget."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

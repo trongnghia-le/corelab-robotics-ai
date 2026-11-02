@@ -1,0 +1,196 @@
+{
+  "id": "CPP09-diagnostic",
+  "topicId": "CPP09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Summing n doubles in a std::vector and in a linked list are both O(n). Why is the list typically much slower for large n?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The list performs more floating-point additions than the vector does",
+        "Lists take more asymptotic steps because pointer chasing is O(n log n)",
+        "The vector is always held in registers while the list lives in memory",
+        "Nodes are scattered, so each hop is a cache miss and prefetching cannot help"
+      ],
+      "answer": "3",
+      "explanation": "Both do n steps; the difference is the cost per step, dominated by memory latency for pointer chasing.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cache-locality"
+      ],
+      "skillLabel": "Locality beats equal big-O",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        },
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP09#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Lines of 64 bytes. How many distinct cache lines does a sequential read of 2000 floats (4 bytes each, line-aligned start) touch? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "125",
+      "tolerance": 0.01,
+      "explanation": "8000 bytes / 64 = 125 lines.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cache-locality"
+      ],
+      "skillLabel": "Counting cache lines",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A routine takes 3 ms at n=1000 and 12 ms at n=2000. Assuming t ~ n^p, what is p? Give a number with 1 decimal.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.05,
+      "explanation": "Doubling n multiplied time by 4 = 2^p, so p = 2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "empirical-complexity"
+      ],
+      "skillLabel": "Empirical exponent",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "30% of a program's run time is spent in function f. You make f 5 times faster. What is the overall speedup? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.3157894736842106",
+      "tolerance": 0.005,
+      "explanation": "S = 1/(0.7 + 0.3/5) = 1/0.76 = 1.316, i.e. 1.32.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "profiling-amdahl"
+      ],
+      "skillLabel": "Amdahl's law",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "What is the most important thing to do before optimizing a slow C++ program?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Turn on sanitizers, because they make the program run faster",
+        "Measure with an optimized build and a profiler to see where the time goes",
+        "Replace every vector with a linked list to avoid reallocation",
+        "Rewrite the hot loops with manual unrolling to help the optimizer"
+      ],
+      "answer": "1",
+      "explanation": "Optimizing a function that takes a small fraction of the time cannot give a big gain (Amdahl's law).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "profiling-amdahl"
+      ],
+      "skillLabel": "Profile first",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        },
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP09#verification"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A benchmark loop computes a sum but never uses it, and the build is -O2. The reported time is 0 ns. Why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The optimizer removed the dead computation",
+        "Timers cannot measure anything below one microsecond",
+        "The CPU cached the answer and never recomputed it",
+        "-O2 disables loops that have no side effects"
+      ],
+      "answer": "0",
+      "explanation": "Make the result observable (volatile sink or print) so the work cannot be eliminated.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "benchmark-design"
+      ],
+      "skillLabel": "Benchmark traps",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP09#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe a trustworthy benchmark to compare a vector traversal with a linked-list traversal. Give at least five controls.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Optimized build, same data and result check, result consumed so the loop is not removed.",
+        "Allocation and setup outside the timed region; warm-up and repeated runs with median reported.",
+        "Several sizes spanning cache capacities; report ns per element and the machine/cache sizes."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "benchmark-design",
+        "cache-locality"
+      ],
+      "skillLabel": "Designing a benchmark",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        },
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP09#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

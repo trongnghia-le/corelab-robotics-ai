@@ -1,0 +1,323 @@
+{
+  "id": "RL03-targeted",
+  "topicId": "RL03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "Q = (10, 12, 20) under pi = (0.5, 0.25, 0.25). What is V?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "v-q-relation"
+      ],
+      "skillLabel": "Relating V and Q",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "13",
+      "tolerance": 0.01,
+      "explanation": "5 + 3 + 5 = 13.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "Same Q and pi. What is the advantage of the third action?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "advantage"
+      ],
+      "skillLabel": "Advantage",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "20 - 13 = 7.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "Q = (3, 7) under pi = (0.5, 0.5). What is the advantage of the first action?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "advantage"
+      ],
+      "skillLabel": "Advantage",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "-2",
+      "tolerance": 0.01,
+      "explanation": "V = 5; 3 - 5 = -2.",
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "Policy iteration step: the new policy is greedy with respect to Q^pi. What does the policy improvement theorem guarantee?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "greedy-improvement"
+      ],
+      "skillLabel": "Greedy improvement",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL03#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "The new policy is deterministic and never explores any action.",
+        "Q of the old policy is unchanged, so no new evaluation is needed.",
+        "The new policy is optimal after this single improvement step.",
+        "V of the new policy is at least V of the old policy in every state."
+      ],
+      "answer": "3",
+      "explanation": "Improvement is monotone, optimality follows only after convergence."
+    },
+    {
+      "id": "p5",
+      "prompt": "For a policy pi, action a has positive advantage. What does that tell you?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "advantage"
+      ],
+      "skillLabel": "Advantage",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "options": [
+        "a has the largest immediate reward in that state, since advantage is the reward.",
+        "a is the optimal action in that state, since no other action has positive advantage.",
+        "a leads to a terminal state, because positive advantage means the episode ends.",
+        "a is better than the pi-average action in that state, but not necessarily the best action."
+      ],
+      "answer": "3",
+      "explanation": "Advantage is relative to the current policy.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "p6",
+      "prompt": "Rewards 2, 2, 2, 2 then the episode ends, gamma = 0.5. Compute G_0 (4 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "return-and-discount"
+      ],
+      "skillLabel": "Discounted return",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "3.75",
+      "tolerance": 0.001,
+      "explanation": "2(1 + 0.5 + 0.25 + 0.125) = 3.75.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "A self-loop state with reward 1 per step has value 20. What is gamma (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "return-and-discount"
+      ],
+      "skillLabel": "Discounted return",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "0.95",
+      "tolerance": 0.005,
+      "explanation": "1/(1-g) = 20 -> g = 0.95.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "Which identity can catch a bug where V^pi was computed as max_a Q(s,a)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "v-q-relation"
+      ],
+      "skillLabel": "Relating V and Q",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL03#verification"
+        }
+      ],
+      "options": [
+        "Q(s,a) >= V(s) for every action a in every state",
+        "V(s) is bounded by the maximum immediate reward in every state",
+        "V(s) >= 0 in every state, whatever the reward function is",
+        "V(s) = sum_a pi(a|s) Q(s,a) for the evaluated policy"
+      ],
+      "answer": "3",
+      "explanation": "The max is not the pi-weighted average unless pi is greedy.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p9",
+      "prompt": "Q^pi(A,stay) = 9.649 and Q^pi(A,go) = 9.572 under the uniform policy with V(A) = 9.610. What is the advantage of 'go' (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "advantage"
+      ],
+      "skillLabel": "Advantage",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "-0.039",
+      "tolerance": 0.002,
+      "explanation": "9.572 - 9.610 = -0.038.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p10",
+      "prompt": "In a one-step lookahead, an action gives reward 1 and moves to a state with V = 8 with certainty; gamma = 0.9. What is Q?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "v-q-relation"
+      ],
+      "skillLabel": "Relating V and Q",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "answer": "8.2",
+      "tolerance": 0.01,
+      "explanation": "1 + 0.9*8 = 8.2.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p11",
+      "prompt": "Write the function body that computes Q from V for a tabular MDP stored as a dict of (prob, next state, reward) lists, and a test that checks V = sum pi Q.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "v-q-relation"
+      ],
+      "skillLabel": "Relating V and Q",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/RL03#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Sums p*(r + gamma*V[s']) with V of the terminal state set to 0.",
+        "Test uses a policy and checks the identity to 1e-9.",
+        "Notes the terminal convention."
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p12",
+      "prompt": "A teammate claims that the action with the largest advantage under the current policy is the optimal action. Give a counterexample reasoning and say what is true instead.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "greedy-improvement"
+      ],
+      "skillLabel": "Greedy improvement",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL03#worked-example"
+        }
+      ],
+      "rubric": [
+        "States that the advantage is relative to the current policy.",
+        "Gives a concrete case (e.g. stay at A under the uniform policy vs go under Q*).",
+        "States that greedy improvement is monotone and converges to the optimum after iteration."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

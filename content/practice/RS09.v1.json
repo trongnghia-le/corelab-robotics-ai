@@ -1,0 +1,404 @@
+{
+  "id": "RS09-targeted",
+  "topicId": "RS09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A teammate stores only the final plot and the commit hash. What is the biggest gap?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The commit hash should be abbreviated so it can be read from the figure.",
+        "Nothing is missing, because the commit hash determines the whole result.",
+        "The config and a data identifier are missing, so the same code can give other results.",
+        "The plot should also be saved in colour, so it can be compared with others."
+      ],
+      "answer": "2",
+      "explanation": "The result depends on config and data as well as code.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "provenance-manifest"
+      ],
+      "skillLabel": "Spot missing provenance",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Which file belongs in git?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A file with API keys and passwords for the data server.",
+        "configs/exp1.yaml, a small text file with the experiment's settings.",
+        "A pile of autosaved editor temporary files from several runs.",
+        "A 4 GB raw sensor recording captured on the robot, stored as is."
+      ],
+      "answer": "1",
+      "explanation": "Small text files that define the experiment belong in version control; large raw data are tracked by hash; secrets never.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "provenance-manifest"
+      ],
+      "skillLabel": "Decide what to version",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives-and-trade-offs",
+          "href": "/lessons/RS09#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "How many bits does a SHA-256 digest have?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "256",
+      "tolerance": 0.5,
+      "explanation": "SHA-256 produces 256 bits (64 hex characters).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "file-hashing"
+      ],
+      "skillLabel": "Digest sizes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A hash abbreviation uses 10 hex characters. How many distinct abbreviations exist, as a power of two exponent (give the exponent)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "40",
+      "tolerance": 0.5,
+      "explanation": "10 hex characters = 40 bits, so 2^40 abbreviations.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "git-revision"
+      ],
+      "skillLabel": "Abbreviated hash size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "With 28-bit abbreviations and 10,000 items, what is the approximate collision chance in percent (2 decimals), using P = 1 - exp(-k^2/(2*2^b))?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "16.99",
+      "tolerance": 0.05,
+      "explanation": "k^2/(2*2^28) = 1e8/536,870,912 = 0.1863; P = 1 - exp(-0.1863) = 16.99%.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "git-revision",
+        "file-hashing"
+      ],
+      "skillLabel": "Birthday collision estimate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "With 256-bit hashes and 1e9 items, k^2/(2*2^b) is about 4.3e-60. What exponent of 10 does that correspond to for the collision chance (give the exponent as a negative integer, e.g. -60)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-60",
+      "tolerance": 1,
+      "explanation": "1e18/(2*1.16e77) = 4.3e-60, so the chance is about 1e-60: negligible.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "file-hashing"
+      ],
+      "skillLabel": "Collision scale for full hashes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Which function gives the same hash for {\"x\":1,\"y\":2} and {\"y\":2,\"x\":1}?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "sha256(repr(id(cfg)).encode()) of the dict's address",
+        "sha256(json.dumps(cfg).encode()) with default key order",
+        "sha256(json.dumps(cfg, sort_keys=True).encode())",
+        "sha256(str(cfg).encode()) in an order-preserving dict"
+      ],
+      "answer": "2",
+      "explanation": "Only the sorted-keys canonical dump is order-independent.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "config-hashing"
+      ],
+      "skillLabel": "Canonical serialisation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A config hash changes when you edit 'lr': 0.10 to 'lr': 0.1 in a JSON file. Is this expected?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Yes; the parser rounds floats in an unpredictable way, so the value changes from load to load.",
+        "No for a hash of the parsed config: both parse to the float 0.1 and serialise identically.",
+        "No; JSON cannot store floats, so both lines are read as the integer 0 and give an identical hash.",
+        "Yes: any edit to the file text must change the hash, whatever the hash is computed over."
+      ],
+      "answer": "1",
+      "explanation": "Hashing the parsed canonical form ignores formatting; hashing raw file bytes would change.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "config-hashing"
+      ],
+      "skillLabel": "Hash what the parser sees",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS09#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "You reproduce a run from a manifest and get a slightly different result, but config, data and code hashes all match. What should you check first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Whether the hash algorithm is broken and has produced a false match between files.",
+        "Whether the file name is different, since the name is not part of the hash.",
+        "Whether the printed result has the same number of characters as the original.",
+        "Unseeded random sources, thread or GPU non-determinism, and library or environment versions."
+      ],
+      "answer": "3",
+      "explanation": "Everything hashed matches, so the difference comes from something not captured: randomness, environment, hardware.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Chase non-determinism",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS09#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Design a manifest verifier: which fields does it compare, what should it do when a data file is missing, and what exit status should it return?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Recomputes config hash, data hash and code revision and lists the fields that differ.",
+        "Reports a missing file as MISSING/failed rather than crashing or passing.",
+        "Returns non-zero when anything differs so scripts and CI can detect it."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "provenance-manifest",
+        "file-hashing"
+      ],
+      "skillLabel": "Design a verifier",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RS09#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q1",
+        "q8"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "List four sources of non-determinism in a machine-learning experiment and, for each, what to record or control.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names sources such as unseeded RNGs, GPU kernels, multi-threading, data order, library versions.",
+        "Says what to record or fix for each (seeds, flags, thread count, lock file).",
+        "Describes a detection method: repeat the run and compare results."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "List non-determinism sources",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "This function returns identical hashes for two files that differ at byte 3000: h.update(f.read(1024)). Explain and fix it, and write the test that would catch it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies that only the first 1024 bytes are hashed.",
+        "Fix: loop reading chunks until empty and update the hash each time.",
+        "Test: two files longer than the chunk differing in the last byte must hash differently."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "file-hashing"
+      ],
+      "skillLabel": "Debug a hashing function",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS09#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

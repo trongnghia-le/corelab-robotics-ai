@@ -1,0 +1,361 @@
+{
+  "id": "RL11-targeted",
+  "topicId": "RL11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "pi = (0.1, 0.9), b = (0.5, 0.5). Importance weight of action 0? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.01,
+      "explanation": "0.1/0.5 = 0.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-importance-sampling"
+      ],
+      "skillLabel": "Compute importance weights",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Importance weights (3, 1). What is the effective sample size (sum w)^2 / sum w^2? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.6",
+      "tolerance": 0.01,
+      "explanation": "16 / 10 = 1.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-weighted-is"
+      ],
+      "skillLabel": "Compute effective sample size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Compared with ordinary importance sampling, weighted importance sampling is usually",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "applicable even when the behaviour policy has zero probability for a target action",
+        "exact for any N when the support is complete",
+        "unbiased and with higher variance",
+        "lower variance, with a small bias that vanishes as N grows"
+      ],
+      "answer": "3",
+      "explanation": "Self-normalisation caps the influence of any single large weight at the price of finite-sample bias.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "offp-weighted-is"
+      ],
+      "skillLabel": "Compare IS estimators",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/RL11#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "FIFO buffer, capacity 500, reward changes at step 800, current time 1000. Fraction of the buffer that is stale? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.6",
+      "tolerance": 0.01,
+      "explanation": "The buffer holds steps 500 to 1000; 300 of them are before 800: 0.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-staleness"
+      ],
+      "skillLabel": "Compute stale fraction",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "DQN target: r = 0.5, gamma = 0.95, max target-network next value 4, not terminal. Target? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.3",
+      "tolerance": 0.01,
+      "explanation": "0.5 + 0.95*4 = 4.3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-target-network"
+      ],
+      "skillLabel": "Compute the DQN target",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Double-Q: r = 0.5, gamma = 0.95, online next values (1, 7), target next values (6, 2). Target? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.4",
+      "tolerance": 0.01,
+      "explanation": "Online picks action 1; target network value 2; 0.5 + 0.95*2 = 2.4 (plain max would give 0.5 + 0.95*6 = 6.2).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-target-network"
+      ],
+      "skillLabel": "Compute the double-Q target",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "The behaviour policy never takes action 3, but the target policy takes it 30% of the time. What can an offline importance-sampling estimate say about the target policy?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is correct after clipping the importance weights at a maximum value of 10",
+        "It is unbiased as long as weighted importance sampling is used for the estimate",
+        "It is correct provided that the logged buffer is large enough to cover the rest",
+        "Nothing reliable: the target's value on that 30% cannot be estimated from the data"
+      ],
+      "answer": "3",
+      "explanation": "Without support there is no data about the action, and no weighting scheme creates it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "offp-importance-sampling"
+      ],
+      "skillLabel": "Recognise missing support",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Soft update with tau = 0.05: target parameter 2.0, online parameter 10.0. New target value? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.4",
+      "tolerance": 0.01,
+      "explanation": "0.95*2 + 0.05*10 = 2.4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-target-network"
+      ],
+      "skillLabel": "Apply a Polyak update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A real-robot team keeps every transition from six months of experiments in one buffer. List three risks and one monitoring experiment.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names stale dynamics or hardware changes and an old policy's state distribution",
+        "Names a second risk such as correlated or narrow data, or too-old rewards",
+        "Proposes comparing prediction error or returns on old vs recent data, or training with sessions removed"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "offp-staleness"
+      ],
+      "skillLabel": "Plan replay for a real robot",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Your off-policy evaluation fails because the logs contain only the chosen actions, not the behaviour policy's probabilities. What should have been logged, and can you recover?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Behaviour action probabilities (or the policy parameters and noise) logged per transition",
+        "Explains that without them the weights pi/b cannot be computed exactly",
+        "Mentions estimating b by fitting a model, with the caveat that its error enters the estimate"
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "offp-importance-sampling"
+      ],
+      "skillLabel": "Design logs for off-policy use",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q2"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "To test whether a replay buffer is stale you compare the mean reward of the oldest and newest quarters at the same state-action pairs. A large gap indicates",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "a correct importance weighting of the data",
+        "a learning rate that is too small",
+        "the environment or reward changed over time",
+        "overestimation bias in the value targets"
+      ],
+      "answer": "2",
+      "explanation": "If the same (s,a) gives different rewards early and late, the data is non-stationary; weights cannot reconcile them.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "offp-staleness"
+      ],
+      "skillLabel": "Detect staleness",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL11#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Weights (0.5, 2.0), rewards (4, 1). What is the ordinary IS estimate (mean of w*r)? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.01,
+      "explanation": "(0.5*4 + 2*1)/2 = 2.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "offp-importance-sampling",
+        "offp-weighted-is"
+      ],
+      "skillLabel": "Compute ordinary IS",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Maximization bias in Q-learning arises because",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "the maximum of noisy estimates is higher on average than the maximum of their true values",
+        "the importance weights are too large for the rare actions, which inflates the estimate",
+        "the replay buffer is too small to cover the actions, so some values are never updated",
+        "the target network is updated too rarely, so the targets are always stale and too large"
+      ],
+      "answer": "0",
+      "explanation": "E[max of noisy estimates] >= max of expectations; double Q-learning decouples selection from evaluation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "offp-target-network"
+      ],
+      "skillLabel": "Explain maximization bias",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ]
+    }
+  ]
+}

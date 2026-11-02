@@ -1,0 +1,202 @@
+{
+  "id": "V02-diagnostic",
+  "topicId": "V02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A 3x3 smoothing kernel has all nine weights equal to 0.12. What happens to the mean brightness of a filtered image?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kernel-correlation"
+      ],
+      "skillLabel": "Kernel normalisation and correlation",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It falls because smoothing removes detail",
+        "It rises by about 8% because the weights sum to 1.08",
+        "It stays the same because every pixel is averaged",
+        "It depends only on the padding mode"
+      ],
+      "answer": "1",
+      "explanation": "Weights sum to 9*0.12=1.08, so a constant region is scaled by 1.08."
+    },
+    {
+      "id": "q2",
+      "prompt": "An image has 80 rows. A 7x7 kernel is applied in 'valid' mode with stride 1. How many rows does the output have? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "output-size"
+      ],
+      "skillLabel": "Output size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#theory-and-derivation"
+        }
+      ],
+      "answer": "74",
+      "tolerance": 0.01,
+      "explanation": "80-7+1=74."
+    },
+    {
+      "id": "q3",
+      "prompt": "Pixels carry independent noise with standard deviation 12 grey levels. After a 3x3 box filter (all weights 1/9), what is the noise standard deviation? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-smoothing"
+      ],
+      "skillLabel": "Noise reduction by averaging",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#theory-and-derivation"
+        }
+      ],
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "12*sqrt(9*(1/9)^2)=12/3=4."
+    },
+    {
+      "id": "q4",
+      "prompt": "Correlate x=[1,2,4,7,11] with k=[-1,0,1] in valid mode. What is the second output value? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kernel-correlation"
+      ],
+      "skillLabel": "Kernel normalisation and correlation",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#worked-example"
+        }
+      ],
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "Windows: (1,2,4)->3, (2,4,7)->5, (4,7,11)->7."
+    },
+    {
+      "id": "q5",
+      "prompt": "A 16x16 checkerboard with 1-pixel squares is reduced to 8x8 by keeping every second pixel in both directions. What does the result show?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "aliasing-prefilter"
+      ],
+      "skillLabel": "Aliasing and prefiltering",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#worked-example"
+        }
+      ],
+      "options": [
+        "A uniform image of one value, although the true mean is 0.5",
+        "A random-looking noise pattern made of the lost pixels",
+        "A smaller checkerboard that again has 1-pixel squares, just halved",
+        "A uniform grey of 0.5, the average of the two square colours"
+      ],
+      "answer": "0",
+      "explanation": "Positions with even y and even x all have the same colour."
+    },
+    {
+      "id": "q6",
+      "prompt": "Stripes with period 5 pixels are subsampled by keeping every 3rd pixel. What is the apparent period in the small image, in small-image pixels? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "aliasing-prefilter"
+      ],
+      "skillLabel": "Aliasing and prefiltering",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#exercises"
+        }
+      ],
+      "answer": "2.5",
+      "tolerance": 0.1,
+      "explanation": "f=0.2 cycles/px; sampled every 3: 0.6 per new px, alias |0.6-1|=0.4, period 2.5."
+    },
+    {
+      "id": "q7",
+      "prompt": "A 4K image is reduced to 640 pixels wide for a detector. Explain why simply keeping every sixth pixel is a bad choice and what you do instead, including a sensible Gaussian sigma.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "aliasing-prefilter"
+      ],
+      "skillLabel": "Aliasing and prefiltering",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V01",
+        "M03"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V02#alternatives-and-trade-offs"
+        }
+      ],
+      "rubric": [
+        "Names aliasing: content above the new Nyquist limit folds into false lower-frequency patterns.",
+        "Low-pass filter first (Gaussian with sigma about 0.5 x factor, or area averaging) and then subsample.",
+        "Notes the trade-off: some real detail is lost, nearest neighbour is only for label masks."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

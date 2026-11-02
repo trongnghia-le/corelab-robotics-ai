@@ -1,0 +1,203 @@
+{
+  "id": "R09-diagnostic",
+  "topicId": "R09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A gearbox has ratio N = 50 and efficiency 0.8. Compared with the motor shaft, the output shaft has:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gear-conversion"
+      ],
+      "skillLabel": "Gear conversion",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Gear conversion",
+          "href": "/lessons/R09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ],
+      "options": [
+        "The same speed and 40 times the torque",
+        "1/50 of the speed and 1/50 of the torque",
+        "50 times the speed and 50 times the torque",
+        "1/50 of the speed and about 40 times the torque"
+      ],
+      "answer": "3",
+      "explanation": "Speed divides by N; torque multiplies by eta N = 40."
+    },
+    {
+      "id": "q2",
+      "prompt": "k_t = k_e = 0.05, R = 1 ohm, V = 24 V. What is the no-load speed in rad/s?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "motor-curve"
+      ],
+      "skillLabel": "DC motor curve",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: DC motor curve",
+          "href": "/lessons/R09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ],
+      "answer": "480",
+      "tolerance": 0.5,
+      "explanation": "V/k_e = 480."
+    },
+    {
+      "id": "q3",
+      "prompt": "With the same motor, what is the (voltage-limited) stall torque in N m, ignoring any current limit?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "motor-curve"
+      ],
+      "skillLabel": "DC motor curve",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: DC motor curve",
+          "href": "/lessons/R09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ],
+      "answer": "1.2",
+      "tolerance": 0.005,
+      "explanation": "k_t V / R = 1.2."
+    },
+    {
+      "id": "q4",
+      "prompt": "A joint needs 9.81 N m, eta = 0.8, N = 100, k_t = 0.05 N m/A. What motor current in A (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "current-and-limits"
+      ],
+      "skillLabel": "Current and limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Current and limits",
+          "href": "/lessons/R09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ],
+      "answer": "2.4525",
+      "tolerance": 0.002,
+      "explanation": "I = tau/(N eta k_t) = 2.4525 A."
+    },
+    {
+      "id": "q5",
+      "prompt": "Same joint (9.81 N m at 2 rad/s, N = 100, eta = 0.8, k_t = k_e = 0.05, R = 1). Required supply voltage in V (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "current-and-limits"
+      ],
+      "skillLabel": "Back-EMF voltage",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Back-EMF voltage",
+          "href": "/lessons/R09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ],
+      "answer": "12.4525",
+      "tolerance": 0.02,
+      "explanation": "V = R I + k_e w_m = 2.4525 + 10 = 12.45 V."
+    },
+    {
+      "id": "q6",
+      "prompt": "Why can a very large gear ratio make a joint fail to reach the required speed?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "current-and-limits"
+      ],
+      "skillLabel": "Back-EMF voltage",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Back-EMF voltage",
+          "href": "/lessons/R09#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ],
+      "options": [
+        "Gearboxes always lose all torque at high ratio, so the joint can no longer move",
+        "Motors cannot rotate backwards at a high ratio, so the joint stalls in one direction",
+        "Back-EMF grows with motor speed (N x joint speed) and can reach the supply voltage",
+        "Larger ratios reduce the load inertia seen by the motor to zero, so control is lost"
+      ],
+      "answer": "2",
+      "explanation": "The motor must spin N times faster than the joint; back-EMF approaches V."
+    },
+    {
+      "id": "q7",
+      "prompt": "A design passes the peak-torque check but the motor overheats after a minute. Explain which limit was missed, how to confirm it with numbers, and two possible fixes.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "current-and-limits",
+        "gear-conversion"
+      ],
+      "skillLabel": "Thermal sizing",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Thermal sizing",
+          "href": "/lessons/R09#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ],
+      "rubric": [
+        "Identifies continuous (thermal) current limit versus peak limit, heating proportional to R I^2.",
+        "Confirms by computing RMS current over the duty cycle versus the continuous rating.",
+        "Proposes a higher ratio (within voltage window), larger motor, or reduced duty / cooling."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

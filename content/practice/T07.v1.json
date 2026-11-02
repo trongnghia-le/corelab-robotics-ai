@@ -1,0 +1,364 @@
+{
+  "id": "T07-targeted",
+  "topicId": "T07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Mean latency is 20 ms but P99 is 95 ms. A user complains about occasional stalls. Which conclusion is best supported?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "percentiles-and-tail"
+      ],
+      "skillLabel": "Percentiles and tail latency",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Percentiles and tail latency",
+          "href": "/lessons/T07#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "A rare slow path exists; investigate the tail (retries, GC, cache misses)",
+        "P99 is an arithmetic error, because it exceeds the mean latency value",
+        "The system is uniformly slow, so optimise the average code path first",
+        "Throughput must be exactly 1/0.02 requests per second in this system"
+      ],
+      "answer": "0",
+      "explanation": "The tail is much longer than the mean, which indicates rare slow events rather than uniform slowness."
+    },
+    {
+      "id": "b2",
+      "prompt": "Nearest-rank P95 (in ms) of these 20 latencies: 1,2,2,3,3,3,4,4,4,5,5,5,6,6,7,8,9,12,30,80.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "percentiles-and-tail"
+      ],
+      "skillLabel": "Nearest-rank percentile",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Nearest-rank percentile",
+          "href": "/lessons/T07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "30",
+      "tolerance": 0.01,
+      "explanation": "Rank = ceil(0.95*20)=19, the 19th sorted value is 30."
+    },
+    {
+      "id": "b3",
+      "prompt": "A pipeline of 3 serial stages takes 6 ms, 14 ms and 20 ms per item. What is the maximum throughput in items per second if one worker runs the stages back to back?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "throughput-and-utilization"
+      ],
+      "skillLabel": "Throughput and utilization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Throughput and utilization",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "25",
+      "tolerance": 0.01,
+      "explanation": "Total 40 ms per item, so 1/0.04 = 25 items/s."
+    },
+    {
+      "id": "b4",
+      "prompt": "A data loader must keep 50 batches/s flowing while each batch takes 200 ms to arrive from disk. How many batches must be in flight on average (Little's law)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "littles-law"
+      ],
+      "skillLabel": "Little's law",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Little's law",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "L = 50 x 0.2 = 10."
+    },
+    {
+      "id": "b5",
+      "prompt": "A job reports cpu_s = 7.5 and wall_s = 2.5 on a machine with 4 cores. What is the CPU utilization as a fraction of all 4 cores (0 to 1)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wall-vs-cpu-time",
+        "throughput-and-utilization"
+      ],
+      "skillLabel": "CPU utilization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: CPU utilization",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.75",
+      "tolerance": 0.001,
+      "explanation": "U = 7.5/(2.5 x 4) = 0.75."
+    },
+    {
+      "id": "b6",
+      "prompt": "Why should interval timing use time.perf_counter() rather than time.time()?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "timing-pitfalls"
+      ],
+      "skillLabel": "Timing pitfalls",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Timing pitfalls",
+          "href": "/lessons/T07#reference-implementation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "time.time() is not available in Python 3, so it cannot be used to time",
+        "perf_counter reports CPU time only, which is what latency measures here",
+        "perf_counter is monotonic and high-resolution; time.time() can jump if the clock is set",
+        "time.time() only has whole-second resolution on all systems, which is too coarse"
+      ],
+      "answer": "2",
+      "explanation": "perf_counter is a monotonic clock designed for intervals."
+    },
+    {
+      "id": "b7",
+      "prompt": "A function is timed once, takes 40 ms, and the new version takes 36 ms on one run. What is the best next step?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "benchmark-design",
+        "timing-pitfalls"
+      ],
+      "skillLabel": "Repeats and noise",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Repeats and noise",
+          "href": "/lessons/T07#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "Run the new version only, since the old one is already well known",
+        "Ship it: it is 10% faster, which is a clear gain on this function",
+        "Take the maximum of the two runs instead, as the safe worst case",
+        "Repeat both many times, alternating, and compare medians to the spread"
+      ],
+      "answer": "3",
+      "explanation": "One run per version cannot separate a 10% effect from timing noise."
+    },
+    {
+      "id": "b8",
+      "prompt": "30% of a program's time is a stage you can speed up 3x; the rest cannot change. What is the overall speedup (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amdahl-speedup"
+      ],
+      "skillLabel": "Amdahl's law",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Amdahl's law",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "answer": "1.25",
+      "tolerance": 0.01,
+      "explanation": "1/(0.7+0.3/3)=1/0.8=1.25."
+    },
+    {
+      "id": "b9",
+      "prompt": "A list of 2,000,000 distinct Python floats costs about 8 bytes of pointer plus 24 bytes per float object. Estimate its size in MB (1 MB = 10^6 bytes).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "memory-measurement"
+      ],
+      "skillLabel": "Memory estimation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Memory estimation",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "answer": "64",
+      "tolerance": 0.5,
+      "explanation": "2e6 x 32 bytes = 64 MB."
+    },
+    {
+      "id": "b10",
+      "prompt": "Which statement about tracemalloc versus RSS is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "memory-measurement"
+      ],
+      "skillLabel": "Memory measurement",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Memory measurement",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "options": [
+        "RSS counts only the memory that was freed, while tracemalloc counts the rest",
+        "tracemalloc peak equals the RSS exactly, as both count the same memory",
+        "tracemalloc measures GPU memory, while the RSS measures the host memory",
+        "RSS includes the interpreter and libraries, so exceeds the traced Python allocations"
+      ],
+      "answer": "3",
+      "explanation": "RSS is an OS number covering the whole process; tracemalloc counts Python allocations."
+    },
+    {
+      "id": "b11",
+      "prompt": "Your camera node must run at 30 Hz. Which latency statistics do you report and what do you do if P99 is 41 ms?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "benchmark-design",
+        "percentiles-and-tail"
+      ],
+      "skillLabel": "Deadline and tail analysis",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Deadline and tail analysis",
+          "href": "/lessons/T07#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q7",
+        "q1"
+      ],
+      "rubric": [
+        "Computes the budget 1/30 s = 33.3 ms and reports median, P99 and maximum with sample count.",
+        "Concludes P99 = 41 ms misses the deadline in about 1% of frames.",
+        "Proposes a measurement-led next step (profile the slow frames, check queueing, GC, or I/O waits) rather than guessing."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "b12",
+      "prompt": "A teammate says the pipeline is 'CPU bound' because htop shows it busy. What additional measurements would confirm or reject that?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "wall-vs-cpu-time"
+      ],
+      "skillLabel": "Wall time versus CPU time",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Wall time versus CPU time",
+          "href": "/lessons/T07#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "Compares CPU time with wall time over the same window (utilization near 1 per core).",
+        "Checks other resources with USE: disk, network, memory saturation, lock waits.",
+        "Names a falsifiable test, such as removing the compute stage and seeing whether wall time barely changes."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

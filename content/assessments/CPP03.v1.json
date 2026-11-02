@@ -1,0 +1,197 @@
+{
+  "id": "CPP03-diagnostic",
+  "topicId": "CPP03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which statement best describes RAII?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Resources are acquired lazily on first use and only released when the program exits",
+        "A resource is acquired in a constructor and released in the destructor of its owning object",
+        "Every resource is allocated on the heap and reclaimed later by a tracing garbage collector",
+        "The programmer must call release() explicitly in a finally block on every exit path"
+      ],
+      "answer": "1",
+      "explanation": "RAII binds a resource to an object's lifetime; destructors run on every exit path including exceptions.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "raii-lifetime"
+      ],
+      "skillLabel": "RAII principle",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A 50 Hz loop runs for 2 minutes and leaks a 128-double buffer on every cycle. How many bytes leak in total? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6144000",
+      "tolerance": 0.5,
+      "explanation": "50 x 120 = 6000 cycles; 128 x 8 = 1024 bytes each: 6,144,000 bytes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raii-lifetime"
+      ],
+      "skillLabel": "Leak size arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP03#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A class owns a double* released in its destructor and has no other special members. What happens in 'Scan b = a;' when both go out of scope?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The compiler rejects the copy",
+        "Both destructors free the same memory: a double free",
+        "The copy allocates fresh storage automatically",
+        "Only the first destructor frees; the second is skipped"
+      ],
+      "answer": "1",
+      "explanation": "The implicit copy constructor copies the pointer value, so two objects own one block.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rule-of-five"
+      ],
+      "skillLabel": "Default copy of an owner",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP03#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "What does std::move(x) do by itself?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It destroys x and leaves the name x referring to deallocated storage",
+        "It casts x to an rvalue reference so a move overload can be chosen",
+        "It copies x and marks that copy as a temporary that can be stolen from",
+        "It immediately transfers x's resources into a newly created destination object"
+      ],
+      "answer": "1",
+      "explanation": "std::move is only a cast; the move constructor or assignment that is then selected does the transfer.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "move-semantics"
+      ],
+      "skillLabel": "Meaning of std::move",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Four cameras each deliver a 2.5 MB frame at 20 Hz. If every frame is deep-copied once, how many MB per second are copied? Give a number.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "200",
+      "tolerance": 0.01,
+      "explanation": "4 x 2.5 MB x 20 = 200 MB/s of copy traffic; a move would be O(1) per frame.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "move-semantics"
+      ],
+      "skillLabel": "Cost of copying versus moving",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A copyable type has a move constructor that is not marked noexcept. What does std::vector do when it grows?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It reuses the old storage in place without relocating any element",
+        "It refuses to compile until the move constructor is marked noexcept",
+        "It copies the elements to keep the strong exception guarantee",
+        "It moves them anyway and terminates if one of the moves throws"
+      ],
+      "answer": "2",
+      "explanation": "std::move_if_noexcept selects the copy when the move may throw and a copy exists.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "move-semantics",
+        "rule-of-five"
+      ],
+      "skillLabel": "noexcept moves and containers",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP03#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A subscriber callback receives a camera frame. Choose parameter types for (a) rendering the frame immediately, and (b) queueing it for a worker thread that may run after the callback returns. Justify each in terms of ownership and lifetime.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "(a) const Frame& (borrow): the caller keeps ownership and the frame outlives the call.",
+        "(b) Needs ownership or shared lifetime: unique_ptr moved in, or shared_ptr<const Frame>; a reference or raw pointer would dangle.",
+        "Mentions the cost trade-off: no copy of a large frame versus unbounded queue or reference counting overhead."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "ownership-signatures"
+      ],
+      "skillLabel": "Ownership in signatures",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP03#alternatives-and-trade-offs"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

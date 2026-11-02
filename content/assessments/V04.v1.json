@@ -1,0 +1,207 @@
+{
+  "id": "V04-diagnostic",
+  "topicId": "V04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A calibration reports 0.2 px RMS reprojection error on the 300 corners it was fitted to. Which statement is justified?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Fit versus held-out error",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Only that the model fits those points; you still need error on held-out views",
+        "The camera is accurate to 0.2 px everywhere in the image, including the corners",
+        "Any new image taken with this camera will have a 0.2 px error",
+        "The distortion model is correct, since the error is below a quarter pixel"
+      ],
+      "answer": "0",
+      "explanation": "Fit error is measured on the data that chose the parameters; it is optimistic."
+    },
+    {
+      "id": "q2",
+      "prompt": "Reprojection residuals (du, dv) in pixels: (1, 1), (2, 0), (0, -2). Compute the RMS error in pixels (precision 0.01).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reprojection-rms"
+      ],
+      "skillLabel": "Reprojection RMS",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#worked-example"
+        }
+      ],
+      "answer": "1.83",
+      "tolerance": 0.01,
+      "explanation": "sqrt((2+4+4)/3)=1.826."
+    },
+    {
+      "id": "q3",
+      "prompt": "A lens has k1 = -0.1, k2 = 0, f = 600 px. About how many pixels does a point at normalised radius 0.5 shift relative to the ideal pinhole, f*r*|k1|*r^2? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "radial-distortion"
+      ],
+      "skillLabel": "Radial distortion",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#theory-and-derivation"
+        }
+      ],
+      "answer": "7.5",
+      "tolerance": 0.1,
+      "explanation": "600*0.5*0.1*0.25 = 7.5 px."
+    },
+    {
+      "id": "q4",
+      "prompt": "A 5x8-corner board is seen in 10 views. The model has 4 intrinsics, k1, k2 and 6 pose values per view. What is the ratio of scalar residuals to parameters? (precision 0.05)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dof-counting"
+      ],
+      "skillLabel": "Residuals versus parameters",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#theory-and-derivation"
+        }
+      ],
+      "answer": "12.1",
+      "tolerance": 0.05,
+      "explanation": "Residuals 2*40*10=800; parameters 4+2+60=66; 800/66=12.12."
+    },
+    {
+      "id": "q5",
+      "prompt": "All 20 calibration images show the board centred, parallel to the image plane at about 1 m. What is the main risk?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "calibration-coverage"
+      ],
+      "skillLabel": "Calibration coverage",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#failure-modes"
+        }
+      ],
+      "options": [
+        "The RMS will be large because a flat board gives poorly conditioned corners",
+        "Focal length and distortion are poorly determined, although the RMS looks small",
+        "Corner detection fails on a frontal board, so most views are rejected",
+        "The principal point becomes exactly known, so the other parameters are certain"
+      ],
+      "answer": "1",
+      "explanation": "Frontal central views do not separate focal length from distance and never probe the corners."
+    },
+    {
+      "id": "q6",
+      "prompt": "Why is RMS preferred to the mean of the residual lengths when summarising reprojection error?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reprojection-rms"
+      ],
+      "skillLabel": "Reprojection RMS",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#failure-modes"
+        }
+      ],
+      "options": [
+        "It weights large residuals more, so outliers are not hidden",
+        "It keeps the direction of the error, which the mean discards",
+        "It is always smaller, so the calibration looks better",
+        "It is measured in different units than the residuals"
+      ],
+      "answer": "0",
+      "explanation": "Mean of lengths <= RMS; squaring penalises outliers."
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how you would validate a new camera calibration before using it for ranging, including how you split data and what you would report.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Fit versus held-out error",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V03",
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V04#verification"
+        }
+      ],
+      "rubric": [
+        "Hold out whole views chosen before fitting; never use them in the fit.",
+        "Report training and held-out RMS in pixels, residual plot, and number/coverage of views.",
+        "Checks stability against a second session or datasheet focal length, and re-calibrates after lens changes."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

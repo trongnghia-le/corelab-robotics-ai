@@ -1,0 +1,226 @@
+{
+  "id": "E03-diagnostic",
+  "topicId": "E03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why does a POMDP planner use a belief state instead of the latest observation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "belief-state"
+      ],
+      "skillLabel": "Belief state",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "A belief removes the need for any sensor model, since it is learned directly from rewards",
+        "Observations are never available during planning, so the planner must guess the state",
+        "The belief is always deterministic, so the planner can treat the state as exactly known",
+        "The belief summarises the history and the uncertainty, while the last observation can be wrong"
+      ],
+      "answer": "3",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "The belief is a sufficient statistic of history; the last observation ignores noise and past evidence."
+    },
+    {
+      "id": "q2",
+      "prompt": "Tiger problem: b = P(tiger left) = 0.5, sensor accuracy 0.85. Posterior after hearing 'left'? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bayes-belief-update"
+      ],
+      "skillLabel": "Bayes belief update",
+      "mistakeCategory": "mathematical",
+      "answer": "0.85",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "0.85*0.5 / (0.85*0.5+0.15*0.5)=0.85."
+    },
+    {
+      "id": "q3",
+      "prompt": "b = 0.7, accuracy 0.85. Probability of hearing 'left'? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bayes-belief-update"
+      ],
+      "skillLabel": "Bayes belief update",
+      "mistakeCategory": "mathematical",
+      "answer": "0.64",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "0.85*0.7+0.15*0.3=0.64."
+    },
+    {
+      "id": "q4",
+      "prompt": "Opening the right door gives +10 if the tiger is left and -100 otherwise. At b = 0.9 (tiger left), expected reward of opening the right door?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "act-now-value"
+      ],
+      "skillLabel": "Immediate action value",
+      "mistakeCategory": "mathematical",
+      "answer": "-1",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "0.9*10 + 0.1*(-100) = -1."
+    },
+    {
+      "id": "q5",
+      "prompt": "When is a clarifying measurement NOT worth taking?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "value-of-information"
+      ],
+      "skillLabel": "Value of information",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "When the sensor is noisy, since a noisy reading can never change the belief at all",
+        "Whenever the planning horizon is long, because early information is always forgotten later",
+        "When no possible outcome would change the chosen action, or its cost exceeds the expected gain",
+        "When the belief is uniform, because there is nothing left that a measurement could tell us"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "Information is valuable only through the decisions it changes, net of cost."
+    },
+    {
+      "id": "q6",
+      "prompt": "Acting now at b=0.5 gives -45; one listen (cost 1) leads to a belief where the best action is worth -6.5 in both cases. Value of listening once?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "value-of-information"
+      ],
+      "skillLabel": "Value of information",
+      "mistakeCategory": "mathematical",
+      "answer": "-7.5",
+      "tolerance": 0.01,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "-1 + (-6.5) = -7.5."
+    },
+    {
+      "id": "q7",
+      "prompt": "A sensor with accuracy 0.5 (pure coin flips) is used before acting. The best policy is:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "value-of-information"
+      ],
+      "skillLabel": "Value of information",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "Treat the reading as the true state and act on it without updating",
+        "Ignore it: the posterior equals the prior and sensing only costs",
+        "Trust it fully, since any reading is better than acting on the prior alone",
+        "Use it twice, so that the two coin flips average out to a reliable signal"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E03#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "explanation": "No information, positive cost."
+    },
+    {
+      "id": "q8",
+      "prompt": "A manipulator is unsure whether an object is a cup or a bottle (80 percent cup). Grasping wrongly breaks something; a second camera view costs 1 second. Describe how you would decide between grasping now and taking the view, including the quantities you need and how you would validate the decision.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "value-of-information",
+        "belief-state"
+      ],
+      "skillLabel": "Decide act-now versus sense-first",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E03#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ],
+      "rubric": [
+        "Define rewards for correct/incorrect grasps and the cost of the view.",
+        "Update the belief with the camera's accuracy for each outcome and compare expected values.",
+        "Validate on logged data or simulation using the hidden class, and test a sensor of accuracy 0.5 as a boundary case."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

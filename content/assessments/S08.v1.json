@@ -1,0 +1,207 @@
+{
+  "id": "S08-diagnostic",
+  "topicId": "S08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A joint is excited only with q = 0.01 sin(2t). Torque is fit as I*qdd + b*qd + c*sin(q). Which statement is right?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "I is identified exactly but c is not.",
+        "All three parameters are identified, since the fit error is tiny.",
+        "Only b and the combination c - 4I are identified; I and c individually are not.",
+        "b is not identified because qd is small."
+      ],
+      "answer": "2",
+      "explanation": "qdd = -4q and sin q ~ q are proportional: only c - w^2 I is determined.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "excitation-identifiability"
+      ],
+      "skillLabel": "Excitation and identifiability",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Free decay: successive peaks 1.0 and 0.8, damped period 1.5 s. Compute b/I = 2*ln(p1/p2)/Td in 1/s. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2975",
+      "tolerance": 0.001,
+      "explanation": "2*0.2231/1.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "log-decrement"
+      ],
+      "skillLabel": "Damping from free decay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "With theta=(I,b,c)=(1.5,0.2,8) predict the torque for qdd=2, qd=-1, sin q=0.5. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.8",
+      "tolerance": 0.01,
+      "explanation": "3-0.2+4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "regression-form"
+      ],
+      "skillLabel": "Write a model linear in its parameters",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Acceleration from a second difference of position with sigma_q=0.002 rad and dt=0.02 s: noise sigma_a = sqrt(6)*sigma_q/dt^2 in rad/s^2. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12.25",
+      "tolerance": 0.01,
+      "explanation": "sqrt(6)*0.002/4e-4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-differentiation"
+      ],
+      "skillLabel": "Noise from differentiation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A fit has RMSE 0.002 N m on its training data. What do you need before trusting it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Prediction error on a different trajectory, compared with the noise level.",
+        "A still lower RMSE measured on the same training data, below the noise.",
+        "A larger sampling rate so the same data can be fitted more finely.",
+        "A higher-order model so the training RMSE can be driven down further."
+      ],
+      "answer": "1",
+      "explanation": "Validation requires unseen data.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "heldout-validation"
+      ],
+      "skillLabel": "Validate on held-out data",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Which is the best way to get acceleration for the regression from noisy 100 Hz position data?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Multiply the measured torque by dt to obtain the acceleration.",
+        "Take the second difference of the raw position samples directly.",
+        "Use an IMU, or smooth the data or use an integral (weak) form instead of raw differences.",
+        "Fit with fewer samples so there is less noise to amplify."
+      ],
+      "answer": "0",
+      "explanation": "Raw differentiation amplifies noise by 1/dt^2.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "noise-differentiation"
+      ],
+      "skillLabel": "Noise from differentiation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Design an experiment to identify inertia, damping and gravity coefficient of a one-link joint: excitation, duration, what you record, and how you validate.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Chooses a multi-frequency or chirp excitation with amplitude and duration and explains why one frequency fails.",
+        "Records torque, position and velocity/acceleration with sample rate and addresses noise in differentiation.",
+        "Fits with least squares, reports condition number or standard errors, and validates on a different trajectory with a stated tolerance."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "excitation-identifiability"
+      ],
+      "skillLabel": "Excitation and identifiability",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S08#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "C06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "id": "R05-targeted",
+  "topicId": "R05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A 2R arm has l1 = l2 = 0.7 m. What does a correct solver return for the target (0, 0)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ik-solution-count"
+      ],
+      "skillLabel": "Counting IK solutions",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Counting IK solutions",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Two solutions, q2 = +-pi/2",
+        "No solution",
+        "An infinite family: q2 = pi with any q1",
+        "Exactly one solution with q1 = 0"
+      ],
+      "answer": "2",
+      "explanation": "The folded arm puts the tip at the base for every q1; there is no finite list."
+    },
+    {
+      "id": "b2",
+      "prompt": "l1 = 1.0, l2 = 0.6, target (0.7, 0.9). Give cos q2 (four decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "elbow-solution"
+      ],
+      "skillLabel": "Elbow angle from the law of cosines",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Elbow angle from the law of cosines",
+          "href": "/lessons/R05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "-0.05",
+      "tolerance": 0.0005,
+      "explanation": "(1.30 - 1.00 - 0.36)/1.2 = -0.05."
+    },
+    {
+      "id": "b3",
+      "prompt": "l1 = 0.5, l2 = 0.3. What is the inner radius |l1 - l2| (m) of the reachable ring?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reachability-ring"
+      ],
+      "skillLabel": "Reachability ring",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Reachability ring",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.2",
+      "tolerance": 0.001,
+      "explanation": "|0.5-0.3| = 0.2."
+    },
+    {
+      "id": "b4",
+      "prompt": "l1 = 0.6, l2 = 0.4, target (-0.5, 0.5): the buggy formula q1 = atan(y/x) - atan(l2 sin q2/(l1 + l2 cos q2)) with q2 = +1.61248 returns a pose whose tip is the mirror (0.5, -0.5). What is its distance error to the target (m, two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "atan2-quadrants",
+        "residual-check"
+      ],
+      "skillLabel": "Quadrant-safe angles",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Quadrant-safe angles",
+          "href": "/lessons/R05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "1.414214",
+      "tolerance": 0.01,
+      "explanation": "Distance between (0.5,-0.5) and (-0.5,0.5) is sqrt(1+1) = 1.41 m."
+    },
+    {
+      "id": "b5",
+      "prompt": "A target is 0.15 m outside the outer edge of the ring. Approximately what residual (m) should a converged damped solver report?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reachability-ring",
+        "residual-check"
+      ],
+      "skillLabel": "Residual at unreachable targets",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Residual at unreachable targets",
+          "href": "/lessons/R05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.15",
+      "tolerance": 0.01,
+      "explanation": "The best pose is the stretched arm; the remaining gap equals the distance outside the ring."
+    },
+    {
+      "id": "b6",
+      "prompt": "For l1 = l2 = 0.4 m at q = (0, 0.05) the determinant of J is 0.008, and at q = (0, 1.5) it is 0.16. What follows?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "jacobian-singularity"
+      ],
+      "skillLabel": "Jacobian and singularity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Jacobian and singularity",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "options": [
+        "Joint rates are identical in both poses, because the tip speed is the same",
+        "The arm cannot move at all at q2 = 0.05, because J is singular at that point",
+        "Joint rates for the same tip velocity are about 20 times larger at q2 = 0.05",
+        "The determinant has no effect on joint rates, only on the tip's reach"
+      ],
+      "answer": "2",
+      "explanation": "Joint rates scale with 1/det J along the near-singular direction, so 0.16/0.008 = 20 times larger."
+    },
+    {
+      "id": "b7",
+      "prompt": "det J = l1 l2 sin q2. For l1 = 0.8, l2 = 0.5, q2 = 0.2 rad, give det J (three decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "jacobian-singularity"
+      ],
+      "skillLabel": "Jacobian and singularity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Jacobian and singularity",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "answer": "0.079468",
+      "tolerance": 0.001,
+      "explanation": "0.4 x sin(0.2) = 0.0795."
+    },
+    {
+      "id": "b8",
+      "prompt": "With joint limits q2 in [0, 2] only branch A of a target is admissible. A teammate says 'then the target is unreachable'. What is the correct statement?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "branch-selection"
+      ],
+      "skillLabel": "Branch selection and limits",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Branch selection and limits",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "options": [
+        "Both branches are admissible after wrapping q2 by 2 pi, so the target is fine",
+        "The target is outside the reach ring, since limits shrink the ring to nothing",
+        "It is reachable, with one admissible solution; branch B is excluded by the joint limits",
+        "Correct: joint limits define reachability, so a target with a missing branch is unreachable"
+      ],
+      "answer": "2",
+      "explanation": "Reachable and admissible are different; one branch survives."
+    },
+    {
+      "id": "b9",
+      "prompt": "Which test most reliably accepts a numerical IK pose?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "residual-check"
+      ],
+      "skillLabel": "Residual verification",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Residual verification",
+          "href": "/lessons/R05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "The solver stopped before its iteration cap",
+        "Its FK residual is below tolerance and joint limits hold",
+        "It matches a reference pair of angles exactly",
+        "Its angles are in [0, 2 pi)"
+      ],
+      "answer": "1",
+      "explanation": "Residual plus limits is independent of branch and wrapping; matching one reference pair is not required."
+    },
+    {
+      "id": "b10",
+      "prompt": "A 3R planar arm controls only the tip position (2 numbers). How many dimensions does the family of joint solutions have for a generic reachable target?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "redundancy"
+      ],
+      "skillLabel": "Redundancy",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Redundancy",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "n - m = 3 - 2 = 1."
+    },
+    {
+      "id": "b11",
+      "prompt": "A solver fails to converge for a target. Describe how you decide whether the target is unreachable or the solver is at fault, and what you report.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "reachability-ring",
+        "numerical-ik"
+      ],
+      "skillLabel": "Failure diagnosis",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Failure diagnosis",
+          "href": "/lessons/R05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q5",
+        "q6"
+      ],
+      "rubric": [
+        "Applies the exact ring test r in [|l1-l2|, l1+l2] before blaming the solver.",
+        "Uses the residual and a restart from other starts / more iterations if the target is reachable.",
+        "Reports unreachable (no angles) or closest approach with its non-zero residual, never as a solution."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "b12",
+      "prompt": "Compare analytic and numerical IK for a 2R arm and for a 7-DoF arm. Which would you use and why?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "numerical-ik"
+      ],
+      "skillLabel": "Choosing an IK method",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Choosing an IK method",
+          "href": "/lessons/R05#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "rubric": [
+        "Analytic is exact and gives all branches for special geometries like 2R.",
+        "Numerical (Jacobian/DLS or optimisation) is needed for general or redundant arms and handles constraints.",
+        "Mentions verifying with FK residual and the start dependence of numerical methods."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

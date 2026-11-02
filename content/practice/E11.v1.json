@@ -1,0 +1,364 @@
+{
+  "id": "E11-targeted",
+  "topicId": "E11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "alpha_bar=0.49, a0=-2, eps=1. Forward-noised a_t? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "diffusion-noising"
+      ],
+      "skillLabel": "Diffusion noising and loss",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "-0.6858571571457149",
+      "tolerance": 0.002,
+      "explanation": "0.7*(-2)+sqrt(0.51)*1"
+    },
+    {
+      "id": "b2",
+      "prompt": "Given a_t=0.8, alpha_bar=0.64, predicted noise 0.5, compute the implied clean action a0_hat. (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "diffusion-noising"
+      ],
+      "skillLabel": "Diffusion noising and loss",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.625",
+      "tolerance": 0.002,
+      "explanation": "(0.8-0.6*0.5)/0.8 = 0.625."
+    },
+    {
+      "id": "b3",
+      "prompt": "In DDPM training with epsilon-prediction, what is the regression target?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "diffusion-noising"
+      ],
+      "skillLabel": "Diffusion noising and loss",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "The reward received after the action, as in a value function.",
+        "The clean action a0 only, which the network reproduces directly.",
+        "The next observation after the action, as in a dynamics model.",
+        "The noise epsilon that was added to produce the noisy action a_t."
+      ],
+      "answer": "3",
+      "explanation": "The network predicts the injected Gaussian noise."
+    },
+    {
+      "id": "b4",
+      "prompt": "Flow matching x0=0.5, x1=-1.5, t=0.75: the point x_t? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "flow-matching-velocity"
+      ],
+      "skillLabel": "Flow matching velocity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "-1.0",
+      "tolerance": 0.002,
+      "explanation": "0.125-1.125=-1.0"
+    },
+    {
+      "id": "b5",
+      "prompt": "Same pair: target velocity x1-x0? (1 decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "flow-matching-velocity"
+      ],
+      "skillLabel": "Flow matching velocity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "-2.0",
+      "tolerance": 0.01,
+      "explanation": "-1.5-0.5=-2.0"
+    },
+    {
+      "id": "b6",
+      "prompt": "Exact marginal velocity for data {-1,+1} at x=0.5, t=0.5 (use the formula in the lesson). (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "flow-matching-velocity"
+      ],
+      "skillLabel": "Flow matching velocity",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ],
+      "answer": "0.5231883119115297",
+      "tolerance": 0.003,
+      "explanation": "weights 0.881/0.119 -> (0.8808*0.5-0.1192*1.5)/0.5=0.523"
+    },
+    {
+      "id": "b7",
+      "prompt": "Why does the Euler solver with 1 step fail to give modes for a two-mode action distribution?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "multimodal-vs-regression"
+      ],
+      "skillLabel": "Multimodal policies vs regression",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q1"
+      ],
+      "options": [
+        "Flow matching needs 1000 steps by its definition to produce any sample.",
+        "The modes are too far apart for any network to be able to represent them.",
+        "At t=0 the learned field points to the data mean, and one step lands there.",
+        "Euler cannot integrate ODEs, so it never reaches the data distribution."
+      ],
+      "answer": "2",
+      "explanation": "The marginal velocity at t=0 is mean minus x."
+    },
+    {
+      "id": "b8",
+      "prompt": "A deterministic MSE policy has lower average action error than a flow policy on a bimodal task but a lower success rate. Most likely reason?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "multimodal-vs-regression"
+      ],
+      "skillLabel": "Multimodal policies vs regression",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "The MSE policy is stochastic, so its success varies from one run to another.",
+        "Its mode-averaged actions are invalid for the task though close to both demos on average.",
+        "The success rate is computed incorrectly for deterministic policies in general.",
+        "The flow policy is overfitting, which lowers its average action error."
+      ],
+      "answer": "1",
+      "explanation": "Mean error does not measure validity of an action."
+    },
+    {
+      "id": "b9",
+      "prompt": "Chunks of 16 actions are generated with 12 evaluations of 8 ms each. How many ms of inference per chunk?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inference-cost"
+      ],
+      "skillLabel": "Inference cost budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "96.0",
+      "tolerance": 0.5,
+      "explanation": "12*8=96"
+    },
+    {
+      "id": "b10",
+      "prompt": "Control at 25 Hz, executing 10 actions per chunk. How many ms of wall-clock does one chunk of executed actions cover?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inference-cost"
+      ],
+      "skillLabel": "Inference cost budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "400.0",
+      "tolerance": 0.5,
+      "explanation": "10/25 s = 0.4 s = 400 ms"
+    },
+    {
+      "id": "b11",
+      "prompt": "Inference takes 150 ms per chunk, the executed chunk covers 400 ms, and the robot waits for each new chunk. What is the idle fraction of time?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "inference-cost"
+      ],
+      "skillLabel": "Inference cost budget",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "options": [
+        "150/(400+150) = 27%, because the robot pauses during blocking inference.",
+        "62%, because the idle time is the complement of the executed fraction.",
+        "37.5%, because 150 ms is that fraction of the 400 ms chunk length.",
+        "0%, because inference is faster than the execution of the chunk."
+      ],
+      "answer": "0",
+      "explanation": "Blocking inference adds a pause per chunk unless it overlaps with execution."
+    },
+    {
+      "id": "b12",
+      "prompt": "Design a fair comparison of MSE regression against a flow policy on a task with two valid grasp approaches. State metrics, baselines, the number of solver steps studied and a falsifier.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "multimodal-vs-regression",
+        "inference-cost"
+      ],
+      "skillLabel": "Multimodal policies vs regression",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "rubric": [
+        "Uses task success and mode coverage, not only mean action error.",
+        "Studies the step count (including 1 step) and reports network evaluations per chunk.",
+        "States a result that would reject the claim that the flow policy is better."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Explain, with the exact flow-matching field for data {-1,+1}, why one Euler step gives the mean and how more steps recover the modes.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "multimodal-vs-regression",
+        "flow-matching-velocity"
+      ],
+      "skillLabel": "Multimodal policies vs regression",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "rubric": [
+        "At t=0 the weights are equal so v(x,0)=mean(d)-x and one step lands on the mean.",
+        "As t grows the posterior weights commit to the nearer mode so later steps pull toward it.",
+        "Notes the cost: N network evaluations per chunk."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

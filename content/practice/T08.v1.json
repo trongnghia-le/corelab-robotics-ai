@@ -1,0 +1,342 @@
+{
+  "id": "T08-targeted",
+  "topicId": "T08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A worker finishes its outputs, then the node dies before reporting success. Under at-least-once scheduling the job runs again. What should the new attempt do first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "idempotence-and-restart"
+      ],
+      "skillLabel": "Idempotent restart",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Idempotent restart",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Delete the output directory and recompute everything from the start",
+        "Wait for an operator to confirm that the earlier run really finished",
+        "Check for a valid DONE marker and exit successfully if present",
+        "Increase the backoff so the node has time to report success"
+      ],
+      "answer": "2",
+      "explanation": "Idempotent restart checks for completion before working."
+    },
+    {
+      "id": "b2",
+      "prompt": "backoff_delays(5, base=5, cap=60): what is the fifth delay (seconds)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "retry-backoff"
+      ],
+      "skillLabel": "Retry backoff",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Retry backoff",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "60",
+      "tolerance": 0.01,
+      "explanation": "5,10,20,40,80 capped at 60 gives 60."
+    },
+    {
+      "id": "b3",
+      "prompt": "Checkpoint cost C = 2 s, MTBF M = 3600 s. At the optimal interval, what is the overhead fraction sqrt(2C/M), as a percentage (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "checkpoint-interval"
+      ],
+      "skillLabel": "Checkpoint interval",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Checkpoint interval",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "3.33",
+      "tolerance": 0.02,
+      "explanation": "sqrt(4/3600)=0.03333."
+    },
+    {
+      "id": "b4",
+      "prompt": "A script opens results.json with mode 'w' and dumps the data. The node dies mid-write. What is the most likely state on restart?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "atomic-publish"
+      ],
+      "skillLabel": "Atomic publication",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Atomic publication",
+          "href": "/lessons/T08#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "No file and no directory",
+        "A truncated or empty file that still exists",
+        "The previous version intact",
+        "A complete valid file because open() is atomic"
+      ],
+      "answer": "1",
+      "explanation": "Mode w truncates immediately; only temp-file-plus-rename is atomic."
+    },
+    {
+      "id": "b5",
+      "prompt": "Which is the best place for the learning rate of a sweep run?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "output-contract"
+      ],
+      "skillLabel": "Config and image separation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Config and image separation",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "options": [
+        "In the container's writable layer, edited by hand at start",
+        "In a config passed at run time and copied into the output",
+        "In the image tag, so that each learning rate has its own tag",
+        "Hard-coded in the image, rebuilt for each value of the sweep"
+      ],
+      "answer": "1",
+      "explanation": "Config is separate from code and recorded with outputs."
+    },
+    {
+      "id": "b6",
+      "prompt": "A job has 100 steps of 6 s and checkpoints every 20 steps. It is killed after step 77 completes. How many seconds of work are redone?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "checkpoint-interval",
+        "idempotence-and-restart"
+      ],
+      "skillLabel": "Cost of a restart",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Cost of a restart",
+          "href": "/lessons/T08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "102",
+      "tolerance": 0.01,
+      "explanation": "Last checkpoint 60, so 17 steps x 6 s = 102 s."
+    },
+    {
+      "id": "b7",
+      "prompt": "A Job has completions = 9, parallelism = 3, each pod takes 8 minutes and none fail. Minimum wall time in minutes?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "retry-backoff",
+        "output-contract"
+      ],
+      "skillLabel": "Parallel job scheduling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Parallel job scheduling",
+          "href": "/lessons/T08#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "answer": "24",
+      "tolerance": 0.01,
+      "explanation": "Three waves x 8 min = 24."
+    },
+    {
+      "id": "b8",
+      "prompt": "A sweep is 48 configs x 3 seeds at 20 minutes each on 4 machines. Ideal wall time in hours?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "output-contract"
+      ],
+      "skillLabel": "Sweep planning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Sweep planning",
+          "href": "/lessons/T08#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "answer": "12",
+      "tolerance": 0.01,
+      "explanation": "144 x 20 = 2880 min /4 = 720 min = 12 h."
+    },
+    {
+      "id": "b9",
+      "prompt": "Two experiments {'seed': 1} and {'seed': 1.0} produce different config hashes. What is the correct fix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "artifact-identity"
+      ],
+      "skillLabel": "Stable config hashing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Stable config hashing",
+          "href": "/lessons/T08#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "Normalise types (cast seed to int) before hashing",
+        "Hash only the keys, never the values of the config",
+        "Accept it; both are valid and should have separate directories",
+        "Use the timestamp as the directory name instead of the hash"
+      ],
+      "answer": "0",
+      "explanation": "json.dumps writes 1 and 1.0 differently; normalise before hashing."
+    },
+    {
+      "id": "b10",
+      "prompt": "A teammate uses exp:latest and stores outputs inside the container. List what will go wrong over six months and how you would fix each problem.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "artifact-identity",
+        "output-contract"
+      ],
+      "skillLabel": "Artifact management",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Artifact management",
+          "href": "/lessons/T08#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ],
+      "rubric": [
+        "Names mutable-tag irreproducibility and fix: commit tag plus recorded digest.",
+        "Names loss of outputs when the container is removed and fix: volume or object store.",
+        "Adds a manifest with config hash, commit and checksums."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "b11",
+      "prompt": "Your retry loop retries every failure six times. Explain which failures should and should not be retried and how backoff helps.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "retry-backoff"
+      ],
+      "skillLabel": "Retry policy",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Retry policy",
+          "href": "/lessons/T08#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T06"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "rubric": [
+        "Retries only transient failures (network, preemption); permanent errors such as bad config fail fast.",
+        "Explains exponential backoff with a cap avoiding hammering a dependency.",
+        "Mentions a retry limit and surfacing the final error."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

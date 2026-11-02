@@ -1,0 +1,246 @@
+{
+  "id": "RS09-diagnostic",
+  "topicId": "RS09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which set of identifiers lets you trace a result back to what produced it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The code revision, the config (including seed) and a hash of the input data.",
+        "The result file name, its size and the time at which it was last saved to disk.",
+        "The operating system, the monitor resolution and the editor used for the analysis.",
+        "The date of the run, the author's name and the name of the machine that executed it."
+      ],
+      "answer": "0",
+      "explanation": "A result is a function of code, config and data; each needs an identifier that changes when the content changes.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "provenance-manifest"
+      ],
+      "skillLabel": "Know what a manifest records",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "How many hexadecimal characters are in a SHA-256 digest?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "64",
+      "tolerance": 0.5,
+      "explanation": "256 bits / 4 bits per hex character = 64.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "file-hashing"
+      ],
+      "skillLabel": "Digest sizes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A git abbreviated hash has 7 hexadecimal characters. How many bits is that?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "28",
+      "tolerance": 0.5,
+      "explanation": "7 * 4 = 28 bits, i.e. 2^28 = 268,435,456 possible abbreviations.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "git-revision"
+      ],
+      "skillLabel": "Abbreviated hash size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Two configs {\"a\":1,\"b\":2} and {\"b\":2,\"a\":1} mean the same thing. How should you hash the config so both give the same hash?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Hash the file modification time, which is the same for both writings of the config.",
+        "Serialise to canonical JSON (sorted keys, fixed separators) and hash those bytes.",
+        "Hash only the first key of the file, which is the same in both configs.",
+        "Hash the Python object id of the loaded dictionary, which is the same for equal dicts."
+      ],
+      "answer": "1",
+      "explanation": "Canonical form removes differences that carry no meaning, such as key order and whitespace.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "config-hashing"
+      ],
+      "skillLabel": "Canonical serialisation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Using P = 1 - exp(-k^2 / (2 * 2^b)), what is the chance, in percent to 2 decimals, of at least one collision among k = 2000 items with b = 28 bits?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.74",
+      "tolerance": 0.02,
+      "explanation": "k^2 = 4,000,000; 2*2^28 = 536,870,912; ratio 0.00745; 1 - exp(-0.00745) = 0.74%.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "git-revision",
+        "file-hashing"
+      ],
+      "skillLabel": "Birthday collision estimate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Your results log records git rev-parse HEAD, but you ran with uncommitted edits. Explain why the result cannot be reproduced from the log and give two fixes.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Explains that HEAD does not include uncommitted edits, so the code that ran differs from the logged revision.",
+        "Fix 1: refuse to run unless git status --porcelain is empty (or commit first).",
+        "Fix 2: record a hash or copy of git diff in the manifest."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "git-revision",
+        "provenance-manifest"
+      ],
+      "skillLabel": "Handle a dirty working tree",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Two runs with the same code, config and data hash give different results although a seed is set. What is the most plausible cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Another source of variation is unseeded or unrecorded (a second RNG, threads, GPU kernels, library version).",
+        "Git tags change the numerical result, even when the commit and the data stay exactly the same.",
+        "SHA-256 is not deterministic, so equal inputs can produce different hash values between runs of it.",
+        "The hashes are too long to compare, so a collision hides a real difference in the inputs given."
+      ],
+      "answer": "0",
+      "explanation": "Hashes only capture what you hash; if the result differs, an input was missing from the manifest or a random source was not seeded.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Find hidden non-determinism",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure-modes",
+          "href": "/lessons/RS09#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "Describe how to hash a 5 GB file in Python without loading it into memory, and how to test your function.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Opens in binary mode and reads fixed-size chunks, updating a hashlib object per chunk.",
+        "Returns hexdigest at the end.",
+        "Tests: known vector (abc), empty file, and equal results for different chunk sizes."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "file-hashing"
+      ],
+      "skillLabel": "Chunked file hashing",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference-implementation",
+          "href": "/lessons/RS09#reference-implementation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS04",
+        "PY08",
+        "T02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "id": "M08-targeted",
+  "topicId": "M08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "m08-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bayes-rule"
+      ],
+      "skillLabel": "Direction of conditioning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "Which statement is true in general?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "P(A|B) = P(B|A) always, so the order of conditioning does not matter",
+        "P(A|B) = P(A)P(B) always, since conditioning multiplies the probabilities",
+        "P(A|B) and P(B|A) can differ greatly; Bayes' rule relates them via the priors",
+        "P(A|B) = 1 − P(B|A) always, since the two conditionals are complementary"
+      ],
+      "answer": "2",
+      "explanation": "P(A|B) = P(B|A)P(A)/P(B). Confusing the two is the base-rate fallacy."
+    },
+    {
+      "id": "m08-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "base-rate"
+      ],
+      "skillLabel": "Base rate",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "A very accurate test flags a rare condition. Why can most flags still be false alarms?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Flags are independent of the true state, so most of them are errors",
+        "The few real cases are outnumbered by false alarms among the many non-cases",
+        "The test is accurate only on average, so any single flag is a coin toss",
+        "Accurate tests cannot detect rare conditions, so their flags are random"
+      ],
+      "answer": "1",
+      "explanation": "Posterior depends on prevalence: sens·p / (sens·p + fpr·(1−p))."
+    },
+    {
+      "id": "m08-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "independence"
+      ],
+      "skillLabel": "Independence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "What does independence of events A and B mean?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "P(A ∪ B) = P(A) + P(B) always, so the events add without overlap",
+        "P(A ∩ B) = P(A)P(B), so learning B does not change the probability of A",
+        "A and B have the same probability, so one carries no extra information",
+        "A and B can never occur together, so observing one rules out the other"
+      ],
+      "answer": "1",
+      "explanation": "Mutually exclusive events with positive probability are in fact dependent."
+    },
+    {
+      "id": "m08-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "expectation-variance"
+      ],
+      "skillLabel": "Linearity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "Which identity holds for any two random variables X, Y, even dependent ones?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "P(X, Y) = P(X)P(Y)",
+        "Var(X + Y) = Var(X) + Var(Y)",
+        "E[X + Y] = E[X] + E[Y]",
+        "E[XY] = E[X]E[Y]"
+      ],
+      "answer": "2",
+      "explanation": "Only expectation is linear in general; variance and product rules need extra conditions."
+    },
+    {
+      "id": "m08-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bayes-rule"
+      ],
+      "skillLabel": "Posterior",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "Prior 0.2, sensitivity 0.8, false-positive rate 0.1. What is P(state | positive)? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.666667",
+      "tolerance": 0.001,
+      "explanation": "0.16 / (0.16 + 0.08) = 0.667."
+    },
+    {
+      "id": "m08-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "expectation-variance"
+      ],
+      "skillLabel": "Expected value",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "X takes values 1, 2, 5 with probabilities 0.5, 0.3, 0.2. What is E[X]?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.1",
+      "tolerance": 0.001,
+      "explanation": "0.5 + 0.6 + 1.0 = 2.1."
+    },
+    {
+      "id": "m08-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "expectation-variance"
+      ],
+      "skillLabel": "Variance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "For the same X (1, 2, 5 with probabilities 0.5, 0.3, 0.2), what is Var(X)? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.29",
+      "tolerance": 0.01,
+      "explanation": "E[X²] = 0.5 + 1.2 + 5 = 6.7; 6.7 − 2.1² = 2.29."
+    },
+    {
+      "id": "m08-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "independence"
+      ],
+      "skillLabel": "Conditional from counts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "Of 400 trials, 100 had a wet floor; of those, 40 slipped. Of the 300 dry trials, 30 slipped. What is P(wet | slipped)? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.571429",
+      "tolerance": 0.001,
+      "explanation": "Slips: 70 total, 40 on wet: 40/70 = 0.571."
+    },
+    {
+      "id": "m08-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "base-rate"
+      ],
+      "skillLabel": "Natural frequencies",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "Out of 20,000 items, prevalence 0.5%, sensitivity 80%, false-positive rate 4%. How many items are flagged in total?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "876",
+      "tolerance": 0.5,
+      "explanation": "80 true flags + 796 false flags = 876."
+    },
+    {
+      "id": "m08-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "base-rate"
+      ],
+      "skillLabel": "Fog obstacle detector",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "A robot detects obstacles in fog. Which base rate and conditional sensor errors must be measured before interpreting an alarm, and why can clear-air numbers mislead?",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Obstacle prevalence in the deployment scenes.",
+        "P(alarm | obstacle) and P(alarm | no obstacle) measured in fog.",
+        "Explains error rates change with conditions so clear-air values would give a wrong posterior."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m08-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "bayes-rule"
+      ],
+      "skillLabel": "Testing a Bayes update",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "List tests for a posterior function: hand-computed cases, input validation, and invariants such as order independence of repeated readings.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Hand case such as 90/585 and extreme priors 0 and 1.",
+        "Rejects probabilities outside [0, 1] and zero evidence.",
+        "Permuting a list of independent readings leaves the final belief unchanged."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m08-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "expectation-variance"
+      ],
+      "skillLabel": "Correlated sensors",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "Two range sensors share a temperature error source. Why does averaging them help less than averaging independent sensors, and what quantity should you estimate?",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Variance of a sum includes covariance terms.",
+        "Shared error is not reduced by averaging.",
+        "Estimate the covariance/correlation of the errors."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

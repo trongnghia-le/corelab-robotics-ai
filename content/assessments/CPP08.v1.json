@@ -1,0 +1,194 @@
+{
+  "id": "CPP08-diagnostic",
+  "topicId": "CPP08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which tool is the right first choice for finding a one-past-the-end write on a heap array?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "AddressSanitizer (-fsanitize=address)",
+        "ThreadSanitizer (-fsanitize=thread)",
+        "A Release build with -O3",
+        "-Wall alone, with no execution"
+      ],
+      "answer": "0",
+      "explanation": "ASan instruments memory accesses and reports heap-buffer-overflow with the faulty line.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sanitizer-selection"
+      ],
+      "skillLabel": "Choosing a sanitizer",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "An ASan report says '0 bytes to the right of 64-byte region' for an array of doubles. What is the index of the element that was accessed (zero-based)? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "64 bytes / 8 bytes per double = 8 elements (indices 0-7); an access 0 bytes right of the region is index 8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sanitizer-reports"
+      ],
+      "skillLabel": "Reading sanitizer reports",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A buggy program prints slightly wrong numbers but never crashes. What is the most likely explanation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Undefined behavior: the invalid read returned some value without a fault",
+        "Floating point is non-deterministic",
+        "The compiler is broken",
+        "The sanitizer is required for the program to run correctly"
+      ],
+      "answer": "0",
+      "explanation": "UB gives no guarantee, including no guarantee of a crash. Tests must check values.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sanitizer-reports",
+        "test-regression"
+      ],
+      "skillLabel": "Undefined behavior need not crash",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP08#failure-modes"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A regression was introduced somewhere in 600 commits. What is the maximum number of builds git bisect needs? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "ceil(log2 600) = ceil(9.23) = 10.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection-reduction"
+      ],
+      "skillLabel": "Bisection",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Which is the best property of a regression test?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It computes the expected value by calling the function under test",
+        "It passes on both the buggy and the fixed code",
+        "It fails on the buggy code and passes on the fixed code",
+        "It prints the result so a human can check it"
+      ],
+      "answer": "2",
+      "explanation": "A test that never failed proves nothing; the expected value must be independent of the code under test.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "test-regression"
+      ],
+      "skillLabel": "Regression test purpose",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        },
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP08#verification"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A flaky test fails with probability 0.05 per run. What is the smallest number of runs that gives at least 90% chance of seeing one failure? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "45",
+      "tolerance": 0.01,
+      "explanation": "n >= ln(0.1)/ln(0.95) = 44.9, so 45.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection-reduction"
+      ],
+      "skillLabel": "Repetitions for rare failures",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Outline the steps you would take for a robot node that crashes once an hour with a segmentation fault, from first report to a merged fix. Name the tools.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Makes it reproducible/reduced: record the input (rosbag or log), run in a loop, shrink the input.",
+        "Locates it with a core dump and GDB bt, and with ASan/UBSan (or TSan for races) builds.",
+        "Writes a regression test that fails before the fix, fixes, re-runs under sanitizers in CI."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "bisection-reduction",
+        "test-regression",
+        "sanitizer-selection"
+      ],
+      "skillLabel": "Debugging workflow",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        },
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP08#verification"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

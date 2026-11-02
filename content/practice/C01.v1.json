@@ -1,0 +1,300 @@
+{
+  "id": "C01-targeted",
+  "topicId": "C01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "c01-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "p-control-steady-error"
+      ],
+      "skillLabel": "Steady-state error of P control",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A P controller u = k(r − x) drives ẋ = u + d with constant d. Doubling k changes the steady-state error e = r − x from −d/k to what?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "−d/k: gain has no effect on the equilibrium",
+        "−2d/k: the error doubles too",
+        "0: higher gain always removes it",
+        "−d/(2k): half as large, but still nonzero"
+      ],
+      "answer": "3",
+      "explanation": "Equilibrium requires k·e + d = 0, so e = −d/k. Doubling k halves it but never reaches zero."
+    },
+    {
+      "id": "c01-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "integral-action"
+      ],
+      "skillLabel": "Why integral action rejects constant disturbances",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Why does a stable PI loop remove the steady error caused by constant d?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It predicts the disturbance before it happens and cancels it early with feed-forward",
+        "It averages out the sensor noise that causes the steady error over a long time",
+        "The integrator state stops changing only at e = 0, so it holds the input that cancels d",
+        "The integrator makes the loop gain infinitely large at all frequencies, so d vanishes"
+      ],
+      "answer": "2",
+      "explanation": "At equilibrium ż = e = 0, and k_i·z = −d holds the needed cancelling input."
+    },
+    {
+      "id": "c01-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "windup"
+      ],
+      "skillLabel": "Integrator windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A joint saturates at its torque limit while following a large step. Which description is windup?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Derivative action amplifies sensor noise, making the torque command jitter",
+        "The integral keeps growing while the actuator is pinned, causing large overshoot afterward",
+        "The controller gain is too low to reach the target, so the step is never completed",
+        "The floating-point integral overflows to infinity and the controller output is NaN"
+      ],
+      "answer": "1",
+      "explanation": "Saturation breaks the feedback path, but the integrator still accumulates the error."
+    },
+    {
+      "id": "c01-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "feedback-sign"
+      ],
+      "skillLabel": "Sign convention",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A loop uses e = x − r and u = k·e on ẋ = u. What happens?",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "The error stays constant, because u is proportional to e",
+        "The error grows like e^(kt): positive feedback",
+        "The error decays like e^(−kt), as in ordinary negative feedback",
+        "The loop is stable but leaves a constant offset from r"
+      ],
+      "answer": "1",
+      "explanation": "ė = ẋ = k e, so e(t) = e(0) e^{kt}."
+    },
+    {
+      "id": "c01-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "discrete-stability"
+      ],
+      "skillLabel": "Per-step factor",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A sampled P loop uses h = 0.05 s and k = 30. Compute the per-step error factor 1 − hk.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.5",
+      "tolerance": 0.001,
+      "explanation": "1 − 1.5 = −0.5: stable, sign flipping each step."
+    },
+    {
+      "id": "c01-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "discrete-stability"
+      ],
+      "skillLabel": "Error after n steps",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "h = 0.1, k = 5, e₀ = 2. What is the error after 3 steps (disturbance-free)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.25",
+      "tolerance": 0.001,
+      "explanation": "Factor 0.5, so 2·0.125 = 0.25."
+    },
+    {
+      "id": "c01-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "p-control-steady-error"
+      ],
+      "skillLabel": "Equilibrium error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "d = −0.6 and k = 4 for P control of ẋ = u + d. What is the equilibrium error e = r − x?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.15",
+      "tolerance": 0.001,
+      "explanation": "e = −d/k = 0.15; negative disturbance leaves the state below r."
+    },
+    {
+      "id": "c01-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "discrete-stability"
+      ],
+      "skillLabel": "Stability limit",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "For h = 0.04 s, what is the exclusive upper bound on k for the sampled P loop?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "50",
+      "tolerance": 0.01,
+      "explanation": "Need hk < 2, so k < 50."
+    },
+    {
+      "id": "c01-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "p-control-steady-error"
+      ],
+      "skillLabel": "Settling time",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Continuous loop with k = 4 s⁻¹. How many seconds until the error falls to 5% of its initial value? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.748933",
+      "tolerance": 0.01,
+      "explanation": "e^{−4t}=0.05, t = ln(20)/4 ≈ 0.75 s."
+    },
+    {
+      "id": "c01-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "integral-action"
+      ],
+      "skillLabel": "Feedforward plus feedback design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A robot arm holds a pose while the payload changes between 0 and 2 kg. Propose a feedforward-plus-feedback design and state what you measure before raising the gain.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Feedforward gravity/payload compensation from a model or a payload estimate.",
+        "Feedback (PI or PD) corrects the remaining error; mentions steady-state error and integral action.",
+        "Measures saturation, noise, latency and step responses before increasing gain."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "c01-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "feedback-sign"
+      ],
+      "skillLabel": "Test plan for a simulated loop",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "List three tests for a simulated feedback loop that would catch a reversed error sign, a wrong sampling factor, and missing anti-windup.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Closed-form check e_n=(1−hk)^n e_0 or monotone decay for a positive-gain case.",
+        "Gain above 2/h must diverge and below must converge.",
+        "Saturated large-step test comparing overshoot with and without anti-windup."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "c01-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "windup"
+      ],
+      "skillLabel": "Derivative term trade-off",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#alternatives-and-trade-offs"
+        }
+      ],
+      "prompt": "Why can adding a derivative term make a real loop worse even though it adds damping in theory? Mention what you would do about it.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Derivative amplifies measurement noise / quantisation.",
+        "Mentions filtering the derivative or using derivative on measurement.",
+        "States that damping benefit must be compared on the same plant with noise."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "id": "R05-diagnostic",
+  "topicId": "R05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A planar 2R arm has l1 = 0.8 m and l2 = 0.5 m. A target is at distance 1.0 m from the base. How many IK solutions does it have (position only)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ik-solution-count"
+      ],
+      "skillLabel": "Counting IK solutions",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Counting IK solutions",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "options": [
+        "One",
+        "Infinitely many",
+        "Zero",
+        "Two"
+      ],
+      "answer": "3",
+      "explanation": "1.0 m is strictly inside the ring [0.3, 1.3], so there are two elbow solutions."
+    },
+    {
+      "id": "q2",
+      "prompt": "l1 = l2 = 1 m, target (1, 1). Give the elbow angle q2 > 0 in radians (relative angle, 4 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "elbow-solution"
+      ],
+      "skillLabel": "Elbow angle from the law of cosines",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Elbow angle from the law of cosines",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "answer": "1.570796",
+      "tolerance": 0.001,
+      "explanation": "cos q2 = (2-2)/2 = 0, so q2 = pi/2 = 1.5708."
+    },
+    {
+      "id": "q3",
+      "prompt": "l1 = 0.8 m, l2 = 0.5 m. What is the largest target distance (m) from the base that is reachable?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reachability-ring"
+      ],
+      "skillLabel": "Reachability ring",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Reachability ring",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "answer": "1.3",
+      "tolerance": 0.001,
+      "explanation": "The outer edge is l1 + l2 = 1.3 m."
+    },
+    {
+      "id": "q4",
+      "prompt": "Why must q1 be computed with atan2(y, x) rather than atan(y/x)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "atan2-quadrants"
+      ],
+      "skillLabel": "Quadrant-safe angles",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Quadrant-safe angles",
+          "href": "/lessons/R05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "options": [
+        "atan2 returns degrees, which the rest of the kinematics code expects",
+        "atan(y/x) cannot be differentiated, so the Jacobian could not be formed",
+        "atan(y/x) loses the signs of x and y, so the quadrant is wrong; x = 0 fails",
+        "atan(y/x) is slower, because it needs a division and a function call every step"
+      ],
+      "answer": "2",
+      "explanation": "The ratio erases the individual signs; a target with x < 0 gets the angle of its mirror point."
+    },
+    {
+      "id": "q5",
+      "prompt": "An iterative IK solver for a target 0.2 m outside the ring's outer edge stalls. What residual (m) is the best any pose can achieve?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reachability-ring",
+        "residual-check"
+      ],
+      "skillLabel": "Residual at unreachable targets",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Residual at unreachable targets",
+          "href": "/lessons/R05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "answer": "0.2",
+      "tolerance": 0.005,
+      "explanation": "The closest the tip can get is the stretched arm pointing at the target, leaving a 0.2 m gap."
+    },
+    {
+      "id": "q6",
+      "prompt": "A damped-least-squares solver is run from two starts, one with q2 > 0 and one with q2 < 0, for a reachable target. What is the most likely outcome?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "numerical-ik"
+      ],
+      "skillLabel": "Start-dependent numerical IK",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Start-dependent numerical IK",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "options": [
+        "Both always converge to the same branch, whatever the sign of q2 at start",
+        "They return the average of the two elbow branches, with a large residual",
+        "Each converges to the elbow branch near its start, with residual near zero",
+        "Both fail, because a target with two solutions has no unique root"
+      ],
+      "answer": "2",
+      "explanation": "Newton-type methods converge to a nearby solution; the elbow sign of the start picks the branch."
+    },
+    {
+      "id": "q8",
+      "prompt": "Explain how a controller should choose between two IK solutions every cycle, and why choosing 'the first one in the list' is risky.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "branch-selection"
+      ],
+      "skillLabel": "Branch selection and limits",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Branch selection and limits",
+          "href": "/lessons/R05#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "rubric": [
+        "Filters solutions by joint limits using angle wrapping.",
+        "Chooses by an explicit rule such as smallest joint motion from the current pose.",
+        "Explains that list order can change between cycles and flip the elbow; verify each choice by FK residual."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

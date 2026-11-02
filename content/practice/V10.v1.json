@@ -1,0 +1,376 @@
+{
+  "id": "V10-targeted",
+  "topicId": "V10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "An object covers 5% of the image and the model predicts background everywhere. Mean IoU over the two classes? (precision 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pixel-accuracy-imbalance"
+      ],
+      "skillLabel": "Accuracy versus IoU on imbalanced masks",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.475",
+      "tolerance": 0.001,
+      "explanation": "(0.95 + 0)/2."
+    },
+    {
+      "id": "b2",
+      "prompt": "Pixel confusion matrix [[50, 10], [5, 35]] (rows true class 0,1; columns predicted). IoU of class 1 (precision 0.01)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-iou-dice"
+      ],
+      "skillLabel": "Class IoU and Dice",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.7",
+      "tolerance": 0.01,
+      "explanation": "35 / (40 + 45 - 35) = 0.7."
+    },
+    {
+      "id": "b3",
+      "prompt": "Same matrix [[50, 10], [5, 35]]. Dice of class 1 (precision 0.001)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-iou-dice"
+      ],
+      "skillLabel": "Class IoU and Dice",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.824",
+      "tolerance": 0.001,
+      "explanation": "2*35/(40+45) = 0.8235."
+    },
+    {
+      "id": "b4",
+      "prompt": "A class has Dice 0.8. What is its IoU? (precision 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-iou-dice"
+      ],
+      "skillLabel": "Class IoU and Dice",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.667",
+      "tolerance": 0.001,
+      "explanation": "IoU = Dice/(2-Dice) = 0.8/1.2."
+    },
+    {
+      "id": "b5",
+      "prompt": "A 20x20 square object is predicted 1 pixel too large on every side (22x22 mask containing it). Object IoU? (precision 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "boundary-tolerance"
+      ],
+      "skillLabel": "Boundary tolerance",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "answer": "0.826",
+      "tolerance": 0.001,
+      "explanation": "400/484 = 0.826."
+    },
+    {
+      "id": "b6",
+      "prompt": "How many connected components has the mask [[1,1,0],[0,1,0],[0,0,1]] under 4-connectivity? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "instances-components"
+      ],
+      "skillLabel": "Connected components",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "{(0,0),(0,1),(1,1)} and {(2,2)}."
+    },
+    {
+      "id": "b7",
+      "prompt": "Confusion matrix [[900, 100], [50, 950]]. Pixel accuracy (precision 0.001)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pixel-accuracy-imbalance"
+      ],
+      "skillLabel": "Accuracy versus IoU on imbalanced masks",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "0.925",
+      "tolerance": 0.001,
+      "explanation": "1850/2000."
+    },
+    {
+      "id": "b8",
+      "prompt": "You compute IoU separately for each test image and average. For a rare class that is tiny in many images this...",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "class-iou-dice"
+      ],
+      "skillLabel": "Class IoU and Dice",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "Always gives a higher score than dataset-level IoU, so it is the preferred report",
+        "Over-weights images where the class is tiny; accumulate the confusion matrix over the whole dataset",
+        "Is required by the definition of mIoU used in the standard segmentation benchmarks",
+        "Is exactly the same as dataset-level IoU, because the average of ratios is the ratio of sums"
+      ],
+      "answer": "1",
+      "explanation": "Dataset-level counts are the standard."
+    },
+    {
+      "id": "b9",
+      "prompt": "What is the purpose of an 'ignore' label (e.g. 255) in segmentation ground truth?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pixel-accuracy-imbalance"
+      ],
+      "skillLabel": "Accuracy versus IoU on imbalanced masks",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "They are counted as errors in both the loss and the metrics",
+        "Pixels that are void or ambiguous are excluded from the loss and the metrics",
+        "They are treated as background pixels in both the loss and the metrics",
+        "They mark the largest class so that the loss can be re-weighted"
+      ],
+      "answer": "1",
+      "explanation": "Ignored pixels contribute nothing."
+    },
+    {
+      "id": "b10",
+      "prompt": "A class never appears in the test ground truth and is never predicted. How should mIoU treat it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "class-iou-dice"
+      ],
+      "skillLabel": "Class IoU and Dice",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "options": [
+        "Count it as IoU 0, because the model never found the class",
+        "Replace it by the pixel accuracy of the other classes",
+        "Count it as IoU 1, because nothing was predicted wrongly",
+        "Exclude it from the mean, because its IoU is 0/0 and undefined"
+      ],
+      "answer": "3",
+      "explanation": "0/0 is undefined."
+    },
+    {
+      "id": "b11",
+      "prompt": "A delivery robot uses a segmentation mask to find drivable floor. Which metrics and which safety measures do you use, given that calling a pit 'floor' is far worse than the reverse?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "pixel-accuracy-imbalance"
+      ],
+      "skillLabel": "Accuracy versus IoU on imbalanced masks",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "rubric": [
+        "Reports per-class IoU and recall of the hazard class, not only accuracy.",
+        "Uses class weights/thresholds to bias errors to the safe side and erodes the floor mask by a margin.",
+        "Uses an ignore label for ambiguous pixels and checks temporal consistency or other sensors."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "List the tests you would write for a connected-components function and a confusion-matrix function.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "instances-components"
+      ],
+      "skillLabel": "Connected components",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "rubric": [
+        "Known masks: diagonal (3 vs 1 components), ring, two touching squares.",
+        "Confusion matrix sums to the number of non-ignored pixels; hand-computed 2x2 case.",
+        "Checks 4 versus 8 connectivity and empty-mask behaviour."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

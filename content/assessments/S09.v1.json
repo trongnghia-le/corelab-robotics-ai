@@ -1,0 +1,208 @@
+{
+  "id": "S09-diagnostic",
+  "topicId": "S09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "In a staged validation protocol, the mock-hardware stage produced no measurement because the logger crashed. What does the gate do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Passes if the previous stage passed and no error was logged.",
+        "Fails: a missing result is a failure and later stages do not start.",
+        "Passes, because no error was observed during the stage.",
+        "Skips ahead to the tethered stage and records the stage as pending."
+      ],
+      "answer": "1",
+      "explanation": "Missing evidence is not evidence of success.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "staged-gates"
+      ],
+      "skillLabel": "Staged validation with gates",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S08",
+        "S07"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Sampled loop x[n+1]=x[n]-kT x[n-d]. Largest stable kT for d=2 delay samples (2 sin(pi/10)). Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.618",
+      "tolerance": 0.001,
+      "explanation": "2 sin(18 deg)=0.618.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "delay-margin"
+      ],
+      "skillLabel": "Delay margin of a sampled loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S08",
+        "S07"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Continuous loop x'=-k x(t-tau) with k=25 1/s. Largest stable delay tau in ms (pi/(2k)). Precision 0.1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "62.8",
+      "tolerance": 0.1,
+      "explanation": "pi/50 s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "delay-margin"
+      ],
+      "skillLabel": "Delay margin of a sampled loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S08",
+        "S07"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A damping estimate is 0.80 with standard error 0.04. Upper end of a +-3 sigma randomization range. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.92",
+      "tolerance": 0.001,
+      "explanation": "0.8+0.12.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "randomization-ranges"
+      ],
+      "skillLabel": "Choose randomization ranges",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S08",
+        "S07"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A training env calls np.random.seed(0) inside reset() and then samples friction. What is the effect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Nothing; seeding only affects the very first draw of the program",
+        "Friction is randomized once per step instead of once per episode",
+        "Every episode draws identical parameters: no randomization.",
+        "Friction is randomized more strongly, since the seed is reset"
+      ],
+      "answer": "2",
+      "explanation": "Reseeding resets the sequence.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "randomization-ranges"
+      ],
+      "skillLabel": "Choose randomization ranges",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S08",
+        "S07"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Which parameters should be identified or randomized first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Those with large elasticity of the outcome and large uncertainty.",
+        "Those with the smallest nominal value, as they are cheapest to change.",
+        "Those that are easiest to measure with the available equipment.",
+        "Those listed first in the model file, since they were added earliest."
+      ],
+      "answer": "0",
+      "explanation": "Gap contribution ~ elasticity x uncertainty.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sensitivity-elasticity",
+        "gap-sources"
+      ],
+      "skillLabel": "Sensitivity of an outcome to parameters",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S08",
+        "S07"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Design a four-stage validation protocol for moving a policy from simulation to a real 2-joint arm: stage, metric, numeric limit, safety envelope, abort condition.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Orders stages from reference sim to mock hardware to tethered low-speed to full, each with a metric and numeric limit.",
+        "Gives a safety envelope (speed, torque, workspace) and abort conditions linked to S07 limits and timeouts.",
+        "States that missing results fail and that controller changes restart the affected stages."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "staged-gates"
+      ],
+      "skillLabel": "Staged validation with gates",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/S09#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S08",
+        "S07"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

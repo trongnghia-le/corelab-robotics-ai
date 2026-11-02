@@ -1,0 +1,376 @@
+{
+  "id": "PY05-targeted",
+  "topicId": "PY05",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "residual-analysis"
+      ],
+      "skillLabel": "Residual analysis",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "b1",
+      "kind": "choice",
+      "prompt": "Which residual plot supports the model?",
+      "options": [
+        "A smooth sine-like curve",
+        "A long run of positive values then negative values",
+        "Spread growing with the signal",
+        "Random scatter around zero with constant spread"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Structure in residuals signals a problem; scatter is what noise looks like.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ode-model"
+      ],
+      "skillLabel": "First-order step response",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#worked-example"
+        }
+      ],
+      "id": "b2",
+      "kind": "number",
+      "prompt": "Motor tau=0.5, K=2, u=3. Speed at t=0.25 s in rad/s (3 decimals)?",
+      "answer": "2.361",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.005,
+      "explanation": "6(1-e^{-0.5}).",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ode-model"
+      ],
+      "skillLabel": "First-order step response",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "b3",
+      "kind": "number",
+      "prompt": "What fraction (percent, 1 decimal) of the final value is reached at t=2*tau?",
+      "answer": "86.5",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.2,
+      "explanation": "1-e^{-2}=0.8647.",
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-uncertainty"
+      ],
+      "skillLabel": "Uncertainty from the Jacobian",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#exercises"
+        }
+      ],
+      "id": "b4",
+      "kind": "number",
+      "prompt": "sigma_hat=0.083 and sqrt((J^T J)^-1) for tau = 0.102. SE of tau in milliseconds (nearest integer)?",
+      "answer": "8",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.6,
+      "explanation": "0.083*0.102=0.00847 s.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-uncertainty"
+      ],
+      "skillLabel": "Uncertainty from the Jacobian",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#worked-example"
+        }
+      ],
+      "id": "b5",
+      "kind": "number",
+      "prompt": "With SE(tau)=0.0085 s and t critical value 2.045, the 95% half-width in milliseconds (nearest integer)?",
+      "answer": "17",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.6,
+      "explanation": "2.045*8.5=17.4 ms.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-uncertainty"
+      ],
+      "skillLabel": "Noise estimate",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "b6",
+      "kind": "number",
+      "prompt": "40 points, 3 parameters, SSR=0.37. sigma_hat in rad/s (3 decimals)?",
+      "answer": "0.1",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "sqrt(0.37/37)=0.1.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fitting-workflow"
+      ],
+      "skillLabel": "Units and bounds",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#failure-modes"
+        }
+      ],
+      "id": "b7",
+      "kind": "choice",
+      "prompt": "Two fits of tau, one in seconds and one in milliseconds, with the same bounds numbers (1e-3, 10) will",
+      "options": [
+        "give identical optima, as the bounds are only a starting search range",
+        "restrict the millisecond fit to physically unreasonable values",
+        "always converge faster, as the smaller numbers are better conditioned",
+        "be equivalent, because the unit change cancels in the optimizer"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Bounds expressed in the wrong unit change the problem.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "identifiability"
+      ],
+      "skillLabel": "Identifiability",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#failure-modes"
+        }
+      ],
+      "id": "b8",
+      "kind": "choice",
+      "prompt": "A fit with u=0 returns a gain K identical to the initial guess because",
+      "options": [
+        "the bounds forced K to stay equal to the initial value",
+        "solve_ivp ignores K and uses a default gain inside the model",
+        "the optimizer converged to the true value, which equals the guess",
+        "the output does not depend on K, so the optimizer sees no gradient"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Zero Jacobian column.",
+      "equivalentTo": [
+        "q7"
+      ]
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fitting-workflow"
+      ],
+      "skillLabel": "Parametrization",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#alternatives-and-trade-offs"
+        }
+      ],
+      "id": "b9",
+      "kind": "choice",
+      "prompt": "Fitting ln(tau) instead of tau is helpful because",
+      "options": [
+        "positivity is automatic and errors become relative",
+        "it removes the need for a model to be fitted",
+        "it moves the optimum to a better value than before",
+        "it makes the measurement noise Gaussian and equal"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Unconstrained optimization on log scale; SE(ln tau)~SE(tau)/tau.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-uncertainty"
+      ],
+      "skillLabel": "Delta method",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#exercises"
+        }
+      ],
+      "id": "b10",
+      "kind": "number",
+      "prompt": "SE(tau)=0.0085 s and tau_hat=0.498 s. The approximate standard error of ln(tau) in percent (1 decimal)?",
+      "answer": "1.7",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.1,
+      "explanation": "0.0085/0.498=1.7%.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "fitting-workflow"
+      ],
+      "skillLabel": "Reproducible fits",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#transfer-and-retention"
+        }
+      ],
+      "id": "b11",
+      "kind": "short",
+      "prompt": "Describe the outputs and metadata you would save so that a colleague can reproduce and audit a parameter fit months later.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Saves parameters, standard errors, sigma_hat and covariance together with units.",
+        "Records seed, tolerances, bounds and library versions or commit.",
+        "Keeps raw data and the residual figure so the fit can be regenerated."
+      ]
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "fitting-workflow",
+        "residual-analysis"
+      ],
+      "skillLabel": "Solver tolerance versus noise",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#failure-modes"
+        }
+      ],
+      "id": "b12",
+      "kind": "short",
+      "prompt": "The simulator uses rtol=1e-3 while your measurement noise is 0.1 rad/s on a 6 rad/s signal. Explain why this can still hurt a least-squares fit and how you would test the effect.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Explains that finite-difference Jacobians amplify small, nonsmooth simulator errors.",
+        "Proposes tightening rtol/atol and compare fits.",
+        "Checks the simulator against an analytic solution and monitors optimizer status."
+      ]
+    }
+  ]
+}

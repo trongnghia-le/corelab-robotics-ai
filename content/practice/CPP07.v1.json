@@ -1,0 +1,332 @@
+{
+  "id": "CPP07-targeted",
+  "topicId": "CPP07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "main.o needs A, A needs B, both are static archives. Which hand-written link line works with GNU ld?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "g++ main.o -lA -lB",
+        "Both always work",
+        "Neither can work",
+        "g++ main.o -lB -lA"
+      ],
+      "answer": "0",
+      "explanation": "Archives are scanned left to right; B must come after the library that needs it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "build-stages"
+      ],
+      "skillLabel": "Static library order",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A new source file is added to src/ but the project uses file(GLOB SRC src/*.cpp). The build still fails with undefined reference. What is the most likely reason?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The glob is evaluated at configure time; CMake has not been re-run",
+        "Static libraries ignore any new files placed in src/",
+        "ctest must be run first to register the new file",
+        "The linker cannot read source files added after the first build"
+      ],
+      "answer": "0",
+      "explanation": "Re-run cmake, list sources explicitly, or use CONFIGURE_DEPENDS.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rebuild-graph"
+      ],
+      "skillLabel": "file(GLOB) and configure time",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP07#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A header-only math library has no .cpp files. Which CMake form describes it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "add_library(mathlib INTERFACE) with target_include_directories(mathlib INTERFACE include)",
+        "add_library(mathlib STATIC) with an empty source list and the headers copied in",
+        "include_directories(include) only, with no library target defined for users",
+        "add_executable(mathlib) with all of the header files listed as its sources"
+      ],
+      "answer": "0",
+      "explanation": "INTERFACE targets carry usage requirements for their users but build nothing themselves.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "usage-requirements"
+      ],
+      "skillLabel": "INTERFACE libraries",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP07#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Why configure with cmake -S . -B build rather than running cmake in the source directory?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It disables the sanitizer flags that were previously set in the CMake cache",
+        "It makes the compiler produce faster code than an in-source build would give",
+        "It is required, because ctest only works when started from a separate directory",
+        "Generated files stay out of the source tree and several configurations can coexist"
+      ],
+      "answer": "3",
+      "explanation": "Separate build directories keep the tree clean and let you keep Debug, Release and ASAN builds side by side.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "test-targets",
+        "rebuild-graph"
+      ],
+      "skillLabel": "Out-of-source builds",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "12 of 80 objects include header common.hpp; each compile takes 2 s and the final link takes 5 s. How many seconds does a rebuild after touching common.hpp take? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "29",
+      "tolerance": 0.5,
+      "explanation": "12 x 2 = 24 s of compiling plus 5 s linking = 29 s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rebuild-graph"
+      ],
+      "skillLabel": "Cost of touching a header",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Graph: x.o needs x.cpp and common.hpp; y.o needs y.cpp and common.hpp; libxy needs x.o and y.o; tool needs libxy and tool.o; tool.o needs tool.cpp. common.hpp is edited. How many nodes (including common.hpp itself) are in the rebuild set? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.01,
+      "explanation": "common.hpp, x.o, y.o, libxy, tool = 5. tool.o does not depend on common.hpp.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rebuild-graph"
+      ],
+      "skillLabel": "Rebuild sets",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "7 tests are registered and 1 fails. What percentage passes? Give a number with 1 decimal.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "85.7",
+      "tolerance": 0.06,
+      "explanation": "6/7 = 85.7%.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "test-targets"
+      ],
+      "skillLabel": "Test pass rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "app links libA PRIVATE. libA links libB PUBLIC. libB links libC PRIVATE. libA, libB, libC each export a PUBLIC include directory. How many of these three include directories does app see when compiling? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "app sees libA's directory and, because libA links libB PUBLIC, libB's. libC's is private to libB.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "usage-requirements"
+      ],
+      "skillLabel": "Include propagation",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "demo fails with 'fatal error: robotmath/vec2.hpp: No such file or directory' although the library compiles. Give the likely cause in CMake terms and the one-line fix.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "demo is not linked with the library target, or the library does not export its include directory as PUBLIC.",
+        "Fix: target_link_libraries(demo PRIVATE robotmath) and target_include_directories(robotmath PUBLIC include).",
+        "Names the stage: preprocessing, not linking."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "usage-requirements",
+        "build-stages"
+      ],
+      "skillLabel": "Diagnosing missing includes",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP07#failure-modes"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Write the CMake lines that register a test executable tests/test_x.cpp for library mylib with CTest.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "enable_testing() in the top-level CMakeLists.",
+        "add_executable(test_x tests/test_x.cpp) and target_link_libraries(test_x PRIVATE mylib).",
+        "add_test(NAME x COMMAND test_x)."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "test-targets"
+      ],
+      "skillLabel": "Registering tests",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP07#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Your team debates one big target versus many small library targets for a 200-file robot stack. Give two arguments for the split and one cost.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Precise rebuilds: a change recompiles only dependents.",
+        "Layering is enforced through the dependency graph and prevents cycles; PRIVATE hides internals.",
+        "Cost: more CMake to maintain, slower configuration and a graph to understand."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "rebuild-graph",
+        "usage-requirements"
+      ],
+      "skillLabel": "Granularity of targets",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP07#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q4",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

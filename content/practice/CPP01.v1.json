@@ -1,0 +1,300 @@
+{
+  "id": "CPP01-targeted",
+  "topicId": "CPP01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "cpp01-b1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "integer-division"
+      ],
+      "skillLabel": "Integer division",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "After `int a = 7, b = 2; double r = a / b;` what does r hold?",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "3.0, because a / b is evaluated as integer division before the assignment",
+        "3.5, because r is declared as a double, so the division is done in double",
+        "4.0, because integer division rounds the quotient up to the next integer",
+        "3.5, because 7 is odd and the conversion keeps the fractional remainder"
+      ],
+      "answer": "0",
+      "explanation": "The conversion to double happens after the truncating int division."
+    },
+    {
+      "id": "cpp01-b2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "vector-bounds"
+      ],
+      "skillLabel": "Unchecked indexing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A function reads v[v.size()] on a std::vector<double> with v.size() == 3. What is the language-level behaviour?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It grows the vector by one element so that the index becomes valid",
+        "Undefined behaviour: operator[] performs no bounds check on the index",
+        "It returns 0.0 for the missing element, since doubles are value-initialised",
+        "It throws std::out_of_range, since vector checks every index that is used"
+      ],
+      "answer": "1",
+      "explanation": "Only .at() checks bounds and throws; operator[] is unchecked."
+    },
+    {
+      "id": "cpp01-b3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "numeric-contract"
+      ],
+      "skillLabel": "Parameter passing",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Which signature lets a function read a large std::vector<double> without copying it and without modifying it?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "double f(const std::vector<double> v)",
+        "double f(std::vector<double> v)",
+        "double f(const std::vector<double>& v)",
+        "double f(std::vector<double>& v)"
+      ],
+      "answer": "2",
+      "explanation": "const& avoids the copy and forbids writes; pass-by-value (even const) copies."
+    },
+    {
+      "id": "cpp01-b4",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "numeric-contract"
+      ],
+      "skillLabel": "Reading compiler warnings",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "The compiler warns about comparing a signed int with std::size_t in a loop condition. Best response?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Add -w to hide all warnings so that the build is clean again",
+        "Understand the conversion, use one index type, and rebuild until it is gone",
+        "Cast both sides to int everywhere so that the compiler stops warning",
+        "Ignore it, because the program still compiles and seems to run well"
+      ],
+      "answer": "1",
+      "explanation": "Signed/unsigned mixing can turn -1 into a huge value; fix the types rather than hiding the message."
+    },
+    {
+      "id": "cpp01-b5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "numeric-contract"
+      ],
+      "skillLabel": "Mean",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "What is the mean of {1.5, 2.5, 4.0, 8.0}? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "Sum 16.0 divided by 4 = 4.0."
+    },
+    {
+      "id": "cpp01-b6",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "numeric-contract"
+      ],
+      "skillLabel": "Window count",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A moving average with window w = 6 runs over n = 20 samples. How many outputs does it produce (no padding)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "15",
+      "tolerance": 0.01,
+      "explanation": "n − w + 1 = 15."
+    },
+    {
+      "id": "cpp01-b7",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "numeric-contract"
+      ],
+      "skillLabel": "Filter delay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A 9-sample moving average runs at 500 Hz. By how many milliseconds does it lag a ramp input? Use (w − 1)/2 samples.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8",
+      "tolerance": 0.01,
+      "explanation": "4 samples at 2 ms each = 8 ms."
+    },
+    {
+      "id": "cpp01-b8",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "integer-division"
+      ],
+      "skillLabel": "Mixed expression",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "`int a = 5; double r = a / 2 * 2.0;` What is r?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.001,
+      "explanation": "a / 2 is integer 2, then 2 * 2.0 = 4.0 (not 5.0)."
+    },
+    {
+      "id": "cpp01-b9",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "vector-bounds"
+      ],
+      "skillLabel": "Copy cost",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A function takes std::vector<double> by value; the vector has 100000 elements and it is called 200 times per second. How many MB/s are copied (8 bytes per double, 1 MB = 10^6 bytes)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "160",
+      "tolerance": 0.01,
+      "explanation": "0.8 MB per call × 200 = 160 MB/s."
+    },
+    {
+      "id": "cpp01-b10",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "numeric-contract"
+      ],
+      "skillLabel": "Design a function contract",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Specify the contract for moving_average(x, w) used on motor velocity: numeric type, preconditions, output meaning at the start, and failure behaviour.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Chooses double and states finite-input assumption.",
+        "States 1 <= w <= n and output length n−w+1 with no padding; start-up samples are not produced.",
+        "Chooses an exception (or documented error value) rather than undefined behaviour."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "cpp01-b11",
+      "kind": "short",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "vector-bounds"
+      ],
+      "skillLabel": "Test plan",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "List the inputs you would use to test a moving-average function, including edge cases, and say which off-by-one bug each would reveal.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Window equal to 1 and equal to n.",
+        "Empty vector, w = 0 and w > n.",
+        "A hand-computed small case that detects dropping the last window."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "cpp01-b12",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "integer-division"
+      ],
+      "skillLabel": "Floating-point equality",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Why is `if (sum == 1.0)` dangerous after adding 0.1 ten times, and what do you write instead?",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Binary floating point cannot represent 0.1 exactly so errors accumulate.",
+        "Compare with a tolerance such as abs(a−b) < eps.",
+        "Chooses eps from the scale of the quantities."
+      ],
+      "explanation": "Open question; check your answer against the rubric."
+    }
+  ]
+}

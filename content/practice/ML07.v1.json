@@ -1,0 +1,358 @@
+{
+  "id": "ML07-targeted",
+  "topicId": "ML07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "TP=18, FP=2, FN=12, TN=968. Compute recall. (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.6",
+      "tolerance": 0.001,
+      "explanation": "18/(18+12)=0.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "precision-recall"
+      ],
+      "skillLabel": "Precision, recall and F1",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q3"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Precision 0.5 and recall 1.0. What is F1? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.666667",
+      "tolerance": 0.001,
+      "explanation": "2·0.5·1/1.5=0.667. The harmonic mean punishes the weaker value.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "precision-recall"
+      ],
+      "skillLabel": "Precision, recall and F1",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A false alarm costs 2 and a miss costs 18. Calibrated probability threshold for predicting positive? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1",
+      "tolerance": 0.001,
+      "explanation": "c_FP/(c_FP+c_FN)=2/20=0.1.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cost-threshold"
+      ],
+      "skillLabel": "Cost-based decision threshold",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "On a test set FP=12 and FN=7 with c_FP=1 and c_FN=5. What is the total cost? (integer, tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "47.0",
+      "tolerance": 0.01,
+      "explanation": "12·1+7·5=47.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cost-threshold"
+      ],
+      "skillLabel": "Cost-based decision threshold",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Sensitivity 0.95, specificity 0.98, prevalence 2%. What is the precision? (decimal, tolerance 0.002)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.492228",
+      "tolerance": 0.002,
+      "explanation": "0.019/(0.019+0.0196)=0.4922.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "precision-recall",
+        "calibration"
+      ],
+      "skillLabel": "Prevalence and deployment shift",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7",
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Bins: 6 predictions at 0.7 with 5 positives, and 4 predictions at 0.2 with 0 positives. What is the ECE? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.16",
+      "tolerance": 0.001,
+      "explanation": "0.6·|0.8333−0.7|+0.4·|0−0.2|=0.08+0.08=0.16.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "calibration"
+      ],
+      "skillLabel": "Calibration and ECE",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Calibrated at balanced prior, p=0.5 for a case. Deployment prevalence is 20%. What is the prior-corrected probability? (decimal, tolerance 0.002)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.002,
+      "explanation": "Odds 1 × (0.2/0.8)=0.25, p=0.25/1.25=0.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "calibration"
+      ],
+      "skillLabel": "Prevalence and deployment shift",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A robot team reports 97% accuracy for a rare-event detector (1% positive). Which follow-up is most informative?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Ask for recall, precision, and the accuracy of always predicting negative.",
+        "Ask for the training loss, which shows how well the model fitted the data.",
+        "Ask for the number of epochs, which shows how long the model was trained.",
+        "Ask whether accuracy was computed in float64, which affects its exact value."
+      ],
+      "answer": "0",
+      "explanation": "Only per-class metrics and a baseline show whether 97% is meaningful when 99% is free.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "metric-selection"
+      ],
+      "skillLabel": "Choosing metrics under imbalance",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A model ranks positives above negatives perfectly (AUC=1) but outputs 0.99 for every example. Which statement is true?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is badly calibrated: ECE is large although ranking is perfect.",
+        "It is well calibrated because AUC is 1 and the ranking is perfect.",
+        "Calibration is undefined for such a model, since all the outputs are equal.",
+        "Precision must be 1, because the model ranks every positive above every negative."
+      ],
+      "answer": "0",
+      "explanation": "AUC measures ordering only; confidence 0.99 is wrong for negatives.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "calibration"
+      ],
+      "skillLabel": "Calibration and ECE",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "You select the threshold maximizing F1 on the test set and report that F1. Which fix is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Use a lower threshold so that recall is higher and the F1 stays the same.",
+        "Report the F1 at the best threshold but add the word 'tuned' to the table.",
+        "Choose it on the training set, which is larger and gives a more stable estimate.",
+        "Choose the threshold on a validation split and report once on the untouched test set."
+      ],
+      "answer": "3",
+      "explanation": "Anything optimized on a dataset biases the score on that dataset.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "held-out-evaluation"
+      ],
+      "skillLabel": "Held-out evaluation and selection bias",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Fifty useless models each have validation accuracy ~N(0.5, 0.05²). Approximate the expected best score using μ+σ·sqrt(2 ln K). (decimal, tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.639857",
+      "tolerance": 0.01,
+      "explanation": "sqrt(2 ln 50)=2.80, so 0.5+0.14=0.64 (a rough upper estimate; exact order statistic is about 0.61).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "held-out-evaluation"
+      ],
+      "skillLabel": "Held-out evaluation and selection bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "A grasp-success classifier is evaluated on frames sampled from 20 robot runs, split randomly by frame into train and test. Identify the problem and the fix.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Neighbouring frames from the same run appear in both splits, so test is not independent (group leakage).",
+        "Split by run (group split) so each run is wholly in train, validation or test.",
+        "Names a check such as comparing with a group-split score or a label-shuffle control."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "held-out-evaluation"
+      ],
+      "skillLabel": "Held-out evaluation and selection bias",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Write the steps of a small evaluation script for a binary detector so that someone else can rerun it and disagree with you.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Fixed seed and saved split; threshold chosen on validation only.",
+        "Reports confusion matrix, precision, recall, cost and the majority baseline on the test set once.",
+        "Lists failure cases and states a condition that would reject the conclusion."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "precision-recall",
+        "held-out-evaluation"
+      ],
+      "skillLabel": "Reproducible evaluation report",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

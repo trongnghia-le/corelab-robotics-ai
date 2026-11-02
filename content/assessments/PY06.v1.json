@@ -1,0 +1,203 @@
+{
+  "id": "PY06-diagnostic",
+  "topicId": "PY06",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "grad-accumulation"
+      ],
+      "skillLabel": "Gradient accumulation",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "You call loss.backward() twice in a row on fresh graphs without zeroing gradients. What happens to w.grad?",
+      "options": [
+        "the second gradient replaces the first one, so only the last remains",
+        "PyTorch raises an error because the graph was already traversed once",
+        "w.grad becomes None because the second graph frees the first one",
+        "the second gradient is added to the first"
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "Leaf .grad accumulates; use zero_grad() each step."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grad-accumulation"
+      ],
+      "skillLabel": "Gradient accumulation",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#worked-example"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "w=3 (requires_grad), L=w**2. After 4 backward() calls without zeroing, what is w.grad?",
+      "answer": "24",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "4*(2w)=24."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "autograd-gradient"
+      ],
+      "skillLabel": "Hand-derived neuron gradient",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "Sigmoid neuron: z=0.3. What is sigma'(z)=y(1-y) (4 decimals)?",
+      "answer": "0.2445",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.0005,
+      "explanation": "y=0.574443; y(1-y)=0.2445."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "autograd-gradient"
+      ],
+      "skillLabel": "Chain rule on a graph",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#exercises"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "f=(x*y+z)**2 at x=2,y=-3,z=10. What is df/dy?",
+      "answer": "16",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "q=4, df/dq=8, df/dy=8*x=16."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "tensor-shapes"
+      ],
+      "skillLabel": "Tensor shapes and broadcasting",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "q5",
+      "kind": "choice",
+      "prompt": "Shape of (x[:, None, :] - x[None]) for x of shape (5, 2)?",
+      "options": [
+        "(2, 5, 5), because the new axis is put first by broadcasting",
+        "(5, 2), because broadcasting keeps the shape of the first operand",
+        "(5, 5, 2)",
+        "(10,), because the difference is flattened into a vector of pairs"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Pairwise differences: (5,1,2)-(1,5,2) broadcasts to (5,5,2)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lr-stability"
+      ],
+      "skillLabel": "Learning-rate stability",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "q6",
+      "kind": "number",
+      "prompt": "Quadratic loss with largest Hessian eigenvalue 5. Gradient descent is stable only if the learning rate is below what value?",
+      "answer": "0.4",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "2/lambda_max=0.4."
+    },
+    {
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "autograd-gradient",
+        "training-loop"
+      ],
+      "skillLabel": "Gradient checking",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#verification"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "A custom loss gives gradients that look wrong. Describe how you would verify autograd against a numerical gradient, including dtype and tolerance choices.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Uses central differences with a small eps on float64 tensors.",
+        "Compares with autograd using a relative tolerance around 1e-6 or tighter.",
+        "Checks several random points and parameters, and reports the largest error."
+      ]
+    }
+  ]
+}

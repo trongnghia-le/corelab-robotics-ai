@@ -1,0 +1,304 @@
+{
+  "id": "V19-targeted",
+  "topicId": "V19",
+  "version": 1,
+  "questions": [
+    {
+      "id": "p1",
+      "prompt": "A ray crosses constant density sigma = 1 for 2 m. What fraction of light is transmitted? 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "volume-rendering"
+      ],
+      "skillLabel": "Volume rendering quadrature",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "answer": "0.135",
+      "tolerance": 0.002,
+      "explanation": "e^-2 = 0.1353.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p2",
+      "prompt": "Two samples sigma = (5, 5), delta = 1, colours (1.0, 0.2). Correct pixel colour (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "volume-rendering"
+      ],
+      "skillLabel": "Volume rendering quadrature",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "answer": "0.995",
+      "tolerance": 0.002,
+      "explanation": "w = (0.9933, 0.0067): C = 0.9933+0.0013 = 0.9946.",
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "p3",
+      "prompt": "A single sample with sigma = 4.605 and delta = 0.5 has opacity alpha. What is it (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "volume-rendering"
+      ],
+      "skillLabel": "Volume rendering quadrature",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "answer": "0.9",
+      "tolerance": 0.01,
+      "explanation": "1 - e^(-2.3025) = 0.90.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p4",
+      "prompt": "An 800 x 800 image with 64 samples per ray: how many millions of field evaluations (1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "volume-rendering"
+      ],
+      "skillLabel": "Volume rendering quadrature",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: exercise answers",
+          "href": "/lessons/V19#exercise-answers"
+        }
+      ],
+      "answer": "41.0",
+      "tolerance": 0.1,
+      "explanation": "800*800*64 = 40.96 M.",
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "p5",
+      "prompt": "Why does NeRF use a positional encoding of the input coordinates?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "positional-encoding"
+      ],
+      "skillLabel": "Positional encoding",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V19#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It guarantees that the learned density gives the correct geometry.",
+        "It reduces the number of rays needed to render each training image.",
+        "It replaces the volume-rendering equation with a simpler one.",
+        "A plain MLP is biased toward low-frequency functions and blurs detail."
+      ],
+      "answer": "3",
+      "explanation": "Mapping coordinates to sinusoids of increasing frequency lets the MLP fit fine detail.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p6",
+      "prompt": "Positional encoding with L = 6 frequencies for a 3D point, including the raw coordinates. How many numbers?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "positional-encoding"
+      ],
+      "skillLabel": "Positional encoding",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "answer": "39",
+      "tolerance": 0.5,
+      "explanation": "3*2*6 + 3 = 39.",
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "p7",
+      "prompt": "A thin surface and a uniform fog have the same total opacity along one ray. What do they share on that ray?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "photometric-vs-geometric"
+      ],
+      "skillLabel": "Photometric versus geometric error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/V19#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Both pixel colour and expected depth.",
+        "Depth only, but not necessarily pixel colour.",
+        "Pixel colour only, not necessarily depth.",
+        "Nothing at all along that ray."
+      ],
+      "answer": "2",
+      "explanation": "The rendered colour depends on the opacity-weighted colour; depth differs.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p8",
+      "prompt": "Floaters in a reconstruction most likely come from",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "photometric-vs-geometric"
+      ],
+      "skillLabel": "Photometric versus geometric error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V19#failure-modes"
+        }
+      ],
+      "options": [
+        "using PSNR as the training loss, which ignores depth",
+        "too many positional-encoding frequencies in the input coordinates",
+        "training images that have too few pixels in each view",
+        "semi-transparent density in space that no training view contradicts"
+      ],
+      "answer": "3",
+      "explanation": "If no view sees through those points they get no penalty.",
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "p9",
+      "prompt": "A fog with sigma = 0.9 per sample renders 0.778 on a pixel whose true colour is 0.8. PSNR of this pixel (1 decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "photometric-vs-geometric"
+      ],
+      "skillLabel": "Photometric versus geometric error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/V19#worked-example"
+        }
+      ],
+      "answer": "33.2",
+      "tolerance": 0.2,
+      "explanation": "error 0.0219: 10 log10(1/0.000480)=33.2 dB.",
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "p10",
+      "prompt": "Write the function body for NeRF quadrature on one ray and a unit test that would catch the missing-transmittance bug.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "volume-rendering"
+      ],
+      "skillLabel": "Volume rendering quadrature",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/V19#reference-implementation"
+        }
+      ],
+      "rubric": [
+        "Computes alpha, running transmittance, weights and the weighted colour sum.",
+        "Test uses a case with two dense samples where the buggy sum exceeds the maximum colour.",
+        "Checks that the weights sum to 1 minus the final transmittance."
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "p11",
+      "prompt": "A gripper plans using a neural-field reconstruction. Give two reasons the images can look perfect and the grasp still fail, and a check for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "photometric-vs-geometric"
+      ],
+      "skillLabel": "Photometric versus geometric error",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/V19#failure-modes"
+        }
+      ],
+      "rubric": [
+        "Names ambiguity of fog versus surface and view-dependent colour hiding geometry.",
+        "Pairs each with a check (depth against a sensor, chamfer distance, held-out views).",
+        "Mentions camera-pose errors or reflective objects as failure sources."
+      ],
+      "equivalentTo": [
+        "q4",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

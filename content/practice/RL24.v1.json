@@ -1,0 +1,384 @@
+{
+  "id": "RL24-targeted",
+  "topicId": "RL24",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Task (c=1, a=2), w=5, alpha=0.5. New w after one step?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inner-adaptation"
+      ],
+      "skillLabel": "Compute an inner step",
+      "mistakeCategory": "mathematical",
+      "answer": "3.5",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL24#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "explanation": "5 - 0.5*(5-2)=3.5."
+    },
+    {
+      "id": "b2",
+      "prompt": "Task (c=0.5, a=0), w=2, alpha=1. Loss after 2 inner steps? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inner-adaptation"
+      ],
+      "skillLabel": "Compute an inner step",
+      "mistakeCategory": "mathematical",
+      "answer": "0.0625",
+      "tolerance": 0.0005,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL24#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "w: 2 -> 1 -> 0.5; loss 0.5*0.5*0.25=0.0625."
+    },
+    {
+      "id": "b3",
+      "prompt": "alpha=1, c=0.2: meta weight c(1-alpha c)^2? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "meta-weights"
+      ],
+      "skillLabel": "Meta weights",
+      "mistakeCategory": "mathematical",
+      "answer": "0.128",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL24#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "0.2*0.64=0.128."
+    },
+    {
+      "id": "b4",
+      "prompt": "Two tasks, alpha=1: (c=0.2, a=1) and (c=0.2, a=3). Meta-optimal initialisation?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "meta-weights"
+      ],
+      "skillLabel": "Meta weights",
+      "mistakeCategory": "mathematical",
+      "answer": "2",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL24#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Equal weights give the mean 2."
+    },
+    {
+      "id": "b5",
+      "prompt": "Largest alpha for which the inner step converges on a task with c=4 (strict bound)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inner-stability"
+      ],
+      "skillLabel": "Inner-loop stability",
+      "mistakeCategory": "mathematical",
+      "answer": "0.5",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL24#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "explanation": "alpha c < 2 gives alpha < 0.5."
+    },
+    {
+      "id": "b6",
+      "prompt": "Inner step with alpha c = 1.5. Multiplier on the distance to the optimum per step?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inner-stability"
+      ],
+      "skillLabel": "Inner-loop stability",
+      "mistakeCategory": "mathematical",
+      "answer": "-0.5",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL24#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "1 - 1.5 = -0.5 (oscillates but converges)."
+    },
+    {
+      "id": "b7",
+      "prompt": "A student measures adaptation by comparing loss before and after the inner step on the same support data. The result is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "held-out-tasks"
+      ],
+      "skillLabel": "Held-out task evaluation",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Biased; it measures fitting, so use fresh query data",
+        "Unbiased, because the same data are used before and after",
+        "Valid if the batch is large enough to average out noise",
+        "A lower bound on the true adaptation after the inner step"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL24#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "The update was fitted to those data."
+    },
+    {
+      "id": "b8",
+      "prompt": "Held-out tasks come from the training tasks' own trajectories with new random seeds. This is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "held-out-tasks"
+      ],
+      "skillLabel": "Held-out task evaluation",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Out-of-family evaluation",
+        "Not a test of generalising to new tasks",
+        "A valid test of new-task adaptation",
+        "Zero-shot transfer"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL24#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Same tasks again, so it measures nothing about new tasks."
+    },
+    {
+      "id": "b9",
+      "prompt": "Which baseline is essential when reporting a meta-learned initialisation?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "meta-objective"
+      ],
+      "skillLabel": "Meta-objective vs multi-task loss",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "The same number of adaptation steps from a zero or multi-task init",
+        "A larger neural network trained with the same meta-objective",
+        "A different dataset on which the meta-learned init also performs well",
+        "Training for more epochs on the meta-training tasks only"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/RL24#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Without baselines you cannot tell whether meta-training helped."
+    },
+    {
+      "id": "b10",
+      "prompt": "First-order MAML drops:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "meta-objective"
+      ],
+      "skillLabel": "Meta-objective vs multi-task loss",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The task distribution, so every task is sampled uniformly",
+        "The query data, so adaptation uses only the support set",
+        "The Hessian (second-derivative) term in the meta-gradient",
+        "The inner adaptation step, so only the query loss is used"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL24#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "It uses grad L(theta') without the factor (I - alpha Hessian)."
+    },
+    {
+      "id": "b11",
+      "prompt": "Explain why tasks that the inner step already solves exactly get weight zero in the quadratic meta-objective, and what that implies for the meta-initialisation.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "meta-weights",
+        "meta-objective"
+      ],
+      "skillLabel": "Meta weights",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL24#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "rubric": [
+        "Weight is c(1 - alpha c)^2, which is 0 when alpha c = 1.",
+        "The remaining hard tasks dominate, so the meta-init sits near their optima.",
+        "Multi-task pretraining weights tasks by c instead."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "A meta-learner beats the baseline on training tasks but not on held-out tasks. List three possible causes and a check for each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "held-out-tasks",
+        "inner-stability"
+      ],
+      "skillLabel": "Diagnose a generalisation gap",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL24#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RL13",
+        "ML10"
+      ],
+      "equivalentTo": [
+        "q6",
+        "q8"
+      ],
+      "rubric": [
+        "Meta-overfitting to a few training tasks: check with more held-out tasks.",
+        "Distribution shift between train and test tasks: compare task statistics.",
+        "Unstable or too-small inner step on some tasks: plot adaptation curves per task."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

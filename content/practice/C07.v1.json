@@ -1,0 +1,396 @@
+{
+  "id": "C07-targeted",
+  "topicId": "C07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Prior N(0, 9), sensor R = 1. Posterior variance (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.9",
+      "tolerance": 0.001,
+      "explanation": "P+ = P-R/(P-+R) = 0.9.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kalman-gain"
+      ],
+      "skillLabel": "Scalar Kalman gain and update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q2",
+        "q4"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Prior mean 3, P- = 0.5, R = 1.5, z = 5. Posterior mean (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.5",
+      "tolerance": 0.001,
+      "explanation": "K = 0.5/2 = 0.25; 3+0.25*2 = 3.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kalman-gain"
+      ],
+      "skillLabel": "Scalar Kalman gain and update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Information form: P- = 2, R = 3. Posterior variance (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.2",
+      "tolerance": 0.001,
+      "explanation": "1/(0.5+0.3333) = 1.2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gaussian-belief"
+      ],
+      "skillLabel": "Gaussian belief and its covariance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "The gain K = P-/(P- + R) tends to which value as R becomes very large?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "0.5, an equal blend of both",
+        "0, so the noisy sensor is ignored",
+        "Infinity, so the gain grows without bound",
+        "1, so the sensor is trusted completely"
+      ],
+      "answer": "1",
+      "explanation": "A noisy sensor receives no weight.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kalman-gain"
+      ],
+      "skillLabel": "Scalar Kalman gain and update",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "In the predict step P- = F P F' + Q, why does velocity uncertainty enlarge position uncertainty for F = [[1, dt],[0, 1]]?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It does not; position and velocity errors are independent of each other",
+        "F maps velocity error into position error over dt, creating cross-covariance",
+        "Because Q is added twice in the predict step, once for each of the two states",
+        "Because the measurement arrives delayed relative to the state estimate"
+      ],
+      "answer": "1",
+      "explanation": "The off-diagonal dt term copies velocity variance into the position variance and correlation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "predict-covariance"
+      ],
+      "skillLabel": "Covariance prediction and steady state",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Random walk with Q = 0.2, R = 0.8. Steady-state prior variance P- solves P-^2 - Q P- - QR = 0. Give P- (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.512311",
+      "tolerance": 0.001,
+      "explanation": "(0.2+sqrt(0.04+0.64))/2 = 0.5124.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "predict-covariance"
+      ],
+      "skillLabel": "Covariance prediction and steady state",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Same filter: steady-state gain K (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.390388",
+      "tolerance": 0.001,
+      "explanation": "0.5124/1.3124 = 0.3904.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "predict-covariance"
+      ],
+      "skillLabel": "Covariance prediction and steady state",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A filter's long-run mean NIS (scalar measurement) is 0.3. Best interpretation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The filter is too cautious: R or Q is larger than needed, or readings are correlated",
+        "The filter is overconfident: R or Q is smaller than the real noise in the data",
+        "The sensor has failed, since a small NIS means that no measurement arrived",
+        "The filter is exactly consistent, since the mean NIS is close to zero"
+      ],
+      "answer": "0",
+      "explanation": "Innovations are smaller than S predicts, so the claimed uncertainty is too large.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "consistency"
+      ],
+      "skillLabel": "Innovation and NIS consistency checks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which is the main reason to use the Joseph form for the covariance update?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It makes the gain optimal, so the standard covariance formula is no longer needed",
+        "It is faster than (I-KH)P because it uses fewer matrix products per update",
+        "It keeps P symmetric and positive semi-definite despite rounding and non-optimal gains",
+        "It removes the need for process noise, as it adds the noise term by itself"
+      ],
+      "answer": "2",
+      "explanation": "Joseph form is robust; it is more expensive, not cheaper.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kalman-gain"
+      ],
+      "skillLabel": "Scalar Kalman gain and update",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A chi-square gate for one degree of freedom at 99% is 6.635. Innovation y = 0.9, S = 0.1. Compute y^2/S (2 decimals): is it above the gate? Give the number.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8.1",
+      "tolerance": 0.01,
+      "explanation": "0.81/0.1 = 8.1 > 6.635: rejected as an outlier.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "consistency"
+      ],
+      "skillLabel": "Innovation and NIS consistency checks",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Two designs: (A) fixed alpha-beta gains tuned once, (B) a Kalman filter that recomputes its gain. Give a scenario where B clearly wins and one where A is the better engineering choice.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "B wins when noise or sampling interval changes or measurements drop out.",
+        "A wins when compute is tiny and conditions are stable.",
+        "Mentions P or the gain behaviour to justify."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "predict-covariance",
+        "kalman-gain"
+      ],
+      "skillLabel": "Covariance prediction and steady state",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Describe a test plan for a Kalman filter implementation with no hardware: name three checks and the bug each catches.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Hand-computed update and predict (catches sign and transpose errors).",
+        "Symmetry/positive definiteness of P and information-form agreement.",
+        "NIS on simulated data with correct and wrong R (catches consistency problems)."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "consistency",
+        "kalman-gain"
+      ],
+      "skillLabel": "Innovation and NIS consistency checks",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

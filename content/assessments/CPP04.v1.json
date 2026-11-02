@@ -1,0 +1,202 @@
+{
+  "id": "CPP04-diagnostic",
+  "topicId": "CPP04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "What is a class invariant?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A data member that is declared const so it can never change after construction",
+        "A condition that is checked only inside the constructor and never again later",
+        "A condition on the object's state that holds whenever control is outside its members",
+        "A global variable shared by all instances so that they stay mutually consistent"
+      ],
+      "answer": "2",
+      "explanation": "The constructor establishes the invariant and every public operation preserves it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "class-invariants"
+      ],
+      "skillLabel": "Class invariants",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A joint with vmax = 3 rad/s is at q = 0.4 rad. What is the smallest dt in seconds for which a move to 1.3 rad is accepted? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.3",
+      "tolerance": 0.005,
+      "explanation": "Need |1.3-0.4|/dt <= 3, so dt >= 0.9/3 = 0.30 s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-invariants"
+      ],
+      "skillLabel": "Speed-limit arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP04#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A validator is written 'if (q < lo || q > hi) reject;'. What happens with q = NaN?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It is rejected, because NaN is out of range",
+        "It is clamped to lo",
+        "The comparison throws",
+        "It is accepted, because both comparisons are false"
+      ],
+      "answer": "3",
+      "explanation": "All ordered comparisons with NaN are false; write !(lo <= q && q <= hi) or test std::isfinite first.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "class-invariants",
+        "encapsulation-gate"
+      ],
+      "skillLabel": "NaN and range checks",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP04#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Which accessor design lets callers break the invariant of a private member q_?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "double position() const { return q_; }",
+        "double& position() { return q_; }",
+        "bool try_set(double q);",
+        "const double& position() const { return q_; }"
+      ],
+      "answer": "1",
+      "explanation": "A non-const reference to private state is a public write door that skips validation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "encapsulation-gate"
+      ],
+      "skillLabel": "Leaky accessors",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP04#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A P controller with kp = 3 and dt = 0.05 drives q toward a target. The update is q += kp*(target-q)*dt. Starting at q = 0 with target 2, what is the position after one step? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.30000000000000004",
+      "tolerance": 0.005,
+      "explanation": "q1 = 0 + 3*(2-0)*0.05 = 0.30.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "interface-dispatch"
+      ],
+      "skillLabel": "One controller step",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP04#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "double run(Controller c) { return c.compute(1); } is called with a PController object. What is the problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The argument is sliced to its Controller part, so derived behavior is lost",
+        "Nothing is wrong; virtual dispatch still reaches PController::compute on the copy",
+        "The destructor of the argument runs twice because of the by-value copy",
+        "The call is ambiguous because both classes define a compute member"
+      ],
+      "answer": "0",
+      "explanation": "Polymorphic types must be passed by reference or pointer.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "interface-dispatch"
+      ],
+      "skillLabel": "Slicing and virtual dispatch",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP04#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "FixedJoint derives from Joint and overrides set_position to throw. Explain what rule this violates and propose a better design.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names substitutability (Liskov): code written for Joint& must work for every derived class.",
+        "Explains that callers cannot know a call is illegal from the type.",
+        "Proposes separate interfaces (read-only base, actuated derived) or composition with a limits object."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "interface-dispatch",
+        "encapsulation-gate"
+      ],
+      "skillLabel": "Substitutability",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP04#alternatives-and-trade-offs"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

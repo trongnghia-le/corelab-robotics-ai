@@ -1,0 +1,203 @@
+{
+  "id": "C13-diagnostic",
+  "topicId": "C13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "The principle of optimality says:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Whatever the first decision, the remaining decisions must be optimal for the state it produces",
+        "Optimal trajectories are unique, so the same control sequence is optimal from every state",
+        "An optimal trajectory always applies the minimum possible control at each individual step",
+        "The first decision alone fixes optimality, because later decisions can never change total cost"
+      ],
+      "answer": "0",
+      "explanation": "A tail of an optimal trajectory is optimal from its own starting state; that justifies the backward recursion.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dynamic-programming"
+      ],
+      "skillLabel": "Dynamic programming and the principle of optimality",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Minimum-energy rest-to-rest motion of a double integrator over T = 3 s covering 2 m. J* = 12 d^2 / T^3 (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.777778",
+      "tolerance": 0.002,
+      "explanation": "12*4/27 = 1.778.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "optimality-conditions"
+      ],
+      "skillLabel": "Optimality conditions and the minimum-norm solution",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "The bang-bang plan for the same motion has effort 16 d^2 / T^3 (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.37037",
+      "tolerance": 0.002,
+      "explanation": "16*4/27 = 2.370.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "baseline-comparison"
+      ],
+      "skillLabel": "Comparing optimized and baseline trajectories",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Peak acceleration of the minimum-energy plan, 6 d / T^2, for d = 2 m, T = 3 s (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.333333",
+      "tolerance": 0.002,
+      "explanation": "12/9 = 1.333.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "baseline-comparison"
+      ],
+      "skillLabel": "Comparing optimized and baseline trajectories",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Path costs: A-B 2, A-C 3, B-G 6, C-G 4. Optimal cost from A to G?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "A-B-G = 8, A-C-G = 7.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dynamic-programming"
+      ],
+      "skillLabel": "Dynamic programming and the principle of optimality",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Minimise ||U||^2 subject to W U = d. At the optimum, how does U relate to the feasible perturbations (null space of W)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "U is parallel to the null space, so feasible perturbations can lower ||U||^2 along it",
+        "The null space has no effect on cost, because feasible perturbations never change ||U||^2",
+        "U is orthogonal to the null space, so any feasible perturbation adds ||delta||^2 of cost",
+        "U equals zero at the optimum, since W U = d is satisfied by any multiple of the null space"
+      ],
+      "answer": "2",
+      "explanation": "U = W'(WW')^-1 d lies in the row space of W, which is orthogonal to the null space.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "optimality-conditions"
+      ],
+      "skillLabel": "Optimality conditions and the minimum-norm solution",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Your trajectory optimizer returns a path 25% cheaper than the baseline. List the checks you would run before accepting it, and one situation in which the baseline is the better choice.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Checks constraint satisfaction (dynamics, bounds, boundary states).",
+        "Checks local optimality or multiple initial guesses, and equal cost accounting (dt).",
+        "Names a case for the baseline (peak actuation, robustness, simplicity)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "baseline-comparison",
+        "trajopt-formulation"
+      ],
+      "skillLabel": "Comparing optimized and baseline trajectories",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "id": "R11-diagnostic",
+  "topicId": "R11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why can the joint torques of a floating-base robot not directly command the base acceleration?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "underactuation"
+      ],
+      "skillLabel": "Underactuated base",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Underactuated base",
+          "href": "/lessons/R11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "options": [
+        "Joint torques are too small compared with gravity, so the base can only be moved by larger external motors",
+        "Motors cannot produce torque while the feet are in the air, so the base is uncontrolled in flight",
+        "The base rows of the equation of motion have no joint-torque term; the base moves only via contact forces and couplings",
+        "The base is massless in the model, so its acceleration is fixed by the leg dynamics alone"
+      ],
+      "answer": "2",
+      "explanation": "S^T tau only selects actuated joints, so the base rows have no tau term."
+    },
+    {
+      "id": "q2",
+      "prompt": "A humanoid has 30 actuated joints and a free 3D base. How many generalized coordinates does it have?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dof-counting"
+      ],
+      "skillLabel": "Counting coordinates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Counting coordinates",
+          "href": "/lessons/R11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "answer": "36",
+      "tolerance": 0.01,
+      "explanation": "30 + 6 = 36."
+    },
+    {
+      "id": "q3",
+      "prompt": "Hopper in flight: m_b = 4 kg, m_l = 1 kg, actuator force 60 N. What is the centre-of-mass acceleration in m/s^2 (g = 9.81, upward positive)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "momentum-conservation"
+      ],
+      "skillLabel": "Momentum in flight",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Momentum in flight",
+          "href": "/lessons/R11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "answer": "-9.81",
+      "tolerance": 0.01,
+      "explanation": "The internal force cancels, leaving -g."
+    },
+    {
+      "id": "q4",
+      "prompt": "Same hopper in stance with the foot on the ground. What ground force in N does the actuator produce on the leg (f = u + m_l g)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contact-force-stance"
+      ],
+      "skillLabel": "Contact force in stance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Contact force in stance",
+          "href": "/lessons/R11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "answer": "69.81",
+      "tolerance": 0.02,
+      "explanation": "60 + 1 x 9.81 = 69.81 N."
+    },
+    {
+      "id": "q5",
+      "prompt": "Which condition ends the stance phase of the hopper?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "contact-force-stance"
+      ],
+      "skillLabel": "Contact force in stance",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Contact force in stance",
+          "href": "/lessons/R11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "options": [
+        "The ground force f would have to be negative",
+        "The COM acceleration exceeds g in magnitude",
+        "The actuator force on the leg becomes positive",
+        "The body mass exceeds the leg mass at touchdown"
+      ],
+      "answer": "0",
+      "explanation": "Ground can only push (f >= 0)."
+    },
+    {
+      "id": "q6",
+      "prompt": "A body (I1 = 2 kg m^2) with a limb (I2 = 0.5 kg m^2) starts at zero angular momentum. The limb turns 90 degrees relative to the body. By how many degrees does the body turn (magnitude)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "momentum-conservation"
+      ],
+      "skillLabel": "Reorientation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Reorientation",
+          "href": "/lessons/R11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "answer": "18",
+      "tolerance": 0.1,
+      "explanation": "I2/(I1+I2) x 90 = 0.2 x 90 = 18 degrees."
+    },
+    {
+      "id": "q7",
+      "prompt": "Explain why a legged robot must plan contact forces to move its trunk, and name two constraints those forces must satisfy.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "underactuation",
+        "contact-force-stance"
+      ],
+      "skillLabel": "Planning contact forces",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Planning contact forces",
+          "href": "/lessons/R11#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "rubric": [
+        "States that internal torques cannot change total momentum; external contact forces (and gravity) do.",
+        "Names friction cone and unilaterality (normal force >= 0).",
+        "Mentions torque/actuation limits or support-polygon / torque about the COM."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

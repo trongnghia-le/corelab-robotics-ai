@@ -1,0 +1,228 @@
+{
+  "id": "RS06-diagnostic",
+  "topicId": "RS06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A paper claims its method 'generalises to unseen robots'. Its experiments use one simulated robot with 3 different maps. What is the best assessment?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The claim is supported if the average success rate across the maps is high enough.",
+        "The claim is supported, because testing on three different maps shows it generalises.",
+        "The claim cannot be assessed at all unless the authors also release their code.",
+        "The claim is wider than the evidence: one simulated robot on new maps does not test unseen robots."
+      ],
+      "answer": "1",
+      "explanation": "Evidence supports only the conditions it tested. New maps test map generalisation, not robot generalisation.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "claim-scope"
+      ],
+      "skillLabel": "Compare claim scope with evidence",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Baseline success rates over three seeds are 50, 54, 52; the new method gets 55, 57, 56. What is the difference in means (new minus baseline)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "Means are 52 and 56, so the difference is 4.0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Difference of means across seeds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "For the same data (baseline 50, 54, 52; new 55, 57, 56) compute the standard error of the difference in means using sample variances. Give 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.29",
+      "tolerance": 0.01,
+      "explanation": "Sample variances are 4 and 1; SE = sqrt(4/3 + 1/3) = 1.29.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Standard error of a difference",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A paper says 'the gain comes from component C'. Which evidence best supports that claim?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The full system beats the baseline on all of the test maps by a clear margin.",
+        "A longer and more detailed description of how component C works internally.",
+        "A citation to an earlier paper in which component C was already used.",
+        "The full system compared with the same system lacking only C, over several seeds."
+      ],
+      "answer": "1",
+      "explanation": "A mechanism claim needs a controlled removal (ablation) of that component, repeated enough to see through noise.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "claim-evidence-mapping"
+      ],
+      "skillLabel": "Match mechanism claims to ablations",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Per-run standard deviation is about 4 points and you want to detect a true difference of 2 points with z = 2. How many runs per method are needed (n >= 2(z*sigma/delta)^2)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "32",
+      "tolerance": 0.5,
+      "explanation": "n >= 2*(2*4/2)^2 = 2*16 = 32 runs per method.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-noise"
+      ],
+      "skillLabel": "Plan the number of seeds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A paper shows a controller working in simulation and claims it is ready for a real robot. List three assumptions the result depends on and how you would check each one.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names at least three concrete assumptions (e.g. perfect state estimate, ideal actuation, friction model, fixed initial conditions).",
+        "For each, says how it could fail on hardware.",
+        "Gives a measurable check for each (noise injection, latency measurement, randomised starts)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "assumption-listing"
+      ],
+      "skillLabel": "Name hidden assumptions and tests",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "What is the purpose of the first pass when reading a paper?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "To verify every proof and re-derive every equation before reading further.",
+        "To list all references that must be read before the next pass begins.",
+        "To decide quickly what kind of paper it is and whether it deserves more time.",
+        "To reproduce the experiments so the main results can be trusted."
+      ],
+      "answer": "2",
+      "explanation": "The first pass (about 5-10 minutes) establishes category, context, correctness impressions, contributions and clarity, and decides whether to continue.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reading-passes"
+      ],
+      "skillLabel": "Use the pass structure",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory-and-derivation",
+          "href": "/lessons/RS06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "Write a function (code or pseudocode) that takes a dict of claims, each listing evidence ids, and a dict of evidence, and returns the claims that have no supporting evidence. State one thing it cannot tell you.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Loops over claims and checks whether any listed evidence id exists in the evidence dict.",
+        "Returns the ids with none (not those with some).",
+        "Notes it cannot judge the quality, scope or noise of the evidence that exists."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "claim-evidence-mapping"
+      ],
+      "skillLabel": "Automate a claim-evidence check",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: reference-implementation",
+          "href": "/lessons/RS06#reference-implementation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "RS01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

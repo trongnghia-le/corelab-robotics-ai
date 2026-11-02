@@ -1,0 +1,210 @@
+{
+  "id": "C07-diagnostic",
+  "topicId": "C07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Fusing a prior with variance 4 and a sensor with variance 1 (direct measurement). Which statement about the posterior variance is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It is smaller than both 4 and 1",
+        "It is the average, 2.5",
+        "It is 5, the sum",
+        "It equals 1, the smaller of the two"
+      ],
+      "answer": "0",
+      "explanation": "Precisions add: 1/4 + 1 = 1.25, so the variance is 0.8, below both.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gaussian-belief"
+      ],
+      "skillLabel": "Gaussian belief and its covariance",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Prior variance P- = 4, sensor variance R = 1. Kalman gain K (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.001,
+      "explanation": "K = 4/(4+1) = 0.8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kalman-gain"
+      ],
+      "skillLabel": "Scalar Kalman gain and update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Prior mean 10, K = 0.8, reading z = 12.5. Posterior mean (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12",
+      "tolerance": 0.01,
+      "explanation": "10 + 0.8*2.5 = 12.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kalman-gain"
+      ],
+      "skillLabel": "Scalar Kalman gain and update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Same update: posterior variance (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.8",
+      "tolerance": 0.001,
+      "explanation": "(1-K)P- = 0.2*4 = 0.8.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kalman-gain"
+      ],
+      "skillLabel": "Scalar Kalman gain and update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Scalar random-walk filter with posterior P = 0.375 and process noise Q = 0.1. Predicted variance P- (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.475",
+      "tolerance": 0.001,
+      "explanation": "P- = P + Q.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "predict-covariance"
+      ],
+      "skillLabel": "Covariance prediction and steady state",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Over many steps the mean normalised innovation squared of a scalar-measurement filter is 6. What does this indicate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Overconfident: the claimed innovation variance S is smaller than the innovations actually seen",
+        "The measurement is biased by exactly 6 units, because NIS reports the mean innovation size",
+        "Too cautious: the claimed innovation variance S is much larger than the innovations seen",
+        "Consistent: a mean NIS of 6 shows that S matches the actual innovation errors well"
+      ],
+      "answer": "0",
+      "explanation": "For a consistent filter E[y^2/S] = 1. A value of 6 means the innovations are larger than S predicts.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "consistency"
+      ],
+      "skillLabel": "Innovation and NIS consistency checks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A robot's Kalman filter works for 30 seconds and then ignores new GPS fixes. Diagnose the likely cause, how you would confirm it with logged data, and the fix.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies Q too small or missing so P and K collapse.",
+        "Names logged quantities (P, K, innovation, NIS) and the signature.",
+        "States the fix (process noise or covariance floor) and a re-check."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "predict-covariance",
+        "consistency"
+      ],
+      "skillLabel": "Covariance prediction and steady state",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

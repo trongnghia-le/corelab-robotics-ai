@@ -1,0 +1,179 @@
+{
+  "id": "RL12-diagnostic",
+  "topicId": "RL12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which action most clearly invalidates a comparison of two RL algorithms?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Picking each method's best checkpoint using the same episodes later used to report its score",
+        "Training both methods for exactly the same number of environment steps in each run",
+        "Reporting the interquartile mean as well as the plain mean of the returns of each method",
+        "Using the identical environment version and settings for both of the compared methods"
+      ],
+      "answer": "0",
+      "explanation": "Selecting on the reported data inflates the result by roughly the expected maximum of the noise. The other choices are good practice.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rlx-leakage"
+      ],
+      "skillLabel": "Spot evaluation leakage",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL12#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Per-seed standard deviation 10; you want a 95% confidence half-width of 2. How many seeds (use z = 1.96, round up)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "97",
+      "tolerance": 0.5,
+      "explanation": "(1.96*10/2)^2 = 96.04, rounded up to 97.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-seeds-needed"
+      ],
+      "skillLabel": "Compute the number of seeds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Returns of 5 seeds: 10, 12, 11, 13, 9. What is the standard error of the mean (n-1 denominator)? (three decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.707",
+      "tolerance": 0.002,
+      "explanation": "Mean 11, sample variance 10/4 = 2.5, sd 1.581, se = 1.581/sqrt(5) = 0.707.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-summary"
+      ],
+      "skillLabel": "Compute a standard error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/RL12#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Var of one seed's evaluation episodes is 400 (sigma_e = 20), the seed-to-seed variance is 100, S = 10 seeds, m = 25 episodes each. What is the variance of the grand mean? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "11.6",
+      "tolerance": 0.02,
+      "explanation": "100/10 + 400/(10*25) = 10 + 1.6 = 11.6.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rlx-two-level-variance"
+      ],
+      "skillLabel": "Compute grand-mean variance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "You have enough budget for either 5 seeds x 200 episodes or 20 seeds x 50 episodes. Seed-to-seed variance is large compared with episode variance. Which is better and why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "20 x 50: seed variance only shrinks with more seeds",
+        "5 x 200: more episodes always dominate",
+        "Neither: the variance does not depend on either",
+        "They are equal because the total episodes are the same"
+      ],
+      "answer": "0",
+      "explanation": "Var = sigma_s^2/S + sigma_e^2/(S m). The first term only falls with S, so more seeds win when sigma_s is large.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rlx-two-level-variance"
+      ],
+      "skillLabel": "Allocate seeds versus episodes",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A report pools 100 evaluation episodes from 5 seeds and gives a confidence interval from the sample standard deviation divided by sqrt(100). What is wrong and how do you fix it?",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "rubric": [
+        "Episodes from the same seed are not independent: they share the seed's policy",
+        "The interval is too narrow: the effective sample is closer to 5 seeds",
+        "Fix: aggregate per seed first and compute/bootstrap the interval over seeds"
+      ],
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rlx-two-level-variance",
+        "rlx-summary"
+      ],
+      "skillLabel": "Avoid pseudo-replication",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/RL12#failure-modes"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q7",
+      "prompt": "Write a predeclared evaluation protocol for comparing two RL methods in five lines or fewer.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Fixes training seeds and a disjoint evaluation seed set",
+        "Fixes steps, number of evaluation episodes, selection rule (final or validation-based) and statistic with interval",
+        "Includes a baseline and the same tuning budget for both methods"
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "rlx-leakage",
+        "rlx-seeds-needed"
+      ],
+      "skillLabel": "Design a protocol",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/RL12#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

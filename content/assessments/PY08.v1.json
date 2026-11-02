@@ -1,0 +1,208 @@
+{
+  "id": "PY08-diagnostic",
+  "topicId": "PY08",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Sources of nondeterminism",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "Two runs with the same seed give different results because the code iterates over a set of sensor names. The root cause is",
+      "options": [
+        "string hash randomization changes set iteration order between processes",
+        "Python ignores the seed unless it is also passed to every function call",
+        "floating-point addition is random, so each run sums the readings differently",
+        "sets keep insertion order, but the seed resets it after every import"
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "PYTHONHASHSEED salts string hashes; sort before iterating."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reproducible-outputs"
+      ],
+      "skillLabel": "Result versus metadata",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "id": "q2",
+      "kind": "choice",
+      "prompt": "Which belongs inside the hashed result file of an experiment?",
+      "options": [
+        "the hostname",
+        "metrics computed from the data",
+        "the wall-clock time of the run",
+        "the absolute path of the output folder"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Anything that varies between identical runs belongs in separate metadata."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "logging"
+      ],
+      "skillLabel": "Logging handlers",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#failure-modes"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "A logging setup function that adds a handler on every call is called 4 times. How many copies of each message appear?",
+      "answer": "4",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "One per handler."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-variability"
+      ],
+      "skillLabel": "Variability across seeds",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#worked-example"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "Per-run standard deviation of an estimator is 0.02. The mean over 25 seeds has what standard error?",
+      "answer": "0.004",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.0002,
+      "explanation": "0.02/sqrt(25)."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Local random generators",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "id": "q5",
+      "kind": "choice",
+      "prompt": "Why use a local random.Random(seed) object instead of the global random.seed?",
+      "options": [
+        "the global generator cannot be seeded once any other module has imported random",
+        "results no longer depend on the order of unrelated calls that draw random numbers",
+        "it avoids importing the random module, so no other code can change its state",
+        "local generators are faster than the global one because they skip the module lock"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Explicit generator state is an explicit input."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "configuration"
+      ],
+      "skillLabel": "Canonical configuration",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "id": "q6",
+      "kind": "number",
+      "prompt": "How many characters are in the canonical JSON string {\"a\":1,\"b\":2} (sorted keys, no spaces)?",
+      "answer": "13",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "{\"a\":1,\"b\":2} has 13 characters."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "clean-checkout-test",
+        "reproducible-outputs"
+      ],
+      "skillLabel": "Clean-checkout test",
+      "relatedPrerequisites": [
+        "PY07",
+        "T02"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#verification"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "A colleague cannot reproduce your reported result from your repository. Describe the clean-checkout test you would run, what you compare, and which differences are acceptable.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Clones into a new directory, creates a fresh environment from pinned dependencies and runs with the saved config.",
+        "Compares a hash or tolerance-based metrics of the result files.",
+        "Accepts only differences in metadata (time, host, paths) and flags result differences as failures."
+      ]
+    }
+  ]
+}

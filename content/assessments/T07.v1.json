@@ -1,0 +1,200 @@
+{
+  "id": "T07-diagnostic",
+  "topicId": "T07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A service's latencies are 12, 11, 13, 12, 10, 11, 95, 12, 13, 11 ms. Which statistic best describes a TYPICAL request?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "percentiles-and-tail",
+        "latency"
+      ],
+      "skillLabel": "Percentiles and tail latency",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Percentiles and tail latency",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "options": [
+        "The mean (20 ms)",
+        "The maximum (95 ms)",
+        "The sum divided by the worker count",
+        "The median (12 ms)"
+      ],
+      "answer": "3",
+      "explanation": "The median ignores the single outlier; the mean is pulled up by it and the maximum describes the tail."
+    },
+    {
+      "id": "q2",
+      "prompt": "Using nearest-rank percentiles, what is P90 (in ms) of: 4, 5, 5, 6, 6, 6, 7, 7, 9, 60? Give the value in ms.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "percentiles-and-tail"
+      ],
+      "skillLabel": "Nearest-rank percentile",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Nearest-rank percentile",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "answer": "9",
+      "tolerance": 0.01,
+      "explanation": "Rank = ceil(0.9*10) = 9, the 9th sorted value is 9."
+    },
+    {
+      "id": "q3",
+      "prompt": "A serial job processes 1200 items in 4.8 s of wall time. What is the throughput in items per second?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "throughput-and-utilization"
+      ],
+      "skillLabel": "Throughput and utilization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Throughput and utilization",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "answer": "250",
+      "tolerance": 0.01,
+      "explanation": "1200 / 4.8 = 250."
+    },
+    {
+      "id": "q4",
+      "prompt": "Requests arrive at 200 per second and spend 50 ms in the system on average. By Little's law, how many are in the system on average?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "littles-law"
+      ],
+      "skillLabel": "Little's law",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Little's law",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "L = lambda W = 200 x 0.05 = 10."
+    },
+    {
+      "id": "q5",
+      "prompt": "A process shows cpu_s = 0.1 and wall_s = 5.0 for a job on a 4-core machine. What does this most likely indicate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "wall-vs-cpu-time"
+      ],
+      "skillLabel": "Wall time versus CPU time",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Wall time versus CPU time",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "options": [
+        "The timer is broken, because CPU time must always equal wall time",
+        "The job used all 4 cores at 50% each for the whole run",
+        "The job spent most of its time waiting (I/O, sleep or locks)",
+        "The job is CPU-bound and needs more cores to finish faster"
+      ],
+      "answer": "2",
+      "explanation": "CPU time is 2% of wall time on one core, so the process was mostly idle waiting."
+    },
+    {
+      "id": "q6",
+      "prompt": "Which code correctly measures the time to apply f to every element of data?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "timing-pitfalls"
+      ],
+      "skillLabel": "Timing pitfalls",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: Timing pitfalls",
+          "href": "/lessons/T07#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "options": [
+        "t=perf_counter(); g=(f(x) for x in data); dt=perf_counter()-t",
+        "t=time.time(); out=map(f,data); dt=time.time()-t",
+        "t=perf_counter(); out=[f(x) for x in data]; dt=perf_counter()-t"
+      ],
+      "answer": "2",
+      "explanation": "A list comprehension runs the work inside the timed region. A generator expression and map are lazy in Python 3, and time.time() is not monotonic."
+    },
+    {
+      "id": "q7",
+      "prompt": "Design a benchmark to decide whether a new JSON parser is faster than the old one for robot log files. State workload, controls, statistic and a result that would reject the claim.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "benchmark-design"
+      ],
+      "skillLabel": "Benchmark design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Benchmark design",
+          "href": "/lessons/T07#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "PY09"
+      ],
+      "rubric": [
+        "Names a representative workload (including a large and a pathological file) and identical inputs/machine state for both versions.",
+        "Uses warm-up, many alternating repeats and a robust statistic (median or minimum) plus spread, and checks outputs are identical.",
+        "States a rejection rule such as difference smaller than run-to-run spread, or slower on the large file."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

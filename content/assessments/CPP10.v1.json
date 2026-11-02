@@ -1,0 +1,202 @@
+{
+  "id": "CPP10-diagnostic",
+  "topicId": "CPP10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Two threads access the same int, at least one writes, and there is no synchronization. What does the C++ standard say?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "It is only a problem for floating-point types",
+        "It is safe on x86 because int accesses are atomic",
+        "The result is one of the two written values",
+        "It is a data race: undefined behavior"
+      ],
+      "answer": "3",
+      "explanation": "Conflicting unsynchronized accesses are a data race, which is undefined behavior regardless of the hardware.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "data-races"
+      ],
+      "skillLabel": "Data race definition",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Two threads each do 500,000 plain increments of a shared int; the program prints 982,415. How many updates were lost? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "17585",
+      "tolerance": 0.5,
+      "explanation": "1,000,000 - 982,415 = 17,585.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "data-races"
+      ],
+      "skillLabel": "Counting lost updates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Which wait is correct for a consumer thread?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "while (q.empty()) std::this_thread::yield(); with no lock",
+        "cv.wait(lk, [&]{ return closed || !q.empty(); });",
+        "if (q.empty()) cv.wait(lk);",
+        "cv.wait(lk); with no re-check"
+      ],
+      "answer": "1",
+      "explanation": "Spurious wake-ups and competing consumers require re-checking the condition with the lock held; the predicate form does that.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "condition-variables"
+      ],
+      "skillLabel": "Waiting with a predicate",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP10#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A producer bursts 80 items in 100 ms; the consumer processes 300 items/s. What is the backlog (items) at the end of the burst? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "50",
+      "tolerance": 0.5,
+      "explanation": "The consumer removes 300*0.1 = 30 items during the burst: 80-30 = 50.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-contract"
+      ],
+      "skillLabel": "Queue sizing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Thread 1 locks A then B; thread 2 locks B then A. What can happen and what is the standard fix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Livelock; add a std::this_thread::sleep_for between attempts",
+        "Deadlock; lock both with std::scoped_lock (or use a global lock order)",
+        "A data race on the mutexes themselves; make the mutexes atomic",
+        "Nothing happens, because std::mutex is recursive and re-lockable"
+      ],
+      "answer": "1",
+      "explanation": "A cycle of waits is a deadlock; scoped_lock acquires several mutexes with a deadlock-avoidance algorithm.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "deadlock"
+      ],
+      "skillLabel": "Lock-order deadlock",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP10#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "close() on a blocking queue must call which notification, and why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "notify_one on not_empty only, which wakes a single consumer",
+        "notify_all, so every blocked producer and consumer re-checks and exits",
+        "It must destroy the mutex so the waiting threads are released",
+        "None; blocked threads poll the closed flag on their own"
+      ],
+      "answer": "1",
+      "explanation": "Several threads may be blocked; each must be woken to observe closed_.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "queue-contract",
+        "condition-variables"
+      ],
+      "skillLabel": "Shutdown wake-ups",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        },
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP10#failure-modes"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "State the locking contract of a bounded producer-consumer queue: what is protected by what, what blocks, what happens on close, and what the queue guarantees about order.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "One mutex protects the container and the closed flag; waits use predicates on condition variables.",
+        "push blocks when full, pop blocks when empty and open; close wakes all, push then fails, pop drains then returns nullopt.",
+        "FIFO, no item lost or duplicated; no user code runs under the lock."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "queue-contract",
+        "data-races"
+      ],
+      "skillLabel": "Writing a locking contract",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP10#reference-implementation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

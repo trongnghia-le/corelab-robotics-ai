@@ -1,0 +1,202 @@
+{
+  "id": "V10-diagnostic",
+  "topicId": "V10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "An object covers 1% of the image and the model predicts background everywhere. Compute the mean IoU over the two classes (precision 0.001).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pixel-accuracy-imbalance"
+      ],
+      "skillLabel": "Accuracy versus IoU on imbalanced masks",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#worked-example"
+        }
+      ],
+      "answer": "0.495",
+      "tolerance": 0.001,
+      "explanation": "IoU_bg = 0.99, IoU_obj = 0; mean 0.495 (pixel accuracy 0.99)."
+    },
+    {
+      "id": "q2",
+      "prompt": "For one class, 30 pixels are correct, the ground truth has 50 pixels of that class and the prediction has 40. Compute its IoU (precision 0.01).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-iou-dice"
+      ],
+      "skillLabel": "Class IoU and Dice",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#theory-and-derivation"
+        }
+      ],
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "30 / (50 + 40 - 30) = 0.5."
+    },
+    {
+      "id": "q3",
+      "prompt": "A class has IoU 0.5. Compute its Dice score (precision 0.001).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-iou-dice"
+      ],
+      "skillLabel": "Class IoU and Dice",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#theory-and-derivation"
+        }
+      ],
+      "answer": "0.667",
+      "tolerance": 0.001,
+      "explanation": "Dice = 2*0.5/1.5 = 0.667."
+    },
+    {
+      "id": "q4",
+      "prompt": "A segmenter reaches 98% pixel accuracy but the 'person' class covers 1% of pixels. What is the correct reading?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pixel-accuracy-imbalance"
+      ],
+      "skillLabel": "Accuracy versus IoU on imbalanced masks",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#failure-modes"
+        }
+      ],
+      "options": [
+        "Accuracy is dominated by background; check per-class IoU and recall for person",
+        "The model is overfitted, because accuracy this high cannot be real",
+        "98% means the model segments people well, since accuracy covers every class",
+        "Accuracy and IoU are always equal for each class, so 98% is enough"
+      ],
+      "answer": "0",
+      "explanation": "Predicting all background already scores 99%."
+    },
+    {
+      "id": "q5",
+      "prompt": "You downsample a label mask with class ids 0, 1, 2 for a faster network. Which interpolation is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mask-resizing"
+      ],
+      "skillLabel": "Resizing masks",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#failure-modes"
+        }
+      ],
+      "options": [
+        "Bilinear on the label ids",
+        "Bicubic on the label ids",
+        "Nearest neighbour",
+        "Average pooling on the label ids"
+      ],
+      "answer": "2",
+      "explanation": "Averaging ids creates labels that are not in the image (0 and 2 give 1)."
+    },
+    {
+      "id": "q6",
+      "prompt": "How many connected components does the mask [[1,0,0],[0,1,0],[0,0,1]] have under 8-connectivity? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "instances-components"
+      ],
+      "skillLabel": "Connected components",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#worked-example"
+        }
+      ],
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "Diagonal neighbours are connected in 8-connectivity (3 components in 4-connectivity)."
+    },
+    {
+      "id": "q7",
+      "prompt": "A distant pedestrian is 8 pixels wide and 20 pixels tall; the prediction is exactly one pixel larger on every side. Compute roughly the IoU and explain what this means for evaluating small objects and for choosing a boundary tolerance.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "boundary-tolerance"
+      ],
+      "skillLabel": "Boundary tolerance",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V10#theory-and-derivation"
+        }
+      ],
+      "rubric": [
+        "Computes IoU = (8*20)/(10*22) = 160/220 = 0.73.",
+        "Notes small objects lose IoU from one-pixel boundary errors.",
+        "Suggests a boundary-tolerance metric or evaluating by object size."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

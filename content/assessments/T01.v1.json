@@ -1,0 +1,179 @@
+{
+  "id": "T01-diagnostic",
+  "topicId": "T01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A file has the mode rwxr-x---. What is it in octal (three digits as an integer, e.g. 644)? (tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "750.0",
+      "tolerance": 0.5,
+      "explanation": "user 4+2+1=7, group 4+0+1=5, other 0 → 750.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "permission-modes"
+      ],
+      "skillLabel": "Permission modes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "The umask is 027. A new regular file is requested with mode 666. What mode (octal digits as an integer) does it get? (tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "640.0",
+      "tolerance": 0.5,
+      "explanation": "666 with the bits 027 cleared: user 6, group 6&~2=4, other 6&~7=0 → 640.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "permission-modes"
+      ],
+      "skillLabel": "Permission modes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "File owned by alice with group robots has mode 070. Alice is a member of robots. Can Alice read it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Only if she uses sudo, since mode 070 is an invalid permission mode",
+        "Yes: her group has read permission, and she is a member of that group",
+        "No: the owner class applies to the owner and has no read bit",
+        "Yes: owners can always read their own files whatever the mode says"
+      ],
+      "answer": "2",
+      "explanation": "The first matching class (owner) decides; the group bits are not consulted for the owner.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "access-decision"
+      ],
+      "skillLabel": "Access decision by class",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "In a bash script without pipefail, what is $? after: false | true ?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "0",
+        "Undefined",
+        "127",
+        "1"
+      ],
+      "answer": "0",
+      "explanation": "The pipeline status is that of the last command, true, which is 0.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "exit-status"
+      ],
+      "skillLabel": "Exit status and pipelines",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A process is killed with SIGKILL (signal 9). What exit status does the shell report? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "137.0",
+      "tolerance": 0.5,
+      "explanation": "128+9=137.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "exit-status"
+      ],
+      "skillLabel": "Exit status and pipelines",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Which command writes both stdout and stderr of cmd into log.txt?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "cmd > log.txt 2>&1",
+        "cmd 2>&1 > log.txt",
+        "cmd 2> log.txt",
+        "cmd | log.txt"
+      ],
+      "answer": "0",
+      "explanation": "Redirections are applied left to right: first stdout to the file, then stderr is copied to stdout (the file).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "redirection"
+      ],
+      "skillLabel": "Redirection order",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Your colleague's analysis script works from the project directory but fails from cron. List the likely causes and how you would make it a repeatable project command.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names dependence on the current directory, PATH/environment variables, or interactive aliases.",
+        "Fixes: cd to the script's directory, absolute or resolved paths, explicit environment, shebang and exec bit.",
+        "Adds strict mode, argument validation, logging and exit codes, and tests it from a clean environment."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "repeatable-command"
+      ],
+      "skillLabel": "Repeatable project commands",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

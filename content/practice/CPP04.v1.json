@@ -1,0 +1,334 @@
+{
+  "id": "CPP04-targeted",
+  "topicId": "CPP04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which type should be a class with private members rather than a plain struct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A 3D vector with free x, y, z components",
+        "A ROS pose message with plain fields",
+        "A unit quaternion whose norm must stay 1",
+        "A pair of (timestamp, value) with no rule"
+      ],
+      "answer": "2",
+      "explanation": "The unit-norm rule is an invariant that arbitrary field writes could break.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "class-invariants"
+      ],
+      "skillLabel": "Choosing struct or class",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A constructor cannot establish the invariant for the given arguments. What is the best design?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Clamp silently and continue",
+        "Set a public bool valid_ and let callers check it",
+        "Leave members default and require a later init() call",
+        "Throw, so no invalid object exists"
+      ],
+      "answer": "3",
+      "explanation": "A constructor should create a valid object or throw; two-phase initialization allows invalid objects.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "class-invariants"
+      ],
+      "skillLabel": "Failing constructors",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Which expression correctly rejects both out-of-range values and NaN for limits lo and hi?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "if (q < lo || q > hi) reject;",
+        "if (!(lo <= q && q <= hi)) reject;",
+        "if (q != q) accept;",
+        "if (q <= lo && q >= hi) reject;"
+      ],
+      "answer": "1",
+      "explanation": "The negated conjunction is true when either comparison fails, which includes NaN.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "class-invariants",
+        "encapsulation-gate"
+      ],
+      "skillLabel": "NaN-safe range checks",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP04#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A polymorphic base class Controller is deleted through a Controller*. What must the base declare?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A template parameter",
+        "A static member function",
+        "A protected copy constructor",
+        "A virtual destructor"
+      ],
+      "answer": "3",
+      "explanation": "Deleting a derived object through a base pointer without a virtual destructor is undefined behavior.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "interface-dispatch"
+      ],
+      "skillLabel": "Virtual destructors",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "vmax = 1.5 rad/s, q = -0.2 rad. What is the largest position (rad) reachable in one step of dt = 0.4 s when the upper limit is 1.0 rad? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.4000000000000001",
+      "tolerance": 0.005,
+      "explanation": "Speed bound gives -0.2+0.6 = 0.4 rad, which is below the limit 1.0, so 0.40.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-invariants"
+      ],
+      "skillLabel": "Reachable set per step",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "P controller, kp = 2, dt = 0.1, target 1, start 0, no limits. Using q += kp*(target-q)*dt, what is q after 5 steps? Give 4 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.6723199999999999",
+      "tolerance": 0.0005,
+      "explanation": "The error shrinks by 0.8 each step, so q5 = 1 - 0.8^5 = 0.67232.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "interface-dispatch"
+      ],
+      "skillLabel": "Closed-loop recursion",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A fuzz test applies 1000 updates. The joint accepts 640 and rejects the rest. How many rejected updates must have left the state unchanged for the invariant argument to hold? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "360",
+      "tolerance": 0.01,
+      "explanation": "All rejected calls (1000-640 = 360) must be no-ops.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "class-invariants",
+        "encapsulation-gate"
+      ],
+      "skillLabel": "Rejection must be a no-op",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        },
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP04#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A control step clamps the controller output to vmax = 2 rad/s and then moves for dt = 0.05 s. The raw P command is 10 rad/s. By how many radians does the joint move? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1",
+      "tolerance": 0.005,
+      "explanation": "Clamped speed 2 times dt 0.05 = 0.10 rad.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "interface-dispatch",
+        "class-invariants"
+      ],
+      "skillLabel": "Clamped command",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2",
+        "q5"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Write the declaration of an abstract interface for a range sensor (distance in metres) that is safe to delete through a base pointer, and say how callers should receive it.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "struct RangeSensor { virtual ~RangeSensor() = default; virtual double distance() const = 0; };",
+        "Callers take const RangeSensor& (or unique_ptr when owning), never by value.",
+        "Mentions override in implementations."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "interface-dispatch"
+      ],
+      "skillLabel": "Writing an interface",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP04#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Your teammate makes JointState's position a public double so that 'it is faster'. Respond with an argument about the invariant and about performance.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Public data allows invalid values anywhere; bugs appear far from the cause.",
+        "Inline const getters and try_set functions compile to the same code at -O2, so cost is negligible.",
+        "Suggests a measurement (benchmark or disassembly) if performance is claimed."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "encapsulation-gate",
+        "class-invariants"
+      ],
+      "skillLabel": "Defending encapsulation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        },
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP04#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Implement bool try_set(double q) for a class with members lo_, hi_, q_ that rejects NaN and out-of-range values and leaves the state unchanged on rejection.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Checks !(lo_ <= q && q <= hi_) (or isfinite first) and returns false before any write.",
+        "Assigns q_ only after all checks pass and returns true.",
+        "Notes the function is the only way to change q_ and the getter is const."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "encapsulation-gate",
+        "class-invariants"
+      ],
+      "skillLabel": "Implementing a gate",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP04#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

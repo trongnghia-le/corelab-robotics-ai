@@ -1,0 +1,187 @@
+{
+  "id": "CPP11-diagnostic",
+  "topicId": "CPP11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why can solving least squares through the normal equations lose twice as many digits as QR?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The normal equations need twice the memory, which forces lower precision",
+        "A^T A is always singular, so the solver loses half of the digits",
+        "cond(A^T A) = cond(A)^2, so the rounding error is amplified by the square",
+        "Eigen cannot factorize A^T A, so it falls back to a float solver"
+      ],
+      "answer": "2",
+      "explanation": "Forming A^T A squares the condition number; QR avoids forming it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "normal-equations-conditioning"
+      ],
+      "skillLabel": "Squared condition number",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "cond(A) = 1e5 and double precision has about 16 digits. About how many accurate digits does a stable least-squares solve keep? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "11",
+      "tolerance": 0.5,
+      "explanation": "Digits lost ~ log10(cond) = 5, so about 16-5 = 11 digits remain.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "normal-equations-conditioning"
+      ],
+      "skillLabel": "Digits lost to conditioning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "auto x = A.colPivHouseholderQr().solve(b); is later printed. What is the problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "auto cannot deduce Eigen types, so x is truncated to an int",
+        "auto stores an expression that refers to a destroyed temporary decomposition",
+        "solve is not a member of the decomposition object and fails silently",
+        "The result is always zero because solve needs an initial guess"
+      ],
+      "answer": "1",
+      "explanation": "Use Eigen::VectorXd x = ... so the expression is evaluated immediately.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "eigen-pitfalls"
+      ],
+      "skillLabel": "Dangling expression templates",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CPP11#failure-modes"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Fit y = a + b t by least squares to (0,0), (1,2), (2,3). What is a (the intercept)? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.16666666666666666",
+      "tolerance": 0.005,
+      "explanation": "A^T A = [[3,3],[3,5]], A^T b = [5,8]; a = (5*5 - 3*8)/6 = 1/6 = 0.17 and b = (3*8 - 3*5)/6 = 1.5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "least-squares-solution"
+      ],
+      "skillLabel": "Hand-solving normal equations",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP11#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Which Eigen decomposition fits a symmetric positive definite 6x6 covariance matrix best when solving K x = f?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "llt() or ldlt() (Cholesky)",
+        "jacobiSvd() always",
+        "fullPivLu() with float",
+        "Computing K.inverse() * f"
+      ],
+      "answer": "0",
+      "explanation": "Cholesky exploits symmetry and positive definiteness: n^3/3 flops and stable.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "solver-selection"
+      ],
+      "skillLabel": "Choosing a decomposition",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "For the fit in q4 the residual vector is (1/6, -1/3, 1/6). What is its Euclidean norm? Give a number with 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.408248290463863",
+      "tolerance": 0.0005,
+      "explanation": "sqrt(1/36 + 4/36 + 1/36) = sqrt(1/6) = 0.408.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "least-squares-solution"
+      ],
+      "skillLabel": "Residual norm",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP11#worked-example"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You implemented a least-squares fit in C++ with Eigen. Describe how you would verify it, including an independent oracle and how you would choose tolerances.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Hand-computed/known-solution cases, and the optimality check A^T(Ax-b) ~ 0.",
+        "Compare with numpy.linalg.lstsq on the same data, residual norms and fitted values first.",
+        "Tolerance from cond(A)*eps_machine, not an arbitrary constant; test ill-conditioned inputs on purpose."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "oracle-verification"
+      ],
+      "skillLabel": "Verification plan",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP11#verification"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

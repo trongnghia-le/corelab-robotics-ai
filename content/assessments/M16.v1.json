@@ -1,0 +1,211 @@
+{
+  "id": "M16-diagnostic",
+  "topicId": "M16",
+  "version": 1,
+  "questions": [
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "contraction-hypotheses"
+      ],
+      "skillLabel": "Hypotheses of the contraction theorem",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#theory-and-derivation"
+        }
+      ],
+      "id": "q1",
+      "kind": "choice",
+      "prompt": "The Banach fixed-point theorem guarantees convergence of x <- f(x) when",
+      "options": [
+        "f is continuous and maps a closed interval into itself, so a fixed point exists",
+        "the space is complete and |f(x)-f(y)| < |x-y| for all x != y, with f mapping it into itself",
+        "the space is complete, f maps it into itself, and f shrinks distances by a constant L < 1",
+        "f is differentiable everywhere with |f'(x)| <= 1, so the iterates move less each step"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": true,
+      "explanation": "A constant strictly below 1 is essential; x+1/x shrinks every pair yet has no fixed point."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contraction-hypotheses",
+        "a-priori-bound"
+      ],
+      "skillLabel": "Banach error bound",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#worked-example"
+        }
+      ],
+      "id": "q2",
+      "kind": "number",
+      "prompt": "f(x)=cos x on [0,1] has contraction constant L=sin 1=0.8415. With |x1-x0|=0.3776, what is the a-priori error bound after n=10 steps? (3 decimals)",
+      "answer": "0.424",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "L^10/(1-L)*d = 0.1758/0.1585*0.3776."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "a-priori-bound"
+      ],
+      "skillLabel": "Contraction rate of value iteration",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#exercises"
+        }
+      ],
+      "id": "q3",
+      "kind": "number",
+      "prompt": "Value iteration with gamma=0.5 starts with sup-norm error 8. After how many sweeps is the guaranteed error at most 0.01? (integer)",
+      "answer": "10",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.5,
+      "explanation": "8*0.5^k<=0.01 gives k>=9.64 so 10."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "projection-theorem"
+      ],
+      "skillLabel": "Orthogonal projection",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#theory-and-derivation"
+        }
+      ],
+      "id": "q4",
+      "kind": "number",
+      "prompt": "Project y=(2,0) onto span{(1,1)}. What is the first coordinate of the projection?",
+      "answer": "1",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "c=(y.a)/(a.a)=2/2=1, p=(1,1)."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "manifold-regular-value"
+      ],
+      "skillLabel": "Regular-value test",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#theory-and-derivation"
+        }
+      ],
+      "id": "q5",
+      "kind": "choice",
+      "prompt": "The set {(x,y,z): x^2+y^2-z^2=0} is NOT a manifold at the origin because",
+      "options": [
+        "the set is unbounded, so no finite atlas of charts can cover all of it",
+        "the Jacobian of the constraint vanishes there, so the regular-value test fails",
+        "the constraint has degree two, and only linear constraints define manifolds",
+        "the set contains the origin, and a manifold cannot contain the zero vector of the space"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Dg=2(x,y,-z)=0 at the origin; the cone has an apex."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "manifold-regular-value"
+      ],
+      "skillLabel": "Dimension of a regular level set",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#theory-and-derivation"
+        }
+      ],
+      "id": "q6",
+      "kind": "number",
+      "prompt": "What is the dimension of the set {x in R^5 : g(x)=0} when g maps R^5 to R^2 and the Jacobian has rank 2 everywhere on the set?",
+      "answer": "3",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.01,
+      "explanation": "n-m=5-2."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "contraction-hypotheses",
+        "theorem-audit"
+      ],
+      "skillLabel": "Auditing a theorem",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#transfer-and-retention"
+        }
+      ],
+      "id": "q7",
+      "kind": "short",
+      "prompt": "Choose a theorem you want to rely on (for example convergence of a fixed-point solver). Write its hypotheses, explain how you would test each on your problem, and give a counterexample showing one of them cannot be dropped.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Lists the hypotheses explicitly and separately from the conclusion.",
+        "Gives a concrete numerical or analytic test for each hypothesis.",
+        "Provides a valid counterexample for a dropped hypothesis, such as x+1/x for L<1."
+      ]
+    }
+  ]
+}

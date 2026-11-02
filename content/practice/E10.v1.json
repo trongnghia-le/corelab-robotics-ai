@@ -1,0 +1,336 @@
+{
+  "id": "E10-targeted",
+  "topicId": "E10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Unit vectors u=(0.28,0.96) and v=(0.96,0.28). Cosine similarity? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contrastive-alignment"
+      ],
+      "skillLabel": "Contrastive alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.5376000000000001",
+      "tolerance": 0.0005,
+      "explanation": "2*0.28*0.96=0.5376"
+    },
+    {
+      "id": "b2",
+      "prompt": "Sim matrix [[0.9,0.1],[0.2,0.8]], tau=0.2. Image-to-text InfoNCE loss? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contrastive-alignment"
+      ],
+      "skillLabel": "Contrastive alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.03336863974577575",
+      "tolerance": 0.003,
+      "explanation": "row1 logits (4.5,0.5): ln(1+e^-4)=0.0181; row2 (1,4): ln(1+e^-3)=0.0486; mean 0.0334."
+    },
+    {
+      "id": "b3",
+      "prompt": "Same matrix [[0.9,0.1],[0.2,0.8]] at tau=1.0. Loss? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contrastive-alignment"
+      ],
+      "skillLabel": "Contrastive alignment",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.4042943082168317",
+      "tolerance": 0.003,
+      "explanation": "ln(1+e^-0.8)=0.3711; ln(1+e^-0.6)=0.4375; mean 0.4043."
+    },
+    {
+      "id": "b4",
+      "prompt": "A zero-shot classifier's softmax gives 0.95 confidence but only 60% of such predictions are correct. What does this show?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "contrastive-alignment"
+      ],
+      "skillLabel": "Contrastive alignment",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "options": [
+        "The scores are not calibrated probabilities.",
+        "The text encoder is too large, so its confidences are inflated for each class.",
+        "The temperature must be exactly zero for the softmax to be a probability.",
+        "The classes are balanced, so a confidence above 0.5 should always be right."
+      ],
+      "answer": "0",
+      "explanation": "Softmax of scaled cosines is a score, not a calibrated frequency."
+    },
+    {
+      "id": "b5",
+      "prompt": "Prompt A only right on 11 questions, prompt B only right on 4. Two-sided exact sign-test p? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "paired-prompt-comparison"
+      ],
+      "skillLabel": "Paired prompt comparison",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.11846923828125",
+      "tolerance": 0.002,
+      "explanation": "2*sum_{i<=4}C(15,i)/2^15"
+    },
+    {
+      "id": "b6",
+      "prompt": "Prompt A only right on 15 questions, prompt B only right on 1. Two-sided exact p? (5 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "paired-prompt-comparison"
+      ],
+      "skillLabel": "Paired prompt comparison",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.000518798828125",
+      "tolerance": 0.0001,
+      "explanation": "2*(1+16)/65536"
+    },
+    {
+      "id": "b7",
+      "prompt": "A forced-choice relation test (true vs swapped caption) gives 52 correct of 100. Best interpretation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "spatial-grounding"
+      ],
+      "skillLabel": "Grounding spatial relations",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "options": [
+        "Strong grounding because 52 > 50.",
+        "Consistent with chance; no evidence of grounding.",
+        "Evidence is conclusive after 100 trials.",
+        "The model is anti-grounded."
+      ],
+      "answer": "1",
+      "explanation": "SD of a fair-coin count is 5, so 52 is 0.4 SD from 50."
+    },
+    {
+      "id": "b8",
+      "prompt": "Which control best shows that an apparent grounding success is not just a language prior?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "spatial-grounding"
+      ],
+      "skillLabel": "Grounding spatial relations",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "options": [
+        "Increase the number of text tokens in each question to add more context.",
+        "Use a larger temperature so that the answers depend less on the text.",
+        "Report only the best prompt, since it shows the highest grounding accuracy.",
+        "Run the same questions with the image blanked or shuffled and compare."
+      ],
+      "answer": "3",
+      "explanation": "A text-only baseline exposes priors such as 'cups are usually left of plates'."
+    },
+    {
+      "id": "b9",
+      "prompt": "Prompt A: 'a photo of a {c}' scores 62%, prompt B tuned on the test set scores 71%. What is the main issue with preferring B?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "paired-prompt-comparison"
+      ],
+      "skillLabel": "Paired prompt comparison",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "B was selected on the same data it is evaluated on, so the 71% is optimistic.",
+        "A is a photo prompt, so its 62% cannot be compared with another prompt.",
+        "B is a longer prompt, and longer prompts always generalise worse than short ones.",
+        "Accuracy cannot compare prompts, because the prompts change the label set."
+      ],
+      "answer": "0",
+      "explanation": "Selection on the test set inflates the estimate; use validation then test."
+    },
+    {
+      "id": "b10",
+      "prompt": "Mean-pooled word vectors with 4 words of dimension 2: (1,0),(0,1),(1,1),(2,0). Mean embedding x-coordinate? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "spatial-grounding"
+      ],
+      "skillLabel": "Grounding spatial relations",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "1.0",
+      "tolerance": 0.01,
+      "explanation": "(1+0+1+2)/4=1.00"
+    },
+    {
+      "id": "b11",
+      "prompt": "A colleague shows that prompt B beats prompt A by 5 points on 200 images and concludes B is better. List the information needed and the analysis you would run.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "paired-prompt-comparison"
+      ],
+      "skillLabel": "Paired prompt comparison",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "rubric": [
+        "Paired data: counts of images only A right and only B right.",
+        "Exact sign test or McNemar plus an interval on the difference.",
+        "Several paraphrases and a test-set vs tuning-set separation."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Explain why a VLM can score 95% on object recognition and near chance on relation questions, and propose one targeted improvement to the model or data.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "spatial-grounding",
+        "contrastive-alignment"
+      ],
+      "skillLabel": "Grounding spatial relations",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/E10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "rubric": [
+        "Training captions rarely stress relations and encoders may pool word order away.",
+        "Names evidence: swapped-relation similarity gaps or minimal-pair accuracy.",
+        "Proposes hard-negative captions with swapped relations or a better text/cross-attention architecture."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

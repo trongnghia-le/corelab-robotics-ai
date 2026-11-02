@@ -1,0 +1,410 @@
+{
+  "id": "S05-targeted",
+  "topicId": "S05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A camera at 30 Hz (P=33.3 ms) has a 16.7 ms callback. Utilization. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.5",
+      "tolerance": 0.01,
+      "explanation": "16.7/33.3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-utilization"
+      ],
+      "skillLabel": "Utilization and drops",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Overloaded keep-last queue depth 4, P=20 ms. Lower bound on delay (ms).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "60",
+      "tolerance": 0.5,
+      "explanation": "(N-1)P.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "steady-delay"
+      ],
+      "skillLabel": "Queue depth and staleness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Overloaded queue depth 3, P=50 ms. Upper bound on delay (ms).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "150",
+      "tolerance": 0.5,
+      "explanation": "N*P.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "steady-delay"
+      ],
+      "skillLabel": "Queue depth and staleness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Utilization 4 (callback four times slower than arrivals). Long-run fraction dropped. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.75",
+      "tolerance": 0.01,
+      "explanation": "1-1/4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-utilization"
+      ],
+      "skillLabel": "Utilization and drops",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A callback takes 25 ms. Maximum sustained throughput in messages per second.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "40",
+      "tolerance": 0.1,
+      "explanation": "1000/25.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-utilization"
+      ],
+      "skillLabel": "Utilization and drops",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Controller must not act on data older than 60 ms; arrivals every 20 ms, overloaded queue. Largest depth N with N*P <= 60.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "N<=3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "steady-delay"
+      ],
+      "skillLabel": "Queue depth and staleness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Single thread blocked from t=150 to t=420 ms; a 100 ms timer is due at 200 ms (callback duration 0). Lateness of that call in ms.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "220",
+      "tolerance": 0.5,
+      "explanation": "Starts at 420.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "executor-blocking"
+      ],
+      "skillLabel": "Executors and callback blocking",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Why is a deep keep-last queue risky for a controller input?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It hides overload: no drops but the data used is up to N periods old.",
+        "Deep queues disable the reliability setting of the subscription.",
+        "It reduces the publisher rate because the writer must wait for the queue.",
+        "Deep queues cause messages to be corrupted inside the middleware."
+      ],
+      "answer": "0",
+      "explanation": "Depth trades loss for staleness.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "steady-delay"
+      ],
+      "skillLabel": "Queue depth and staleness",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which pair is compatible?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "publisher volatile, subscriber transient_local",
+        "publisher best_effort, subscriber requires deadline shorter than offered",
+        "publisher best_effort, subscriber reliable",
+        "publisher reliable transient_local, subscriber best_effort volatile"
+      ],
+      "answer": "3",
+      "explanation": "A stronger offer satisfies a weaker request.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "qos-compatibility"
+      ],
+      "skillLabel": "QoS compatibility rules",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A MultiThreadedExecutor is used but both callbacks are in the default callback group, and they never run in parallel. Why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The executor ignores callbacks of the same node and runs only one.",
+        "The default group is mutually exclusive, so its callbacks are serialized.",
+        "Callbacks are never run in parallel in ROS 2, whatever the executor.",
+        "Python has no real threads, so callbacks are always run one after another."
+      ],
+      "answer": "1",
+      "explanation": "Use separate or reentrant groups.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "executor-blocking"
+      ],
+      "skillLabel": "Executors and callback blocking",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Describe an experiment that measures message delay under two QoS settings and says which result would reject your queue model.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Fixes publish rate, callback time and two QoS profiles; records processed, drops and delays.",
+        "Compares against the bounds (N-1)P..NP and conservation processed+dropped=sent.",
+        "States a rejecting outcome (delay beyond N*P or counts that do not add up) and a possible cause."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "steady-delay"
+      ],
+      "skillLabel": "Queue depth and staleness",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/S05#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Choose QoS and a callback-group strategy for a lidar mapper (10 Hz scans, 40 ms processing) and a 100 Hz safety stop in the same process. Justify.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes the mapper utilization (40 ms / 100 ms = 0.4) and notes the safety deadline.",
+        "Isolates the safety loop with its own callback group/executor or thread.",
+        "Chooses best-effort small-depth for scans and reliable small-depth for safety commands."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "executor-blocking"
+      ],
+      "skillLabel": "Executors and callback blocking",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/S05#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Which QoS must both ends use so that a node starting late still receives a static transform or map published once?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "best_effort and transient_local on the subscriber only",
+        "best_effort and volatile",
+        "reliable and volatile with a large depth",
+        "reliable and transient_local"
+      ],
+      "answer": "3",
+      "explanation": "transient_local on the publisher keeps the sample for late joiners; the subscriber must request it too.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "qos-compatibility"
+      ],
+      "skillLabel": "QoS compatibility rules",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S03",
+        "CPP01"
+      ]
+    }
+  ]
+}

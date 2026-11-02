@@ -1,0 +1,332 @@
+{
+  "id": "CPP09-targeted",
+  "topicId": "CPP09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which layout minimizes memory traffic when a loop reads only the z field of 10^6 points {x, y, z, intensity}?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A std::map keyed by the index of each point",
+        "A linked list holding one node for each point",
+        "Structure of arrays (separate contiguous z array)",
+        "Array of structures (one whole struct per point)"
+      ],
+      "answer": "2",
+      "explanation": "SoA streams only the needed field; AoS drags the other fields through the cache.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cache-locality"
+      ],
+      "skillLabel": "AoS versus SoA",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A 4096x4096 row-major double matrix is summed column by column. Compared with row by row, what is expected?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Faster, because the columns are shorter than the rows",
+        "Identical speed, since both orders are O(n^2) in total work",
+        "Much slower, because every access touches a different cache line",
+        "Faster, because column sums vectorize better than row sums"
+      ],
+      "answer": "2",
+      "explanation": "Stride of 32 KB between consecutive accesses wastes 7/8 of every loaded line and defeats prefetching.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cache-locality"
+      ],
+      "skillLabel": "Traversal order",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A time-versus-n plot on log-log axes is a straight line with slope about 1 for small n and bends upward at larger n. Most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The compiler optimizations were switched off",
+        "The working set has outgrown a cache level",
+        "The algorithm switched to O(2^n) behavior",
+        "The timer overflowed at larger sizes"
+      ],
+      "answer": "1",
+      "explanation": "Memory cost per element rises when data exceeds L1, L2, then L3.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "empirical-complexity",
+        "cache-locality"
+      ],
+      "skillLabel": "Bends in log-log plots",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        },
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CPP09#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Which statement about perf record / perf report is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It requires the program to be built with -fsanitize=address to give any output",
+        "It prints the exact asymptotic complexity of every function that it samples",
+        "It samples where the program spends time, so the top entries show where to look",
+        "It makes the program run faster by reordering its hottest functions in memory"
+      ],
+      "answer": "2",
+      "explanation": "Sampling profilers attribute run time to functions; they need symbols (-g) for readable output.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "profiling-amdahl"
+      ],
+      "skillLabel": "What profilers show",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "An array of 1000 doubles (8 bytes) is read with a stride of 8 elements (64 bytes). How many distinct 64-byte lines are touched? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "125",
+      "tolerance": 0.01,
+      "explanation": "Elements 0, 8, ..., 992 = 125 reads, each in its own line: 125 lines (the sequential pass would touch 125 lines too).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cache-locality"
+      ],
+      "skillLabel": "Counting cache lines",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Timings: 1.5 s at n=1000, 6.0 s at n=2000, 24 s at n=4000. Estimate the exponent p of t ~ n^p. Give a number with 1 decimal.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.05,
+      "explanation": "Each doubling multiplies time by 4, so p = 2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "empirical-complexity"
+      ],
+      "skillLabel": "Empirical exponent",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Profile: search 50%, serialization 30%, filter 20%. Search is made 10 times faster. Overall speedup? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.8181818181818181",
+      "tolerance": 0.005,
+      "explanation": "S = 1/(0.5+0.05) = 1.818, i.e. 1.82.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "profiling-amdahl"
+      ],
+      "skillLabel": "Amdahl's law",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Predict the time at n = 10000 for a routine fitted as t = 2e-6 * n^2 ms. Give a number in ms.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "200",
+      "tolerance": 0.5,
+      "explanation": "2e-6 * 10^8 = 200 ms.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "empirical-complexity"
+      ],
+      "skillLabel": "Extrapolating a fit",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "A colleague says: inserting in the middle of a std::list is O(1) and of a vector O(n), so lists are faster for our 5000-element queue. Evaluate the claim and propose how to settle it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Big-O ignores constants and locality; at 5000 elements (tens of KB) the vector shift is a fast memmove inside cache.",
+        "Finding the insertion position in a list is O(n) pointer chasing, which dominates.",
+        "Settle with a benchmark at the real size and access pattern; mention median of repeated optimized runs."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "cache-locality",
+        "benchmark-design"
+      ],
+      "skillLabel": "Big-O versus constants",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CPP09#alternatives-and-trade-offs"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b10",
+      "prompt": "Your node misses its 33 ms frame deadline occasionally. List the steps you would take, from measurement to change, and how you would verify the improvement.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Reproduce with a recorded input, measure with timers/perf in an optimized build, look at the distribution (tail) not only the mean.",
+        "Find the dominant contributor with a profiler; bound the gain with Amdahl's law before changing code.",
+        "Make one change, re-measure with the same method, keep a regression benchmark."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "profiling-amdahl",
+        "benchmark-design"
+      ],
+      "skillLabel": "Performance debugging workflow",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CPP09#verification"
+        },
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5",
+        "q7"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b11",
+      "prompt": "Write a function that estimates the exponent p from vectors of sizes and times by least squares on logs, and say what you check before trusting it.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Computes ln x and ln y, then slope = sum((lx-mx)(ly-my))/sum((lx-mx)^2).",
+        "Validates positive values, at least two distinct sizes (preferably four or more).",
+        "Checks the points are straight on a log-log plot and that no cache boundary is crossed in the fitted range."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "empirical-complexity"
+      ],
+      "skillLabel": "Implementing the exponent fit",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        },
+        {
+          "label": "Review: reference implementation",
+          "href": "/lessons/CPP09#reference-implementation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

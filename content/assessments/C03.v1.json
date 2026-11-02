@@ -1,0 +1,196 @@
+{
+  "id": "C03-diagnostic",
+  "topicId": "C03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A conveyor-speed loop uses only a proportional gain. A constant extra load is added and the speed settles slightly below the setpoint. Which statement is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "P control needs nonzero error to supply the holding effort, so an offset remains; integral action removes it.",
+        "The gain is too high, so the loop overshoots and settles low; reducing the gain removes the offset.",
+        "The derivative term is missing; adding derivative action supplies the holding effort and removes the offset.",
+        "The offset is just measurement noise on the speed sensor and averages out over a long enough run."
+      ],
+      "answer": "0",
+      "explanation": "With u = Kp e and a constant load, equilibrium needs u > 0 so e cannot be zero. Only an integrator (or a load feedforward) supplies the effort at zero error.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pid-terms"
+      ],
+      "skillLabel": "What P, I and D respond to",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "First-order plant y' = -a y + b u + d with a = 1, b = 2, P control Kp = 3, setpoint r = 1, d = -0.6. Give the steady-state output y_inf (2 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.771429",
+      "tolerance": 0.01,
+      "explanation": "y_inf = (b Kp r + d)/(a + b Kp) = (6 - 0.6)/7 = 0.7714.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "steady-state-error"
+      ],
+      "skillLabel": "Steady-state error of P and PI loops",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "The same plant gets PI control with Kp = 3 and Ki = 5. The closed-loop polynomial is s^2 + (a + b Kp)s + b Ki. What is the coefficient of s (the sum of the pole magnitudes)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "a + b Kp = 1 + 2*3 = 7.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pi-poles"
+      ],
+      "skillLabel": "Closed-loop poles of a PI loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "For s^2 + 7s + 10 (a PI loop), what is the pole closest to zero? (give the real number)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-2",
+      "tolerance": 0.01,
+      "explanation": "s^2+7s+10 = (s+2)(s+5); the slowest pole is -2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pi-poles"
+      ],
+      "skillLabel": "Closed-loop poles of a PI loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "An arm joint is commanded to a target that needs more torque than the motor can give. The integrator keeps accumulating. When the joint finally arrives, what happens with a plain integrator?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It overshoots, because the stored integral keeps the command at the limit until negative error unwinds it.",
+        "It oscillates only if Kd is nonzero, since the derivative term is what reacts to the saturated output.",
+        "It never leaves the limit, because the integral is reset to zero as soon as the output y reaches r.",
+        "It stops exactly on target, because clipping the output also clips the integral state so nothing is stored."
+      ],
+      "answer": "0",
+      "explanation": "Clipping the output does not clip the integral state. The excess integral must be unwound by an error of the opposite sign: windup overshoot.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "windup"
+      ],
+      "skillLabel": "Integrator windup and anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Position noise has sigma = 0.02 rad per sample (independent), Delta t = 0.01 s, Kd = 0.25. A raw finite difference feeds the D term. Standard deviation of the D contribution to u (2 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.707107",
+      "tolerance": 0.01,
+      "explanation": "sqrt(2)*0.02/0.01 = 2.828; times 0.25 = 0.707.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "derivative-noise"
+      ],
+      "skillLabel": "Derivative term and noise",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A velocity loop for a mobile robot must hold speed up a ramp (extra load) and survive wheel slip that saturates the motor for seconds. Describe your controller structure and what you would log to check it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Chooses PI (or PI + feedforward) and explains why the offset needs an integrator.",
+        "Includes anti-windup (clamp or back-calculation) and a limit on D or none.",
+        "Names logged signals (u_raw, u, integral, error) and a rejection criterion."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "windup",
+        "pid-terms"
+      ],
+      "skillLabel": "Integrator windup and anti-windup",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C03#transfer-and-retention"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

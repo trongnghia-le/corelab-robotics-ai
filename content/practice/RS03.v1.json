@@ -1,0 +1,370 @@
+{
+  "id": "RS03-targeted",
+  "topicId": "RS03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "25 runs, mean 100, SD 15. Using t(24)~2.064 for the 95% CI, half-width? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confidence-interval"
+      ],
+      "skillLabel": "Confidence intervals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "6.192",
+      "tolerance": 0.02,
+      "explanation": "15/5=3; 2.064*3=6.19"
+    },
+    {
+      "id": "b2",
+      "prompt": "You want to halve the CI half-width of a mean. By what factor must n increase?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confidence-interval"
+      ],
+      "skillLabel": "Confidence intervals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "4.0",
+      "tolerance": 0.01,
+      "explanation": "Half-width ~ 1/sqrt(n): 4x n."
+    },
+    {
+      "id": "b3",
+      "prompt": "A: mean 90, B: mean 84, both SD 10, n=10 each. Cohen's d? (2 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "effect-size"
+      ],
+      "skillLabel": "Effect size",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.6",
+      "tolerance": 0.005,
+      "explanation": "6/10=0.6"
+    },
+    {
+      "id": "b4",
+      "prompt": "With n=20000 per group, d=0.03 and p=0.001. What is the right summary?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "effect-size",
+        "p-value-meaning"
+      ],
+      "skillLabel": "Effect size",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3",
+        "q4"
+      ],
+      "options": [
+        "Statistically significant, but the effect is practically negligible.",
+        "A large and important effect, since the p-value is so small.",
+        "No effect, because the difference of 0.03 is far below the noise.",
+        "The test is invalid, because the sample size is much too large."
+      ],
+      "answer": "0",
+      "explanation": "Large n makes tiny effects significant."
+    },
+    {
+      "id": "b5",
+      "prompt": "With n=4 per group, d=1.2 and p=0.15. What is the right summary?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "p-value-meaning"
+      ],
+      "skillLabel": "Interpreting p-values",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q4"
+      ],
+      "options": [
+        "A significant effect, since d is large and p is small enough.",
+        "Proof that there is no effect, because p is greater than 0.05.",
+        "A negative effect, since the group difference is not significant.",
+        "Inconclusive: a possibly large effect measured too imprecisely."
+      ],
+      "answer": "3",
+      "explanation": "Absence of significance is not evidence of absence."
+    },
+    {
+      "id": "b6",
+      "prompt": "20 independent tests, alpha=0.05. Bonferroni per-test level? (4 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "multiple-comparisons"
+      ],
+      "skillLabel": "Multiple comparisons",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "0.0025",
+      "tolerance": 5e-05,
+      "explanation": "0.05/20"
+    },
+    {
+      "id": "b7",
+      "prompt": "50 independent tests at alpha=0.05 with no real effects. Expected number of false positives?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "multiple-comparisons"
+      ],
+      "skillLabel": "Multiple comparisons",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "answer": "2.5",
+      "tolerance": 0.05,
+      "explanation": "50*0.05=2.5"
+    },
+    {
+      "id": "b8",
+      "prompt": "Welch SE for A (s=2, n=4) and B (s=2, n=4)? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confidence-interval"
+      ],
+      "skillLabel": "Confidence intervals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "answer": "1.4142135623730951",
+      "tolerance": 0.002,
+      "explanation": "sqrt(1+1)=1.414"
+    },
+    {
+      "id": "b9",
+      "prompt": "Which is the correct way to combine the uncertainty of two independent group means?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confidence-interval"
+      ],
+      "skillLabel": "Confidence intervals",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "Add the standard errors of the two group means directly.",
+        "Multiply the standard errors, then take the square root.",
+        "Average the standard deviations of the two groups, then divide by n.",
+        "Add the variances of the means, then take the square root."
+      ],
+      "answer": "3",
+      "explanation": "Independent variances add."
+    },
+    {
+      "id": "b10",
+      "prompt": "You run the same seeds for two methods (seed s used in both). Which analysis is more appropriate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "confidence-interval"
+      ],
+      "skillLabel": "Confidence intervals",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6",
+        "q7"
+      ],
+      "options": [
+        "Only compare the best seed.",
+        "Welch's test treating all runs as independent.",
+        "A paired analysis of per-seed differences.",
+        "Bonferroni correction."
+      ],
+      "answer": "2",
+      "explanation": "Shared seeds pair the runs and reduce variance."
+    },
+    {
+      "id": "b11",
+      "prompt": "After seeing the data you switch from a t-test to a one-sided test because it gives p<0.05. What is the problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "p-value-meaning",
+        "multiple-comparisons"
+      ],
+      "skillLabel": "Multiple comparisons",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1",
+        "q5"
+      ],
+      "options": [
+        "There is no problem, because a one-sided test uses the same data.",
+        "The test was chosen after seeing the data, which inflates false positives.",
+        "One-sided tests are never valid in any experiment, however planned.",
+        "t-tests cannot be one-sided, so the new test is a different method."
+      ],
+      "answer": "1",
+      "explanation": "Data-dependent choices distort error rates."
+    },
+    {
+      "id": "b12",
+      "prompt": "Two policies differ by 2.0 points (95% CI -1.0 to 5.0) with six seeds each. Write an honest one-paragraph conclusion and say what you would do next.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "effect-size",
+        "confidence-interval"
+      ],
+      "skillLabel": "Reporting results",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "States the estimate and interval and that zero is plausible; avoids claiming a difference or no difference.",
+        "Notes the small sample and effect-size uncertainty.",
+        "Proposes more seeds computed from the target effect or a paired design."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b13",
+      "prompt": "Explain why a permutation test and a t-test can disagree at n=6 per group, and which you would trust more.",
+      "kind": "short",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "p-value-meaning"
+      ],
+      "skillLabel": "Interpreting p-values",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/RS03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "rubric": [
+        "Permutation is exact under exchangeability; t depends on normality of the means.",
+        "With tiny n the t approximation can be off, so p values differ.",
+        "Suggests checking both and reporting the interval."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

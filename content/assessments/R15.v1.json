@@ -1,0 +1,203 @@
+{
+  "id": "R15-diagnostic",
+  "topicId": "R15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A link's first natural frequency is 30 Hz and the controller bandwidth is 25 Hz. Is a rigid-body model of the link appropriate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rigid-validity"
+      ],
+      "skillLabel": "Rigid-model validity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Rigid-model validity",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "options": [
+        "Yes, because the 25 Hz bandwidth is below the 30 Hz natural frequency",
+        "No: excitation is close to the resonance and the amplification is large",
+        "Yes, provided the link is made of aluminium, which is stiff enough",
+        "Only at DC, where no link motion at all is excited by the controller"
+      ],
+      "answer": "1",
+      "explanation": "Rigid models need excitation well below the first mode (rule of thumb < fn/3)."
+    },
+    {
+      "id": "q2",
+      "prompt": "Planar five-bar linkage (5 links including ground, 5 revolute joints). Mobility by Grubler's formula?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Grubler mobility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Grubler mobility",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "3(5-1) - 2 x 5 = 2."
+    },
+    {
+      "id": "q3",
+      "prompt": "Dynamic amplification at f/fn = 0.5 (two decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dynamic-amplification"
+      ],
+      "skillLabel": "Dynamic amplification",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Dynamic amplification",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "1.333333",
+      "tolerance": 0.005,
+      "explanation": "1/(1 - 0.25) = 1.33."
+    },
+    {
+      "id": "q4",
+      "prompt": "Cantilever link: halving its length multiplies the first bending frequency by what factor?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "beam-stiffness-frequency"
+      ],
+      "skillLabel": "Cantilever scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Cantilever scaling",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "f1 ~ 1/L^2, so x4."
+    },
+    {
+      "id": "q5",
+      "prompt": "Two-mass joint: Jl = 0.02 kg m^2, k = 100 N m/rad. Anti-resonance (motor held) in rad/s (one decimal)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "flexible-joint"
+      ],
+      "skillLabel": "Flexible joint frequencies",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Flexible joint frequencies",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "70.710678",
+      "tolerance": 0.1,
+      "explanation": "sqrt(k/Jl) = sqrt(5000) = 70.7."
+    },
+    {
+      "id": "q6",
+      "prompt": "For an arm with 0.2% tolerance in some task, a designer replaces a flexible link by a rigid one. The most reliable check of that assumption is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rigid-validity"
+      ],
+      "skillLabel": "Rigid-model validity",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Rigid-model validity",
+          "href": "/lessons/R15#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "options": [
+        "Comparing excitation frequencies with the measured or computed first natural frequency",
+        "Checking that the link is made of metal and not of a flexible plastic material",
+        "Doubling the link mass to see whether the response changes noticeably",
+        "Using a larger motor so that the tracking error falls below the tolerance"
+      ],
+      "answer": "0",
+      "explanation": "The validity of the rigid model is a frequency comparison."
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how you would decide whether a rigid model is adequate for a lightweight arm and how you would validate your estimate of its first natural frequency.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "rigid-validity",
+        "beam-stiffness-frequency"
+      ],
+      "skillLabel": "Model fidelity decision",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Model fidelity decision",
+          "href": "/lessons/R15#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "rubric": [
+        "Computes stiffness and f1 from geometry/material and compares with controller bandwidth using a DAF tolerance or f < fn/3 rule.",
+        "Chooses model: rigid, flexible joint, or flexible link depending on the ratio.",
+        "Proposes a tap/free-decay experiment and compares measured with predicted f1 within a stated tolerance."
+      ],
+      "explanation": "Rubric-guided practice, not automatically verified."
+    }
+  ]
+}

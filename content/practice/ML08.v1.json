@@ -1,0 +1,336 @@
+{
+  "id": "ML08-targeted",
+  "topicId": "ML08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Covariance eigenvalues of centred data are 9, 3, 1, 1. What fraction of variance do the first two components explain? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.857143",
+      "tolerance": 0.001,
+      "explanation": "(9+3)/14=0.857.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "PCA as variance maximization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "With the eigenvalues 9, 3, 1, 1, what is the mean squared reconstruction error if you keep 2 components? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.0",
+      "tolerance": 0.001,
+      "explanation": "Dropped eigenvalues 1+1=2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "PCA as variance maximization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "In power iteration, what does the update v ← Cv/‖Cv‖ converge to (for a generic start)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The eigenvector of C belonging to the largest eigenvalue of C",
+        "The eigenvector of C belonging to the smallest eigenvalue of C",
+        "The mean of the data, because C is built from the centred points",
+        "A random unit vector, because the start is random and generic"
+      ],
+      "answer": "0",
+      "explanation": "Components along larger eigenvalues are amplified faster, so the direction converges to the top eigenvector.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "PCA as variance maximization",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Cosine similarity of (3,0,4) and (0,5,0)? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0",
+      "tolerance": 0.001,
+      "explanation": "Dot product is 0, so the vectors are orthogonal.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-similarity"
+      ],
+      "skillLabel": "Cosine similarity of embeddings",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "u=(1,1) and v=(5,5) differ in length. What is their cosine similarity, and what is their Euclidean distance? Give the Euclidean distance. (decimal, tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.656854",
+      "tolerance": 0.01,
+      "explanation": "Cosine is 1 (same direction), but the distance is sqrt(32)=5.66: cosine ignores scale.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cosine-similarity"
+      ],
+      "skillLabel": "Cosine similarity of embeddings",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "An embedding table for 8,000 sensor-place IDs uses 64 dimensions. How many parameters? (integer, tolerance 1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "512000.0",
+      "tolerance": 1,
+      "explanation": "8000·64=512,000.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "embedding-table"
+      ],
+      "skillLabel": "Embedding tables",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Why is an embedding layer implemented as a table lookup rather than multiplying a one-hot vector by a matrix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "One-hot vectors cannot be multiplied by a matrix, so the product is undefined",
+        "Lookups make the embedding non-trainable, which keeps the table stable",
+        "Both give the same row, but indexing avoids V multiplications and a V-length vector",
+        "The lookup gives a different and better result than the one-hot product does"
+      ],
+      "answer": "2",
+      "explanation": "E^T e_i = E_i; the lookup just reads the row.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "embedding-table"
+      ],
+      "skillLabel": "Embedding tables",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Classes differ along axis x (std 0.3 within class) while an irrelevant axis y has std 3. After PCA with k=1, what happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "PCA automatically uses the labels to choose x as the retained axis",
+        "Both axes are kept, because the class axis has a small variance",
+        "The retained feature is the nuisance axis y and the class information is lost",
+        "The retained feature is the class axis x, because it separates the classes"
+      ],
+      "answer": "2",
+      "explanation": "PCA ranks by variance only: var(y)=9 exceeds var(x)≈1.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "feature-quality",
+        "pca-variance"
+      ],
+      "skillLabel": "Judging feature quality",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7",
+        "q6"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which protocol is leakage-free for 'frozen features vs raw inputs'?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Fit the encoder on train+test features, because that makes it more stable",
+        "Select k on the test accuracy and then report that same accuracy",
+        "Compare the two kinds of features on one labelled set only, with no held-out set",
+        "Fit the encoder on a pool without the test set, train the head, and test once"
+      ],
+      "answer": "3",
+      "explanation": "Anything fitted or selected on test data contaminates the estimate.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "feature-quality"
+      ],
+      "skillLabel": "Judging feature quality",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Feature accuracy over 20 label draws: mean 0.84; raw baseline mean 0.78, draw-to-draw std of the gain 0.05. How many standard errors is the mean gain from zero? (decimal, tolerance 0.05; SE = std/√20)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.366563",
+      "tolerance": 0.05,
+      "explanation": "SE=0.05/4.472=0.01118; 0.06/0.01118=5.37.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "feature-quality"
+      ],
+      "skillLabel": "Judging feature quality",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "You train a linear probe on a pretrained encoder with 200 labelled robot images and get 85% test accuracy. List the controls you need before claiming the encoder's features are good.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Raw-pixel (or simple handcrafted) baseline with the same head, labels and test set.",
+        "Several label draws/seeds with spread, and the encoder not trained on the test images.",
+        "A sanity check such as a random-weights encoder or shuffled labels, and a statement of what would falsify the claim."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "feature-quality"
+      ],
+      "skillLabel": "Judging feature quality",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7",
+        "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "Write the pseudocode for power iteration with deflation to get the top-2 principal directions of a covariance matrix, and name two checks that your implementation is correct.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Loop v ← Cv/‖Cv‖ from a random start, then λ = vᵀCv; deflate C ← C − λ v vᵀ and repeat.",
+        "Check on a toy covariance with known eigenvalues (e.g. 4 and 1).",
+        "Check orthonormality of components, descending variances, and total variance equals the trace."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "PCA as variance maximization",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "id": "V07-targeted",
+  "topicId": "V07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Logits [1, 2, 3]. Softmax probabilities are [0.090, 0.245, 0.665]. Cross-entropy for true class index 1? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "softmax-cross-entropy"
+      ],
+      "skillLabel": "Softmax and cross-entropy",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "1.41",
+      "tolerance": 0.01,
+      "explanation": "-ln(0.2447) = 1.408."
+    },
+    {
+      "id": "b2",
+      "prompt": "Four classes with a uniform prediction (0.25 each). What is the cross-entropy for any true class? (precision 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "softmax-cross-entropy"
+      ],
+      "skillLabel": "Softmax and cross-entropy",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "1.386",
+      "tolerance": 0.001,
+      "explanation": "ln 4 = 1.386."
+    },
+    {
+      "id": "b3",
+      "prompt": "For logits [0, 0, 0] and true class 2, what is the gradient of the cross-entropy with respect to the third logit? (precision 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "softmax-cross-entropy"
+      ],
+      "skillLabel": "Softmax and cross-entropy",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "answer": "-0.667",
+      "tolerance": 0.001,
+      "explanation": "p - 1 = 1/3 - 1 = -2/3."
+    },
+    {
+      "id": "b4",
+      "prompt": "Confusion matrix [[85,4,1],[6,30,4],[2,3,5]]. Balanced accuracy (mean recall), precision 0.001?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confusion-matrix-metrics"
+      ],
+      "skillLabel": "Confusion matrix metrics",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "answer": "0.731",
+      "tolerance": 0.001,
+      "explanation": "(85/90 + 30/40 + 5/10)/3 = 0.731."
+    },
+    {
+      "id": "b5",
+      "prompt": "Test labels: 700 class A, 200 class B, 100 class C. What accuracy does the majority-class baseline achieve? (precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "majority-baseline"
+      ],
+      "skillLabel": "Majority-class baseline",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "0.7",
+      "tolerance": 0.01,
+      "explanation": "700/1000."
+    },
+    {
+      "id": "b6",
+      "prompt": "A classifier is 90% accurate on the test set of b5 (700/200/100). By how many percentage points does it beat the baseline? (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "majority-baseline"
+      ],
+      "skillLabel": "Majority-class baseline",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "answer": "20",
+      "tolerance": 0.1,
+      "explanation": "90 - 70 = 20 points, but check the per-class recall."
+    },
+    {
+      "id": "b7",
+      "prompt": "Precision of a class is TP/(TP+FP). A person detector predicts 'person' 50 times; 40 are correct. Precision (precision 0.01)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "confusion-matrix-metrics"
+      ],
+      "skillLabel": "Confusion matrix metrics",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "answer": "0.8",
+      "tolerance": 0.01,
+      "explanation": "40/50."
+    },
+    {
+      "id": "b8",
+      "prompt": "Which augmentation is safe for a traffic-light colour classifier (red/yellow/green)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "augmentation-labels"
+      ],
+      "skillLabel": "Label-preserving augmentation",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "Converting all images to grayscale before training",
+        "Random channel permutation of the RGB planes",
+        "Random hue rotation of up to 180 degrees",
+        "Small translation and brightness change"
+      ],
+      "answer": "3",
+      "explanation": "Hue-changing transformations destroy the label."
+    },
+    {
+      "id": "b9",
+      "prompt": "Which operation is applied only to training images?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "augmentation-labels"
+      ],
+      "skillLabel": "Label-preserving augmentation",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "options": [
+        "Converting to float",
+        "Random crop / flip augmentation",
+        "Normalising with the training mean",
+        "Resizing to the network input size"
+      ],
+      "answer": "1",
+      "explanation": "Test-time preprocessing must be deterministic and identical to the training pipeline except for augmentation."
+    },
+    {
+      "id": "b10",
+      "prompt": "Your validation accuracy is 85% on a random frame split but 62% on held-out recordings from a new building. This is best explained by...",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "split-leakage"
+      ],
+      "skillLabel": "Splits and leakage",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "options": [
+        "Leakage and domain shift: the random split overstated performance",
+        "A bug in softmax that only appears on recordings from a new building",
+        "Underfitting: the model is too simple to learn the building's layout",
+        "Too few classes, so the validation set cannot measure accuracy fairly"
+      ],
+      "answer": "0",
+      "explanation": "Splitting by source reveals the true generalisation gap."
+    },
+    {
+      "id": "b11",
+      "prompt": "A person-detection classifier must keep missed pedestrians below 1%. Describe how you choose the decision threshold and which numbers you report.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "confusion-matrix-metrics"
+      ],
+      "skillLabel": "Confusion matrix metrics",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "rubric": [
+        "Chooses the threshold on a validation set (not the test set) to reach the recall target.",
+        "Reports recall, false-stop rate, confusion matrix and confidence intervals.",
+        "Notes calibration/domain shift and a fallback."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b12",
+      "prompt": "List four tests for a confusion-matrix and metrics implementation, including one invariant.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "confusion-matrix-metrics"
+      ],
+      "skillLabel": "Confusion matrix metrics",
+      "mistakeCategory": "implementation",
+      "relatedPrerequisites": [
+        "V06",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "rubric": [
+        "A small hand-computed case with expected recalls and precisions.",
+        "Invariant: matrix sum equals sample count; row sums equal class counts; accuracy equals trace/total.",
+        "Edge cases: empty class (no division by zero) and comparison with the majority baseline."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,234 @@
+{
+  "id": "E06-diagnostic",
+  "topicId": "E06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A symbolic plan has all preconditions satisfied but the arm cannot reach the grasp pose. What is the correct response of a TAMP system?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "symbolic-geometric-coupling"
+      ],
+      "skillLabel": "Symbolic-geometric coupling",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Execute the plan anyway, since all of its symbolic preconditions are already satisfied",
+        "Reject or repair that plan using the geometric reason and try another candidate",
+        "Increase the symbolic cost of the action until the planner stops choosing it permanently",
+        "Delete the object from the symbolic model so the planner no longer tries to grasp it"
+      ],
+      "answer": "1",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "explanation": "Symbols do not include geometry; feasibility must be checked and failures fed back."
+    },
+    {
+      "id": "q2",
+      "prompt": "Planar 2R arm with l1=0.8 and l2=0.5. Maximum reach?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reach-ring"
+      ],
+      "skillLabel": "Reach ring",
+      "mistakeCategory": "mathematical",
+      "answer": "1.3",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "explanation": "l1 + l2 = 1.3."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same arm, no joint limits. Minimum reach (the inner hole radius)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reach-ring"
+      ],
+      "skillLabel": "Reach ring",
+      "mistakeCategory": "mathematical",
+      "answer": "0.3",
+      "tolerance": 0.001,
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/E06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "explanation": "|l1 - l2| = 0.3."
+    },
+    {
+      "id": "q4",
+      "prompt": "Arm base at (0.9, 0). The world point (0.2, 0.1) in the arm frame is at distance r = ? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-conversion"
+      ],
+      "skillLabel": "World versus arm frame",
+      "mistakeCategory": "mathematical",
+      "answer": "0.707107",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "explanation": "Subtract the base: (-0.7, 0.1), r = 0.707."
+    },
+    {
+      "id": "q5",
+      "prompt": "A target is inside the reach ring but IK reports no solution. The most likely cause is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "joint-limits"
+      ],
+      "skillLabel": "Joint limits shrink the reach",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The target is exactly at the base, where IK is singular",
+        "The arm is too heavy, so the motors cannot reach the ring",
+        "A joint limit (for example the elbow) removes both branches",
+        "The symbolic plan contains the wrong object for this pose"
+      ],
+      "answer": "2",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "explanation": "The ring ignores limits; an elbow limit raises the inner radius."
+    },
+    {
+      "id": "q6",
+      "prompt": "Elbow limit |q2| <= 2.6 rad, l1=0.8, l2=0.5. Inner radius r_min = sqrt(l1^2 + l2^2 + 2 l1 l2 cos(2.6))? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "joint-limits"
+      ],
+      "skillLabel": "Joint limits shrink the reach",
+      "mistakeCategory": "mathematical",
+      "answer": "0.452205",
+      "tolerance": 0.002,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/E06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "explanation": "sqrt(0.89 - 0.6855)=0.452."
+    },
+    {
+      "id": "q7",
+      "prompt": "Passing the reach test for a pick pose shows that:",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "necessary-not-sufficient"
+      ],
+      "skillLabel": "Necessary but not sufficient",
+      "mistakeCategory": "method_selection",
+      "options": [
+        "The pose is geometrically possible for the arm; the motion itself may still fail",
+        "The gripper orientation is feasible at that position and the grasp is valid",
+        "The pick will succeed, because the arm can reach the object's position",
+        "The path to the pose is collision free, so the arm can move there safely"
+      ],
+      "answer": "0",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/E06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "explanation": "Reachability is only a necessary condition."
+    },
+    {
+      "id": "q8",
+      "prompt": "A symbolic planner proposes pick(cup), place(cup, shelf). Describe how a geometric layer should check and report on it, and what you do when every candidate is rejected.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "symbolic-geometric-coupling",
+        "necessary-not-sufficient"
+      ],
+      "skillLabel": "Design a TAMP check",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/E06#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E05",
+        "R05"
+      ],
+      "rubric": [
+        "Check each step with the base/arm state at that step: reachability, limits, collisions.",
+        "Report which step failed and why for each candidate.",
+        "If all candidates fail, say 'no plan with these choices', then enlarge the continuous choices (base poses) or report impossible."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

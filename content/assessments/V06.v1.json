@@ -1,0 +1,202 @@
+{
+  "id": "V06-diagnostic",
+  "topicId": "V06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Input width 64, kernel 5, stride 2, padding 2 on each side, dilation 1. What is the output width? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conv-output-size"
+      ],
+      "skillLabel": "Convolution output size",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "answer": "32",
+      "tolerance": 0.01,
+      "explanation": "floor((64+4-5)/2)+1 = 31+1 = 32."
+    },
+    {
+      "id": "q2",
+      "prompt": "A 3x3 convolution maps 32 channels to 64 channels, with bias. How many parameters? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conv-cost"
+      ],
+      "skillLabel": "Parameters and MACs",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#worked-example"
+        }
+      ],
+      "answer": "18496",
+      "tolerance": 0.5,
+      "explanation": "(9*32+1)*64 = 289*64 = 18496."
+    },
+    {
+      "id": "q3",
+      "prompt": "Stack of four layers: 3x3 s1, 3x3 s1, 3x3 s2, 3x3 s1 (no dilation). What is the receptive field of the last layer's units? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "receptive-field"
+      ],
+      "skillLabel": "Receptive field",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#worked-example"
+        }
+      ],
+      "answer": "11",
+      "tolerance": 0.01,
+      "explanation": "r: 3, 5, then 5+2*1 = 7 (j becomes 2), then 7+2*2 = 11."
+    },
+    {
+      "id": "q4",
+      "prompt": "What does weight sharing in a convolutional layer mean?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "weight-sharing"
+      ],
+      "skillLabel": "Weight sharing and equivariance",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Different layers use identical weights, which cuts the model size to a single layer's worth",
+        "Weights are shared between the training set and the test set during every forward pass",
+        "All channels share one bias term, so that there is only a single bias for the whole layer",
+        "The same kernel weights are used at every position, so parameters do not depend on image size"
+      ],
+      "answer": "3",
+      "explanation": "One kernel slides over the whole input; its gradient sums contributions from all positions."
+    },
+    {
+      "id": "q5",
+      "prompt": "An object shifts 5 pixels to the right in the input. For a convolutional layer (ignoring borders) the feature map...",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "weight-sharing"
+      ],
+      "skillLabel": "Weight sharing and equivariance",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "changes in an unpredictable way, because the kernel breaks the layout",
+        "shifts correspondingly (equivariance), it does not stay the same",
+        "is mirrored left to right, because the kernel is flipped in convolution",
+        "stays exactly the same (invariance), so the output ignores the shift"
+      ],
+      "answer": "1",
+      "explanation": "Convolution commutes with translation; invariance requires pooling or aggregation."
+    },
+    {
+      "id": "q6",
+      "prompt": "A 3x3 convolution with 8 filters on a 1-channel input produces a 28x28 output. How many multiply-accumulates? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conv-cost"
+      ],
+      "skillLabel": "Parameters and MACs",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "answer": "56448",
+      "tolerance": 0.5,
+      "explanation": "28*28*8*9*1 = 56448."
+    },
+    {
+      "id": "q7",
+      "prompt": "You must classify objects about 60 pixels wide on 128x128 images. Explain how you would check that your CNN design can 'see' an object that large, and two ways to increase the receptive field.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "knowledgeType": "design",
+      "skillTags": [
+        "receptive-field"
+      ],
+      "skillLabel": "Receptive field",
+      "mistakeCategory": "method_selection",
+      "relatedPrerequisites": [
+        "ML05",
+        "V02"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V06#theory-and-derivation"
+        }
+      ],
+      "rubric": [
+        "Computes receptive field with r += (k-1)*j, j *= s, and compares with 60 pixels.",
+        "Names increasing depth/kernel size, stride or pooling, dilation, or global pooling/dense layers.",
+        "Mentions effective receptive field is smaller than the theoretical one."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}
