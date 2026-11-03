@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ReactFlow,
@@ -7,6 +7,8 @@ import {
   Controls,
   MiniMap,
   MarkerType,
+  Position,
+  useNodesState,
   type Node,
   type Edge,
 } from "@xyflow/react";
@@ -17,6 +19,35 @@ import type { Mastery } from "@/lib/types";
 import { TopicChips, Status } from "./ui";
 import { useCore } from "./provider";
 import { useI18n } from "@/lib/i18n";
+import { domainTone } from "./domain-theme";
+import { layoutGraph } from "@/lib/graph-layout";
+// Card height estimate for layout: wraps the bold title at ~22 characters a
+// line (290px card), plus the code line, status pill and padding.
+function cardHeight(text: string) {
+  let lines = 1;
+  let width = 0;
+  for (const word of text.split(/\s+/)) {
+    if (width && width + 1 + word.length > 22) {
+      lines++;
+      width = word.length;
+    } else width += (width ? 1 : 0) + word.length;
+  }
+  return 104 + 28 * lines;
+}
+// Minimap colors mirror the --domain-accent values in globals.css.
+const toneAccent: Record<string, string> = {
+  blue: "#93c5fd",
+  sky: "#7dd3fc",
+  violet: "#c4b5fd",
+  teal: "#5eead4",
+  orange: "#fdba74",
+  rose: "#f9a8d4",
+  indigo: "#a5b4fc",
+  amber: "#fde68a",
+  lime: "#bef264",
+  red: "#fca5a5",
+};
+const columnWidth = 400;
 export function Graph({
   domain,
   query,
@@ -35,12 +66,13 @@ export function Graph({
   const { title } = useCore();
   const [focus, setFocus] = useState("");
   const [selected, setSelected] = useState("");
-  const { nodes, edges } = useMemo(() => {
+  const [hovered, setHovered] = useState("");
+  const { nodes, links, items } = useMemo(() => {
     const selectedTopics = focus
       ? [focus, ...ancestors(focus)].map((id) => topicMap[id])
       : topics.filter(
           (t) =>
-            t.domain === domain &&
+            (!domain || t.domain === domain) &&
             (!query ||
               `${t.id} ${t.title} ${title(t.id)}`
                 .toLowerCase()
@@ -48,69 +80,107 @@ export function Graph({
             (!priority || t.priority === priority) &&
             (!status || mastery[t.id].status === status),
         );
+    const inScope = new Set(selectedTopics.map((t) => t.id));
     const ids = new Set(
       selectedTopics.flatMap((t) => [t.id, ...t.prerequisites]),
     );
-    const levels: Record<string, number> = {};
-    function level(id: string): number {
-      return (levels[id] ??= topicMap[id].prerequisites.length
-        ? Math.max(...topicMap[id].prerequisites.map(level)) + 1
-        : 0);
-    }
-    const rows: Record<number, number> = {};
-    const ns: Node[] = [...ids].map((id) => {
-      const l = level(id);
-      const row = rows[l] ?? 0;
-      rows[l] = row + 1;
+    const its = [...ids].map((id) => ({
+      id,
+      prerequisites: topicMap[id].prerequisites,
+    }));
+    const placed = layoutGraph(its, {
+      height: (id) => cardHeight(title(id)),
+    });
+    const ns: Node[] = placed.map(({ id, column, y }) => {
       return {
         id,
-        position: { x: l * 340, y: row * 170 },
+        position: { x: column * columnWidth, y },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+        className: "graph-node",
         data: {
           label: (
-            <div>
+            <div
+              className="graph-card"
+              data-domain-tone={domainTone(topicMap[id].domain)}
+              data-context={inScope.has(id) ? undefined : "true"}
+            >
               <span className="mono">{id}</span>
               <strong>{title(id)}</strong>
-              <small>
-                {mastery[id].level
-                  ? t("status.mastered")
-                  : mastery[id].status === "in_progress"
-                    ? t("status.practised")
-                    : t("status.notStarted")}
-              </small>
+              <Status mastery={mastery[id]} />
             </div>
           ),
         },
-        style: {
-          background: mastery[id].level ? "#15281f" : "#1b1f26",
-          border: `1px solid ${mastery[id].level ? "#36714d" : "#3f4652"}`,
-          color: "#f3f4f6",
-          width: 290,
-          borderRadius: 10,
-          fontSize: 16,
-          padding: 12,
-        },
+        style: { width: 290, padding: 0, background: "none", border: 0 },
         ariaLabel: `${id} ${title(id)}`,
       };
     });
-    const es: Edge[] = [...ids].flatMap((id) =>
+    const ls = [...ids].flatMap((id) =>
       topicMap[id].prerequisites
         .filter((p) => ids.has(p))
-        .map((p) => ({
-          id: `${p}-${id}`,
-          source: p,
-          target: id,
-          markerEnd: { type: MarkerType.ArrowClosed, color: "#7d8795" },
-          style: { stroke: "#626d7d" },
-        })),
+        .map((p) => ({ source: p, target: id })),
     );
-    return { nodes: ns, edges: es };
-  }, [domain, query, priority, status, focus, mastery, t, title]);
+    return { nodes: ns, links: ls, items: its };
+  }, [domain, query, priority, status, focus, mastery, title]);
+  // Controlled nodes: titles load after a language switch and statuses change,
+  // so labels refresh in place (dragged positions reset only then).
+  const [flowNodes, setFlowNodes, onNodesChange] = useNodesState(nodes);
+  useEffect(() => setFlowNodes(nodes), [nodes, setFlowNodes]);
+  // Once the cards are measured, stack each column by its real heights.
+  const relaid = useRef<Node[] | null>(null);
+  useEffect(() => {
+    if (relaid.current === nodes || flowNodes.length !== nodes.length) return;
+    if (
+      !flowNodes.every((n, i) => n.data === nodes[i].data && n.measured?.height)
+    )
+      return;
+    relaid.current = nodes;
+    const heights = new Map(flowNodes.map((n) => [n.id, n.measured!.height!]));
+    const at = new Map(
+      layoutGraph(items, { height: (id) => heights.get(id)! }).map((p) => [
+        p.id,
+        p,
+      ]),
+    );
+    setFlowNodes((ns) =>
+      ns.map((n) => ({
+        ...n,
+        position: { x: at.get(n.id)!.column * columnWidth, y: at.get(n.id)!.y },
+      })),
+    );
+  }, [flowNodes, nodes, items, setFlowNodes]);
+  // Highlight the arrows of the hovered (or selected) topic and fade the rest.
+  const active = [hovered, selected].find(
+    (id) => id && nodes.some((n) => n.id === id),
+  );
+  const edges: Edge[] = useMemo(
+    () =>
+      links.map(({ source, target }) => {
+        const on = active && (source === active || target === active);
+        const color = on ? "#f59e0b" : "#7d8795";
+        return {
+          id: `${source}-${target}`,
+          source,
+          target,
+          zIndex: on ? 1 : 0,
+          markerEnd: { type: MarkerType.ArrowClosed, color },
+          style: {
+            stroke: on ? color : "#626d7d",
+            strokeWidth: on ? 2.5 : 1.25,
+            opacity: active && !on ? 0.15 : 1,
+          },
+        };
+      }),
+    [links, active],
+  );
   return (
     <section className="graph-section">
       <div className="between">
         <p className="small muted">
-          {focus ? t("graph.chain") : t("graph.scope", { domain })} ·{" "}
-          {t("graph.nodes", { n: nodes.length })}
+          {focus
+            ? t("graph.chain")
+            : t("graph.scope", { domain: domain || t("cat.allDomains") })}{" "}
+          · {t("graph.nodes", { n: nodes.length })}
         </p>
         <select
           aria-label={t("graph.focus")}
@@ -131,14 +201,23 @@ export function Graph({
       <div className="graph-canvas">
         <ReactFlow
           key={`${domain}-${focus}-${query}-${priority}-${status}`}
-          defaultNodes={nodes}
-          defaultEdges={edges}
+          nodes={flowNodes}
+          onNodesChange={onNodesChange}
+          edges={edges}
+          edgesFocusable={false}
           colorMode="dark"
           fitView
-          fitViewOptions={{ padding: 0.1, minZoom: 0.6, maxZoom: 1 }}
+          fitViewOptions={{
+            padding: 0.1,
+            minZoom: domain || focus ? 0.6 : 0.2,
+            maxZoom: 1,
+          }}
           minZoom={0.15}
           maxZoom={1.8}
           onNodeClick={(_, node) => setSelected(node.id)}
+          onNodeMouseEnter={(_, node) => setHovered(node.id)}
+          onNodeMouseLeave={() => setHovered("")}
+          onPaneClick={() => setSelected("")}
           onNodeDoubleClick={(_, node) => router.push(`/lessons/${node.id}`)}
         >
           <Background gap={24} color="#323946" />
@@ -146,11 +225,29 @@ export function Graph({
           <MiniMap
             pannable
             zoomable
-            nodeColor="#626d7d"
+            nodeColor={(n) =>
+              toneAccent[domainTone(topicMap[n.id]?.domain)] ?? "#626d7d"
+            }
             maskColor="rgba(13,15,18,.7)"
           />
         </ReactFlow>
       </div>
+      <ul className="graph-legend" aria-label={t("graph.legend")}>
+        {[...new Set(nodes.map((n) => topicMap[n.id].domain))].map((d) => (
+          <li key={d} data-domain-tone={domainTone(d)}>
+            <span className="graph-swatch" />
+            {d}
+          </li>
+        ))}
+        {!focus &&
+          domain &&
+          nodes.some((n) => topicMap[n.id].domain !== domain) && (
+            <li>
+              <span className="graph-swatch dashed" />
+              {t("graph.outside")}
+            </li>
+          )}
+      </ul>
       {selected && (
         <div className="panel graph-detail">
           <div className="between">

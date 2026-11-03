@@ -2362,7 +2362,62 @@ button.danger,
 }
 .react-flow__node .mono {
   font-size: 1.0625rem;
-  color: #eeae7d;
+  color: var(--domain-accent, #eeae7d);
+}
+/* Graph cards take the subject colors; status keeps the shared .status pill. */
+.react-flow__node-default.graph-node {
+  padding: 0 !important;
+}
+.graph-card {
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--domain-surface);
+  border: 1px solid var(--domain-border);
+  border-left: 5px solid var(--domain-accent);
+  color: var(--text);
+  transition:
+    box-shadow 0.15s,
+    border-color 0.15s;
+}
+.graph-card[data-context] {
+  border: 2px dashed var(--domain-accent);
+  border-left: 5px solid var(--domain-accent);
+  opacity: 0.85;
+}
+.graph-card .status {
+  margin-top: 6px;
+  font-size: 0.9375rem;
+}
+.react-flow__node:hover .graph-card,
+.react-flow__node.selected .graph-card {
+  border-color: var(--domain-accent);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.graph-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.graph-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--domain-surface, transparent);
+  border: 1px solid var(--domain-border, var(--subtle));
+  border-left: 4px solid var(--domain-accent, var(--subtle));
+}
+.graph-swatch.dashed {
+  border: 1px dashed var(--subtle);
 }
 .react-flow__node strong {
   font-size: 1.25rem;
@@ -4360,6 +4415,16 @@ html:has(.media-navigation) {
   --domain-accent: #fde68a;
   --domain-surface: #39321c;
   --domain-border: #807037;
+}
+[data-domain-tone="lime"] {
+  --domain-accent: #bef264;
+  --domain-surface: #232f12;
+  --domain-border: #56702a;
+}
+[data-domain-tone="red"] {
+  --domain-accent: #fca5a5;
+  --domain-surface: #3d1f1f;
+  --domain-border: #8a4040;
 }
 
 .dashboard-domain-card[data-domain-tone],

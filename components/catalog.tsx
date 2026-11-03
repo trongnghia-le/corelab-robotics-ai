@@ -162,7 +162,7 @@ export function Catalog({
       </div>
       {view === "graph" && isRoad ? (
         <Graph
-          domain={domain || domains[0]}
+          domain={domain}
           query={query}
           priority={priority}
           status={status}

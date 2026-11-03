@@ -230,6 +230,8 @@ const en = {
   "graph.currentDomain": "Current domain",
   "graph.prereqs": "Prerequisites",
   "graph.open": "Open topic details",
+  "graph.legend": "Colour legend",
+  "graph.outside": "Dashed border: prerequisite from another domain",
   "graph.note":
     "Select a node to inspect it. Prerequisites outside the domain remain visible to preserve relationships. The list provides equivalent keyboard navigation.",
   // dashboard
@@ -563,6 +565,8 @@ const vi: Dict = {
   "graph.currentDomain": "Lĩnh vực hiện tại",
   "graph.prereqs": "Kiến thức tiên quyết",
   "graph.open": "Mở chi tiết chủ đề",
+  "graph.legend": "Chú thích màu",
+  "graph.outside": "Viền đứt nét: kiến thức tiên quyết thuộc lĩnh vực khác",
   "graph.note":
     "Chọn một nút để xem chi tiết. Các kiến thức tiên quyết ngoài lĩnh vực vẫn hiển thị để giữ nguyên quan hệ. Danh sách cung cấp cách điều hướng tương đương bằng bàn phím.",
   "dash.eyebrow": "PHÒNG HỌC ROBOTICS & AI CỦA BẠN",

@@ -1,10 +1,10 @@
 // Presentation only: shared curriculum/exercise aliases never affect assessment.
 const domainTones = {
   Mathematics: "blue",
-  Programming: "sky",
-  Python: "sky",
-  "Programming & C++": "sky",
-  Algorithms: "sky",
+  Programming: "lime",
+  Python: "lime",
+  "Programming & C++": "lime",
+  Algorithms: "lime",
   "Machine Learning": "violet",
   ML: "violet",
   "ML & CV": "violet",
@@ -16,7 +16,7 @@ const domainTones = {
   Planning: "orange",
   "Reinforcement & Robot Learning": "rose",
   RL: "rose",
-  "Embodied & Cognitive Robotics": "indigo",
+  "Embodied & Cognitive Robotics": "red",
   "Scientific Research": "amber",
 } as const;
 
