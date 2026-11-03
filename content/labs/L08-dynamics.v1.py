@@ -34,7 +34,8 @@ the START state (q, qd) (damping uses the old qd as well):
                 s' = s + h/6 (k1 + 2 k2 + 2 k3 + k4).
 Results are EXACT definitions: each is compared with tolerance 1e-9 (relative to
 max(1, |value|)); energy_trace and regulate results accumulate over many steps and use
-1e-8 relative tolerance instead. Other formulations of the same method are accepted.
+1e-6 relative tolerance instead (rounding differs between platforms' sin/cos and grows
+over hundreds of steps). Other formulations of the same method are accepted.
 
 Contracts (all numbers finite int/float, never bool; bounds inclusive):
   acceleration(q, qd, tau, model) -> qdd           (rad/s^2) = (tau - b*qd - m*g*lc*sin(q))/I
@@ -456,7 +457,7 @@ def self_check(notes=None):
                 raise _Mismatch("every energy must be a finite int/float")
             want = _oracle_trace(*args)
             for k, (a, b) in enumerate(zip(got, want)):
-                close(a, b, "energy at index " + str(k), 1e-8)
+                close(a, b, "energy at index " + str(k), 1e-6)
             if anchor == "euler-growth":
                 m, lc, ic, damping, g = args[5]
                 w2 = m*g*lc/(ic + m*lc*lc)
@@ -500,9 +501,9 @@ def self_check(notes=None):
             for k, (a, b) in enumerate(zip(got, want)):
                 if abs(a[2]) > tau_max + 1e-12:
                     raise _Mismatch("applied torque exceeds tau_max at step " + str(k))
-                close(a[2], b[2], "applied torque at step " + str(k), 1e-8)
-                close(a[0], b[0], "q after step " + str(k), 1e-8)
-                close(a[1], b[1], "qd after step " + str(k), 1e-8)
+                close(a[2], b[2], "applied torque at step " + str(k), 1e-6)
+                close(a[0], b[0], "q after step " + str(k), 1e-6)
+                close(a[1], b[1], "qd after step " + str(k), 1e-6)
             if kind == "analytic":
                 w = kd/2.0
                 k = steps // 2
