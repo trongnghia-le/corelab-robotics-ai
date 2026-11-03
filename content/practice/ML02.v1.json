@@ -49,10 +49,10 @@
       "dimension": "C",
       "critical": false,
       "options": [
-        "The learning rate is too small",
-        "The data have too few samples to compute a mean",
-        "The relationship is curved and the model is missing a nonlinear feature",
-        "The bias term has been penalised"
+        "The learning rate is too small for the optimiser to converge",
+        "The data have too few samples to compute a meaningful mean",
+        "The relationship is curved and the model is missing a feature",
+        "The bias term has been penalised by the regulariser"
       ],
       "answer": "2",
       "explanation": "Residuals should look patternless; structure means unmodelled systematic effects."
@@ -76,10 +76,10 @@
       "dimension": "C",
       "critical": false,
       "options": [
-        "The bias shifts predictions and is not a sensitivity; penalising it would pull predictions toward zero",
-        "The bias is always zero after scaling",
-        "Penalising it makes the loss non-convex",
-        "The bias has no gradient"
+        "The bias is an offset, not a sensitivity; shrinking it distorts predictions",
+        "The bias is always exactly zero after the features have been scaled",
+        "Penalising the bias would make the loss function non-convex",
+        "The bias has no gradient, so the optimiser cannot change it"
       ],
       "answer": "0",
       "explanation": "Weights are shrunk to reduce sensitivity; the offset must stay free to match the mean target."
@@ -103,10 +103,10 @@
       "dimension": "C",
       "critical": false,
       "options": [
-        "It applies to every neural network",
-        "It is an independent exact answer the iterates must approach",
-        "It is always faster for any model",
-        "It never needs a design matrix"
+        "It applies to every neural network, whatever its architecture",
+        "It is an independent exact answer that the iterates must approach",
+        "It is always faster than gradient descent for any model",
+        "It never needs a design matrix, unlike gradient descent"
       ],
       "answer": "1",
       "explanation": "Agreement between two independent methods catches sign and scaling bugs."
@@ -148,7 +148,7 @@
           "href": "/lessons/ML02#theory-and-derivation"
         }
       ],
-      "prompt": "For the same data, what is ∂J/∂b?",
+      "prompt": "x = [1, 3], y = [2, 8], w = b = 0, J = (1/2N) Σ e² with e = ŷ − y. What is ∂J/∂b?",
       "dimension": "M",
       "critical": false,
       "answer": "-5",

@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Trong mô hình z_k = x_k + n_k, x_{k+1} = x_k + v dt + w_k, bước dự đoán đóng vai trò gì?",
+   "options": [
+    "Nó thay phép đo mới bằng đầu ra của mô hình bất cứ khi nào giá trị đọc của cảm biến trông nhiễu",
+    "Nó loại bỏ nhiễu n_k khỏi giá trị đọc của cảm biến bằng cách lấy trung bình với phép đo thô trước đó",
+    "Nó lan truyền ước lượng trước đó qua mô hình chuyển động, cho ra một giá trị đọc kỳ vọng để so với z",
+    "Nó đảm bảo ước lượng không chệch, bất kể mô hình chuyển động, bằng cách triệt tiêu nhiễu quá trình w_k"
+   ],
+   "explanation": "Dự đoán cho phép đo kỳ vọng; phần dư z trừ dự đoán là thứ mà bước hiệu chỉnh tác động lên."
+  },
+  "q2": {
+   "prompt": "dt = 0.1, trạng thái (x, v) = (5.0, 1.0), alpha = 0.4, beta = 0.2, giá trị đọc z = 5.30. Ước lượng x mới (3 chữ số thập phân)?",
+   "explanation": "x_pred = 5.1, r = 0.2, x = 5.1 + 0.08 = 5.18."
+  },
+  "q3": {
+   "prompt": "dt = 0.1, trạng thái (x, v) = (5.0, 1.0), alpha = 0.4, beta = 0.2, giá trị đọc z = 5.30. Ước lượng vận tốc mới (3 chữ số thập phân)?",
+   "explanation": "v = 1 + (0.2/0.1)*0.2 = 1.4."
+  },
+  "q4": {
+   "prompt": "Nhiễu vị trí sigma = 0.01 m, dt = 0.05 s. Độ lệch chuẩn của vận tốc sai phân hữu hạn hai mẫu (m/s, 3 chữ số thập phân)?",
+   "explanation": "sqrt(2)*0.01/0.05 = 0.283."
+  },
+  "q5": {
+   "prompt": "Bạn tăng alpha và beta của một bộ lọc vận tốc alpha-beta. Hệ quả thường gặp là gì?",
+   "options": [
+    "Không có gì thay đổi nếu mục tiêu chuyển động với vận tốc không đổi",
+    "Ít độ trễ hơn khi gia tốc nhưng nhiễu trong ước lượng vận tốc nhiều hơn",
+    "Cả độ trễ và nhiễu đều giảm",
+    "Độ trễ nhiều hơn và nhiễu ít hơn"
+   ],
+   "explanation": "Hệ số cao hơn tin cảm biến nhiều hơn: bám nhanh hơn, làm mượt ít hơn."
+  },
+  "q6": {
+   "prompt": "Định thức của ma trận sai số bằng 1 - alpha. Với alpha = 0.7, tích của hai trị riêng là bao nhiêu?",
+   "explanation": "det Phi = 1 - 0.7 = 0.3."
+  },
+  "q7": {
+   "prompt": "Một phép định vị vị trí bằng lidar của robot đến trễ 80 ms, trong khi ước lượng vận tốc của nó trông mượt và hợp lý. Bạn sẽ phát hiện vấn đề độ trễ như thế nào và xử lý ra sao?",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nhận xét rằng phép đo bị trễ tạo ra độ trễ nhất quán trong ước lượng vị trí (vận tốc x độ trễ).",
+    "Đề xuất một phép thử (so với tham chiếu độc lập hoặc dùng timestamp/thay đổi bậc).",
+    "Đề xuất cách sửa: đệm theo timestamp hoặc dự đoán tới thời điểm của phép đo."
+   ]
+  }
+ }
+}

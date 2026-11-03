@@ -1,0 +1,84 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "TP=18, FP=2, FN=12, TN=968. Tính recall. (số thập phân, sai số cho phép 0.001)",
+   "explanation": "18/(18+12)=0.6."
+  },
+  "b2": {
+   "prompt": "Precision 0.5 và recall 1.0. F1 là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "2·0.5·1/1.5=0.667. Trung bình điều hòa phạt giá trị yếu hơn."
+  },
+  "b3": {
+   "prompt": "Một báo động giả tốn 2 và một lần bỏ sót tốn 18. Ngưỡng xác suất đã calibrate để dự đoán dương là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "c_FP/(c_FP+c_FN)=2/20=0.1."
+  },
+  "b4": {
+   "prompt": "Trên một tập test, FP=12 và FN=7 với c_FP=1 và c_FN=5. Tổng chi phí là bao nhiêu? (số nguyên, sai số cho phép 0.01)",
+   "explanation": "12·1+7·5=47."
+  },
+  "b5": {
+   "prompt": "Sensitivity 0.95, specificity 0.98, prevalence 2%. Precision là bao nhiêu? (số thập phân, sai số cho phép 0.002)",
+   "explanation": "0.019/(0.019+0.0196)=0.4922."
+  },
+  "b6": {
+   "prompt": "Các bin: 6 dự đoán ở mức 0.7 với 5 mẫu dương, và 4 dự đoán ở mức 0.2 với 0 mẫu dương. ECE là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "0.6·|0.8333−0.7|+0.4·|0−0.2|=0.08+0.08=0.16."
+  },
+  "b7": {
+   "prompt": "Calibrate ở prior cân bằng, p=0.5 cho một ca. Prevalence khi triển khai là 20%. Xác suất đã hiệu chỉnh theo prior là bao nhiêu? (số thập phân, sai số cho phép 0.002)",
+   "explanation": "Odds 1 × (0.2/0.8)=0.25, p=0.25/1.25=0.2."
+  },
+  "b8": {
+   "prompt": "Một nhóm robot báo cáo accuracy 97% cho một bộ phát hiện sự kiện hiếm (1% là dương). Câu hỏi tiếp theo nào có nhiều thông tin nhất?",
+   "options": [
+    "Hỏi recall, precision, và accuracy của việc luôn dự đoán âm tính.",
+    "Hỏi loss huấn luyện, cho biết mô hình fit dữ liệu tốt đến đâu.",
+    "Hỏi số epoch, cho biết mô hình được huấn luyện bao lâu.",
+    "Hỏi accuracy có được tính bằng float64 không, điều ảnh hưởng đến giá trị chính xác của nó."
+   ],
+   "explanation": "Chỉ các metric theo từng lớp và một baseline mới cho thấy 97% có ý nghĩa hay không khi 99% là miễn phí."
+  },
+  "b9": {
+   "prompt": "Một mô hình xếp hạng mọi mẫu dương trên mọi mẫu âm một cách hoàn hảo (AUC=1) nhưng xuất ra 0.99 cho mọi ví dụ. Phát biểu nào đúng?",
+   "options": [
+    "Nó calibrate rất tệ: ECE lớn dù ranking hoàn hảo.",
+    "Nó calibrate tốt vì AUC là 1 và ranking hoàn hảo.",
+    "Calibration không xác định với một mô hình như vậy, vì mọi đầu ra đều bằng nhau.",
+    "Precision phải bằng 1, vì mô hình xếp mọi mẫu dương trên mọi mẫu âm."
+   ],
+   "explanation": "AUC chỉ đo thứ tự; confidence 0.99 là sai với các mẫu âm."
+  },
+  "b10": {
+   "prompt": "Bạn chọn ngưỡng tối đa hóa F1 trên tập test và báo cáo F1 đó. Cách sửa nào đúng?",
+   "options": [
+    "Dùng ngưỡng thấp hơn để recall cao hơn và F1 giữ nguyên.",
+    "Báo cáo F1 ở ngưỡng tốt nhất nhưng thêm chữ 'tuned' vào bảng.",
+    "Chọn nó trên tập huấn luyện, vốn lớn hơn và cho ước lượng ổn định hơn.",
+    "Chọn ngưỡng trên một phần chia validation và báo cáo một lần trên tập test chưa bị chạm tới."
+   ],
+   "explanation": "Bất cứ thứ gì được tối ưu trên một tập dữ liệu đều làm chệch điểm số trên tập đó."
+  },
+  "b11": {
+   "prompt": "Năm mươi mô hình vô dụng, mỗi mô hình có độ chính xác validation ~N(0.5, 0.05²). Ước lượng điểm tốt nhất kỳ vọng bằng μ+σ·sqrt(2 ln K). (số thập phân, sai số cho phép 0.01)",
+   "explanation": "sqrt(2 ln 50)=2.80, nên 0.5+0.14=0.64 (một ước lượng cận trên thô; thống kê thứ tự chính xác khoảng 0.61)."
+  },
+  "b12": {
+   "prompt": "Một bộ phân loại thành công của grasp được đánh giá trên các frame lấy từ 20 lần chạy robot, chia ngẫu nhiên theo frame thành train và test. Hãy chỉ ra vấn đề và cách sửa.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Các frame lân cận từ cùng một lần chạy xuất hiện ở cả hai phần chia, nên test không độc lập (rò rỉ theo nhóm).",
+    "Chia theo lần chạy (chia theo nhóm) để mỗi lần chạy nằm hoàn toàn trong train, validation hoặc test.",
+    "Nêu một phép kiểm tra như so sánh với điểm khi chia theo nhóm hoặc một đối chứng xáo trộn nhãn."
+   ]
+  },
+  "b13": {
+   "prompt": "Hãy viết các bước của một script đánh giá nhỏ cho một bộ phát hiện nhị phân để người khác có thể chạy lại và phản biện bạn.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Seed cố định và cách chia được lưu; ngưỡng chỉ được chọn trên validation.",
+    "Báo cáo confusion matrix, precision, recall, chi phí và baseline lớp đa số trên tập test một lần.",
+    "Liệt kê các ca lỗi và nêu một điều kiện sẽ bác bỏ kết luận."
+   ]
+  }
+ }
+}

@@ -53,6 +53,8 @@ export type Grade = {
   items: { id: string; correct: boolean | null; feedback: string }[];
 };
 export type Attempt = {
+  /** Response-only display text in the learner's language; never stored. */
+  localizedFeedback?: Record<string, string>;
   purpose?: "targeted";
   skillTag?: string;
   questionIds?: string[];
@@ -148,7 +150,18 @@ export type LessonMeta = {
   review_prompts: string[];
   extension_refs: string[];
 };
-export type Lesson = { meta: LessonMeta; body: string };
+export type Lesson = {
+  meta: LessonMeta;
+  body: string;
+  /** Language of `body`; absent means English. */
+  lang?: "en" | "vi";
+  /** True when Vietnamese was requested but no (valid) translation exists. */
+  missingTranslation?: boolean;
+  /** English `## ` headings by index, present when `body` is a translation. */
+  englishHeadings?: string[];
+  /** Study minutes per session, always computed from the English body. */
+  sessionMinutes?: Record<string, number>;
+};
 export type Overview = {
   concepts: string[];
   overview: string;
@@ -162,6 +175,7 @@ export type PracticeSkill = {
   questionCount: number;
 };
 export type TopicPayload = {
+  lang?: "en" | "vi";
   media?: import("./media").ResolvedMedia;
   practiceSkills?: PracticeSkill[];
   lesson: Lesson | null;

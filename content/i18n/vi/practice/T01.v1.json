@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Đổi rw-r----- sang bát phân (các chữ số dưới dạng số nguyên). (sai số cho phép 0.5)",
+   "explanation": "6,4,0 → 640."
+  },
+  "b2": {
+   "prompt": "Với umask 022, một thư mục mới được yêu cầu với 777 nhận mode nào (các chữ số bát phân dưới dạng số nguyên)? (sai số cho phép 0.5)",
+   "explanation": "777 với 022 bị xóa: 7,5,5."
+  },
+  "b3": {
+   "prompt": "Mode bát phân của rwxrwxr-x là gì? (các chữ số dưới dạng số nguyên, sai số cho phép 0.5)",
+   "explanation": "7,7,5."
+  },
+  "b4": {
+   "prompt": "Một script có mode 644 và bắt đầu bằng shebang đúng. Điều gì xảy ra với ./script.sh?",
+   "options": [
+    "Nó chạy, nhưng với quyền root, vì shebang nêu tên trình thông dịch",
+    "Nó chạy bình thường, vì shebang nêu tên một trình thông dịch hợp lệ",
+    "Permission denied (status 126): không có bit thực thi",
+    "Command not found (status 127): đường dẫn không được tìm kiếm"
+   ],
+   "explanation": "Thực thi cần bit x; shell báo 126."
+  },
+  "b5": {
+   "prompt": "Một lệnh không được tìm thấy trong PATH. Shell báo exit status nào? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "127 = không tìm thấy lệnh."
+  },
+  "b6": {
+   "prompt": "Một tiến trình nhận SIGTERM (15). Exit status được báo cho một tiến trình bị giết là gì? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "128+15=143."
+  },
+  "b7": {
+   "prompt": "File mode 0604 thuộc sở hữu của alice, group robots, và Bob thuộc robots. Bob có đọc được không?",
+   "options": [
+    "Có: lớp other cấp quyền đọc (4), nên Bob đọc được",
+    "Có: quyền group và other được kết hợp, cho quyền đọc",
+    "Không: Bob thuộc group của file, nên lớp group (0) từ chối",
+    "Chỉ khi Bob là root, vì chỉ root mới ghi đè được group"
+   ],
+   "explanation": "Bob thuộc group của file, nên lớp group (0) là lớp khớp đầu tiên và từ chối; lớp other không được xét."
+  },
+  "b8": {
+   "prompt": "`set -e` đang bật. Dòng nào trong một script KHÔNG làm nó dừng khi thất bại?",
+   "options": [
+    "Một lệnh thất bại đứng riêng trên một dòng trong script",
+    "Lệnh cuối cùng của script thất bại, vốn đặt exit status",
+    "Một lệnh thất bại được dùng làm điều kiện của câu lệnh if",
+    "Một phép gán thất bại từ command substitution trên một dòng riêng"
+   ],
+   "explanation": "Các lệnh được kiểm tra bởi if/while/&&/|| được miễn khỏi errexit, một ngoại lệ đã biết."
+  },
+  "b9": {
+   "prompt": "Lệnh `ls /missing 2>&1 > out.txt` được chạy. Thông báo lỗi đi đâu?",
+   "options": [
+    "Vào out.txt và terminal, vì 2>&1 nhân bản nó vào cả hai nơi",
+    "Nó bị loại bỏ, vì hai redirection triệt tiêu nhau về hiệu quả",
+    "Vào out.txt, vì cả hai luồng đều được lệnh chuyển hướng vào file",
+    "Ra terminal: stderr được sao chép vào stdout cũ trước khi stdout chuyển sang file"
+   ],
+   "explanation": "2>&1 được đánh giá trước, nhân bản stderr vào terminal."
+  },
+  "b10": {
+   "prompt": "Pipeline `producer | filter | consumer` có status các giai đoạn là 3, 0, 0. Với pipefail, status của pipeline là bao nhiêu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "pipefail trả về status khác 0 ngoài cùng bên phải: 3. Không có nó: 0."
+  },
+  "b11": {
+   "prompt": "Hãy viết một phiên bản an toàn của `cd $1; rm -rf *` và giải thích từng thay đổi.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "set -euo pipefail để các thất bại dừng script.",
+    "Kiểm tra hợp lệ và quote đối số (dir=${1:?usage}; cd -- \"$dir\") và tránh glob trần, ví dụ rm -rf -- ./* chỉ sau khi cd thành công (hoặc xóa một thư mục con có tên).",
+    "Đề cập việc kiểm thử script trên một thư mục scratch và từ chối các đường dẫn nguy hiểm như / hoặc thư mục home."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy thiết kế checklist bạn sẽ áp dụng trước khi nói một script là một lệnh dự án có thể lặp lại.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chạy được từ bất kỳ thư mục nào và từ một môi trường sạch (env -i), không alias hay lịch sử.",
+    "Có shebang, bit exec, chế độ chặt chẽ, kiểm tra đối số với giá trị mặc định, vị trí đầu ra tất định và logging.",
+    "Trả về exit code có ý nghĩa và có ít nhất một bài kiểm thử thành công và một bài kiểm thử thất bại."
+   ]
+  }
+ }
+}

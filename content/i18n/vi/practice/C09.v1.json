@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Euler tiến được dùng cho y' = -a y với a = 80 1/s. Bước ổn định lớn nhất T (s, 4 chữ số thập phân)?",
+   "explanation": "|1 - aT| < 1 nên T < 2/a = 0.025."
+  },
+  "b2": {
+   "prompt": "y' = -10 y + 10 u được rời rạc hóa bằng ZOH và T = 0.1 s. B_d (4 chữ số thập phân)?",
+   "explanation": "B_d = (10/10)(1 - e^{-1}) = 0.6321."
+  },
+  "b3": {
+   "prompt": "Vòng bộ tích phân với d = 2 mẫu trễ: ổn định khi và chỉ khi K*T < 2 sin(pi/10). Cho giới hạn của K*T (3 chữ số thập phân).",
+   "explanation": "2 sin(18 deg) = 0.618."
+  },
+  "b4": {
+   "prompt": "Vòng bộ tích phân, không trễ, T = 0.02 s. K ổn định lớn nhất (1/s)?",
+   "explanation": "K T < 2 nên K < 100."
+  },
+  "b5": {
+   "prompt": "Biên trễ của vòng liên tục y' = -K y(t - tau) là tau < pi/(2K). Với K = 20, tau_max (ms, 1 chữ số thập phân)?",
+   "explanation": "pi/40 = 78.5 ms."
+  },
+  "b6": {
+   "prompt": "ZOH thêm khoảng T/2. Với T = 20 ms, độ trễ tính toán 5 ms và độ trễ driver 3 ms, tổng độ trễ hiệu dụng (ms)?",
+   "explanation": "10 + 5 + 3 = 18 ms."
+  },
+  "b7": {
+   "prompt": "Vì sao zero-order hold hoạt động xấp xỉ như một độ trễ T/2?",
+   "options": [
+    "Vì bộ giữ giảm một nửa gain của tín hiệu, làm giảm pha đi T/2",
+    "Trung bình giá trị được giữ cũ hơn tín hiệu liên tục T/2",
+    "Vì bộ giữ lấy mẫu ở tần số gấp đôi, nên tín hiệu trễ nửa chu kỳ",
+    "Vì bộ giữ loại bỏ các tần số cao, làm trễ tín hiệu T/2"
+   ],
+   "explanation": "Bộ giữ tạo ra một bậc thang trễ hơn tín hiệu nền khoảng T/2."
+  },
+  "b8": {
+   "prompt": "Một cực tại s = -50 và T = 0.1 s được ánh xạ tới z = exp(sT). Phát biểu nào đúng?",
+   "options": [
+    "z nằm ngoài vòng tròn đơn vị, nên hệ lấy mẫu bất ổn",
+    "Cực bị mất do lấy mẫu, nên nó không còn ảnh hưởng tới đáp ứng",
+    "z = -50*0.1 = -5, nằm ngoài vòng tròn đơn vị, nên bất ổn",
+    "z = 0.0067 nằm trong vòng tròn đơn vị: ổn định, và rất nhanh tại các mẫu"
+   ],
+   "explanation": "e^{-5} = 0.0067."
+  },
+  "b9": {
+   "prompt": "Đáp ứng bậc mô phỏng trông ổn nhưng một encoder thật có độ phân giải thô để lại một độ lệch nhỏ không đổi mà phản hồi không có tích phân không bao giờ loại bỏ. Nguyên nhân khả dĩ nhất?",
+   "options": [
+    "Một cực bất ổn của đối tượng, trôi về một giá trị nhỏ không đổi",
+    "Bất ổn Euler của việc rời rạc hóa, ổn định ở một độ lệch nhỏ",
+    "Aliasing của tín hiệu encoder, thêm một độ lệch không đổi ở tốc độ thấp",
+    "Vùng chết do lượng tử hóa: các lệnh gần không bị làm tròn về không"
+   ],
+   "explanation": "Khi |K y| < q/2 lệnh đã lượng tử hóa bằng không, nên vòng dừng lại."
+  },
+  "b10": {
+   "prompt": "Bạn ghi lệnh motor sau khi ngủ hết phần còn lại của chu kỳ thay vì ngay sau khi tính. Tác dụng chính là gì?",
+   "options": [
+    "Nó triệt tiêu độ trễ ZOH, vì lệnh khi đó được giữ ít thời gian hơn",
+    "Nó thêm gần một mẫu trễ và jitter, làm giảm gain ổn định",
+    "Nó chỉ ảnh hưởng tới việc ghi log tín hiệu điều khiển và không ảnh hưởng vòng kín",
+    "Nó cải thiện thời gian, vì lệnh được áp dụng đúng tại biên chu kỳ"
+   ],
+   "explanation": "Đầu ra cũ hơn mức cần thiết một chu kỳ."
+  },
+  "b11": {
+   "prompt": "Giải thích cách bạn chọn tần số lấy mẫu cho một vòng khớp có băng thông vòng kín 5 Hz và một ngân sách trễ tính toán, bao gồm một kiểm tra bạn sẽ chạy trên hệ thật.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu một quy tắc (10-30 lần băng thông) và cả ngân sách trễ so với biên trễ.",
+    "Tính đến ZOH T/2 cộng độ trễ tính toán/truyền thông.",
+    "Nêu một kiểm tra: đo độ trễ/jitter thực và kiểm chứng bằng quét gain."
+   ]
+  },
+  "b12": {
+   "prompt": "Một đồng đội thiết kế bộ điều khiển rời rạc bằng cách đưa các gain liên tục vào code chạy ở 20 Hz cho một đối tượng có băng thông 10 Hz. Hãy dự đoán điều gì sai và hai phương án thiết kế lại.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nhận xét tần số lấy mẫu quá thấp (khoảng 2 lần băng thông), độ trễ T/2 rất lớn và aliasing.",
+    "Phương án: tăng tần số hoặc thiết kế lại trong thời gian rời rạc với mô hình chính xác.",
+    "Phương án: bù độ trễ hoặc giảm gain."
+   ]
+  }
+ }
+}

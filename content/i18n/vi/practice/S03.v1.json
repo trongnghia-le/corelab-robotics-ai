@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Một LaserScan có 1080 range float32 ở 20 Hz. Băng thông payload của các range tính bằng kB/s (1 kB = 1000 B). Độ chính xác 0.1.",
+   "explanation": "1080*4*20=86400 B/s."
+  },
+  "b2": {
+   "prompt": "Một timer được tạo với chu kỳ 0.04 (giây). Tốc độ tính bằng Hz?",
+   "explanation": "1/0.04."
+  },
+  "b3": {
+   "prompt": "31 stamp trải 3.0 s. Tốc độ tính bằng Hz, độ chính xác 0.01.",
+   "explanation": "30/3."
+  },
+  "b4": {
+   "prompt": "Một odometer tích phân tốc độ 0.8 m/s từ 11 message cách nhau 0.1 s (message đầu không có message trước). Quãng đường tính bằng m, độ chính xác 0.001.",
+   "explanation": "10 khoảng * 0.1 * 0.8."
+  },
+  "b5": {
+   "prompt": "Cùng odometer đó dùng sai dt=0.1 cho cả 11 message. Sai số tương đối theo phần trăm, độ chính xác 0.1.",
+   "explanation": "11/10 -> lớn hơn 10 %."
+  },
+  "b6": {
+   "prompt": "Các stamp theo ms: 0, 20, 40, 100, 120, 200, chu kỳ mong đợi 20 ms. Tổng số message bị thiếu.",
+   "explanation": "Khoảng trống 60 -> 2; khoảng trống 80 -> 3."
+  },
+  "b7": {
+   "prompt": "Một bên gửi publish khoảng cách theo centimet vào một trường mà bên nhận coi là mét. Công cụ nào bắt được lỗi này?",
+   "options": [
+    "Kiểm tra kiểu message, vì kiểu trường khác nhau giữa centimet và mét",
+    "Các thiết lập quality of service, vốn gồm một đơn vị cho mỗi giá trị được publish",
+    "Lệnh ros2 topic info -v, in ra đơn vị được khai báo của mọi trường",
+    "Đơn vị được ghi tài liệu cộng với một bài kiểm thử giá trị đã biết xuyên qua giao diện"
+   ],
+   "explanation": "Các kiểu giống hệt nhau; chỉ quy ước và kiểm thử mới bắt được."
+  },
+  "b8": {
+   "prompt": "Một node publish mỗi 10 s dù được định chạy ở 10 Hz. Nguyên nhân nhiều khả năng nhất?",
+   "options": [
+    "Message không có header, nên timestamp làm trễ mỗi lần publish.",
+    "DDS discovery chậm, nên publisher chờ mười giây giữa các lần gửi.",
+    "Chu kỳ timer được cho là 10 (giây) thay vì 0.1.",
+    "Độ sâu hàng đợi quá nhỏ, nên hầu hết message bị bỏ trước khi gửi."
+   ],
+   "explanation": "create_timer nhận đơn vị giây."
+  },
+  "b9": {
+   "prompt": "Vì sao service là lựa chọn kém cho luồng IMU 100 Hz?",
+   "options": [
+    "Mỗi mẫu cần một vòng yêu cầu-phản hồi và một client; topic phát tới mọi subscriber",
+    "Service không dùng được từ Python, và driver IMU ở đây viết bằng Python.",
+    "Service không mang được giá trị dấu phẩy động, mà các mẫu IMU lại cần.",
+    "Topic luôn nhanh hơn bất kỳ service nào, bất kể tốc độ message."
+   ],
+   "explanation": "Luồng thuộc về topic."
+  },
+  "b10": {
+   "prompt": "Remapping /cmd_vel thành /robot1/cmd_vel khi launch đạt được điều gì?",
+   "options": [
+    "Nó đổi code của publisher để ghi vào topic khác.",
+    "Nó đổi kiểu message mà topic mang giữa các node.",
+    "Nó đổi tên mà node dùng, không cần đổi code.",
+    "Nó mã hóa topic để chỉ tên mới mới đọc được."
+   ],
+   "explanation": "Tên có thể đổi khi launch."
+  },
+  "b11": {
+   "prompt": "Mô tả một bài kiểm thử đơn vị phát hiện khoảng trống trong luồng stamp nanosecond nguyên, với số cụ thể và một trường hợp biên.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Cho các stamp và một chu kỳ với số message thiếu mong đợi (ví dụ 0,100,200,500 với 100 -> 2).",
+    "Có một trường hợp biên như ít hơn hai stamp hoặc một stamp trùng.",
+    "Nêu cách tránh float (ns nguyên) và bài kiểm thử phải từ chối điều gì."
+   ]
+  },
+  "b12": {
+   "prompt": "Lập luận ủng hộ hoặc phản đối việc đặt tư thế, pin và chẩn đoán trong một message tùy chỉnh 30 Hz.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "So sánh độ ghép nối, băng thông, phát lại và tiến hóa.",
+    "Dùng kiểu chuẩn khi có thể.",
+    "Kết luận bằng việc tách theo tốc độ và bên tiêu thụ, có biện minh."
+   ]
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "<origin xyz rpy> của một joint chỉ định điều gì?",
+   "options": [
+    "Tư thế của frame con trong frame cha khi giá trị khớp bằng không.",
+    "Tư thế của frame con trong frame thế giới.",
+    "Tư thế của frame cha trong frame con tại giá trị khớp hiện tại.",
+    "Khối tâm của link con."
+   ],
+   "explanation": "Origin là từ cha sang con tại q=0; chuyển động khớp theo sau."
+  },
+  "q2": {
+   "prompt": "Cánh tay phẳng, độ lệch l1=0.5 m, l2=0.3 m, các revolute joint trục z, q1=pi/3, q2=pi/6 (tương đối). x của tool tính bằng m. Độ chính xác 0.001.",
+   "explanation": "0.5cos60+0.3cos90=0.25."
+  },
+  "q3": {
+   "prompt": "Hộp đặc m=3 kg, sx=0.5, sy=0.1, sz=0.1 m. Izz quanh tâm của nó, kg m^2. Độ chính xác 0.0005.",
+   "explanation": "3/12*(0.25+0.01)=0.065."
+  },
+  "q4": {
+   "prompt": "Quán tính link quanh khối tâm 0.02 kg m^2, khối lượng 2 kg, trục khớp cách tâm 0.3 m. Quán tính quanh trục khớp, độ chính xác 0.001.",
+   "explanation": "0.02+2*0.09."
+  },
+  "q5": {
+   "prompt": "Quán tính đường chéo nào (kg m^2) không thể thuộc về bất kỳ vật rắn thực nào?",
+   "options": [
+    "(0.02, 0.02, 0.03)",
+    "(0.01, 0.01, 0.05)",
+    "(0.05, 0.05, 0.05)",
+    "(0.01, 0.01, 0.02)"
+   ],
+   "explanation": "0.01+0.01<0.05 vi phạm bất đẳng thức tam giác."
+  },
+  "q6": {
+   "prompt": "Một bản mô tả có các link a,b,c,d và các joint a->b, c->d, d->c (3 joint = 4-1). Sai ở đâu?",
+   "options": [
+    "Không sai gì; joint = link - 1 đảm bảo một cây hợp lệ.",
+    "Thiếu một joint cố định ở gốc.",
+    "Có hai gốc a và c.",
+    "c và d tạo thành một chu trình không tới được từ gốc duy nhất a."
+   ],
+   "explanation": "Kiểm tra đếm là chưa đủ; hãy đi từ gốc."
+  },
+  "q7": {
+   "prompt": "Mô tả cách bạn sẽ kiểm chứng một URDF hai link mới trước khi dùng nó trong MoveIt hoặc bộ mô phỏng: kiểm tra file, số tính tay và kiểm tra quán tính.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Kiểm tra tính hợp lệ của cây (tên duy nhất, một gốc, tới được, giới hạn) bằng check_urdf hoặc code.",
+    "So FK tại nhiều tư thế (không, +/-90 độ, ngẫu nhiên) với giá trị tính tay hoặc dạng đóng.",
+    "Kiểm tra khối lượng, khối tâm và quán tính (tính dương, bất đẳng thức tam giác, đơn vị) và scale của mesh."
+   ]
+  }
+ }
+}

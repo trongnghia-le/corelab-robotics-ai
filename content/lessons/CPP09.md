@@ -4,7 +4,7 @@
   "module_id": "CPP09",
   "title": "Complexity and performance: asymptotics, cache locality, and profiling",
   "summary": "Combine big-O reasoning with the memory-hierarchy cost model, measure honestly, and profile before optimizing.",
-  "estimated_minutes": 85,
+  "estimated_minutes": 410,
   "prerequisites": [
     "CPP05",
     "CPP08"
@@ -448,6 +448,70 @@ For the experiment, expect the vector column to stay within about 1.5x across si
 
 Replace the `PoolList` traversal by a "prefetch-friendly" version that processes eight independent lists at once and measure how much of the latency you can hide. Or run `perf stat -e cache-misses,cache-references ./bench` and compare the miss rates of the two traversals.
 
+### Library track
+
+Google Benchmark (`sudo apt install libbenchmark-dev`) does the measurement hygiene of this lesson for you: it picks the iteration count, repeats, and provides `DoNotOptimize`. Re-run the experiment with it, and cross-check your `loglog_slope` against NumPy.
+
+```cpp
+// gbench.cpp : the vector / strided / shuffled-list experiment with Google Benchmark.
+// g++ -std=c++17 -O2 gbench.cpp -lbenchmark -pthread -o gbench && ./gbench
+#include <benchmark/benchmark.h>
+#include <algorithm>
+#include <numeric>
+#include <random>
+#include <vector>
+
+static void BM_VectorSum(benchmark::State& st) {
+  std::vector<double> v(st.range(0), 1.0);
+  for (auto _ : st) {
+    double s = 0;
+    for (double x : v) s += x;
+    benchmark::DoNotOptimize(s);                       // makes the result observable
+  }
+  st.SetItemsProcessed(st.iterations() * v.size());    // report items/second -> ns per element
+}
+static void BM_StrideSum(benchmark::State& st) {       // stride 8 doubles = one new cache line per read
+  std::vector<double> v(st.range(0), 1.0);
+  for (auto _ : st) {
+    double s = 0;
+    for (std::size_t i = 0; i < v.size(); i += 8) s += v[i];
+    benchmark::DoNotOptimize(s);
+  }
+  st.SetItemsProcessed(st.iterations() * (v.size() / 8));
+}
+struct Node { double value; Node* next; };
+static void BM_ShuffledList(benchmark::State& st) {
+  const std::size_t n = st.range(0);
+  std::vector<Node> pool(n);
+  std::vector<std::size_t> order(n);
+  std::iota(order.begin(), order.end(), 0);
+  std::shuffle(order.begin(), order.end(), std::mt19937(1));
+  for (std::size_t i = 0; i < n; ++i) { pool[order[i]].value = 1.0; pool[order[i]].next = i + 1 < n ? &pool[order[i + 1]] : nullptr; }
+  for (auto _ : st) {
+    double s = 0;
+    for (Node* p = &pool[order[0]]; p; p = p->next) s += p->value;
+    benchmark::DoNotOptimize(s);
+  }
+  st.SetItemsProcessed(st.iterations() * n);
+}
+BENCHMARK(BM_VectorSum)->Arg(1000)->Arg(100000)->Arg(4000000);
+BENCHMARK(BM_StrideSum)->Arg(1000)->Arg(100000)->Arg(4000000);
+BENCHMARK(BM_ShuffledList)->Arg(1000)->Arg(100000)->Arg(4000000);
+BENCHMARK_MAIN();
+```
+
+On one test machine the shuffled list ran at about 5.7 M items/s for $4\times10^6$ nodes (about 175 ns per node) against about 450 M items/s for the vector (about 2.2 ns), the same shape as the table in the worked example; items/s is the inverse of ns per element. Compare the `Time` column of `BM_StrideSum` with `BM_VectorSum` (the stride version reads 8 times fewer elements). Expect your numbers to differ. (If linking against `libbenchmark_main` fails with an LTO error, use `BENCHMARK_MAIN()` as above.)
+
+For the fit, NumPy gives the same exponent as your least-squares code:
+
+```python
+import numpy as np
+n = np.array([1000, 2000, 4000, 8000.0]); t = np.array([2.0, 8.1, 32.5, 129])
+p = np.polyfit(np.log(n), np.log(t), 1)[0]      # slope of ln t against ln n
+print(round(p, 3))                              # 2.004, equal to loglog_slope({1000,...}, {2.0,...})
+assert abs(p - 2.004) < 1e-3 and np.median([4, 1, 3, 2]) == 2.5
+```
+
 ## Verification
 
 - Check that the timed function returns the right answer (compare with the reference sum) in every configuration.
@@ -504,4 +568,4 @@ The same cost model explains why NumPy vectorized operations beat Python loops (
 - [Linux perf Tutorial](https://perf.wiki.kernel.org/index.php/Tutorial) - `perf stat`, `perf record` and `perf report` with examples.
 - [MIT 6.006 Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/) - complexity analysis, data structures, and problem sets.
 
-**More practice:** the problem sets on the [MIT 6.006 assignments page](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/assignments/), the [CS:APP student labs](https://csapp.cs.cmu.edu/3e/labs.html) (the cache and performance labs), and [Brendan Gregg's perf examples](https://www.brendangregg.com/perf.html).
+**More practice:** the [Google Benchmark user guide](https://github.com/google/benchmark/blob/main/docs/user_guide.md) (write one benchmark per container), the exercises on asymptotic analysis in [MIT 6.006](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/), the CS:APP [labs page](https://csapp.cs.cmu.edu/3e/labs.html) (the Cache Lab is exactly the locality exercise of this lesson), Drepper's [What Every Programmer Should Know About Memory](https://www.akkadia.org/drepper/cpumemory.pdf), and the [perf tutorial](https://perf.wiki.kernel.org/index.php/Tutorial) / [Brendan Gregg's perf examples](https://www.brendangregg.com/perf.html) for profiling your benchmark.

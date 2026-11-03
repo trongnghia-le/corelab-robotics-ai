@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "const int& r = i; auto x = r; Kiểu của x là gì?",
+   "options": [
+    "int&",
+    "const int",
+    "int",
+    "const int&"
+   ],
+   "explanation": "auto suy ra theo giá trị, bỏ reference và const cấp cao nhất."
+  },
+  "b2": {
+   "prompt": "Một phương sai streaming tính bằng (sum_sq - n*mean^2)/(n-1) được chạy trên các giá trị quanh 1e9. Triệu chứng điển hình là gì?",
+   "options": [
+    "Một optional rỗng được trả về với đầu vào lớn",
+    "Một kết quả chậm hơn chút nhưng vẫn chính xác",
+    "Một exception tràn số nguyên được throw lúc chạy",
+    "Một phương sai sai lệch rất nhiều hoặc thậm chí âm"
+   ],
+   "explanation": "Hai số rất lớn và gần bằng nhau bị trừ cho nhau, nên sai số làm tròn chi phối."
+  },
+  "b3": {
+   "prompt": "Vì sao nên dùng static_assert(std::is_floating_point_v<T>) thay vì ghi chú 'T phải là dấu phẩy động' trong comment?",
+   "options": [
+    "Nó làm code sinh ra chạy nhanh hơn đáng kể lúc chạy",
+    "Nó cho phép dùng an toàn các kiểu nguyên bên trong template",
+    "Comment không được phép xuất hiện ở bất kỳ đâu trong code template",
+    "Compiler thực thi nó và báo thông báo của bạn tại lúc instantiation"
+   ],
+   "explanation": "Một giả định được kiểm tra sẽ thất bại ồn ào ngay tại chỗ nó bị vi phạm."
+  },
+  "b4": {
+   "prompt": "Cách nào làm cho 'template <class T> T clamp_to(T, T, T);' với thân hàm trong util.cpp link được cho int và double?",
+   "options": [
+    "Khai báo hàm inline chỉ trong main.cpp, và giữ thân hàm trong util.cpp",
+    "Link chương trình với -lstdc++ để các symbol template được giải quyết",
+    "Thêm const vào mọi tham số trong khai báo và định nghĩa",
+    "template int clamp_to<int>(int,int,int); và tương tự cho double trong util.cpp"
+   ],
+   "explanation": "Explicit instantiation phát ra các chuyên biệt trong util.cpp; đặt thân hàm vào header là cách sửa còn lại."
+  },
+  "b5": {
+   "prompt": "constexpr std::array<double, 181> chứa một bảng sin theo bước 0.5 độ. Nó chiếm bao nhiêu byte (double 8 byte)? Cho một số nguyên.",
+   "explanation": "181 x 8 = 1448 byte."
+  },
+  "b6": {
+   "prompt": "Phương sai mẫu (n-1) của {10, 20, 60}. Cho một số nguyên hoặc thập phân.",
+   "explanation": "Trung bình 30; bình phương độ lệch 400+100+900 = 1400; 1400/2 = 700."
+  },
+  "b7": {
+   "prompt": "Quy tắc hình thang cho f(x)=e^x trên [0,1] có sai số tối đa (b-a)^3/(12 n^2) * max|f''| với max|f''| = e. n nguyên nhỏ nhất để sai số <= 1e-4 là bao nhiêu?",
+   "explanation": "n >= sqrt(e / (12e-4)) = sqrt(2265.2) = 47.6, nên n = 48."
+  },
+  "b8": {
+   "prompt": "Các lời gọi: clamp_to(1,2,3), clamp_to(1.0,2.0,3.0), clamp_to(2,3,4), clamp_to(1.5f,2.f,3.f), clamp_to(3.5,4.5,5.5), clamp_to(7L,8L,9L). Compiler tạo bao nhiêu instantiation khác nhau? Số nguyên.",
+   "explanation": "int, double, float và long: 4."
+  },
+  "b9": {
+   "prompt": "Viết một hàm template describe(T) trả về \"integer\" cho các kiểu nguyên, \"real\" cho các kiểu dấu phẩy động và \"other\" trong các trường hợp còn lại, dùng if constexpr. Vì sao một if thường sẽ không chạy được nếu một nhánh gọi std::sqrt(x)?",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Dùng if constexpr (std::is_integral_v<T>) ... else if constexpr (std::is_floating_point_v<T>) ... else ...",
+    "Một if thường vẫn biên dịch mọi nhánh cho mọi T, nên std::sqrt(x) phải hợp lệ ngay cả với chuỗi.",
+    "Lưu ý rằng các nhánh không được chọn bị loại bỏ, không chỉ bị bỏ qua lúc chạy."
+   ]
+  },
+  "b10": {
+   "prompt": "Linker báo undefined reference tới 'RunningStats<float>::push(float)' dù class được khai báo trong header và định nghĩa trong một .cpp. Chẩn đoán và nêu hai cách sửa.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Định nghĩa các member không hiển thị ở nơi RunningStats<float> được dùng, nên không có instantiation nào được phát ra.",
+    "Cách sửa 1: chuyển các định nghĩa vào header (hoặc include file .tpp).",
+    "Cách sửa 2: explicit instantiation trong .cpp cho các kiểu được hỗ trợ."
+   ]
+  },
+  "b11": {
+   "prompt": "Viết một factorial(int n) constexpr cho 0 <= n <= 12 và static_assert kiểm tra factorial(5) == 120. Nói chuyện gì xảy ra với factorial(13) trong một biểu thức hằng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "constexpr int factorial(int n) { int r = 1; for (int i = 2; i <= n; ++i) r *= i; return r; }",
+    "static_assert(factorial(5) == 120);",
+    "13! làm tràn int 32-bit; trong biểu thức hằng, tràn số có dấu là lỗi biên dịch."
+   ]
+  }
+ }
+}

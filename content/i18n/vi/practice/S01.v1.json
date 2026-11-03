@@ -1,0 +1,90 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Euler tường minh trên x''=-x với h=0.1 trong 20 bước. Tỉ số năng lượng E_20/E_0. Độ chính xác 0.001.",
+   "explanation": "1.01^20=1.2202."
+  },
+  "b2": {
+   "prompt": "Euler tường minh, h=0.05, T=5 s (100 bước) trên x''=-x. Tỉ số năng lượng. Độ chính xác 0.001.",
+   "explanation": "(1.0025)^100=1.2836."
+  },
+  "b3": {
+   "prompt": "Sai số 1.6e-6 ở h và 1.0e-7 ở h/2. Bậc quan sát được. Độ chính xác 0.05.",
+   "explanation": "log2(16)=4: giống RK4."
+  },
+  "b4": {
+   "prompt": "y'=-200y với Euler tường minh. Bước h (s) lớn nhất còn ổn định. Độ chính xác 0.0005.",
+   "explanation": "2/200."
+  },
+  "b5": {
+   "prompt": "Với y'=-200y và h=0.015, hệ số mỗi bước của Euler tường minh là 1-200h. Cho giá trị, độ chính xác 0.01.",
+   "explanation": "1-3=-2: |.|>1, không ổn định."
+  },
+  "b6": {
+   "prompt": "Ma trận bước dao động tử nửa ẩn có vết 2-h^2. Với h=0.5 cho vết. Độ chính xác 0.001.",
+   "explanation": "2-0.25=1.75, nằm trong (-2,2): bị chặn."
+  },
+  "b7": {
+   "prompt": "Tỉ số chu kỳ thật/góc nhỏ của một con lắc thả từ 2.0 rad là 1.329. Nếu chu kỳ góc nhỏ là 1.0 s, sai số chu kỳ thật là bao nhiêu giây (thật trừ mô hình)? Độ chính xác 0.001.",
+   "explanation": "1.329-1."
+  },
+  "b8": {
+   "prompt": "Một nghiên cứu hội tụ cho thấy sai số là 1e-3 ở h, h/2 và h/4. Chẩn đoán nào tốt nhất?",
+   "options": [
+    "Kết quả hoàn hảo, vì sai số bằng nhau với mọi bước.",
+    "Sai số do thứ khác ngoài bước quyết định, ví dụ một lỗi hoặc một ngưỡng sàn.",
+    "Phương pháp bậc không và phải thay bằng phương pháp tốt hơn.",
+    "Bước vẫn còn quá lớn, nên cứ tiếp tục giảm một nửa cho đến khi sai số giảm."
+   ],
+   "explanation": "Sai số không phụ thuộc bước thì không thể là rời rạc hóa."
+  },
+  "b9": {
+   "prompt": "Phép kiểm thử nào bắt tốt nhất một bộ tích phân nửa ẩn có hai dòng cập nhật vô tình bị đổi chỗ?",
+   "options": [
+    "Kiểm tra vị trí cuối là dương sau khi chạy.",
+    "Kiểm tra lần chạy kết thúc mà không ném ngoại lệ nào.",
+    "Kiểm tra dt>0 và số bước là số nguyên.",
+    "Kiểm tra x^2+v^2-h x v qua nhiều bước hoặc bước đầu tiên tính tay."
+   ],
+   "explanation": "Đổi chỗ biến nó thành Euler tường minh: bước đầu và đại lượng bất biến khác đi."
+  },
+  "b10": {
+   "prompt": "Vì sao bậc quan sát được được đo với ít nhất hai lần giảm một nửa bước?",
+   "options": [
+    "Bậc phải là số nguyên, cần ít nhất hai điểm để thấy.",
+    "Một tỉ số có thể bị đánh lừa bởi chế độ trước tiệm cận hoặc ngưỡng sàn; một xu hướng mới cho độ dốc.",
+    "Năng lượng phải được tính hai lần, cần hai kích thước bước khác nhau.",
+    "Euler cần hai bước để khởi động, nên một lần giảm một nửa không cho độ dốc."
+   ],
+   "explanation": "Bậc là một tính chất tiệm cận."
+  },
+  "b11": {
+   "prompt": "Mô tả một bài kiểm thử hồi quy tối thiểu sẽ bắt được `n=int(T/dt)` trong một wrapper của bộ mô phỏng, kèm các số bạn sẽ dùng.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chọn T và dt với một tỉ số dấu phẩy động như 0.3/0.1 và nêu số bước mong đợi (3).",
+    "Khẳng định thời điểm cuối bằng T và so với một giá trị giải tích.",
+    "Có một trường hợp phải ném lỗi hoặc cảnh báo khi T không phải bội của dt."
+   ]
+  },
+  "b12": {
+   "prompt": "Một nhóm huấn luyện policy trong bộ mô phỏng với dt=0.01 và triển khai trong bộ mô phỏng với dt=0.02 và thấy thất bại. Liệt kê các lý do số học và các phép kiểm tra bạn sẽ chạy trước khi đổ lỗi cho policy.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nhắc đến giới hạn ổn định và độ cứng va chạm phụ thuộc vào dt.",
+    "Đề xuất kiểm tra hội tụ hoặc năng lượng ở cả hai bước.",
+    "Đề xuất huấn luyện với dt khớp hoặc ngẫu nhiên hóa và ghi dt vào cấu hình."
+   ]
+  },
+  "b13": {
+   "prompt": "Phát biểu nào về tích phân một dao động tử bảo toàn là đúng?",
+   "options": [
+    "Mọi phương pháp bậc một đều trôi theo cùng cách và cùng tốc độ.",
+    "RK4 bảo toàn năng lượng chính xác, ở mọi kích thước bước, cho mọi dao động tử.",
+    "Euler nửa ẩn giữ năng lượng trong một dải; năng lượng của Euler tường minh tăng (1+h^2) mỗi bước.",
+    "Euler tường minh giữ năng lượng bị chặn với bước h đủ nhỏ."
+   ],
+   "explanation": "Euler nửa ẩn bảo toàn một năng lượng biến đổi; Euler tường minh nhân năng lượng với 1+h^2."
+  }
+ }
+}

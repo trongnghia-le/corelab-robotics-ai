@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Đối tượng vô hướng, N = 1, Q = R = P = 1, x0 = 10, |u| <= 1. Sau khi áp dụng đầu vào MPC đầu tiên, trạng thái là (2 chữ số thập phân)?",
+   "explanation": "u = -5 bị cắt về -1; x1 = 9."
+  },
+  "b2": {
+   "prompt": "Đối tượng vô hướng x+ = x + u, Q = R = P = 1, N = 1, |u| <= 1, bắt đầu tại x0 = 10 với luật receding-horizon u = clip(-x/2). Có bao nhiêu bước bị bão hòa (|x/2| > 1) trước khi cận ngừng hoạt động?",
+   "explanation": "x: 10,9,...,2: u=-x/2 vượt 1 khi x > 2: x=10..3 là 8 trạng thái; tại x=2 u=-1 đúng bằng."
+  },
+  "b3": {
+   "prompt": "H = R I + sum G_k'Q G_k + G_N'P G_N. Với hệ vô hướng A = B = 1, Q = P = 2, R = 1, N = 1, cho H (2 chữ số thập phân).",
+   "explanation": "G_1 = [1]; H = 1 + 2 = 3."
+  },
+  "b4": {
+   "prompt": "Xe đẩy với |a| <= 1.5 m/s^2, tốc độ 3 m/s. Thời gian dừng (s, 2 chữ số thập phân)?",
+   "explanation": "v/a = 2 s."
+  },
+  "b5": {
+   "prompt": "Một xe đẩy cần 2 s để dừng. Với dt = 0.1 s, horizon tối thiểu N (tính bằng bước) bao phủ thời gian dừng là bao nhiêu?",
+   "explanation": "2/0.1 = 20."
+  },
+  "b6": {
+   "prompt": "Hệ số LQR K = [2.4146, 2.3264], x0 = (0.2, -0.1). Đầu vào đầu tiên LQR/MPC không ràng buộc (3 chữ số thập phân)?",
+   "explanation": "-(0.48292 - 0.23264) = -0.2503."
+  },
+  "b7": {
+   "prompt": "Vì sao QP ngưng tụ lồi chặt khi R > 0?",
+   "options": [
+    "Vì Q là đường chéo, làm mọi số hạng của chi phí lồi",
+    "H >= R I xác định dương, nên chi phí có điểm cực tiểu duy nhất",
+    "Vì đối tượng ổn định, nên các ma trận dự đoán bị chặn",
+    "Vì các ràng buộc tuyến tính, làm mọi chi phí toàn phương lồi"
+   ],
+   "explanation": "Mọi số hạng trong H đều bán xác định dương và R I xác định dương."
+  },
+  "b8": {
+   "prompt": "Một ràng buộc cứng về vị trí được thêm vào và xe đẩy xuất phát quá nhanh để kịp dừng. Điều gì xảy ra?",
+   "options": [
+    "Ràng buộc bị bỏ qua tự động cho đến khi xe đẩy có thể dừng",
+    "Solver âm thầm trả về nghiệm LQR không ràng buộc",
+    "Xe đẩy dừng ngay lập tức, vì QP có thể vượt cận đầu vào",
+    "QP không khả thi: không chuỗi đầu vào nào thỏa mọi ràng buộc"
+   ],
+   "explanation": "Không khả thi có thể xảy ra với ràng buộc trạng thái; ràng buộc mềm và dự phòng là các cách sửa chuẩn."
+  },
+  "b9": {
+   "prompt": "Một horizon rất ngắn với chi phí cuối = chi phí giai đoạn khiến xe đẩy MPC lảng vảng gần nhưng không bao giờ tới mục tiêu. Cách khắc phục trực tiếp nhất là:",
+   "options": [
+    "Đặt R chính xác bằng không để bộ điều khiển dùng nỗ lực đầu vào không giới hạn",
+    "Bỏ ràng buộc đầu vào, giữ nguyên horizon và chi phí cuối",
+    "Dùng ma trận Riccati làm chi phí cuối và/hoặc kéo dài horizon",
+    "Chỉ tăng tần số lấy mẫu, giữ nguyên horizon và chi phí cuối"
+   ],
+   "explanation": "Chi phí cuối phải đại diện cho chi phí vượt quá horizon."
+  },
+  "b10": {
+   "prompt": "Phát biểu nào về việc cắt đầu ra LQR tại giới hạn cơ cấu chấp hành so với MPC là đúng?",
+   "options": [
+    "Chúng giống hệt nhau, vì cắt đầu vào LQR giống như giải một QP có ràng buộc",
+    "Cắt luôn tối ưu, vì đầu vào bão hòa là lựa chọn khả thi tốt nhất",
+    "MPC không thể dùng cùng chi phí toàn phương như LQR, nên không thể so sánh hai bộ điều khiển",
+    "Cắt bỏ qua ảnh hưởng tương lai của giới hạn; MPC lập kế hoạch quanh nó và có thể an toàn hơn"
+   ],
+   "explanation": "MPC tối ưu với cận nằm trong bài toán."
+  },
+  "b11": {
+   "prompt": "Liệt kê các bước để kiểm chứng một cài đặt MPC khi không có phần cứng, và lỗi mà mỗi kiểm tra bắt được.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Các ma trận ngưng tụ tính tay (chỉ số/chuyển vị).",
+    "Tính tối ưu qua nhiễu loạn hoặc so sánh với LQR khi không ràng buộc (solver/chi phí cuối).",
+    "Các test thỏa ràng buộc vòng kín và hội tụ (logic receding-horizon)."
+   ]
+  },
+  "b12": {
+   "prompt": "So sánh MPC với LQR bị cắt cho một vòng tư thế drone có biên bão hòa 20%. Nêu khi nào mỗi cách chấp nhận được và nêu một thước đo để so sánh chúng.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nói rằng LQR bị cắt ổn khi bão hòa hiếm; MPC khi các ràng buộc thường xuyên hoạt động.",
+    "Nêu một thước đo (sai số đỉnh, thời gian xác lập, chi phí, vi phạm ràng buộc, thời gian giải).",
+    "Đề cập ngân sách tính toán hoặc một dự phòng."
+   ]
+  }
+ }
+}

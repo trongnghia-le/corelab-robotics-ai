@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một lock file cho bạn điều gì mà một khoảng requirements như numpy>=1.20 không có?",
+   "options": [
+    "Tự động nâng cấp lên phiên bản mới nhất mỗi khi có bản phát hành mới",
+    "Các phiên bản chính xác đã dùng, để có thể dựng lại cùng môi trường sau này",
+    "Bảo vệ khỏi lỗi trong numpy, vì các phiên bản bị khóa là cố định",
+    "Code nhanh hơn, vì các phiên bản đã ghim bỏ qua resolver lúc chạy"
+   ],
+   "explanation": "Một khoảng mô tả cái chấp nhận được; một lock ghi lại cái đã được cài."
+  },
+  "q2": {
+   "prompt": "Phiên bản nào thỏa specifier ~=1.4.2?",
+   "options": [
+    "1.4.7",
+    "1.5.0",
+    "2.0.0",
+    "1.4.0"
+   ],
+   "explanation": "~=1.4.2 nghĩa là >=1.4.2 và <1.5, nên chỉ 1.4.7."
+  },
+  "q3": {
+   "prompt": "Cái nào mới hơn?",
+   "options": [
+    "1.10",
+    "1.9",
+    "Chúng bằng nhau",
+    "Không thể so sánh"
+   ],
+   "explanation": "Phiên bản được so sánh theo số trên từng đoạn: 10 > 9."
+  },
+  "q4": {
+   "prompt": "Mặc định steps=1000; file cấu hình đặt steps=500; môi trường có EXP_STEPS=200; dòng lệnh truyền --steps 50. Giá trị steps hiệu lực là bao nhiêu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "mặc định < file < môi trường < dòng lệnh: 50."
+  },
+  "q5": {
+   "prompt": "Mặc định seed=0; file đặt seed=3; env EXP_SEED=7; không có giá trị CLI. Seed hiệu lực là bao nhiêu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Môi trường ghi đè file."
+  },
+  "q6": {
+   "prompt": "Một token API được thí nghiệm của bạn dùng nên nằm ở đâu?",
+   "options": [
+    "Được viết cứng thành hằng số trong script, nơi nó luôn khả dụng",
+    "Trong một config.yaml được commit, để mọi người trong nhóm có cùng giá trị",
+    "Trong một biến môi trường hoặc kho bí mật, không bao giờ commit vào repository",
+    "Trong README, để người dùng mới biết cần xin và dùng token nào"
+   ],
+   "explanation": "Bí mật trong Git ở lại trong lịch sử; hãy cung cấp chúng từ môi trường."
+  },
+  "q7": {
+   "prompt": "Bạn phải chứng minh một thí nghiệm có thể tái lập từ một checkout mới. Hãy mô tả các file bạn commit, các lệnh bạn chạy trong một thư mục sạch, và cách bạn quyết định thành công.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Commit code, lock file với phiên bản chính xác (lý tưởng là có hash), phiên bản Python, cấu hình và seed; loại trừ .venv và bí mật.",
+    "Tạo một virtual environment mới từ lock và chạy với cấu hình đã ghi.",
+    "So sánh đầu ra (digest/metric) và điều tra khác biệt về phiên bản, biến môi trường, dữ liệu và phần cứng."
+   ]
+  }
+ }
+}

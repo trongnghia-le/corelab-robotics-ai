@@ -27,7 +27,7 @@
         "Both coordinates are lengths in metres, since every joint translates",
         "A prismatic joint adds no coordinate, because it only slides along a fixed line"
       ],
-      "answer": "1",
+      "answer": "0",
       "explanation": "A revolute coordinate is an angle and a prismatic coordinate is a length, so the vector mixes units and any joint-space distance needs scaling."
     },
     {
@@ -98,7 +98,7 @@
         "The constraints are not all independent, because of special geometry",
         "The formula only works for spatial mechanisms, not planar linkages"
       ],
-      "answer": "0",
+      "answer": "2",
       "explanation": "The formula counts constraints, not whether they are independent. Special geometry (equal-length parallel bars) makes some constraints redundant."
     },
     {
@@ -240,7 +240,7 @@
         "Its configuration space is a 2D surface, as the sideways direction is removed",
         "It has only 2 configuration coordinates, since sideways motion is impossible"
       ],
-      "answer": "0",
+      "answer": "1",
       "explanation": "The sideways constraint is on velocity and is not integrable, so it does not remove a configuration coordinate: the configuration space is still 3-dimensional."
     },
     {
@@ -283,13 +283,13 @@
       ],
       "id": "d12",
       "kind": "short",
-      "prompt": "A quadrotor has a 6D pose but only four rotors. Explain how many configuration coordinates it has, how many independent inputs, and why this is not a problem for reaching an arbitrary pose.",
+      "prompt": "A quadrotor has a 6D pose but only four rotors. Explain how many configuration coordinates it has, how many independent inputs, and why it can still reach any position and heading even though it cannot hold an arbitrary tilt there.",
       "dimension": "T",
       "critical": false,
       "rubric": [
         "States 6 configuration degrees of freedom (3 translation, 3 rotation) and 4 inputs (thrusts)",
         "Explains it is underactuated: not every velocity direction can be commanded instantly (e.g., lateral motion needs tilting first)",
-        "Explains that coupling between tilt and translation still allows reaching any pose over time, so reachability depends on dynamics, not only on the dof count"
+        "Explains that tilt is coupled to horizontal acceleration, so the vehicle can reach any position and yaw over time (flat outputs) but roll and pitch cannot be chosen independently; reachability depends on dynamics, not only on the dof count"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }

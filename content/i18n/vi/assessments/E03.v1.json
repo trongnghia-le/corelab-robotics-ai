@@ -1,0 +1,59 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Vì sao một bộ lập kế hoạch POMDP dùng belief state thay vì quan sát mới nhất?",
+   "options": [
+    "Belief loại bỏ nhu cầu về bất kỳ mô hình cảm biến nào, vì nó được học trực tiếp từ reward",
+    "Quan sát không bao giờ có sẵn trong lúc lập kế hoạch, nên bộ lập kế hoạch phải đoán trạng thái",
+    "Belief luôn tất định, nên bộ lập kế hoạch có thể coi trạng thái là đã biết chính xác",
+    "Belief tóm tắt lịch sử và độ bất định, trong khi quan sát cuối cùng có thể sai"
+   ],
+   "explanation": "Belief là thống kê đủ của lịch sử; quan sát cuối cùng bỏ qua nhiễu và bằng chứng trước đó."
+  },
+  "q2": {
+   "prompt": "Bài toán Tiger: b = P(tiger ở trái) = 0.5, độ chính xác cảm biến 0.85. Posterior sau khi nghe 'left' là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "0.85*0.5 / (0.85*0.5+0.15*0.5)=0.85."
+  },
+  "q3": {
+   "prompt": "b = 0.7, độ chính xác 0.85. Xác suất nghe thấy 'left' là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "0.85*0.7+0.15*0.3=0.64."
+  },
+  "q4": {
+   "prompt": "Mở cửa bên phải cho +10 nếu tiger ở trái và -100 nếu ngược lại. Tại b = 0.9 (tiger ở trái), reward kỳ vọng khi mở cửa bên phải là bao nhiêu?",
+   "explanation": "0.9*10 + 0.1*(-100) = -1."
+  },
+  "q5": {
+   "prompt": "Khi nào một phép đo làm rõ KHÔNG đáng thực hiện?",
+   "options": [
+    "Khi cảm biến nhiễu, vì một lần đọc nhiễu không bao giờ thay đổi được belief",
+    "Bất cứ khi nào tầm lập kế hoạch dài, vì thông tin sớm luôn bị quên về sau",
+    "Khi không kết quả khả dĩ nào làm đổi hành động được chọn, hoặc chi phí vượt quá lợi ích kỳ vọng",
+    "Khi belief đồng đều, vì không còn gì mà phép đo có thể cho ta biết"
+   ],
+   "explanation": "Thông tin chỉ có giá trị thông qua các quyết định mà nó làm thay đổi, sau khi trừ chi phí."
+  },
+  "q6": {
+   "prompt": "Hành động ngay tại b=0.5 cho -45; một lần listen (chi phí 1) dẫn đến một belief mà hành động tốt nhất đáng giá -6.5 trong cả hai trường hợp. Giá trị của việc listen một lần là bao nhiêu?",
+   "explanation": "-1 + (-6.5) = -7.5."
+  },
+  "q7": {
+   "prompt": "Một cảm biến có độ chính xác 0.5 (thuần tung đồng xu) được dùng trước khi hành động. Chính sách tốt nhất là:",
+   "options": [
+    "Coi lần đọc là trạng thái thật và hành động theo nó mà không cập nhật",
+    "Bỏ qua nó: posterior bằng prior và việc cảm nhận chỉ tốn chi phí",
+    "Tin nó hoàn toàn, vì bất kỳ lần đọc nào cũng tốt hơn chỉ hành động theo prior",
+    "Dùng nó hai lần, để hai lần tung đồng xu trung bình hóa thành tín hiệu đáng tin"
+   ],
+   "explanation": "Không có thông tin, chi phí dương."
+  },
+  "q8": {
+   "prompt": "Một tay máy không chắc một vật là cốc hay chai (80 phần trăm là cốc). Gắp nhầm sẽ làm vỡ thứ gì đó; một góc nhìn camera thứ hai tốn 1 giây. Mô tả cách bạn quyết định giữa gắp ngay và lấy thêm góc nhìn, bao gồm các đại lượng cần có và cách bạn kiểm chứng quyết định.",
+   "explanation": "Có rubric hướng dẫn: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Định nghĩa reward cho việc gắp đúng/sai và chi phí của góc nhìn.",
+    "Cập nhật belief với độ chính xác của camera cho từng kết quả và so sánh các giá trị kỳ vọng.",
+    "Kiểm chứng trên dữ liệu log hoặc mô phỏng dùng lớp thật bị ẩn, và kiểm thử cảm biến có độ chính xác 0.5 như một trường hợp biên."
+   ]
+  }
+ }
+}

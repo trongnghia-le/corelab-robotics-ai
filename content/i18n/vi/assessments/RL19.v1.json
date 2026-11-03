@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một mô hình học được có RMSE một bước là 0.02 trên các transition thật. Bạn có thể kết luận gì về một kế hoạch open-loop 30 bước?",
+   "options": [
+    "Chưa kết luận được gì: sai số tích lũy, nên hãy đo sai số open-loop tại horizon lập kế hoạch",
+    "Sai số của nó chính xác khoảng 30 x 0.02 = 0.6, không thay đổi giữa các rollout",
+    "Nó an toàn, vì model predictive control luôn sửa được sai số mô hình",
+    "Sai số của nó tối đa là 0.02, vì các sai số một bước triệt tiêu nhau trên horizon"
+   ],
+   "explanation": "Các dự đoán được đưa ngược lại làm đầu vào, nên hệ thức truy hồi sai số e_{k+1} <= L e_k + eps áp dụng; sai số một bước chỉ là đầu vào theo từng bước của nó."
+  },
+  "q2": {
+   "prompt": "Mô hình s'=1.02 s+0.5 a, plant s'=s+0.5 a, a=1 ở mỗi bước, s0=0. Trạng thái open-loop của mô hình sau 10 bước là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "s_k=0.5(1.02^k-1)/0.02, cho 5.4749 tại k=10."
+  },
+  "q3": {
+   "prompt": "Chặn sai số truy hồi e_{k+1} <= L e_k + eps với L=1.1, eps=0.05, e_0=0. Chặn của e_5 là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "eps (L^5-1)/(L-1)=0.05*0.61051/0.1=0.3053."
+  },
+  "q4": {
+   "prompt": "MPC lập kế hoạch lại ở mỗi bước. Vì sao điều này làm giảm tác hại của sai số mô hình so với việc thực thi toàn bộ chuỗi đã lập kế hoạch?",
+   "options": [
+    "Nó khởi động lại việc lập kế hoạch từ trạng thái thật quan sát được, nên dự đoán không bao giờ tích lũy vượt quá horizon",
+    "Nó làm mô hình chính xác hơn, vì mỗi lần lập lại thêm dữ liệu cho mô hình online",
+    "Nó đảm bảo cost được cực tiểu hóa trong hệ thật, vì mô hình được khớp lại ở mỗi bước",
+    "Nó loại bỏ nhu cầu học mô hình, vì trạng thái thật thay thế mọi dự đoán"
+   ],
+   "explanation": "Chỉ hành động đầu tiên của mỗi kế hoạch được thực thi, và kế hoạch kế tiếp bắt đầu từ trạng thái đã đo."
+  },
+  "q5": {
+   "prompt": "Simulation lemma: gamma=0.95, eps=0.01 (sai số chuyển L1), Rmax=1. Chặn sai số giá trị gamma*eps*Rmax/(1-gamma)^2 là bao nhiêu? (2 chữ số thập phân)",
+   "explanation": "0.95*0.01/0.0025=3.8."
+  },
+  "q6": {
+   "prompt": "Một planner tìm ra kế hoạch có return dự đoán 100 nhưng return thật 12. Nguyên nhân có khả năng nhất là:",
+   "options": [
+    "Policy là ngẫu nhiên, nên các hành động lấy mẫu khác nhau giữa lập kế hoạch và thực thi",
+    "Hệ số chiết khấu lớn hơn 1, nên return dự đoán bị thổi phồng bởi các bước về sau",
+    "Learning rate quá nhỏ, nên mô hình chưa hội tụ về dữ liệu",
+    "Model exploitation: bộ tối ưu chọn các hành động mà ở đó mô hình sai theo hướng có lợi cho nó"
+   ],
+   "explanation": "Một bộ cực đại hóa trên mô hình sẽ chọn lọc theo sai số mô hình dương; khoảng cách giữa return dự đoán và return thật là dấu hiệu của nó."
+  },
+  "q7": {
+   "prompt": "Bạn phải báo cáo chất lượng của một mô hình động lực học học được cho một robot lập kế hoạch trước 15 bước. Hãy mô tả cách đánh giá: dùng dữ liệu nào, hai sai số nào, baseline nào, và điều gì khiến bạn bác bỏ mô hình.",
+   "rubric": [
+    "Quỹ đạo thật được giữ lại (held-out); báo cáo riêng sai số một bước và sai số open-loop 15 bước.",
+    "So sánh với một baseline tầm thường như s'=s và kiểm tra các trạng thái nằm ngoài vùng huấn luyện.",
+    "Bác bỏ nếu sai số open-loop tại horizon xấp xỉ baseline hoặc khoảng cách giữa return dự đoán và return thật lớn."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

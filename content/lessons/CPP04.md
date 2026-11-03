@@ -4,7 +4,7 @@
   "module_id": "CPP04",
   "title": "Classes and OOP: encapsulation, interfaces, and invariants",
   "summary": "Design classes whose public operations can never leave a valid state, and use abstract interfaces for behavior that varies.",
-  "estimated_minutes": 75,
+  "estimated_minutes": 395,
   "prerequisites": [
     "CPP01",
     "CPP02"
@@ -375,6 +375,70 @@ all tests passed
 
 Make `Limits` and `JointState` constexpr-friendly, or add a `Joint` template parameter for the unit (radians versus meters) so that passing a prismatic position to a revolute joint does not compile.
 
+### Library track
+
+Use only the standard library: `<random>` for the fuzz test of the extension project, and `<functional>`/`<variant>` for the two alternatives to virtual dispatch from exercise 8. Paste the code below *after* your finished `JointState`, `Controller`, `PController` and `step` (it has its own `main`, so drop the one from the tests). Compile with `g++ -std=c++17 -Wall -Wextra -fsanitize=address,undefined`.
+
+```cpp
+#include <cassert>
+#include <cmath>
+#include <functional>
+#include <iostream>
+#include <limits>
+#include <random>
+#include <variant>
+#include <vector>
+
+// step() again, but taking ANY callable error -> command (lambda, std::function, functor).
+template <class F>
+void step_with(JointState& j, F&& compute, double target, double dt) {
+  const double cmd = std::clamp(compute(target - j.position()), -j.vmax(), j.vmax());
+  j.set_position(std::clamp(j.position() + cmd * dt, j.lo(), j.hi()), dt);
+}
+
+struct PGain  { double kp; double operator()(double e) const { return kp * e; } };
+struct PDGain { double kp, kd, prev = 0; double operator()(double e) { double d = e - prev; prev = e; return kp * e + kd * d; } };
+
+int main() {
+  // 1. fuzz with <random>: the invariant must hold after every call, accepted or not
+  std::mt19937 rng(42);
+  std::normal_distribution<double> nd(0.0, 3.0);
+  const double inf = std::numeric_limits<double>::infinity();
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> special = {0.0, -0.0, nan, inf, -inf, 1e308, 5e-324, 1.5, -1.5};
+  JointState j(-1.5, 1.5, 2.0);
+  int accepted = 0;
+  for (int i = 0; i < 100000; ++i) {
+    double q  = (i % 4 == 0) ? special[rng() % special.size()] : nd(rng);
+    double dt = (i % 5 == 0) ? special[rng() % special.size()] : std::fabs(nd(rng)) * 0.1;
+    const double q0 = j.position(), v0 = j.velocity();
+    const bool ok = j.try_set_position(q, dt);
+    accepted += ok;
+    if (!ok) assert(j.position() == q0 && j.velocity() == v0);      // a rejection is a no-op
+    assert(std::isfinite(j.position()) && j.position() >= -1.5 && j.position() <= 1.5);
+    assert(std::fabs(j.velocity()) <= 2.0);
+  }
+  std::cout << "accepted " << accepted << " of 100000\n";
+
+  // 2. three ways to swap the controller must agree with the virtual PController
+  const double expect = 1.0 - std::pow(0.8, 10);
+  PController virt(2.0);
+  std::function<double(double)> fn = PGain{2.0};
+  std::variant<PGain, PDGain> var = PGain{2.0};            // run-time switch without virtual
+  JointState a(-10, 10, 100), b(-10, 10, 100), c(-10, 10, 100), d(-10, 10, 100);
+  for (int i = 0; i < 10; ++i) {
+    step(a, virt, 1.0, 0.1);                                           // virtual
+    step_with(b, fn, 1.0, 0.1);                                        // std::function
+    step_with(c, [&](double e) { return std::visit([e](auto& g) { return g(e); }, var); }, 1.0, 0.1);
+    step_with(d, PGain{2.0}, 1.0, 0.1);                                // template, inlinable
+  }
+  for (const JointState* s : {&a, &b, &c, &d}) assert(std::fabs(s->position() - expect) < 1e-12);
+  std::cout << "four controllers agree: " << a.position() << "\n";
+}
+```
+
+Expected output: `accepted ...` (about 11 800 of 100 000 with this seed; the exact count depends on your standard library's `normal_distribution`) and `four controllers agree: 0.892626`. Every assert must hold, which is the induction proof of exercise 7 checked on 100 000 hostile calls. Then measure: how much slower is the `std::function` loop than the template version for $10^8$ calls (use `-O2` and `std::chrono`)?
+
 ## Verification
 
 - Write the invariant as an `assert`-style `bool invariant() const` private function and call it at the end of every mutating function in debug builds.
@@ -428,4 +492,4 @@ The same pattern appears in ROS 2 `hardware_interface` (an abstract interface wi
 - [cppreference: Classes](https://en.cppreference.com/w/cpp/language/classes) - precise rules for access control, constructors, virtual functions and abstract classes.
 - [LearnCpp](https://www.learncpp.com/) - classes, constructors, inheritance and virtual functions with graded quizzes.
 
-**More practice:** the chapter quizzes on classes and inheritance at [LearnCpp](https://www.learncpp.com/) (answers shown inline), and the per-rule "Enforcement" notes in the [Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines), which describe how to check each rule in real code.
+**More practice:** the quizzes on [LearnCpp: introduction to classes](https://www.learncpp.com/cpp-tutorial/introduction-to-classes/), [pure virtual functions and interface classes](https://www.learncpp.com/cpp-tutorial/pure-virtual-functions-abstract-base-classes-and-interface-classes/), [virtual destructors and override](https://www.learncpp.com/cpp-tutorial/virtual-destructors-virtual-assignment-and-overriding-virtualization/) and [object slicing](https://www.learncpp.com/cpp-tutorial/object-slicing/) (answers shown on each page), and the Core Guidelines [classes and class hierarchies](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c-classes-and-class-hierarchies) section as a review checklist for your own `JointState`.

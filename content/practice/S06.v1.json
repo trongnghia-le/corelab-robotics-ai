@@ -281,18 +281,18 @@
     },
     {
       "id": "b10",
-      "prompt": "`max(-1, min(1, w/w_max))` is applied to w=NaN. Result?",
+      "prompt": "In Python, `max(-1, min(1, w / w_max))` is applied with w = NaN (w_max = 10). What happens?",
       "kind": "choice",
       "dimension": "C",
       "critical": false,
       "options": [
         "-1, because a NaN compares as smaller than every number",
         "0, because a NaN is treated as zero by the min and max functions",
-        "It raises an exception in Python, because a NaN cannot be compared",
-        "It can pass NaN through, so an explicit check is needed."
+        "It raises an exception, because a NaN cannot be compared",
+        "It returns 1 (full scale) without any error, so an explicit NaN check is needed"
       ],
       "answer": "3",
-      "explanation": "Comparisons with NaN are false; the clamp may return NaN.",
+      "explanation": "Comparisons with NaN are all false, so min(1, nan) returns 1 and max(-1, 1) stays 1: the clamp turns NaN into a full-scale command. With the arguments in the other order the NaN would pass through instead. Either way, check for NaN explicitly.",
       "knowledgeType": "concept",
       "skillTags": [
         "command-mapping"

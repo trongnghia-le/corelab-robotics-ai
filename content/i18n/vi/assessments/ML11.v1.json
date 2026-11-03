@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Dữ liệu {1, 3}, mô hình N(μ=2, σ²=1). Log-likelihood trung bình mỗi điểm là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Mỗi điểm có (x−μ)²=1: −½[ln(2π)+1]=−1.4189."
+  },
+  "q2": {
+   "prompt": "Vì sao ta không thể cực đại hóa log-likelihood của mixture ở dạng đóng?",
+   "options": [
+    "Likelihood không khả vi theo các trung bình, nên không tồn tại điểm dừng",
+    "Log của một tổng trên thành phần ẩn không tách riêng theo từng thành phần",
+    "Trọng số của mỗi thành phần được cố định trước, nên chỉ fit được các trung bình",
+    "Likelihood phẳng theo các tham số vì các thành phần có thể hoán đổi tự do"
+   ],
+   "explanation": "log Σ_k w_k N(x; μ_k, σ_k²) gắn kết mọi thành phần; EM làm việc với likelihood kỳ vọng của dữ liệu đầy đủ thay thế."
+  },
+  "q3": {
+   "prompt": "Mixture 0.5·N(0,1)+0.5·N(3,1), quan sát x=1. Responsibility của thành phần 1 là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "e^-0.5=0.6065 so với e^-2=0.1353 → 0.6065/0.7418=0.8176."
+  },
+  "q4": {
+   "prompt": "Một Gaussian đơn được fit vào dữ liệu có ba cụm tách biệt rõ. Vấn đề chính của mô hình sinh kết quả là gì?",
+   "options": [
+    "Nó đặt khối lượng xác suất vào các vùng trống giữa các cụm",
+    "Likelihood của nó không xác định khi các cụm tách biệt rõ",
+    "Nó overfit bằng cách học thuộc từng điểm huấn luyện trong cụm của riêng nó",
+    "Không thể lấy mẫu từ nó khi dữ liệu có nhiều hơn một mode"
+   ],
+   "explanation": "Một chuông không mô hình hóa được ba mode, nên mẫu rơi vào các khoảng trống và held-out likelihood kém."
+  },
+  "q5": {
+   "prompt": "Encoder của một VAE cho q(z|x)=N(0, 1) với mọi đầu vào (μ=0, σ²=1) và prior là N(0,1). Số hạng KL là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "½(1+0−1−ln1)=0. Mã không mang thông tin về x (posterior collapse)."
+  },
+  "q6": {
+   "prompt": "Bạn chọn số thành phần mixture bằng log-likelihood huấn luyện. Điều gì sẽ xảy ra?",
+   "options": [
+    "Không tính được, vì likelihood cần các nhãn ẩn trước",
+    "Nó chọn đúng K thật, vì likelihood đạt đỉnh tại giá trị sinh dữ liệu",
+    "Nó ưu tiên K ngày càng lớn, vì likelihood huấn luyện tiếp tục tăng theo năng lực",
+    "Nó chọn K=1, vì một thành phần đơn có độ phức tạp mô hình thấp nhất"
+   ],
+   "explanation": "Nhiều thành phần hơn luôn fit dữ liệu huấn luyện ít nhất tốt bằng; hãy dùng held-out likelihood."
+  },
+  "q7": {
+   "prompt": "Một mô hình sinh cho ảnh depth của robot tạo ra các mẫu sắc nét, chân thực nhưng tất cả đều cho thấy cùng một loại cảnh. Hãy gọi tên thất bại và mô tả hai phép đo bạn sẽ thêm vào đánh giá.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Gọi tên mode collapse (độ đa dạng/độ bao phủ thấp) dù độ chân thực cao.",
+    "Đo độ bao phủ, ví dụ tỉ lệ cụm/mode của mẫu so với dữ liệu hoặc recall láng giềng gần nhất trong không gian feature.",
+    "Thêm held-out likelihood hoặc tái tạo khi có, và so sánh với phân phối dữ liệu, không chỉ kiểm tra bằng mắt."
+   ]
+  }
+ }
+}

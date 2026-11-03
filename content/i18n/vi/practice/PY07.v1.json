@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "t1": {
+   "prompt": "Một bộ kiểm thử chạy mọi dòng của một hàm nhưng không chứa câu lệnh assert nào và không bao giờ thất bại. Kết luận nào là chính đáng?",
+   "options": [
+    "Các bài kiểm thử tốt, vì độ phủ là 100% và bộ kiểm thử không bao giờ thất bại",
+    "Hàm đúng với mọi đầu vào, vì mọi dòng của nó đã được thực thi",
+    "Chỉ là code đã chạy mà không raise ngoại lệ trên các đầu vào đó",
+    "Hàm đúng trên các đầu vào đã chạy, vì nó không thất bại"
+   ],
+   "explanation": "Độ phủ cho biết các dòng đã thực thi, không cho biết kết quả đã được kiểm tra. Một bộ kiểm thử không có assertion có thể qua với bất kỳ hành vi nào (trừ sự cố)."
+  },
+  "t2": {
+   "prompt": "Một bài kiểm thử so sánh giá trị tính được a với b = 2000 bằng |a-b| <= atol + rtol*|b|, rtol = 1e-6 và atol = 1e-9. Chênh lệch tuyệt đối lớn nhất được phép là bao nhiêu? Cho đáp án đến 6 chữ số thập phân.",
+   "explanation": "1e-9 + 1e-6*2000 = 0.002000001."
+  },
+  "t3": {
+   "prompt": "Một regression nằm đâu đó trong 256 commit (commit đầu tốt, commit cuối xấu). git bisect cần tối đa bao nhiêu lần chạy kiểm thử? Cho một số nguyên.",
+   "explanation": "Mỗi lần chạy chia đôi khoảng: log2(256) = 8."
+  },
+  "t4": {
+   "prompt": "Một bài kiểm thử ngẫu nhiên không seed thất bại giả trong 1% số lần chạy. Xác suất có ít nhất một trong 50 lần chạy CI độc lập thất bại là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "1 - 0.99^50 = 0.395."
+  },
+  "t5": {
+   "prompt": "Kiểm tra nào nên dùng so sánh bằng chính xác thay vì dung sai số học?",
+   "options": [
+    "Khoảng cách tính bằng công thức căn bậc hai",
+    "Góc sau các vòng đi-về sin/cos",
+    "Số lượng lidar return trong một thông điệp đã phân tích",
+    "Trung bình của 1000 số đo float"
+   ],
+   "explanation": "Số đếm nguyên là chính xác; kết quả dấu phẩy động của các thuật toán số cần một dung sai có cơ sở."
+  },
+  "t6": {
+   "prompt": "Một bộ kiểm thử được chạy với 12 mutant. 9 bị giết và 2 trong 3 mutant sống sót là mutant tương đương (không đổi hành vi). Điểm đột biến sau khi loại các mutant tương đương, dưới dạng phân số, là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "Mutant hợp lệ = 12 - 2 = 10; điểm = 9/10 = 0.90."
+  },
+  "t7": {
+   "prompt": "Một bài kiểm thử so sánh đầu ra của bộ lọc với một mô phỏng có nhiễu qua ở máy bạn nhưng thất bại khoảng một trong ba mươi lần chạy CI. Hãy mô tả cách bạn chẩn đoán và sửa.",
+   "rubric": [
+    "Nghi ngờ nguồn ngẫu nhiên không seed hoặc phụ thuộc thời gian, và tái hiện bằng cách lặp bài kiểm thử hoặc cố định seed",
+    "Tách logic tất định (kiểm thử với dữ liệu cố định và oracle tính tay) khỏi hành vi thống kê (kiểm thử với một cận có cơ sở)",
+    "Không chỉ chạy lại cho đến khi xanh hay nới dung sai mà không tính xác suất thất bại"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "t8": {
+   "prompt": "Thiết kế các ca kiểm thử cho normalize_angle(theta) ánh xạ mọi góc theo radian vào (-pi, pi]. Liệt kê ít nhất sáu ca với kết quả mong đợi và nói ca nào là ca biên.",
+   "rubric": [
+    "Gồm các giá trị thông thường trong khoảng và các giá trị ngoài khoảng cách nhau những vòng nguyên (ví dụ 3*pi/2 -> -pi/2, -3*pi -> pi)",
+    "Xác định hành vi biên tại +pi và -pi (khoảng nửa mở) và tại 0 và 2*pi",
+    "Đề cập đầu vào có độ lớn rất lớn hoặc không hữu hạn và dùng dung sai cho các so sánh float"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "t9": {
+   "prompt": "Bạn viết một FFT nhanh. Oracle nào cho các giá trị mong đợi đáng tin cậy nhất cho các bài kiểm thử của nó?",
+   "options": [
+    "Đầu ra FFT từ chính hàm đó, gọi lần thứ hai",
+    "Đầu ra in ở lần chạy đầu, lưu làm giá trị mong đợi",
+    "Một bản sao code FFT dán vào bài kiểm thử",
+    "Một vòng lặp DFT ngây thơ O(n^2) viết riêng"
+   ],
+   "explanation": "Một tổng DFT trực tiếp chậm là một phép tính độc lập của cùng đại lượng toán học; các lựa chọn khác dùng lại chính code đang kiểm thử hoặc các giả định của nó."
+  },
+  "t10": {
+   "prompt": "Một bài kiểm thử cố định seed ngẫu nhiên của numpy bằng 0 và lấy 100 mẫu. Một lần qua chứng minh điều gì?",
+   "options": [
+    "Code không chệch về mặt thống kê",
+    "Code hoạt động với tập mẫu có thể tái lập đó",
+    "Bài kiểm thử giờ độc lập với hành vi dấu phẩy động của máy",
+    "Code hoạt động với mọi đầu vào ngẫu nhiên"
+   ],
+   "explanation": "Một seed cố định cho khả năng lặp lại, nhưng nó chỉ kiểm thử một tập mẫu; các seed hoặc phân phối khác chưa được kiểm thử."
+  },
+  "t11": {
+   "prompt": "Một ID cảm biến nguyên hợp lệ trong khoảng 10..20 bao gồm cả hai đầu. Dùng các điểm phân tích giá trị biên tiêu chuẩn (ngay dưới, đúng tại, và ngay trên mỗi đầu), bạn viết bao nhiêu đầu vào kiểm thử? Cho một số nguyên.",
+   "explanation": "9, 10, 11, 19, 20, 21."
+  },
+  "t12": {
+   "prompt": "Điều kiện nào cần để git bisect tìm ra commit xấu đầu tiên một cách đáng tin cậy?",
+   "options": [
+    "Lỗi phải nằm trong một file chỉ bị đổi ở đúng một commit của khoảng",
+    "Mọi commit trong khoảng phải đã được review code trước khi merge",
+    "Bài kiểm thử phải chạy dưới một giây để mỗi bước bisect nhanh",
+    "Kết quả kiểm thử phải tất định và tiếp tục thất bại với mọi commit sau đó"
+   ],
+   "explanation": "Bisect giả định tính đơn điệu: một khi một commit xấu thì mọi commit sau đều xấu, và kết quả kiểm thử là tất định."
+  }
+ }
+}

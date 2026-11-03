@@ -1,0 +1,23 @@
+{"questions": {
+"q1": {"prompt": "Tập định danh nào cho phép bạn truy vết một kết quả về thứ đã tạo ra nó?",
+ "options": ["Phiên bản code, config (gồm seed) và hash của dữ liệu đầu vào.", "Tên file kết quả, kích thước của nó và thời điểm nó được lưu lần cuối vào đĩa.", "Hệ điều hành, độ phân giải màn hình và trình soạn thảo dùng cho phân tích.", "Ngày chạy, tên tác giả và tên máy đã thực thi nó."],
+ "explanation": "Một kết quả là hàm của code, config và dữ liệu; mỗi thứ cần một định danh thay đổi khi nội dung thay đổi."},
+"q2": {"prompt": "Một digest SHA-256 có bao nhiêu ký tự thập lục phân?",
+ "explanation": "256 bit / 4 bit mỗi ký tự hex = 64."},
+"q3": {"prompt": "Một hash rút gọn của git có 7 ký tự thập lục phân. Đó là bao nhiêu bit?",
+ "explanation": "7 * 4 = 28 bit, tức 2^28 = 268,435,456 dạng rút gọn có thể."},
+"q4": {"prompt": "Hai config {\"a\":1,\"b\":2} và {\"b\":2,\"a\":1} có cùng ý nghĩa. Bạn nên hash config thế nào để cả hai cho cùng hash?",
+ "options": ["Hash thời gian sửa đổi file, giống nhau cho cả hai lần viết config.", "Tuần tự hóa sang JSON chuẩn hóa (khóa sắp xếp, dấu phân cách cố định) và hash các byte đó.", "Chỉ hash khóa đầu tiên của file, giống nhau ở cả hai config.", "Hash object id trong Python của dictionary đã nạp, giống nhau cho các dict bằng nhau."],
+ "explanation": "Dạng chuẩn hóa loại bỏ các khác biệt không mang ý nghĩa, như thứ tự khóa và khoảng trắng."},
+"q5": {"prompt": "Dùng P = 1 - exp(-k^2 / (2 * 2^b)), xác suất, theo phần trăm với 2 chữ số thập phân, có ít nhất một va chạm giữa k = 2000 mục với b = 28 bit là bao nhiêu?",
+ "explanation": "k^2 = 4,000,000; 2*2^28 = 536,870,912; tỉ số 0.00745; 1 - exp(-0.00745) = 0.74%."},
+"q6": {"prompt": "Log kết quả của bạn ghi git rev-parse HEAD, nhưng bạn đã chạy với các chỉnh sửa chưa commit. Giải thích vì sao kết quả không thể tái lập từ log và nêu hai cách sửa.",
+ "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+ "rubric": ["Giải thích rằng HEAD không bao gồm các chỉnh sửa chưa commit, nên code đã chạy khác với revision đã ghi.", "Cách sửa 1: từ chối chạy trừ khi git status --porcelain rỗng (hoặc commit trước).", "Cách sửa 2: ghi một hash hoặc bản sao của git diff vào manifest."]},
+"q7": {"prompt": "Hai lần chạy với cùng code, config và hash dữ liệu cho kết quả khác nhau dù đã đặt seed. Nguyên nhân hợp lý nhất là gì?",
+ "options": ["Một nguồn biến thiên khác chưa được seed hoặc ghi lại (RNG thứ hai, luồng, kernel GPU, phiên bản thư viện).", "Git tag làm thay đổi kết quả số, dù commit và dữ liệu vẫn y nguyên.", "SHA-256 không xác định, nên các đầu vào bằng nhau có thể cho giá trị hash khác nhau giữa các lần chạy.", "Các hash quá dài để so sánh, nên một va chạm che giấu sự khác biệt thật trong các đầu vào."],
+ "explanation": "Hash chỉ nắm bắt những gì bạn hash; nếu kết quả khác, một đầu vào bị thiếu trong manifest hoặc một nguồn ngẫu nhiên chưa được seed."},
+"q8": {"prompt": "Mô tả cách hash một file 5 GB trong Python mà không nạp nó vào bộ nhớ, và cách kiểm thử hàm của bạn.",
+ "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+ "rubric": ["Mở ở chế độ nhị phân và đọc các chunk kích thước cố định, cập nhật một đối tượng hashlib cho mỗi chunk.", "Trả về hexdigest ở cuối.", "Kiểm thử: vector đã biết (abc), file rỗng, và kết quả bằng nhau với các kích thước chunk khác nhau."]}
+}}

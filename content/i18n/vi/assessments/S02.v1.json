@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một joint hinge MJCF được viết không có thuộc tính axis. Nó quay quanh trục nào?",
+   "options": [
+    "y, (0,1,0)",
+    "x, (1,0,0)",
+    "z, (0,0,1)",
+    "Trục được chọn theo hướng dài nhất của geom."
+   ],
+   "explanation": "Trục hinge mặc định là (0,0,1); một con lắc treo dọc theo -z khi đó không có mô men trọng lực."
+  },
+  "q2": {
+   "prompt": "Một mô hình có một hộp free-joint và ba khớp hinge. Nó có bao nhiêu tọa độ vị trí nq?",
+   "explanation": "7 cho free joint (3+quaternion 4) cộng 3 hinge."
+  },
+  "q3": {
+   "prompt": "Một geom hình cầu bán kính 0.1 m không cho mass hay density. Với mật độ mặc định 1000 kg/m^3, khối lượng của nó là bao nhiêu kg? Độ chính xác 0.001.",
+   "explanation": "4/3 pi r^3 * 1000 = 4.1888."
+  },
+  "q4": {
+   "prompt": "Một bản lề tại gốc giữ một hình cầu (m=2 kg, r=0.1 m) có tâm cách 0.5 m. Quán tính trục I = 0.4 m r^2 + m L^2 tính bằng kg m^2. Độ chính xác 0.001.",
+   "explanation": "0.008+0.5."
+  },
+  "q5": {
+   "prompt": "Actuator position kp=20, kv=1, ctrl=1, q=0.4, qdot=-0.5, không giới hạn lực. Mô men áp dụng? Độ chính xác 0.01.",
+   "explanation": "20(1-0.4)-1(-0.5)=12.5."
+  },
+  "q6": {
+   "prompt": "Một va chạm có hằng số thời gian solref 0.004 s và timestep là 0.004 s (reference safety mặc định). Bạn nhận được gì?",
+   "options": [
+    "Hằng số thời gian hiệu dụng 0.008 s: mềm hơn đã viết.",
+    "Một lỗi vì va chạm không thể mềm hơn timestep.",
+    "Đúng va chạm 0.004 s bạn đã viết.",
+    "Một va chạm cứng không xuyên."
+   ],
+   "explanation": "Hằng số thời gian bị chặn dưới ở 2*timestep."
+  },
+  "q7": {
+   "prompt": "Bạn đã xây một con lắc MuJoCo và muốn có bằng chứng nó đúng trước khi dùng cho điều khiển. Hãy liệt kê các phép kiểm tra, giá trị tính tay và dung sai bạn sẽ dùng.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "So khối lượng và quán tính đã biên dịch với tính tay (định lý trục song song).",
+    "So chu kỳ góc nhỏ và một dải năng lượng với dung sai tường minh và một nghiên cứu theo timestep.",
+    "Cố ý đổi một tham số (bán kính, mật độ) và kiểm tra hướng thay đổi đã dự đoán."
+   ]
+  }
+ }
+}

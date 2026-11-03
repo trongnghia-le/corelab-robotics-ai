@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Build in ra \"undefined reference to 'plan(Path const&)'\". Giai đoạn nào báo lỗi này và nguyên nhân thường gặp là gì?",
+   "options": [
+    "Preprocess: một file header được include không tìm thấy trên include path",
+    "Run time: shared library không được dynamic loader tìm thấy lúc khởi động",
+    "Compile: tên hàm bị gõ sai tại chỗ gọi trong source",
+    "Link: thấy một khai báo nhưng không object hay library nào được link định nghĩa hàm"
+   ],
+   "explanation": "Khai báo làm compiler hài lòng; linker cần một định nghĩa trong các object và library được cung cấp cho nó."
+  },
+  "q2": {
+   "prompt": "Một dự án có 60 object file, mỗi file 2.5 s. Một header được 18 file trong số đó include. Động vào header đó tốn bao nhiêu giây biên dịch (bỏ qua link)? Cho một số.",
+   "explanation": "18 x 2.5 s = 45 s, so với 2.5 s cho thay đổi một .cpp."
+  },
+  "q3": {
+   "prompt": "Library sensors include <util/units.hpp> trong header PUBLIC sensors.hpp của nó. sensors nên link util như thế nào?",
+   "options": [
+    "PRIVATE, vì util là chi tiết cài đặt",
+    "Không quan trọng đối với header",
+    "Chỉ INTERFACE, để bản thân sensors bỏ qua util",
+    "PUBLIC, vì người dùng sensors.hpp cũng cần header của util"
+   ],
+   "explanation": "Một dependency xuất hiện trong header public của library là một phần của interface và phải lan truyền."
+  },
+  "q4": {
+   "prompt": "Đồ thị: app cần libplan và main.o; libplan cần plan.o và libmath; libmath cần math.o; math.o cần math.cpp và math.hpp; plan.o cần plan.cpp và math.hpp; main.o cần main.cpp và plan.hpp. math.cpp được sửa. Có bao nhiêu node KHÔNG phải source (object, library, executable) phải được build lại? Số nguyên.",
+   "explanation": "math.o, libmath, libplan, app = 4. plan.o và main.o không phụ thuộc vào math.cpp."
+  },
+  "q5": {
+   "prompt": "Một test dùng assert(f(x) == expected). Nó thất bại ở build Debug nhưng pass ở build Release có cùng bug. Vì sao?",
+   "options": [
+    "assert chỉ hoạt động khi sanitizer được bật",
+    "Release link một standard library khác với Debug",
+    "ctest bỏ qua các test thất bại ở cấu hình Release",
+    "Release định nghĩa NDEBUG, làm assert được biên dịch thành không gì cả"
+   ],
+   "explanation": "-DNDEBUG biên dịch assert(...) thành không gì cả. Hãy dùng macro test luôn kiểm tra."
+  },
+  "q6": {
+   "prompt": "Hai file .cpp include một header chứa 'int twice(int x) { return 2*x; }'. Lỗi là gì?",
+   "options": [
+    "Lỗi preprocessor: header được include hai lần",
+    "Không có lỗi; linker lặng lẽ chọn một bản cho hàm không inline",
+    "Lỗi link: multiple definition of twice(int)",
+    "Lỗi compile ở file thứ hai"
+   ],
+   "explanation": "Mỗi translation unit phát ra một định nghĩa; một hàm không inline chỉ được định nghĩa một lần trong chương trình. Đánh dấu nó inline hoặc định nghĩa trong một .cpp."
+  },
+  "q7": {
+   "prompt": "Giải thích cách bạn cấu trúc các target CMake cho một library với một test executable để test có thể include header của library mà không dùng lệnh include toàn cục theo thư mục, và cách bạn chạy test.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "add_library với target_include_directories(... PUBLIC include) và add_executable cho test.",
+    "target_link_libraries(test PRIVATE library) để include directory được thừa kế.",
+    "enable_testing(), add_test(NAME ... COMMAND ...), rồi cmake -S . -B build, cmake --build build, ctest --test-dir build."
+   ]
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một policy thỏa E[episode cost] <= 1.5. Điều gì suy ra được?",
+   "options": [
+    "Tối đa 1.5% episode vượt quá tổng cost 1.5",
+    "Policy này né rủi ro, vì nó kiểm soát cost trung bình",
+    "Không suy ra gì về tần suất một episode đơn lẻ vượt 1.5; đuôi có thể lớn",
+    "Không episode đơn lẻ nào vượt 1.5, vì trung bình bị chặn bởi nó"
+   ],
+   "explanation": "Một kỳ vọng chỉ ràng buộc trung bình; một đuôi nhị thức vẫn có thể đẩy một tỉ lệ lớn episode vượt ngân sách."
+  },
+  "q2": {
+   "prompt": "Các hành động: A (r=1, p=0), B (r=2, p=0.1), C (r=3, p=0.4). Một policy dùng B với xác suất 0.7 và C với 0.3. Xác suất sự cố kỳ vọng mỗi bước là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "0.7*0.1+0.3*0.4=0.19."
+  },
+  "q3": {
+   "prompt": "Các hành động A (r=1, p=0), B (r=2, p=0.1), C (r=3, p=0.4), trong đó p là xác suất sự cố mỗi bước. Ngân sách d=0.15. Chặn đối ngẫu g(lambda)=max_a(r-lambda p)+lambda d tại lambda=1 là bao nhiêu? (2 chữ số thập phân)",
+   "explanation": "max(1,1.9,2.6)+0.15=2.75."
+  },
+  "q4": {
+   "prompt": "Trong một phương pháp primal-dual, cost đo được vượt giới hạn. Hệ số nhân lambda nên:",
+   "options": [
+    "Tăng, phạt cost nhiều hơn",
+    "Giảm, để policy có thể đánh đổi nhiều cost hơn lấy reward",
+    "Giữ nguyên, vì cost đo được không ảnh hưởng đến nó",
+    "Đặt lại về 0, vì ràng buộc đã đang bị vi phạm"
+   ],
+   "explanation": "lambda <- max(0, lambda + eta (J_C - d)) tăng khi J_C > d."
+  },
+  "q5": {
+   "prompt": "Sự cố xảy ra độc lập với xác suất 0.05 mỗi bước. Xác suất có ít nhất một sự cố trong một episode 20 bước là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "1-0.95^20=0.6415."
+  },
+  "q6": {
+   "prompt": "Một giới hạn góc khớp không bao giờ được vượt trên một cánh tay thật. Cơ chế phù hợp nhất là:",
+   "options": [
+    "Thêm nhiễu khám phá, để cánh tay học được giới hạn nằm ở đâu",
+    "Một shield cứng hoặc bộ kẹp (clamp) ghi đè các hành động không an toàn",
+    "Hệ số chiết khấu lớn hơn, để các vi phạm trong tương lai được tính nhiều hơn",
+    "Một khoản phạt reward nhỏ khi vi phạm giới hạn, được học dần theo thời gian"
+   ],
+   "explanation": "Các ràng buộc cứng đã biết được thực thi bằng shield; khoản phạt chỉ làm nản lòng."
+  },
+  "q7": {
+   "prompt": "Một cánh tay robot sẽ học đẩy các vật gần một chiếc ly dễ vỡ. Hãy mô tả cách bạn đánh giá và báo cáo độ an toàn, và những lớp bảo vệ nào bạn sẽ dùng trong lúc khám phá.",
+   "rubric": [
+    "Báo cáo riêng return, cost trung bình và tỉ lệ vi phạm, kèm các seed, và cả trong lúc huấn luyện.",
+    "Gọi tên các lớp: khởi đầu thận trọng/demonstration, shield hoặc giới hạn cứng, ước lượng cost học được với policy dự phòng an toàn.",
+    "Nêu mỗi lớp không bao phủ điều gì và phép kiểm tra nào sẽ bác bỏ 'an toàn'."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

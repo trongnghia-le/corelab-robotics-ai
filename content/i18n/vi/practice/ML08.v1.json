@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Các trị riêng hiệp phương sai của dữ liệu đã căn tâm là 9, 3, 1, 1. Hai thành phần đầu giải thích bao nhiêu phần phương sai? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "(9+3)/14=0.857."
+  },
+  "b2": {
+   "prompt": "Dữ liệu đã căn tâm có các trị riêng hiệp phương sai 9, 3, 1, 1. Sai số tái tạo bình phương trung bình là bao nhiêu nếu bạn giữ 2 thành phần hàng đầu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Các trị riêng bị bỏ 1+1=2."
+  },
+  "b3": {
+   "prompt": "Trong power iteration, phép cập nhật v ← Cv/‖Cv‖ hội tụ về đâu (với điểm bắt đầu tổng quát)?",
+   "options": [
+    "Vector riêng của C ứng với trị riêng lớn nhất của C",
+    "Vector riêng của C ứng với trị riêng nhỏ nhất của C",
+    "Trung bình của dữ liệu, vì C được xây từ các điểm đã căn tâm",
+    "Một vector đơn vị ngẫu nhiên, vì điểm bắt đầu là ngẫu nhiên và tổng quát"
+   ],
+   "explanation": "Các thành phần dọc theo trị riêng lớn hơn được khuếch đại nhanh hơn, nên hướng hội tụ về vector riêng hàng đầu."
+  },
+  "b4": {
+   "prompt": "Cosine similarity của (3,0,4) và (0,5,0)? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Tích vô hướng bằng 0, nên các vector trực giao."
+  },
+  "b5": {
+   "prompt": "u=(1,1) và v=(5,5) khác nhau về độ dài. Cosine similarity của chúng là bao nhiêu, và khoảng cách Euclid là bao nhiêu? Hãy cho khoảng cách Euclid. (số thập phân, sai số cho phép 0.01)",
+   "explanation": "Cosine bằng 1 (cùng hướng), nhưng khoảng cách là sqrt(32)=5.66: cosine bỏ qua thang đo."
+  },
+  "b6": {
+   "prompt": "Một bảng embedding cho 8,000 ID địa điểm cảm biến dùng 64 chiều. Có bao nhiêu tham số? (số nguyên, sai số cho phép 1)",
+   "explanation": "8000·64=512,000."
+  },
+  "b7": {
+   "prompt": "Vì sao một lớp embedding được cài đặt bằng tra cứu bảng thay vì nhân một vector one-hot với một ma trận?",
+   "options": [
+    "Vector one-hot không thể nhân với ma trận, nên tích không xác định",
+    "Tra cứu làm embedding không huấn luyện được, giúp giữ bảng ổn định",
+    "Cả hai cho cùng một hàng, nhưng đánh chỉ số tránh được V phép nhân và một vector độ dài V",
+    "Tra cứu cho kết quả khác và tốt hơn so với tích one-hot"
+   ],
+   "explanation": "E^T e_i = E_i; phép tra cứu chỉ đọc hàng đó."
+  },
+  "b8": {
+   "prompt": "Các lớp khác nhau dọc theo trục x (std 0.3 trong lớp) trong khi một trục không liên quan y có std 3. Sau PCA với k=1, điều gì xảy ra?",
+   "options": [
+    "PCA tự động dùng nhãn để chọn x làm trục được giữ",
+    "Cả hai trục đều được giữ, vì trục lớp có phương sai nhỏ",
+    "Feature được giữ là trục nhiễu y và thông tin về lớp bị mất",
+    "Feature được giữ là trục lớp x, vì nó tách các lớp"
+   ],
+   "explanation": "PCA chỉ xếp hạng theo phương sai: var(y)=9 vượt var(x)≈1."
+  },
+  "b9": {
+   "prompt": "Giao thức nào không rò rỉ cho 'feature đóng băng so với đầu vào thô'?",
+   "options": [
+    "Fit encoder trên feature train+test, vì điều đó làm nó ổn định hơn",
+    "Chọn k theo độ chính xác test rồi báo cáo chính độ chính xác đó",
+    "So sánh hai loại feature chỉ trên một tập có nhãn, không có tập held-out",
+    "Fit encoder trên một pool không có tập test, huấn luyện đầu, và kiểm thử một lần"
+   ],
+   "explanation": "Bất cứ thứ gì được fit hoặc chọn trên dữ liệu test đều làm nhiễm bẩn ước lượng."
+  },
+  "b10": {
+   "prompt": "Độ chính xác của feature qua 20 lần lấy mẫu nhãn: trung bình 0.84; trung bình baseline thô 0.78, std của mức lợi giữa các lần lấy là 0.05. Mức lợi trung bình cách 0 bao nhiêu sai số chuẩn? (số thập phân, sai số cho phép 0.05; SE = std/√20)",
+   "explanation": "SE=0.05/4.472=0.01118; 0.06/0.01118=5.37."
+  },
+  "b11": {
+   "prompt": "Bạn huấn luyện một linear probe trên một encoder pretrained với 200 ảnh robot có nhãn và đạt độ chính xác test 85%. Hãy liệt kê các đối chứng bạn cần trước khi khẳng định feature của encoder là tốt.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Baseline pixel thô (hoặc feature thủ công đơn giản) với cùng đầu, cùng nhãn và cùng tập test.",
+    "Nhiều lần lấy mẫu nhãn/seed kèm độ trải, và encoder không được huấn luyện trên các ảnh test.",
+    "Một phép kiểm tra tỉnh táo như encoder trọng số ngẫu nhiên hoặc nhãn bị xáo trộn, và một phát biểu về điều gì sẽ bác bỏ khẳng định."
+   ]
+  },
+  "b12": {
+   "prompt": "Viết pseudocode cho power iteration với deflation để lấy hai hướng chính hàng đầu của một ma trận hiệp phương sai, và nêu hai phép kiểm tra rằng cài đặt của bạn đúng.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Lặp v ← Cv/‖Cv‖ từ một điểm bắt đầu ngẫu nhiên, rồi λ = vᵀCv; deflate C ← C − λ v vᵀ và lặp lại.",
+    "Kiểm tra trên một hiệp phương sai đồ chơi có trị riêng đã biết (ví dụ 4 và 1).",
+    "Kiểm tra tính trực chuẩn của các thành phần, phương sai giảm dần, và tổng phương sai bằng vết (trace)."
+   ]
+  }
+ }
+}

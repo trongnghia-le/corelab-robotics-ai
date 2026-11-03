@@ -4,7 +4,7 @@
   "module_id": "CPP05",
   "title": "STL containers, iterators, and algorithms",
   "summary": "Choose a container from its access pattern, use iterator ranges and standard algorithms correctly, and measure the trade-off.",
-  "estimated_minutes": 80,
+  "estimated_minutes": 395,
   "prerequisites": [
     "CPP01"
   ],
@@ -59,9 +59,9 @@ Think of three layers. **Containers** own elements and fix their layout: `vector
 
 Ranges are **half-open**: `[first, last)` contains `first` but not `last`. An empty range has `first == last`. This convention is why `v.end()` is valid to compare with but never to dereference, and why `lower_bound` can return `end()` meaning "not found".
 
-![Contiguous vector with binary search narrowing a window, compared with a tree of nodes, with typical costs](/lesson-figures/CPP05.svg)
+![Contiguous sorted vector with lower_bound finding t = 3, and the number of comparisons versus n for binary search](/lesson-figures/CPP05.svg)
 
-*Binary search on a sorted contiguous vector halves the window each step; a tree needs pointer hops for the same logarithmic count.*
+*Binary search on a sorted contiguous vector halves the window each step, so the comparison count grows like $\log_2 n$ (10, 14, 17, 20 for $n=10^3,\dots,10^6$) while a linear scan needs up to $n$. A tree needs the same logarithmic count but with pointer hops.*
 
 ## Theory and derivation
 
@@ -355,6 +355,66 @@ For the benchmark, expect `vector` to be faster than `map` and the gap to grow w
 
 Add `insert_sorted(t, v)` that accepts late samples using `upper_bound` and `vector::insert`, and measure the cost as a function of how far from the end the insertion happens. Then compare with a `std::map` implementation for 1% late arrivals.
 
+### Library track
+
+Use only the standard library (`<map>`, `<chrono>`, `<random>`) for task 5 and 6. Paste this *after* your finished `TimeSeries` (it has its own `main`, so drop the one from the tests) and compile it separately with `g++ -std=c++17 -O2 -Wall -Wextra` (no sanitizers when timing).
+
+```cpp
+#include <cassert>
+#include <chrono>
+#include <iostream>
+#include <map>
+#include <random>
+
+// Same interface on std::map, for the cross-check and the benchmark (task 5).
+class MapSeries {
+ public:
+  bool append(double t, double v) {
+    if (!std::isfinite(t) || (!m_.empty() && !(t > m_.rbegin()->first))) return false;
+    m_.emplace_hint(m_.end(), t, v);
+    return true;
+  }
+  std::optional<double> at(double t) const {
+    auto it = m_.lower_bound(t);
+    if (it == m_.end()) return std::nullopt;
+    if (it->first == t) return it->second;
+    if (it == m_.begin()) return std::nullopt;
+    auto a = std::prev(it);
+    return a->second + (it->second - a->second) * (t - a->first) / (it->first - a->first);
+  }
+ private:
+  std::map<double, double> m_;
+};
+
+template <class S>
+double ns_per_query(const S& s, const std::vector<double>& q, double& sink) {
+  using clk = std::chrono::steady_clock;
+  double best = 1e300;
+  for (int rep = 0; rep < 5; ++rep) {                         // repeats: keep the best (least noisy)
+    auto t0 = clk::now();
+    for (double x : q) sink += s.at(x).value_or(0.0);         // consume results
+    best = std::min(best, std::chrono::duration<double, std::nano>(clk::now() - t0).count() / q.size());
+  }
+  return best;
+}
+
+int main() {
+  std::mt19937 g(1);
+  for (std::size_t n : {1000u, 100000u, 1000000u}) {
+    TimeSeries vs; MapSeries ms;
+    for (std::size_t i = 0; i < n; ++i) { vs.append(0.01 * i, std::sin(0.01 * i)); ms.append(0.01 * i, std::sin(0.01 * i)); }
+    std::uniform_real_distribution<double> u(0.0, 0.01 * (n - 1));
+    std::vector<double> q(2000000); for (double& x : q) x = u(g);
+    for (int i = 0; i < 1000; ++i) assert(std::fabs(vs.at(q[i]).value() - ms.at(q[i]).value()) < 1e-12);  // same answers
+    double sink = 0;
+    double a = ns_per_query(vs, q, sink), b = ns_per_query(ms, q, sink);
+    std::cout << "N=" << n << "  vector " << a << " ns  map " << b << " ns  ratio " << b / a << "  check " << sink << "\n";
+  }
+}
+```
+
+On one test machine the output was ratios of about 1.5, 2.3 and 4.2 for $N=10^3, 10^5, 10^6$ (vector 64, 162, 248 ns per query; map 94, 374, 1032 ns); yours will differ, but the ratio should grow with $N$. The `assert` checks that both structures return the same interpolated values. Questions: why does the vector's time still grow with $N$? What happens to the ratio if the queries are sorted instead of random?
+
 ## Verification
 
 - Property test: for every stored $t_i$, `at(t_i)` must equal $v_i$ exactly; for monotone data the interpolation must be monotone.
@@ -409,4 +469,4 @@ The same ideas appear in NumPy (`np.searchsorted` is `lower_bound`, boolean mask
 - [cppreference: Algorithms library](https://en.cppreference.com/w/cpp/algorithm) - every algorithm with preconditions, complexity and examples.
 - [LearnCpp](https://www.learncpp.com/) - the chapters on containers, iterators and algorithms with quizzes.
 
-**More practice:** the quizzes at the end of the containers and algorithms chapters on [LearnCpp](https://www.learncpp.com/), and the worked examples attached to each algorithm page on [cppreference](https://en.cppreference.com/w/cpp/algorithm), which you can modify and run to confirm your predictions.
+**More practice:** the quizzes on [LearnCpp: STL containers overview](https://www.learncpp.com/cpp-tutorial/stl-containers-overview/), [iterators overview](https://www.learncpp.com/cpp-tutorial/stl-iterators-overview/) and [algorithms overview](https://www.learncpp.com/cpp-tutorial/stl-algorithms-overview/) (answers shown on each page), and the runnable examples on cppreference for [`std::lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and [`std::remove`/`remove_if`](https://en.cppreference.com/w/cpp/algorithm/remove) (modify them to predict outputs), plus the [iterator invalidation table](https://en.cppreference.com/w/cpp/container#Iterator_invalidation).

@@ -17,7 +17,7 @@ test("empty workspace → lesson → assessment → reload → evidence → hand
   await expect(
     page.getByRole("heading", { name: "Mathematical Basics", exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("Unassessed is a starting point")).toBeVisible();
+  await expect(page.getByText("Not started is a starting point")).toBeVisible();
   const initial = await (await page.request.get("/api/state")).json();
   expect(initial.progress.attempts).toHaveLength(0);
   expect(
@@ -35,15 +35,24 @@ test("empty workspace → lesson → assessment → reload → evidence → hand
     }),
   ).toBeVisible();
   await expect(page.locator(".katex").first()).toBeVisible();
+  await page.getByRole("button", { name: "Contents", exact: true }).click();
   await expect(page.locator(".lesson-toc a").first()).toBeVisible();
-  await page.getByRole("button", { name: "Mark as read", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await expect(page.getByText(/≈ \d+ h( \d+ min)? · 4 sessions/)).toBeVisible();
+  await page
+    .getByRole("button", { name: "Mark session done", exact: true })
+    .click();
   await expect(
     page
       .getByRole("status")
-      .getByText("Reading activity saved. Mastery is unchanged."),
+      .getByText("Session saved as done. Mastery is unchanged."),
   ).toBeVisible();
+  await expect(page.getByRole("progressbar")).toHaveAttribute(
+    "aria-valuenow",
+    "1",
+  );
   await page
-    .getByRole("link", { name: "Assess competence", exact: true })
+    .getByRole("link", { name: "Check what you know", exact: true })
     .click();
   const contract = getAssessment("M01")!;
   await page
@@ -58,16 +67,12 @@ test("empty workspace → lesson → assessment → reload → evidence → hand
     .fill(
       "I state assumptions, check units, and verify on a held-out calibration point.",
     );
-  await page
-    .getByRole("button", { name: "Submit and save diagnostic" })
-    .click();
+  await page.getByRole("button", { name: "Submit and save answers" }).click();
   await expect(
     page.getByRole("heading", { name: "Result · 100%" }),
   ).toBeVisible();
   await page.reload();
-  await expect(
-    page.locator(".topic-meta").getByText("Verified L1"),
-  ).toBeVisible();
+  await expect(page.locator(".topic-meta").getByText("Mastered")).toBeVisible();
   await expect(page.getByText("100% · A0", { exact: true })).toBeVisible();
   await page
     .getByRole("button", { name: "Copy Learning Context", exact: true })
@@ -154,7 +159,7 @@ test("remaining pages, honest overview, keyboard/mobile layout, invalid import a
     ["/paths", "One path, many open branches."],
     ["/practice", "Implement independently. Verify your work."],
     ["/lessons", "Go beyond reading. Understand deeply."],
-    ["/assessments", "Verify what you understand."],
+    ["/assessments", "Check what you know."],
     ["/sources", "References"],
     ["/roadmap", "Knowledge roadmap"],
     ["/tutor", "One tutor. One source of truth."],
@@ -338,6 +343,7 @@ test("mistakes → type-aware remediation → assisted practice → independent 
     expect(r.ok()).toBe(true);
   }
   await page.goto("/assessments/M05");
+  await page.getByText("How each kind of knowledge is checked").click();
   await expect(
     page
       .locator(".assessment-methods")
@@ -421,7 +427,9 @@ test("mistakes → type-aware remediation → assisted practice → independent 
           .fill(q.answer!);
     }
   }
-  await page.getByLabel("Assistance level", { exact: true }).selectOption("A3");
+  await page
+    .getByLabel("How much help did you use?", { exact: true })
+    .selectOption("A3");
   await fillFocused();
   await page
     .getByRole("button", { name: "Save focused practice", exact: true })
@@ -441,7 +449,9 @@ test("mistakes → type-aware remediation → assisted practice → independent 
       .status,
   ).toBe("practiced_with_assistance");
   await page.getByRole("button", { name: "Check next available set" }).click();
-  await page.getByLabel("Assistance level", { exact: true }).selectOption("A0");
+  await page
+    .getByLabel("How much help did you use?", { exact: true })
+    .selectOption("A0");
   await fillFocused();
   await page
     .getByRole("button", { name: "Save focused practice", exact: true })
@@ -476,6 +486,11 @@ test("mistakes → type-aware remediation → assisted practice → independent 
   await page
     .getByLabel("Focused practice skill")
     .selectOption("design-decisions");
+  await page
+    .locator(".question")
+    .first()
+    .getByText("Details", { exact: true })
+    .click();
   await expect(
     page.getByText("DESIGN — Choose and justify", { exact: true }),
   ).toBeVisible();

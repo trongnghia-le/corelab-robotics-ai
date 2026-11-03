@@ -1,0 +1,23 @@
+{"questions": {
+"q1": {"prompt": "Một classifier có lỗi tổng thể 8% trên một tập kiểm thử được chia thành nhiều nhóm con. Phát biểu nào chắc chắn đúng?",
+ "options": ["Mọi nhóm con đều có lỗi gần 8%, vì giá trị trung bình kéo tất cả các nhóm lại gần nhau.", "Có ít nhất một nhóm con có lỗi bằng hoặc cao hơn 8% và có ít nhất một nhóm có lỗi bằng hoặc thấp hơn 8%.", "Nhóm con lớn nhất có tỉ lệ lỗi gần 8% nhất, vì nó chi phối giá trị trung bình.", "Nhóm con nhỏ nhất có tỉ lệ lỗi cao nhất, vì các nhóm nhỏ có ít dữ liệu huấn luyện hơn."],
+ "explanation": "Tỉ lệ tổng thể là trung bình có trọng số của các tỉ lệ nhóm con, nên nó nằm giữa tỉ lệ nhóm con nhỏ nhất và lớn nhất. Không có gì buộc các nhóm phải bằng nhau hay nhóm nhỏ nhất phải tệ nhất."},
+"q2": {"prompt": "Một log nắm vật có hai loại vật: 600 lần thử với 18 thất bại, và 400 lần thử với 22 thất bại. Tỉ lệ thất bại tổng thể là bao nhiêu, theo phần trăm với một chữ số thập phân?",
+ "explanation": "(18+22)/(600+400) = 40/1000 = 4.0%. Hãy gộp số đếm; đừng lấy trung bình không trọng số của 3% và 5.5% (sẽ ra 4.25%)."},
+"q3": {"prompt": "Khoảng cách thật là y = [10, 12, 9] m và một mô hình cảm biến dự đoán [11, 11, 11] m. Residual trung bình (quan sát trừ dự đoán) là bao nhiêu mét, làm tròn 2 chữ số thập phân?",
+ "explanation": "Các residual là -1, +1, -2; trung bình của chúng là -4/3 = -0.67 m, nên trung bình mô hình dự đoán cao hơn thực tế."},
+"q4": {"prompt": "Một detector sai trên 20% ảnh tối và 5% ảnh sáng. Hầu hết ảnh tối cũng ở xa camera. Trong số ảnh xa, cả hai nhóm ánh sáng đều sai 26%, và trong số ảnh gần, cả hai đều sai 2%. Kết luận tốt nhất là gì?",
+ "options": ["Tập kiểm thử quá nhỏ để kết luận gì về ánh sáng hay khoảng cách, nên hãy thu thêm dữ liệu trước.", "Bóng tối là nguyên nhân của các lỗi thêm, nên nhóm cần bổ sung thêm ảnh ban đêm vào huấn luyện.", "Khoảng cách, chứ không phải ánh sáng, giải thích chênh lệch trong dữ liệu này; chênh lệch theo ánh sáng là một hiệu ứng thành phần.", "Dữ liệu chứng minh bóng tối không ảnh hưởng đến bất kỳ detector nào, nên từ nay có thể bỏ qua ánh sáng."],
+ "explanation": "Khi cố định khoảng cách thì chênh lệch theo ánh sáng biến mất, nên ở đây khoảng cách giải thích nó. Điều đó không chứng minh bóng tối không bao giờ quan trọng, chỉ là dữ liệu này không ủng hộ điều đó."},
+"q5": {"prompt": "Có 3 thất bại trong 10 lần thử của một điều kiện hiếm. Cận dưới của khoảng Wilson 95% (z = 1.96) cho tỉ lệ thất bại là bao nhiêu? Cho số thập phân đến 3 chữ số.",
+ "explanation": "Tâm (0.3+0.1920)/1.3841 = 0.3555; nửa độ rộng 0.2477; cận dưới 0.108."},
+"q6": {"prompt": "Bạn nghĩ một navigation stack thất bại nhiều hơn trong hành lang so với phòng mở. Hãy mô tả cách bạn sẽ kiểm tra lời giải thích này sao cho nó có thể bị bác bỏ, bao gồm một confounder bạn sẽ kiểm soát.",
+ "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+ "rubric": ["Phát biểu lời giải thích như một dự đoán với baseline (tỉ lệ thất bại tổng thể hoặc trong phòng mở) và một chỉ số đo được.", "Nêu một confounder (ví dụ tốc độ, kích thước bản đồ, loại cảm biến) và phân tầng hoặc ghép cặp theo nó.", "Nêu kết quả nào sẽ bác bỏ lời giải thích và kiểm tra trên các lần chạy giữ lại hoặc mới, kèm báo cáo kích thước nhóm."]},
+"q7": {"prompt": "Nhãn failure taxonomy nào là tốt nhất để phân tích một grasp detector?",
+ "options": ["Người đánh giá thấy ảnh tối và chất lượng thấp, nên mô hình sai", "Mô hình bị nhầm lẫn bởi cảnh và đưa ra dự đoán sai ở đây", "Hộp dự đoán quá nhỏ (đúng lớp, độ chồng lấp với ground truth dưới ngưỡng)", "Cần thêm dữ liệu huấn luyện và lịch huấn luyện dài hơn để sửa loại lỗi này"],
+ "explanation": "Một nhãn tốt quan sát được từ chính trường hợp đó và chỉ ra một cách sửa. Các nhãn còn lại là phỏng đoán về nguyên nhân."},
+"q8": {"prompt": "Phác thảo (code hoặc pseudocode) một hàm nhận danh sách bản ghi có trường 'error' kiểu 0/1 và một trường điều kiện, trả về tỉ lệ lỗi và số lượng cho mỗi điều kiện, và giải thích trường hợp biên nào nó phải xử lý.",
+ "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+ "rubric": ["Tích lũy số đếm và tổng lỗi theo từng nhóm rồi mới chia (không lấy trung bình không trọng số của các tỉ lệ).", "Trả về n cùng với tỉ lệ để thấy được các nhóm nhỏ.", "Xử lý nhóm rỗng hoặc rất nhỏ (chia cho 0, kích thước tối thiểu, hoặc khoảng tin cậy)."]}
+}}

@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một file có mode rwxr-x---. Dạng bát phân của nó là gì (ba chữ số dưới dạng số nguyên, ví dụ 644)? (sai số cho phép 0.5)",
+   "explanation": "user 4+2+1=7, group 4+0+1=5, other 0 → 750."
+  },
+  "q2": {
+   "prompt": "Umask là 027. Một file thường mới được yêu cầu với mode 666. Nó nhận mode nào (các chữ số bát phân dưới dạng số nguyên)? (sai số cho phép 0.5)",
+   "explanation": "666 với các bit 027 bị xóa: user 6, group 6&~2=4, other 6&~7=0 → 640."
+  },
+  "q3": {
+   "prompt": "File thuộc sở hữu của alice với group robots có mode 070. Alice là thành viên của robots. Alice có đọc được không?",
+   "options": [
+    "Chỉ khi cô ấy dùng sudo, vì mode 070 là mode quyền không hợp lệ",
+    "Có: group của cô ấy có quyền đọc, và cô ấy là thành viên của group đó",
+    "Không: lớp owner áp dụng cho owner và không có bit đọc",
+    "Có: owner luôn đọc được file của mình bất kể mode nói gì"
+   ],
+   "explanation": "Lớp khớp đầu tiên (owner) quyết định; các bit group không được xét cho owner."
+  },
+  "q4": {
+   "prompt": "Trong một script bash không có pipefail, $? là gì sau: false | true ?",
+   "options": [
+    "0",
+    "Không xác định",
+    "127",
+    "1"
+   ],
+   "explanation": "Status của pipeline là của lệnh cuối, true, tức là 0."
+  },
+  "q5": {
+   "prompt": "Một tiến trình bị giết bằng SIGKILL (signal 9). Shell báo exit status nào? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "128+9=137."
+  },
+  "q6": {
+   "prompt": "Lệnh nào ghi cả stdout và stderr của cmd vào log.txt?",
+   "options": [
+    "cmd > log.txt 2>&1",
+    "cmd 2>&1 > log.txt",
+    "cmd 2> log.txt",
+    "cmd | log.txt"
+   ],
+   "explanation": "Các redirection được áp dụng từ trái sang phải: trước tiên stdout vào file, rồi stderr được sao chép vào stdout (file)."
+  },
+  "q7": {
+   "prompt": "Script phân tích của đồng nghiệp bạn chạy được từ thư mục dự án nhưng thất bại từ cron. Hãy liệt kê các nguyên nhân khả dĩ và cách bạn biến nó thành một lệnh dự án có thể lặp lại.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu sự phụ thuộc vào thư mục hiện tại, PATH/biến môi trường, hoặc alias tương tác.",
+    "Cách sửa: cd vào thư mục của script, đường dẫn tuyệt đối hoặc đã được xác định, môi trường tường minh, shebang và bit exec.",
+    "Thêm chế độ chặt chẽ, kiểm tra đối số, logging và exit code, và kiểm thử nó từ một môi trường sạch."
+   ]
+  }
+ }
+}

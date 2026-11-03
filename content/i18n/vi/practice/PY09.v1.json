@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Cột tottime của cProfile cho một hàm có nghĩa là",
+   "options": [
+    "tổng thời gian gồm cả thời gian trong mọi hàm được nó gọi",
+    "số lần hàm được gọi trong lần chạy được profile",
+    "thời gian của lần gọi đơn lẻ chậm nhất tới hàm",
+    "thời gian dành trong chính hàm đó, không tính các hàm được nó gọi"
+   ],
+   "explanation": "cumtime mới gồm các hàm được gọi."
+  },
+  "b2": {
+   "prompt": "60% thời gian chạy được làm nhanh gấp 6 lần. Mức tăng tốc tổng thể (3 chữ số thập phân)?",
+   "explanation": "1/(0.4+0.1)=2."
+  },
+  "b3": {
+   "prompt": "Cần tăng tốc phần p bằng bao nhiêu để giới hạn tăng tốc là 20x?",
+   "explanation": "1/(1-p)=20."
+  },
+  "b4": {
+   "prompt": "Moving average tổng chạy thực hiện khoảng 2n phép tính. Với n=10,000 và k=100, ít hơn phiên bản ngây thơ bao nhiêu lần (số nguyên gần nhất)?",
+   "explanation": "990100/20000=49.5."
+  },
+  "b5": {
+   "prompt": "Một list 1 triệu số float dùng khoảng 32 byte mỗi phần tử. Bao nhiêu MB?",
+   "explanation": "32e6 byte."
+  },
+  "b6": {
+   "prompt": "Ma trận khoảng cách theo cặp của 10,000 điểm, float64. Bộ nhớ theo GB (1 GB = 1e9 byte, 2 chữ số thập phân)?",
+   "explanation": "1e8*8=0.8e9 byte."
+  },
+  "b7": {
+   "prompt": "Thống kê nào so sánh thời gian của hai cài đặt tốt nhất?",
+   "options": [
+    "giá trị lớn nhất qua nhiều lần lặp, vì là cận an toàn nhất",
+    "một lần chạy đơn lẻ, vì nó cho thấy thời gian thực của chương trình",
+    "giá trị nhỏ nhất qua nhiều lần lặp, vì ít nhiễu nhất",
+    "trung bình gồm cả lần khởi động nguội, vì dùng mọi lần chạy"
+   ],
+   "explanation": "Nhiễu chỉ làm thêm thời gian."
+  },
+  "b8": {
+   "prompt": "Moving average tổng chạy trả về 0.0 trong khi phiên bản ngây thơ trả về 1.0 sau khi giá trị 1e16 rời cửa sổ. Đây là",
+   "options": [
+    "do phép chia nguyên, vốn cắt các giá trị nhỏ về không",
+    "absorption: các giá trị nhỏ bị mất khi cộng với 1e16",
+    "một lỗi của NumPy, vốn cộng cửa sổ với dtype sai",
+    "hành vi mong đợi của phiên bản ngây thơ, vốn cũng không chính xác"
+   ],
+   "explanation": "Khoảng cách giữa các double gần 1e16 là 2."
+  },
+  "b9": {
+   "prompt": "np.allclose(a, b) được ưa hơn a == b để kiểm tra một phép tính float đã tối ưu vì",
+   "options": [
+    "== không hoạt động trên mảng và ném lỗi với chúng",
+    "sắp xếp lại các phép tính làm đổi việc làm tròn ở các bit cuối",
+    "== chậm hơn allclose trên mảng float lớn",
+    "allclose là chính xác, còn == cho phép một dung sai nhỏ"
+   ],
+   "explanation": "Việc làm tròn khác nhau theo thứ tự phép tính."
+  },
+  "b10": {
+   "prompt": "Một benchmark gồm việc tạo list chiếm 40% vùng được đo thời gian. Bản thân hàm mất 6 ms. Tổng thời gian đo (sai) là bao nhiêu ms?",
+   "explanation": "6/0.6=10 ms."
+  },
+  "b11": {
+   "prompt": "Hãy giải thích chunking là gì, vì sao nó giảm bộ nhớ cho khoảng cách theo cặp, và cái giá phải trả.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Mô tả việc xử lý từng khối hàng để chỉ một phần nhỏ của ma trận NxN tồn tại tại một thời điểm.",
+    "Lưu ý bộ nhớ đỉnh tỉ lệ với kích thước khối.",
+    "Lưu ý vòng lặp thêm và độ phức tạp của code nhưng tổng số học tương đương."
+   ]
+  },
+  "b12": {
+   "prompt": "Profile của bạn cho thấy 85% thời gian nằm trong một lời gọi thư viện bạn không viết. Bạn có những lựa chọn nào, và định luật Amdahl nói gì về việc tối ưu mọi thứ còn lại?",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Đề xuất giảm số lượng hoặc kích thước lời gọi, gom batch, caching hoặc chọn thư viện/thuật toán khác.",
+    "Tính được rằng tối ưu 15% còn lại cho tối đa 1.18 lần.",
+    "Khuyến nghị đo trước và sau."
+   ]
+  }
+ }
+}

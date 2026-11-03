@@ -157,7 +157,7 @@
     },
     {
       "id": "b6",
-      "prompt": "For l1 = l2 = 0.4 m at q = (0, 0.05) the determinant of J is 0.008, and at q = (0, 1.5) it is 0.16. What follows?",
+      "prompt": "For l1 = l2 = 0.4 m, the determinant of J is 0.008 at q = (0, 0.05) and 0.16 at q = (0, 1.5). The tip must move along +x at the same speed in both poses. What follows?",
       "kind": "choice",
       "dimension": "C",
       "critical": false,
@@ -180,11 +180,11 @@
       "options": [
         "Joint rates are identical in both poses, because the tip speed is the same",
         "The arm cannot move at all at q2 = 0.05, because J is singular at that point",
-        "Joint rates for the same tip velocity are about 20 times larger at q2 = 0.05",
+        "Joint rates are more than 10 times larger at q2 = 0.05 (the determinant ratio alone is 20)",
         "The determinant has no effect on joint rates, only on the tip's reach"
       ],
       "answer": "2",
-      "explanation": "Joint rates scale with 1/det J along the near-singular direction, so 0.16/0.008 = 20 times larger."
+      "explanation": "Joint rates scale with 1/det J along the near-singular direction: 0.16/0.008 = 20, and for motion along +x the joint-rate norm ratio is about 42 (11.2 against 0.27 rad/s at 0.1 m/s)."
     },
     {
       "id": "b7",
@@ -214,7 +214,7 @@
     },
     {
       "id": "b8",
-      "prompt": "With joint limits q2 in [0, 2] only branch A of a target is admissible. A teammate says 'then the target is unreachable'. What is the correct statement?",
+      "prompt": "A 2R arm has joint limits q2 in [0, 2] rad, and for a given target only the q2 > 0 elbow branch satisfies them (the other branch has q2 < 0 and no 2 pi representative fits). A teammate says 'then the target is unreachable'. What is the correct statement?",
       "kind": "choice",
       "dimension": "C",
       "critical": false,
@@ -240,7 +240,7 @@
       "options": [
         "Both branches are admissible after wrapping q2 by 2 pi, so the target is fine",
         "The target is outside the reach ring, since limits shrink the ring to nothing",
-        "It is reachable, with one admissible solution; branch B is excluded by the joint limits",
+        "It is reachable, with one admissible solution; the other branch is excluded by the joint limits",
         "Correct: joint limits define reachability, so a target with a missing branch is unreachable"
       ],
       "answer": "2",

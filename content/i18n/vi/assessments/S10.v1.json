@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Hai controller cùng ghi joint1/velocity. ros2_control cho phép điều gì?",
+   "options": [
+    "Cả hai có thể hoạt động, nhưng mỗi cái chỉ nhận một nửa độ lợi",
+    "Cả hai có thể hoạt động cùng lúc, và cái ghi sau cùng thắng",
+    "Chỉ một cái có thể hoạt động; cái kia không claim được command interface",
+    "Cả hai có thể hoạt động nếu lệnh của chúng dùng cùng kiểu message"
+   ],
+   "explanation": "Một command interface có nhiều nhất một chủ sở hữu đang hoạt động."
+  },
+  "q2": {
+   "prompt": "update_rate là 200 Hz. Chu kỳ theo ms.",
+   "explanation": "1000/200."
+  },
+  "q3": {
+   "prompt": "update_rate 500 Hz và một chu kỳ (read+update+write) 1.8 ms. Utilization (phần của chu kỳ định thời). Độ chính xác 0.01.",
+   "explanation": "1.8/2.0 - cao một cách nguy hiểm."
+  },
+  "q4": {
+   "prompt": "PID với kp=3, ki=2, kd=0, dt=0.05, sai số 1, tích phân bắt đầu từ 0 và không bão hòa. Đầu ra u. Độ chính xác 0.001.",
+   "explanation": "3 + 2*0.05."
+  },
+  "q5": {
+   "prompt": "Một giao diện hardware mock trả về vận tốc được ra lệnh làm vận tốc đo được ngay cả khi khớp nằm ở giới hạn. Sai ở đâu?",
+   "options": [
+    "Vận tốc nên được lọc, để controller không bao giờ thấy bước nhảy đột ngột tại giới hạn.",
+    "Không sai gì; vận tốc được ra lệnh là ước lượng tốt nhất sẵn có của vận tốc đo được.",
+    "Vận tốc luôn phải bằng không trong một mock, để controller không bao giờ phản ứng với nó.",
+    "Trạng thái phải báo chuyển động thực (độ dịch chuyển mỗi chu kỳ), nếu không controller nghĩ một khớp bị kẹt đang chuyển động."
+   ],
+   "explanation": "Tính nhất quán của trạng thái."
+  },
+  "q6": {
+   "prompt": "Một yêu cầu switch controller strict thất bại vì một lần kích hoạt xung đột. Trạng thái sau đó là gì?",
+   "options": [
+    "Chỉ các lần hủy kích hoạt được áp dụng; các lần kích hoạt mới thất bại.",
+    "Không đổi: mọi controller đang hoạt động trước đó vẫn hoạt động.",
+    "Chỉ lần kích hoạt đầu tiên được áp dụng, trước khi phát hiện xung đột.",
+    "Mọi controller bị dừng cho đến khi yêu cầu được thử lại."
+   ],
+   "explanation": "Chuyển đổi nguyên tử để hệ thống không đổi khi thất bại."
+  },
+  "q7": {
+   "prompt": "Bạn sẽ thực thi giới hạn vận tốc và vị trí ở đâu trong một thiết lập ros2_control và một bài kiểm thử mock sẽ kiểm tra gì? Hãy nhắc đến tính nhất quán trạng thái.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Thảo luận giới hạn trong giao diện phần cứng và trong controller cùng ưu nhược điểm của chúng.",
+    "Liệt kê các bất biến của mock: lệnh bị clamp, vị trí trong dải, chỉ lệnh hữu hạn.",
+    "Có tính nhất quán trạng thái: vận tốc bằng độ dịch chuyển thực trong chu kỳ."
+   ]
+  }
+ }
+}

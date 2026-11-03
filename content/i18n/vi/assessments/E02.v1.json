@@ -1,0 +1,59 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một heuristic h là admissible (chấp nhận được) nếu:",
+   "options": [
+    "Nó bằng không ở mọi trạng thái, kể cả những trạng thái xa đích",
+    "Nó không bao giờ đánh giá quá cao chi phí còn lại thực sự",
+    "Nó giảm đúng bằng chi phí bước dọc theo mọi cạnh của đồ thị",
+    "Nó không bao giờ đánh giá thấp chi phí còn lại thực sự từ bất kỳ trạng thái nào"
+   ],
+   "explanation": "Admissible nghĩa là h(s) <= h*(s) với mọi s."
+  },
+  "q2": {
+   "prompt": "Một nút A* có g = 7 và h = 4.5. f bằng bao nhiêu?",
+   "explanation": "f = g + h = 11.5."
+  },
+  "q3": {
+   "prompt": "Các trạng thái open có (g,h): P (3,6), Q (5,2), R (2,8). A* pop trạng thái nào trước? Trả lời bằng giá trị f của trạng thái đó.",
+   "explanation": "f: P=9, Q=7, R=10; Q được pop trước với f=7."
+  },
+  "q4": {
+   "prompt": "A* phải dừng khi nào để đảm bảo kết quả tối ưu với một heuristic admissible?",
+   "options": [
+    "Sau khi đường đi đầu tiên đến đích được tìm thấy bằng bất kỳ cách nào",
+    "Khi đích lần đầu được sinh ra như một trạng thái kế tiếp của một trạng thái đã được mở rộng",
+    "Sau khi mọi trạng thái đạt tới được đã được mở rộng một lần, kết thúc tìm kiếm",
+    "Khi đích được pop khỏi tập open"
+   ],
+   "explanation": "Một tuyến rẻ hơn vẫn có thể còn trong hàng đợi khi đích mới chỉ được sinh ra."
+  },
+  "q5": {
+   "prompt": "Một lưới có các ô chi phí 0.5 trên đường. Tuyến đường thẳng 6 ô là rẻ nhất. Chi phí còn lại thực sự là 3. Khoảng cách Manhattan (1 mỗi ô) cho 6. Nó đánh giá quá cao bao nhiêu?",
+   "explanation": "6 - 3 = 3, nên Manhattan không admissible; hãy dùng 0.5 * Manhattan."
+  },
+  "q6": {
+   "prompt": "Tập open trở nên rỗng và đích chưa bao giờ được pop. Kết luận?",
+   "options": [
+    "Tăng ngân sách, vì tìm kiếm chỉ là hết số lần mở rộng",
+    "Đích không thể đạt tới theo mô hình",
+    "Đích đạt tới được nhưng ở xa, nên tìm kiếm cần thêm thời gian",
+    "Heuristic không admissible, nên nó đã cắt tỉa mất đường đến đích"
+   ],
+   "explanation": "Tập open rỗng nghĩa là mọi trạng thái đạt tới được đều đã được thử."
+  },
+  "q7": {
+   "prompt": "Cạnh a-b có chi phí 2, h(a)=7, h(b)=4. Bất đẳng thức consistency h(a) <= c + h(b) bị vi phạm bao nhiêu? (0 nếu nó thỏa)",
+   "explanation": "7 > 2 + 4 = 6, vi phạm 1."
+  },
+  "q8": {
+   "prompt": "Thiết kế một công thức hóa bài toán tìm kiếm cho một robot phải ghé thăm ba kệ hàng theo thứ tự bất kỳ. Nêu trạng thái phải chứa gì, hàm kế tiếp, phép kiểm tra đích, một heuristic, và cách bạn kiểm tra heuristic đó admissible.",
+   "explanation": "Có rubric hướng dẫn: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Trạng thái gồm vị trí và tập các kệ đã ghé thăm.",
+    "Hàm kế tiếp di chuyển đến một kệ với chi phí là khoảng cách; đích: tất cả đã được ghé thăm.",
+    "Heuristic từ một relaxation, ví dụ khoảng cách đến kệ xa nhất chưa ghé; kiểm tra h <= chi phí thật bằng Dijkstra trên các trường hợp nhỏ."
+   ]
+  }
+ }
+}

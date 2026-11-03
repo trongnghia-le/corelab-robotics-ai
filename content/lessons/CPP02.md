@@ -4,7 +4,7 @@
   "module_id": "CPP02",
   "title": "Memory, references, and lifetime",
   "summary": "Explain who owns an object and how long a reference stays valid.",
-  "estimated_minutes": 55,
+  "estimated_minutes": 280,
   "prerequisites": [
     "CPP01"
   ],
@@ -138,6 +138,7 @@ A C++17 compiler. Put the starter and tests in `lab.cpp` and build with `g++ -st
 #include <cstdint>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <vector>
 
 struct Tracked {                       // given: counts live objects
@@ -254,4 +255,4 @@ Close the reference before trying. Explain your assumptions and one way your ans
 
 [LearnCpp](https://www.learncpp.com/) — primary course, documentation, or the supplied reference collection. Follow the relevant subject heading; these are further reading links, not reproduced book chapters.
 
-**More practice:** [C++ Core Guidelines, resource management (R) rules](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) and [LearnCpp smart-pointer and move-semantics chapters](https://www.learncpp.com/) with quizzes.
+**More practice:** [LearnCpp chapter 22 quiz](https://www.learncpp.com/cpp-tutorial/chapter-22-summary-and-quiz/) (move semantics and smart pointers), [LearnCpp std::unique_ptr](https://www.learncpp.com/cpp-tutorial/stdunique_ptr/) and [std::shared_ptr](https://www.learncpp.com/cpp-tutorial/stdshared_ptr/) lessons, the [C++ Core Guidelines resource-management rules](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#r-resource-management), and the [AddressSanitizer use-after-free example](https://github.com/google/sanitizers/wiki/AddressSanitizerExampleUseAfterFree).

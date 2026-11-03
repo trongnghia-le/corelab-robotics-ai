@@ -16,7 +16,7 @@ test("Python and C++ use Dark+ syntax colors and copy the exact original source"
     const expected = payload.lesson.body
       .split("## Reference implementation")[1]
       .match(new RegExp("^```" + lang + "\\n([\\s\\S]*?)^```", "m"))[1];
-    await page.goto("/lessons/" + topic);
+    await page.goto("/lessons/" + topic + "#reference-implementation");
     const block = page
       .locator(`.lesson-section-code .code-block[data-language="${lang}"]`)
       .first();
@@ -72,13 +72,15 @@ test("reading sections preserve anchors, mathematics and usable phone-width code
     "Worked example",
   );
   await expect(page.locator(".katex").first()).toBeVisible();
+  await page.locator(".lesson-section-example").scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "test-results/lesson-reading-desktop.png" });
+  await page.getByRole("button", { name: "Contents", exact: true }).click();
   await page.locator('.lesson-toc a[href="#reference-implementation"]').click();
+  await expect(page.locator(".lesson-toc")).toBeHidden();
   const block = page
     .locator('.lesson-section-code .code-block[data-language="python"]')
     .first();
   await expect(block).toHaveAttribute("data-highlighted", "true");
-  await page.locator(".lesson-section-example").scrollIntoViewIfNeeded();
-  await page.screenshot({ path: "test-results/lesson-reading-desktop.png" });
   for (const width of [390, 320]) {
     await page.setViewportSize({ width, height: 844 });
     await block.scrollIntoViewIfNeeded();

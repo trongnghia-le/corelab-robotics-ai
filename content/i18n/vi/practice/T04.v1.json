@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "v1": {
+   "prompt": "Bạn đang kiểm thử một hàm chiếu một vector lên một hướng. Nguồn giá trị mong đợi nào là một oracle thực sự độc lập?",
+   "options": [
+    "Chạy hàm một lần và dán kết quả in ra làm giá trị mong đợi",
+    "Gọi cùng hàm đó lần thứ hai với cùng đầu vào và so sánh",
+    "Một giá trị tính tay từ hình học, ví dụ chiếu (4,3) lên (2,0)",
+    "Sao chép công thức từ cài đặt vào bài kiểm thử để làm phép kiểm tra"
+   ],
+   "explanation": "Một giá trị tính tay (hoặc một phương pháp khác, như phép tính số học chính xác) là độc lập. Các giá trị do hàm đang được kiểm thử tạo ra, hoặc một bản sao công thức của nó, chung lỗi với nó."
+  },
+  "v2": {
+   "prompt": "Một phép kiểm tra dùng |a-b| <= atol + rtol*|b| với atol = 1e-6 và rtol = 1e-3. Với giá trị mong đợi b = 500, sai số tuyệt đối lớn nhất được phép là bao nhiêu? Cho 4 chữ số thập phân.",
+   "explanation": "1e-6 + 1e-3*500 = 0.500001."
+  },
+  "v3": {
+   "prompt": "Một bài kiểm thử so sánh xấp xỉ 3.14 với pi = 3.14159265. Sai số tuyệt đối là bao nhiêu? Cho 4 chữ số thập phân.",
+   "explanation": "|3.14 - 3.14159265| = 0.00159265, khoảng 0.0016."
+  },
+  "v4": {
+   "prompt": "assertAlmostEqual(norm(v), 2.2e-9) được dùng để kiểm thử một hàm trả về các độ dài cỡ 1e-9 mét. Có gì sai?",
+   "options": [
+    "Nó so sánh kiểu của các đối số thay vì giá trị số của chúng",
+    "Không có gì: 7 chữ số thập phân luôn đủ chặt cho một bài kiểm thử độ dài",
+    "Mặc định 7 chữ số thập phân làm nó qua với mọi giá trị nhỏ, kể cả 0",
+    "Nó luôn thất bại, vì nhiễu dấu phẩy động vượt quá 7 chữ số thập phân"
+   ],
+   "explanation": "assertAlmostEqual làm tròn hiệu đến 7 chữ số thập phân, nên mọi giá trị trong khoảng 5e-8 so với giá trị mong đợi, kể cả 0, đều qua: bài kiểm thử không ràng buộc gì ở thang đo này. Hãy dùng dung sai tương đối."
+  },
+  "v5": {
+   "prompt": "Thành phần đầu tiên của phép chiếu của a = [4, 3] lên b = [2, 0] (tức (a.b / b.b) b) là bao nhiêu? Cho một số nguyên.",
+   "explanation": "a.b = 8, b.b = 4, nên vô hướng là 2 và phép chiếu là [4, 0]."
+  },
+  "v6": {
+   "prompt": "Tính chất nào phải đúng cho phép chiếu p của a lên b, với mọi a và mọi b khác không?",
+   "options": [
+    "Phép chiếu bằng đầu vào: p = a",
+    "Phần dư trực giao: (a - p) . b = 0",
+    "Phép chiếu không bao giờ ngắn hơn: |p| >= |a|",
+    "Bản thân phép chiếu trực giao: p . b = 0"
+   ],
+   "explanation": "Phần dư a - p trực giao với b, nên (a - p).b = 0 (sai khác sai số làm tròn)."
+  },
+  "v7": {
+   "prompt": "sqrt(tổng bình phương) ngây thơ của [1e160, 1e160] bị tràn. Dùng công thức đã co giãn, norm/1e160 bằng giá trị nào? Cho 4 chữ số thập phân.",
+   "explanation": "sqrt(1^2 + 1^2) = 1.4142, nên chuẩn là 1.4142e160."
+  },
+  "v8": {
+   "prompt": "Một hàm lỗi thất bại trên 1% đầu vào ngẫu nhiên. Một bài kiểm thử tính chất lấy 200 ca ngẫu nhiên độc lập. Xác suất nó bắt được lỗi ít nhất một lần là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "1 - 0.99^200 = 0.866. Có 13% khả năng bỏ sót: hãy dùng nhiều ca hơn, hoặc các ca biên có chủ đích."
+  },
+  "v9": {
+   "prompt": "Các vector cảm biến đến từ một file JSON theo milimét và thư viện toán học mong đợi mét. Bài kiểm thử nào nhiều khả năng nhất tìm ra việc thiếu chuyển đổi?",
+   "options": [
+    "Một integration test với fixture theo mm và kết quả mong đợi theo mét",
+    "Một bài kiểm thử tính chất rằng norm(c*v) bằng |c| nhân norm(v) với c ngẫu nhiên",
+    "Một báo cáo độ phủ dòng cho thấy 100% với hàm norm",
+    "Một unit test của norm với vài đầu vào dương theo mét"
+   ],
+   "explanation": "Lỗi nằm ở ranh giới giữa các thành phần, nên chỉ một bài kiểm thử đọc fixture và kiểm tra kết quả đã chuyển đổi (với một giá trị tính tay) mới thấy được."
+  },
+  "v10": {
+   "prompt": "Một fixture chứa vector [1200, 500] theo milimét. Chuẩn của nó theo mét là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "Vector là (1.2, 0.5) m, nên chuẩn là sqrt(1.44 + 0.25) = 1.3 m."
+  },
+  "v11": {
+   "prompt": "Hãy đặc tả hành vi của project(a, b) với đầu vào không hợp lệ và viết các ca kiểm thử (tên, đầu vào, kết quả mong đợi) mà bạn sẽ đưa vào cho các hợp đồng này.",
+   "rubric": [
+    "Đặc tả ValueError cho hướng b bằng không, cho số chiều không khớp, và cho đầu vào rỗng hoặc không hữu hạn",
+    "Liệt kê các ca cụ thể như project([1,2],[0,0]), project([1,2],[1]) và một ca có nan, với loại ngoại lệ được kiểm tra chính xác",
+    "Gồm một ca biên hợp lệ (b rất nhỏ nhưng khác không, hoặc các vector song song) để cho thấy các phép kiểm tra không từ chối đầu vào tốt"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "v12": {
+   "prompt": "Hãy giải thích vì sao việc sinh các giá trị mong đợi của một bài kiểm thử bằng cách chạy cài đặt cho ra một bài kiểm thử không thể tìm ra công thức sai, và mô tả hai cách để có các giá trị mong đợi tốt hơn.",
+   "rubric": [
+    "Giải thích rằng giá trị mong đợi và thực tế chung cùng một lỗi, nên phép so sánh luôn qua (tối đa là một ảnh chụp hồi quy)",
+    "Đề xuất các ví dụ tính tay hoặc các ca đặc biệt có đáp án đã biết",
+    "Đề xuất một phương pháp độc lập (cài đặt tham chiếu chậm, số học độ chính xác cao) hoặc kiểm tra các tính chất toán học"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

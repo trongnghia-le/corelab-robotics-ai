@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Một phòng lab báo cáo 'độ lệch chuẩn 0.5 mm' cho từng lần đọc và 'sai số chuẩn 0.05 mm' cho trung bình của chúng. Đã lấy trung bình bao nhiêu lần đọc độc lập?",
+   "options": [
+    "10",
+    "20",
+    "100",
+    "1000"
+   ],
+   "explanation": "SE=sigma/sqrt(n) nên sqrt(n)=10, n=100."
+  },
+  "b2": {
+   "prompt": "Các lần đọc (m): 2.0, 2.2, 1.8, 2.0, 2.0. Tính phương sai mẫu không chệch theo m^2 (3 chữ số thập phân).",
+   "explanation": "Trung bình 2.0; SS=0+0.04+0.04+0+0=0.08; /4 = 0.02."
+  },
+  "b3": {
+   "prompt": "Tốc độ của robot có sigma 2 cm/s mỗi lần đọc. Để có sai số chuẩn 0.25 cm/s cần bao nhiêu lần đọc độc lập?",
+   "explanation": "n=(2/0.25)^2=64."
+  },
+  "b4": {
+   "prompt": "Sáu lần đọc được dùng để dựng khoảng với giá trị chuẩn 1.96. So với giá trị t 2.571, độ phủ thực nghiệm được kỳ vọng là",
+   "options": [
+    "dưới 95%, vì bản thân s cũng bất định khi chỉ có ít lần đọc như vậy",
+    "không liên quan đến lựa chọn giá trị tới hạn, vốn chỉ đổi độ rộng khoảng",
+    "đúng 95%, vì các lần đọc là Gauss và khoảng đối xứng",
+    "trên 95%, vì 1.96 là lựa chọn thận trọng với mọi cỡ mẫu"
+   ],
+   "explanation": "Mô phỏng cho độ phủ khoảng 89.5%."
+  },
+  "b5": {
+   "prompt": "Hợp nhất ước lượng x từ GPS là 4.0 m (phương sai 9) với ước lượng từ lidar là 5.0 m (phương sai 1). Cho trung bình hợp nhất theo mét (2 chữ số thập phân).",
+   "explanation": "w_gps=(1/9)/(1/9+1)=0.1; mean=0.4+4.5=4.9."
+  },
+  "b6": {
+   "prompt": "Hai ước lượng không chệch độc lập về vị trí x của robot có phương sai 9 m^2 (GPS) và 1 m^2 (lidar). Phương sai của phép hợp nhất nghịch đảo phương sai tối ưu là bao nhiêu m^2 (2 chữ số thập phân)?",
+   "explanation": "1/v=1/9+1=10/9, v=0.9."
+  },
+  "b7": {
+   "prompt": "Một cảm biến 1 kHz lặp mỗi giá trị 4 lần vì bộ lọc nội bộ cập nhật ở 250 Hz. Cỡ mẫu hiệu dụng đúng của 2000 mẫu xấp xỉ",
+   "options": [
+    "4",
+    "500",
+    "2000",
+    "8000"
+   ],
+   "explanation": "Chỉ 2000/4=500 giá trị là độc lập."
+  },
+  "b8": {
+   "prompt": "Thay đổi nào KHÔNG làm giảm sai số chuẩn của một trung bình?",
+   "options": [
+    "Dùng cảm biến có nhiễu sigma bằng một nửa",
+    "Loại bỏ độ lệch hiệu chuẩn không đổi khỏi các lần đọc",
+    "Lấy trung bình với độ tương quan giữa các mẫu liên tiếp thấp hơn",
+    "Lấy số lần đọc độc lập nhiều gấp bốn lần"
+   ],
+   "explanation": "Bù độ lệch chỉ đổi tâm, không đổi độ phân tán."
+  },
+  "b9": {
+   "prompt": "Dùng giá trị tới hạn t 2.262 (9 df) với n=10, s=0.5, tính nửa độ rộng của khoảng (3 chữ số thập phân).",
+   "explanation": "2.262*0.5/sqrt(10)."
+  },
+  "b10": {
+   "prompt": "Phương sai chia cho n của một mẫu là 0.36 với n=10. Phương sai không chệch là bao nhiêu?",
+   "explanation": "Nhân với n/(n-1)=10/9: 0.4."
+  },
+  "b11": {
+   "prompt": "Một đồng nghiệp tính phương sai bằng mean(x^2) - mean(x)^2 trên các lần đọc gyro gần 1000 với nhiễu 0.01. Hãy dự đoán điều gì có thể hỏng và đề xuất cách sửa.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Nhận ra triệt tiêu thảm họa của hai số lớn gần bằng nhau.",
+    "Nhắc đến khả năng phương sai âm hoặc nhiễu trong dấu phẩy động.",
+    "Đề xuất cập nhật hai lượt hoặc Welford, hoặc trừ đi một giá trị tham chiếu."
+   ]
+  },
+  "b12": {
+   "prompt": "Bạn phải báo cáo chiều cao trung bình của một robot đang lơ lửng từ 8 lần đọc nhiễu cho một buổi rà soát an toàn. Hãy mô tả con số bạn báo cáo, độ bất định của nó, và hai giả định bạn sẽ nêu.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Báo cáo trung bình với khoảng dựa trên t hoặc SE và n.",
+    "Nêu các giả định độc lập và không chệch.",
+    "Nêu một phép kiểm tra có thể bác bỏ kết quả, như tự tương quan hoặc một mục tiêu tham chiếu."
+   ]
+  }
+ }
+}

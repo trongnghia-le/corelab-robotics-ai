@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, type CSSProperties } from "react";
 import { Braces, Check, Copy } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import { copyText } from "./provider";
 import type { highlightCode } from "./code-highlight";
 const aliases = {
@@ -39,6 +40,7 @@ export function CodeBlock({
     lang: string;
     result: Awaited<ReturnType<typeof highlightCode>>;
   } | null>(null);
+  const { tx } = useI18n();
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -79,7 +81,11 @@ export function CodeBlock({
         </span>
         <span className="code-theme">Dark+</span>
         <button
-          aria-label={copied ? "Code copied" : "Copy code"}
+          aria-label={
+            copied
+              ? tx("Code copied", "Đã sao chép code")
+              : tx("Copy code", "Sao chép code")
+          }
           className="code-copy"
           type="button"
           onClick={async () => {
@@ -97,10 +103,14 @@ export function CodeBlock({
           ) : (
             <Copy size={15} aria-hidden="true" />
           )}
-          {copied ? "Copied" : "Copy"}
+          {copied ? tx("Copied", "Đã chép") : tx("Copy", "Chép")}
         </button>
       </div>
-      <pre tabIndex={0} role="region" aria-label={`${label} code example`}>
+      <pre
+        tabIndex={0}
+        role="region"
+        aria-label={`${label} ${tx("code example", "ví dụ code")}`}
+      >
         <code>
           {result
             ? result.tokens.map((line, i) => (

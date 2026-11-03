@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một tập dữ liệu có 2% mẫu dương. Một mô hình dự đoán âm tính cho mọi ca có tính chất nào?",
+   "options": [
+    "98% precision và 98% recall",
+    "50% accuracy và 100% recall",
+    "98% accuracy và 100% recall",
+    "98% accuracy và recall bằng 0"
+   ],
+   "explanation": "Mô hình luôn-âm-tính đoán đúng mọi mẫu âm (98%) và bỏ sót mọi mẫu dương (recall 0). Chỉ riêng accuracy che giấu điều này."
+  },
+  "q2": {
+   "prompt": "TP=45, FP=15, FN=5, TN=935. Precision là bao nhiêu? (số thập phân, 3 chữ số, sai số cho phép 0.001)",
+   "explanation": "45/(45+15)=0.75."
+  },
+  "q3": {
+   "prompt": "Một bộ phát hiện có TP=45, FP=15, FN=5, TN=935. Điểm F1 là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Recall=45/50=0.9. F1=2·0.75·0.9/1.65=0.8182."
+  },
+  "q4": {
+   "prompt": "Một bộ phân loại đã calibrate. Một false negative tốn 4 và một false positive tốn 1. Từ xác suất nào bạn nên bắt đầu dự đoán dương? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Dự đoán dương khi p·4>(1−p)·1, tức p>1/5=0.2."
+  },
+  "q5": {
+   "prompt": "Bạn đánh giá 30 cấu hình trên tập validation, chọn cấu hình tốt nhất và báo cáo điểm validation của nó làm hiệu năng kỳ vọng. Vấn đề chính là gì?",
+   "options": [
+    "Không có gì sai: dữ liệu validation theo định nghĩa là không chệch với mô hình đã chọn.",
+    "Learning rate lẽ ra phải lớn hơn, nên phải lặp lại việc tìm kiếm.",
+    "Điểm tốt nhất trong nhiều điểm nhiễu bị chệch lạc quan; hãy báo cáo trên dữ liệu test chưa bị chạm tới.",
+    "Điểm này bi quan, vì mô hình đã chọn thấy ít dữ liệu huấn luyện hơn các mô hình khác."
+   ],
+   "explanation": "Việc chọn trên tập validation làm cạn kiệt nó; giá trị lớn nhất của nhiều ước lượng có nhiễu phóng đại hiệu năng thật."
+  },
+  "q6": {
+   "prompt": "Xác suất từ một mô hình có ECE là 0.18 trên tập test. Điều này nói lên gì?",
+   "options": [
+    "Trung bình, confidence được nêu khác với tần suất quan sát khoảng 0.18 qua các bin.",
+    "Mô hình bị overfit: loss huấn luyện thấp hơn loss trên tập test 0.18.",
+    "Thứ hạng của các mẫu sai, vì ECE đo mức các điểm số sắp xếp các ca tốt đến đâu.",
+    "Accuracy là 82%, vì ECE bằng một trừ accuracy của mô hình trên tập test."
+   ],
+   "explanation": "ECE là trung bình có trọng số của chênh lệch giữa confidence và tần suất quan sát; nó không nói trực tiếp gì về accuracy hay ranking."
+  },
+  "q7": {
+   "prompt": "Bộ phát hiện của bạn báo precision 0.9 trên một tập test cân bằng. Nó sẽ chạy ở nơi mẫu dương chiếm 1% số ca. Bạn kiểm tra và báo cáo gì trước khi triển khai?",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Giải thích rằng precision phụ thuộc vào prevalence và tính lại nó (Bayes) hoặc đánh giá lại trên dữ liệu có prevalence khi triển khai.",
+    "Báo cáo recall/tỉ lệ báo động giả và chi phí của mỗi loại lỗi, cùng một baseline tầm thường.",
+    "Kiểm tra calibration hoặc recalibrate các điểm số cho prior mới, và nêu một cách để kết quả có thể bị bác bỏ."
+   ]
+  }
+ }
+}

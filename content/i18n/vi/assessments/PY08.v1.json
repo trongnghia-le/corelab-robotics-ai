@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Hai lần chạy cùng seed cho kết quả khác nhau vì code duyệt qua một set các tên cảm biến. Nguyên nhân gốc là",
+   "options": [
+    "hash randomization của chuỗi làm đổi thứ tự duyệt set giữa các process",
+    "Python bỏ qua seed trừ khi nó cũng được truyền vào mọi lời gọi hàm",
+    "phép cộng dấu phẩy động là ngẫu nhiên, nên mỗi lần chạy cộng các lần đọc theo cách khác",
+    "set giữ thứ tự chèn, nhưng seed đặt lại nó sau mỗi lần import"
+   ],
+   "explanation": "PYTHONHASHSEED làm salt hash của chuỗi; hãy sắp xếp trước khi duyệt."
+  },
+  "q2": {
+   "prompt": "Thứ nào thuộc về bên trong file kết quả được hash của một thí nghiệm?",
+   "options": [
+    "hostname",
+    "các metric tính từ dữ liệu",
+    "giờ hệ thống của lần chạy",
+    "đường dẫn tuyệt đối của thư mục đầu ra"
+   ],
+   "explanation": "Bất cứ thứ gì thay đổi giữa các lần chạy giống hệt nhau đều thuộc về metadata riêng."
+  },
+  "q3": {
+   "prompt": "Một hàm thiết lập logging thêm handler mỗi lần được gọi, được gọi 4 lần. Mỗi thông điệp xuất hiện bao nhiêu bản sao?",
+   "explanation": "Một bản cho mỗi handler."
+  },
+  "q4": {
+   "prompt": "Độ lệch chuẩn mỗi lần chạy của một estimator là 0.02. Trung bình trên 25 seed có sai số chuẩn là bao nhiêu?",
+   "explanation": "0.02/sqrt(25)."
+  },
+  "q5": {
+   "prompt": "Vì sao dùng đối tượng random.Random(seed) cục bộ thay vì random.seed toàn cục?",
+   "options": [
+    "bộ sinh toàn cục không thể được seed khi bất kỳ module nào khác đã import random",
+    "kết quả không còn phụ thuộc vào thứ tự các lời gọi không liên quan cũng rút số ngẫu nhiên",
+    "nó tránh import module random, nên không code nào khác đổi được trạng thái của nó",
+    "bộ sinh cục bộ nhanh hơn bộ toàn cục vì bỏ qua khóa của module"
+   ],
+   "explanation": "Trạng thái bộ sinh tường minh là một đầu vào tường minh."
+  },
+  "q6": {
+   "prompt": "Chuỗi JSON chuẩn tắc {\"a\":1,\"b\":2} (khóa sắp xếp, không khoảng trắng) có bao nhiêu ký tự?",
+   "explanation": "{\"a\":1,\"b\":2} có 13 ký tự."
+  },
+  "q7": {
+   "prompt": "Một đồng nghiệp không thể tái tạo kết quả bạn báo cáo từ repository của bạn. Hãy mô tả bài kiểm tra clean-checkout bạn sẽ chạy, so sánh cái gì, và những khác biệt nào chấp nhận được.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Clone vào thư mục mới, tạo môi trường mới từ các phụ thuộc được ghim và chạy với config đã lưu.",
+    "So sánh hash hoặc các metric theo dung sai của các file kết quả.",
+    "Chỉ chấp nhận khác biệt ở metadata (thời gian, host, đường dẫn) và coi khác biệt ở kết quả là thất bại."
+   ]
+  }
+ }
+}

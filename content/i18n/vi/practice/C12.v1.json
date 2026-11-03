@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "x ~ N(2, 0.25), y = x^2. Phương sai chính xác của y (4 chữ số thập phân)?",
+   "explanation": "4 mu^2 var + 2 var^2 = 4 + 0.125 = 4.125."
+  },
+  "b2": {
+   "prompt": "x ~ N(2, 0.25), y = x^2. Phương sai EKF của y, (2 mu)^2 var (3 chữ số thập phân)?",
+   "explanation": "(2 mu)^2 var = 4.0."
+  },
+  "b3": {
+   "prompt": "Biến đổi unscented (kappa = 2, n = 1) của g(x) = x^2 với N(0, 1): các điểm sigma là 0, +-sqrt(3). Trung bình UT của y (3 chữ số thập phân)?",
+   "explanation": "2/3*0 + 1/6*(3+3) = 1."
+  },
+  "b4": {
+   "prompt": "exp(x), x ~ N(0, 1): trung bình chính xác e^{0.5}. Giá trị EKF là 1 lệch bao nhiêu (tuyệt đối, 2 chữ số thập phân)?",
+   "explanation": "1.6487 - 1 = 0.65."
+  },
+  "b5": {
+   "prompt": "Cập nhật EKF cảm biến khoảng cách: tiên nghiệm x = 4 (phương sai 1), z = 5.2, h(4) = 5, H = 0.8, R = 0.04. Hệ số Kalman (3 chữ số thập phân)?",
+   "explanation": "K = 0.8/0.68 = 1.176."
+  },
+  "b6": {
+   "prompt": "Cập nhật EKF cảm biến khoảng cách: tiên nghiệm x = 4 (phương sai 1), giá trị đọc z = 5.2, h(4) = 5, H = 0.8, R = 0.04, nên hệ số Kalman là K = 1.1765. Trung bình hậu nghiệm (3 chữ số thập phân)?",
+   "explanation": "4 + 1.1765*0.2 = 4.235."
+  },
+  "b7": {
+   "prompt": "Một phép đo góc gần +pi trong khi góc dự đoán gần -pi. Bộ lọc phải làm gì trước khi dùng innovation?",
+   "options": [
+    "Chuyển sang độ",
+    "Không làm gì; dấu không quan trọng",
+    "Wrap hiệu về (-pi, pi]",
+    "Nhân với Jacobian hai lần"
+   ],
+   "explanation": "Nếu không, innovation xấp xỉ 2*pi và làm hỏng trạng thái."
+  },
+  "b8": {
+   "prompt": "Với g nào thì biến đổi unscented ba điểm (kappa = 2, đầu vào Gauss) chính xác về trung bình và phương sai?",
+   "options": [
+    "Mọi dạng toàn phương",
+    "Chỉ các ánh xạ tuyến tính",
+    "Chỉ các ánh xạ có g'' = 0",
+    "Mọi ánh xạ trơn"
+   ],
+   "explanation": "Các điểm sigma khớp bốn moment đầu của Gauss, đủ cho các dạng toàn phương."
+  },
+  "b9": {
+   "prompt": "Phát biểu nào về tính nhất quán của EKF và UKF là đúng?",
+   "options": [
+    "EKF chính xác bất cứ khi nào nhiễu là Gauss, nên có thể tin hiệp phương sai của nó",
+    "Cả hai bộ lọc đều không cần chỉnh nào, vì hiệp phương sai thích ứng với sai số thật",
+    "Cả hai là xấp xỉ và có thể trở nên quá tự tin; hãy kiểm tra NIS khi vận hành",
+    "UKF luôn nhất quán, nên không bao giờ cần kiểm tra các innovation của nó"
+   ],
+   "explanation": "Sai số xấp xỉ có thể làm P quá nhỏ."
+  },
+  "b10": {
+   "prompt": "Một robot trong hành lang đối xứng nhận một phép đo phù hợp với hai nơi xa nhau. Một bộ lọc Gauss đơn sẽ:",
+   "options": [
+    "Luôn biểu diễn cả hai nơi bằng một Gauss rộng, đúng",
+    "Lấy trung bình hai nơi thành một ước lượng kém hoặc chọn một cách tùy ý",
+    "Trở nên chính xác, vì phép đo đối xứng loại bỏ sai số",
+    "Mất Jacobian, nên cập nhật hiệp phương sai không còn chạy được"
+   ],
+   "explanation": "Một niềm tin đơn đỉnh không biểu diễn được hai giả thuyết tách biệt."
+  },
+  "b11": {
+   "prompt": "Chọn giữa EKF, UKF và particle filter cho (a) một bộ lọc dẫn đường IMU/GPS 6 bậc tự do, (b) một bài toán định vị toàn cục (kidnapped robot). Biện minh bằng tính phi tuyến và hình dạng niềm tin, và nêu một kiểm tra cho mỗi trường hợp.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chọn EKF/UKF cho (a) với độ bất định nhỏ và niềm tin gần đơn đỉnh.",
+    "Chọn particle/bộ lọc hỗn hợp cho (b) do đa đỉnh.",
+    "Nêu các kiểm tra nhất quán (NIS, effective sample size, so với ground truth)."
+   ]
+  },
+  "b12": {
+   "prompt": "Giải thích cách bạn kiểm chứng một cài đặt UKF vô hướng chỉ dùng các hàm kiểm thử toàn phương và mũ, và mỗi test sẽ bắt được gì.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Test toàn phương: trung bình và phương sai chính xác (trọng số/scale điểm sigma).",
+    "Test mũ hoặc sin với dạng đóng (xu hướng sai số theo sigma).",
+    "Test Jacobian bằng không hoặc ánh xạ tuyến tính (hiệp phương sai chéo và công thức cập nhật)."
+   ]
+  }
+ }
+}

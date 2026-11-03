@@ -1,0 +1,43 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một bộ điều khiển ổn định với mọi gain trong mô hình liên tục của đối tượng bộ tích phân. Sau khi lấy mẫu với zero-order hold và một mẫu trễ tính toán, vì sao một gain lớn có thể trở nên bất ổn?",
+   "options": [
+    "Bộ điều khiển số không thể cài đặt chính xác gain tỉ lệ, nên gain lớn làm bão hòa số học và phân kỳ",
+    "Lấy mẫu loại bỏ bộ tích phân của đối tượng, nên vòng rời rạc không có tác dụng tích phân và gain cao trở nên không an toàn",
+    "Zero-order hold đảo dấu phản hồi ở mỗi mẫu, nên bất kỳ gain nào cũng trở nên bất ổn",
+    "Bộ giữ và độ trễ thêm độ trễ pha (khoảng 1.5 mẫu trễ), nên gain quá cao đẩy chống lại thông tin cũ"
+   ],
+   "explanation": "Độ trễ thêm độ trễ pha tỉ lệ với tần số; với gain cao vòng cắt ở nơi độ trễ pha vượt quá biên."
+  },
+  "q2": {
+   "prompt": "Rời rạc hóa ZOH y' = -3y + 6u với T = 0.05 s. Cho A_d (4 chữ số thập phân).",
+   "explanation": "A_d = exp(-0.15) = 0.8607."
+  },
+  "q3": {
+   "prompt": "Rời rạc hóa ZOH y' = -3y + 6u với T = 0.05 s, cho y[k+1] = A_d y[k] + B_d u[k]. Cho B_d (4 chữ số thập phân).",
+   "explanation": "B_d = (6/3)(1 - 0.8607) = 0.2786."
+  },
+  "q4": {
+   "prompt": "Cực liên tục s = -20 và T = 0.02 s. Nó ánh xạ tới đâu trong mặt phẳng z (z = e^{sT}), 4 chữ số thập phân?",
+   "explanation": "exp(-0.4) = 0.6703."
+  },
+  "q5": {
+   "prompt": "Bộ tích phân lấy mẫu với u = -K y và d = 1 mẫu trễ ổn định khi và chỉ khi K*T < 1. Với T = 0.04 s, K ổn định lớn nhất là bao nhiêu (1/s)?",
+   "explanation": "K < 1/T = 25."
+  },
+  "q6": {
+   "prompt": "Bước lượng tử hóa lệnh q = 0.1 và gain K = 20 trên một vòng vị trí với đối tượng bộ tích phân. Kích thước vùng chết |y| <= q/(2K) (4 chữ số thập phân)?",
+   "explanation": "q/(2K) = 0.1/40 = 0.0025."
+  },
+  "q7": {
+   "prompt": "Một vòng motor hoạt động trong mô phỏng nhưng dao động trên robot ở khoảng tần số lấy mẫu chia 3. Liệt kê các hiệu ứng số bạn sẽ kiểm tra, theo thứ tự, kèm một phép đo cho mỗi hiệu ứng.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu độ trễ/latency (timestamp của đọc, tính và ghi) và bộ giữ.",
+    "Nêu jitter thời gian lấy mẫu hoặc tần số và lượng tử hóa.",
+    "Đề xuất giảm gain hoặc giảm độ trễ và đo lại dao động."
+   ]
+  }
+ }
+}

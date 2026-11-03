@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Sự khác nhau giữa tương thích API và tương thích ABI là gì?",
+   "options": [
+    "Tương thích ABI hàm ý mã nguồn không bao giờ cần thay đổi gì cả",
+    "API: mã nguồn vẫn biên dịch. ABI: một chương trình đã biên dịch vẫn chạy với binary mới",
+    "API chỉ liên quan đến header, còn ABI chỉ liên quan đến các file tài liệu",
+    "Chúng là hai tên của cùng một thứ, nên giữ cái này luôn giữ được cái kia"
+   ],
+   "explanation": "ABI bao gồm tên symbol, calling convention, kích thước và bố cục kiểu, và vtable; nó quan trọng khi binary được hoán đổi mà không biên dịch lại."
+  },
+  "q2": {
+   "prompt": "Thay đổi nào với một struct public được truyền bằng con trỏ qua ranh giới shared-library là phá vỡ ABI?",
+   "options": [
+    "Chèn một field mới vào giữa hai field hiện có",
+    "Thêm một comment phía trên một trong các field",
+    "Thêm một hàm tự do mới vào cùng header",
+    "Đổi tên một tham số của một hàm trong header"
+   ],
+   "explanation": "Binary cũ dùng các offset cũ, nên đọc sai field và có thể làm tràn đối tượng của chúng."
+  },
+  "q3": {
+   "prompt": "Một hàm thư viện extern \"C\" ném một exception C++ và bên gọi là Python qua ctypes. Chuyện gì xảy ra?",
+   "options": [
+    "Python chuyển nó thành một exception Python mà ctypes raise cho bên gọi",
+    "Process bị kết thúc (undefined behavior): exception không được xuyên qua ranh giới C",
+    "Exception bị bỏ qua và việc thực thi đơn giản tiếp tục sau lời gọi",
+    "C runtime bắt nó và trả -1 cho bên gọi Python"
+   ],
+   "explanation": "Bên gọi không thể unwind các frame C++; hãy bắt mọi thứ tại ranh giới và trả về một mã lỗi."
+  },
+  "q4": {
+   "prompt": "Một struct public có 3 double và một int, bố trí với căn lề tự nhiên trên x86-64 (không sắp xếp lại). sizeof của struct là bao nhiêu byte? Cho một số nguyên.",
+   "explanation": "3 x 8 = 24 byte, rồi int 4 byte tại offset 24, đệm lên bội của căn lề struct (8): 32 byte."
+  },
+  "q5": {
+   "prompt": "Frame* grab(); xuất hiện trong một header C++ không có comment. Chữ ký để ngỏ điều gì?",
+   "options": [
+    "Ai sở hữu và giải phóng frame được trả về và nó còn hợp lệ trong bao lâu",
+    "Tên của hàm và namespace của nó",
+    "Không có gì để ngỏ; con trỏ thô luôn có nghĩa là đối tượng được mượn",
+    "Kiểu trả về của hàm và việc nó có phải là con trỏ hay không"
+   ],
+   "explanation": "Trả về con trỏ thô có thể nghĩa là đối tượng mới (bên gọi free), buffer nội bộ (hợp lệ đến lời gọi tiếp theo) hoặc tài nguyên chia sẻ. Hợp đồng phải được viết ra hoặc mã hóa vào một kiểu."
+  },
+  "q6": {
+   "prompt": "Một thư viện xuất các hàm sau: c_add (extern \"C\"), cxx_add(int,int), robot::cxx_add2(int,int), takes_vector(const std::vector<int>&). Có bao nhiêu hàm trong số đó có thể được gọi từ Python ctypes bằng tên mã nguồn thường? Cho một số nguyên.",
+   "explanation": "Chỉ hàm extern \"C\" giữ tên symbol thường; ba hàm còn lại bị mangle."
+  },
+  "q7": {
+   "prompt": "Mô tả thiết kế hai tầng để phơi một thư viện cánh tay robot C++ cho người dùng build bằng các compiler khác nhau: cái gì nằm trong interface nhị phân, cái gì nằm trong wrapper, và ai sở hữu cái gì.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Interface nhị phân: các hàm extern \"C\", opaque handle với create/destroy, mã lỗi, không có exception hay kiểu chuẩn.",
+    "Wrapper C++ chỉ có header: RAII (unique_ptr với deleter), chỉ-move, dịch mã sang exception.",
+    "Quyền sở hữu: bên tạo/wrapper sở hữu handle; destroy giải phóng nó đúng một lần; quy tắc thread và vòng đời được ghi tài liệu."
+   ]
+  }
+ }
+}

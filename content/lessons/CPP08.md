@@ -4,7 +4,7 @@
   "module_id": "CPP08",
   "title": "Debugging and testing: sanitizers, debuggers, and test harnesses",
   "summary": "Find memory and logic errors with sanitizers and a debugger, reduce a failure to a minimal case, and lock the fix in with a regression test.",
-  "estimated_minutes": 80,
+  "estimated_minutes": 405,
   "prerequisites": [
     "CPP07",
     "CPP02"
@@ -136,7 +136,7 @@ The expected output for `{1,2,3,4,5}` with window 2 is `1.5 2.5 3.5 4.5`. The nu
 
 1. **Hypothesis from the numbers**: the first value 3 equals $(1+2+3)/2$: three elements were summed but divided by 2. The loop has one iteration too many.
 2. **Confirm with ASan**: `g++ -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer buggy.cpp && ./a.out` reports `heap-buffer-overflow`, `READ of size 8`, `buggy.cpp:10`, and "0 bytes to the right of 40-byte region": the vector holds 5 doubles, and the last window read index 5. For the last window, $i=3$, $k=2$ gives index $3+2=5$, which is out of range. The earlier outputs were wrong too, but only this read is a memory error.
-3. **Reduce**: with `{1,2,3}` and window 2, the output should be `1.5 2.5` and ASan still fires at the second window (index $1+2=3$). Smaller still: `{1,2}` and window 1 should give `1 2`; the program prints `3 2` (the second value includes the out-of-range read of index 2). The minimal reproducer is two elements and window 1.
+3. **Reduce**: with `{1,2,3}` and window 2, the output should be `1.5 2.5` and ASan still fires at the second window (index $1+2=3$). Smaller still: `{1,2}` and window 1 should give `1 2`; the program prints `3` and then `2` plus whatever sits at index 2 (every window reads one element too many). The minimal reproducer is a single element and window 1: the only window reads index 1 of a 1-element vector.
 4. **Fix**: change `k <= w` to `k < w`.
 5. **Regression test** (hand-computed): `moving_average({1,2,3,4,5}, 2)` equals `{1.5, 2.5, 3.5, 4.5}`; window 1 returns the input; window 5 returns `{3}`; window 6 and 0 return empty.
 6. **Confirm**: the test fails on the old code (first value 3 not 1.5, with or without the sanitizer) and passes on the new code under ASan and UBSan, with no report.
@@ -433,6 +433,44 @@ With the stubs, the first test terminates with `NotImplemented`. With the bug re
 
 Add a `TEST(name) { ... }` macro with static registration so that tests need not be listed by hand; add a `--filter` command-line option; or write `minimize` (exercise 9) in C++ and use it to shrink a failing input read from a file.
 
+### Library track
+
+The real-world version of your `Checker` is a test framework. GoogleTest (`sudo apt install libgtest-dev`) is the usual choice for C++ robotics code (ROS 2 `ament_cmake_gtest` wraps it). Save this as `gtest_ma.cpp` with your fixed `moving_average` above it.
+
+```cpp
+// gtest_ma.cpp : the regression tests of this lesson with GoogleTest instead of your Checker.
+// Put the FIXED moving_average (and its includes) above this line, or #include a header that has it.
+#include <gtest/gtest.h>
+#include <cmath>
+#include <vector>
+
+TEST(MovingAverage, HandComputedWindow2) {
+  const std::vector<double> v{1, 2, 3, 4, 5};
+  const auto m = moving_average(v, 2);
+  ASSERT_EQ(m.size(), 4u);                       // ASSERT_* stops this test, EXPECT_* continues
+  EXPECT_DOUBLE_EQ(m[0], 1.5);                   // fails on the buggy code (it gives 3)
+  EXPECT_DOUBLE_EQ(m[1], 2.5);
+  EXPECT_DOUBLE_EQ(m[3], 4.5);
+}
+
+TEST(MovingAverage, Edges) {
+  const std::vector<double> v{1, 2, 3, 4, 5};
+  EXPECT_EQ(moving_average(v, 1), v);            // window 1 is the identity
+  EXPECT_EQ(moving_average(v, 5), std::vector<double>{3.0});
+  EXPECT_TRUE(moving_average(v, 6).empty());
+  EXPECT_TRUE(moving_average(v, 0).empty());
+}
+
+TEST(Checker, NaNNeverPasses) { EXPECT_FALSE(std::fabs(NAN - 1.0) <= 1e9); }
+
+// Build and run (also under the sanitizers, as in the lab):
+//   g++ -std=c++17 -g -O1 -fsanitize=address,undefined gtest_ma.cpp -lgtest -lgtest_main -pthread -o gt && ./gt
+// Bounds checking without ASan: add -D_GLIBCXX_ASSERTIONS and use v.at(i) or v[i] on the buggy
+// program; it aborts (SIGABRT, exit code 134) at the faulty index instead of printing wrong numbers.
+```
+
+Expected: `[  PASSED  ] 3 tests.` With the `k <= w` bug put back, `HandComputedWindow2` and `Edges` fail with a readable message (`Expected equality of these values ... 3 vs 1.5`) even without any sanitizer. Compare the output format with your `run_tests`.
+
 ## Verification
 
 - Prove the test can fail: revert the fix (or mutate the code) and check that the test goes red. A test that never failed proves nothing.
@@ -480,9 +518,9 @@ The same loop applies in Python (`pytest`, `pdb`, `faulthandler`) and in ROS 2 (
 6. For instance: `Test{"moving_average window 2", [](Checker& c){ auto m = moving_average({1,2,3,4,5}, 2); c.check(m.size() == 4, "size"); c.check_near(m[0], 1.5, 1e-12, "m[0]"); ... }}`. On the buggy code `m[0]` is 3, so the test fails without a sanitizer. A value assertion states what correct means and fails deterministically; relying on a crash fails only when the undefined behavior happens to crash, and says nothing about wrong-but-silent results.
 7. A good table: `wrap_to_pi(0)=0`; `wrap_to_pi(pi)=-3.14159` (upper end excluded); `wrap_to_pi(-pi)=-3.14159`; `wrap_to_pi(1.5*pi)=-1.5708`; `wrap_to_pi(2*pi)=0` (tolerance); `wrap_to_pi(7)=0.71681`; `wrap_to_pi(-7)=-0.71681`; `wrap_to_pi(1e6)` equals the direct computation with an independent oracle (precision loss for huge angles is expected); `wrap_to_pi(NAN)` is NaN (must not loop forever). Tolerance about $10^{-9}$.
 8. $n\ge\ln0.05/\ln0.98=148.3$, so 149 runs. Causes and techniques: data races (ThreadSanitizer); timing/sleeps (use a fake clock or condition variables instead of `sleep`); uninitialized memory (Valgrind/MSan, `-ftrivial-auto-var-init=zero` to expose it); unseeded or time-seeded randomness (log and fix seeds); ordering of unordered containers (sort before comparing); resource leaks across tests (run each test in a fresh process).
-9. The result is `[17, 42]` with 23 calls of `fails` for `range(64)` (the exact count depends on the strategy). A good answer shows that starting with chunk 32 removes 32 elements at a time (kept only if the bug persists), then halves down to 1, and that the result is "1-minimal": removing any single remaining element makes the bug disappear.
+9. The result is `[17, 42]` with 22 calls of `fails` for `range(64)` when you start at chunk 32 and halve down to 1 (the exact count depends on the strategy). A good answer shows that starting with chunk 32 removes 32 elements at a time (kept only if the bug persists), then halves down to 1, and that the result is "1-minimal": removing any single remaining element makes the bug disappear.
 10. A good answer: job 1 Debug (`-O1 -g`) with `-fsanitize=address,undefined` running all tests (catches 1(a), 1(b), 1(c), 1(e)); job 2 Release with warnings as errors (`-Wall -Wextra -Werror`) and the same tests (catches optimization-dependent UB); job 3 ThreadSanitizer for the concurrency tests only (1(d), the race in exercise 8), separate because TSan and ASan instrument memory differently and cannot be combined; optionally a nightly Valgrind or MSan job for 1(f). Each job should upload the first sanitizer report as an artifact.
-11. A good answer has a table with: ASan (first 4 lines: heap-buffer-overflow, READ of size 8, `buggy.cpp:10`, 0 bytes to the right of a 40-byte region), Valgrind (`Invalid read of size 8`, address 0 bytes after a block of size 40), GDB for the `segv.cpp` variant (`bt`, `get() = 0x0`); the reduced input (two elements, window 1); a regression test that fails on the old code; and a final run with no sanitizer output.
+11. A good answer has a table with: ASan (first 4 lines: heap-buffer-overflow, READ of size 8, `buggy.cpp:10`, 0 bytes to the right of a 40-byte region), Valgrind (`Invalid read of size 8`, address 0 bytes after a block of size 40), GDB for the `segv.cpp` variant (`bt`, `get() = 0x0`); the reduced input (one element, window 1); a regression test that fails on the old code; and a final run with no sanitizer output.
 
 ## Further reading
 
@@ -490,4 +528,4 @@ The same loop applies in Python (`pytest`, `pdb`, `faulthandler`) and in ROS 2 (
 - [GCC: Program Instrumentation Options](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html) - every `-fsanitize=` option, and which can be combined.
 - [GDB documentation](https://sourceware.org/gdb/documentation/) - the manual for breakpoints, stack inspection and watchpoints.
 
-**More practice:** the [Pro Git chapter on debugging with Git](https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git) (bisect and blame), the [UndefinedBehaviorSanitizer manual](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html) with its list of checks you can trigger deliberately, and the [Valgrind quick start](https://valgrind.org/docs/manual/quick-start.html).
+**More practice:** the [Pro Git chapter on debugging with Git](https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git) (bisect and blame), the [UndefinedBehaviorSanitizer manual](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html) and [AddressSanitizer manual](https://clang.llvm.org/docs/AddressSanitizer.html) (trigger each listed check deliberately and read the report), the [Valgrind quick start](https://valgrind.org/docs/manual/quick-start.html), the [GDB sample session](https://sourceware.org/gdb/current/onlinedocs/gdb.html/Sample-Session.html), and the [GoogleTest primer](https://google.github.io/googletest/primer.html).

@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Đồ thị residual nào ủng hộ mô hình?",
+   "options": [
+    "Một đường cong trơn dạng sin",
+    "Một chuỗi dài giá trị dương rồi âm",
+    "Độ trải tăng theo tín hiệu",
+    "Scatter ngẫu nhiên quanh 0 với độ trải không đổi"
+   ],
+   "explanation": "Cấu trúc trong residual báo hiệu vấn đề; scatter là dáng vẻ của nhiễu."
+  },
+  "b2": {
+   "prompt": "Động cơ tau=0.5, K=2, u=3. Tốc độ tại t=0.25 s tính bằng rad/s (3 chữ số thập phân)?",
+   "explanation": "6(1-e^{-0.5})."
+  },
+  "b3": {
+   "prompt": "Bao nhiêu phần trăm (1 chữ số thập phân) giá trị cuối đạt được tại t=2*tau?",
+   "explanation": "1-e^{-2}=0.8647."
+  },
+  "b4": {
+   "prompt": "sigma_hat=0.083 và sqrt((J^T J)^-1) của tau = 0.102. SE của tau tính bằng mili giây (làm tròn số nguyên)?",
+   "explanation": "0.083*0.102=0.00847 s."
+  },
+  "b5": {
+   "prompt": "Với SE(tau)=0.0085 s và giá trị tới hạn t là 2.045, nửa độ rộng khoảng 95% tính bằng mili giây (làm tròn số nguyên)?",
+   "explanation": "2.045*8.5=17.4 ms."
+  },
+  "b6": {
+   "prompt": "40 điểm, 3 tham số, SSR=0.37. sigma_hat bằng bao nhiêu rad/s (3 chữ số thập phân)?",
+   "explanation": "sqrt(0.37/37)=0.1."
+  },
+  "b7": {
+   "prompt": "Hai phép khớp tau, một theo giây và một theo mili giây, với cùng các con số bounds (1e-3, 10) sẽ",
+   "options": [
+    "cho điểm tối ưu giống nhau, vì bounds chỉ là khoảng tìm kiếm ban đầu",
+    "hạn chế phép khớp theo mili giây vào những giá trị không hợp lý về vật lý",
+    "luôn hội tụ nhanh hơn, vì các số nhỏ hơn có điều kiện tốt hơn",
+    "tương đương, vì việc đổi đơn vị triệt tiêu trong bộ tối ưu"
+   ],
+   "explanation": "Bounds biểu diễn sai đơn vị làm đổi bài toán."
+  },
+  "b8": {
+   "prompt": "Một phép khớp với u=0 trả về gain K đúng bằng giá trị đoán ban đầu vì",
+   "options": [
+    "bounds buộc K giữ nguyên bằng giá trị ban đầu",
+    "solve_ivp bỏ qua K và dùng một gain mặc định trong mô hình",
+    "bộ tối ưu hội tụ về giá trị thật, vốn bằng giá trị đoán",
+    "đầu ra không phụ thuộc K, nên bộ tối ưu không thấy gradient"
+   ],
+   "explanation": "Cột Jacobian bằng 0."
+  },
+  "b9": {
+   "prompt": "Khớp ln(tau) thay vì tau có ích vì",
+   "options": [
+    "nó giữ tau dương và biến sai số thành tương đối",
+    "nó loại bỏ nhu cầu phải khớp một mô hình",
+    "nó chuyển điểm tối ưu sang một giá trị tốt hơn",
+    "nó làm nhiễu đo thành Gaussian"
+   ],
+   "explanation": "Tối ưu không ràng buộc trên thang log; SE(ln tau)~SE(tau)/tau."
+  },
+  "b10": {
+   "prompt": "SE(tau)=0.0085 s và tau_hat=0.498 s. Standard error xấp xỉ của ln(tau) theo phần trăm (1 chữ số thập phân)?",
+   "explanation": "0.0085/0.498=1.7%."
+  },
+  "b11": {
+   "prompt": "Hãy mô tả các đầu ra và metadata bạn sẽ lưu để một đồng nghiệp có thể tái lập và kiểm toán một phép khớp tham số nhiều tháng sau.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Lưu tham số, standard error, sigma_hat và hiệp phương sai cùng với đơn vị.",
+    "Ghi lại seed, tolerance, bounds và phiên bản thư viện hoặc commit.",
+    "Giữ dữ liệu thô và hình residual để có thể sinh lại phép khớp."
+   ]
+  },
+  "b12": {
+   "prompt": "Simulator dùng rtol=1e-3 trong khi nhiễu đo của bạn là 0.1 rad/s trên tín hiệu 6 rad/s. Hãy giải thích vì sao điều này vẫn có thể làm hại phép khớp bình phương tối thiểu và bạn sẽ kiểm tra tác động ra sao.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Giải thích rằng Jacobian sai phân hữu hạn khuếch đại các sai số nhỏ, không trơn của simulator.",
+    "Đề xuất siết rtol/atol và so sánh các phép khớp.",
+    "Kiểm tra simulator với nghiệm giải tích và theo dõi trạng thái của bộ tối ưu."
+   ]
+  }
+ }
+}

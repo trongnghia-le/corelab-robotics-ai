@@ -4,7 +4,7 @@
   "module_id": "CPP11",
   "title": "Numerical C++: Eigen, linear solvers, and numerical stability",
   "summary": "Use Eigen matrices and decompositions to solve least-squares problems, and predict and measure how conditioning limits accuracy.",
-  "estimated_minutes": 85,
+  "estimated_minutes": 400,
   "prerequisites": [
     "CPP05",
     "M03"
@@ -117,7 +117,7 @@ The Vandermonde matrix with columns $1,t,t^2,\dots,t^d$ on $[0,1]$ becomes nearl
 | 9 | 3.6e6 | 2.5e-11 | 4.9e-04 |
 | 12 | 6.8e8 | 3.4e-08 | 3.8e+00 |
 
-(errors are $\|\hat c-c_{\text{true}}\|$ for noise-free data $y=Ac_{\text{true}}$.) Centering and scaling $t$ to $[-1,1]$ reduces the degree-12 condition number to $1.6\times10^{4}$; orthogonal polynomial bases (Chebyshev) are better still. Remedies for near-singular problems: scale the columns, use SVD with truncation, or add Tikhonov (ridge) regularization $(A^\top A+\lambda I)x=A^\top b$.
+(errors are $\|\hat c-c_{\text{true}}\|$ for noise-free data $y=Ac_{\text{true}}$ with $c_{\text{true},j}=(-1)^j(1+0.1j)$, the same coefficients as the lab test; other coefficients give errors of the same order, and the last digits depend on the platform.) Centering and scaling $t$ to $[-1,1]$ reduces the degree-12 condition number to $1.6\times10^{4}$; orthogonal polynomial bases (Chebyshev) are better still. Remedies for near-singular problems: scale the columns, use SVD with truncation, or add Tikhonov (ridge) regularization $(A^\top A+\lambda I)x=A^\top b$.
 
 ### Verifying with an oracle
 
@@ -383,6 +383,45 @@ and for the sweep (3 significant digits; your last digits can differ): degree 9 
 
 Add ridge regression `ridge(A, b, lambda)` through an augmented QR (stack $\sqrt\lambda I$ under $A$) and show that it stabilizes the degree-12 fit; or implement a Householder QR yourself and compare with Eigen on the test cases.
 
+### Library track
+
+The lab already uses Eigen. The independent library is NumPy (`pip install numpy`), the usual oracle: reproduce the whole degree table in Python with `np.vander`, `np.linalg.qr`, the normal equations and `np.linalg.lstsq`, and compare it with your C++ sweep (same `c_true`, same 50 points). The last block shows the remedies from the theory section with `numpy.polynomial.chebyshev`.
+
+```python
+import numpy as np
+
+t = np.linspace(0.0, 1.0, 50)                         # 50 equally spaced points in [0, 1]
+print("deg   cond(A)   QR err    normal-eq err   lstsq(SVD) err")
+for d in (3, 6, 9, 12):
+    A = np.vander(t, d + 1, increasing=True)          # columns 1, t, ..., t^d  (same as vandermonde)
+    c_true = np.array([(-1.0) ** j * (1.0 + 0.1 * j) for j in range(d + 1)])
+    y = A @ c_true                                    # noise-free data
+    Q, R = np.linalg.qr(A)                            # thin QR
+    x_qr = np.linalg.solve(R, Q.T @ y)                # R x = Q^T y
+    x_ne = np.linalg.solve(A.T @ A, A.T @ y)          # normal equations
+    x_svd = np.linalg.lstsq(A, y, rcond=None)[0]      # SVD based (what numpy uses)
+    err = lambda x: np.linalg.norm(x - c_true)
+    print(f"{d:3d}  {np.linalg.cond(A):9.2e}  {err(x_qr):8.1e}  {err(x_ne):12.1e}  {err(x_svd):12.1e}")
+    if d == 9:
+        assert err(x_ne) > 100 * err(x_qr)            # the lab's stability test
+        assert 1e6 < np.linalg.cond(A) < 1e7
+
+# centering/scaling t to [-1, 1] and the Chebyshev basis (numpy.polynomial) remove the problem
+s = 2 * t - 1
+print("cond monomial [0,1]  :", f"{np.linalg.cond(np.vander(t, 13, increasing=True)):.1e}")
+print("cond monomial [-1,1] :", f"{np.linalg.cond(np.vander(s, 13, increasing=True)):.1e}")
+print("cond Chebyshev [-1,1]:", f"{np.linalg.cond(np.polynomial.chebyshev.chebvander(s, 12)):.1e}")
+
+# the optimality check of the Verification section: A^T r must be ~ 0
+A = np.vander(np.arange(10.0), 2, increasing=True)
+y = np.array([1.1, 2.9, 5.2, 7.1, 8.8, 11.2, 13.1, 14.8, 17.1, 19.0])
+x = np.linalg.lstsq(A, y, rcond=None)[0]
+assert np.allclose(x, [1.06, 1.99333333333], atol=1e-9) and np.linalg.norm(A.T @ (A @ x - y)) < 1e-12
+print("library track ok")
+```
+
+Expected: $\kappa$ values 1.2e2, 2.0e4, 3.6e6, 6.8e8 (identical to the C++ run), QR errors near $\kappa\epsilon$ and normal-equation errors near $\kappa^2\epsilon$ (the last digits differ between NumPy/LAPACK and Eigen), condition numbers about 6.8e8, 1.6e4 and 2.5 for the monomial basis on $[0,1]$, the monomial basis on $[-1,1]$ and the Chebyshev basis, then `library track ok`. Compare your C++ numbers with these rows and explain any difference larger than a factor of 10.
+
 ## Verification
 
 - **Optimality check:** $\|A^\top(A\hat x-b)\|$ should be of order $\epsilon\,\|A\|\,\|r\|$, not just small in absolute terms. Always compute it.
@@ -440,4 +479,4 @@ The same ideas appear in Python (`numpy.linalg.lstsq` is SVD-based; `np.linalg.s
 - [Eigen: Linear algebra and decompositions](https://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html) - solving systems, least squares, and the decomposition comparison table.
 - [MIT 18.06 Linear Algebra](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/) - projections, least squares, and the SVD, with lectures and problem sets.
 
-**More practice:** the [18.06 problem sets](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/pages/assignments/) (least squares and projection problems with solutions), Eigen's [catalogue of dense decompositions](https://eigen.tuxfamily.org/dox/group__TopicLinearAlgebraDecompositions.html) and its page on [aliasing](https://eigen.tuxfamily.org/dox/group__TopicAliasing.html).
+**More practice:** the [MIT 18.06 assignments](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/pages/assignments/) (the projection and least-squares problem sets), the Eigen pages [Linear algebra and decompositions](https://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html), [Solving linear least squares systems](https://eigen.tuxfamily.org/dox/group__LeastSquares.html), [Aliasing](https://eigen.tuxfamily.org/dox/group__TopicAliasing.html) and [Lazy evaluation and `auto`](https://eigen.tuxfamily.org/dox/TopicLazyEvaluation.html), and the NumPy docs for [`np.linalg.lstsq`](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html) and [Chebyshev polynomials](https://numpy.org/doc/stable/reference/routines.polynomials.chebyshev.html) (re-do the degree sweep in a better basis).

@@ -1,41 +1,40 @@
 "use client";
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import {
   ArrowRight,
   ArrowLeft,
   BookOpen,
-  Target,
   Copy,
   ClipboardCheck,
   Pin,
   FileText,
+  Clock3,
 } from "lucide-react";
 import { domainTone } from "./domain-theme";
 import { topicMap, topics } from "@/lib/curriculum";
 import { contextFor } from "@/lib/engine";
 import type { TopicPayload, Attempt, Assistance, Answers } from "@/lib/types";
 import { useCore, Loading, copyText } from "./provider";
-import { TopicChips, Status, Matrix, Time, dateText } from "./ui";
-import { headingId } from "./markdown";
-import { LessonMedia } from "./lesson-media";
-import { LearningVisual } from "./learning-visual";
+import { TopicChips, Status, Matrix, dateText } from "./ui";
+import { LessonReader, SessionProgressBar } from "./lesson-study";
+import { lessonPlan } from "@/lib/lesson-plan";
+import { isCheckoff } from "@/lib/checkoff";
+import { formatDuration, useI18n } from "@/lib/i18n";
 import { AssessmentQuestion, AssistanceSelect } from "./assessment-question";
 import { AssessmentMethods } from "./assessment-methods";
 import { weaknessUrl } from "@/lib/weaknesses";
-const LessonMarkdown = dynamic(
-  () => import("./markdown").then((m) => m.LessonMarkdown),
-  { loading: () => <p>Rendering lesson…</p> },
-);
 export function useTopic(id: string) {
+  const { lang } = useI18n();
   const [data, setData] = useState<TopicPayload | null>(null),
     [error, setError] = useState("");
   useEffect(() => {
     const controller = new AbortController();
     setData(null);
     setError("");
-    fetch(`/api/topics/${id}`, { signal: controller.signal })
+    fetch(`/api/topics/${id}${lang === "vi" ? "?lang=vi" : ""}`, {
+      signal: controller.signal,
+    })
       .then(async (r) => {
         const payload = await r.json();
         if (!r.ok) throw new Error(payload.error);
@@ -46,7 +45,7 @@ export function useTopic(id: string) {
           setError(e instanceof Error ? e.message : "Unable to open topic.");
       });
     return () => controller.abort();
-  }, [id]);
+  }, [id, lang]);
   return { data, error };
 }
 export function TopicPage({
@@ -56,15 +55,16 @@ export function TopicPage({
   id: string;
   assessment?: boolean;
 }) {
-  const { state, act, busy, notify } = useCore();
+  const { state, act, busy, notify, title } = useCore();
+  const { t, lang } = useI18n();
   const { data, error } = useTopic(id);
   const [context, setContext] = useState("");
   if (error)
     return (
       <div className="page empty-state" role="alert">
-        <h1>Unable to open topic</h1>
+        <h1>{t("topic.unableTitle")}</h1>
         <p>{error}</p>
-        <Link href="/roadmap">Back to Roadmap</Link>
+        <Link href="/roadmap">{t("topic.backRoadmap")}</Link>
       </div>
     );
   if (!state || !data) return <Loading />;
@@ -80,16 +80,49 @@ export function TopicPage({
   const pos = authored.findIndex((t) => t.id === id);
   const prev = authored[pos - 1],
     next = authored[pos + 1];
+  const plan = lesson ? lessonPlan(lesson) : null;
+  const sessions = plan?.sessions ?? [];
   async function copyContext() {
     const text = contextFor(id, state!.progress, objectives, "learning");
     setContext(text);
     try {
       await copyText(text);
-      notify("Learning Context copied.");
+      notify(t("topic.contextCopied"));
     } catch (e) {
-      notify(e instanceof Error ? e.message : "Unable to copy.");
+      notify(e instanceof Error ? e.message : t("topic.copyFailed"));
     }
   }
+  const after = (
+    <>
+      <Notebook id={id} />
+      <div className="lesson-nav">
+        {prev ? (
+          <Link href={`/lessons/${prev.id}`}>
+            <ArrowLeft size={16} />
+            <span>
+              <small>{t("topic.prevLesson")}</small>
+              {prev.id} · {title(prev.id)}
+            </span>
+          </Link>
+        ) : (
+          <span />
+        )}
+        {next && (
+          <Link href={`/lessons/${next.id}`}>
+            <span>
+              <small>{t("topic.nextLesson")}</small>
+              {next.id} · {title(next.id)}
+            </span>
+            <ArrowRight size={16} />
+          </Link>
+        )}
+      </div>
+      <section className="related-topics">
+        <h2>{t("topic.buildsOn")}</h2>
+        <TopicChips ids={successors.map((t) => t.id)} />
+      </section>
+    </>
+  );
   return (
     <div
       className={`page topic-page ${assessment ? "assessment-page" : ""}`}
@@ -97,7 +130,7 @@ export function TopicPage({
     >
       <div className="topic-breadcrumb">
         <Link href={assessment ? "/assessments" : "/lessons"}>
-          {assessment ? "Assessments" : "Lessons"}
+          {assessment ? t("nav.review") : t("nav.lessons")}
         </Link>
         <span>/</span>
         <Link href={`/roadmap?domain=${encodeURIComponent(topic.domain)}`}>
@@ -111,25 +144,33 @@ export function TopicPage({
           <span className="topic-code">{id}</span>
           <span className={`priority ${topic.priority}`}>{topic.priority}</span>
           <Status mastery={m} />
-          {lesson && <Time minutes={lesson.meta.estimated_minutes} />}
+          {lesson && !assessment && (
+            <span className="time" data-testid="lesson-time">
+              <Clock3 size={14} />≈ {formatDuration(plan?.minutes ?? 0, lang)} ·{" "}
+              {t("lesson.sessionCount", { n: sessions.length })}
+            </span>
+          )}
         </div>
         <h1>
           {assessment
-            ? `Diagnostic · ${topic.title}`
+            ? t("topic.checkTitle", { title: title(id) })
             : (lesson?.meta.title ?? topic.title)}
         </h1>
         <p>{lesson?.meta.summary ?? overview.overview}</p>
+        {lesson && !assessment && (
+          <SessionProgressBar topicId={id} sessionCount={sessions.length} />
+        )}
         <div className="topic-actions">
           <Link
             className={assessment ? "button" : "button primary"}
             href={`/assessments/${id}`}
           >
             <ClipboardCheck size={16} />
-            Assess competence
+            {t("topic.checkKnow")}
           </Link>
           <button className="button" onClick={() => void copyContext()}>
             <Copy size={15} />
-            Copy Learning Context
+            {t("topic.copyContext")}
           </button>
           <button
             className="button"
@@ -141,24 +182,26 @@ export function TopicPage({
                 focusTopic: id,
                 focusReason: "Topic pinned from the workspace.",
               })
-                .then(() => notify(`Pinned ${id} as the current focus.`))
+                .then(() => notify(t("topic.pinned", { id })))
                 .catch(() => {})
             }
           >
             <Pin size={15} />
-            {state.progress.focusTopic === id ? "Focus pinned" : "Pin focus"}
+            {state.progress.focusTopic === id
+              ? t("topic.focusPinned")
+              : t("topic.pinFocus")}
           </button>
           {assessment && (
             <Link className="button" href={`/lessons/${id}`}>
               <BookOpen size={15} />
-              Read lesson
+              {t("topic.readLesson")}
             </Link>
           )}
         </div>
       </div>
       {context && (
         <details className="context-preview">
-          <summary>View generated Learning Context</summary>
+          <summary>{t("topic.viewContext")}</summary>
           <textarea
             aria-label="Learning Context"
             readOnly
@@ -168,143 +211,41 @@ export function TopicPage({
         </details>
       )}
       <section className="topic-prereqs">
-        <h2>Suggested prerequisites</h2>
+        <h2>{t("topic.prereqs")}</h2>
         <TopicChips ids={topic.prerequisites} />
         {topic.prerequisites.some((p) => state.mastery[p].level < 1) && (
-          <p className="small warning-text">
-            Some prerequisites are not verified yet. You can still study this
-            topic; consider checking the foundations first.
-          </p>
+          <p className="small warning-text">{t("topic.prereqWarn")}</p>
         )}
       </section>
-      <Matrix mastery={m} />
+      <details className="details-disclosure">
+        <summary>{t("common.details")}</summary>
+        <Matrix mastery={m} />
+      </details>
       {assessment ? (
         <AssessmentWorkspace id={id} data={data} />
+      ) : lesson ? (
+        <LessonReader
+          key={`${id}-${lang}`}
+          id={id}
+          lesson={lesson}
+          media={data.media}
+          objectives={objectives}
+          sessions={sessions}
+          after={after}
+        />
       ) : (
         <div className="reading-layout">
           <article className="lesson-article">
-            <div className="objectives-box">
-              <div className="eyebrow">AFTER THIS LESSON</div>
-              <ul>
-                {objectives.map((o) => (
-                  <li key={o}>
-                    <Target size={16} aria-hidden="true" />
-                    {o}
-                  </li>
-                ))}
-              </ul>
+            <div id="lesson-theory">
+              <OverviewBody data={data} domain={topic.domain} />
             </div>
-            {data.media && <LessonMedia key={id} media={data.media} />}
-            <LearningVisual
-              key={`visual-${id}`}
-              topicId={id}
-              ids={data.media?.visualizations}
-            />
-            {lesson ? (
-              <>
-                <div id="lesson-theory">
-                  <LessonMarkdown
-                    body={lesson.body}
-                    illustrations={data.media?.illustrations}
-                  />
-                </div>
-                <div className="reading-complete">
-                  <div>
-                    <strong>
-                      Finished reading? Move from understanding to verification.
-                    </strong>
-                    <p>
-                      Recording a read only saves an activity; it does not
-                      increase mastery.
-                    </p>
-                  </div>
-                  <button
-                    disabled={busy}
-                    onClick={() =>
-                      void act({
-                        type: "session",
-                        topicId: id,
-                        kind: "reading",
-                        text: `Read ${lesson.meta.title}`,
-                        minutes: 0,
-                      })
-                        .then(() =>
-                          notify(
-                            "Reading activity saved. Mastery is unchanged.",
-                          ),
-                        )
-                        .catch(() => {})
-                    }
-                  >
-                    Mark as read
-                  </button>
-                </div>
-                <Link className="button primary" href={`/assessments/${id}`}>
-                  Start diagnostic
-                  <ArrowRight size={16} />
-                </Link>
-              </>
-            ) : (
-              <div id="lesson-theory">
-                <OverviewBody data={data} domain={topic.domain} />
-              </div>
-            )}
-            <Notebook id={id} />
-            <div className="lesson-nav">
-              {prev ? (
-                <Link href={`/lessons/${prev.id}`}>
-                  <ArrowLeft size={16} />
-                  <span>
-                    <small>Previous lesson in the library</small>
-                    {prev.id} · {prev.title}
-                  </span>
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next && (
-                <Link href={`/lessons/${next.id}`}>
-                  <span>
-                    <small>Next lesson in the library</small>
-                    {next.id} · {next.title}
-                  </span>
-                  <ArrowRight size={16} />
-                </Link>
-              )}
-            </div>
-            <section className="related-topics">
-              <h2>Topics that build on this foundation</h2>
-              <TopicChips ids={successors.map((t) => t.id)} />
-            </section>
+            {after}
           </article>
-          <aside className="lesson-toc">
-            <div className="eyebrow">IN THIS LESSON</div>
-            {data.media && <a href="#lesson-media">Recommended video</a>}
-            {!!data.media?.visualizations.length && (
-              <a href={`#explore-${data.media.visualizations[0]}`}>
-                Interactive exploration
-              </a>
-            )}
-            {lesson ? (
-              lesson.body
-                .split("\n")
-                .filter((l) => l.startsWith("## "))
-                .map((l) => (
-                  <a href={`#${headingId(l.slice(3))}`} key={l}>
-                    {l.slice(3).split(" · ")[0]}
-                  </a>
-                ))
-            ) : (
-              <>
-                <a href="#overview">Overview</a>
-                <a href="#application">Application</a>
-                <a href="#practice">Practice</a>
-              </>
-            )}
-            <div className="toc-note">
-              <FileText size={18} />
-              <p>Diagnostic → Learn → Derive → Implement → Verify → Transfer</p>
-            </div>
+          <aside className="lesson-toc is-static">
+            <div className="eyebrow">{t("lesson.inThis")}</div>
+            <a href="#overview">Overview</a>
+            <a href="#application">Application</a>
+            <a href="#practice">Practice</a>
           </aside>
         </div>
       )}
@@ -388,8 +329,16 @@ function OverviewBody({
     </div>
   );
 }
+const noteKinds: Record<string, [string, string]> = {
+  note: ["note", "ghi chú"],
+  difficulty: ["difficulty", "khó khăn"],
+  practice: ["practice", "luyện tập"],
+  self_assessment: ["self_assessment", "tự đánh giá"],
+  ai_feedback: ["ai_feedback", "phản hồi AI"],
+};
 export function Notebook({ id }: { id: string }) {
   const { state, act, busy, notify } = useCore();
+  const { t, tx } = useI18n();
   const [text, setText] = useState(""),
     [kind, setKind] = useState("note"),
     [minutes, setMinutes] = useState(15),
@@ -407,39 +356,34 @@ export function Notebook({ id }: { id: string }) {
         provisionalLevel: kind === "self_assessment" ? level : undefined,
       });
       setText("");
-      notify("Notebook entry saved locally.");
+      notify(t("notebook.saved"));
     } catch {}
   }
   const notes =
     state?.progress.sessions
-      .filter((s) => s.topicId === id && s.kind !== "reading")
+      .filter((s) => s.topicId === id && s.kind !== "reading" && !isCheckoff(s))
       .slice(-5)
       .reverse() ?? [];
   return (
     <section className="notebook panel">
       <div className="panel-heading">
-        <h2>Research notebook</h2>
+        <h2>{t("notebook.title")}</h2>
         <FileText size={18} />
       </div>
-      <p className="small muted">
-        Record reasoning, experimental results, and open questions.
-        Self-assessments remain separate from verified competence.
-      </p>
+      <p className="small muted">{t("notebook.intro")}</p>
       <form onSubmit={submit}>
         <div className="form-row">
           <label>
-            Entry type
+            {t("notebook.type")}
             <select value={kind} onChange={(e) => setKind(e.target.value)}>
-              <option value="note">Note</option>
-              <option value="difficulty">Knowledge debt · difficulty</option>
-              <option value="practice">Practice results</option>
-              <option value="self_assessment">
-                Self-assessment · provisional
-              </option>
+              <option value="note">{t("notebook.note")}</option>
+              <option value="difficulty">{t("notebook.difficulty")}</option>
+              <option value="practice">{t("notebook.practice")}</option>
+              <option value="self_assessment">{t("notebook.self")}</option>
             </select>
           </label>
           <label>
-            Time (minutes)
+            {t("notebook.time")}
             <input
               type="number"
               min="0"
@@ -450,14 +394,14 @@ export function Notebook({ id }: { id: string }) {
           </label>
           {kind === "self_assessment" && (
             <label>
-              Self-assessed level
+              {t("notebook.level")}
               <select
                 value={level}
                 onChange={(e) => setLevel(Number(e.target.value))}
               >
                 {[1, 2, 3, 4].map((l) => (
                   <option key={l} value={l}>
-                    Provisional L{l}
+                    {tx("Provisional", "Tạm thời")} L{l}
                   </option>
                 ))}
               </select>
@@ -465,14 +409,14 @@ export function Notebook({ id }: { id: string }) {
           )}
         </div>
         <label className="sr-only" htmlFor={`note-${id}`}>
-          Notebook entry
+          {tx("Notebook entry", "Nội dung ghi chú")}
         </label>
         <textarea
           id={`note-${id}`}
           required
           maxLength={20000}
           rows={4}
-          placeholder="What did I try? Which results can I not explain yet?"
+          placeholder={t("notebook.placeholder")}
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
@@ -481,7 +425,7 @@ export function Notebook({ id }: { id: string }) {
           disabled={busy || !text.trim()}
           type="submit"
         >
-          Save entry
+          {t("notebook.save")}
         </button>
       </form>
       {notes.length > 0 && (
@@ -490,9 +434,11 @@ export function Notebook({ id }: { id: string }) {
             <div key={n.id}>
               <div className="between">
                 <span className="status">
-                  {n.kind}
+                  {noteKinds[n.kind]
+                    ? tx(noteKinds[n.kind][0], noteKinds[n.kind][1])
+                    : n.kind}
                   {n.provisionalLevel
-                    ? ` · Provisional L${n.provisionalLevel}`
+                    ? ` · ${tx("Provisional", "Tạm thời")} L${n.provisionalLevel}`
                     : ""}
                 </span>
                 <small className="muted">{dateText(n.at)}</small>
@@ -507,6 +453,7 @@ export function Notebook({ id }: { id: string }) {
 }
 function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
   const { state, act, busy } = useCore();
+  const { t, tx, lang } = useI18n();
   const [answers, setAnswers] = useState<Answers>({}),
     [assistance, setAssistance] = useState<Assistance>("A0"),
     [result, setResult] = useState<Attempt | null>(null),
@@ -527,45 +474,48 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
         topicId: id,
         answers,
         assistance,
+        lang,
       })) as Attempt;
       setResult(attempt);
     } catch (e) {
-      setSubmitError(
-        e instanceof Error ? e.message : "Unable to save attempt.",
-      );
+      setSubmitError(e instanceof Error ? e.message : t("assess.saveFail"));
     }
   }
   return (
     <div className="assessment-layout">
       <section>
-        <AssessmentMethods id={id} data={data} />
+        <details className="details-disclosure panel">
+          <summary>{t("assess.methods")}</summary>
+          <AssessmentMethods id={id} data={data} />
+        </details>
         <div className="panel gates">
-          <h2>Required evidence</h2>
+          <h2>{t("assess.masteredTitle")}</h2>
           <ul>
             <li className={m.dimensions.C ? "verified-text" : ""}>
-              {m.dimensions.C ? "✓" : "○"} L1 · A0 diagnostic ≥80%, with no
-              failed critical items.
+              {m.dimensions.C ? "✓" : "○"} {t("assess.gateC")}
             </li>
             <li className={m.dimensions.M ? "verified-text" : ""}>
-              {m.dimensions.M ? "✓" : "○"} M · Numerical answers meet the
-              assessment criteria.
+              {m.dimensions.M ? "✓" : "○"} {t("assess.gateM")}
             </li>
             <li className={m.dimensions.I ? "verified-text" : ""}>
-              {m.dimensions.I ? "✓" : "○"} I · Independently implement and
-              import a valid local test report.
+              {m.dimensions.I ? "✓" : "○"} {t("assess.gateI")}
             </li>
             <li className={m.dimensions.T ? "verified-text" : ""}>
-              {m.dimensions.T ? "✓" : "○"} Retention · Repeat A0 after at least
-              7 days.
+              {m.dimensions.T ? "✓" : "○"} {t("assess.gateT")}
             </li>
           </ul>
-          <p className="small muted">
-            L2 requires conceptual, numerical, and implementation evidence.
-            L3/L4 require unfamiliar transfer tasks or independently reviewed
-            research contributions; this quiz does not certify those levels.
-          </p>
+          <details className="details-disclosure">
+            <summary>{t("common.details")}</summary>
+            <p className="small muted">{t("assess.levelsNote")}</p>
+            <dl className="assist-legend">
+              <dt>C · M · I · T</dt>
+              <dd>{t("assess.cmit")}</dd>
+              <dt>A0 · A1 · A2 · A3</dt>
+              <dd>{t("assess.assistNote")}</dd>
+            </dl>
+          </details>
           <Link href={`/practice?topic=${id}`} className="text-link">
-            Open practice instructions
+            {t("assess.practiceInstructions")}
             <ArrowRight size={14} />
           </Link>
         </div>
@@ -573,15 +523,12 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
           <form className="assessment-form" onSubmit={submit}>
             <div className="panel">
               <div className="between">
-                <h2>Diagnostic</h2>
+                <h2>{t("assess.checkTitle")}</h2>
                 <span className="mono small muted">
-                  CONTRACT v{assessment.version}
+                  {tx("VERSION", "PHIÊN BẢN")} v{assessment.version}
                 </span>
               </div>
-              <p className="muted small">
-                Try before viewing solutions. Short responses are saved with a
-                rubric and are not automatically graded.
-              </p>
+              <p className="muted small">{t("assess.tryFirst")}</p>
               <AssistanceSelect value={assistance} onChange={setAssistance} />
             </div>
             {assessment.questions.map((q, i) => (
@@ -596,7 +543,7 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
               />
             ))}
             <button className="button primary" type="submit" disabled={busy}>
-              {busy ? "Saving…" : "Submit and save diagnostic"}
+              {busy ? t("common.saving") : t("assess.submit")}
               <ArrowRight size={16} />
             </button>
             {submitError && (
@@ -607,29 +554,26 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
           </form>
         ) : (
           <div className="panel empty-state">
-            <h2>No diagnostic available for this topic yet</h2>
-            <p>
-              Record notes and self-study results in the notebook. They remain
-              unverified.
-            </p>
+            <h2>{t("assess.none")}</h2>
+            <p>{t("assess.noneNote")}</p>
           </div>
         )}
         {result && (
           <div className="panel assessment-result" role="status">
             <div className="between">
-              <h2>Result · {result.grade.score}%</h2>
+              <h2>{t("assess.result", { score: result.grade.score })}</h2>
               <span
                 className={`status ${result.grade.passed && result.assistance === "A0" ? "verified" : ""}`}
               >
                 {result.grade.passed
                   ? result.assistance === "A0"
-                    ? "A0 diagnostic passed"
-                    : "Passed with assistance · unverified"
-                  : "Study and try again"}
+                    ? t("assess.passed")
+                    : t("assess.passedHelp")
+                  : t("assess.tryAgain")}
               </span>
             </div>
             <p className="muted small">
-              {dateText(result.at)} · {result.assistance} · Saved in SQLite
+              {dateText(result.at)} · {result.assistance} · {t("assess.saved")}
             </p>
             {result.grade.items.map((item) => (
               <div className="feedback-item" key={item.id}>
@@ -644,21 +588,21 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                 >
                   {item.id} ·{" "}
                   {item.correct === null
-                    ? "Review against rubric"
+                    ? t("assess.rubric")
                     : item.correct
-                      ? "Correct"
-                      : "Not yet correct"}
+                      ? t("assess.correct")
+                      : t("assess.notYet")}
                 </strong>
-                <p>{item.feedback}</p>
+                <p>{result.localizedFeedback?.[item.id] ?? item.feedback}</p>
               </div>
             ))}
             <Link className="button" href={`/lessons/${id}`}>
-              Revisit the theory
+              {t("assess.revisit")}
               <BookOpen size={15} />
             </Link>
             {result.grade.items.some((i) => i.correct === false) && (
               <Link className="button" href={weaknessUrl(id)}>
-                Practice Weaknesses
+                {t("assess.practiceWeak")}
                 <ArrowRight size={15} />
               </Link>
             )}
@@ -668,7 +612,7 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
       </section>
       <aside className="evidence-history">
         <div className="panel">
-          <h2>Evidence history</h2>
+          <h2>{t("assess.history")}</h2>
           {attempts.length ? (
             attempts.map((a) => (
               <details key={a.id}>
@@ -676,54 +620,51 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
                   <strong>
                     {a.grade.items.some((i) => i.correct !== null)
                       ? `${a.grade.score}%`
-                      : "Rubric only"}{" "}
+                      : t("assess.rubricOnly")}{" "}
                     · {a.assistance}
                   </strong>
                   <small>{dateText(a.at)}</small>
                 </summary>
                 <p className="small muted">
-                  {a.purpose === "targeted" ? "Focused practice" : "Assessment"}{" "}
+                  {a.purpose === "targeted"
+                    ? t("assess.focused")
+                    : t("assess.check")}{" "}
                   v{a.assessmentVersion} · {a.id}
                 </p>
                 {a.grade.items.map((i) => (
                   <p className="small" key={i.id}>
                     {i.id}:{" "}
                     {i.correct === null
-                      ? "Rubric"
+                      ? t("assess.rubricShort")
                       : i.correct
-                        ? "Correct"
-                        : "Not yet correct"}{" "}
+                        ? t("assess.correct")
+                        : t("assess.notYet")}{" "}
                     · {i.feedback}
                   </p>
                 ))}
               </details>
             ))
           ) : (
-            <p className="muted small">
-              No attempts yet. Missing evidence does not mean missing ability.
-            </p>
+            <p className="muted small">{t("assess.noAttempts")}</p>
           )}
           {state.progress.labs
             .filter((l) => l.topicId === id)
             .map((l) => (
               <div className="lab-evidence" key={l.id}>
                 <strong className="verified-text">
-                  Fixed-test report · {l.assistance}
+                  {t("assess.labReport")} · {l.assistance}
                 </strong>
                 <small>{dateText(l.at)}</small>
                 <code>SHA256 {l.sourceHash.slice(0, 16)}…</code>
                 <p className="small">
                   {l.assistance === "A0"
-                    ? "Independent implementation evidence with self-declared assistance."
-                    : "Assisted · practice only."}
+                    ? t("assess.labIndependent")
+                    : t("assess.labAssisted")}
                 </p>
               </div>
             ))}
         </div>
-        <div className="quiet-note">
-          Evidence is historical and remains after an unsuccessful review. A
-          failed attempt creates a review gap.
-        </div>
+        <div className="quiet-note">{t("assess.historyNote")}</div>
       </aside>
     </div>
   );

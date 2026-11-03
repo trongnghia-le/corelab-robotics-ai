@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "M = M.transpose(); trên một ma trận Eigen không vuông hoặc không đối xứng ở bản build -O2 -DNDEBUG nhiều khả năng dẫn đến?",
+   "options": [
+    "Một ma trận chuyển vị đúng, vì Eigen đệm kết quả",
+    "Một exception được throw báo rằng các toán hạng chồng lấn",
+    "Lỗi biên dịch vì gán cho chính nó bị cấm",
+    "Một ma trận sai lặng lẽ vì nguồn và đích alias nhau"
+   ],
+   "explanation": "Dùng M.transposeInPlace() hoặc M = M.transpose().eval(); bản build Debug sẽ assert."
+  },
+  "b2": {
+   "prompt": "Vì sao nên ưu tiên A.colPivHouseholderQr().solve(b) hơn A.inverse() * b?",
+   "options": [
+    "solve trả về một biểu thức lazy, luôn là lựa chọn rẻ hơn để đánh giá",
+    "Nó nhanh hơn và chính xác hơn về số học; nghịch đảo tường minh hiếm khi cần",
+    "Nghịch đảo chỉ được định nghĩa cho ma trận nhỏ kích thước 2x2 hoặc 3x3 trong Eigen",
+    "Nghịch đảo không tồn tại cho ma trận double trong Eigen, chỉ cho ma trận float"
+   ],
+   "explanation": "Phân rã và giải; lập nghịch đảo tốn hơn và thêm sai số."
+  },
+  "b3": {
+   "prompt": "Tại nghiệm bình phương tối thiểu x, đẳng thức nào phải đúng?",
+   "options": [
+    "x^T x = 1",
+    "A (A x - b) = 0",
+    "b^T b = 0",
+    "A^T (A x - b) = 0"
+   ],
+   "explanation": "Phần dư vuông góc với không gian cột của A."
+  },
+  "b4": {
+   "prompt": "Điều chuẩn ridge (A^T A + lambda I) làm gì với condition number?",
+   "options": [
+    "Làm nó đúng bằng 1 với mọi lambda dương",
+    "Giữ nguyên, vì lambda I là một dịch chuyển hằng",
+    "Làm tăng nó, vì lambda làm lớn trị riêng lớn nhất",
+    "Làm giảm nó, với cái giá là một độ lệch về phía không"
+   ],
+   "explanation": "Các trị riêng trở thành sigma^2 + lambda, nên giá trị nhỏ nhất được nâng lên và tỉ số co lại."
+  },
+  "b5": {
+   "prompt": "cond(A) = 1e4. Dùng số chữ số mất ~ log10 của condition number mà bộ giải thấy, phương trình chuẩn giữ được bao nhiêu chữ số chính xác (trong 16)? Cho một số nguyên.",
+   "explanation": "cond(A^T A) = 1e8, nên còn khoảng 16-8 = 8 chữ số."
+  },
+  "b6": {
+   "prompt": "Đường thẳng bình phương tối thiểu qua (0,1), (1,1), (2,4). Đường khớp dự đoán gì tại t = 3? Cho một số với 1 chữ số thập phân.",
+   "explanation": "A^T A = [[3,3],[3,5]], A^T b = [6,9] cho a = 0.5, b = 1.5; tại t = 3: 0.5 + 4.5 = 5.0."
+  },
+  "b7": {
+   "prompt": "Cholesky tốn khoảng n^3/3 flop. Với n = 30 là bao nhiêu? Cho một số nguyên.",
+   "explanation": "30^3/3 = 27000/3 = 9000."
+  },
+  "b8": {
+   "prompt": "A có sigma_max = 2 và sigma_min = 0.01. Với ridge lambda = 0.01, condition number của A^T A + lambda I là bao nhiêu? Cho một số nguyên (làm tròn).",
+   "explanation": "(4+0.01)/(0.0001+0.01) = 4.01/0.0101 = 397."
+  },
+  "b9": {
+   "prompt": "Các hệ số C++ của bạn khác của NumPy ở chữ số thứ 6 cho một phép khớp điều kiện xấu. Đó có phải là bug không? Bạn sẽ so sánh gì thay vào đó?",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Không nhất thiết: với cond ~ 1e8 khác biệt hệ số cỡ cond*eps là điều được dự kiến.",
+    "So sánh chuẩn phần dư, giá trị khớp và tính trực giao A^T r.",
+    "In cond(A), và đặt dung sai tương đối so với nó."
+   ]
+  },
+  "b10": {
+   "prompt": "Bạn phải giải một bài toán bình phương tối thiểu đặc 7x7 1000 lần mỗi giây cho động học ngược, và đôi khi Jacobian gần suy biến. Chọn một phương pháp và biện minh.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "SVD hoặc bình phương tối thiểu có giảm chấn (ridge) vì Jacobian gần suy biến cần xử lý hạng.",
+    "Lưu ý rằng bài toán 7x7 rất nhỏ: chi phí không đáng kể ở 1 kHz, nên sự vững chắc thắng tốc độ.",
+    "Tránh lập J^T J mà không có giảm chấn và tránh nghịch đảo tường minh."
+   ]
+  },
+  "b11": {
+   "prompt": "Viết các dòng Eigen giải min ||A x - b|| bằng QR vào một VectorXd tường minh và in chuẩn phần dư.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Eigen::VectorXd x = A.colPivHouseholderQr().solve(b); (không phải auto).",
+    "double r = (A * x - b).norm();",
+    "Tùy chọn kiểm tra A.rows() >= A.cols() và A^T(Ax-b) ~ 0."
+   ]
+  }
+ }
+}

@@ -1,0 +1,80 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Cảm biến Tiger có độ chính xác 0.9, prior b = 0.5. Posterior sau 'left' là bao nhiêu?",
+   "explanation": "0.45/0.5=0.9."
+  },
+  "b2": {
+   "prompt": "Độ chính xác 0.8, prior b = 0.3. Xác suất nghe thấy 'left' là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "0.24+0.14=0.38."
+  },
+  "b3": {
+   "prompt": "Cảm biến Tiger có độ chính xác 0.8, prior b = 0.3 (tiger ở trái). Belief posterior rằng nó ở trái sau khi nghe 'left' là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "0.24/0.38=0.632."
+  },
+  "b4": {
+   "prompt": "Tại b = 0.6, reward kỳ vọng khi mở cửa bên phải (+10 nếu tiger ở trái, -100 nếu ngược lại) là bao nhiêu?",
+   "explanation": "6 - 40 = -34."
+  },
+  "b5": {
+   "prompt": "Gắp cốc/chai: +10 nếu vật là cốc và bạn gắp, -40 nếu thực ra là chai, bỏ qua = 0. Belief 0.8 rằng nó là cốc. Giá trị kỳ vọng của việc gắp là bao nhiêu?",
+   "explanation": "0.8*10 + 0.2*(-40) = 0."
+  },
+  "b6": {
+   "prompt": "Gắp cốc/chai: +10 nếu vật là cốc và bạn gắp, -40 nếu thực ra là chai, bỏ qua = 0. Belief 0.8 rằng nó là cốc. Một góc nhìn camera với độ chính xác 0.9 tốn 1. Xác suất nó báo 'cup' là bao nhiêu? (2 chữ số thập phân)",
+   "explanation": "0.9*0.8+0.1*0.2=0.74."
+  },
+  "b7": {
+   "prompt": "Gắp cốc/chai: +10 nếu vật là cốc và bạn gắp, -40 nếu thực ra là chai, bỏ qua = 0. Belief 0.8 rằng nó là cốc. Một góc nhìn camera với độ chính xác 0.9 tốn 1: gắp sau 'cup', bỏ qua sau 'bottle'. Giá trị kỳ vọng của việc lấy góc nhìn rồi chọn tối ưu là bao nhiêu? (1 chữ số thập phân)",
+   "explanation": "-1 + 0.74*8.65 + 0.26*0 = 5.4."
+  },
+  "b8": {
+   "prompt": "Belief posterior kỳ vọng E_o[b'] trên các quan sát khả dĩ bằng:",
+   "options": [
+    "1",
+    "Posterior của quan sát có khả năng cao nhất",
+    "0.5",
+    "Belief prior b"
+   ],
+   "explanation": "Quan sát làm dịch chuyển belief nhưng không dịch chuyển trung bình."
+  },
+  "b9": {
+   "prompt": "Bài toán Tiger (độ chính xác 0.85, chi phí listen 1, kho báu +10, tiger -100). Tại belief 0.85 rằng tiger ở bên trái, lần listen thứ hai có giá trị bằng không (hoặc âm) vì:",
+   "options": [
+    "Không kết quả nào đủ khả dĩ để thay đổi quyết định; chi phí bị lãng phí",
+    "Listen là miễn phí, nên lần listen thứ hai không thể thay đổi giá trị kỳ vọng",
+    "Belief đặt lại về 0.5 sau mỗi hành động, nên các lần đọc trước bị mất",
+    "Cảm biến ngừng hoạt động sau lần đọc đầu tiên, nên lần thứ hai không cho thông tin"
+   ],
+   "explanation": "Mở bên phải vẫn là hành động tốt nhất sau các lần đọc đồng thuận; kết quả không đồng thuận làm mất phần lợi đã có."
+  },
+  "b10": {
+   "prompt": "Lỗi mô hình hóa: mô hình cảm biến nói độ chính xác 0.85 nhưng thực ra là 0.7. Belief sẽ:",
+   "options": [
+    "Không xác định, vì các likelihood không còn có tổng bằng một với mô hình thật",
+    "Hoàn toàn đúng, vì độ chính xác sai bị triệt tiêu trong phép chuẩn hóa",
+    "Underconfident: tin quá yếu, dẫn đến hành động quá thận trọng",
+    "Overconfident: tin quá mạnh, dẫn đến hành động liều lĩnh"
+   ],
+   "explanation": "Các bước cập nhật quá lớn so với bằng chứng thật."
+  },
+  "b11": {
+   "prompt": "Giải thích vì sao một kế hoạch có điều kiện có thể tốt hơn dãy hành động cố định tốt nhất trong bài toán Tiger.",
+   "explanation": "Có rubric hướng dẫn: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Một dãy cố định bỏ qua các lần đọc.",
+    "Kế hoạch có điều kiện rẽ nhánh theo quan sát và chỉ hành động khi belief đủ rõ ràng.",
+    "Đưa ra số liệu: -7.5 so với hành động mù -45."
+   ]
+  },
+  "b12": {
+   "prompt": "Mô tả cách bạn kiểm thử code cập nhật belief và bộ lập kế hoạch cho một cảm biến robot, dùng các trường hợp cực đoan.",
+   "explanation": "Có rubric hướng dẫn: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Độ chính xác cảm biến 0.5 phải giữ nguyên belief.",
+    "Độ chính xác 1.0 phải làm belief sụp về một điểm; các belief có tổng bằng 1.",
+    "So sánh giá trị dự đoán của bộ lập kế hoạch với mô phỏng dùng trạng thái ẩn."
+   ]
+  }
+ }
+}

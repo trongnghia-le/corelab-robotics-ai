@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Bộ phân loại tuyến tính w=(2,−1,0.5), b=0, đầu vào x=(1,1,1), nhãn +1. Nhiễu loạn max-norm ε nhỏ nhất có thể lật dự đoán (margin chia cho ‖w‖₁) là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Margin 1.5, ‖w‖₁=3.5, nên ε* = 0.4286."
+  },
+  "q2": {
+   "prompt": "Vì sao các bộ phân loại tuyến tính nhiều chiều dễ bị tấn công bằng các nhiễu loạn rất nhỏ trên mỗi tọa độ?",
+   "options": [
+    "Gradient biến mất trong không gian nhiều chiều, nên không nhiễu loạn nhỏ nào đổi được điểm số",
+    "Adversarial example chỉ tồn tại với mạng sâu, không có với bộ phân loại tuyến tính",
+    "Nhiễu loạn nhỏ luôn đổi nhãn thật, nên chúng không thật sự là tấn công",
+    "Hiệu ứng eps*||w||_1 cộng dồn qua mọi tọa độ, tăng theo số chiều"
+   ],
+   "explanation": "Mỗi tọa độ dịch điểm số ε|w_j| theo hướng xấu nhất, nên tổng tăng theo số tọa độ."
+  },
+  "q3": {
+   "prompt": "Một lớp giả thuyết hữu hạn có |H|=1000, δ=0.05 và n=10,000 mẫu. Khoảng cách Hoeffding/union-bound sqrt((ln|H|+ln(2/δ))/(2n)) là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "(6.908+3.689)/20000=5.30e-4; căn bậc hai 0.0230."
+  },
+  "q4": {
+   "prompt": "Nếu bạn muốn giảm một nửa khoảng cách khái quát hóa Hoeffding, cần khoảng bao nhiêu dữ liệu hơn (mọi thứ khác cố định)?",
+   "options": [
+    "Gấp bốn lần",
+    "Bằng nhau",
+    "Một nửa",
+    "Gấp đôi"
+   ],
+   "explanation": "Khoảng cách tỉ lệ với 1/√n, nên giảm một nửa cần 4× n."
+  },
+  "q5": {
+   "prompt": "Trên trục log-log, một đường cong học đi qua (n=100, loss=0.2) và (n=10,000, loss=0.02). Số mũ α trong loss ∝ n^−α là bao nhiêu? (số thập phân, sai số cho phép 0.01)",
+   "explanation": "Loss giảm 10× khi n tăng 100×: α=log(10)/log(100)=0.5."
+  },
+  "q6": {
+   "prompt": "Một phép fit power-law lên dữ liệu đường cong học từ n=10³ đến 10⁵ dự đoán loss 0.04 tại n=10⁷, nhưng nhiễu nhãn của dữ liệu đặt một sàn ở 0.08. Bài học là gì?",
+   "options": [
+    "Lẽ ra nên fit trên trục tuyến tính, điều đó loại bỏ sàn nhiễu nhãn",
+    "Power law không bao giờ áp dụng cho đường cong học, nên phải bỏ hoàn toàn dự đoán",
+    "Loss dự đoán thấp hơn luôn là lựa chọn an toàn, nên có thể tin phép fit như nó vốn có",
+    "Ngoại suy vượt ngoài khoảng đã fit có thể phá vỡ sàn không thể giảm; hãy mô hình hóa nó hoặc thu thập n lớn hơn"
+   ],
+   "explanation": "Một power law thuần bỏ qua số hạng không thể giảm và có thể dự đoán các giá trị mà bài toán không thể đạt được."
+  },
+  "q7": {
+   "prompt": "Một bài báo khẳng định một biện pháp phòng thủ mới làm bộ phân loại bền vững. Hãy mô tả một phép tái lập hẹp, có thể bác bỏ: baseline, một trường hợp biên, cuộc tấn công, và điều kiện bác bỏ.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu một baseline (mô hình không phòng thủ dưới cùng cuộc tấn công) và một trường hợp biên (độ chính xác sạch tại ε=0 khớp với con số đã báo cáo).",
+    "Dùng một tấn công mạnh, nhiều bước và một dải ε; nhiều seed kèm độ trải.",
+    "Nêu điều kiện bác bỏ trước khi chạy (ví dụ độ chính xác bền vững dưới một ngưỡng, hoặc một tấn công mạnh hơn xóa mất mức lợi)."
+   ]
+  }
+ }
+}

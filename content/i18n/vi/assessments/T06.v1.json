@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Bạn chạy một container, ghi /tmp/result.txt bên trong nó, rồi chạy docker rm trên container. Điều gì xảy ra với file?",
+   "options": [
+    "Nó mất, vì nó nằm trong layer ghi được của container",
+    "Nó được tự động sao chép sang host khi container bị xóa",
+    "Nó được giữ nếu container đã được dừng trước, vì việc dừng lưu các file của nó",
+    "Nó được giữ trong image, vốn lưu mọi file do container ghi"
+   ],
+   "explanation": "Layer ghi được bị loại bỏ khi container bị xóa."
+  },
+  "q2": {
+   "prompt": "Một named volume được gắn tại /results. Chương trình phải ghi kết quả ở đâu để chúng sống sót khi thay container?",
+   "options": [
+    "Dưới /app nếu image có nó",
+    "Dưới /results",
+    "Bất kỳ đâu trong container",
+    "Dưới /tmp"
+   ],
+   "explanation": "Chỉ các đường dẫn được một mount bao phủ mới tồn tại; mọi thứ khác đi vào layer ghi được."
+  },
+  "q3": {
+   "prompt": "Phát biểu nào về image và container là đúng?",
+   "options": [
+    "Container là khuôn mẫu cho image; mỗi image được tạo bằng cách chạy một container",
+    "Image là khuôn mẫu chỉ đọc; container là một thể hiện có layer ghi được",
+    "Image và container là cùng một thứ, chỉ được gọi tên khác nhau trong các công cụ",
+    "Image là một tiến trình đang chạy giữ một layer ghi được của riêng nó"
+   ],
+   "explanation": "Container được tạo từ image và thêm một layer ghi được cùng một tiến trình đang chạy."
+  },
+  "q4": {
+   "prompt": "Một Dockerfile có 6 chỉ thị. Sửa một file nguồn làm đổi chỉ thị thứ 5 (COPY . .). Có bao nhiêu layer/chỉ thị được lấy từ cache? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Các chỉ thị 1-4 không đổi và được cache; chỉ thị thứ 5 và mọi thứ sau được dựng lại."
+  },
+  "q5": {
+   "prompt": "Vì sao sao chép requirements.lock và chạy pip install trước khi sao chép phần còn lại của code?",
+   "options": [
+    "Nó làm image cuối nhỏ hơn theo định nghĩa, vì ít layer được lưu hơn",
+    "Docker yêu cầu các lock file được sao chép trước, nếu không build thất bại",
+    "Pip chỉ chạy được trước khi có bất kỳ code nào được sao chép vào image",
+    "Khi đó các thay đổi code không làm vô hiệu layer dependency đã cache"
+   ],
+   "explanation": "Chỉ thị đổi đầu tiên làm vô hiệu mọi chỉ thị sau; dependency hiếm khi đổi, code thì thường xuyên."
+  },
+  "q6": {
+   "prompt": "Ba image dùng chung một layer cơ sở 120 MB. Mỗi image thêm layer 30 MB của riêng nó. Ba image cần tổng cộng bao nhiêu MB lưu trữ? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Các layer dùng chung được lưu một lần: 120 + 3×30 = 210 MB."
+  },
+  "q7": {
+   "prompt": "Bạn phải cho một người review thấy file nào của thí nghiệm sống sót khi container được thay bằng một phiên bản mới của image. Hãy mô tả thí nghiệm, các lệnh, và điều bạn sẽ quan sát.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Ghi một file vào một volume được gắn và một file vào filesystem của container (ví dụ /tmp), rồi docker rm.",
+    "Khởi động container mới với cùng volume và liệt kê cả hai đường dẫn; cũng dùng docker diff/ls để quan sát.",
+    "Quan sát chỉ file trong volume sống sót; mount chỉ đọc từ chối các lần ghi; ghi lại image digest và lưu ý rằng kernel/driver không được đóng gói."
+   ]
+  }
+ }
+}

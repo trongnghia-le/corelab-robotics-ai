@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Một nút A* có g = 12 và h = 3.25. f bằng bao nhiêu?",
+   "explanation": "12 + 3.25."
+  },
+  "b2": {
+   "prompt": "Open (g,h): X (4,4), Y (6,1), Z (3,6). f của nút mà A* pop trước là bao nhiêu?",
+   "explanation": "f: X=8, Y=7, Z=9."
+  },
+  "b3": {
+   "prompt": "Dijkstra (h=0) pop nút open có g thấp nhất. Các nút open có (g,h): X (4,4), Y (6,1), Z (3,6). Dijkstra pop g nào trước?",
+   "explanation": "g thấp nhất là 3 (nút Z)."
+  },
+  "b4": {
+   "prompt": "Heuristic nào admissible cho lưới 4 hướng với chi phí bước đơn vị?",
+   "options": [
+    "Khoảng cách Manhattan",
+    "Khoảng cách Manhattan cộng số bức tường",
+    "Hai lần khoảng cách Manhattan",
+    "Khoảng cách Euclid nhân 3"
+   ],
+   "explanation": "Manhattan là chi phí khi không có tường, một relaxation."
+  },
+  "b5": {
+   "prompt": "Trên lưới 4 hướng, mỗi bước tốn ít nhất 2 (địa hình thay đổi, có thể có tường). Hệ số k nào của khoảng cách Manhattan được đảm bảo admissible trên mọi lưới như vậy (lấy k lớn nhất)?",
+   "explanation": "Nhân theo chi phí bước tối thiểu: k=2, vì mọi ô trên bất kỳ đường đi nào tốn ít nhất 2."
+  },
+  "b6": {
+   "prompt": "Với heuristic consistent, dãy giá trị f của các trạng thái được mở rộng là:",
+   "options": [
+    "Hằng số, bằng chi phí tối ưu",
+    "Giảm nghiêm ngặt theo thứ tự mở rộng",
+    "Ngẫu nhiên, không có thứ tự cố định cho các giá trị f",
+    "Không giảm theo thứ tự mở rộng"
+   ],
+   "explanation": "f(b) = g(a)+c+h(b) >= g(a)+h(a) = f(a)."
+  },
+  "b7": {
+   "prompt": "Các cạnh với (c, h(a), h(b)): e1 (1,3,2), e2 (2,5,2), e3 (1,1,1). Có bao nhiêu cạnh vi phạm consistency?",
+   "explanation": "e2: 5 > 2+2=4 vi phạm; e1: 3 <= 3; e3: 1 <= 2."
+  },
+  "b8": {
+   "prompt": "Một heuristic admissible nhưng không consistent với tập closed vĩnh viễn có thể trả về:",
+   "options": [
+    "Một đường đi không hợp lệ",
+    "Một đường đi dưới tối ưu",
+    "Luôn là đường đi tối ưu",
+    "Không bao giờ có đường đi"
+   ],
+   "explanation": "Một trạng thái đã được mở rộng với g không tối ưu sẽ không bao giờ được sửa."
+  },
+  "b9": {
+   "prompt": "Weighted A* với f = g + 2h (h admissible) trả về một đường đi có chi phí:",
+   "options": [
+    "Chính xác bằng tối ưu, như với w = 1",
+    "Ít nhất gấp ba lần tối ưu",
+    "Không bị chặn, không có đảm bảo nào",
+    "Nhiều nhất gấp hai lần tối ưu"
+   ],
+   "explanation": "Chi phí <= w * C*."
+  },
+  "b10": {
+   "prompt": "Weighted A* với w = 1.5 trên một bài toán có chi phí tối ưu 40. Cận đảm bảo trong trường hợp xấu nhất cho chi phí trả về là bao nhiêu?",
+   "explanation": "1.5 * 40 = 60."
+  },
+  "b11": {
+   "prompt": "Planner của một đồng nghiệp báo 'không có đường đi' sau 5000 lần mở rộng trên một bản đồ lớn. Bạn kiểm tra gì trước khi tin?",
+   "explanation": "Có rubric hướng dẫn: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Tập open đã rỗng hay ngân sách đã hết.",
+    "Ô xuất phát hoặc ô đích có bị bao kín hay không, bằng flood fill.",
+    "Heuristic hoặc hàm kế tiếp có sai hay không."
+   ]
+  },
+  "b12": {
+   "prompt": "Giải thích vì sao chọn định nghĩa trạng thái là một phần của tính đúng đắn của lập kế hoạch, dùng nhiệm vụ ghé thăm ba kệ.",
+   "explanation": "Có rubric hướng dẫn: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Riêng vị trí không ghi lại những kệ nào đã xong.",
+    "Thiếu thông tin làm tìm kiếm lặp vòng hoặc trả về kế hoạch sai.",
+    "Thêm tập đã ghé; không gian trạng thái trở thành vị trí nhân với các tập con."
+   ]
+  }
+ }
+}

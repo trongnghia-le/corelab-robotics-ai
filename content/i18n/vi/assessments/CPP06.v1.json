@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "template <class T> T add(T a, T b); Chuyện gì xảy ra với add(1, 2.5)?",
+   "options": [
+    "T trở thành double và kết quả là 3.5",
+    "Lời gọi biên dịch được nhưng là undefined behavior",
+    "Lỗi biên dịch: T được suy ra vừa là int vừa là double",
+    "T trở thành int và kết quả là 3"
+   ],
+   "explanation": "Mỗi tham số hàm phải suy ra cùng một T; int và double xung đột. Dùng add<double>(...) hoặc hai tham số template."
+  },
+  "q2": {
+   "prompt": "Thuật toán Welford xử lý {2, 4, 6}. Phương sai mẫu (chia cho n-1) là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "Trung bình 4; bình phương độ lệch 4+0+4 = 8; 8/(3-1) = 4.00."
+  },
+  "q3": {
+   "prompt": "Khai báo nào có thể dùng làm kích thước của một std::array?",
+   "options": [
+    "const int& n = m;",
+    "int n = 12;",
+    "const int n = read_sensor();",
+    "constexpr int n = 3 * 4;"
+   ],
+   "explanation": "Kích thước mảng là đối số template và phải là biểu thức hằng; một const lúc chạy thì không."
+  },
+  "q4": {
+   "prompt": "Một bảng constexpr các bình phương int được dựng bằng make_squares<250>(). Mảng chiếm bao nhiêu byte (int 4 byte)? Cho một số nguyên.",
+   "explanation": "250 phần tử x 4 byte = 1000 byte."
+  },
+  "q5": {
+   "prompt": "'if constexpr' làm gì trong một template?",
+   "options": [
+    "Nó đánh giá điều kiện lúc chạy nhưng lưu kết quả cho các lời gọi sau",
+    "Nó loại bỏ nhánh không được chọn lúc biên dịch, nên nhánh đó không cần hợp lệ với T",
+    "Nó ép điều kiện là true và bỏ qua nhánh else với mọi T",
+    "Nó biến toàn bộ hàm bao quanh thành constexpr và gọi được lúc biên dịch"
+   ],
+   "explanation": "Các câu lệnh bị loại bỏ không được khởi tạo, cho phép một thân template xử lý các kiểu có phép toán hợp lệ khác nhau."
+  },
+  "q6": {
+   "prompt": "Một function template được khai báo trong util.h và thân của nó chỉ có trong util.cpp. main.cpp gọi nó với int. Bạn nhiều khả năng nhận được gì?",
+   "options": [
+    "Lỗi linker: undefined reference tới instantiation int",
+    "Một exception lúc chạy được throw ở lần gọi đầu tiên",
+    "Nó chạy, vì linker khởi tạo theo yêu cầu",
+    "Lỗi biên dịch bên trong util.cpp khi nó được build"
+   ],
+   "explanation": "Compiler không thể khởi tạo template khi biên dịch main.cpp vì nó không thấy thân hàm."
+  },
+  "q7": {
+   "prompt": "mean(const Container&) generic của bạn được gọi với std::vector<std::string> và in ra một lỗi 40 dòng. Chỉ ra cách cải thiện chẩn đoán trong C++17 và nêu tính năng C++20 cải thiện thêm.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Thêm static_assert(std::is_arithmetic_v<value_type>, \"message\") ở đầu hàm.",
+    "Giải thích rằng thông báo nêu giả định không được thỏa trong một dòng.",
+    "Nêu tên concept / mệnh đề requires của C++20, báo ràng buộc không thỏa tại điểm gọi."
+   ]
+  }
+ }
+}

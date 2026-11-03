@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Các biến cục bộ được khai báo theo thứ tự Tag a, Tag b, Tag c trong một scope. Destructor của chúng chạy theo thứ tự nào?",
+   "options": [
+    "Không xác định",
+    "Chỉ cái cuối cùng bị hủy",
+    "a, b, c",
+    "c, b, a"
+   ],
+   "explanation": "Biến cục bộ bị hủy theo thứ tự ngược với thứ tự khởi tạo."
+  },
+  "b2": {
+   "prompt": "Cho std::unique_ptr<int> p = std::make_unique<int>(1); thì 'auto q = p;' làm gì?",
+   "options": [
+    "Biên dịch được; q và p chia sẻ quyền sở hữu int",
+    "Biên dịch được và lặng lẽ đặt p về null",
+    "Không biên dịch được: unique_ptr không copy được",
+    "Biên dịch được; int được deep-copy vào q"
+   ],
+   "explanation": "Sở hữu độc quyền nghĩa là không có copy constructor; bạn phải viết std::move(p)."
+  },
+  "b3": {
+   "prompt": "Tác dụng của 'return std::move(local);' khi local là một đối tượng cục bộ có kiểu trùng kiểu trả về là gì?",
+   "options": [
+    "Nó ngăn copy elision và ép một phép move, nên thường là một pessimization",
+    "Nó bắt buộc để tránh một phép copy đối tượng cục bộ khi trả về",
+    "Nó để local hợp lệ và không đổi để bên gọi dùng tiếp sau đó",
+    "Nó làm việc trả về nhanh hơn return local thường bằng cách bỏ qua phép move"
+   ],
+   "explanation": "'return local;' thường cho phép NRVO và nếu không thì tự động move."
+  },
+  "b4": {
+   "prompt": "draw(frame) chỉ đọc frame trong lúc gọi; bên gọi giữ nó sau đó. Tham số nào là hợp đồng rõ ràng nhất?",
+   "options": [
+    "Frame*",
+    "const Frame&",
+    "std::unique_ptr<Frame>",
+    "std::shared_ptr<Frame>"
+   ],
+   "explanation": "Một const reference nói rõ đây là phép mượn không sở hữu, không null, chỉ đọc."
+  },
+  "b5": {
+   "prompt": "Một vòng lặp 10 Hz chạy 1 giờ. Cứ 5 chu kỳ có 1 chu kỳ một đường lỗi bỏ qua delete[] trên một buffer 1024 double. Bao nhiêu byte bị rò rỉ? Số nguyên.",
+   "explanation": "36,000 chu kỳ / 5 = 7,200 lần rò rỉ x 8,192 byte = 58,982,400."
+  },
+  "b6": {
+   "prompt": "Một std::vector<double> với 2,000,000 phần tử được truyền theo giá trị (không elision) qua chuỗi 3 hàm, copy ở mỗi lần. Tổng cộng bao nhiêu byte được copy? Số nguyên.",
+   "explanation": "Mỗi lần copy là 16,000,000 byte; ba lần copy: 48,000,000. Move sẽ không copy dữ liệu phần tử nào."
+  },
+  "b7": {
+   "prompt": "Buffer a(2); Buffer b(std::move(a)); { Buffer c(1); auto p = std::make_unique<Buffer>(3); } -- nếu Buffer::alive đếm số đối tượng đã dựng trừ số đã hủy, giá trị của nó sau khi khối đóng là bao nhiêu? Số nguyên.",
+   "explanation": "a và b còn sống (a là moved-from nhưng vẫn là một đối tượng): 2. c và Buffer trên heap đã chết ở dấu ngoặc đóng."
+  },
+  "b8": {
+   "prompt": "Một vector của một kiểu copy được có move constructor có thể throw tăng trưởng bằng cách nhân đôi (dung lượng 1, 2, 4, 8) khi 8 phần tử được push lần lượt từng cái. Có bao nhiêu phép copy phần tử xảy ra, chỉ tính khi di dời? Số nguyên.",
+   "explanation": "Việc cấp phát lại xảy ra ở push thứ 2 (1 phần tử), push thứ 3 (2) và push thứ 5 (4): 1+2+4 = 7 phép di dời, mỗi phép là một copy."
+  },
+  "b9": {
+   "prompt": "Code review của bạn thấy 'Frame* latest_;' được một subscriber lưu và dùng từ một timer callback. Mô tả kịch bản lỗi và đề xuất thiết kế lại với quyền sở hữu tường minh.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Mô tả việc dùng con trỏ treo: producer giải phóng hoặc tái sử dụng frame sau khi callback trả về.",
+    "Đề xuất shared_ptr<const Frame> hoặc một bản copy sở hữu hoặc một bàn giao unique_ptr.",
+    "Nêu ai sở hữu, khi nào nó chết, và chi phí bộ nhớ hoặc độ trễ của lựa chọn đó."
+   ]
+  },
+  "b10": {
+   "prompt": "Class của một đồng nghiệp giữ một con trỏ thô, định nghĩa destructor, và chương trình crash với 'double free' khi các đối tượng được lưu trong std::vector. Giải thích nguyên nhân và đưa ra cách sửa tối thiểu dùng rule of zero và một cách dùng rule of five.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nguyên nhân: copy ngầm định chia sẻ con trỏ; hai destructor cùng giải phóng nó.",
+    "Rule of zero: dùng std::vector<double> hoặc unique_ptr<double[]> và không delete gì bằng tay.",
+    "Rule of five: xóa các phép copy hoặc deep-copy chúng và cài đặt các phép move noexcept đặt null cho nguồn."
+   ]
+  },
+  "b11": {
+   "prompt": "Viết move constructor và destructor của 'class Samples { double* p_; size_t n_; ... }' sao cho đối tượng moved-from an toàn để hủy.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Samples(Samples&& o) noexcept : p_(o.p_), n_(o.n_) { o.p_ = nullptr; o.n_ = 0; }",
+    "~Samples() { delete[] p_; } (delete trên nullptr là phép không làm gì).",
+    "Đánh dấu nó noexcept và giải thích vì sao nguồn phải được reset."
+   ]
+  }
+ }
+}

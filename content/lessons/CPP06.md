@@ -4,7 +4,7 @@
   "module_id": "CPP06",
   "title": "Modern C++: templates, constexpr, and idioms",
   "summary": "Write generic code with stated assumptions, move work to compile time with constexpr, and use C++17 idioms that make intent checkable.",
-  "estimated_minutes": 80,
+  "estimated_minutes": 390,
   "prerequisites": [
     "CPP03",
     "CPP05"
@@ -388,6 +388,55 @@ With the unimplemented starter the build itself fails at the first `static_asser
 
 Add `RunningStats::merge(const RunningStats&)` using the parallel (Chan) formula so partial statistics from two threads can be combined, and test it against a single pass. Then rewrite the constraints using C++20 `concept`s if your compiler supports `-std=c++20`.
 
+### Library track
+
+Use `<numeric>`/`<algorithm>` as references and, if installed, Eigen (`sudo apt install libeigen3-dev`; header-only, itself a template library over the scalar type). If Eigen is missing, delete the two Eigen parts and keep the rest. Paste this *after* your finished utilities (it has its own `main`, so drop the one from the tests) and compile with `g++ -std=c++17 -Wall -Wextra -I/usr/include/eigen3`.
+
+```cpp
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <numeric>
+#include <random>
+#include <Eigen/Dense>   // Eigen 3: apt install libeigen3-dev; compile with -I/usr/include/eigen3
+
+// Eigen is the "generic over the scalar type" library: Matrix<Scalar, Rows, Cols>.
+// A generic function over ANY Eigen vector type, with the assumption stated:
+template <class Derived>
+double eigen_mean(const Eigen::MatrixBase<Derived>& v) {
+  static_assert(Derived::ColsAtCompileTime == 1, "eigen_mean needs a column vector");
+  return v.template cast<double>().mean();
+}
+
+int main() {
+  std::mt19937 g(3);
+  std::normal_distribution<double> nd(1e9, 5.0);       // large offset: the naive formula fails here
+  std::vector<double> xs(10000);
+  for (double& x : xs) x = nd(g);
+
+  // 1. Welford against a two-pass reference computed with <numeric>
+  RunningStats<double> w;
+  for (double x : xs) w.push(x);
+  const double m = std::accumulate(xs.begin(), xs.end(), 0.0) / xs.size();
+  const double ss = std::accumulate(xs.begin(), xs.end(), 0.0, [m](double a, double x) { return a + (x - m) * (x - m); });
+  const double v2 = ss / (xs.size() - 1);
+  assert(std::fabs(*w.mean() - m) < 1e-4 && std::fabs(*w.variance() - v2) < 1e-6 * v2);   // relative 1e-6
+
+  // 2. the same numbers through Eigen (a templated library): mean() and a centred dot product
+  Eigen::Map<const Eigen::VectorXd> e(xs.data(), xs.size());
+  const double evar = (e.array() - e.mean()).matrix().squaredNorm() / (xs.size() - 1);
+  assert(std::fabs(e.mean() - *w.mean()) < 1e-4 && std::fabs(evar - *w.variance()) < 1e-6 * evar);
+  assert(std::fabs(eigen_mean(Eigen::Vector3f(1, 2, 6)) - 3.0) < 1e-6);   // same template, float scalar
+  // eigen_mean(Eigen::RowVector3d(1, 2, 3));   // uncomment: stops at YOUR static_assert message
+
+  // 3. std::clamp (C++17) agrees with clamp_to, including at the ends
+  for (int i = -5; i <= 5; ++i) assert(clamp_to(i, -2, 3) == std::clamp(i, -2, 3));
+  std::cout << "Welford var " << *w.variance() << " == two-pass " << ss / (xs.size() - 1) << "\nlibrary track ok\n";
+}
+```
+
+Expected output: the Welford and two-pass variances agree (about 24.9 for this seed) followed by `library track ok`. Uncommenting the `RowVector3d` line must stop the build at your `static_assert` message, the same habit as in `RunningStats`. The tolerances are relative (`1e-6 * var`) because with values near $10^9$ even the two-pass mean is only good to about $10^{-7}$.
+
 ## Verification
 
 - Compile-time tests with `static_assert` run on every build; they cost nothing at run time.
@@ -442,4 +491,4 @@ Eigen, `std::chrono` (units as types) and ROS 2's `rclcpp::Publisher<MessageT>` 
 - [cppreference: constexpr specifier](https://en.cppreference.com/w/cpp/language/constexpr) - what is allowed in constant expressions in each standard.
 - [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) - section T on templates and generic programming, and the rules on constants (Con) and `constexpr` (F.4).
 
-**More practice:** the template and `constexpr` chapter quizzes on [LearnCpp](https://www.learncpp.com/) (with solutions on each page), and the runnable examples on the [cppreference templates page](https://en.cppreference.com/w/cpp/language/templates).
+**More practice:** the quizzes on [LearnCpp: function templates](https://www.learncpp.com/cpp-tutorial/function-templates/), [templates in multiple files](https://www.learncpp.com/cpp-tutorial/using-function-templates-in-multiple-files/), [class templates](https://www.learncpp.com/cpp-tutorial/class-templates/), [constexpr functions](https://www.learncpp.com/cpp-tutorial/constexpr-functions/) and [constexpr if](https://www.learncpp.com/cpp-tutorial/constexpr-if-statements/) (answers shown on each page), the Core Guidelines [templates and generic programming](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#t-templates-and-generic-programming) section, and the Eigen page on [writing functions taking Eigen types](https://eigen.tuxfamily.org/dox/TopicFunctionTakingEigenTypes.html) (a real-world template-constraint problem).

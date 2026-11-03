@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một node publish Twist trên /cmd_vel; một node khác subscribe /cmd_vel và mong đợi TwistStamped. Điều gì xảy ra?",
+   "options": [
+    "Subscriber nhận Twist được chuyển đổi tự động với stamp bằng không.",
+    "Các endpoint không khớp: không có dữ liệu chảy và code của bạn không thấy ngoại lệ nào.",
+    "ROS 2 chuyển phát nó, nhưng với trường stamp đặt bằng không.",
+    "Publisher ném TypeError lúc khởi động vì các kiểu bất đồng."
+   ],
+   "explanation": "Tên và kiểu phải khớp để các endpoint kết nối."
+  },
+  "q2": {
+   "prompt": "Một Twist có 6 double (payload 48 byte). Băng thông payload ở 20 Hz tính bằng byte/s?",
+   "explanation": "48*20."
+  },
+  "q3": {
+   "prompt": "41 stamp trải đúng 2.0 s. Tốc độ trung bình (n-1)/khoảng tính bằng Hz. Độ chính xác 0.01.",
+   "explanation": "40 khoảng / 2.0 s."
+  },
+  "q4": {
+   "prompt": "Các stamp theo ms: 0, 50, 100, 250, chu kỳ 50 ms. Có bao nhiêu message bị thiếu?",
+   "explanation": "Khoảng trống 150 ms = 3 chu kỳ, nên thiếu 2."
+  },
+  "q5": {
+   "prompt": "Giao diện nào phù hợp với 'điều hướng đến tư thế này, báo cáo tiến độ, cho phép hủy'?",
+   "options": [
+    "Một service với timeout 10 phút",
+    "Một action",
+    "Một parameter",
+    "Một topic được publish ở 100 Hz"
+   ],
+   "explanation": "Mục tiêu chạy lâu có phản hồi và hủy là một action."
+  },
+  "q6": {
+   "prompt": "Tên topic ROS 2 nào hợp lệ?",
+   "options": [
+    "/robot//cmd_vel",
+    "/2d/lidar/scan",
+    "/arm_1/joint_states",
+    "/cmd_vel/filtered/"
+   ],
+   "explanation": "Không token nào được bắt đầu bằng chữ số, không có token rỗng, không có dấu gạch chéo ở cuối."
+  },
+  "q7": {
+   "prompt": "Hãy viết bảng giao diện (topic, kiểu, đơn vị, frame, tốc độ) cho lệnh vận tốc và odometry bánh xe của một robot di động, và nói điều gì vẫn có thể sai dù các kiểu khớp nhau.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Liệt kê tên topic, kiểu chuẩn, đơn vị SI và frame (REP 103).",
+    "Nêu tốc độ và nguồn timestamp.",
+    "Nêu sai đơn vị, sai frame hoặc dữ liệu cũ là những lỗi mà hệ thống kiểu không bắt được."
+   ]
+  }
+ }
+}

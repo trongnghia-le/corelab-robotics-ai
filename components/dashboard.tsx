@@ -28,42 +28,49 @@ import { PageHeading, Status, dateText, TopicChips } from "./ui";
 import { weaknessUrl } from "@/lib/weaknesses";
 import { WeaknessStatus } from "./weakness-practice";
 import { domains, topics, topicMap } from "@/lib/curriculum";
-const domainDetails = {
+import { useI18n, localizeRecommendation, type Dict } from "@/lib/i18n";
+import { isCheckoff, parseCheckoff } from "@/lib/checkoff";
+type DomKey = Extract<keyof Dict, `dom.${string}`>;
+const domainDetails: Record<
+  string,
+  { Icon: typeof Sigma; description: DomKey }
+> = {
   Mathematics: {
     Icon: Sigma,
-    description: "The language of motion and uncertainty.",
+    description: "dom.Mathematics",
   },
   Programming: {
     Icon: Code2,
-    description: "Turn ideas into reliable algorithms.",
+    description: "dom.Programming",
   },
   "Machine Learning": {
     Icon: BrainCircuit,
-    description: "Patterns, losses and generalization.",
+    description: "dom.Machine Learning",
   },
   "Computer Vision": {
     Icon: ScanEye,
-    description: "Connect pixels to geometry.",
+    description: "dom.Computer Vision",
   },
   Robotics: {
     Icon: Bot,
-    description: "Frames, motion, estimation and control.",
+    description: "dom.Robotics",
   },
   "Reinforcement & Robot Learning": {
     Icon: Workflow,
-    description: "Make decisions from rewards and dynamics.",
+    description: "dom.Reinforcement & Robot Learning",
   },
   "Embodied & Cognitive Robotics": {
     Icon: Network,
-    description: "Connect perception, memory and action.",
+    description: "dom.Embodied & Cognitive Robotics",
   },
   "Scientific Research": {
     Icon: Microscope,
-    description: "Design experiments. Question results.",
+    description: "dom.Scientific Research",
   },
 };
 export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
-  const { state } = useCore();
+  const { state, title } = useCore();
+  const { t, tx, lang } = useI18n();
   if (!state) return <Loading />;
   const { progress, mastery, recommendations } = state;
   const rec = recommendations[0];
@@ -79,21 +86,29 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
       id: a.id,
       topicId: a.topicId,
       at: a.at,
-      text: `${a.purpose === "targeted" ? "Focused practice" : "Diagnostic"} · ${a.grade.items.some((i) => i.correct !== null) ? `${a.grade.score}%` : "Rubric only"} · ${a.assistance}`,
+      text: `${a.purpose === "targeted" ? t("dash.act.focused") : t("dash.act.check")} · ${a.grade.items.some((i) => i.correct !== null) ? `${a.grade.score}%` : t("assess.rubricOnly")} · ${a.assistance}`,
       kind: "assessment",
     })),
     ...progress.sessions.map((s) => ({
       id: s.id,
       topicId: s.topicId,
       at: s.at,
-      text: {
-        reading: "Lesson read",
-        practice: "Practice",
-        note: "Note",
-        difficulty: "Difficulty recorded",
-        self_assessment: "Self-assessed",
-        ai_feedback: "AI feedback · unverified",
-      }[s.kind],
+      text: isCheckoff(s)
+        ? parseCheckoff(s.text)?.done
+          ? t("dash.act.sessionDone", {
+              name: t(`session.${parseCheckoff(s.text)!.key}`),
+            })
+          : t("dash.act.sessionUndone", {
+              name: t(`session.${parseCheckoff(s.text)!.key}`),
+            })
+        : {
+            reading: t("dash.act.read"),
+            practice: t("dash.act.practice"),
+            note: t("dash.act.note"),
+            difficulty: t("dash.act.difficulty"),
+            self_assessment: t("dash.act.self"),
+            ai_feedback: t("dash.act.ai"),
+          }[s.kind],
       kind: s.kind,
     })),
   ]
@@ -103,13 +118,13 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
   return (
     <div className="page dashboard">
       <PageHeading
-        eyebrow="YOUR ROBOTICS & AI LEARNING LAB"
-        title="Your Robotics & AI journey."
-        description="Understand the foundations. Build the algorithms. Discover what you can do independently."
+        eyebrow={t("dash.eyebrow")}
+        title={t("dash.title")}
+        description={t("dash.desc")}
       >
         <Link className="button" href="/paths">
           <GitBranch size={16} />
-          My learning path
+          {t("dash.myPath")}
         </Link>
       </PageHeading>
       <div className="dashboard-grid dashboard-launch">
@@ -119,30 +134,32 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
         >
           <div className="section-kicker">
             <span className="accent-dot" />
-            YOUR NEXT STEP
+            {t("dash.next")}
             <span className="priority-pill">
               {rec
                 ? {
-                    learn: "LEARN",
-                    assess: "DIAGNOSTIC",
-                    practice: "PRACTICE",
-                    review: "REVIEW",
+                    learn: t("dash.kind.learn"),
+                    assess: t("dash.kind.assess"),
+                    practice: t("dash.kind.practice"),
+                    review: t("dash.kind.review"),
                   }[rec.kind]
-                : "EXPLORE"}
+                : t("dash.kind.explore")}
             </span>
           </div>
           {topic && rec ? (
             <>
               <div className="focus-title">
                 <span className="topic-code">{topic.id}</span>
-                <h2>{topic.title}</h2>
+                <h2>{title(topic.id)}</h2>
               </div>
-              <p className="focus-description">{rec.reason}</p>
+              <p className="focus-description">
+                {localizeRecommendation(rec.reason, lang)}
+              </p>
               <div className="reason-box">
                 <Target size={17} />
                 <div>
-                  <strong>Try this next</strong>
-                  <p>{rec.exercise}</p>
+                  <strong>{t("dash.tryNext")}</strong>
+                  <p>{localizeRecommendation(rec.exercise, lang)}</p>
                 </div>
               </div>
               <div className="focus-bottom">
@@ -162,30 +179,26 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
                   }
                 >
                   {rec.weaknessKey
-                    ? "Practice weak skill"
+                    ? t("dash.cta.weak")
                     : rec.kind === "review"
-                      ? "Review now"
+                      ? t("dash.cta.review")
                       : rec.kind === "assess"
-                        ? "Start diagnostic"
-                        : "Continue learning"}
+                        ? t("dash.cta.assess")
+                        : t("dash.cta.learn")}
                   <ArrowRight size={17} />
                 </Link>
                 <span className="muted small">
                   <Clock3 size={14} />
-                  Progress by competence, at your own pace
+                  {t("dash.pace")}
                 </span>
               </div>
             </>
           ) : (
             <>
-              <h2>Your next foundation</h2>
-              <p>
-                No authored lesson currently matches your verified
-                prerequisites. Open the Roadmap to choose a foundation to work
-                on.
-              </p>
+              <h2>{t("dash.noRec.title")}</h2>
+              <p>{t("dash.noRec.body")}</p>
               <Link className="button primary" href="/roadmap">
-                Open Roadmap
+                {t("dash.openRoadmap")}
                 <ArrowRight size={16} />
               </Link>
             </>
@@ -195,89 +208,78 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
           className="dashboard-lab-card"
           aria-labelledby="dashboard-lab-title"
         >
-          <div className="eyebrow">FROM FIRST PRINCIPLES TO ROBOT BEHAVIOR</div>
+          <div className="eyebrow">{t("dash.labEyebrow")}</div>
           <RoboticsConcept idPrefix="dashboard-concept" />
           <div className="dashboard-lab-caption">
-            <h2 id="dashboard-lab-title">Make the connection.</h2>
+            <h2 id="dashboard-lab-title">{t("dash.labTitle")}</h2>
             <Link
               className="button"
               href={v2Enabled ? "/objectives" : "/roadmap"}
             >
               <Compass size={18} aria-hidden="true" />
-              {v2Enabled
-                ? "Open Robotics & AI lab"
-                : "Explore Robotics & AI curriculum"}
+              {v2Enabled ? t("dash.openLab") : t("dash.exploreCurriculum")}
               <ArrowRight size={17} aria-hidden="true" />
             </Link>
-            {v2Enabled && (
-              <small>
-                Objective practice and C/M checks have their own evidence
-                record.
-              </small>
-            )}
+            {v2Enabled && <small>{t("dash.labNote")}</small>}
           </div>
         </section>
       </div>
       <section
         className="dashboard-evidence"
-        aria-label="Your topic learning evidence"
+        aria-label={t("dash.progressLabel")}
       >
         <dl>
           <div>
             <dt>
-              <ShieldCheck size={18} aria-hidden="true" /> Topics with evidence
+              <ShieldCheck size={18} aria-hidden="true" /> {t("dash.mastered")}
             </dt>
             <dd data-testid="dashboard-evidence-count">
               {verified.length}
-              <span>of {topics.length} curriculum topics</span>
+              <span>{t("dash.ofTopics", { n: topics.length })}</span>
             </dd>
           </div>
           <div>
             <dt>
-              <Target size={18} aria-hidden="true" /> Topics attempted
+              <Target size={18} aria-hidden="true" /> {t("dash.attempted")}
             </dt>
             <dd data-testid="dashboard-attempted-count">
               {attempted.size}
-              <span>through topic assessments</span>
+              <span>{t("dash.throughChecks")}</span>
             </dd>
           </div>
           <div>
             <dt>
-              <RotateCcw size={18} aria-hidden="true" /> Topic reviews due
+              <RotateCcw size={18} aria-hidden="true" /> {t("dash.due")}
             </dt>
             <dd data-testid="dashboard-due-count">
               {due.length}
-              <span>return when it is time to retrieve</span>
+              <span>{t("dash.dueNote")}</span>
             </dd>
           </div>
         </dl>
-        <p>
-          {verified.length
-            ? "Topic evidence reflects your recorded C/M/I/T checks; reading and practice do not automatically increase mastery."
-            : "Unassessed is a starting point, not a score of zero."}
-        </p>
+        <p>{verified.length ? t("dash.evidenceNote") : t("dash.startNote")}</p>
       </section>
       <div className="section-title dashboard-directions-heading">
         <div>
-          <div className="eyebrow">EXPLORE YOUR INTERESTS</div>
-          <h2>Where will you go next?</h2>
+          <div className="eyebrow">{t("dash.exploreEyebrow")}</div>
+          <h2>{t("dash.exploreTitle")}</h2>
         </div>
         <Link href="/roadmap">
-          Full curriculum <ArrowUpRight size={16} />
+          {t("dash.fullCurriculum")} <ArrowUpRight size={16} />
         </Link>
       </div>
-      <p className="dashboard-directions-note">
-        Start with a foundation or follow your curiosity. The roadmap includes
-        future topics; authored lessons are counted separately.
-      </p>
-      <section className="dashboard-domains" aria-label="Curriculum directions">
+      <p className="dashboard-directions-note">{t("dash.exploreNote")}</p>
+      <section
+        className="dashboard-domains"
+        aria-label={tx("Curriculum directions", "Các hướng trong chương trình")}
+      >
         {domains.map((d) => {
           const ts = topics.filter((t) => t.domain === d);
           const vs = ts.filter((t) => mastery[t.id].level > 0);
           const lessons = ts.filter((t) =>
             state.lessonIds.includes(t.id),
           ).length;
-          const detail = domainDetails[d as keyof typeof domainDetails];
+          const detail = domainDetails[d];
           const Icon = detail?.Icon ?? Compass;
           return (
             <Link
@@ -293,19 +295,21 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
                 <ArrowUpRight size={17} aria-hidden="true" />
               </div>
               <h3>{d}</h3>
-              <p>
-                {detail?.description ?? "Explore this part of the curriculum."}
-              </p>
+              <p>{detail ? t(detail.description) : t("dash.domainDefault")}</p>
               <div className="dashboard-domain-meta">
-                <span>{ts.length} curriculum topics</span>
+                <span>{t("dash.curriculumTopics", { n: ts.length })}</span>
                 <span>
-                  {lessons} authored {lessons === 1 ? "lesson" : "lessons"}
+                  {t(lessons === 1 ? "dash.lesson1" : "dash.lessonN", {
+                    n: lessons,
+                  })}
                 </span>
               </div>
               {vs.length > 0 && (
                 <span className="dashboard-domain-evidence">
-                  <ShieldCheck size={14} aria-hidden="true" /> {vs.length}{" "}
-                  {vs.length === 1 ? "topic has" : "topics have"} evidence
+                  <ShieldCheck size={14} aria-hidden="true" />{" "}
+                  {t(vs.length === 1 ? "dash.masteredN1" : "dash.masteredN", {
+                    n: vs.length,
+                  })}
                 </span>
               )}
             </Link>
@@ -315,7 +319,7 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
       <div className="two-columns">
         <section className="panel">
           <div className="panel-heading">
-            <h2>Weaknesses to Review</h2>
+            <h2>{t("dash.weak")}</h2>
             <GitBranch size={18} />
           </div>
           {weaknesses.length ? (
@@ -326,8 +330,10 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
                     {w.topicId} · {w.skillLabel}
                   </strong>
                   <span className="small muted">
-                    {w.failureCount} mistakes · {w.failedAttempts} failed
-                    attempts
+                    {t("dash.weakCounts", {
+                      m: w.failureCount,
+                      a: w.failedAttempts,
+                    })}
                   </span>
                   <WeaknessStatus weakness={w} />
                 </div>
@@ -336,23 +342,23 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
           ) : (
             <p className="small muted">
               {progress.attempts.length
-                ? "No active objective weaknesses. Historical mistakes remain available in Practice."
-                : "Not enough evidence yet. Objective assessment mistakes will appear here; ungraded responses never count as errors."}
+                ? t("dash.noWeak")
+                : t("dash.noWeakYet")}
             </p>
           )}
           <Link
             className="text-link weakness-dashboard-action"
             href={weaknessUrl(weaknesses[0]?.topicId, weaknesses[0]?.skillTag)}
           >
-            Practice Weaknesses
+            {t("assess.practiceWeak")}
             <ArrowRight size={14} />
           </Link>
           {due.length > 0 && (
             <div className="review-block">
-              <strong className="warning-text">Review due</strong>
+              <strong className="warning-text">{t("status.reviewDue")}</strong>
               {due.slice(0, 3).map((r) => (
                 <Link href={`/assessments/${r.topicId}`} key={r.topicId}>
-                  {r.topicId} · {topicMap[r.topicId].title}
+                  {r.topicId} · {title(r.topicId)}
                   <ArrowRight size={14} />
                 </Link>
               ))}
@@ -361,7 +367,7 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
         </section>
         <section className="panel">
           <div className="panel-heading">
-            <h2>Recent activity</h2>
+            <h2>{t("dash.recent")}</h2>
             <Clock3 size={18} />
           </div>
           {recent.length ? (
@@ -390,12 +396,12 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
             <div className="empty-inline">
               <BookOpen size={23} />
               <p>
-                Your workspace is ready.
+                {t("dash.ready1")}
                 <br />
-                Start with one small question.
+                {t("dash.ready2")}
               </p>
               <Link href="/lessons/M01">
-                Open your first lesson
+                {t("dash.firstLesson")}
                 <ArrowRight size={14} />
               </Link>
             </div>
@@ -407,26 +413,26 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
           <BookOpen size={18} />
           <div>
             <strong>
-              Return to {last.topicId} · {topicMap[last.topicId].title}
+              {t("dash.return")} {last.topicId} · {title(last.topicId)}
             </strong>
             <span>
-              Read · {dateText(last.at)} · reading does not increase mastery
+              {t("dash.readOn")} {dateText(last.at)}
             </span>
           </div>
           <Link className="button" href={`/lessons/${last.topicId}`}>
-            Continue
+            {t("dash.continue")}
             <ArrowRight size={15} />
           </Link>
         </section>
       )}
       {verified.length > 0 && (
         <section className="panel">
-          <h2>Evidence-backed strengths</h2>
+          <h2>{t("dash.strengths")}</h2>
           <div className="stack">
             {verified.slice(0, 4).map((t) => (
               <div className="between" key={t.id}>
                 <Link href={`/assessments/${t.id}`}>
-                  {t.id} · {t.title}
+                  {t.id} · {title(t.id)}
                 </Link>
                 <Status mastery={mastery[t.id]} />
               </div>
@@ -438,16 +444,16 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
         <Link href="/practice">
           <FlaskConical size={20} />
           <div>
-            <strong>Implement & test independently</strong>
-            <span>Practice outside the browser, at your own pace.</span>
+            <strong>{t("dash.q1")}</strong>
+            <span>{t("dash.q1b")}</span>
           </div>
           <ArrowUpRight size={18} />
         </Link>
         <Link href="/tutor">
           <Target size={20} />
           <div>
-            <strong>Take your questions to AI Tutor</strong>
-            <span>Copy the context; keep the evidence in CoreLab.</span>
+            <strong>{t("dash.q2")}</strong>
+            <span>{t("dash.q2b")}</span>
           </div>
           <ArrowUpRight size={18} />
         </Link>
@@ -455,14 +461,14 @@ export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {
       {recommendations.length > 1 && (
         <details className="secondary-recs">
           <summary>
-            Suitable parallel learning branches ({recommendations.length - 1})
+            {t("dash.branches", { n: recommendations.length - 1 })}
           </summary>
           {recommendations.slice(1).map((r) => (
             <div key={r.topicId}>
               <Link href={`/lessons/${r.topicId}`}>
-                {r.topicId} · {topicMap[r.topicId].title}
+                {r.topicId} · {title(r.topicId)}
               </Link>
-              <p>{r.reason}</p>
+              <p>{localizeRecommendation(r.reason, lang)}</p>
               <TopicChips ids={r.prerequisites} />
             </div>
           ))}

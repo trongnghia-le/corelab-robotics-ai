@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Với dữ liệu đã căn tâm có hiệp phương sai C, vector đơn vị v nào cực đại hóa phương sai v^T C v của dữ liệu được chiếu?",
+   "options": [
+    "Vector riêng của C ứng với trị riêng lớn nhất",
+    "Vector bất kỳ, vì phép chiếu bảo toàn phương sai",
+    "Vector riêng của C ứng với trị riêng nhỏ nhất",
+    "Hướng của điểm dữ liệu đơn lẻ lớn nhất"
+   ],
+   "explanation": "v^T C v = Σ λ_j a_j² ≤ λ_max, với dấu bằng đạt tại vector riêng hàng đầu."
+  },
+  "q2": {
+   "prompt": "Hiệp phương sai đã căn tâm C = [[2.5, 1.5],[1.5, 2.5]]. Thành phần chính thứ nhất giải thích bao nhiêu phần tổng phương sai? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Các trị riêng là 4 và 1; 4/(4+1)=0.8."
+  },
+  "q3": {
+   "prompt": "Hiệp phương sai đã căn tâm C = [[2.5, 1.5],[1.5, 2.5]]. Sai số tái tạo bình phương trung bình khi chỉ giữ thành phần chính thứ nhất là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Sai số bằng trị riêng bị bỏ λ₂=1."
+  },
+  "q4": {
+   "prompt": "Tính cosine similarity của u=(1,2,2) và v=(2,1,2). (số thập phân, sai số cho phép 0.001)",
+   "explanation": "u·v=2+2+4=8; cả hai chuẩn đều là 3; 8/9=0.889."
+  },
+  "q5": {
+   "prompt": "Một bảng embedding có từ vựng 20,000 mục và 128 chiều. Nó có bao nhiêu tham số? (số nguyên, sai số cho phép 1)",
+   "explanation": "V·d=20,000·128=2,560,000."
+  },
+  "q6": {
+   "prompt": "Một encoder PCA đóng băng được đánh giá bằng cách huấn luyện một đầu phân loại trên 10 điểm có nhãn và kiểm thử trên các điểm held-out. Kết quả nào ủng hộ tốt nhất cho 'các feature tốt'?",
+   "options": [
+    "Độ chính xác huấn luyện cao hơn so với đầu vào thô, đo trên một tập 10 điểm có nhãn cụ thể",
+    "Độ chính xác held-out trung bình cao hơn so với cùng đầu đó trên đầu vào thô, qua nhiều lần lấy mẫu tập có nhãn",
+    "Encoder có ít chiều đầu ra hơn chiều đầu vào, nên nén dữ liệu một cách hữu ích",
+    "Sai số tái tạo thấp trên pool huấn luyện, vì khi đó mã giữ được thông tin"
+   ],
+   "explanation": "Chất lượng là một khẳng định ở mức tác vụ trên dữ liệu held-out, so với một baseline; độ chính xác huấn luyện và sai số tái tạo không chứng minh được nó."
+  },
+  "q7": {
+   "prompt": "Các feature PCA tính từ dữ liệu cảm biến không nhãn cho độ chính xác ở mức ngẫu nhiên với bộ phân loại của bạn. Hãy nêu hai lời giải thích có thể và phép kiểm tra bạn sẽ chạy cho mỗi lời giải thích.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Phương sai bị chi phối bởi một nhân tố nhiễu, nên hướng liên quan đến nhãn bị bỏ; kiểm tra bằng cách dùng nhiều thành phần hơn hoặc phương sai có điều kiện theo lớp.",
+    "Encoder được fit trên một phân phối khác, hoặc pipeline có lỗi (chưa căn tâm, chiếu sai); kiểm tra trên ca đồ chơi có lời giải và các bất biến.",
+    "So sánh với baseline đầu vào thô qua nhiều lần lấy mẫu nhãn và nêu kết quả nào sẽ bác bỏ mỗi lời giải thích."
+   ]
+  }
+ }
+}

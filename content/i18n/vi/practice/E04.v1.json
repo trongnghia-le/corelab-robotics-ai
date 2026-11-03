@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "k=0.2, e0=1.0. Sai số sau 4 bước? (4 chữ số thập phân)",
+   "explanation": "0.8^4=0.4096."
+  },
+  "b2": {
+   "prompt": "k=0.5, e0=1.0, dung sai 0.01. Bước n đầu tiên có sai số <= dung sai là bao nhiêu?",
+   "explanation": "0.5^7=0.0078<=0.01; 0.5^6=0.0156>0.01."
+  },
+  "b3": {
+   "prompt": "Bộ điều khiển tỉ lệ k=0.5, e0=1.0, dung sai 0.01, hold=4 bước liên tiếp nằm trong dung sai. SUCCEEDED được báo ở bước nào?",
+   "explanation": "7 + 4 - 1 = 10."
+  },
+  "b4": {
+   "prompt": "Không bị chặn tốc độ, k=0.25, dung sai 0.02, cửa sổ 10: ngưỡng stall delta lớn nhất để tránh stall giả (mức tiến triển tối thiểu ngay ngoài dung sai) là bao nhiêu? (4 chữ số thập phân)",
+   "explanation": "delta < eps (1-(1-k)^w) = 0.02*0.9437=0.0189."
+  },
+  "b5": {
+   "prompt": "Reach bị giới hạn tốc độ: k=0.5, v_max=0.2. Ở mức sai số nào bộ điều khiển rời pha tuyến tính (bị giới hạn tốc độ)?",
+   "explanation": "k e = v_max cho e=0.4."
+  },
+  "b6": {
+   "prompt": "Chỉ một mẫu nằm trong dung sai đã được coi là thành công. Với cảm biến nhiễu, điều này có thể gây ra:",
+   "options": [
+    "Bám quỹ đạo hoàn hảo, vì một mẫu là đủ để xác nhận cánh tay đã ổn định",
+    "Thành công giả: cánh tay chỉ thoáng chạm vào dải dung sai",
+    "Horizon dài hơn, vì cánh tay phải chờ mẫu kế tiếp",
+    "Tầm với giảm, vì cánh tay dừng ngay khi một mẫu nằm trong dung sai"
+   ],
+   "explanation": "Cửa sổ hold bảo vệ khỏi những mẫu nhiễu đơn lẻ."
+  },
+  "b7": {
+   "prompt": "Robot đi 0.3 m mỗi bước điều khiển và chướng ngại dày 0.1 m. Chỉ kiểm tra tại điểm cuối mỗi bước có thể bỏ sót nó. Hiện tượng này gọi là:",
+   "options": [
+    "Aliasing của đích",
+    "Overshoot",
+    "Tunnelling",
+    "Stalling"
+   ],
+   "explanation": "Hãy kiểm tra dọc theo đoạn đường hoặc giới hạn độ dài bước."
+  },
+  "b8": {
+   "prompt": "Vì sao nên báo kèm lý do với failure status?",
+   "options": [
+    "Để tiết kiệm bộ nhớ, vì lý do được lưu ở dạng gọn hơn văn bản",
+    "Để tránh timeout, vì bên gọi khi đó sẽ chờ lý do rồi mới thử lại",
+    "Để log ngắn hơn, vì lý do thay thế cho toàn bộ thông báo lỗi",
+    "Bên gọi có thể chọn cách phục hồi phù hợp (retry, replan, nhờ giúp đỡ)"
+   ],
+   "explanation": "Các lý do khác nhau cần cách phục hồi khác nhau."
+  },
+  "b9": {
+   "prompt": "Skill A kết thúc với gripper cách tư thế đích 2 cm, skill B đòi hỏi 1 cm. Chuỗi A;B:",
+   "options": [
+    "Hợp lệ nếu B có timeout dài hơn, vì khi đó B có thời gian để hội tụ",
+    "Không hợp lệ: postcondition của A không kéo theo precondition của B",
+    "Hợp lệ nếu A chạy hai lần, vì lần chạy thứ hai làm tư thế chính xác hơn",
+    "Luôn hợp lệ, vì một chuỗi chỉ cần cả hai skill tồn tại"
+   ],
+   "explanation": "Postcondition phải kéo theo precondition."
+  },
+  "b10": {
+   "prompt": "Trong một behavior tree, node Fallback có skill con đầu tiên trả về REFUSED sẽ:",
+   "options": [
+    "Thử con kế tiếp",
+    "Dừng với kết quả thành công",
+    "Lặp lại con đầu tiên mãi mãi",
+    "Hủy cả cây"
+   ],
+   "explanation": "Fallback thử các phương án thay thế cho đến khi có một cái thành công."
+  },
+  "b11": {
+   "prompt": "Giải thích bằng một ví dụ vì sao timeout, stall và collision cần các status khác nhau.",
+   "rubric": [
+    "Mỗi loại có nguyên nhân khác nhau và cách phục hồi phù hợp khác nhau.",
+    "Ví dụ: collision cần lập kế hoạch lại; stall cần bộ điều khiển mạnh hơn hoặc kiểm tra lại đích; timeout cần ngân sách dài hơn hoặc chia nhỏ tác vụ.",
+    "Bên gọi không thể chọn cách phục hồi từ một status 'failed' duy nhất."
+   ],
+   "explanation": "Có rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b12": {
+   "prompt": "Mô tả kế hoạch kiểm thử cho một skill reach, kiểm tra mọi terminal status và các bất biến 'đúng một status' và 'REFUSED kéo theo không có chuyển động'.",
+   "rubric": [
+    "Một bài kiểm thử kích hoạt cho mỗi status, cộng một bài kiểm thử phủ định.",
+    "Property test trên các đích ngẫu nhiên để kiểm tra các bất biến.",
+    "So sánh thời lượng mô phỏng với công thức đóng (closed form)."
+   ],
+   "explanation": "Có rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

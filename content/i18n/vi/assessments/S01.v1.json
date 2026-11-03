@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Euler tường minh được áp dụng cho dao động tử không tắt dần x''=-x với bước cố định h. Năng lượng 0.5(x^2+v^2) thay đổi thế nào?",
+   "options": [
+    "Nó dao động quanh giá trị thật mà không trôi.",
+    "Nó tăng theo hệ số (1+h^2) mỗi bước.",
+    "Nó giảm chậm như do ma sát.",
+    "Nó giữ nguyên chính xác không đổi."
+   ],
+   "explanation": "x'^2+v'^2=(1+h^2)(x^2+v^2) với mọi h>0."
+  },
+  "q2": {
+   "prompt": "Euler tường minh trên x''=-x với h=0.3. Năng lượng được nhân với hệ số nào trong một bước? Độ chính xác 0.001.",
+   "explanation": "1+h^2=1.09."
+  },
+  "q3": {
+   "prompt": "Một phương pháp có sai số toàn cục 8e-3 ở bước h và 2e-3 ở h/2 (cùng thời điểm cuối). Bậc quan sát được p=log2(e(h)/e(h/2)). Độ chính xác 0.01.",
+   "explanation": "log2(4)=2."
+  },
+  "q4": {
+   "prompt": "Một mô hình động cơ y'=-20y được mô phỏng bằng Euler tường minh. Bước h (s) lớn nhất còn ổn định là bao nhiêu? Độ chính xác 0.001.",
+   "explanation": "|1-20h|<1 cho h<2/20=0.1."
+  },
+  "q5": {
+   "prompt": "Một con lắc thả từ 1.0 rad được mô phỏng bằng mô hình góc nhỏ. Chu kỳ ngắn hơn chu kỳ thật 6.6% ngay cả khi dt rất nhỏ. Phát biểu nào đúng?",
+   "options": [
+    "Đó là sai số mô hình hóa; bộ tích phân giải chính xác một phương trình sai.",
+    "Bộ tích phân là Euler tường minh; chuyển sang RK4 thì sai số chu kỳ sẽ biến mất.",
+    "dt vẫn còn quá lớn đối với bộ tích phân; cứ tiếp tục thu nhỏ cho đến khi chu kỳ khớp.",
+    "Sai số làm tròn float32 tích lũy qua mỗi chu kỳ và là nguyên nhân làm chu kỳ ngắn."
+   ],
+   "explanation": "Sai số không biến mất khi dt giảm, nên đó không phải sai số rời rạc hóa."
+  },
+  "q6": {
+   "prompt": "`n = int(0.3/0.1)` cho 2 trong Python. Vì sao đó là mối nguy khi kiểm chứng với nghiệm giải tích tại t=0.3?",
+   "options": [
+    "Nó làm năng lượng tăng, vì bước bị thiếu bơm thêm năng lượng mỗi chu kỳ.",
+    "Nó làm bộ tích phân mất ổn định, vì bước cuối vượt quá giới hạn ổn định.",
+    "Nó đổi bậc của phương pháp, vì bước cuối có kích thước khác.",
+    "Lần chạy dừng ở t=0.2, nên sai số so sánh bị chi phối bởi thời điểm cuối sai."
+   ],
+   "explanation": "0.3/0.1=2.9999999999999996 bị cắt cụt; dùng round kèm kiểm tra chia hết."
+  },
+  "q7": {
+   "prompt": "Bạn phải mô phỏng một bàn tay robot với các va chạm cứng để huấn luyện. Bạn sẽ chọn họ bộ tích phân và các phép kiểm chứng nào, và vì sao không dùng Euler tường minh thuần?",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu một họ implicit/semi-implicit và gắn nó với giới hạn ổn định do tính cứng h<2/lambda.",
+    "Nêu các phép kiểm tra: nghiên cứu hội tụ theo kích thước bước, độ xuyên thấu, năng lượng không tăng.",
+    "Lưu ý sự đánh đổi giữa độ chính xác, chi phí và độ vững (RK4 mất bậc tại các va chạm)."
+   ]
+  }
+ }
+}

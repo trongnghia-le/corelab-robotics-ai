@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Độ lệch l1=0.6, l2=0.4, q1=pi/2, q2=-pi/2 (tương đối). x của tool tính bằng m, độ chính xác 0.001.",
+   "explanation": "Link1 dọc theo +y; sau -90 độ link2 dọc theo +x."
+  },
+  "b2": {
+   "prompt": "Độ lệch 0.5 và 0.3 với q2=pi (gập ngược lại). Khoảng cách ngang của tool tới trục đế, m. Độ chính xác 0.001.",
+   "explanation": "|0.5-0.3|."
+  },
+  "b3": {
+   "prompt": "Trụ đặc m=2 kg, r=0.05 m, h=0.3 m, trục z. Ixx tính bằng kg m^2, độ chính xác 0.0001.",
+   "explanation": "2/12*(3*0.0025+0.09)=0.01625."
+  },
+  "b4": {
+   "prompt": "Trụ đặc m=2 kg, r=0.05 m, h=0.3 m, trục z. Izz quanh tâm của nó tính bằng kg m^2, độ chính xác 0.00005.",
+   "explanation": "0.5*2*0.0025."
+  },
+  "b5": {
+   "prompt": "I_com=0.01, m=1.5, khoảng cách tới trục 0.5 m. Quán tính quanh trục, độ chính xác 0.001.",
+   "explanation": "0.01+1.5*0.25."
+  },
+  "b6": {
+   "prompt": "Một tải 2 kg nằm cách khớp 1 là 0.8 m. Quán tính bổ sung quanh khớp 1 (kg m^2), độ chính xác 0.01.",
+   "explanation": "2*0.64."
+  },
+  "b7": {
+   "prompt": "Một mesh vẽ theo milimét hiện lớn gấp 1000 lần trong RViz. Cách sửa là gì?",
+   "options": [
+    "Nhân khối lượng link với 0.001 trong khối inertial",
+    "Đổi giới hạn khớp thành một phần nghìn giá trị của chúng",
+    "Đặt scale='0.001 0.001 0.001' trên phần tử mesh.",
+    "Đổi rpy của joint theo hệ số 0.001"
+   ],
+   "explanation": "URDF dùng mét."
+  },
+  "b8": {
+   "prompt": "Một joint có origin rpy = (pi/2, 0, 0) và trục (0,0,1). Trong frame cha, trục hướng theo?",
+   "options": [
+    "+x",
+    "-y",
+    "+y",
+    "+z"
+   ],
+   "explanation": "Rx(pi/2) ánh xạ (0,0,1) thành (0,-1,0)."
+  },
+  "b9": {
+   "prompt": "Một link không có phần tử <inertial>. Hậu quả thường gặp trong bộ mô phỏng vật lý là gì?",
+   "options": [
+    "Bộ mô phỏng tính quán tính từ mesh visual và không cảnh báo gì.",
+    "Nó nhận khối lượng trung bình của các link lân cận và hoạt động bình thường.",
+    "Nó bị coi là không khối lượng hoặc gộp vào cha; động lực học sai.",
+    "Robot không nạp được trong RViz vì link chưa đầy đủ."
+   ],
+   "explanation": "Dữ liệu quán tính là bắt buộc cho vật lý."
+  },
+  "b10": {
+   "prompt": "Vì sao I_xx + I_yy >= I_zz đúng với mọi phân bố khối lượng?",
+   "options": [
+    "Vì khối tâm nằm tại gốc của frame link.",
+    "Vì các khối lượng chỉ dương dọc theo trục z của vật.",
+    "Đó chỉ là một quy ước mà các nhà cung cấp CAD chọn khi định nghĩa tensor quán tính.",
+    "Vì I_xx+I_yy = I_zz + 2*tích phân(z^2 dm) và tích phân đó không âm."
+   ],
+   "explanation": "Suy ra trực tiếp từ định nghĩa."
+  },
+  "b11": {
+   "prompt": "Viết một bài kiểm thử chứng minh một validator phát hiện được robot có hai gốc, với tên link và joint cụ thể.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Định nghĩa một file với ví dụ các link a,b,c và một joint a->b để cả a và c đều là gốc.",
+    "Mong đợi một ValueError (hoặc check_urdf thất bại) và nêu thông báo.",
+    "Thêm đối chứng đạt để cho thấy bài kiểm thử có thể đạt."
+   ]
+  },
+  "b12": {
+   "prompt": "Giải thích vì sao bạn sẽ giữ một nguồn sự thật xacro duy nhất và bạn chạy những kiểm tra số nào trên URDF được sinh ra và trên phép chuyển đổi sang bộ mô phỏng.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Lập luận cho tham số hóa và tránh sửa lặp lại.",
+    "Liệt kê các kiểm tra: tổng khối lượng, FK tại các tư thế, giới hạn khớp, tính hợp lệ của quán tính.",
+    "Nêu điều bị mất khi chuyển đổi (vòng kín, actuator) và cách phát hiện."
+   ]
+  }
+ }
+}

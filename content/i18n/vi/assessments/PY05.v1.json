@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Sau khi khớp một mô hình bậc nhất, các residual tạo thành một sóng trơn quanh 0 dù RMS của chúng nhỏ. Điều này nhiều khả năng có nghĩa là",
+   "options": [
+    "nhiễu hoàn toàn ngẫu nhiên, nên RMS nhỏ là tất cả những gì quan trọng",
+    "dữ liệu nên được lấy trung bình trước, vì sóng chỉ đến từ việc lấy mẫu",
+    "bộ tối ưu chưa chạy, nên các tham số vẫn ở giá trị đoán ban đầu",
+    "cấu trúc mô hình thiếu động học, dù các tham số trông hợp lý"
+   ],
+   "explanation": "Cấu trúc có hệ thống trong residual là bằng chứng của model misspecification."
+  },
+  "q2": {
+   "prompt": "Động cơ với tau=0.5 s, K=2 rad/s/V, u=3 V. Tốc độ tại t=1.0 s tính bằng rad/s (3 chữ số thập phân)?",
+   "explanation": "6(1-e^{-2})."
+  },
+  "q3": {
+   "prompt": "Thời gian (giây) để một hệ bậc nhất với tau=0.2 s đạt 95% giá trị cuối (3 chữ số thập phân)?",
+   "explanation": "t=tau ln 20."
+  },
+  "q4": {
+   "prompt": "Một phép khớp có sigma_hat=0.2 rad/s và căn của phần tử (J^T J)^-1 ứng với tau bằng 0.05 s trên mỗi rad/s. Standard error của tau tính bằng giây (3 chữ số thập phân)?",
+   "explanation": "SE=sigma_hat*sqrt((J^T J)^-1_tau)=0.2*0.05."
+  },
+  "q5": {
+   "prompt": "Tổng bình phương residual là 0.28 từ 30 điểm và 2 tham số được khớp. sigma_hat bằng bao nhiêu rad/s (3 chữ số thập phân)?",
+   "explanation": "sqrt(0.28/(30-2))=0.1."
+  },
+  "q6": {
+   "prompt": "Vì sao hằng số thời gian tau nên bị chặn khỏi các giá trị bằng 0 và âm trong phép khớp?",
+   "options": [
+    "tau âm là đúng về vật lý cho hệ suy giảm và nên được cho phép",
+    "tau âm làm ODE mất ổn định và solver có thể tràn số hoặc thất bại",
+    "solve_ivp yêu cầu bounds và từ chối chạy nếu không có chúng",
+    "bounds làm phép khớp nhanh hơn trong mọi trường hợp, đó là mục đích duy nhất của chúng ở đây"
+   ],
+   "explanation": "Các bước thử ngoài vùng vật lý có thể sinh nan hoặc crash."
+  },
+  "q7": {
+   "prompt": "Một đồng nghiệp khớp gain K vào dữ liệu step response nhưng đã đặt 0 V trong thí nghiệm. Hãy giải thích Jacobian trông thế nào, bộ tối ưu trả về gì và bạn sẽ sửa thí nghiệm ra sao.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Nêu rằng đầu ra không phụ thuộc K khi u=0, nên cột Jacobian bằng 0 (thiếu hạng).",
+    "Lưu ý rằng phép khớp giữ nguyên giá trị đoán ban đầu và hiệp phương sai không xác định.",
+    "Đề xuất đầu vào khác 0 và kiểm tra matrix_rank hoặc hiệp phương sai."
+   ]
+  }
+ }
+}

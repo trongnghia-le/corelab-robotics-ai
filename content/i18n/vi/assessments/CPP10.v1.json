@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Hai thread truy cập cùng một int, ít nhất một thread ghi, và không có đồng bộ hóa. Tiêu chuẩn C++ nói gì?",
+   "options": [
+    "Chỉ là vấn đề với các kiểu dấu phẩy động",
+    "An toàn trên x86 vì truy cập int là nguyên tử",
+    "Kết quả là một trong hai giá trị đã ghi",
+    "Đó là data race: undefined behavior"
+   ],
+   "explanation": "Các truy cập xung đột không đồng bộ là data race, là undefined behavior bất kể phần cứng."
+  },
+  "q2": {
+   "prompt": "Hai thread mỗi thread thực hiện 500,000 phép tăng thường trên một int dùng chung; chương trình in ra 982,415. Mất bao nhiêu cập nhật? Cho một số nguyên.",
+   "explanation": "1,000,000 - 982,415 = 17,585."
+  },
+  "q3": {
+   "prompt": "Cách chờ nào là đúng cho một consumer thread?",
+   "options": [
+    "while (q.empty()) std::this_thread::yield(); không có lock",
+    "cv.wait(lk, [&]{ return closed || !q.empty(); });",
+    "if (q.empty()) cv.wait(lk);",
+    "cv.wait(lk); không kiểm tra lại"
+   ],
+   "explanation": "Spurious wake-up và các consumer cạnh tranh đòi hỏi kiểm tra lại điều kiện khi đang giữ lock; dạng predicate làm điều đó."
+  },
+  "q4": {
+   "prompt": "Một producer phát đợt 80 phần tử trong 100 ms; consumer xử lý 300 phần tử/s. Lượng tồn đọng (phần tử) ở cuối đợt là bao nhiêu? Cho một số nguyên.",
+   "explanation": "Consumer lấy đi 300*0.1 = 30 phần tử trong đợt: 80-30 = 50."
+  },
+  "q5": {
+   "prompt": "Thread 1 khóa A rồi B; thread 2 khóa B rồi A. Điều gì có thể xảy ra và cách sửa chuẩn là gì?",
+   "options": [
+    "Livelock; thêm std::this_thread::sleep_for giữa các lần thử",
+    "Deadlock; khóa cả hai bằng std::scoped_lock (hoặc dùng thứ tự khóa toàn cục)",
+    "Data race trên chính các mutex; làm cho mutex thành atomic",
+    "Không có gì xảy ra, vì std::mutex là đệ quy và khóa lại được"
+   ],
+   "explanation": "Một chu trình chờ là deadlock; scoped_lock lấy nhiều mutex bằng thuật toán tránh deadlock."
+  },
+  "q6": {
+   "prompt": "close() trên một hàng đợi chặn phải gọi notification nào, và vì sao?",
+   "options": [
+    "Chỉ notify_one trên not_empty, đánh thức một consumer",
+    "notify_all, để mọi producer và consumer đang chặn kiểm tra lại và thoát",
+    "Nó phải hủy mutex để các thread đang chờ được giải phóng",
+    "Không cái nào; các thread bị chặn tự thăm dò cờ closed"
+   ],
+   "explanation": "Nhiều thread có thể đang bị chặn; mỗi thread phải được đánh thức để quan sát closed_."
+  },
+  "q7": {
+   "prompt": "Nêu hợp đồng khóa của một hàng đợi producer-consumer có giới hạn: cái gì được bảo vệ bởi cái gì, cái gì chặn, chuyện gì xảy ra khi close, và hàng đợi đảm bảo gì về thứ tự.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Một mutex bảo vệ container và cờ closed; việc chờ dùng predicate trên condition variable.",
+    "push chặn khi đầy, pop chặn khi rỗng và còn mở; close đánh thức tất cả, push sau đó thất bại, pop rút nốt rồi trả nullopt.",
+    "FIFO, không phần tử nào bị mất hay lặp; không có code người dùng chạy dưới lock."
+   ]
+  }
+ }
+}

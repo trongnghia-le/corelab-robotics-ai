@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Sau khi v.erase(std::remove_if(...), v.end()) bị thay bằng chỉ std::remove_if(...) trên một vector, điều gì đúng?",
+   "options": [
+    "Chỉ phần tử khớp đầu tiên bị xóa và phần còn lại giữ nguyên vị trí",
+    "Kích thước không đổi; các phần tử được giữ bị dồn lên đầu, phần đuôi không xác định",
+    "Các phần tử khớp bị xóa khỏi vector và kích thước của nó co lại",
+    "Lời gọi không biên dịch được vì remove_if cần chính container"
+   ],
+   "explanation": "Thuật toán chỉ thấy iterator, không thấy container; chỉ erase mới thay đổi kích thước."
+  },
+  "q2": {
+   "prompt": "std::lower_bound cần tối đa bao nhiêu phép so sánh trên một vector đã sắp xếp gồm 100,000 phần tử? Cho một số nguyên (ceil của log2(n+1)).",
+   "explanation": "log2(100001) = 16.61, nên tối đa 17 phép so sánh."
+  },
+  "q3": {
+   "prompt": "Bạn phải trả về mẫu gần nhất theo thời gian với một t tùy ý từ một log 10^6 mẫu được xây một lần. Cấu trúc nào phù hợp nhất?",
+   "options": [
+    "Một vector sắp xếp theo thời gian, tìm bằng lower_bound",
+    "Một std::set<int> chỉ chứa id của mẫu",
+    "Một unordered_map khóa theo giá trị timestamp chính xác",
+    "Một std::list quét tuyến tính từ phần tử đầu"
+   ],
+   "explanation": "Truy vấn key gần nhất cần một thứ tự; vector liên tục đã sắp xếp cho O(log n) và locality tốt nhất. Hash map chỉ hỗ trợ key chính xác."
+  },
+  "q4": {
+   "prompt": "Các mẫu (t=4, v=12) và (t=8, v=20) kẹp truy vấn t=5. Giá trị nội suy tuyến tính là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "12 + 8*(1/4) = 14."
+  },
+  "q5": {
+   "prompt": "Thao tác nào có thể vô hiệu hóa mọi iterator, con trỏ và reference vào một std::vector?",
+   "options": [
+    "Gọi size() trên vector",
+    "Một push_back gây cấp phát lại",
+    "Gọi begin() trên vector",
+    "Đọc một phần tử qua operator[]"
+   ],
+   "explanation": "Cấp phát lại di chuyển các phần tử sang vùng nhớ mới, để các địa chỉ cũ bị treo."
+  },
+  "q6": {
+   "prompt": "double kp = params[\"kp\"]; trong đó params là một std::map<std::string,double> không có key \"kp\". Chuyện gì xảy ra?",
+   "options": [
+    "Phép tra cứu throw ngoại lệ std::out_of_range",
+    "Một key \"kp\" với giá trị 0.0 được chèn vào và 0.0 được trả về",
+    "Hành vi là undefined vì key không tồn tại",
+    "Một optional rỗng được trả về và kp không được khởi tạo"
+   ],
+   "explanation": "operator[] default-construct một giá trị còn thiếu; hãy dùng find hoặc at để truy cập chỉ đọc."
+  },
+  "q7": {
+   "prompt": "Mô tả cách bạn benchmark vector+lower_bound với std::map cho 10^6 mẫu để kết quả đáng tin cậy. Nêu ít nhất bốn điều được kiểm soát.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Bật tối ưu hóa (-O2), cùng các truy vấn ngẫu nhiên sinh sẵn cho cả hai, một lượt warm-up.",
+    "Dùng kết quả (ví dụ cộng dồn và in ra) để optimizer không thể xóa vòng lặp.",
+    "Lặp lại nhiều lần, báo cáo median, nêu rõ máy; thay đổi N để thấy xu hướng."
+   ]
+  }
+ }
+}

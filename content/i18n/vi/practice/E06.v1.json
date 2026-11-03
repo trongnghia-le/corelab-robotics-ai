@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Cánh tay l1=0.6, l2=0.4. Tầm với tối đa?",
+   "explanation": "0.6+0.4."
+  },
+  "b2": {
+   "prompt": "Cánh tay l1=0.6, l2=0.4. Tầm với tối thiểu khi không có giới hạn?",
+   "explanation": "|0.6-0.4|."
+  },
+  "b3": {
+   "prompt": "Base ở (1,1), đích (1.5, 1.5) trong tọa độ thế giới. Khoảng cách r trong hệ tọa độ cánh tay? (3 chữ số thập phân)",
+   "explanation": "sqrt(0.5)=0.707."
+  },
+  "b4": {
+   "prompt": "Base ở (0.9, 0), đích (1.3, -0.4). Khoảng cách r trong hệ tọa độ cánh tay? (3 chữ số thập phân)",
+   "explanation": "sqrt(0.32)=0.566."
+  },
+  "b5": {
+   "prompt": "l1=0.8, l2=0.5, giới hạn khuỷu 2.2 rad. Bán kính trong r_min? (3 chữ số thập phân)",
+   "explanation": "cos 2.2 = -0.5885, nên r_min = sqrt(0.89 - 0.4708) = 0.647."
+  },
+  "b6": {
+   "prompt": "Một điểm nằm ở r=0.4 so với base. Vành là [0.3, 1.3] nhưng giới hạn khuỷu cho r_min=0.452. Có với tới được không?",
+   "options": [
+    "Chỉ với nhánh còn lại",
+    "Chỉ ở tốc độ thấp hơn",
+    "Không: giới hạn khớp loại trừ nó",
+    "Có: nó nằm trong vành"
+   ],
+   "explanation": "Giới hạn lấn át kiểm tra vành thuần."
+  },
+  "b7": {
+   "prompt": "Một lỗi TAMP: bộ kiểm tra chuyển mọi tư thế pick/place sang hệ tọa độ cánh tay bằng base BAN ĐẦU ngay cả sau move_base. Hậu quả?",
+   "options": [
+    "Symbolic planner thất bại ngay với lỗi kiểu dữ liệu",
+    "Quyết định chấp nhận/loại bỏ sai cho mọi tư thế sau khi base di chuyển",
+    "Plan ngắn hơn, vì cần kiểm tra ít tư thế hơn",
+    "Không có gì, vì vị trí base không ảnh hưởng tới tư thế trong hệ tọa độ cánh tay"
+   ],
+   "explanation": "Phải dùng base tại bước đó."
+  },
+  "b8": {
+   "prompt": "Với K = 3 tư thế base và bộ sinh của bài (không di chuyển, một lần di chuyển trước pick hoặc trước place, hai lần di chuyển), có bao nhiêu plan ứng viên cho mỗi vật?",
+   "explanation": "K^2 = 9."
+  },
+  "b9": {
+   "prompt": "Thêm precondition ký hiệu base_ok(o, b) được tính bởi lớp hình học chủ yếu nhằm:",
+   "options": [
+    "Làm plan dài hơn bằng cách thêm các lần di chuyển base",
+    "Loại bỏ nhu cầu IK trong lớp hình học",
+    "Cắt tỉa các plan bất khả thi trước khi chúng được sinh ra",
+    "Thay motion planning bằng một tìm kiếm thuần ký hiệu"
+   ],
+   "explanation": "Các vị từ hình học được đẩy vào domain ký hiệu."
+  },
+  "b10": {
+   "prompt": "Kiểm tra reach nói là với tới được, nhưng đường đi thẳng của công cụ cắt qua một chướng ngại. Status đúng là:",
+   "options": [
+    "Tư thế khả thi, đường đi bất khả thi: reachability chỉ là điều kiện cần",
+    "Không với tới được, vì kiểm tra reach hẳn đã sai",
+    "Không hợp lệ về ký hiệu, vì plan vi phạm một precondition",
+    "Hoàn toàn khả thi, vì kiểm tra reach là ràng buộc duy nhất"
+   ],
+   "explanation": "Va chạm là các ràng buộc riêng."
+  },
+  "b11": {
+   "prompt": "Giải thích vì sao kết quả TAMP 'không có plan' với một danh sách hữu hạn tư thế base không phải là bằng chứng rằng tác vụ bất khả thi.",
+   "rubric": [
+    "Các lựa chọn liên tục đã được rời rạc hóa thành các tư thế trong danh sách.",
+    "Một tư thế base ngoài danh sách (ví dụ điểm giữa) có thể nằm trong cả hai vành reach.",
+    "Hãy báo là không có plan với các lựa chọn này; lấy mẫu hoặc tối ưu base."
+   ],
+   "explanation": "Có rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b12": {
+   "prompt": "Mô tả kế hoạch kiểm chứng cho hàm reachability của bạn: test ở các mép, bên trong lỗ, với giới hạn, và đối chiếu chéo với một phương pháp độc lập.",
+   "rubric": [
+    "Test mép tại r_max và r_min, bên ngoài và bên trong lỗ.",
+    "Một trường hợp bị loại chỉ do giới hạn và kiểm chứng từng nhánh IK bằng forward kinematics.",
+    "Đối chiếu chéo với việc lấy mẫu ngẫu nhiên không gian khớp của cánh tay."
+   ],
+   "explanation": "Có rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

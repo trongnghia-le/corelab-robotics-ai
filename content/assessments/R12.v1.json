@@ -29,9 +29,9 @@
         "Backward pass tip-to-base accumulating forces first, then a forward pass computing motion",
         "Both computations in one single pass from base to tip, so no second pass is needed",
         "A backward pass only, because accelerations are not needed to find joint torques",
-        "Forward pass base-to-tip computing motion, then backward pass tip-to-base accumulating forces"
+        "Forward pass base-to-tip computing motion, then backward pass tip-to-base for forces"
       ],
-      "answer": "0",
+      "answer": "3",
       "explanation": "Accelerations propagate outward; forces needed to produce them accumulate inward."
     },
     {
@@ -62,7 +62,7 @@
     },
     {
       "id": "q3",
-      "prompt": "Same arm: torque at joint 1 in N m (three decimals)?",
+      "prompt": "Planar 2R arm in a vertical plane (angles from +x, gravity -y): l1 = 0.5 m, m1 = 2 kg, lc1 = 0.25 m, m2 = 1.5 kg, lc2 = 0.2 m, g = 9.81. Held static and horizontal (q = 0), what is the torque at joint 1 in N m (three decimals)?",
       "kind": "number",
       "dimension": "M",
       "critical": false,
@@ -137,15 +137,15 @@
       "options": [
         "Torque is nonlinear in the inertial parameters, so they cannot be fit by linear least squares",
         "Parameters can be identified from a single sample if the measurement noise is small",
-        "Torque is linear in a minimal set of parameter combinations, so regression identifies them from exciting data",
+        "Torque is linear in a minimal set of parameter combinations, so exciting data identifies them",
         "Static poses alone are enough to identify all inertias, so no motion is needed"
       ],
-      "answer": "0",
+      "answer": "2",
       "explanation": "tau = Y(q, qd, qdd) pi with pi the parameter combinations; excitation is needed."
     },
     {
       "id": "q6",
-      "prompt": "The arm above (l1 = 0.5, m2 = 1.5, lc2 = 0.2). Compute the identifiable parameter a3 = m2 l1 lc2 (three decimals).",
+      "prompt": "A planar 2R arm has l1 = 0.5 m, m2 = 1.5 kg and lc2 = 0.2 m. Compute the identifiable parameter a3 = m2 l1 lc2 (three decimals).",
       "kind": "number",
       "dimension": "M",
       "critical": false,

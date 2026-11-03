@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Phát biểu nào mô tả đúng nhất RAII?",
+   "options": [
+    "Tài nguyên được chiếm lười (lazy) khi dùng lần đầu và chỉ được giải phóng khi chương trình thoát",
+    "Một tài nguyên được chiếm trong constructor và được giải phóng trong destructor của đối tượng sở hữu nó",
+    "Mọi tài nguyên đều được cấp phát trên heap và được một tracing garbage collector thu hồi sau đó",
+    "Lập trình viên phải gọi release() tường minh trong khối finally ở mọi đường thoát"
+   ],
+   "explanation": "RAII gắn một tài nguyên với vòng đời của một đối tượng; destructor chạy trên mọi đường thoát, kể cả exception."
+  },
+  "q2": {
+   "prompt": "Một vòng lặp 50 Hz chạy 2 phút và rò rỉ một buffer 128 double ở mỗi chu kỳ. Tổng cộng bao nhiêu byte bị rò rỉ? Cho một số nguyên.",
+   "explanation": "50 x 120 = 6000 chu kỳ; 128 x 8 = 1024 byte mỗi lần: 6,144,000 byte."
+  },
+  "q3": {
+   "prompt": "Một class sở hữu một double* được giải phóng trong destructor và không có hàm thành viên đặc biệt nào khác. Chuyện gì xảy ra với 'Scan b = a;' khi cả hai ra khỏi scope?",
+   "options": [
+    "Compiler từ chối phép copy",
+    "Cả hai destructor giải phóng cùng một vùng nhớ: double free",
+    "Phép copy tự động cấp phát vùng nhớ mới",
+    "Chỉ destructor đầu tiên giải phóng; destructor thứ hai bị bỏ qua"
+   ],
+   "explanation": "Copy constructor ngầm định copy giá trị con trỏ, nên hai đối tượng sở hữu một khối."
+  },
+  "q4": {
+   "prompt": "Bản thân std::move(x) làm gì?",
+   "options": [
+    "Nó hủy x và để tên x tham chiếu tới vùng nhớ đã giải phóng",
+    "Nó ép x sang rvalue reference để một overload move có thể được chọn",
+    "Nó copy x và đánh dấu bản copy đó là tạm để có thể lấy cắp",
+    "Nó lập tức chuyển tài nguyên của x vào một đối tượng đích mới tạo"
+   ],
+   "explanation": "std::move chỉ là một phép cast; move constructor hoặc assignment được chọn sau đó mới thực hiện việc chuyển."
+  },
+  "q5": {
+   "prompt": "Bốn camera mỗi cái gửi một frame 2.5 MB ở 20 Hz. Nếu mỗi frame được deep-copy một lần, có bao nhiêu MB mỗi giây được copy? Cho một số.",
+   "explanation": "4 x 2.5 MB x 20 = 200 MB/s lưu lượng copy; một move là O(1) cho mỗi frame."
+  },
+  "q6": {
+   "prompt": "Một kiểu copy được có move constructor không đánh dấu noexcept. std::vector làm gì khi nó tăng dung lượng?",
+   "options": [
+    "Nó tái sử dụng vùng nhớ cũ tại chỗ mà không di dời phần tử nào",
+    "Nó từ chối biên dịch cho đến khi move constructor được đánh dấu noexcept",
+    "Nó copy các phần tử để giữ strong exception guarantee",
+    "Nó vẫn move chúng và terminate nếu một phép move throw"
+   ],
+   "explanation": "std::move_if_noexcept chọn phép copy khi move có thể throw và tồn tại một phép copy."
+  },
+  "q7": {
+   "prompt": "Một callback subscriber nhận một frame camera. Chọn kiểu tham số cho (a) vẽ frame ngay lập tức, và (b) xếp nó vào hàng đợi cho một worker thread có thể chạy sau khi callback trả về. Biện minh từng cái theo quyền sở hữu và vòng đời.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "(a) const Frame& (mượn): bên gọi giữ quyền sở hữu và frame sống lâu hơn lời gọi.",
+    "(b) Cần quyền sở hữu hoặc vòng đời chia sẻ: unique_ptr được move vào, hoặc shared_ptr<const Frame>; reference hay con trỏ thô sẽ bị treo (dangling).",
+    "Nhắc đến đánh đổi chi phí: không copy frame lớn so với hàng đợi không giới hạn hoặc chi phí đếm tham chiếu."
+   ]
+  }
+ }
+}

@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "gamma=0.95, reward -1 mỗi bước. Một option kéo dài 4 bước. R là bao nhiêu? (4 chữ số thập phân)",
+   "explanation": "Tổng hình học 1+0.95+0.9025+0.857375=3.709875."
+  },
+  "b2": {
+   "prompt": "R=-3.439, tau=4, gamma=0.9, V(s_end)=-5.217. Giá trị backup là bao nhiêu? (2 chữ số thập phân)",
+   "explanation": "-3.439+0.6561*(-5.217)=-6.862."
+  },
+  "b3": {
+   "prompt": "Một sinh viên dùng gamma thay vì gamma^tau cho một option 6 bước với reward âm. Giá trị của option được ước lượng:",
+   "options": [
+    "Quá cao (quá lạc quan), vì phần tương lai âm được tính nhẹ hơn",
+    "Chính xác nếu policy là tối ưu",
+    "Quá thấp (quá bi quan), vì phần tương lai âm được tính nặng hơn",
+    "Không bị ảnh hưởng, vì tau triệt tiêu trong tỉ số"
+   ],
+   "explanation": "gamma > gamma^6 nên phần tiếp nối (âm) bị tính quá nặng; giá trị ra quá thấp."
+  },
+  "b4": {
+   "prompt": "Xác suất kết thúc 0.05 mỗi bước. Xác suất option kéo dài hơn 10 bước (vẫn đang chạy sau 10 bước) là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "0.95^10=0.5987."
+  },
+  "b5": {
+   "prompt": "Xác suất kết thúc 0.04 mỗi bước. Thời lượng kỳ vọng là bao nhiêu?",
+   "explanation": "1/0.04=25."
+  },
+  "b6": {
+   "prompt": "Khi mọi hành động nguyên thủy được giữ trong tập hành động, việc thêm option làm giá trị tối ưu thay đổi:",
+   "options": [
+    "Luôn giảm giá trị tối ưu, vì option hạn chế policy",
+    "Luôn tăng giá trị tối ưu, vì option thêm hành vi",
+    "Làm bài toán trở nên non-Markov, nên giá trị không xác định",
+    "Hoàn toàn không; nó chỉ có thể thay đổi tốc độ tìm ra nghiệm"
+   ],
+   "explanation": "Option có thể được thực hiện bởi các flat policy, nên giá trị tối ưu không đổi."
+  },
+  "b7": {
+   "prompt": "Log nào sẽ tiết lộ rõ nhất hiện tượng option collapse trong một phân cấp học được?",
+   "options": [
+    "Chuẩn gradient của encoder ở mỗi lần cập nhật",
+    "Lịch trình learning rate của bộ tối ưu mức cao",
+    "Training loss của critic theo thời gian",
+    "Histogram mức sử dụng option và thời lượng option trung bình"
+   ],
+   "explanation": "Một option được dùng ở mọi nơi hoặc thời lượng bằng 1 cho thấy sự collapse."
+  },
+  "b8": {
+   "prompt": "Đâu là một lý do chính đáng để ưu tiên option thiết kế tay hơn option học được?",
+   "options": [
+    "Các kỹ năng con đã biết và phải an toàn, kiểm thử được",
+    "Option học được không cần tín hiệu reward để huấn luyện",
+    "Option thiết kế tay loại bỏ nhu cầu có termination condition",
+    "Option học được không bao giờ collapse về một option duy nhất"
+   ],
+   "explanation": "Phân rã đã biết cộng với khả năng kiểm thử nghiêng về thiết kế tay."
+  },
+  "b9": {
+   "prompt": "Một option điều hướng bắt đầu trong một căn phòng có cửa đóng. Initiation set nên:",
+   "options": [
+    "Bị bỏ qua, vì termination beta xử lý chuyện này",
+    "Loại trạng thái đó ra, vì kỹ năng không thể thành công ở đó",
+    "Rỗng, để option không bao giờ được bắt đầu",
+    "Bao gồm nó, vì thất bại dạy cho mức cao"
+   ],
+   "explanation": "Initiation set là tiền điều kiện; đưa vào các trạng thái mà kỹ năng không hợp lệ tạo ra các thất bại có thể tránh được."
+  },
+  "b10": {
+   "prompt": "Hành lang dài 20 (đích ở 20, reward -1, chỉ có hành động nguyên thủy). Bắt đầu từ V=-100 (đích 0), cần bao nhiêu lượt quét đồng bộ để giá trị đến trạng thái 0 lần đầu tiên? ",
+   "explanation": "Mỗi lượt quét một trạng thái: trạng thái kề đích ở lượt 1 ... trạng thái 0 ở lượt 20."
+  },
+  "b11": {
+   "prompt": "Một option nắm cam kết trong 2 giây và vật bị trượt sau 0.5 s. Giải thích vấn đề và nêu hai thay đổi thiết kế.",
+   "rubric": [
+    "Option không thể phản ứng vì nó chỉ kết thúc theo thời gian; mức cao không thể lập kế hoạch lại.",
+    "Làm termination phụ thuộc vào trạng thái (phát hiện trượt hoặc lực) và thêm một kết cục thất bại.",
+    "Dùng option có thể ngắt (interruptible) hoặc để manager ghi đè khi thất bại."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b12": {
+   "prompt": "Hãy giải thích, dùng phép phân rã return, hệ số gamma^tau trong phương trình Bellman SMDP đến từ đâu.",
+   "rubric": [
+    "Tách return tại thời điểm kết thúc tau: tau reward đầu rồi return về sau.",
+    "Return về sau bắt đầu muộn hơn tau bước nên mỗi reward bị chiết khấu thêm gamma^tau.",
+    "Lấy kỳ vọng theo phân phối đồng thời của s' và tau."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

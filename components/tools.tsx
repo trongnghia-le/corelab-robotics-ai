@@ -17,13 +17,16 @@ import {
 import { topics, topicMap, domains } from "@/lib/curriculum";
 import { contextFor } from "@/lib/engine";
 import { practices } from "@/lib/practice";
+import { practiceVi } from "@/lib/practice-vi";
 import { sources } from "@/lib/resources";
 import { useCore, Loading, copyText } from "./provider";
 import { useTopic, Notebook } from "./topic";
 import { PageHeading, Status, TopicChips, dateText } from "./ui";
 import { PracticeTabs, WeaknessPractice } from "./weakness-practice";
+import { useI18n } from "@/lib/i18n";
 export function Practice() {
-  const { state, act, busy, notify } = useCore();
+  const { state, act, busy, notify, title } = useCore();
+  const { t, tx, lang } = useI18n();
   const params = useSearchParams();
   const [topic, setTopic] = useState(params.get("topic") ?? ""),
     [report, setReport] = useState("");
@@ -36,42 +39,57 @@ export function Practice() {
     try {
       await act({ type: "lab", report: JSON.parse(report) });
       setReport("");
-      notify("Test report imported. View the evidence in Assessments.");
+      notify(
+        tx(
+          "Test report imported. View the evidence in Assessments.",
+          "Đã nhập báo cáo kiểm thử. Xem kết quả trong mục Ôn tập.",
+        ),
+      );
     } catch (e) {
       if (e instanceof SyntaxError)
-        notify("The report must contain valid JSON.");
+        notify(
+          tx(
+            "The report must contain valid JSON.",
+            "Báo cáo phải là JSON hợp lệ.",
+          ),
+        );
     }
   }
   return (
     <div className="page">
       <PageHeading
-        eyebrow="IMPLEMENT → VERIFY → TRANSFER"
-        title="Implement independently. Verify your work."
-        description="Write code in VS Code and run tests in your own terminal. CoreLab does not execute code submitted through the browser."
+        eyebrow={t("practice.eyebrow")}
+        title={t("practice.title")}
+        description={t("practice.desc")}
       />
       <PracticeTabs />
       <div className="info-banner">
         <ShieldCheck size={19} />
         <span>
-          Fixed tests currently support M02 and PY01. Other assignments include
-          instructions and a notebook; self-reported results do not increase
-          verified competence.
+          {tx(
+            "Fixed tests currently support M02 and PY01. Other assignments include instructions and a notebook; self-reported results do not increase verified competence.",
+            "Test cố định hiện hỗ trợ M02 và PY01. Các bài khác có hướng dẫn và sổ ghi chép; kết quả tự báo cáo không làm tăng năng lực đã được kiểm chứng.",
+          )}
         </span>
       </div>
       <div className="filters">
         <select
-          aria-label="Choose practice topic"
+          aria-label={tx("Choose practice topic", "Chọn chủ đề luyện tập")}
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
         >
-          <option value="">All assignments</option>
+          <option value="">{tx("All assignments", "Tất cả bài tập")}</option>
           {topics.map((t) => (
             <option key={t.id} value={t.id}>
-              {t.id} · {t.title}
+              {t.id} · {title(t.id)}
             </option>
           ))}
         </select>
-        {topic && <button onClick={() => setTopic("")}>View all</button>}
+        {topic && (
+          <button onClick={() => setTopic("")}>
+            {tx("View all", "Xem tất cả")}
+          </button>
+        )}
       </div>
       <div className="practice-list">
         {shown.map((p, i) => (
@@ -85,29 +103,31 @@ export function Practice() {
                   <Link className="topic-code" href={`/lessons/${p.topicId}`}>
                     {p.topicId}
                   </Link>
-                  <span className="muted small">{p.kind}</span>
+                  <span className="muted small">
+                    {lang === "vi" ? practiceVi[p.id].kind : p.kind}
+                  </span>
                 </div>
                 <span className={`status ${p.verified ? "verified" : ""}`}>
                   {p.verified
-                    ? "Fixed verifier available"
-                    : "Practice · self-reported"}
+                    ? tx("Fixed verifier available", "Có bộ kiểm chứng cố định")
+                    : tx("Practice · self-reported", "Luyện tập · tự báo cáo")}
                 </span>
               </div>
-              <h2>{p.title}</h2>
-              <p>{p.task}</p>
+              <h2>{lang === "vi" ? practiceVi[p.id].title : p.title}</h2>
+              <p>{lang === "vi" ? practiceVi[p.id].task : p.task}</p>
               <TopicChips ids={topicMap[p.topicId].prerequisites} />
               <CodeBlock code={p.command} language="bash" />
               <div className="topic-actions">
                 <a className="button" download href={p.starter}>
                   <Download size={15} />
-                  Download starter
+                  {tx("Download starter", "Tải bản khởi đầu")}
                 </a>
                 <Link className="button" href={`/lessons/${p.topicId}`}>
-                  Theory
+                  {tx("Theory", "Lý thuyết")}
                   <ArrowRight size={15} />
                 </Link>
                 <Link className="button" href={`/assessments/${p.topicId}`}>
-                  View evidence
+                  {tx("View evidence", "Xem kết quả")}
                   <ArrowRight size={15} />
                 </Link>
               </div>
@@ -117,38 +137,44 @@ export function Practice() {
       </div>
       {shown.length === 0 && exact && (
         <div className="panel">
-          <h2>Practice the objectives for {exact.title}</h2>
+          <h2>
+            {tx("Practice the objectives for", "Luyện tập các mục tiêu của")}{" "}
+            {title(exact.id)}
+          </h2>
           <p>
-            This topic has no fixed verifier yet. Follow the independent
-            practice section or overview guidance, then record your assumptions,
-            reasoning, and results in the notebook.
+            {tx(
+              "This topic has no fixed verifier yet. Follow the independent practice section or overview guidance, then record your assumptions, reasoning, and results in the notebook.",
+              "Chủ đề này chưa có bộ kiểm chứng cố định. Hãy làm theo phần luyện tập độc lập hoặc hướng dẫn tổng quan, rồi ghi giả định, lập luận và kết quả vào sổ ghi chép.",
+            )}
           </p>
           <Link className="button" href={`/lessons/${topic}`}>
-            Open topic
+            {tx("Open topic", "Mở chủ đề")}
             <ArrowRight size={16} />
           </Link>
         </div>
       )}
       <section className="panel import-report">
-        <h2>Import a local test report</h2>
+        <h2>
+          {tx("Import a local test report", "Nhập báo cáo kiểm thử cục bộ")}
+        </h2>
         <p className="muted small">
-          The runner records the source hash, timestamp, v1 contract,
-          assistance, and local signature. A3 records practice only; a fresh A0
-          run can establish I evidence. This is personal study evidence, not
-          proctored certification.
+          {tx(
+            "The runner records the source hash, timestamp, v1 contract, assistance, and local signature. A3 records practice only; a fresh A0 run can establish I evidence. This is personal study evidence, not proctored certification.",
+            "Trình chạy ghi lại mã băm mã nguồn, thời điểm, hợp đồng v1, mức trợ giúp và chữ ký cục bộ. A3 chỉ tính là luyện tập; một lần chạy A0 mới có thể tạo bằng chứng I. Đây là bằng chứng tự học cá nhân, không phải chứng nhận có giám sát.",
+          )}
         </p>
         <label className="file-label">
           <Upload size={16} />
-          Choose report JSON
+          {tx("Choose report JSON", "Chọn tệp JSON báo cáo")}
           <input
-            aria-label="Choose lab report"
+            aria-label={tx("Choose lab report", "Chọn báo cáo lab")}
             type="file"
             accept="application/json,.json"
             onChange={async (e) => {
               const f = e.target.files?.[0];
               if (f) {
                 if (f.size > 10000) {
-                  notify("The report is too large.");
+                  notify(tx("The report is too large.", "Báo cáo quá lớn."));
                   return;
                 }
                 setReport(await f.text());
@@ -158,8 +184,11 @@ export function Practice() {
         </label>
         <form onSubmit={importReport}>
           <textarea
-            aria-label="Test report JSON"
-            placeholder="Paste the contents of .local/M02-report.json…"
+            aria-label={tx("Test report JSON", "JSON báo cáo kiểm thử")}
+            placeholder={tx(
+              "Paste the contents of .local/M02-report.json…",
+              "Dán nội dung của .local/M02-report.json…",
+            )}
             value={report}
             onChange={(e) => setReport(e.target.value)}
             rows={6}
@@ -171,13 +200,15 @@ export function Practice() {
             type="submit"
             disabled={busy || !report}
           >
-            Import report
+            {tx("Import report", "Nhập báo cáo")}
             <Upload size={16} />
           </button>
         </form>
         <p className="small muted">
-          Only the CLI in your terminal executes Python files. This button only
-          validates and saves a report.
+          {tx(
+            "Only the CLI in your terminal executes Python files. This button only validates and saves a report.",
+            "Chỉ CLI trong terminal của bạn mới chạy các tệp Python. Nút này chỉ kiểm tra và lưu báo cáo.",
+          )}
         </p>
       </section>
       {topic && <Notebook key={topic} id={topic} />}
@@ -220,8 +251,35 @@ const milestones = [
     ids: ["RL17", "E01", "E02", "E07", "E08", "E10", "E12", "RS01", "RS02"],
   },
 ];
+const milestonesVi: Record<string, [string, string]> = {
+  "01 · Mathematics & programming foundations": [
+    "01 · Nền tảng toán và lập trình",
+    "Ký hiệu → vector → ma trận, song song với Python và C++.",
+  ],
+  "02 · Reasoning and computation": [
+    "02 · Suy luận và tính toán",
+    "Đạo hàm, xác suất, đại số tuyến tính và NumPy.",
+  ],
+  "03 · Machine Learning from first principles": [
+    "03 · Machine Learning từ nguyên lý cơ bản",
+    "Đặt bài toán, baseline, gradient, mạng nơ-ron và backpropagation.",
+  ],
+  "04 · Robot geometry & control": [
+    "04 · Hình học và điều khiển robot",
+    "Cơ học, cơ cấu, hệ tọa độ, động học, động lực học và phản hồi.",
+  ],
+  "05 · Vision & sequential decisions": [
+    "05 · Thị giác và ra quyết định tuần tự",
+    "Ảnh số và MDP; các nhánh sau mở dần qua kiến thức tiên quyết.",
+  ],
+  "06 · Robot Learning & Cognitive Robotics": [
+    "06 · Robot Learning và Cognitive Robotics",
+    "Bản đồ dài hạn: tương tác, biểu diễn, lập kế hoạch và nghiên cứu.",
+  ],
+};
 export function Paths() {
-  const { state, act, busy, notify } = useCore();
+  const { t, tx, lang } = useI18n();
+  const { state, act, busy, notify, title } = useCore();
   const [goal, setGoal] = useState(""),
     [focus, setFocus] = useState<string | undefined>(undefined),
     [reason, setReason] = useState<string | undefined>(undefined);
@@ -236,16 +294,17 @@ export function Paths() {
   return (
     <div className="page">
       <PageHeading
-        eyebrow="ZERO VERIFIED KNOWLEDGE → INDEPENDENT RESEARCH"
-        title="One path, many open branches."
-        description="Follow prerequisites and evidence. You do not need to finish an entire domain to start a suitable branch."
+        eyebrow={t("paths.eyebrow")}
+        title={t("paths.title")}
+        description={t("paths.desc")}
       />
       <section className="panel goal-panel">
-        <h2>Current learning focus</h2>
+        <h2>{tx("Current learning focus", "Trọng tâm học hiện tại")}</h2>
         <p className="muted small">
-          Begin with foundations by default. Pin a project topic for parallel,
-          just-in-time learning; recommendations prioritize its missing
-          prerequisites.
+          {tx(
+            "Begin with foundations by default. Pin a project topic for parallel, just-in-time learning; recommendations prioritize its missing prerequisites.",
+            "Mặc định hãy bắt đầu từ nền tảng. Ghim một chủ đề dự án để học song song, đúng lúc cần; gợi ý sẽ ưu tiên các kiến thức tiên quyết còn thiếu của nó.",
+          )}
         </p>
         <form
           onSubmit={(e) => {
@@ -256,60 +315,73 @@ export function Paths() {
               focusTopic: selectedFocus || null,
               focusReason: selectedReason,
             })
-              .then(() => notify("Goal and recommendations updated."))
+              .then(() =>
+                notify(
+                  tx(
+                    "Goal and recommendations updated.",
+                    "Đã cập nhật mục tiêu và gợi ý.",
+                  ),
+                ),
+              )
               .catch(() => {});
           }}
         >
           <div className="form-row">
             <label>
-              Direction
+              {tx("Direction", "Hướng học")}
               <select
-                aria-label="Learning direction"
+                aria-label={tx("Learning direction", "Hướng học")}
                 value={selectedGoal}
                 onChange={(e) => setGoal(e.target.value)}
               >
-                <option>Foundations</option>
+                <option value="Foundations">
+                  {tx("Foundations", "Nền tảng")}
+                </option>
                 {domains.map((d) => (
                   <option key={d}>{d}</option>
                 ))}
               </select>
             </label>
             <label>
-              Project topic / focus
+              {tx("Project topic / focus", "Chủ đề dự án / trọng tâm")}
               <select
-                aria-label="Project topic"
+                aria-label={tx("Project topic", "Chủ đề dự án")}
                 value={selectedFocus}
                 onChange={(e) => setFocus(e.target.value)}
               >
-                <option value="">No pinned topic</option>
+                <option value="">
+                  {tx("No pinned topic", "Chưa ghim chủ đề")}
+                </option>
                 {topics.map((t) => (
                   <option value={t.id} key={t.id}>
-                    {t.id} · {t.title}
+                    {t.id} · {title(t.id)}
                   </option>
                 ))}
               </select>
             </label>
           </div>
           <label>
-            Why choose this goal?
+            {tx("Why choose this goal?", "Vì sao chọn mục tiêu này?")}
             <input
               value={selectedReason}
               onChange={(e) => setReason(e.target.value)}
               maxLength={1000}
-              placeholder="For example: understand coordinate frames for a camera project…"
+              placeholder={tx(
+                "For example: understand coordinate frames for a camera project…",
+                "Ví dụ: hiểu hệ tọa độ cho một dự án camera…",
+              )}
             />
           </label>
           <button disabled={busy} className="button" type="submit">
-            Save goal
+            {tx("Save goal", "Lưu mục tiêu")}
             <Route size={16} />
           </button>
         </form>
         {state.progress.focusTopic && (
           <p className="small">
-            Pinned:{" "}
+            {tx("Pinned:", "Đã ghim:")}{" "}
             <Link href={`/lessons/${state.progress.focusTopic}`}>
-              {state.progress.focusTopic} ·{" "}
-              {topicMap[state.progress.focusTopic].title}
+              {state.progress.focusTopic} · {title(state.progress.focusTopic)}
             </Link>{" "}
             · {state.progress.focusReason}
           </p>
@@ -320,8 +392,14 @@ export function Paths() {
           <section className="path-stage" key={stage.name}>
             <span className="path-dot" />
             <div>
-              <h2>{stage.name}</h2>
-              <p className="muted">{stage.description}</p>
+              <h2>
+                {lang === "vi" ? milestonesVi[stage.name][0] : stage.name}
+              </h2>
+              <p className="muted">
+                {lang === "vi"
+                  ? milestonesVi[stage.name][1]
+                  : stage.description}
+              </p>
               <div className="panel path-topics">
                 {stage.ids.map((id) => {
                   const t = topicMap[id],
@@ -332,12 +410,17 @@ export function Paths() {
                     <Link key={id} href={`/lessons/${id}`}>
                       <span className="topic-id">{id}</span>
                       <div>
-                        <strong>{t.title}</strong>
+                        <strong>{title(t.id)}</strong>
                         <small>
                           {missing.length
-                            ? `Prerequisites needing evidence: ${missing.join(", ")}`
-                            : "Ready to start a diagnostic"}
-                          {!state.lessonIds.includes(id) ? " · Overview" : ""}
+                            ? `${tx("Prerequisites not mastered yet:", "Kiến thức tiên quyết chưa nắm vững:")} ${missing.join(", ")}`
+                            : tx(
+                                "Ready to check what you know",
+                                "Sẵn sàng kiểm tra kiến thức",
+                              )}
+                          {!state.lessonIds.includes(id)
+                            ? ` · ${tx("Overview", "Tổng quan")}`
+                            : ""}
                         </small>
                       </div>
                       <Status mastery={state.mastery[id]} />
@@ -350,9 +433,12 @@ export function Paths() {
         ))}
       </div>
       <section className="panel">
-        <h2>Knowledge debt</h2>
+        <h2>{tx("Knowledge debt", "Chỗ còn vướng")}</h2>
         <p className="muted small">
-          Difficulties you recorded, separate from gaps detected by assessments.
+          {tx(
+            "Difficulties you recorded, separate from gaps detected by assessments.",
+            "Các khó khăn bạn đã ghi lại, tách biệt với lỗ hổng do bài kiểm tra phát hiện.",
+          )}
         </p>
         {debt.length ? (
           debt.slice(0, 12).map((d) => (
@@ -364,8 +450,10 @@ export function Paths() {
           ))
         ) : (
           <p className="muted">
-            No difficulties recorded yet. Use the notebook for each topic to
-            capture open questions.
+            {tx(
+              "No difficulties recorded yet. Use the notebook for each topic to capture open questions.",
+              "Chưa ghi khó khăn nào. Hãy dùng sổ ghi chép của từng chủ đề để lưu các câu hỏi còn mở.",
+            )}
           </p>
         )}
       </section>
@@ -373,7 +461,8 @@ export function Paths() {
   );
 }
 export function Tutor() {
-  const { state, act, busy, notify } = useCore();
+  const { state, act, busy, notify, title } = useCore();
+  const { t, tx } = useI18n();
   const params = useSearchParams();
   const [topic, setTopic] = useState(
       params.get("topic") && topicMap[params.get("topic")!]
@@ -400,57 +489,83 @@ export function Tutor() {
   async function copy() {
     try {
       await copyText(fullContext);
-      notify("Context copied. Paste it into your ChatGPT Project yourself.");
+      notify(
+        tx(
+          "Context copied. Paste it into your ChatGPT Project yourself.",
+          "Đã sao chép ngữ cảnh. Hãy tự dán nó vào ChatGPT Project của bạn.",
+        ),
+      );
     } catch (e) {
-      notify(e instanceof Error ? e.message : "Unable to copy.");
+      notify(
+        e instanceof Error
+          ? e.message
+          : tx("Unable to copy.", "Không sao chép được."),
+      );
     }
   }
   return (
     <div className="page">
       <PageHeading
-        eyebrow="CHATGPT PROJECT · MANUAL HANDOFF"
-        title="One tutor. One source of truth."
-        description="Bring the right context into your conversation. CoreLab keeps your progress and evidence on your machine."
+        eyebrow={t("tutor.eyebrow")}
+        title={t("tutor.title")}
+        description={t("tutor.desc")}
       />
       <div className="two-columns tutor-columns">
         <section className="panel">
-          <h2>Prepare context</h2>
+          <h2>{tx("Prepare context", "Chuẩn bị ngữ cảnh")}</h2>
           <label>
-            Topic
+            {tx("Topic", "Chủ đề")}
             <select
-              aria-label="Handoff topic"
+              aria-label={tx("Handoff topic", "Chủ đề cần chuyển")}
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
             >
               {topics.map((t) => (
                 <option value={t.id} key={t.id}>
-                  {t.id} · {t.title}
+                  {t.id} · {title(t.id)}
                 </option>
               ))}
             </select>
           </label>
           <label>
-            Context type
+            {tx("Context type", "Loại ngữ cảnh")}
             <select
-              aria-label="Handoff type"
+              aria-label={tx("Handoff type", "Loại ngữ cảnh")}
               value={kind}
               onChange={(e) => setKind(e.target.value)}
             >
-              <option value="learning">Copy Learning Context</option>
-              <option value="exercise">Copy Exercise for AI Tutor</option>
-              <option value="debugging">Copy Debugging Context</option>
-              <option value="summary">Copy Session Summary</option>
+              <option value="learning">
+                {tx("Copy Learning Context", "Sao chép Learning Context")}
+              </option>
+              <option value="exercise">
+                {tx(
+                  "Copy Exercise for AI Tutor",
+                  "Sao chép bài tập cho AI Tutor",
+                )}
+              </option>
+              <option value="debugging">
+                {tx("Copy Debugging Context", "Sao chép ngữ cảnh gỡ lỗi")}
+              </option>
+              <option value="summary">
+                {tx("Copy Session Summary", "Sao chép tóm tắt buổi học")}
+              </option>
             </select>
           </label>
           <label>
-            Question / failing code / observed result
+            {tx(
+              "Question / failing code / observed result",
+              "Câu hỏi / code lỗi / kết quả quan sát được",
+            )}
             <textarea
-              aria-label="Question for AI Tutor"
+              aria-label={tx("Question for AI Tutor", "Câu hỏi cho AI Tutor")}
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               rows={5}
               maxLength={20000}
-              placeholder="I tried…, expected…, but observed…"
+              placeholder={tx(
+                "I tried…, expected…, but observed…",
+                "Mình đã thử…, kỳ vọng…, nhưng thấy…",
+              )}
             />
           </label>
           <button
@@ -459,18 +574,20 @@ export function Tutor() {
             className="button primary"
           >
             <Copy size={16} />
-            Copy context
+            {tx("Copy context", "Sao chép ngữ cảnh")}
           </button>
           <p className="small muted">
-            No data is sent through an API. Preview the content and choose what
-            to copy.
+            {tx(
+              "No data is sent through an API. Preview the content and choose what to copy.",
+              "Không có dữ liệu nào được gửi qua API. Hãy xem trước nội dung và chọn phần cần sao chép.",
+            )}
           </p>
         </section>
         <section className="panel">
-          <h2>Content preview</h2>
+          <h2>{tx("Content preview", "Xem trước nội dung")}</h2>
           <textarea
             className="context-output"
-            aria-label="Handoff context"
+            aria-label={tx("Handoff context", "Ngữ cảnh chuyển giao")}
             value={fullContext}
             readOnly
             rows={20}
@@ -478,13 +595,17 @@ export function Tutor() {
         </section>
       </div>
       <section className="panel">
-        <h2>Paste study feedback</h2>
+        <h2>{tx("Paste study feedback", "Dán phản hồi học tập")}</h2>
         <p className="muted">
-          ChatGPT feedback is stored as AI-reported notes. It does not change
-          verified mastery.
+          {tx(
+            "ChatGPT feedback is stored as AI-reported notes. It does not change verified mastery.",
+            "Phản hồi từ ChatGPT được lưu như ghi chú do AI báo cáo. Nó không thay đổi mức nắm vững đã kiểm chứng.",
+          )}
         </p>
         <details>
-          <summary>Required JSON format</summary>
+          <summary>
+            {tx("Required JSON format", "Định dạng JSON bắt buộc")}
+          </summary>
           <CodeBlock
             language="json"
             code={JSON.stringify(
@@ -508,16 +629,26 @@ export function Tutor() {
               void act({ type: "feedback", feedback: parsed })
                 .then(() => {
                   setFeedback("");
-                  notify("AI feedback saved as unverified notes.");
+                  notify(
+                    tx(
+                      "AI feedback saved as unverified notes.",
+                      "Đã lưu phản hồi AI như ghi chú chưa kiểm chứng.",
+                    ),
+                  );
                 })
                 .catch(() => {});
             } catch {
-              notify("Invalid JSON. Check the example format.");
+              notify(
+                tx(
+                  "Invalid JSON. Check the example format.",
+                  "JSON không hợp lệ. Hãy kiểm tra định dạng ví dụ.",
+                ),
+              );
             }
           }}
         >
           <textarea
-            aria-label="AI feedback JSON"
+            aria-label={tx("AI feedback JSON", "JSON phản hồi AI")}
             rows={6}
             required
             maxLength={50000}
@@ -525,7 +656,7 @@ export function Tutor() {
             onChange={(e) => setFeedback(e.target.value)}
           />
           <button className="button" disabled={busy || !feedback} type="submit">
-            Save feedback
+            {tx("Save feedback", "Lưu phản hồi")}
             <Upload size={15} />
           </button>
         </form>
@@ -535,6 +666,7 @@ export function Tutor() {
 }
 export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
   const { state, act, busy, notify } = useCore();
+  const { t, tx } = useI18n();
   const [backup, setBackup] = useState<unknown>(null),
     [preview, setPreview] = useState<{
       attempts: number;
@@ -552,7 +684,7 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
     setError("");
     if (!file) return;
     if (file.size > 8_000_000) {
-      setError("Backup limit: 8 MB.");
+      setError(tx("Backup limit: 8 MB.", "Giới hạn bản sao lưu: 8 MB."));
       return;
     }
     setValidating(true);
@@ -569,7 +701,11 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
       setBackup(parsed);
       setPreview(result);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid backup.");
+      setError(
+        e instanceof Error
+          ? e.message
+          : tx("Invalid backup.", "Bản sao lưu không hợp lệ."),
+      );
     } finally {
       setValidating(false);
     }
@@ -577,33 +713,35 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
   return (
     <div className="page settings-page">
       <PageHeading
-        eyebrow="YOUR DATA, ON YOUR MACHINE"
-        title="Data & settings"
-        description="Back up progress, preserve evidence history, and control your personal data."
+        eyebrow={t("settings.eyebrow")}
+        title={t("nav.settings")}
+        description={t("settings.desc")}
       />
       <section className="panel">
         <div className="panel-heading">
-          <h2>Local workspace</h2>
+          <h2>{tx("Local workspace", "Không gian cục bộ")}</h2>
           <ShieldCheck size={19} />
         </div>
         <div className="settings-stats">
           <div>
             <strong>{state.progress.attempts.length}</strong>
-            <span>Assessment attempts</span>
+            <span>{tx("Assessment attempts", "Lần làm bài kiểm tra")}</span>
           </div>
           <div>
             <strong>{state.progress.sessions.length}</strong>
-            <span>Sessions / notes</span>
+            <span>{tx("Sessions / notes", "Buổi học / ghi chú")}</span>
           </div>
           <div>
             <strong>{state.progress.labs.length}</strong>
-            <span>Practice reports</span>
+            <span>{tx("Practice reports", "Báo cáo luyện tập")}</span>
           </div>
         </div>
         <p className="muted small">
-          SQLite at <code>.local/corelab.sqlite</code>, created automatically
-          when you open the app. Personal data and local keys are excluded from
-          Git. The app uses no analytics or AI services.
+          {tx("SQLite at", "SQLite tại")} <code>.local/corelab.sqlite</code>
+          {tx(
+            ", created automatically when you open the app. Personal data and local keys are excluded from Git. The app uses no analytics or AI services.",
+            ", được tạo tự động khi bạn mở ứng dụng. Dữ liệu cá nhân và khóa cục bộ không được đưa vào Git. Ứng dụng không dùng phân tích hay dịch vụ AI.",
+          )}
         </p>
       </section>
       {v2Panel}
@@ -613,45 +751,55 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
             <div className="tool-icon">
               <Download size={23} />
             </div>
-            <h2>Back up progress</h2>
+            <h2>{tx("Back up progress", "Sao lưu tiến độ")}</h2>
             <p>
-              Export attempts, rubric versions, learning sessions, notes,
-              knowledge debt, review schedules, and lab evidence as
-              schema-versioned JSON.
+              {tx(
+                "Export attempts, rubric versions, learning sessions, notes, knowledge debt, review schedules, and lab evidence as schema-versioned JSON.",
+                "Xuất các lần làm bài, phiên bản rubric, buổi học, ghi chú, chỗ còn vướng, lịch ôn tập và bằng chứng lab thành JSON có phiên bản schema.",
+              )}
             </p>
             <a
               className="button primary"
               href="/api/export"
               download="corelab-backup.json"
             >
-              Export backup JSON
+              {tx("Export backup JSON", "Xuất JSON sao lưu")}
               <Download size={16} />
             </a>
             <p className="small muted">
-              Backups contain personal learning data. Store them outside the
-              repository; do not upload them to GitHub.
+              {tx(
+                "Backups contain personal learning data. Store them outside the repository; do not upload them to GitHub.",
+                "Bản sao lưu chứa dữ liệu học tập cá nhân. Hãy lưu ngoài repository; không tải lên GitHub.",
+              )}
             </p>
           </section>
           <section className="panel">
             <div className="tool-icon">
               <Upload size={23} />
             </div>
-            <h2>Restore from backup</h2>
+            <h2>{tx("Restore from backup", "Khôi phục từ bản sao lưu")}</h2>
             <p>
-              Validate the schema and evidence before replacement. A pre-restore
-              snapshot is retained in SQLite to support recovery.
+              {tx(
+                "Validate the schema and evidence before replacement. A pre-restore snapshot is retained in SQLite to support recovery.",
+                "Kiểm tra schema và bằng chứng trước khi thay thế. Một bản chụp trước khi khôi phục được giữ trong SQLite để hỗ trợ phục hồi.",
+              )}
             </p>
             <label className="file-label">
               <FileJson size={17} />
-              Choose backup JSON
+              {tx("Choose backup JSON", "Chọn JSON sao lưu")}
               <input
-                aria-label="Choose backup to restore"
+                aria-label={tx(
+                  "Choose backup to restore",
+                  "Chọn bản sao lưu để khôi phục",
+                )}
                 type="file"
                 accept=".json,application/json"
                 onChange={(e) => void choose(e.target.files?.[0])}
               />
             </label>
-            {validating && <p role="status">Validating…</p>}
+            {validating && (
+              <p role="status">{tx("Validating…", "Đang kiểm tra…")}</p>
+            )}
             {error && (
               <p className="error-text" role="alert">
                 {error}
@@ -661,11 +809,12 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
               <div className="restore-preview">
                 <p className="verified-text">
                   <Check size={15} />
-                  Valid schema
+                  {tx("Valid schema", "Schema hợp lệ")}
                 </p>
                 <p>
-                  {preview.attempts} attempts · {preview.sessions} sessions ·{" "}
-                  {preview.labs} labs
+                  {preview.attempts} {tx("attempts", "lần làm bài")} ·{" "}
+                  {preview.sessions} {tx("sessions", "buổi")} · {preview.labs}{" "}
+                  {tx("labs", "lab")}
                 </p>
                 <label className="checkbox-label">
                   <input
@@ -673,8 +822,10 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
                     checked={confirm}
                     onChange={(e) => setConfirm(e.target.checked)}
                   />
-                  I confirm replacing all current progress with the selected
-                  backup.
+                  {tx(
+                    "I confirm replacing all current progress with the selected backup.",
+                    "Tôi xác nhận thay toàn bộ tiến độ hiện tại bằng bản sao lưu đã chọn.",
+                  )}
                 </label>
                 <button
                   className="button danger"
@@ -685,12 +836,17 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
                         setBackup(null);
                         setPreview(null);
                         setConfirm(false);
-                        notify("Progress restored from backup.");
+                        notify(
+                          tx(
+                            "Progress restored from backup.",
+                            "Đã khôi phục tiến độ từ bản sao lưu.",
+                          ),
+                        );
                       })
                       .catch(() => {})
                   }
                 >
-                  Restore and replace
+                  {tx("Restore and replace", "Khôi phục và thay thế")}
                 </button>
               </div>
             )}
@@ -698,22 +854,43 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
         </div>
       )}
       <section className="panel">
-        <h2>Mastery rules</h2>
+        <h2>{tx("Mastery rules", "Quy tắc nắm vững")}</h2>
         <div className="level-table">
           {[
-            ["L0", "No verified evidence."],
-            ["L1", "An independent diagnostic meets the conceptual criteria."],
+            [
+              "L0",
+              tx(
+                "No verified evidence.",
+                "Chưa có bằng chứng được kiểm chứng.",
+              ),
+            ],
+            [
+              "L1",
+              tx(
+                "An independent check (no help) meets the conceptual criteria.",
+                "Một bài kiểm tra tự làm (không trợ giúp) đạt tiêu chí về khái niệm.",
+              ),
+            ],
             [
               "L2",
-              "Conceptual, numerical, and independent implementation evidence through fixed tests.",
+              tx(
+                "Conceptual, numerical, and independent implementation evidence through fixed tests.",
+                "Bằng chứng về khái niệm, tính toán và tự cài đặt thông qua test cố định.",
+              ),
             ],
             [
               "L3",
-              "Apply skills to unfamiliar problems and demonstrate retention; independent review required.",
+              tx(
+                "Apply skills to unfamiliar problems and demonstrate retention; independent review required.",
+                "Vận dụng kỹ năng vào bài toán lạ và chứng tỏ ghi nhớ; cần được đánh giá độc lập.",
+              ),
             ],
             [
               "L4",
-              "Critically evaluate or extend methods with reviewed research evidence.",
+              tx(
+                "Critically evaluate or extend methods with reviewed research evidence.",
+                "Đánh giá phê phán hoặc mở rộng phương pháp với bằng chứng nghiên cứu đã được xem xét.",
+              ),
             ],
           ].map(([level, text]) => (
             <div key={level}>
@@ -723,23 +900,23 @@ export function Settings({ v2Panel }: { v2Panel?: React.ReactNode } = {}) {
           ))}
         </div>
         <p className="small muted">
-          The current workflow verifies L1, and L2 for M02/PY01 when all gates
-          are met. Retention retests are recorded separately; repeated quizzes
-          do not establish novel transfer. L3/L4 can be provisionally
-          self-assessed, but the initial content has no certification contracts
-          for them.
+          {tx(
+            "The current workflow verifies L1, and L2 for M02/PY01 when all gates are met. Retention retests are recorded separately; repeated quizzes do not establish novel transfer. L3/L4 can be provisionally self-assessed, but the initial content has no certification contracts for them.",
+            "Quy trình hiện tại xác nhận L1, và L2 cho M02/PY01 khi đạt mọi điều kiện. Các lần kiểm tra lại để ghi nhớ được ghi riêng; làm lại bài trắc nghiệm không chứng minh khả năng vận dụng mới. L3/L4 có thể tự đánh giá tạm thời, nhưng nội dung ban đầu chưa có hợp đồng chứng nhận cho chúng.",
+          )}
         </p>
       </section>
     </div>
   );
 }
 export function Sources() {
+  const { t, tx } = useI18n();
   return (
     <div className="page">
       <PageHeading
-        eyebrow="STUDY THE ORIGINALS"
-        title="References"
-        description="Study original courses, texts, and official documentation. External links require Internet; lessons and progress work locally."
+        eyebrow={t("sources.eyebrow")}
+        title={t("nav.sources")}
+        description={t("sources.desc")}
       />
       <div className="panel source-list">
         {sources.map((s) => (
@@ -754,9 +931,10 @@ export function Sources() {
         ))}
       </div>
       <p className="catalog-note">
-        CoreLab content is independently authored. Copyrighted books, PDFs, and
-        datasets are not redistributed. The source collection is maintained at
-        reference/LEARNING_SOURCES.md.
+        {tx(
+          "CoreLab content is independently authored. Copyrighted books, PDFs, and datasets are not redistributed. The source collection is maintained at reference/LEARNING_SOURCES.md.",
+          "Nội dung CoreLab được biên soạn độc lập. Sách, PDF và bộ dữ liệu có bản quyền không được phân phối lại. Bộ nguồn được duy trì tại reference/LEARNING_SOURCES.md.",
+        )}
       </p>
     </div>
   );

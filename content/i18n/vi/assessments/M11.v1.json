@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một bộ giải trả về x với residual tương đối 1e-16, nhưng x khác nghiệm thật ở chữ số thứ 3. Giải thích nhiều khả năng nhất là",
+   "options": [
+    "bộ giải không ổn định, vì bộ giải ổn định sẽ cho sai số 1e-16",
+    "ma trận điều kiện xấu, nên residual rất nhỏ vẫn cho phép sai số lớn",
+    "vế phải chắc chắn sai khoảng 1e-3 về mặt tương đối",
+    "residual được tính bằng float32, làm che mất residual thật"
+   ],
+   "explanation": "Sai số tương đối có thể lớn bằng kappa nhân residual tương đối; với kappa gần 1e13 thì residual 1e-16 cho phép sai số 1e-3."
+  },
+  "q2": {
+   "prompt": "Tính số điều kiện tương đối của f(x)=x-1 tại x=1.002 (số nguyên gần nhất).",
+   "explanation": "kappa=|x f'(x)/f(x)|=1.002/0.002=501."
+  },
+  "q3": {
+   "prompt": "Khoảng cách giữa hai số float32 liên tiếp gần 1000 (trong [512, 1024)) là bao nhiêu, tính bằng mét nếu đơn vị là mét? Đáp án theo đơn vị 1e-5 (ví dụ đáp án 6.1 nghĩa là 6.1e-5).",
+   "explanation": "Trong [2^9,2^10) khoảng cách float32 là 2^(9-23)=2^-14=6.1035e-5."
+  },
+  "q4": {
+   "prompt": "kappa(A)=1e6 và bộ giải ổn định ngược với machine epsilon 2.22e-16. Ước lượng cận sai số tương đối, theo đơn vị 1e-10.",
+   "explanation": "sai số ~ kappa*eps = 1e6*2.22e-16 = 2.22e-10."
+  },
+  "q5": {
+   "prompt": "Với x lớn, cách viết lại nào làm sqrt(x+1)-sqrt(x) chính xác?",
+   "options": [
+    "sqrt(x+1-x) (triệt tiêu trước)",
+    "1/(sqrt(x+1)+sqrt(x))",
+    "sqrt(x+1)*sqrt(x)-x",
+    "(x+1-x)/(sqrt(x+1)-sqrt(x))"
+   ],
+   "explanation": "Nhân với biểu thức liên hợp loại bỏ phép trừ hai số gần bằng nhau."
+  },
+  "q6": {
+   "prompt": "Một nghiệm có residual tương đối 1e-12 và kappa=1e4. Sai số tương đối lớn nhất được cận đảm bảo là bao nhiêu, theo đơn vị 1e-8?",
+   "explanation": "sai số <= kappa*residual = 1e4*1e-12=1e-8."
+  },
+  "q7": {
+   "prompt": "Khớp bình phương tối thiểu của y theo timestamp Unix (khoảng 1.7e9 s) bằng phương trình chuẩn cho độ dốc vô nghĩa. Giải thích vì sao và nêu hai cách sửa.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Nhận ra số điều kiện rất lớn của ma trận thiết kế chưa co giãn, bị bình phương bởi phương trình chuẩn.",
+    "Đề xuất căn giữa hoặc co giãn biến thời gian.",
+    "Lưu ý rằng QR hoặc SVD tránh được việc bình phương số điều kiện nhưng chưa đủ khi ma trận thiết kế thô đã gần suy biến, nên phải co giãn thang đo trước; đồng thời đề xuất kiểm tra số điều kiện."
+   ]
+  }
+ }
+}

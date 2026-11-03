@@ -4,7 +4,7 @@
   "module_id": "CPP12",
   "title": "Advanced C++: generic libraries, ABI, and systems design",
   "summary": "Design and audit library interfaces for ownership, error handling and binary compatibility, with a stable C boundary and a safe C++ wrapper.",
-  "estimated_minutes": 90,
+  "estimated_minutes": 420,
   "prerequisites": [
     "CPP06",
     "CPP09"
@@ -482,6 +482,71 @@ With the stubs the first call terminates with `NotImplemented`. For the shared-l
 
 Add `rc_version()` and a `size` field to a public options struct so that the library can detect which version of the struct the caller compiled against; or call the shared library from Python with `ctypes` and write a Python context manager with the same ownership semantics as `Arm`.
 
+### Library track
+
+Python's standard-library `ctypes` is the real-world consumer of a C ABI, and the best test that your boundary is clean. Put the interface declarations and the implementation (everything above the "C++ wrapper" comment, with its includes, no `main`) into `arm.cpp`, build the shared library, and call it from Python:
+
+```
+g++ -std=c++17 -Wall -Wextra -shared -fPIC arm.cpp -o libarm.so
+nm -D libarm.so | grep ' T '        # seven unmangled rc_* symbols, no _Z prefixes
+python3 lib_arm.py                   # the script below
+```
+
+```python
+import ctypes, math
+
+lib = ctypes.CDLL("./libarm.so")                      # the C ABI: plain symbol names, no mangling
+lib.rc_arm_create.restype = ctypes.c_void_p           # opaque handle = an address; we never look inside
+lib.rc_arm_create.argtypes = [ctypes.c_int]
+lib.rc_arm_destroy.argtypes = [ctypes.c_void_p]
+lib.rc_arm_set_joint.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_double]
+lib.rc_arm_get_joint.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.POINTER(ctypes.c_double)]
+lib.rc_arm_dof.argtypes = [ctypes.c_void_p]
+lib.rc_strerror.restype = ctypes.c_char_p             # static storage: ctypes copies it, we never free it
+lib.rc_strerror.argtypes = [ctypes.c_int]
+RC_OK, RC_ERR_NULL, RC_ERR_RANGE, RC_ERR_VALUE = 0, -1, -2, -3
+
+
+class Arm:
+    """The Python twin of the C++ wrapper: RAII through a context manager."""
+    def __init__(self, dof):
+        self.h = lib.rc_arm_create(dof)
+        if not self.h:
+            raise ValueError("rc_arm_create failed (dof must be in 1..32)")
+    def __enter__(self): return self
+    def __exit__(self, *exc): self.close()
+    def close(self):
+        if self.h:
+            lib.rc_arm_destroy(self.h)
+            self.h = None
+    def set(self, i, angle):
+        code = lib.rc_arm_set_joint(self.h, i, angle)
+        if code != RC_OK:
+            raise RuntimeError(lib.rc_strerror(code).decode())
+    def get(self, i):
+        out = ctypes.c_double()
+        code = lib.rc_arm_get_joint(self.h, i, ctypes.byref(out))
+        if code != RC_OK:
+            raise RuntimeError(lib.rc_strerror(code).decode())
+        return out.value
+
+assert lib.rc_live_arms() == 0
+with Arm(3) as a:
+    a.set(1, 0.5)
+    assert a.get(1) == 0.5 and lib.rc_arm_dof(a.h) == 3 and lib.rc_live_arms() == 1
+    for bad, msg in ((lambda: a.set(3, 1.0), "joint index out of range"), (lambda: a.set(0, math.nan), "angle is not finite")):
+        try:
+            bad(); raise AssertionError("should have failed")
+        except RuntimeError as e:
+            assert str(e) == msg
+assert lib.rc_live_arms() == 0                        # released on scope exit, the same invariant as the C++ tests
+assert lib.rc_arm_create(0) is None and lib.rc_arm_create(33) is None
+lib.rc_arm_destroy(None)                              # NULL is accepted: no-op
+print("library track ok")
+```
+
+Expected: `library track ok`. The script shows what the C++ `Arm` wrapper does in another language: the handle is an opaque address, the error codes become exceptions, and `rc_live_arms()` proves the arm is released when the `with` block ends. Try calling a `cxx_`-style function (a mangled C++ function) through `ctypes` by its plain name: it fails with `AttributeError`. If you compile with an exception-throwing function exported as `extern "C"` and call it from here, the process aborts, as in the theory section.
+
 ## Verification
 
 - `nm -D` on every release: the exported symbol list is the ABI. Diff it between versions (tools such as `abidiff` from libabigail automate the comparison of types and symbols).
@@ -539,4 +604,4 @@ This is the same problem in every ecosystem: Python extension modules and `ctype
 - [KDE: Binary Compatibility Issues With C++](https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B) - the practical list of source-, binary- and breaking changes.
 - [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html) - the specification of name mangling, object layout and vtables used by GCC and Clang on Linux.
 
-**More practice:** the ownership-related rules in the [Core Guidelines (I, F and R sections)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines), and the [libstdc++ dual ABI documentation](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html) for hands-on exercises with `nm` and the `_GLIBCXX_USE_CXX11_ABI` macro; for ROS 2, the [intra-process communication demo](https://docs.ros.org/en/humble/Tutorials/Demos/Intra-Process-Communication.html) shows `unique_ptr` message ownership transfer.
+**More practice:** the [KDE binary compatibility guide](https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B) (a do-and-don't list to classify, as in exercise 2), the libstdc++ manual on the [dual ABI](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html) (reproduce exercise 8 with `-D_GLIBCXX_USE_CXX11_ABI=0`), the [`ctypes` documentation](https://docs.python.org/3/library/ctypes.html) (call your `libarm.so`), cppreference on [language linkage](https://en.cppreference.com/w/cpp/language/language_linkage) and the [pimpl idiom](https://en.cppreference.com/w/cpp/language/pimpl), and the Core Guidelines [interfaces section (I)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#i-interfaces) for the audit of exercise 11.

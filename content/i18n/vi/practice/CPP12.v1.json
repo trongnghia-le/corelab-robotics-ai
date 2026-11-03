@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Thay đổi nào tương thích nhị phân với bên gọi của một class pimpl?",
+   "options": [
+    "Đổi kiểu tham số của một phương thức public",
+    "Thêm một data member public",
+    "Thêm một data member vào struct Impl ẩn",
+    "Thêm một hàm ảo vào class public"
+   ],
+   "explanation": "Class public chỉ là một con trỏ; kích thước và bố cục của nó không đổi."
+  },
+  "b2": {
+   "prompt": "Vì sao một std::string trong chữ ký của .so dựng sẵn có thể gây lỗi link với một thiết lập compiler khác?",
+   "options": [
+    "Linker cấm các template như std::string trong chữ ký của một .so",
+    "Không thể xuất string từ một shared library, chỉ xuất được con trỏ char",
+    "Tên kiểu bị mangle và bố cục khác nhau giữa các ABI của thư viện (dual ABI của libstdc++)",
+    "std::string không copy được, nên không thể đi qua ranh giới shared library"
+   ],
+   "explanation": "_GLIBCXX_USE_CXX11_ABI của GCC chuyển std::string giữa hai kiểu không tương thích với tên mangle khác nhau."
+  },
+  "b3": {
+   "prompt": "Kiểu trả về nào nói rõ nhất việc chuyển giao sở hữu độc quyền trong C++?",
+   "options": [
+    "Map& (một reference có thể sửa)",
+    "const Map& (một const reference)",
+    "Map* (một con trỏ thô)",
+    "std::unique_ptr<Map>"
+   ],
+   "explanation": "unique_ptr ghi tài liệu và thực thi rằng bên gọi trở thành chủ sở hữu duy nhất."
+  },
+  "b4": {
+   "prompt": "Một hàm trả về std::string::c_str() của một string cục bộ qua interface extern \"C\". Điều gì sai?",
+   "options": [
+    "c_str() cấp phát bộ nhớ không bao giờ được giải phóng",
+    "extern \"C\" cấm string",
+    "Con trỏ bị treo sau khi hàm trả về",
+    "Không sao: string sống mãi mãi"
+   ],
+   "explanation": "String cục bộ bị hủy lúc return; hãy trả về vùng lưu trữ tĩnh hoặc ghi vào buffer của bên gọi."
+  },
+  "b5": {
+   "prompt": "struct Pose { double x; double y; } là 16 byte. Phiên bản 2 thêm một double z và một cờ int ở cuối. Với căn lề tự nhiên trên x86-64, sizeof mới là bao nhiêu? Cho một số nguyên.",
+   "explanation": "3 double = 24 byte, int tại offset 24, đệm lên 32."
+  },
+  "b6": {
+   "prompt": "Một thư viện có 9 symbol được xuất; 6 cái là extern \"C\". Có bao nhiêu cái bị mangle? Số nguyên.",
+   "explanation": "9-6 = 3 symbol C++ với tên bị mangle."
+  },
+  "b7": {
+   "prompt": "Một ứng dụng biên dịch với một struct có các field (int size; double x; double y) = 24 byte nhận một struct v2 (int size; double x; double y; double z) = 32 byte. Nếu thư viện tôn trọng field size của bên gọi và chỉ điền các field vừa với nó, tối đa bao nhiêu byte của struct bên gọi bị ghi? Số nguyên.",
+   "explanation": "Thư viện tự giới hạn trong 24 byte do bên gọi khai báo, nên không có tràn."
+  },
+  "b8": {
+   "prompt": "Một hook kiểm thử rc_live_arms() ban đầu trả 0. Một test tạo 3 đối tượng Arm, move một cái vào một cái khác, và hủy một cái khi thoát scope. Còn lại bao nhiêu arm còn sống nếu đối tượng nhận move trước đó sở hữu một arm cần được giải phóng? Bắt đầu: a, b, c được tạo; c = std::move(a); rồi b ra khỏi scope. Số nguyên.",
+   "explanation": "Ba được tạo; move assignment c = std::move(a) hủy arm cũ của c (còn 2 sống: arm của a nay ở trong c, và của b); b ra khỏi scope: còn 1 sống."
+  },
+  "b9": {
+   "prompt": "Viết khai báo của một interface C (create, destroy, lấy giá trị, chuỗi lỗi) cho một handle 'imu' mờ (opaque), và nêu ai sở hữu cái gì.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "typedef struct imu imu; imu* imu_create(void); void imu_destroy(imu*); int imu_get_accel(const imu*, double out[3]); const char* imu_strerror(int);",
+    "Bên gọi sở hữu handle cho đến imu_destroy; imu_destroy chấp nhận NULL; strerror trả về vùng lưu trữ tĩnh.",
+    "Không có kiểu C++ hay exception trong interface; các hàm trả về mã."
+   ]
+  },
+  "b10": {
+   "prompt": "Header SDK của một nhà cung cấp phơi ra callback std::function và kết quả std::vector. Nêu ba chiến lược tích hợp và rủi ro mà mỗi chiến lược loại bỏ.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Bọc sau một interface C được biên dịch bằng toolchain của nhà cung cấp; loại bỏ sự không khớp ABI của standard library.",
+    "Build SDK hoặc cả stack với một compiler/cờ ABI được ghim, như trong một workspace ROS duy nhất.",
+    "Cô lập nó trong một process riêng (IPC/ROS node) để một crash hoặc vấn đề ABI không làm sập robot; copy dữ liệu tại ranh giới."
+   ]
+  },
+  "b11": {
+   "prompt": "Khai báo một class pimpl Planner sao cho một translation unit của người dùng chỉ include header vẫn biên dịch được. Những hàm thành viên đặc biệt nào phải được khai báo trong header và định nghĩa trong .cpp?",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "class Planner { public: Planner(); ~Planner(); Planner(Planner&&) noexcept; Planner& operator=(Planner&&) noexcept; private: struct Impl; std::unique_ptr<Impl> impl_; };",
+    "Destructor và các phép move được định nghĩa trong .cpp (= default) nơi Impl đã đầy đủ.",
+    "Lý do: deleter của unique_ptr cần kiểu đầy đủ, nếu không sẽ là 'invalid application of sizeof to incomplete type'."
+   ]
+  }
+ }
+}

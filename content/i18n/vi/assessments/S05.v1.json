@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một driver cảm biến publish với reliability best_effort. Subscriber của bạn yêu cầu reliable. Điều gì xảy ra?",
+   "options": [
+    "Chúng không kết nối: không có dữ liệu và không có ngoại lệ trong code của bạn.",
+    "Subscriber nhận dữ liệu kèm gửi lại.",
+    "Publisher được tự động nâng lên reliable.",
+    "Cứ hai message thì một được chuyển phát."
+   ],
+   "explanation": "Một đề nghị best-effort không thể thỏa mãn một yêu cầu reliable."
+  },
+  "q2": {
+   "prompt": "Message đến mỗi 25 ms và callback mất 40 ms. Utilization S/P. Độ chính xác 0.01.",
+   "explanation": "40/25."
+  },
+  "q3": {
+   "prompt": "Hàng đợi keep-last quá tải, depth 6, lượng đến mỗi 10 ms. Cận trên của độ trễ hàng đợi (ms).",
+   "explanation": "N*P=60."
+  },
+  "q4": {
+   "prompt": "Tỉ lệ message bị bỏ về lâu dài khi utilization là 1.25 (một worker). Độ chính xác 0.01.",
+   "explanation": "1-1/1.25=0.2."
+  },
+  "q5": {
+   "prompt": "Một bản đồ được publish một lần lúc khởi động. Một planner khởi động muộn hơn vẫn phải nhận được nó. QoS nào ở cả hai đầu?",
+   "options": [
+    "best_effort, volatile",
+    "best_effort, transient_local chỉ trên publisher",
+    "reliable, transient_local",
+    "reliable, volatile, depth 100"
+   ],
+   "explanation": "transient_local ở cả hai phía giữ và phát lại mẫu cuối."
+  },
+  "q6": {
+   "prompt": "Một callback 150 ms và một timer an toàn 100 ms dùng chung một single-threaded executor. Ảnh hưởng là gì?",
+   "options": [
+    "Timer có thể kích hoạt muộn vì tại một thời điểm chỉ có một callback chạy.",
+    "Timer kích hoạt nhanh gấp đôi, vì executor bù các nhịp bị lỡ.",
+    "Callback 150 ms bị bỏ qua mỗi khi timer 100 ms đến hạn.",
+    "Không có gì xảy ra; timer có luồng riêng độc lập với callback."
+   ],
+   "explanation": "Các callback được tuần tự hóa trong single-threaded executor."
+  },
+  "q7": {
+   "prompt": "Một node perception phải publish ở 30 Hz nhưng subscriber của nó thấy 12 Hz và dữ liệu cũ. Mô tả cách bạn chẩn đoán bằng số và bạn sẽ đổi gì.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Đo thời gian callback và chu kỳ đến và tính utilization.",
+    "Kiểm tra QoS (depth, reliability) và executor/callback group bằng ros2 topic info và log.",
+    "Đề xuất cách sửa: callback nhanh hơn, decimate, depth nhỏ hơn, callback group hoặc executor riêng, kèm đo lại."
+   ]
+  }
+ }
+}

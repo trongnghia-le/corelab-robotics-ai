@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Đối tượng nào dưới đây có thể được lặp hai lần và cho cùng các phần tử cả hai lần?",
+   "options": [
+    "Một file văn bản đang mở",
+    "Một đối tượng map",
+    "Một đối tượng generator",
+    "Một đối tượng range"
+   ],
+   "explanation": "range là một sequence re-iterable tạo iterator mới ở mỗi lần iter(). Ba đối tượng còn lại tự chúng là iterator và cạn sau một lượt."
+  },
+  "b2": {
+   "prompt": "Một validator dùng 'if v < lo or v > hi: raise ValueError'. Chuyện gì xảy ra với v = float('nan')?",
+   "options": [
+    "NaN chỉ được chấp nhận nếu lo âm",
+    "NaN được chấp nhận, vì cả hai phép so sánh đều False",
+    "NaN bị từ chối, vì nó không phải là số",
+    "Phép so sánh raise TypeError"
+   ],
+   "explanation": "Mọi phép so sánh thứ tự với NaN đều False, nên không nhánh nào kích hoạt. Viết 'if not (lo <= v <= hi)' sẽ từ chối nó."
+  },
+  "b3": {
+   "prompt": "Một plugin registry được điền bằng __init_subclass__. Config yêu cầu 'lidar' nhưng registry rỗng. Nguyên nhân nào có khả năng nhất?",
+   "options": [
+    "Registry phải là thuộc tính của metaclass",
+    "Module định nghĩa subclass Lidar chưa bao giờ được import",
+    "__init_subclass__ chỉ chạy cho subclass đầu tiên",
+    "Không được phép dùng keyword argument của class"
+   ],
+   "explanation": "Hook chạy khi câu lệnh class được thực thi. Không import nghĩa là không có câu lệnh class, nghĩa là không có đăng ký."
+  },
+  "b4": {
+   "prompt": "class R: p = property(lambda self: 1); def m(self): ... . Sau r = R(), phát biểu nào đúng?",
+   "options": [
+    "Cả hai phép gán đều hoạt động và che các thuộc tính class trên r",
+    "Cả hai phép gán đều raise AttributeError vì class sở hữu chúng",
+    "r.m = 5 hoạt động và che method; r.p = 5 raise AttributeError",
+    "r.m = 5 raise AttributeError; r.p = 5 hoạt động và che nó"
+   ],
+   "explanation": "Hàm là non-data descriptor nên sau khi gán, instance dict thắng. property là data descriptor; không có setter thì phép gán raise AttributeError."
+  },
+  "b5": {
+   "prompt": "Một loader yield các batch gồm 32 ảnh RGB 224x224 pixel lưu dạng uint8 (3 kênh). Một batch chứa bao nhiêu byte dữ liệu pixel? Số nguyên.",
+   "explanation": "32 x 3 x 224 x 224 x 1 byte = 4,816,896 byte."
+  },
+  "b6": {
+   "prompt": "Một sliding mean dạng running-sum thực hiện 2 cập nhật (một cộng, một trừ) cho mỗi mẫu sau khi cửa sổ đầu tiên đã đầy. Với 1000 mẫu và cửa sổ 100, có bao nhiêu cập nhật như vậy? Số nguyên.",
+   "explanation": "Số mẫu sau 100 mẫu đầu: 900, mỗi mẫu 2 cập nhật = 1800."
+  },
+  "b7": {
+   "prompt": "batched(stream, 64) được áp dụng cho một stream hữu hạn gồm 1003 phần tử. Nó yield bao nhiêu list? Số nguyên.",
+   "explanation": "ceil(1003/64) = 16: mười lăm batch đầy đủ (960 phần tử) và một batch gồm 43."
+  },
+  "b8": {
+   "prompt": "Base.__init_subclass__ tăng một bộ đếm. Một module định nghĩa X(Base), Y(Base), Z(X) và W(Z), rồi tạo 50 instance của W. Giá trị bộ đếm là bao nhiêu? Số nguyên.",
+   "explanation": "Hook chạy theo mỗi định nghĩa class (X, Y, Z, W = 4), không phải theo mỗi instance."
+  },
+  "b9": {
+   "prompt": "Một pipeline làm 'total = sum(data); peak = max(data)' với data = (read(f) for f in files). Phép sum đúng nhưng max raise ValueError. Giải thích vì sao và nêu hai cách sửa cùng đánh đổi của chúng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nhận ra generator expression là dùng một lần và đã bị sum làm cạn.",
+    "Cách sửa 1: materialize bằng list() (đơn giản, tốn bộ nhớ O(N)) hoặc tính cả hai trong một lượt.",
+    "Cách sửa 2: bọc trong một re-iterable (factory được gọi ở mỗi lượt) với cái giá là đọc file hai lần."
+   ]
+  },
+  "b10": {
+   "prompt": "Mười hai joint dùng chung quy tắc 'angle phải nằm trong [lo, hi]' với các giới hạn khác nhau. Hãy lập luận chọn descriptor hay một property cho mỗi joint, và nói giá trị của từng joint được lưu ở đâu.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Ưu tiên một class descriptor tái sử dụng được thay vì mười hai property sao chép (một quy tắc kiểm tra duy nhất).",
+    "Tham số hóa lo và hi trong __init__ và học tên qua __set_name__.",
+    "Nêu rằng mỗi giá trị được lưu trên instance, không phải trên descriptor dùng chung."
+   ]
+  },
+  "b11": {
+   "prompt": "Viết (bằng code hoặc pseudocode chính xác) một descriptor chỉ đọc Const(value) trả về cùng một giá trị cho mọi instance và raise AttributeError khi gán. Nói phương thức nào làm cho nó thành data descriptor.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Định nghĩa __get__ trả về value (và self khi obj là None).",
+    "Định nghĩa __set__ raise AttributeError.",
+    "Lưu ý rằng định nghĩa __set__ làm nó thành data descriptor nên instance dict không thể che nó."
+   ]
+  }
+ }
+}

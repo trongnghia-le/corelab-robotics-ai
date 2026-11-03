@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Gradient descent chạy trên f(θ)=½λθ² với learning rate η. Với η nào thì các iterate hội tụ về điểm cực tiểu?",
+   "options": [
+    "Mọi η > 0, vì gradient luôn chỉ xuống dốc",
+    "0 < η < 1/λ",
+    "0 < η < 2/λ",
+    "0 < η < 2λ"
+   ],
+   "explanation": "θ_{t+1}=(1−ηλ)θ_t hội tụ khi và chỉ khi |1−ηλ|<1, tức 0<η<2/λ. Hướng đi là xuống dốc, nhưng một bước dài có thể vượt quá xa hơn cả khoảng cách ban đầu."
+  },
+  "q2": {
+   "prompt": "f(θ)=½λθ² với λ=10. Bắt đầu từ θ₀=2 và thực hiện một bước gradient descent với η=0.15. θ₁ bằng bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "θ₁=(1−0.15·10)·2=(−0.5)·2=−1. Dấu đổi vì ηλ>1, nhưng ηλ<2 nên nó vẫn hội tụ."
+  },
+  "q3": {
+   "prompt": "N=5000 mẫu huấn luyện, batch size 96, giữ lại batch cuối ngắn hơn. Một epoch có bao nhiêu lần cập nhật tham số? (số nguyên, sai số cho phép 0.01)",
+   "explanation": "5000/96=52.08, làm tròn lên 53: 52 batch đầy (4992 mẫu) cộng một batch 8 mẫu."
+  },
+  "q4": {
+   "prompt": "Một lớp ReLU có 200 đầu vào. Khởi tạo He dùng độ lệch chuẩn bao nhiêu cho trọng số? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "std=sqrt(2/n_in)=sqrt(0.01)=0.1."
+  },
+  "q5": {
+   "prompt": "Mọi trọng số trong một lớp ẩn được khởi tạo bằng cùng một hằng số. Điều gì sai?",
+   "options": [
+    "Learning rate phải tăng gấp đôi để bù, vì các unit giống nhau học với nửa tốc độ.",
+    "Mọi hidden unit nhận gradient giống hệt nhau và mãi giống nhau, nên lớp hoạt động như một unit.",
+    "Mạng không thể tính forward pass, vì trọng số giống nhau làm activation không xác định.",
+    "Mọi gradient ở lớp đầu ra đều bằng đúng 0, nên không trọng số nào được cập nhật."
+   ],
+   "explanation": "Đối xứng: trọng số giống hệt nhau cho activation giống hệt nhau và tín hiệu ngược giống hệt nhau, nên các bản cập nhật không bao giờ làm chúng khác nhau."
+  },
+  "q6": {
+   "prompt": "Minibatch size được nhân 4 với mọi thứ khác giữ nguyên. Độ lệch chuẩn của nhiễu gradient minibatch thay đổi thế nào?",
+   "options": [
+    "Nó giảm một nửa.",
+    "Nó chia cho 4.",
+    "Nó không đổi, vì gradient không chệch.",
+    "Nó tăng gấp đôi."
+   ],
+   "explanation": "Std của nhiễu tỉ lệ với σ/√B, nên B×4 cho std giảm một nửa. Tính không chệch không nói gì về phương sai."
+  },
+  "q7": {
+   "prompt": "Bạn phải chọn giữa learning rate 0.1 và 0.01 cho một mạng nhỏ. Hãy mô tả một thí nghiệm mà kết luận của nó người khác có thể chạy lại và bác bỏ: bạn cố định gì, thay đổi gì, báo cáo gì, và kết quả nào sẽ bác bỏ kết luận của bạn?",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Cố định seed, cách chia dữ liệu, batch size, ngân sách epoch và metric; chỉ thay đổi learning rate.",
+    "Chọn trên tập validation, lặp lại với nhiều seed, và báo cáo độ trải chứ không phải một lần chạy đơn.",
+    "Nêu một điều kiện bác bỏ, ví dụ thứ hạng đảo ngược trên một cách chia khác hoặc chênh lệch nhỏ hơn độ trải theo seed."
+   ]
+  }
+ }
+}

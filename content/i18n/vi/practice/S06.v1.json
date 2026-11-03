@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Encoder 256 vạch (x4), hộp số 50:1. Số đếm mỗi vòng trục ra.",
+   "explanation": "4*256*50."
+  },
+  "b2": {
+   "prompt": "Với 51200 số đếm mỗi vòng, 2000 số đếm tương ứng bao nhiêu radian? Độ chính xác 0.0005.",
+   "explanation": "2000/51200*2 pi."
+  },
+  "b3": {
+   "prompt": "Bộ đếm 12 bit đọc 4090 rồi 10. Delta có dấu.",
+   "explanation": "(10-4090) mod 4096=16."
+  },
+  "b4": {
+   "prompt": "Frame 10 byte ở 200 Hz trên liên kết 8N1 115200 baud. Tải liên kết dưới dạng phân số, độ chính xác 0.001.",
+   "explanation": "10*10*200/115200."
+  },
+  "b5": {
+   "prompt": "Lệnh w=-3 rad/s, w_max=12 rad/s, toàn thang 255. Đầu ra nguyên (làm tròn).",
+   "explanation": "-0.25*255=-63.75 -> -64."
+  },
+  "b6": {
+   "prompt": "Để biến các số đếm đọc được trong một mẫu thành rad/s, biểu thức nào đúng (N = số đếm mỗi vòng trục ra, dt = chu kỳ lấy mẫu)?",
+   "options": [
+    "delta * N / (2*pi * dt)",
+    "delta / (N * 2*pi * dt)",
+    "delta * 2*pi / (N * dt)",
+    "delta * dt * 2*pi / N"
+   ],
+   "explanation": "Góc là delta/N*2 pi; chia cho dt."
+  },
+  "b7": {
+   "prompt": "Dữ liệu đến mỗi 20 ms. Giới hạn cũ nào là hợp lý cho một đầu vào liên quan an toàn?",
+   "options": [
+    "10 s: tránh báo động giả, vì dừng an toàn tốn kém",
+    "Khoảng 3 chu kỳ (60 ms): chịu được jitter mà vẫn chặn được tuổi",
+    "20 ms: mọi jitter đều phải kích hoạt, đó là lựa chọn an toàn nhất",
+    "Không bao giờ: dùng giá trị cuối mãi mãi, vì đầu vào đã được xác thực"
+   ],
+   "explanation": "Vài chu kỳ cân bằng giữa kích hoạt giả và mức phơi nhiễm."
+  },
+  "b8": {
+   "prompt": "ADC 10 bit (0..1023) với tham chiếu 5 V đọc 700 từ một cảm biến dòng có đầu ra tại dòng không là 2.5 V và 0.185 V/A. Dòng điện tính bằng A, độ chính xác 0.01.",
+   "explanation": "V=3.4213; (3.4213-2.5)/0.185."
+  },
+  "b9": {
+   "prompt": "Khiếm khuyết nào KHÔNG bị checksum tổng-mod-256 đơn giản bắt được?",
+   "options": [
+    "Một giá trị byte bị lật",
+    "Một byte độ dài sai",
+    "Hai byte payload bị đổi chỗ",
+    "Thiếu byte cuối"
+   ],
+   "explanation": "Tổng không phụ thuộc thứ tự."
+  },
+  "b10": {
+   "prompt": "Trong Python, `max(-1, min(1, w / w_max))` được áp dụng với w = NaN (w_max = 10). Điều gì xảy ra?",
+   "options": [
+    "-1, vì NaN so sánh nhỏ hơn mọi số",
+    "0, vì NaN được các hàm min và max coi là không",
+    "Nó ném ngoại lệ, vì NaN không thể so sánh",
+    "Nó trả về 1 (toàn thang) mà không có lỗi nào, nên cần kiểm tra NaN tường minh"
+   ],
+   "explanation": "Mọi phép so sánh với NaN đều sai, nên min(1, nan) trả về 1 và max(-1, 1) vẫn là 1: clamp biến NaN thành lệnh toàn thang. Với thứ tự đối số ngược lại NaN sẽ đi qua. Dù sao, hãy kiểm tra NaN tường minh."
+  },
+  "b11": {
+   "prompt": "Viết một kế hoạch kiểm thử cho trình phân tích frame chứng minh nó từ chối mọi hỏng hóc một byte của một frame đã biết.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Dựng một frame đã biết với checksum tính tay.",
+    "Lặp qua từng vị trí byte và lật bit, mong đợi bị từ chối (lưu ý trường hợp đổi chỗ).",
+    "Có frame rỗng và bị cắt cụt cùng đối chứng đạt."
+   ]
+  },
+  "b12": {
+   "prompt": "Một ước lượng vận tốc từ hiệu số đếm bị nhiễu ở 1 kHz. Giải thích vì sao, cho công thức của nhiễu, và nêu hai cách khắc phục kèm cái giá của chúng.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu sigma lượng tử hóa = q/sqrt(12) và hệ số sai phân hữu hạn sqrt(2)/dt.",
+    "Lưu ý nhiễu tăng khi dt giảm.",
+    "Cách khắc phục: bộ lọc thông thấp (độ trễ pha), vận tốc dựa trên chu kỳ hoặc do bộ truyền động báo (độ trễ, đơn vị), kèm cái giá."
+   ]
+  }
+ }
+}

@@ -1,0 +1,80 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "AR(1) với phi=0.9, n=190 mẫu. Cỡ mẫu hiệu dụng khi n lớn (số nguyên gần nhất)?",
+   "explanation": "190*(0.1/1.9)=10."
+  },
+  "b2": {
+   "prompt": "phi=0.8 và sigma=1. SE thật của trung bình lớn hơn sigma/sqrt(n) bao nhiêu lần khi n lớn? (1 chữ số thập phân)",
+   "explanation": "sqrt((1.8)/(0.2))=3."
+  },
+  "b3": {
+   "prompt": "Phương sai nhiễu điều khiển 0.19 và phi=0.9. Phương sai dừng của quá trình AR(1) (2 chữ số thập phân)?",
+   "explanation": "0.19/(1-0.81)=1."
+  },
+  "b4": {
+   "prompt": "Tự tương quan lag-1 mẫu bằng 0.999 được tính cho dữ liệu quanh 10 bằng cách chia sum(x[t]*x[t+1]) cho sum(x*x). Vấn đề nhiều khả năng nhất là",
+   "options": [
+    "lag quá lớn",
+    "chuỗi thật sự gần như hằng",
+    "cảm biến hoàn hảo",
+    "chưa trừ trung bình"
+   ],
+   "explanation": "Nếu không loại bỏ trung bình, độ lệch lớn chi phối các tích."
+  },
+  "b5": {
+   "prompt": "Hoeffding cho các lần đọc trong [0,2] (độ rộng 2): số mẫu cần cho độ chính xác 0.1 với xác suất 0.95 (số nguyên)?",
+   "explanation": "Độ rộng 2 nhân n lên 4 lần: ceil(4*ln(40)/(2*0.01))=738."
+  },
+  "b6": {
+   "prompt": "Chebyshev: một đại lượng có độ lệch chuẩn 0.5. Cận trên của P(|X-mu|>=2) (3 chữ số thập phân)?",
+   "explanation": "k=4, cận 1/16."
+  },
+  "b7": {
+   "prompt": "Prior 0.5, mỗi cảm biến đúng với xác suất 0.8, độc lập có điều kiện. Posterior sau hai lần đọc đồng thuận (3 chữ số thập phân)?",
+   "explanation": "0.64/(0.64+0.04)=0.941."
+  },
+  "b8": {
+   "prompt": "Trong chuỗi x_t -> x_{t+1} -> x_{t+2} của một mô hình không gian trạng thái, phát biểu nào đúng?",
+   "options": [
+    "x_{t+1} độc lập với cả hai nút lân cận",
+    "x_t và x_{t+2} độc lập khi biết x_{t+1}",
+    "x_t và x_{t+2} độc lập",
+    "x_t và x_{t+2} phụ thuộc ngay cả khi biết x_{t+1}"
+   ],
+   "explanation": "Điều kiện hóa trên nút giữa chặn chuỗi."
+  },
+  "b9": {
+   "prompt": "Hai nguyên nhân độc lập Z1, Z2 đều kích hoạt một bumper S. Khi biết S=1, việc biết thêm Z2=1 làm Z1=1",
+   "options": [
+    "có khả năng hơn, vì cả hai đã xảy ra",
+    "không thể xảy ra",
+    "ít khả năng hơn, vì Z2 giải thích loại trừ S",
+    "không đổi, vì chúng độc lập"
+   ],
+   "explanation": "Điều kiện hóa trên hệ quả chung làm các nguyên nhân độc lập trở nên phụ thuộc."
+  },
+  "b10": {
+   "prompt": "Phương sai chính xác của trung bình n=2 mẫu AR(1) với phi=0.6 và phương sai biên 1 (2 chữ số thập phân)?",
+   "explanation": "(2+2*0.6)/4=0.8."
+  },
+  "b11": {
+   "prompt": "Một đồng nghiệp lấy trung bình 1000 mẫu gyro (tự tương quan sai số 0.95 tại lag 1, xấp xỉ AR(1)) và báo sigma/sqrt(1000). Ước lượng SE báo cáo sai bao nhiêu và đề xuất hai cách sửa.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Tính hệ số sqrt((1+phi)/(1-phi)) khoảng 6.2 hoặc n_eff khoảng 26.",
+    "Lưu ý rằng khoảng tin cậy dựa trên độc lập sẽ phủ không đủ.",
+    "Đề xuất mô hình hóa trạng thái bias, batch means, lấy mẫu thưa hoặc hiệu chuẩn."
+   ]
+  },
+  "b12": {
+   "prompt": "Giải thích khi nào bất đẳng thức Hoeffding là lựa chọn tốt hơn CLT để lập kế hoạch một thí nghiệm robot, và khi nào nó không áp dụng được.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Nêu rằng Hoeffding cho bảo đảm không tiệm cận với các mẫu độc lập bị chặn.",
+    "Lưu ý rằng nó bảo thủ hơn CLT.",
+    "Nêu một vi phạm như mẫu phụ thuộc hoặc không bị chặn."
+   ]
+  }
+ }
+}

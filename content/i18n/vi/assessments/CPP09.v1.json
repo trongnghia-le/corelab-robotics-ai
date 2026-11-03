@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Cộng n double trong một std::vector và trong một danh sách liên kết đều là O(n). Vì sao danh sách thường chậm hơn nhiều khi n lớn?",
+   "options": [
+    "Danh sách thực hiện nhiều phép cộng dấu phẩy động hơn vector",
+    "Danh sách tốn nhiều bước tiệm cận hơn vì đuổi theo con trỏ là O(n log n)",
+    "Vector luôn nằm trong thanh ghi còn danh sách nằm trong bộ nhớ",
+    "Các node rải rác, nên mỗi bước nhảy là một cache miss và prefetching không giúp được"
+   ],
+   "explanation": "Cả hai đều làm n bước; khác biệt là chi phí mỗi bước, bị độ trễ bộ nhớ chi phối với đuổi theo con trỏ."
+  },
+  "q2": {
+   "prompt": "Line 64 byte. Một lần đọc tuần tự 2000 float (mỗi float 4 byte, bắt đầu căn theo line) chạm bao nhiêu cache line khác nhau? Cho một số nguyên.",
+   "explanation": "8000 byte / 64 = 125 line."
+  },
+  "q3": {
+   "prompt": "Một hàm mất 3 ms tại n=1000 và 12 ms tại n=2000. Giả sử t ~ n^p, p là bao nhiêu? Cho một số với 1 chữ số thập phân.",
+   "explanation": "Nhân đôi n nhân thời gian với 4 = 2^p, nên p = 2."
+  },
+  "q4": {
+   "prompt": "30% thời gian chạy của một chương trình nằm ở hàm f. Bạn làm f nhanh hơn 5 lần. Mức tăng tốc tổng thể là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "S = 1/(0.7 + 0.3/5) = 1/0.76 = 1.316, tức 1.32."
+  },
+  "q5": {
+   "prompt": "Điều quan trọng nhất cần làm trước khi tối ưu một chương trình C++ chậm là gì?",
+   "options": [
+    "Bật sanitizer, vì chúng làm chương trình chạy nhanh hơn",
+    "Đo bằng bản build tối ưu hóa và một profiler để xem thời gian đi đâu",
+    "Thay mọi vector bằng danh sách liên kết để tránh cấp phát lại",
+    "Viết lại các vòng lặp nóng với unrolling thủ công để giúp optimizer"
+   ],
+   "explanation": "Tối ưu một hàm chiếm một phần nhỏ thời gian không thể cho lợi ích lớn (định luật Amdahl)."
+  },
+  "q6": {
+   "prompt": "Một vòng lặp benchmark tính một tổng nhưng không bao giờ dùng nó, và build là -O2. Thời gian báo cáo là 0 ns. Vì sao?",
+   "options": [
+    "Optimizer đã loại bỏ phép tính vô dụng",
+    "Đồng hồ không đo được thứ gì dưới một micro giây",
+    "CPU đã cache đáp án và không bao giờ tính lại",
+    "-O2 vô hiệu hóa các vòng lặp không có tác dụng phụ"
+   ],
+   "explanation": "Hãy làm cho kết quả quan sát được (volatile sink hoặc in ra) để công việc không thể bị loại bỏ."
+  },
+  "q7": {
+   "prompt": "Mô tả một benchmark đáng tin cậy để so sánh việc duyệt vector với việc duyệt danh sách liên kết. Nêu ít nhất năm điều được kiểm soát.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Bản build tối ưu hóa, cùng dữ liệu và kiểm tra kết quả, kết quả được dùng để vòng lặp không bị loại bỏ.",
+    "Cấp phát và chuẩn bị bên ngoài vùng được đo; warm-up và chạy lặp lại với median được báo cáo.",
+    "Nhiều kích thước trải qua các dung lượng cache; báo cáo ns mỗi phần tử và máy/kích thước cache."
+   ]
+  }
+ }
+}

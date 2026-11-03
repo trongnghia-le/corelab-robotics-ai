@@ -1,6 +1,9 @@
 import { mediaFor } from "@/lib/media";
+import { cookies } from "next/headers";
+import { LANG_COOKIE, parseLang } from "@/lib/lang";
 import {
-  getLesson,
+  getLocalizedLesson,
+  localizeAssessment,
   getOverview,
   getAssessment,
   publicAssessment,
@@ -17,11 +20,18 @@ export async function GET(
     const { id } = await params;
     if (!topicMap[id])
       return Response.json({ error: "Unknown topic" }, { status: 404 });
+    const lang = parseLang(
+      new URL(request.url).searchParams.get("lang") ??
+        (await cookies()).get(LANG_COOKIE)?.value,
+    );
     return Response.json({
-      lesson: getLesson(id),
+      lang,
+      lesson: getLocalizedLesson(id, lang),
       media: mediaFor(id),
       overview: getOverview(id),
-      assessment: publicAssessment(getAssessment(id)),
+      assessment: publicAssessment(
+        localizeAssessment(getAssessment(id), "assessments", lang),
+      ),
       practiceSkills: practiceSkills(id),
     });
   } catch (e) {

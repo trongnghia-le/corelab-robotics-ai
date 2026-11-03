@@ -1,0 +1,98 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Operator o có add list {p, q} và delete list {q}. Áp dụng nó khiến q:",
+   "options": [
+    "Đúng: delete được áp dụng trước rồi đến add, nên q được thêm lại",
+    "Không xác định: operator không được liệt kê cùng một atom trong cả hai danh sách",
+    "Không biết: planner không thể nói nếu không biết thứ tự của các effect",
+    "Sai: delete list luôn xóa atom sau add list"
+   ],
+   "explanation": "Delete được áp dụng trước add, nên q có mặt trong state ở cuối."
+  },
+  "b2": {
+   "prompt": "State {a, b, c}. Operator có pre {a, d}. Có áp dụng được không?",
+   "options": [
+    "Có, miễn là b cũng đúng trong state",
+    "Không, vì precondition d không có trong state",
+    "Có, vì phần lớn precondition đúng trong state",
+    "Chỉ sau khi một bước trước đó thêm d vào state"
+   ],
+   "explanation": "Mọi precondition đều phải thỏa."
+  },
+  "b3": {
+   "prompt": "State {x,y}. Op: pre {x}, add {z}, delete {x}. Kết quả?",
+   "options": [
+    "{y}: add list bị bỏ qua khi một atom bị xóa",
+    "{y, z}: x bị xóa, y không đổi và z được thêm",
+    "{z}: chỉ atom được thêm còn lại sau đó",
+    "{x, y, z}: xóa x không có tác dụng khi z được thêm"
+   ],
+   "explanation": "Xóa x, thêm z."
+  },
+  "b4": {
+   "prompt": "3 vị trí, 3 vật, sức chứa một vật mỗi vị trí, tất cả đều trên bàn. Có bao nhiêu cách đặt các vật (ở các vị trí khác nhau)?",
+   "explanation": "3 * 2 * 1 = 6."
+  },
+  "b5": {
+   "prompt": "4 vị trí, 2 vật trên bàn ở các vị trí khác nhau, robot ở bất kỳ trong 4 chỗ, tay trống. Số state?",
+   "explanation": "4*3*4=48."
+  },
+  "b6": {
+   "prompt": "4 vị trí, 2 vật, robot cầm một vật (2 lựa chọn), vật còn lại ở một trong 4 vị trí, robot ở một trong 4 chỗ. Số state?",
+   "explanation": "2*4*4=32."
+  },
+  "b7": {
+   "prompt": "Một tập relaxed reachable chứa đích. Kết luận là:",
+   "options": [
+    "Đích chắc chắn đạt được, nên một plan phải tồn tại",
+    "Đích chắc chắn không đạt được trong bài toán thực",
+    "Đích có thể đạt được; hãy chạy tìm kiếm đầy đủ để biết",
+    "Plan có độ dài không, vì đích đã đúng sẵn"
+   ],
+   "explanation": "Relaxation là lạc quan; nó không thể chứng minh tính khả thi."
+  },
+  "b8": {
+   "prompt": "Heuristic h = số fact đích chưa thỏa. State cầm cup tại C với free(C); đích {at(cup,C), handempty}. h = ? (chi phí còn lại thực là 1)",
+   "explanation": "Cả hai fact đều sai, nên h=2 > 1: không admissible."
+  },
+  "b9": {
+   "prompt": "Đặc điểm nào của mô hình ngăn hai vật được đặt cùng một vị trí?",
+   "options": [
+    "Operator move, vì mỗi lần nó chỉ di chuyển một vật",
+    "Đích, vốn cấm có hai vật tại một chỗ",
+    "Chỉ riêng state ban đầu, vì nó bắt đầu với các chỗ khác nhau",
+    "Precondition free(l) mà place xóa đi khi được áp dụng"
+   ],
+   "explanation": "Sức chứa được biểu diễn như một fact có thể tiêu thụ."
+  },
+  "b10": {
+   "prompt": "Một plan được trả về. Kiểm tra nào là cách xác thực trực tiếp nhất?",
+   "options": [
+    "Chạy nó hai lần và thấy kết quả giống nhau cả hai lần",
+    "So độ dài của nó với plan ngắn nhất tìm được bởi bất kỳ lần tìm kiếm nào trước đó",
+    "Thực thi từng operator, kiểm tra precondition và đích",
+    "Kiểm tra nó dùng tất cả các vật xuất hiện trong bài toán"
+   ],
+   "explanation": "Mô phỏng ký hiệu của plan kiểm tra từng bước."
+  },
+  "b11": {
+   "prompt": "Giải thích vì sao delete relaxation là đúng đắn (sound) để chứng minh tính bất khả thi nhưng không thể chứng minh tính khả thi.",
+   "rubric": [
+    "Các fact relaxed reachable chứa mọi fact reachable thực (quy nạp).",
+    "Vì vậy một fact nằm ngoài tập là không đạt được.",
+    "Một fact nằm trong tập vẫn có thể bị chặn bởi delete, ví dụ chỉ có một gripper."
+   ],
+   "explanation": "Có rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b12": {
+   "prompt": "Mô tả cách bạn kiểm tra một mô hình pick-and-place ký hiệu so với thực tế trước khi dùng nó trên robot.",
+   "rubric": [
+    "Thực thi plan trong simulator và so sánh kết quả ký hiệu với kết quả vật lý.",
+    "Kiểm thử riêng precondition và effect của từng operator với skill thật (E04).",
+    "Liệt kê các ràng buộc mà mô hình bỏ sót (hình học, va chạm) và thêm test cho chúng."
+   ],
+   "explanation": "Có rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

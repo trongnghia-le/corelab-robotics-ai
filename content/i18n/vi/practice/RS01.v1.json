@@ -1,0 +1,91 @@
+{
+ "questions": {
+  "s1": {
+   "prompt": "Phát biểu nào là một giả thuyết khoa học có thể bị bác bỏ?",
+   "options": [
+    "Trên 200 cảnh giữ lại, bộ lập kế hoạch vượt tỉ lệ thành công của baseline từ 5 điểm trở lên ở giới hạn 1 s",
+    "Phương pháp hoạt động tốt trong hầu hết các trường hợp, nên nó tốt hơn các phương pháp hiện có",
+    "Robot là thông minh nếu nó không bao giờ thất bại ở bất kỳ nhiệm vụ nào được giao",
+    "Thuật toán của chúng tôi thanh nhã hơn baseline và do đó là một cải thiện rõ ràng"
+   ],
+   "explanation": "Nó nêu một chỉ số, một phép so sánh, một quần thể và một ngưỡng, nên một phép đo có thể mâu thuẫn với nó. Các phát biểu khác không thể bị bác bỏ bởi bất kỳ quan sát nào."
+  },
+  "s2": {
+   "prompt": "Một ablation giai thừa đầy đủ có 4 lựa chọn thiết kế nhị phân và mỗi điều kiện được chạy với 3 seed. Cần bao nhiêu lần huấn luyện? Cho một số nguyên.",
+   "explanation": "2^4 = 16 điều kiện x 3 seed = 48 lần chạy."
+  },
+  "s3": {
+   "prompt": "Bốn phép đo lặp lại có độ lệch chuẩn mẫu 3.0 (tính với n-1). Sai số chuẩn của trung bình là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "SE = s / sqrt(n) = 3.0 / 2 = 1.50."
+  },
+  "s4": {
+   "prompt": "Bộ điều khiển A đạt 8, 6, 9 và bộ điều khiển B đạt 5, 6, 4 trên cùng ba seed. Trung bình của các hiệu theo cặp A-B là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "Các hiệu 3, 0, 5; trung bình = 8/3 = 2.67."
+  },
+  "s5": {
+   "prompt": "Một pipeline thị giác mới được so sánh với cái cũ, nhưng nó cũng được huấn luyện trên lượng dữ liệu gấp đôi. Có thể kết luận gì?",
+   "options": [
+    "Pipeline mới tốt hơn; nhiều dữ liệu hơn không liên quan",
+    "Sự khác biệt không thể chỉ quy cho pipeline",
+    "Kết quả không hợp lệ vì tập dữ liệu lớn hơn luôn không công bằng",
+    "Pipeline mới chỉ tốt hơn nếu mức tăng trên 10%"
+   ],
+   "explanation": "Thay đổi kích thước dữ liệu bị gây nhiễu chung với thay đổi phương pháp: một mức tăng không thể quy cho pipeline mới nếu không có đối chứng (cùng dữ liệu) hoặc ablation."
+  },
+  "s6": {
+   "prompt": "Bạn kiểm định 10 biến thể độc lập, không cái nào thực sự có hiệu ứng, mỗi cái ở mức 0.05. Xác suất có ít nhất một cái xuất hiện có ý nghĩa là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "1 - 0.95^10 = 0.401."
+  },
+  "s7": {
+   "prompt": "Cách báo cáo nào cho bức tranh trung thực nhất về một phương pháp huấn luyện ngẫu nhiên?",
+   "options": [
+    "Mọi seed, với trung bình và một khoảng, cùng các giá trị thô",
+    "Seed mà baseline có kết quả tệ nhất",
+    "Một seed, cố định trước, để kết quả tái lập được",
+    "Chỉ seed tốt nhất, để cho thấy phương pháp có thể làm được gì"
+   ],
+   "explanation": "Báo cáo mọi seed với trung bình và khoảng tránh được độ chệch chọn lọc; báo cáo seed tốt nhất hoặc seed đã chỉnh làm phóng đại hiệu năng."
+  },
+  "s8": {
+   "prompt": "Sai số của một bộ tích phân giảm từ 4.0e-2 xuống 4.0e-4 khi bước giảm 10 lần. Bậc hội tụ quan sát được là bao nhiêu? Cho một số nguyên.",
+   "explanation": "p = log(100)/log(10) = 2."
+  },
+  "s9": {
+   "prompt": "Khoảng tin cậy 95% cho mức cải thiện trung bình của A so với B là [-0.5, 3.3] điểm. Kết luận nào là chính đáng?",
+   "options": [
+    "A tốt hơn B với xác suất 95%, vì phần lớn khoảng là dương",
+    "A tệ hơn B, vì đầu dưới của khoảng là âm",
+    "Dữ liệu không loại trừ được cải thiện bằng không; cần thêm dữ liệu để quyết định",
+    "Có 5% khả năng A tốt hơn, vì khoảng bao trùm không"
+   ],
+   "explanation": "Khoảng chứa 0, nên dữ liệu tương thích với không có cải thiện; nó không chứng tỏ là không có, và nó không phải một phát biểu xác suất về khoảng cố định này."
+  },
+  "s10": {
+   "prompt": "Một mô hình thị giác cải thiện sau khi bạn thêm tăng cường dữ liệu và nhiều dữ liệu hơn cùng lúc. Hãy thiết kế thí nghiệm tách hai hiệu ứng và nêu những kết luận nào vẫn còn hạn chế.",
+   "rubric": [
+    "Dùng thiết kế 2x2: (tăng cường tắt/bật) x (dữ liệu nhỏ/lớn), với seed, ngân sách huấn luyện và tập đánh giá được khớp",
+    "Đọc các hiệu ứng chính và tương tác, và báo cáo các khoảng qua nhiều seed",
+    "Nêu các giới hạn: một tập dữ liệu/nhiệm vụ/kiến trúc, không chuyển giao sang phần cứng, siêu tham số chỉ được chỉnh cho một số điều kiện"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "s11": {
+   "prompt": "Hãy viết các trường chính của một giao thức một trang để so sánh hai bộ điều khiển trong mô phỏng, và nói trường nào phải được cố định trước khi xem bất kỳ kết quả nào.",
+   "rubric": [
+    "Gồm giả thuyết, chỉ số, cảnh/điều kiện đầu, seed, ngân sách và đối chứng, môi trường/phiên bản, tiêu chí thành công",
+    "Nêu rằng chỉ số, tiêu chí thành công, seed và quy tắc loại trừ được cố định từ trước",
+    "Nói rằng các sai lệch được báo cáo và các phát hiện thăm dò được tách khỏi các phát hiện xác nhận"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "s12": {
+   "prompt": "Hãy giải thích vì sao chọn biến thể tốt nhất trong 50 biến thể mô hình theo điểm trên tập test cho một ước lượng lạc quan, và cách sửa giao thức.",
+   "rubric": [
+    "Giải thích hiệu ứng chọn lọc lời nguyền người thắng: giá trị lớn nhất của các điểm có nhiễu bị chệch lên",
+    "Đề xuất một tập validation riêng (hoặc kiểm định chéo) để chọn và một lần đánh giá cuối cùng trên dữ liệu test chưa đụng tới",
+    "Đề cập việc báo cáo đã thử bao nhiêu biến thể"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

@@ -1,0 +1,80 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Khâu nào của bộ điều khiển PID nhìn vào xu hướng của sai số và hoạt động như một bộ giảm chấn?",
+   "options": [
+    "Vi phân",
+    "Feedforward",
+    "Tích phân",
+    "Tỉ lệ"
+   ],
+   "explanation": "D phản ứng với tốc độ thay đổi, phanh chuyển động tiến về setpoint."
+  },
+  "b2": {
+   "prompt": "Một bước nhảy của setpoint từ 0 lên 1 tạo ra một đỉnh nhọn một mẫu trong u khi đạo hàm được lấy theo sai số nhưng không xảy ra khi lấy theo đo lường. Vì sao?",
+   "options": [
+    "Sai số nhảy 1 trong một mẫu trong khi đo lường liên tục, nên d(error)/dt rất lớn trong một bước.",
+    "Đạo hàm theo đo lường loại bỏ khâu tỉ lệ, nên setpoint không còn tác động lên u.",
+    "Khâu tích phân bị khâu vi phân triệt tiêu, nên đầu ra tạm thời mất giá trị đã tích trữ.",
+    "Nhiễu đo lớn hơn sai số, nên đạo hàm khuếch đại nó trong mẫu đó."
+   ],
+   "explanation": "Bước nhảy setpoint là tức thời trong e nhưng y chuyển động mượt vì đối tượng có quán tính."
+  },
+  "b3": {
+   "prompt": "Một mô hình yaw của drone có a = 0.5, b = 4, Kp = 2, r = 0.8 và gió d = 0.3 (cùng đơn vị với phương trình đối tượng). Sai số xác lập e = r - y_inf với điều khiển P (3 chữ số thập phân).",
+   "explanation": "y_inf=(6.4+0.3)/8.5=0.7882; e=0.0118."
+  },
+  "b4": {
+   "prompt": "Với a = 3, b = 2, Kp = 4, gain P phải lớn bao nhiêu (trả lời bằng Kp mới) để giảm độ lệch (a r - d)/(a + b Kp) xuống còn một nửa giá trị tại Kp = 4?",
+   "explanation": "Cần a+bKp' = 2*(3+8)=22 nên Kp'=(22-3)/2=9.5."
+  },
+  "b5": {
+   "prompt": "Vòng PI với a = 1, b = 1, Kp = 3. Tìm Ki cho một cặp cực tắt dần tới hạn.",
+   "explanation": "s^2+4s+Ki có nghiệm kép khi 16 = 4 Ki."
+  },
+  "b6": {
+   "prompt": "Với s^3 + 3 s^2 + 4 s + Ki (một vòng PI trên đối tượng có trễ vận tốc), phép thử Routh cho thấy ổn định khi 3*4 > Ki. Ki lớn nhất mà vẫn ổn định (biên) là bao nhiêu?",
+   "explanation": "Routh: a2 a1 > a0 nên Ki < 12."
+  },
+  "b7": {
+   "prompt": "Một vòng PI hoạt động tốt với các chuyển động nhỏ nhưng vọt lố nặng sau một thời gian dài ở giới hạn cơ cấu chấp hành. Cách sửa nào nhắm vào nguyên nhân với ít tác dụng phụ nhất?",
+   "options": [
+    "Tích phân có điều kiện hoặc anti-windup back-calculation",
+    "Nhân đôi Kd để khâu vi phân giảm chấn độ vọt lố",
+    "Giảm tần số lấy mẫu để tích phân tăng chậm hơn",
+    "Bỏ hẳn khâu tích phân và dựa vào tác dụng tỉ lệ"
+   ],
+   "explanation": "Vấn đề là tích phân bị tích trữ trong lúc bão hòa; anti-windup chặn nó mà không làm thay đổi hành vi khi chưa bão hòa."
+  },
+  "b8": {
+   "prompt": "Bộ tích phân thường, Kp = 2, Ki = 1, Delta t = 0.5 s, e = 2 giữ không đổi trong 4 bước (đối tượng bị chặn), giới hạn |u| <= 3. Trạng thái tích phân I sau 4 bước là bao nhiêu?",
+   "explanation": "I = sum e*dt = 4*2*0.5 = 4."
+  },
+  "b9": {
+   "prompt": "Một đối tượng bị chặn (y giữ ở 0) với e = 2 giữ không đổi, Kp = 2, Ki = 1, Delta t = 0.5 s và giới hạn |u| <= 3. Bộ điều khiển dùng quy tắc kẹp với u_raw = 2*2 + 1*I_trial. Sau bước 1, I thử = 1, u_raw = 5 > 3 và e > 0. I sau 4 bước là bao nhiêu?",
+   "explanation": "Quy tắc kẹp bỏ qua tích phân bất cứ khi nào u_raw > umax và e > 0, nên I giữ ở 0."
+  },
+  "b10": {
+   "prompt": "Một bộ ước lượng IMU không có gyro lấy đạo hàm tín hiệu vị trí 200 Hz với nhiễu sigma = 0.005 m. Độ lệch chuẩn của ước lượng vận tốc tính bằng m/s là bao nhiêu (2 chữ số thập phân)?",
+   "explanation": "sqrt(2)*sigma/dt = 1.414*0.005*200 = 1.414."
+  },
+  "b11": {
+   "prompt": "Vòng tốc độ PID của bạn dao động khi giới hạn cơ cấu chấp hành được đưa vào, dù nó ổn trong mô phỏng không giới hạn. Hãy mô tả thí nghiệm bạn sẽ chạy để xác nhận windup so với gain quá cao, và bạn sẽ thấy gì trong mỗi trường hợp.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Ghi log u_raw, u và trạng thái tích phân; windup cho thấy u bị ghim và I tăng, rồi vọt lố.",
+    "Chạy lại với bộ kẹp hoặc bước nhỏ hơn: windup biến mất, còn gain quá cao thì không.",
+    "Nêu một giả định và một kiểm tra bác bỏ (ví dụ giảm Kp trong mô phỏng không giới hạn)."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy giải thích bằng lời của bạn vì sao một bộ điều khiển PD trên khớp robot có trọng lực để lại độ lệch, và nêu hai cách loại bỏ nó, mỗi cách kèm một nhược điểm.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Momen trọng lực là tải không đổi, nên P cần sai số khác không để cân bằng nó.",
+    "Nêu tác dụng tích phân (windup/chậm) và feedforward trọng lực (cần mô hình/tải trọng).",
+    "Đề cập công thức độ lệch hoặc quan hệ về độ lớn."
+   ]
+  }
+ }
+}

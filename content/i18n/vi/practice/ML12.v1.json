@@ -1,0 +1,85 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "w=(3,−2,1), b=0.5, x=(1,0,2), nhãn +1. Margin trong trường hợp xấu nhất tại ε=0.25 là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Margin 5.5; ‖w‖₁=6; 5.5−1.5=4.0."
+  },
+  "b2": {
+   "prompt": "Một mô hình ảnh có 3072 đầu vào với |w_j|≈0.02 cho mọi đầu vào. Thay đổi điểm số trong trường hợp xấu nhất với max-norm ε=0.05 là bao nhiêu? (số thập phân, sai số cho phép 0.01)",
+   "explanation": "ε‖w‖₁=0.05·3072·0.02=3.072."
+  },
+  "b3": {
+   "prompt": "Một hàm tấn công cộng ε·sign(w) vào đầu vào của một ví dụ nhãn +1. Điều gì xảy ra với đường cong độ chính xác dưới tấn công?",
+   "options": [
+    "Nó giữ nguyên, vì nhiễu loạn có hướng và kích thước cố định",
+    "Nó tăng theo ε vì dấu sai: tấn công phải trừ, không phải cộng",
+    "Nó giảm theo ε như thiết kế, vì nhiễu loạn tăng theo ngân sách",
+    "Nó dao động ngẫu nhiên, vì dấu của w đổi theo từng ví dụ"
+   ],
+   "explanation": "Trường hợp xấu nhất di chuyển ngược với margin: x − t·ε·sign(w)."
+  },
+  "b4": {
+   "prompt": "|H|=100, δ=0.1, n=2000. Khoảng cách Hoeffding là bao nhiêu? (số thập phân, sai số cho phép 0.0005)",
+   "explanation": "(4.605+2.996)/4000=1.9e-3; căn bậc hai=0.0436."
+  },
+  "b5": {
+   "prompt": "Cần bao nhiêu mẫu để đảm bảo khoảng cách tối đa 0.05 với |H|=10⁴ và δ=0.05? (số nguyên, sai số cho phép 2)",
+   "explanation": "(9.210+3.689)/0.005=2580."
+  },
+  "b6": {
+   "prompt": "Cận Hoeffding cho một lớp mạng sâu là vô nghĩa (lớn hơn 1). Bạn có thể kết luận gì về hiệu năng test của mạng?",
+   "options": [
+    "Mạng phải khái quát hóa tốt, vì cận chỉ là một giới hạn trên",
+    "Độ chính xác test đúng bằng 50%, vì cận vượt quá một",
+    "Mạng phải bị overfit, vì cận vô nghĩa nghĩa là nó học thuộc",
+    "Không có gì trực tiếp: cận lỏng, nên hãy đo hiệu năng held-out"
+   ],
+   "explanation": "Một cận vô nghĩa là sự vắng mặt của một bảo đảm, không phải bằng chứng của thất bại."
+  },
+  "b7": {
+   "prompt": "Các điểm của đường cong học (n=1,000, loss 0.40) và (n=100,000, loss 0.10) trên một power law thuần. Nó dự đoán loss nào tại n=10⁷? (số thập phân, sai số cho phép 0.003)",
+   "explanation": "Loss giảm 4× cho mỗi 100× dữ liệu (α=0.301); thêm 100× nữa cho 0.10/4=0.025."
+  },
+  "b8": {
+   "prompt": "Tính C ≈ 6ND (theo đơn vị 10²¹ FLOP) cho N=2×10⁹ tham số và D=40×10⁹ token. (số thập phân, sai số cho phép 0.01)",
+   "explanation": "6·2e9·4e10=4.8e20 FLOP = 0.48 ×10²¹."
+  },
+  "b9": {
+   "prompt": "Bạn fit loss ∝ n^−α vào dữ liệu thực ra tuân theo c + a·n^−α với c>0, chỉ dùng n nhỏ. Kết quả điển hình là gì?",
+   "options": [
+    "Độ dốc biểu kiến phẳng hơn, và ngoại suy quá lạc quan hoặc không nhất quán",
+    "Độ dốc biểu kiến dốc hơn, và ngoại suy quá bi quan tới n lớn",
+    "Số mũ không xác định, vì không lấy được log của c + a·n^−α",
+    "Một phép fit chính xác, vì power law thuần chứa sàn như một trường hợp đặc biệt"
+   ],
+   "explanation": "Sàn làm đường cong log-log cong về phía nằm ngang; phép fit đường thẳng trộn lẫn cả hai hiệu ứng."
+  },
+  "b10": {
+   "prompt": "Bản tái lập của bạn cho con số chính của một bài báo thấp hơn 6 điểm. Hãy liệt kê các bước bạn làm trước khi kết luận rằng khẳng định không tái lập được.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Kiểm tra dataset, tiền xử lý, metric, siêu tham số và giao thức đánh giá có khớp không; chạy trường hợp biên.",
+    "Lặp lại qua nhiều seed để xem 6 điểm có nằm trong độ trải của seed không và kiểm thử với code/checkpoint gốc nếu có thể.",
+    "Báo cáo kết quả cùng điều kiện bác bỏ bạn đã cố định từ trước và những gì khác với bài báo."
+   ]
+  },
+  "b11": {
+   "prompt": "Hãy viết một điều kiện bác bỏ cho khẳng định 'sai số test của nearest-centroid trên dataset này tuân theo n^-0.5', và thí nghiệm kiểm tra nó.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chỉ rõ khoảng n, số seed và metric, với một tập held-out cố định.",
+    "Điều kiện bác bỏ: độ dốc đã fit khác −0.5 hơn một dung sai đã nêu, hoặc đường cong cong/có sàn trong khoảng đó.",
+    "Gồm một trường hợp biên hoặc baseline và nêu phương pháp fit (bình phương tối thiểu log-log kèm độ trải qua các seed)."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy giải thích vì sao union bound Hoeffding lỏng khi nhiều giả thuyết trong H gần như giống hệt nhau, và nêu một thước đo năng lực tránh được điều này.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Union bound cộng các xác suất thất bại như thể chúng rời nhau, nhưng các giả thuyết tương quan thì thất bại cùng nhau.",
+    "Cận tăng theo ln|H| ngay cả khi số hành vi riêng biệt hiệu dụng trên mẫu là nhỏ.",
+    "Nêu VC dimension, growth function, Rademacher complexity hoặc PAC-Bayes như các lựa chọn thay thế."
+   ]
+  }
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Trong MPC, chuỗi đầu vào được lập kế hoạch U = (u0, ..., u_{N-1}) được xử lý thế nào ở mỗi bước điều khiển?",
+   "options": [
+    "Toàn bộ chuỗi được áp dụng vòng hở trước khi lấy phép đo tiếp theo",
+    "Trung bình của mọi đầu vào được lập kế hoạch được áp dụng, rồi bài toán được giải lại",
+    "Chỉ u0 được áp dụng, rồi bài toán được giải lại từ trạng thái đo mới",
+    "Chỉ đầu vào cuối u_{N-1} được áp dụng, vì nó là kế hoạch được tinh chỉnh nhất"
+   ],
+   "explanation": "Giải lại mỗi bước biến lập kế hoạch vòng hở thành phản hồi."
+  },
+  "q2": {
+   "prompt": "Đối tượng vô hướng x+ = x + u, Q = R = P = 1, N = 1. Đầu vào đầu tiên tối ưu không ràng buộc từ x0 = 6 (2 chữ số thập phân)?",
+   "explanation": "d/du [u^2 + (x+u)^2] = 0 cho u = -x/2 = -3."
+  },
+  "q3": {
+   "prompt": "Đối tượng vô hướng x+ = x + u với Q = R = P = 1, N = 1 và |u| <= 2. Tối ưu không ràng buộc từ x0 = 6 là u = -3. Đầu vào thực sự được áp dụng là bao nhiêu (2 chữ số thập phân)?",
+   "explanation": "Bài toán 1-D lồi: cắt -3 về -2."
+  },
+  "q4": {
+   "prompt": "Các ma trận ngưng tụ N = 2 cho đối tượng vô hướng đó là H = [[3, 1],[1, 2]] và M = [2, 1]^T. Với x0 = 2, gradient của U'HU + 2U'M x0 theo u0 tại U = (0, 0) là 2*(H U + M x0)_0. Cho giá trị của nó (2 chữ số thập phân).",
+   "explanation": "M x0 = [4, 2], gradient = 2*4 = 8."
+  },
+  "q5": {
+   "prompt": "Một xe đẩy với |a| <= 2.5 m/s^2 di chuyển ở 5 m/s về phía một bức tường. Quãng đường dừng tối thiểu (m, 2 chữ số thập phân)?",
+   "explanation": "v^2/(2a) = 25/5 = 5."
+  },
+  "q6": {
+   "prompt": "Khi các ràng buộc không hoạt động và chi phí cuối bằng ma trận Riccati, MPC với bất kỳ horizon N >= 1 nào cho ra:",
+   "options": [
+    "Đầu vào đầu tiên lớn hơn LQR, vì horizon hữu hạn và ít thận trọng hơn",
+    "Một vòng kín bất ổn, vì bất kỳ horizon hữu hạn nào cũng mất đảm bảo ổn định",
+    "Cùng đầu vào đầu tiên như LQR horizon vô hạn",
+    "Đầu vào nhỏ hơn LQR, nhưng chỉ khi horizon N ngắn"
+   ],
+   "explanation": "Chi phí cuối tóm tắt chính xác phần đuôi horizon vô hạn, nên bài toán hữu hạn có nghiệm LQR."
+  },
+  "q7": {
+   "prompt": "MPC của một robot di động chạy ở 20 Hz và đôi khi solver không xong trong 50 ms. Hãy mô tả cách bạn xử lý an toàn và bạn sẽ ghi log gì.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu một dự phòng (kế hoạch trước dịch đi, bộ điều khiển phanh/an toàn) và giới hạn số lần lặp.",
+    "Đề cập khởi động nóng hoặc horizon nhỏ hơn để giảm thời gian giải.",
+    "Nêu các log: thời gian giải, số lần lặp, biên ràng buộc, số lần kích hoạt dự phòng."
+   ]
+  }
+ }
+}

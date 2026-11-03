@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "f1": {
+   "prompt": "Ma trận 3x3 nào là phép quay đúng?",
+   "options": [
+    "Ma trận có các hàng (1,0,0), (0,1,0), (0,0,-1)",
+    "Ma trận có các hàng (2,0,0), (0,0.5,0), (0,0,1)",
+    "Ma trận có các hàng (0,-1,0), (1,0,0), (0,0,1)",
+    "Ma trận có các hàng (1,1,0), (0,1,0), (0,0,1)"
+   ],
+   "explanation": "Một phép quay phải thỏa R^T R = I và det R = +1. Ma trận có các hàng (1,0,0),(0,1,0),(0,0,-1) là phép phản chiếu (det -1); ma trận có các hàng (2,0,0),(0,0.5,0),(0,0,1) có det 1 nhưng kéo giãn; ma trận có các hàng (1,1,0),(0,1,0),(0,0,1) là phép trượt (shear), có các cột không trực chuẩn."
+  },
+  "f2": {
+   "prompt": "Một ma trận quay xoay 60 độ quanh một trục nào đó. Vết (trace) của nó là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "tr R = 1 + 2 cos(theta) = 1 + 2(0.5) = 2."
+  },
+  "f3": {
+   "prompt": "T1 quay 90 độ quanh z và tịnh tiến (0, 3). T2 là phép tịnh tiến thuần (1, 0). Trong tích T1*T2, thành phần y của tịnh tiến là bao nhiêu? Cho 1 chữ số thập phân.",
+   "explanation": "Tịnh tiến của T1T2 = R1 t2 + t1 = R(1,0) + (0,3) = (0,1) + (0,3) = (0,4)."
+  },
+  "f4": {
+   "prompt": "T có R = phép quay 90 độ quanh z và t = (2, 0, 0). Thành phần y của tịnh tiến của T^{-1} = (R^T, -R^T t) là bao nhiêu? Cho 1 chữ số thập phân.",
+   "explanation": "R^T (2,0,0) = (0,-2,0), nên -R^T t = (0,2,0): y = 2."
+  },
+  "f5": {
+   "prompt": "Một điểm p_C được biết trong hệ quy chiếu camera. Các phép biến đổi T_WB (đế trong thế giới) và T_BC (camera trong đế) đã biết. Biểu thức nào cho điểm trong tọa độ thế giới?",
+   "options": [
+    "T_WB * T_BC * p_C",
+    "T_WB^{-1} * T_BC * p_C",
+    "Chỉ T_BC * p_C",
+    "T_BC * T_WB * p_C"
+   ],
+   "explanation": "Các nhãn liền kề phải khớp: T_WB T_BC p_C. Các thứ tự khác ghép các hệ quy chiếu không khớp."
+  },
+  "f6": {
+   "prompt": "Một hệ quy chiếu quay 30 độ quanh z và tịnh tiến (1, 1, 0) so với thế giới. Tọa độ x trong thế giới của điểm (2, 0, 0) cho trong hệ đó là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "x = 2 cos30 + 1 = 1.732 + 1 = 2.732."
+  },
+  "f7": {
+   "prompt": "Phát biểu nào về các phép quay quanh các trục tọa độ khác nhau là đúng?",
+   "options": [
+    "Thứ tự chỉ quan trọng nếu a và b vượt quá 90 độ",
+    "Rx(a) Rz(b) bằng một phép quay đơn quanh x một góc a+b",
+    "Rx(a) Rz(b) luôn bằng Rz(b) Rx(a)",
+    "Rx(a) Rz(b) nói chung khác Rz(b) Rx(a)"
+   ],
+   "explanation": "Các phép quay 3D quanh các trục khác nhau nói chung không giao hoán; các phép quay cùng trục thì có."
+  },
+  "f8": {
+   "prompt": "Một ma trận quay có vết bằng 0. Góc quay của nó là bao nhiêu độ? Cho một số nguyên.",
+   "explanation": "cos(theta) = (0-1)/2 = -1/2, nên theta = 120 độ."
+  },
+  "f9": {
+   "prompt": "Một ma trận quay 3x3 có 9 phần tử. Một phép quay 3D có bao nhiêu tham số độc lập?",
+   "options": [
+    "3",
+    "4",
+    "6",
+    "9"
+   ],
+   "explanation": "Tính trực chuẩn (R^T R = I) cho 6 ràng buộc độc lập trên 9 phần tử, còn lại 3 tham số."
+  },
+  "f10": {
+   "prompt": "Hai điểm (0,0,0) và (3,4,0) được ánh xạ bởi một phép biến đổi cứng tùy ý. Khoảng cách giữa các ảnh là bao nhiêu? Cho một số nguyên.",
+   "explanation": "Các phép biến đổi cứng bảo toàn khoảng cách: sqrt(9+16) = 5."
+  },
+  "f11": {
+   "prompt": "Một robot nhân hàng nghìn ma trận quay nhỏ trong float32 và sau một phút ma trận không còn thỏa R^T R = I. Hãy giải thích vì sao và mô tả cách bạn phát hiện và sửa.",
+   "rubric": [
+    "Giải thích rằng sai số làm tròn tích lũy trong mỗi phép nhân nên R trôi khỏi tính trực chuẩn",
+    "Phát hiện bằng cách kiểm tra max|R^T R - I| và det R so với một dung sai",
+    "Sửa bằng cách định kỳ trực chuẩn hóa lại (SVD/QR) hoặc tích phân một quaternion đơn vị và chuẩn hóa lại"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "f12": {
+   "prompt": "Một robot đặt gripper cách vị trí mục tiêu mà camera báo 5 cm. Bạn có T_base_wrist từ động học và T_wrist_camera từ một lần hiệu chuẩn. Hãy mô tả một quy trình với nhãn hệ quy chiếu và các kiểm tra bằng số để xác định lỗi là sai thứ tự, thiếu nghịch đảo hay hiệu chuẩn tồi.",
+   "rubric": [
+    "Viết chuỗi với các nhãn liền kề khớp nhau (T_base_camera = T_base_wrist T_wrist_camera) và kiểm tra hướng nghịch đảo một cách tường minh",
+    "Dùng các kiểm tra bất biến: T^{-1}T = I, đóng vòng, và độ dài giữa các điểm đã biết được bảo toàn",
+    "Kiểm thử với một tư thế tính tay (ví dụ một phép quay thuần 90 độ) và so sánh độ lớn phần dư với nhiễu hiệu chuẩn để tách lỗi gán nhãn khỏi lỗi hiệu chuẩn"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

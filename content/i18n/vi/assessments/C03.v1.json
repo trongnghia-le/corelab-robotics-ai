@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một vòng tốc độ băng tải chỉ dùng hệ số tỉ lệ. Một tải phụ không đổi được thêm vào và tốc độ ổn định thấp hơn setpoint một chút. Phát biểu nào đúng?",
+   "options": [
+    "Điều khiển P cần sai số khác không để cung cấp lực giữ, nên độ lệch còn lại; tác dụng tích phân loại bỏ nó.",
+    "Gain quá cao nên vòng vọt lố rồi ổn định ở mức thấp; giảm gain sẽ loại bỏ độ lệch.",
+    "Thiếu khâu vi phân; thêm tác dụng vi phân sẽ cung cấp lực giữ và loại bỏ độ lệch.",
+    "Độ lệch chỉ là nhiễu đo của cảm biến tốc độ và sẽ được trung bình triệt tiêu nếu chạy đủ lâu."
+   ],
+   "explanation": "Với u = Kp e và tải không đổi, trạng thái cân bằng cần u > 0 nên e không thể bằng không. Chỉ bộ tích phân (hoặc feedforward theo tải) mới cung cấp lực ở sai số bằng không."
+  },
+  "q2": {
+   "prompt": "Đối tượng bậc nhất y' = -a y + b u + d với a = 1, b = 2, điều khiển P Kp = 3, setpoint r = 1, d = -0.6. Cho biết đầu ra xác lập y_inf (2 chữ số thập phân).",
+   "explanation": "y_inf = (b Kp r + d)/(a + b Kp) = (6 - 0.6)/7 = 0.7714."
+  },
+  "q3": {
+   "prompt": "Một đối tượng bậc nhất y' = -a y + b u + d với a = 1 và b = 2 được điều khiển PI với Kp = 3 và Ki = 5. Đa thức vòng kín là s^2 + (a + b Kp)s + b Ki. Hệ số của s (tổng độ lớn các cực) là bao nhiêu?",
+   "explanation": "a + b Kp = 1 + 2*3 = 7."
+  },
+  "q4": {
+   "prompt": "Với s^2 + 7s + 10 (một vòng PI), cực gần số 0 nhất là bao nhiêu? (cho số thực)",
+   "explanation": "s^2+7s+10 = (s+2)(s+5); cực chậm nhất là -2."
+  },
+  "q5": {
+   "prompt": "Một khớp cánh tay được ra lệnh tới mục tiêu cần nhiều momen hơn động cơ có thể cung cấp. Bộ tích phân cứ tiếp tục cộng dồn. Khi khớp cuối cùng đến nơi, điều gì xảy ra với bộ tích phân thường?",
+   "options": [
+    "Nó vọt lố, vì tích phân đã tích trữ giữ lệnh ở giới hạn cho đến khi sai số âm xả nó.",
+    "Nó chỉ dao động nếu Kd khác không, vì khâu vi phân mới là khâu phản ứng với đầu ra bão hòa.",
+    "Nó không bao giờ rời khỏi giới hạn, vì tích phân được đặt lại về không ngay khi đầu ra y đạt r.",
+    "Nó dừng chính xác tại mục tiêu, vì cắt đầu ra cũng cắt luôn trạng thái tích phân nên không có gì được tích trữ."
+   ],
+   "explanation": "Cắt đầu ra không cắt trạng thái tích phân. Phần tích phân thừa phải được xả bằng sai số trái dấu: vọt lố do windup."
+  },
+  "q6": {
+   "prompt": "Nhiễu vị trí có sigma = 0.02 rad mỗi mẫu (độc lập), Delta t = 0.01 s, Kd = 0.25. Một sai phân hữu hạn thô cấp cho khâu D. Độ lệch chuẩn của đóng góp từ D vào u là bao nhiêu (2 chữ số thập phân)?",
+   "explanation": "sqrt(2)*0.02/0.01 = 2.828; nhân 0.25 = 0.707."
+  },
+  "q7": {
+   "prompt": "Một vòng vận tốc cho robot di động phải giữ tốc độ khi lên dốc (tải phụ) và chịu được trượt bánh làm bão hòa động cơ trong nhiều giây. Hãy mô tả cấu trúc bộ điều khiển của bạn và những gì bạn sẽ ghi log để kiểm tra nó.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chọn PI (hoặc PI + feedforward) và giải thích vì sao độ lệch cần một bộ tích phân.",
+    "Có anti-windup (kẹp hoặc back-calculation) và giới hạn D hoặc không dùng D.",
+    "Nêu các tín hiệu được ghi log (u_raw, u, tích phân, sai số) và một tiêu chí bác bỏ."
+   ]
+  }
+ }
+}

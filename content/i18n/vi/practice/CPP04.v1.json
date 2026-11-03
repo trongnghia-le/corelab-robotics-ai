@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Kiểu nào nên là một class với member private thay vì một struct thuần?",
+   "options": [
+    "Một vector 3D với các thành phần x, y, z tự do",
+    "Một message pose của ROS với các field thuần",
+    "Một quaternion đơn vị có chuẩn phải luôn bằng 1",
+    "Một cặp (timestamp, value) không có quy tắc nào"
+   ],
+   "explanation": "Quy tắc chuẩn đơn vị là một invariant mà việc ghi field tùy ý có thể phá vỡ."
+  },
+  "b2": {
+   "prompt": "Một constructor không thể thiết lập invariant cho các đối số đã cho. Thiết kế tốt nhất là gì?",
+   "options": [
+    "Lặng lẽ clamp và tiếp tục",
+    "Đặt một bool valid_ public và để phía gọi tự kiểm tra",
+    "Để các member mặc định và yêu cầu một lời gọi init() sau đó",
+    "Throw, để không tồn tại đối tượng không hợp lệ nào"
+   ],
+   "explanation": "Constructor nên tạo một đối tượng hợp lệ hoặc throw; khởi tạo hai pha cho phép đối tượng không hợp lệ tồn tại."
+  },
+  "b3": {
+   "prompt": "Biểu thức nào từ chối đúng cả giá trị ngoài khoảng lẫn NaN cho các giới hạn lo và hi?",
+   "options": [
+    "if (q < lo || q > hi) reject;",
+    "if (!(lo <= q && q <= hi)) reject;",
+    "if (q != q) accept;",
+    "if (q <= lo && q >= hi) reject;"
+   ],
+   "explanation": "Phép phủ định của một phép hội đúng khi một trong hai phép so sánh sai, bao gồm cả NaN."
+  },
+  "b4": {
+   "prompt": "Một base class đa hình Controller bị xóa qua một Controller*. Base phải khai báo gì?",
+   "options": [
+    "Một tham số template",
+    "Một hàm thành viên static",
+    "Một copy constructor protected",
+    "Một virtual destructor"
+   ],
+   "explanation": "Xóa một đối tượng dẫn xuất qua con trỏ base mà không có virtual destructor là undefined behavior."
+  },
+  "b5": {
+   "prompt": "vmax = 1.5 rad/s, q = -0.2 rad. Vị trí lớn nhất (rad) có thể đạt trong một bước dt = 0.4 s khi giới hạn trên là 1.0 rad là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "Giới hạn tốc độ cho -0.2+0.6 = 0.4 rad, thấp hơn giới hạn 1.0, nên 0.40."
+  },
+  "b6": {
+   "prompt": "Bộ điều khiển P, kp = 2, dt = 0.1, mục tiêu 1, bắt đầu 0, không giới hạn. Dùng q += kp*(target-q)*dt, q sau 5 bước là bao nhiêu? Cho 4 chữ số thập phân.",
+   "explanation": "Sai số co lại 0.8 lần mỗi bước, nên q5 = 1 - 0.8^5 = 0.67232."
+  },
+  "b7": {
+   "prompt": "Một fuzz test áp dụng 1000 cập nhật. Khớp chấp nhận 640 và từ chối phần còn lại. Có bao nhiêu cập nhật bị từ chối phải để trạng thái không đổi để lập luận invariant đúng? Cho một số nguyên.",
+   "explanation": "Tất cả các lời gọi bị từ chối (1000-640 = 360) phải là no-op."
+  },
+  "b8": {
+   "prompt": "Một bước điều khiển clamp đầu ra của controller về vmax = 2 rad/s rồi di chuyển trong dt = 0.05 s. Lệnh P thô là 10 rad/s. Khớp di chuyển bao nhiêu radian? Cho một số với 2 chữ số thập phân.",
+   "explanation": "Tốc độ sau clamp 2 nhân dt 0.05 = 0.10 rad."
+  },
+  "b9": {
+   "prompt": "Viết khai báo của một abstract interface cho cảm biến khoảng cách (khoảng cách tính bằng mét) an toàn để xóa qua con trỏ base, và nói phía gọi nên nhận nó như thế nào.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "struct RangeSensor { virtual ~RangeSensor() = default; virtual double distance() const = 0; };",
+    "Phía gọi nhận const RangeSensor& (hoặc unique_ptr khi sở hữu), không bao giờ theo giá trị.",
+    "Nhắc đến override trong các cài đặt."
+   ]
+  },
+  "b10": {
+   "prompt": "Đồng nghiệp của bạn đặt position của JointState là một double public vì 'nhanh hơn'. Hãy đáp lại bằng một lập luận về invariant và về hiệu năng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Dữ liệu public cho phép giá trị không hợp lệ ở bất kỳ đâu; bug xuất hiện xa nguyên nhân.",
+    "Các getter const inline và hàm try_set biên dịch ra cùng code ở -O2, nên chi phí không đáng kể.",
+    "Gợi ý một phép đo (benchmark hoặc disassembly) nếu có tuyên bố về hiệu năng."
+   ]
+  },
+  "b11": {
+   "prompt": "Cài đặt bool try_set(double q) cho một class có các member lo_, hi_, q_, từ chối NaN và giá trị ngoài khoảng và để trạng thái không đổi khi từ chối.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Kiểm tra !(lo_ <= q && q <= hi_) (hoặc isfinite trước) và trả false trước mọi phép ghi.",
+    "Chỉ gán q_ sau khi mọi kiểm tra đã qua và trả true.",
+    "Lưu ý rằng hàm này là cách duy nhất để đổi q_ và getter là const."
+   ]
+  }
+ }
+}

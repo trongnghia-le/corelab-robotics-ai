@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Một mô hình có hai body free-joint và một hinge. Có bao nhiêu tọa độ vận tốc nv?",
+   "explanation": "6+6+1=13 (nq sẽ là 15)."
+  },
+  "b2": {
+   "prompt": "Một hình cầu bán kính 0.03 m với mật độ 2500 kg/m^3. Khối lượng tính bằng kg, độ chính xác 0.001.",
+   "explanation": "4/3 pi (0.03)^3 * 2500=0.2827."
+  },
+  "b3": {
+   "prompt": "Hình cầu m=1 kg, r=0.04 m, tâm cách bản lề L=0.8 m. Quán tính trục tính bằng kg m^2, độ chính xác 0.0005.",
+   "explanation": "0.4*0.0016+0.64."
+  },
+  "b4": {
+   "prompt": "Con lắc: bản lề tại gốc, hình cầu m=1 kg, r=0.04 m, tâm cách bản lề L=0.8 m, g=9.81 (nên quán tính trục là I=0.4 m r^2 + m L^2). Chu kỳ góc nhỏ tính bằng s, độ chính xác 0.002.",
+   "explanation": "2 pi sqrt(I/(m g L)) với I=0.6406."
+  },
+  "b5": {
+   "prompt": "Actuator position kp=100, kv=4, ctrl=0.3, q=0.5, qdot=1.0, forcerange +-15. Mô men áp dụng (N m), độ chính xác 0.01.",
+   "explanation": "100(-0.2)-4=-24, bị cắt thành -15."
+  },
+  "b6": {
+   "prompt": "Hằng số thời gian solref 0.01 s, timestep 0.008 s, reference safety bật. Hằng số thời gian hiệu dụng (s), độ chính xác 0.0005.",
+   "explanation": "max(0.01,0.016)."
+  },
+  "b7": {
+   "prompt": "Bản lề con lắc trong MJCF của bạn thiếu axis và thanh không bao giờ lắc. Phép kiểm tra đầu tiên tốt nhất là gì?",
+   "options": [
+    "Chuyển bộ tích phân sang RK4 để mô men bản lề nhỏ không bị mất.",
+    "Tăng mật độ geom để trọng lực tạo mô men lớn hơn lên thanh.",
+    "Tăng timestep để con lắc có đủ thời gian bắt đầu lắc.",
+    "Trục hinge mặc định là z; thêm axis='0 1 0' (hoặc trục dự định)."
+   ],
+   "explanation": "Trọng lực không cho mô men quanh trục bản lề thẳng đứng."
+  },
+  "b8": {
+   "prompt": "Vì sao một con lắc thanh mảnh với cùng bản lề và chiều dài lại không bằng một khối điểm trong MuJoCo?",
+   "options": [
+    "Thanh có khối lượng nhỏ hơn khối điểm cùng chiều dài, nên lắc nhanh hơn.",
+    "Thanh làm đổi hằng số trọng trường vì khối tâm của nó lệch khỏi bản lề.",
+    "MuJoCo bỏ qua hình dạng geom trong động lực học, chỉ dùng tổng khối lượng của body.",
+    "Quán tính quanh bản lề phụ thuộc vào phân bố khối lượng, ví dụ mL^2/3 cho thanh."
+   ],
+   "explanation": "Phân bố khối lượng đi vào quán tính trục."
+  },
+  "b9": {
+   "prompt": "Năng lượng con lắc mô phỏng dao động +-0.3% quanh E0 mà không có xu hướng trong 100 s. Kết luận nào tốt nhất?",
+   "options": [
+    "Kết quả chứng minh mô hình va chạm đúng, vì năng lượng nằm trong 0.3%.",
+    "Năng lượng phải có xu hướng giảm đều, nếu không thì giảm chấn chưa được áp dụng.",
+    "Một dải bị chặn là điều mong đợi với tích phân semi-implicit; hãy kiểm tra nó co lại theo dt.",
+    "Mô phỏng sai, vì năng lượng phải chính xác không đổi trong mọi mô phỏng đúng."
+   ],
+   "explanation": "Dao động bị chặn so với xu hướng là phép chẩn đoán."
+  },
+  "b10": {
+   "prompt": "Một actuator position với forcerange +-5 được ra lệnh xa góc hiện tại. Mô tả nào đúng về mặt vật lý?",
+   "options": [
+    "Nó hành xử như servo mô men vô hạn lý tưởng cho đến khi chạm mục tiêu.",
+    "Nó bỏ qua ctrl khi mục tiêu xa hơn dải lực.",
+    "Nó là lò xo-giảm chấn có mô men bão hòa tại giới hạn.",
+    "Nó đạt mục tiêu ngay lập tức, vì actuator position là lý tưởng."
+   ],
+   "explanation": "Mô men = kp(u-q)-kv qdot, bị cắt."
+  },
+  "b11": {
+   "prompt": "Viết một bài kiểm thử (bằng lời, kèm số) kiểm tra khối lượng và quán tính của mô hình MJCF đã biên dịch cho một hình cầu 1 kg, r=0.05 m cách bản lề 1 m.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Tính tay khối lượng mong đợi 1 và quán tính trục 1.001.",
+    "So model.body_mass và body_inertia (cộng m L^2 cho trục) với một dung sai.",
+    "Có một bài kiểm thử âm (đổi bán kính hoặc bỏ mass) mà phép kiểm tra phải từ chối."
+   ]
+  },
+  "b12": {
+   "prompt": "Một đồng đội tăng độ cứng va chạm bằng cách đặt hằng số thời gian solref rất nhỏ với timestep mặc định. Bạn dự đoán điều gì và sẽ kiểm tra gì?",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu rằng hằng số thời gian hiệu dụng bị chặn dưới ở 2*timestep (hoặc mất ổn định nếu tắt safety).",
+    "Đề xuất giảm timestep hoặc chấp nhận độ mềm, kèm một phép thử độ xuyên.",
+    "Mô tả một phép kiểm tra đo được như độ xuyên khi nằm yên theo timestep."
+   ]
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một option được định nghĩa bởi:",
+   "options": [
+    "Một hàm reward, một hệ số chiết khấu và một horizon thời gian cho tác vụ",
+    "Một hàm giá trị, một policy và một replay buffer dùng cho học off-policy",
+    "Một initiation set, một intra-option policy và một termination condition",
+    "Một không gian trạng thái, một không gian hành động và một mô hình chuyển của môi trường"
+   ],
+   "explanation": "Initiation set I, policy pi và termination beta tạo nên bộ ba option."
+  },
+  "q2": {
+   "prompt": "gamma=0.9, reward -1 mỗi bước. Một option kéo dài 3 bước. Reward chiết khấu R của nó là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "-(1+0.9+0.81)=-2.71."
+  },
+  "q3": {
+   "prompt": "Backup SMDP: R=-2.71, tau=3, gamma=0.9, V(s_end)=-4. Giá trị của R + gamma^tau V(s_end) là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "-2.71+0.729*(-4)=-5.626."
+  },
+  "q4": {
+   "prompt": "Vì sao backup sau một option phải dùng gamma^tau?",
+   "options": [
+    "Vì option luôn kết thúc sau một bước, nên chiết khấu chỉ áp dụng một lần",
+    "tau là một learning rate điều chỉnh mức cập nhật của ước lượng giá trị",
+    "Return còn lại bắt đầu muộn hơn tau bước và bị chiết khấu cho tau bước đó",
+    "Để làm option policy tất định trong lúc đánh giá backup"
+   ],
+   "explanation": "Return tách tại thời điểm kết thúc; phần tiếp nối bị chiết khấu bởi gamma^tau."
+  },
+  "q5": {
+   "prompt": "Một option kết thúc với xác suất 0.2 ở mỗi bước. Thời lượng kỳ vọng tính theo bước là bao nhiêu?",
+   "explanation": "Hình học: 1/0.2=5."
+  },
+  "q6": {
+   "prompt": "Kỹ năng robot 'grasp' không kiểm tra initiation set và được bắt đầu khi gripper đã đang giữ một vật. Đây là thất bại của:",
+   "options": [
+    "Tiền điều kiện (initiation set), cho biết kỹ năng có thể bắt đầu ở đâu",
+    "Hàm reward, vốn không phạt việc bắt đầu ở trạng thái này",
+    "Hệ số chiết khấu, vốn đã gán trọng số tương lai quá lớn cho kỹ năng",
+    "Termination condition, vốn lẽ ra phải dừng kỹ năng sớm hơn"
+   ],
+   "explanation": "Initiation set mã hóa nơi kỹ năng hợp lệ để bắt đầu."
+  },
+  "q7": {
+   "prompt": "Hãy định nghĩa một kỹ năng tái sử dụng được (ví dụ 'mở ngăn kéo') dưới dạng một option: cho biết initiation set, intra-option policy, termination (thành công và thất bại) của nó, và nói bạn sẽ kiểm thử nó riêng lẻ thế nào trước khi dùng trong một phân cấp.",
+   "rubric": [
+    "Initiation set: các trạng thái mà ngăn kéo với tới được và đang đóng.",
+    "Termination: thành công (mở được x cm), thất bại/timeout, và hủy bỏ khi vượt giới hạn lực.",
+    "Kiểm thử riêng lẻ trên nhiều trạng thái bắt đầu và báo cáo tỉ lệ thành công, thời lượng và các lý do thất bại."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

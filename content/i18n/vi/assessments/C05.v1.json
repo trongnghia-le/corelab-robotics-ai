@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Trong hàm chi phí LQR J = integral(x'Qx + u'Ru) dt, tăng R trong khi Q giữ nguyên có tác dụng gì?",
+   "options": [
+    "Vòng kín trở nên bất ổn vì các đầu vào bị giới hạn quá nhiều",
+    "Bộ điều khiển phản ứng nhanh hơn vì các đầu vào lớn bị phạt nặng hơn",
+    "Chỉ sai số xác lập thay đổi, còn tốc độ đáp ứng không bị ảnh hưởng",
+    "Bộ điều khiển dùng đầu vào nhỏ hơn và đáp ứng chậm hơn"
+   ],
+   "explanation": "R lớn hơn làm nỗ lực trở nên đắt, nên hệ số tối ưu giảm và các cực dời sang trái ít xa hơn."
+  },
+  "q2": {
+   "prompt": "Đối tượng vô hướng x' = x + u với q = 1, r = 1. Cho nghiệm Riccati P (4 chữ số thập phân).",
+   "explanation": "P^2 - 2P - 1 = 0, P = 1 + sqrt(2)."
+  },
+  "q3": {
+   "prompt": "Đối tượng vô hướng x' = x + u với q = 1 và r = 1 có nghiệm Riccati P = 2.4142. Cho cực vòng kín a - bK (3 chữ số thập phân).",
+   "explanation": "K = bP/r = 2.4142, cực = 1 - 2.4142 = -1.4142."
+  },
+  "q4": {
+   "prompt": "Đối tượng x' = 2x + u, q = 1, r = 1. Cho hệ số LQR K (3 chữ số thập phân).",
+   "explanation": "P^2 - 4P - 1 = 0, P = 2 + sqrt(5) = 4.236 = K."
+  },
+  "q5": {
+   "prompt": "Bạn nhân đôi cả Q và R. Điều gì xảy ra với hệ số tối ưu K?",
+   "options": [
+    "Nó không đổi, vì chỉ tỉ số của các trọng số mới quan trọng",
+    "Nó chỉ không đổi với hệ vô hướng; với ma trận thì K sẽ thay đổi",
+    "Nó giảm một nửa, vì mức phạt đầu vào R lớn hơn làm bộ điều khiển thận trọng hơn",
+    "Nó tăng gấp đôi, vì cả hai trọng số đều scale hàm chi phí và hệ số scale theo chúng"
+   ],
+   "explanation": "Nhân toàn bộ hàm chi phí với một hằng số không làm thay đổi điểm cực tiểu."
+  },
+  "q6": {
+   "prompt": "Với hệ rời rạc vô hướng x_{k+1} = x_k + u_k với q = r = 1, điểm cố định là P = 1.618. Chi phí tối ưu từ x0 = 3 là bao nhiêu (3 chữ số thập phân)?",
+   "explanation": "J = P x0^2 = 1.618*9 = 14.562."
+  },
+  "q7": {
+   "prompt": "Thiết kế LQR của một robot tự cân bằng ra lệnh 6 N·m cho độ nghiêng 0.05 rad, nhưng motor bão hòa ở 3 N·m. Hãy giải thích bạn sẽ thay đổi gì, sẽ kiểm tra gì bằng mô phỏng, và một điều LQR không thể làm cho bạn ở đây.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Tăng R hoặc giảm trọng số góc, dẫn ra sự đánh đổi giữa hệ số khuếch đại và nỗ lực.",
+    "Kiểm tra momen đỉnh trên các nhiễu thực tế và biên ổn định sau thay đổi.",
+    "Lưu ý rằng LQR bỏ qua các ràng buộc (dùng MPC hoặc anti-windup) hoặc sai lệch mô hình."
+   ]
+  }
+ }
+}

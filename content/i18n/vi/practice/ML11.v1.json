@@ -1,0 +1,80 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Dữ liệu {0, 2, 4} dưới N(2, 8/3) (MLE). Log-likelihood trung bình là bao nhiêu? (số thập phân, sai số cho phép 0.002)",
+   "explanation": "σ²=8/3; số hạng bậc hai của mỗi điểm có trung bình 1: −½[ln(2π·2.667)+1]=−1.909."
+  },
+  "b2": {
+   "prompt": "Phương sai MLE (mẫu số n) của dữ liệu {2, 4, 6, 8}. (số thập phân, sai số cho phép 0.001)",
+   "explanation": "trung bình 5; các độ lệch bình phương 9+1+1+9=20; 20/4=5."
+  },
+  "b3": {
+   "prompt": "0.4·N(−1,1)+0.6·N(2,1), x=0. Responsibility của thành phần 1 là bao nhiêu? (số thập phân, sai số cho phép 0.002)",
+   "explanation": "0.4e^-0.5=0.2426, 0.6e^-2=0.0812: 0.749."
+  },
+  "b4": {
+   "prompt": "Trong một bước M, các responsibility cho các điểm (1, 2, 6) là (0.5, 0.25, 0.25). Trung bình được cập nhật là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "n_k=1.0; Σ r x=0.5+0.5+1.5=2.5; μ=2.5."
+  },
+  "b5": {
+   "prompt": "Sau một vòng EM, log-likelihood huấn luyện giảm. Điều đó cho thấy gì?",
+   "options": [
+    "Learning rate quá cao cho bước M",
+    "Một lỗi (EM được đảm bảo không làm giảm likelihood)",
+    "Hành vi EM bình thường, vì likelihood có thể dao động",
+    "Mô hình đang overfit dữ liệu huấn luyện"
+   ],
+   "explanation": "Mỗi vòng E+M đầy đủ không thể làm giảm likelihood, nên sự giảm báo hiệu một lỗi cài đặt."
+  },
+  "b6": {
+   "prompt": "KL(N(μ=0, σ²=4) ‖ N(0,1)) = ½(σ²+μ²−1−ln σ²). Hãy tính nó. (số thập phân, sai số cho phép 0.002)",
+   "explanation": "½(4−1−1.3863)=0.8069."
+  },
+  "b7": {
+   "prompt": "Phát biểu nào về ELBO là đúng?",
+   "options": [
+    "Nó không phụ thuộc vào decoder p(x|z), chỉ phụ thuộc vào encoder",
+    "Nó là cận trên của log p(x); khoảng cách là KL(p(z|x) ‖ q(z|x))",
+    "Nó bằng log p(x) với mọi encoder q(z|x) đã chuẩn hóa",
+    "Nó là cận dưới của log p(x); khoảng cách là KL(q(z|x) ‖ p(z|x))"
+   ],
+   "explanation": "log p(x)=ELBO+KL(q‖p(z|x)) và KL≥0."
+  },
+  "b8": {
+   "prompt": "Log-likelihood huấn luyện −2.1 và held-out −2.5 cho K=10; K=3 cho train −2.2 và held-out −2.25. K=3 thắng K=10 bao nhiêu nat mỗi điểm trên dữ liệu held-out? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "−2.25−(−2.5)=0.25: K=10 bị overfit."
+  },
+  "b9": {
+   "prompt": "Một bộ sinh luôn xuất các mẫu gần một mode dữ liệu. Cặp phép đo nào mô tả nó?",
+   "options": [
+    "Tỉ lệ khoảng trống thấp (chân thực) nhưng một mode chiếm gần như toàn bộ tỉ lệ mẫu",
+    "Held-out likelihood cao, vì các mode nó bao phủ được mô hình hóa tốt",
+    "Sai số tái tạo thấp, vì một bộ sinh phải tái tạo các đầu vào",
+    "Tỉ lệ khoảng trống cao (không chân thực) và tỉ lệ các mode gần như đồng đều"
+   ],
+   "explanation": "Mode collapse cho các mẫu chân thực với hầu như không có độ đa dạng."
+  },
+  "b10": {
+   "prompt": "Các mẫu của một bộ sinh có tỉ lệ mode (0.7, 0.3, 0.0) trong khi trọng số dữ liệu thật là (0.3, 0.4, 0.3). Khoảng cách biến thiên toàn phần (total variation) ½Σ|p−q| là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "½(0.4+0.1+0.3)=0.4."
+  },
+  "b11": {
+   "prompt": "Một lần fit mixture cho log-likelihood huấn luyện +∞ ở một lần chạy. Hãy chẩn đoán và sửa.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Phương sai của một thành phần co về một điểm nên mật độ của nó phân kỳ.",
+    "Cách sửa: sàn phương sai, prior cho phương sai, ít thành phần hơn hoặc khởi động lại.",
+    "Kiểm tra: held-out likelihood của lần chạy đó phải giảm, và phương sai nhỏ nhất nên được theo dõi trong lúc chạy EM."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy mô tả báo cáo đánh giá bạn sẽ tạo để so sánh hai mô hình sinh của dữ liệu cảm biến, và cách bạn chọn người thắng.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Held-out likelihood (hoặc cận của nó), sai số tái tạo và các thước đo độ chân thực/đa dạng của mẫu, tất cả trên dữ liệu held-out.",
+    "Các baseline (Gaussian đơn, bộ sinh bị collapse) và nhiều seed kèm độ trải.",
+    "Nêu quy tắc quyết định và một điều kiện bác bỏ (ví dụ thứ hạng đổi trên một cách chia dữ liệu thứ hai)."
+   ]
+  }
+ }
+}

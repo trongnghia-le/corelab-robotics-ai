@@ -1,0 +1,81 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Một lidar lắp tại (0.3, 0.0, 0) thấy một điểm tại (2.0, 1.0) trong khung của nó. Tọa độ x trong khung base (2 chữ số thập phân)?",
+   "explanation": "Không xoay: x = 0.3 + 2.0 = 2.3."
+  },
+  "b2": {
+   "prompt": "Một cảm biến lắp với yaw +90 độ tại gốc thấy một điểm tại (1, 0). Tọa độ y trong khung base (2 chữ số thập phân)?",
+   "explanation": "Xoay (1,0) 90 độ cho (0,1)."
+  },
+  "b3": {
+   "prompt": "Các mẫu tại t = 2.0 s (giá trị 10) và t = 2.2 s (giá trị 14). Giá trị nội suy tại t = 2.05 s (2 chữ số thập phân)?",
+   "explanation": "10 + (0.05/0.2)*4 = 11."
+  },
+  "b4": {
+   "prompt": "Hợp nhất độc lập 1.8 (phương sai 0.09) và 1.5 (phương sai 0.01). Phương sai hợp nhất (4 chữ số thập phân)?",
+   "explanation": "1/(11.11+100) = 0.009."
+  },
+  "b5": {
+   "prompt": "Hợp nhất độc lập 1.8 (phương sai 0.09) và 1.5 (phương sai 0.01). Trung bình hợp nhất (3 chữ số thập phân)?",
+   "explanation": "(1.8*11.11+1.5*100)/111.11 = 1.53."
+  },
+  "b6": {
+   "prompt": "sigma1 = 1, sigma2 = 2, tương quan 0.5. Trọng số tối ưu cho cảm biến 1 (2 chữ số thập phân)?",
+   "explanation": "c = 1, w = (4-1)/(1+4-2) = 1: cảm biến 2 không thêm gì."
+  },
+  "b7": {
+   "prompt": "Các cảm biến bằng nhau (phương sai 4 mỗi cái), tương quan 0.5. Phương sai hợp nhất tối ưu (2 chữ số thập phân)?",
+   "explanation": "c=2; (16-4)/(8-4) = 3."
+  },
+  "b8": {
+   "prompt": "Khi nào bạn chọn covariance intersection thay vì cập nhật Kalman độc lập?",
+   "options": [
+    "Khi các phép đo đến cùng tần số, nên cả hai có thể được hợp nhất mà không cần nội suy",
+    "Khi tương quan chéo của hai ước lượng chưa biết và tính nhất quán quan trọng hơn tính tối ưu",
+    "Khi các cảm biến có phương sai giống hệt nhau, nên hai ước lượng có thể được lấy trung bình trực tiếp",
+    "Khi bạn muốn hiệp phương sai nhỏ nhất có thể, chấp nhận rằng nó có thể quá tự tin"
+   ],
+   "explanation": "CI không bao giờ đánh giá thấp hiệp phương sai với bất kỳ tương quan nào."
+  },
+  "b9": {
+   "prompt": "Đầu ra EKF (đã bao gồm IMU) lại được hợp nhất với IMU thô như thể độc lập. Vấn đề là gì?",
+   "options": [
+    "EKF không thể nhận dữ liệu IMU, nên bước hợp nhất thứ hai không chạy được",
+    "IMU có sai đơn vị khi được đưa qua EKF lần thứ hai",
+    "Đếm hai lần: sai số IMU xuất hiện hai lần, nên kết quả quá tự tin",
+    "Kết quả hợp nhất bị chệch đúng bằng bias của IMU, nên nó kém tự tin"
+   ],
+   "explanation": "Phép đo chung khiến các đầu vào tương quan."
+  },
+  "b10": {
+   "prompt": "Theo thuật ngữ ROS REP 105, khung nào liên tục nhưng trôi, và khung nào nhất quán toàn cục nhưng có thể nhảy?",
+   "options": [
+    "base_link là toàn cục và nhất quán; map là cục bộ và trôi",
+    "map liên tục nhưng trôi; odom nhất quán toàn cục nhưng có thể nhảy",
+    "odom liên tục nhưng trôi; map nhất quán toàn cục nhưng có thể nhảy",
+    "Cả hai giống hệt nhau, vì cả hai cố định vào khung thế giới"
+   ],
+   "explanation": "Phép biến đổi map->odom hấp thụ các bước nhảy từ hiệu chỉnh toàn cục."
+  },
+  "b11": {
+   "prompt": "Hằng số thời gian của một bộ lọc bù được tăng lên. Điều gì xảy ra?",
+   "options": [
+    "Bộ lọc trở nên bất ổn, vì hằng số thời gian lớn hơn đặt cực ra ngoài vòng tròn đơn vị",
+    "Tần số cắt cao hơn: tin gia tốc kế hơn, ít trôi gyro hơn, nhiều nhiễu gia tốc kế hơn",
+    "Tần số cắt thấp hơn: tin gyro hơn, sai số xác lập do bias gyro lớn hơn, ít nhiễu gia tốc kế hơn",
+    "Không ảnh hưởng tới sai số do bias: chỉ mức nhiễu thay đổi, còn tần số cắt giữ nguyên"
+   ],
+   "explanation": "error = tau*bias tăng; đường gia tốc kế bị cắt ở tần số thấp hơn."
+  },
+  "b12": {
+   "prompt": "Hãy thiết kế cách xử lý timestamp để hợp nhất một GPS 5 Hz (trễ 40 ms) vào một bộ lọc dựa trên odometry 100 Hz. Bạn làm gì với mỗi phép đo và ghi log gì để kiểm chứng?",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Dùng thời điểm đo (không phải thời điểm đến), bù độ trễ bằng cập nhật trễ hoặc nội suy trạng thái.",
+    "Đề cập đệm/phát lại hoặc nội suy, không ngoại suy.",
+    "Nêu một kiểm tra: các đỉnh innovation sau khi rẽ hoặc độ chệch phụ thuộc tốc độ."
+   ]
+  }
+ }
+}

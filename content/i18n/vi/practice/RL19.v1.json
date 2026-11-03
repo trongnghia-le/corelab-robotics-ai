@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Phép đo nào được thực hiện với teacher forcing?",
+   "options": [
+    "Sự bất đồng của ensemble giữa các mô hình học được",
+    "Sai số open-loop tích lũy qua 20 bước",
+    "Khoảng cách giữa return dự đoán và return thật",
+    "Sai số một bước được đánh giá từ các trạng thái thật"
+   ],
+   "explanation": "Teacher forcing bắt đầu mỗi dự đoán từ trạng thái thật, đó chính là định nghĩa của sai số một bước."
+  },
+  "b2": {
+   "prompt": "Plant s'=s+0.5a, mô hình s'=1.01 s+0.5a, a=1, s0=0, 10 bước. Sai số open-loop |model-true| tại bước 10 là bao nhiêu? (4 chữ số thập phân)",
+   "explanation": "model s10=0.5(1.01^10-1)/0.01; giá trị thật là 5."
+  },
+  "b3": {
+   "prompt": "L=1.05, eps=0.02. Chặn eps(L^k-1)/(L-1) tại k=10 là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "0.02*(1.05^10-1)/0.05."
+  },
+  "b4": {
+   "prompt": "Với L=1 và eps=0.03, chặn sai số sau 40 bước là bao nhiêu? (2 chữ số thập phân)",
+   "explanation": "Với L=1 sai số tối đa là k*eps=1.2."
+  },
+  "b5": {
+   "prompt": "Một đồng nghiệp huấn luyện mô hình và kiểm tra trên chính các transition đó: RMSE 0.001. Vấn đề chính là gì?",
+   "options": [
+    "Sai số huấn luyện không cho thấy khả năng khái quát hóa; hãy dùng các transition và quỹ đạo held-out",
+    "Mô hình phải là phi tuyến, vì mô hình tuyến tính không thể đạt 0.001",
+    "Kiểm tra held-out chỉ áp dụng cho phân loại, không áp dụng cho mô hình hồi quy",
+    "RMSE dưới 0.01 là không thể, nên con số này chắc chắn sai"
+   ],
+   "explanation": "Sai số huấn luyện đo độ khớp, không đo hiệu năng trên các trạng thái mà policy sẽ đi qua."
+  },
+  "b6": {
+   "prompt": "gamma=0.99, eps=0.005, Rmax=1. Chặn sai số giá trị là bao nhiêu? (1 chữ số thập phân)",
+   "explanation": "0.99*0.005/1e-4=49.5, so với giá trị tối đa 100."
+  },
+  "b7": {
+   "prompt": "Thay đổi nào thu nhỏ trực tiếp nhất chặn simulation-lemma mà không cần mô hình tốt hơn?",
+   "options": [
+    "Batch size lớn hơn cho mỗi lần cập nhật mô hình",
+    "Replay buffer lớn hơn chứa các transition thật",
+    "Horizon hiệu dụng ngắn hơn (gamma nhỏ hơn)",
+    "Mạng sâu hơn cho mô hình động lực học"
+   ],
+   "explanation": "Chặn tỉ lệ theo 1/(1-gamma)^2."
+  },
+  "b8": {
+   "prompt": "Các thành viên ensemble đồng thuận chặt chẽ tại trạng thái A và bất đồng mạnh tại trạng thái B. Một planner thận trọng nên:",
+   "options": [
+    "Ưu tiên B vì bất định nghĩa là reward cao",
+    "Huấn luyện lại với learning rate lớn hơn",
+    "Phạt hoặc tránh các kế hoạch đi qua B",
+    "Bỏ qua sự bất đồng và lấy trung bình các dự đoán"
+   ],
+   "explanation": "Sự bất đồng ước lượng bất định epistemic, nơi mô hình nhiều khả năng sai."
+  },
+  "b9": {
+   "prompt": "Giải thích vì sao dự đoán độ thay đổi s'-s thay vì s' có thể giúp một mô hình học được, và nêu một tình huống mà nó không giúp được.",
+   "rubric": [
+    "Độ thay đổi nhỏ và gần 0, nên target được co giãn tốt hơn và phép đồng nhất là mặc định.",
+    "Khi đó sai số cộng vào trạng thái thay vì thay thế nó.",
+    "Nó không giúp nếu trạng thái chứa các đại lượng gián đoạn như cờ tiếp xúc hoặc sự quấn góc (angle wrap)."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b10": {
+   "prompt": "Một phương pháp dựa trên rollout huấn luyện một agent model-free trên các rollout tưởng tượng 50 bước và hiệu năng tệ đi. Hãy đưa ra kế hoạch chẩn đoán và hai cách sửa.",
+   "rubric": [
+    "Đo sai số open-loop tại 50 bước so với 5 bước và khoảng cách giữa return dự đoán và return thật.",
+    "Cách sửa: rollout ngắn hơn, phân nhánh từ các trạng thái thật (MBPO).",
+    "Cách sửa: phạt bất định hoặc dùng ensemble, hoặc trộn dữ liệu thật vào buffer."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b11": {
+   "prompt": "Plant s'=s+0.5a (một bộ tích phân thuần, hệ số trạng thái 1). Một mô hình s'=1.00 s+0.55 a có hệ số trạng thái đúng nhưng hệ số hành động sai. Với hành động không đổi, sai số open-loop của nó tăng:",
+   "options": [
+    "Tuyến tính theo horizon",
+    "Theo cấp số nhân",
+    "Hoàn toàn không, vì hệ số trạng thái đúng",
+    "Chỉ ở bước đầu tiên"
+   ],
+   "explanation": "Mỗi bước cộng thêm 0.05*a vào sai số và không có gì làm nó tắt dần: e_k=0.05 k a."
+  },
+  "b12": {
+   "prompt": "Plant s'=s+0.5a, mô hình s'=1.00 s+0.55 a, a=1 trong 10 bước từ s0=0. Sai số open-loop |model-true| tại bước 10 là bao nhiêu? (2 chữ số thập phân)",
+   "explanation": "0.55*10-0.5*10=0.5."
+  }
+ }
+}

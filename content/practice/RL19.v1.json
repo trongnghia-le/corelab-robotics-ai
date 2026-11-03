@@ -142,7 +142,7 @@
         "Held-out testing only applies to classification, not to regression models",
         "An RMSE below 0.01 is impossible, so the number must be wrong"
       ],
-      "answer": "2",
+      "answer": "0",
       "remediationRefs": [
         {
           "label": "Review: verification",
@@ -202,10 +202,10 @@
       "options": [
         "A larger batch size for each model update",
         "A larger replay buffer of real transitions",
-        "A shorter effective horizon (smaller gamma or short model rollouts)",
+        "A shorter effective horizon (smaller gamma)",
         "A deeper network for the dynamics model"
       ],
-      "answer": "3",
+      "answer": "2",
       "remediationRefs": [
         {
           "label": "Review: theory and derivation",
@@ -322,7 +322,7 @@
     },
     {
       "id": "b11",
-      "prompt": "The pure integrator plant has L=1 in the state. A model with gain 1.00 but action gain 0.55 instead of 0.50 has the error that grows:",
+      "prompt": "Plant s'=s+0.5a (a pure integrator, state gain 1). A model s'=1.00 s+0.55 a has the right state gain but a wrong action gain. With a constant action, its open-loop error grows:",
       "kind": "choice",
       "dimension": "C",
       "critical": false,
@@ -356,7 +356,7 @@
     },
     {
       "id": "b12",
-      "prompt": "The model of b11 with a=1 for 10 steps from 0: error at step 10? (2 decimals)",
+      "prompt": "Plant s'=s+0.5a, model s'=1.00 s+0.55 a, a=1 for 10 steps from s0=0. Open-loop error |model-true| at step 10? (2 decimals)",
       "kind": "number",
       "dimension": "M",
       "critical": false,

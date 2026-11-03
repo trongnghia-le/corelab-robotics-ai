@@ -4,7 +4,7 @@
   "module_id": "CPP01",
   "title": "C++ fundamentals: types, scope, and predictable values",
   "summary": "Write a small compiled program and understand its arithmetic.",
-  "estimated_minutes": 55,
+  "estimated_minutes": 310,
   "prerequisites": [],
   "source_refs": [
     {
@@ -197,6 +197,51 @@ all tests passed
 ### Extension challenge
 Add `class MovingAverage` with `double push(double v)` that keeps a ring buffer and a running sum in O(1) per sample, and test that it agrees with `moving_average` on random data to 1e-9. Explain how you would stop floating-point drift.
 
+### Library track
+Redo the lab with the C++17 standard library instead of hand-written loops: `std::accumulate` for the mean, `std::transform_reduce` for the variance, and `std::partial_sum` (prefix sums) for the moving average, where $y_k=(P_{k+w}-P_k)/w$. Compile with `g++ -std=c++17 -Wall -Wextra -Wpedantic lib.cpp -o lib && ./lib`. Then run your lab tests against these versions: they must agree to $10^{-12}$.
+
+```cpp
+#include <algorithm>
+#include <cassert>
+#include <cmath>
+#include <iostream>
+#include <numeric>
+#include <stdexcept>
+#include <vector>
+
+double mean_std(const std::vector<double>& x) {
+    if (x.empty()) throw std::invalid_argument("empty");
+    return std::accumulate(x.begin(), x.end(), 0.0) / static_cast<double>(x.size());
+}
+double variance_std(const std::vector<double>& x) {
+    const double m = mean_std(x);
+    return std::transform_reduce(x.begin(), x.end(), 0.0, std::plus<>{},
+                                 [m](double v) { return (v - m) * (v - m); }) / static_cast<double>(x.size());
+}
+// Moving average through prefix sums: y[k] = (P[k+w] - P[k]) / w
+std::vector<double> moving_average_std(const std::vector<double>& x, std::size_t w) {
+    if (w == 0 || w > x.size()) throw std::invalid_argument("window");
+    std::vector<double> p(x.size() + 1, 0.0);
+    std::partial_sum(x.begin(), x.end(), p.begin() + 1);
+    std::vector<double> y(x.size() - w + 1);
+    for (std::size_t k = 0; k < y.size(); ++k) y[k] = (p[k + w] - p[k]) / static_cast<double>(w);
+    return y;
+}
+
+int main() {
+    std::vector<double> x{3, -1, 4, 1, -5, 9};
+    assert(std::abs(mean_std(x) - 11.0 / 6.0) < 1e-12);
+    const auto y = moving_average_std(x, 3);
+    const std::vector<double> want{2.0, 4.0 / 3.0, 0.0, 5.0 / 3.0};
+    assert(y.size() == want.size() && std::equal(y.begin(), y.end(), want.begin(),
+           [](double a, double b) { return std::abs(a - b) < 1e-12; }));
+    std::cout << "variance = " << variance_std(x) << "\n";   // matches the hand-written lab
+    std::cout << "library track ok\n";
+}
+```
+
+Expected output: `variance = 18.8056` then `library track ok`. Note that `std::accumulate(x.begin(), x.end(), 0)` with an `int` initial value would silently truncate every partial sum; the `0.0` matters.
+
 ## Verification
 
 Check the worked numerical example independently, then test a boundary case and an invariant from the derivation. Keep the expected result separate from the implementation. Change a sign or remove one term deliberately: your tests should reject that broken version. Use the diagnostic to check concepts and numerical reasoning; short answers remain rubric-guided practice.
@@ -232,4 +277,4 @@ Close the reference before trying. Explain your assumptions and one way your ans
 
 [LearnCpp](https://www.learncpp.com/) — primary course, documentation, or the supplied reference collection. Follow the relevant subject heading; these are further reading links, not reproduced book chapters.
 
-**More practice:** [LearnCpp](https://www.learncpp.com/) chapter quizzes and the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) rule examples (ES section).
+**More practice:** [LearnCpp chapter 4 quiz](https://www.learncpp.com/cpp-tutorial/chapter-4-summary-and-quiz/) (fundamental types and integer division), [LearnCpp chapter 12 quiz](https://www.learncpp.com/cpp-tutorial/chapter-12-summary-and-quiz/) (compound types and references), [LearnCpp on the std::vector unsigned subscript problem](https://www.learncpp.com/cpp-tutorial/stdvector-and-the-unsigned-length-and-subscript-problem/), and the [Exercism C++ track](https://exercism.org/tracks/cpp/exercises).

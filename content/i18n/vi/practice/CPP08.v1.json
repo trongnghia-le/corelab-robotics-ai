@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Bug nào được -fsanitize=undefined phát hiện nhưng KHÔNG được AddressSanitizer phát hiện?",
+   "options": [
+    "Use after free",
+    "Heap buffer overflow",
+    "Tràn số nguyên có dấu",
+    "Double free"
+   ],
+   "explanation": "Tràn số có dấu là undefined behavior về số học, thuộc lĩnh vực của UBSan."
+  },
+  "b2": {
+   "prompt": "Một báo cáo ASan chứa 'heap-use-after-free ... freed by thread T0 here'. Stack trace thứ hai cho bạn biết gì?",
+   "options": [
+    "Thread nào sở hữu heap",
+    "Nơi rò rỉ sẽ được báo cáo",
+    "Nơi bộ nhớ đã được giải phóng",
+    "Nơi chương trình được biên dịch"
+   ],
+   "explanation": "Báo cáo cho biết nơi truy cập, nơi giải phóng và nơi cấp phát."
+  },
+  "b3": {
+   "prompt": "Một test so sánh hai double với dung sai được viết là 'if (!(fabs(a-b) > tol)) pass;'. Điều gì sai khi a là NaN?",
+   "options": [
+    "Test crash khi đánh giá NaN",
+    "Chỉ phụ thuộc vào cờ compiler, không bao giờ phụ thuộc vào giá trị",
+    "NaN pass test vì phép so sánh là false",
+    "Test thất bại đúng, vì NaN bị từ chối"
+   ],
+   "explanation": "Hãy viết fabs(a-b) <= tol: nó là false với NaN, nên NaN fail."
+  },
+  "b4": {
+   "prompt": "Vì sao khẳng định trên GIÁ TRỊ mong đợi mạnh hơn 'chương trình không crash'?",
+   "options": [
+    "Undefined behavior có thể cho kết quả sai mà không crash",
+    "Sanitizer không thấy được giá trị, nên sẽ bỏ sót kết quả sai",
+    "Giá trị luôn tính nhanh hơn việc phát hiện crash",
+    "Crash là không thể trong C++, nên chỉ có thể kiểm tra giá trị"
+   ],
+   "explanation": "Trong bài này chương trình lỗi chạy xong và in ra số sai."
+  },
+  "b5": {
+   "prompt": "Một buffer heap chứa 12 double (96 byte). ASan nói truy cập cách 0 byte bên phải vùng. Chỉ số nào (bắt đầu từ 0) đã bị truy cập? Số nguyên.",
+   "explanation": "Các chỉ số 0-11 hợp lệ; truy cập là chỉ số 12."
+  },
+  "b6": {
+   "prompt": "git bisect trên 5000 commit: số lần build tối đa? Số nguyên.",
+   "explanation": "ceil(log2 5000) = ceil(12.29) = 13."
+  },
+  "b7": {
+   "prompt": "Một race làm test thất bại với xác suất 0.01 mỗi lần chạy. Bao nhiêu lần chạy cho ít nhất 95% khả năng thấy một thất bại? Số nguyên.",
+   "explanation": "n >= ln 0.05 / ln 0.99 = 298.07, nên 299."
+  },
+  "b8": {
+   "prompt": "Một vòng lặp moving-average với cửa sổ 3 trên 8 mẫu được viết với 'k <= w' thay vì 'k < w'. Ở cửa sổ cuối, chỉ số lớn nhất được đọc là bao nhiêu? Số nguyên (bắt đầu từ 0)",
+   "explanation": "Cửa sổ cuối i = 8-3 = 5; k chạy tới 3, nên chỉ số 5+3 = 8, vượt quá cuối một vị trí (hợp lệ 0-7)."
+  },
+  "b9": {
+   "prompt": "Viết ba ca regression test (đầu vào và output mong đợi) cho moving_average(v, w) sẽ bắt được lỗi off-by-one trong vòng lặp cửa sổ, và nêu mỗi ca thất bại thế nào trên code lỗi.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Ca như {1,2,3,4,5}, w=2 -> {1.5,2.5,3.5,4.5}; code lỗi trả 3 làm giá trị đầu.",
+    "Ca w=1 trả về chính đầu vào; code lỗi cộng hai phần tử mỗi cửa sổ.",
+    "Ca biên w bằng kích thước trả về một giá trị trung bình, hoặc w lớn hơn kích thước trả về rỗng; tất cả với giá trị tính bằng tay."
+   ]
+  },
+  "b10": {
+   "prompt": "Giải thích vì sao ASan và TSan được chạy như các job CI riêng biệt và mỗi cái bảo vệ khỏi điều gì.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chúng instrument bộ nhớ khác nhau và không thể kết hợp trong một binary.",
+    "ASan: lỗi bộ nhớ (tràn, use after free, rò rỉ); TSan: data race.",
+    "Nhắc đến chi phí (TSan chậm hơn) và việc chạy các test đồng thời dưới TSan."
+   ]
+  },
+  "b11": {
+   "prompt": "Một phiên GDB cho thấy 'frame = std::unique_ptr<Frame> = {get() = 0x0}' và một segmentation fault tại dòng 'frame->id'. Nêu chẩn đoán và các lệnh bạn đã dùng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chẩn đoán: unique_ptr null, nhiều khả năng đã bị move trước đó.",
+    "Lệnh: gdb -batch -ex run -ex bt -ex 'info locals' ./prog (hoặc run, bt, info locals tương tác).",
+    "Ý tưởng sửa: không dùng sau khi move, hoặc truyền bằng reference."
+   ]
+  }
+ }
+}

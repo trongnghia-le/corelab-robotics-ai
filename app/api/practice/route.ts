@@ -1,5 +1,8 @@
 import { getStore } from "@/lib/storage";
+import { cookies } from "next/headers";
+import { LANG_COOKIE, parseLang } from "@/lib/lang";
 import {
+  localizeAssessment,
   getAssessmentCatalog,
   practiceSkills,
   publicAssessment,
@@ -14,6 +17,9 @@ export async function GET(request: Request) {
     const params = new URL(request.url).searchParams;
     const topicId = params.get("topic") ?? "";
     if (!Object.hasOwn(topicMap, topicId)) throw new Error("Unknown topic");
+    const lang = parseLang(
+      params.get("lang") ?? (await cookies()).get(LANG_COOKIE)?.value,
+    );
     const skills = practiceSkills(topicId);
     const tag = params.get("skill") ?? skills[0]?.tag ?? "";
     const plan = selectTargetedPlan(
@@ -25,7 +31,12 @@ export async function GET(request: Request) {
     return Response.json(
       {
         skills,
-        plan: { ...plan, assessment: publicAssessment(plan.assessment) },
+        plan: {
+          ...plan,
+          assessment: publicAssessment(
+            localizeAssessment(plan.assessment, "practice", lang),
+          ),
+        },
       },
       { headers: { "Cache-Control": "no-store" } },
     );

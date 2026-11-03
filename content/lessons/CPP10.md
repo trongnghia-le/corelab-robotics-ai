@@ -4,7 +4,7 @@
   "module_id": "CPP10",
   "title": "Concurrency: threads, synchronization, and data races",
   "summary": "Share data between threads without data races, build a blocking producer-consumer queue, and state its locking contract.",
-  "estimated_minutes": 85,
+  "estimated_minutes": 405,
   "prerequisites": [
     "CPP03",
     "CPP08"
@@ -432,6 +432,62 @@ With the stubs the first test aborts with `NotImplemented`. A missing `notify_al
 
 Add `pop_for(timeout)` and `push_for(timeout)`, then build a latest-value mailbox `Latest<T>` with `set`, `get` and a version counter so a consumer can tell whether a value is new.
 
+### Library track
+
+Standard-library building blocks beyond `mutex` and `condition_variable`: `std::async`/`std::future` (a thread that *returns* its result, so no shared accumulator is needed) and `std::shared_mutex` (many readers, one writer) for the `Latest<T>` mailbox of exercise 10. Paste this after your finished `BoundedQueue` (it has its own `main`, so drop the one from the tests) and build with `g++ -std=c++17 -Wall -Wextra -g -O1 -pthread`, then again with `-fsanitize=thread` (run as `setarch $(uname -m) -R ./a.out` if TSan complains about the memory mapping).
+
+```cpp
+#include <atomic>
+#include <cassert>
+#include <chrono>
+#include <future>
+#include <iostream>
+#include <numeric>
+#include <shared_mutex>
+#include <vector>
+
+// A latest-value mailbox (exercise 10) with std::shared_mutex: many readers, one writer.
+template <class T>
+class Latest {
+ public:
+  void set(T v) { std::unique_lock<std::shared_mutex> lk(m_); v_ = std::move(v); ++version_; }
+  std::pair<T, unsigned long> get() const { std::shared_lock<std::shared_mutex> lk(m_); return {v_, version_}; }
+ private:
+  mutable std::shared_mutex m_;
+  T v_{};
+  unsigned long version_ = 0;
+};
+
+int main() {
+  // 1. std::async + std::future: threads that RETURN a result (no shared sum, no race on it)
+  BoundedQueue<int> q(8);
+  auto producer = std::async(std::launch::async, [&] { for (int i = 1; i <= 1000; ++i) q.push(i); q.close(); return 1000; });
+  auto consumer = std::async(std::launch::async, [&] { long long s = 0; while (auto v = q.pop()) s += *v; return s; });
+  assert(producer.get() == 1000);
+  assert(consumer.get() == 500500);                      // 1 + 2 + ... + 1000
+
+  // 2. the lost-update experiment, three ways, with the result checked
+  std::atomic<int> a{0};
+  int plain_but_locked = 0;
+  std::mutex mu;
+  auto work = [&] { for (int i = 0; i < 100000; ++i) { a.fetch_add(1, std::memory_order_relaxed); std::lock_guard<std::mutex> lk(mu); ++plain_but_locked; } };
+  auto f1 = std::async(std::launch::async, work), f2 = std::async(std::launch::async, work);
+  f1.get(); f2.get();
+  assert(a == 200000 && plain_but_locked == 200000);
+
+  // 3. mailbox: the reader always sees a value and a non-decreasing version, writers never block on readers
+  Latest<int> box;
+  std::atomic<bool> stop{false};
+  auto reader = std::async(std::launch::async, [&] { unsigned long last = 0; while (!stop) { auto [v, ver] = box.get(); assert(ver >= last); last = ver; (void)v; } return last; });
+  for (int i = 1; i <= 10000; ++i) box.set(i);
+  stop = true;
+  assert(reader.get() <= 10000 && box.get().first == 10000);
+  std::cout << "library track ok\n";
+}
+```
+
+Expected output: `library track ok`, with no ThreadSanitizer warning. Questions: why does the future-returning consumer need no mutex around `s`? What would TSan say if `Latest::set` skipped its `unique_lock`?
+
 ## Verification
 
 - Run under ThreadSanitizer: a clean run is strong evidence of no data race on the paths executed.
@@ -490,4 +546,4 @@ Python has the same concepts under different names (`threading.Lock`, `queue.Que
 - [C++ Core Guidelines: CP](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) - rules for avoiding races and deadlocks (CP.2, CP.20, CP.21, CP.42).
 - [cppreference: std::memory_order](https://en.cppreference.com/w/cpp/atomic/memory_order) - the exact meaning of relaxed, acquire, release and seq_cst.
 
-**More practice:** the examples at the bottom of the [std::condition_variable](https://en.cppreference.com/w/cpp/thread) and mutex pages on cppreference (modify them and run under ThreadSanitizer), and the concurrency rules of the [Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) used as a code-review checklist.
+**More practice:** the [ThreadSanitizer manual](https://clang.llvm.org/docs/ThreadSanitizer.html) (reproduce each listed report on a toy program), the Core Guidelines [concurrency and parallelism rules](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#cp-concurrency-and-parallelism) (CP.20 to CP.42 map to exercises 3 to 7), and the runnable examples on cppreference for [`std::condition_variable`](https://en.cppreference.com/w/cpp/thread/condition_variable), [`std::shared_mutex`](https://en.cppreference.com/w/cpp/thread/shared_mutex) and [`std::async`](https://en.cppreference.com/w/cpp/thread/async), which you can extend and run under TSan.

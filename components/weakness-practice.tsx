@@ -15,44 +15,60 @@ import type {
 } from "@/lib/types";
 import { useCore, Loading } from "./provider";
 import { PageHeading, dateText, TopicChips } from "./ui";
+import { localizePlanText } from "@/lib/i18n";
 import { AssistanceSelect, AssessmentQuestion } from "./assessment-question";
+import { useI18n } from "@/lib/i18n";
+const mistakeVi = {
+  conceptual: "Hiểu sai khái niệm",
+  mathematical: "Lỗi suy luận toán học",
+  procedural: "Lỗi quy trình",
+  implementation: "Lỗi cài đặt/gỡ lỗi",
+  method_selection: "Chọn sai phương pháp",
+  retention: "Quên kiến thức",
+} as const;
 const statusLabels = {
-  active: "Active weakness",
-  practiced_with_assistance: "Practiced with assistance",
-  independently_corrected: "Independently corrected",
-  due_for_retention_review: "Due for retention review",
-};
+  active: "weak.active",
+  practiced_with_assistance: "weak.assisted",
+  independently_corrected: "weak.corrected",
+  due_for_retention_review: "weak.retention",
+} as const;
 export function WeaknessStatus({ weakness }: { weakness: Weakness }) {
+  const { t } = useI18n();
   return (
     <span
       className={`status ${weakness.status === "independently_corrected" ? "verified" : ""}`}
     >
-      {statusLabels[weakness.status]}
+      {t(statusLabels[weakness.status])}
     </span>
   );
 }
 export function PracticeTabs({ weaknesses = false }: { weaknesses?: boolean }) {
+  const { t } = useI18n();
   return (
-    <nav className="practice-tabs segmented" aria-label="Practice sections">
+    <nav
+      className="practice-tabs segmented"
+      aria-label={t("practice.sections")}
+    >
       <Link
         className={weaknesses ? "" : "selected"}
         aria-current={!weaknesses ? "page" : undefined}
         href="/practice"
       >
-        Assignments
+        {t("practice.assignments")}
       </Link>
       <Link
         className={weaknesses ? "selected" : ""}
         aria-current={weaknesses ? "page" : undefined}
         href={weaknessUrl()}
       >
-        My Weaknesses
+        {t("practice.weaknesses")}
       </Link>
     </nav>
   );
 }
 export function WeaknessPractice() {
-  const { state } = useCore();
+  const { state, title } = useCore();
+  const { t, tx } = useI18n();
   const params = useSearchParams();
   const router = useRouter();
   const [filter, setFilter] = useState("open");
@@ -73,34 +89,41 @@ export function WeaknessPractice() {
   return (
     <div className="page">
       <PageHeading
-        eyebrow="PRACTICE → MY WEAKNESSES"
-        title="Practice the skill behind the mistake."
-        description="Objective errors become a focused queue. Correcting a skill preserves its history and does not certify a whole topic."
+        eyebrow={t("weak.eyebrow")}
+        title={t("weak.title")}
+        description={t("weak.desc")}
       />
       <PracticeTabs weaknesses />
       <div className="filters">
         <label className="sr-only" htmlFor="weakness-status">
-          Filter weakness status
+          {tx("Filter weakness status", "Lọc theo trạng thái điểm yếu")}
         </label>
         <select
           id="weakness-status"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
-          <option value="open">Needs practice or retention review</option>
-          <option value="active">Active weakness</option>
+          <option value="open">
+            {tx(
+              "Needs practice or retention review",
+              "Cần luyện tập hoặc ôn lại để ghi nhớ",
+            )}
+          </option>
+          <option value="active">{t("weak.active")}</option>
           <option value="practiced_with_assistance">
-            Practiced with assistance
+            {t("weak.assisted")}
           </option>
-          <option value="independently_corrected">
-            Independently corrected
-          </option>
+          <option value="independently_corrected">{t("weak.corrected")}</option>
           <option value="due_for_retention_review">
-            Due for retention review
+            {t("weak.retention")}
           </option>
-          <option value="all">All mistake history</option>
+          <option value="all">
+            {tx("All mistake history", "Toàn bộ lịch sử lỗi")}
+          </option>
         </select>
-        <span className="result-count">{visible.length} skills</span>
+        <span className="result-count">
+          {visible.length} {tx("skills", "kỹ năng")}
+        </span>
       </div>
       {visible.length ? (
         <div className="weakness-list">
@@ -108,38 +131,53 @@ export function WeaknessPractice() {
             <section className="panel weakness-card" key={w.key}>
               <div className="between">
                 <span className="topic-code">
-                  {w.topicId} · {topicMap[w.topicId].title}
+                  {w.topicId} · {title(w.topicId)}
                 </span>
                 <WeaknessStatus weakness={w} />
               </div>
               <h2>{w.skillLabel}</h2>
               <p className="small">
-                {w.failureCount} objective mistakes across {w.failedAttempts}{" "}
-                failed {w.failedAttempts === 1 ? "attempt" : "attempts"} · Last
-                activity: {dateText(w.lastAttemptAt)}
+                {tx(
+                  `${w.failureCount} objective mistakes across ${w.failedAttempts} failed ${w.failedAttempts === 1 ? "attempt" : "attempts"}`,
+                  `${w.failureCount} lỗi khách quan trong ${w.failedAttempts} lần làm chưa đạt`,
+                )}{" "}
+                · {tx("Last activity:", "Hoạt động gần nhất:")}{" "}
+                {dateText(w.lastAttemptAt)}
               </p>
               <div className="chips">
                 {w.categories.map((c) => (
                   <span className="status" key={c}>
-                    {mistakeCategoryLabel(c)}
+                    {tx(mistakeCategoryLabel(c), mistakeVi[c])}
                   </span>
                 ))}
               </div>
               <p className="small muted">
                 {w.status === "practiced_with_assistance"
-                  ? "Assisted success is useful practice. A fresh equivalent A0 answer is still needed."
+                  ? tx(
+                      "Assisted success is useful practice. A fresh equivalent A0 answer is still needed.",
+                      "Làm đúng khi có trợ giúp là luyện tập hữu ích. Bạn vẫn cần một câu trả lời A0 tương đương mới.",
+                    )
                   : w.status === "independently_corrected"
-                    ? "New independent evidence corrected this skill. Its failure history remains available."
+                    ? tx(
+                        "New independent evidence corrected this skill. Its failure history remains available.",
+                        "Bằng chứng tự làm mới đã sửa kỹ năng này. Lịch sử lỗi vẫn được giữ lại.",
+                      )
                     : w.status === "due_for_retention_review"
-                      ? "The existing topic review schedule is due. Check retention without consulting the solution."
-                      : "Review the specific reasoning, then try a different authored example."}
+                      ? tx(
+                          "The existing topic review schedule is due. Check retention without consulting the solution.",
+                          "Đã đến lịch ôn tập của chủ đề. Hãy kiểm tra trí nhớ mà không xem lời giải.",
+                        )
+                      : tx(
+                          "Review the specific reasoning, then try a different authored example.",
+                          "Xem lại phần lập luận cụ thể, rồi thử một ví dụ khác.",
+                        )}
               </p>
               <div className="topic-actions">
                 <Link
                   className="button"
                   href={w.remediation[0]?.href ?? `/lessons/${w.topicId}`}
                 >
-                  Review Concept
+                  {tx("Review Concept", "Xem lại khái niệm")}
                 </Link>
                 <Link
                   className="button primary"
@@ -147,25 +185,40 @@ export function WeaknessPractice() {
                     weaknessUrl(w.topicId, w.skillTag) + "#targeted-practice"
                   }
                 >
-                  Practice Weak Skill
+                  {tx("Practice Weak Skill", "Luyện kỹ năng yếu")}
                   <ArrowRight size={15} />
                 </Link>
                 <Link className="button" href={`/assessments/${w.topicId}`}>
-                  Retry Assessment
+                  {tx("Retry Assessment", "Làm lại bài kiểm tra")}
                 </Link>
               </div>
               <details className="weakness-provenance">
-                <summary>Evidence and prerequisites</summary>
+                <summary>
+                  {tx(
+                    "Evidence and prerequisites",
+                    "Bằng chứng và kiến thức tiên quyết",
+                  )}
+                </summary>
                 <p className="small muted">
-                  Classification:{" "}
+                  {tx("Classification:", "Phân loại:")}{" "}
                   {w.classificationSource === "authored"
-                    ? "authored skill metadata"
-                    : "legacy question format; no finer skill classification is authored"}
-                  . Latest result: {w.latestResult.replaceAll("_", " ")}. Topic
-                  review:{" "}
-                  {w.reviewDueAt ? dateText(w.reviewDueAt) : "not scheduled"}.{" "}
+                    ? tx(
+                        "authored skill metadata",
+                        "siêu dữ liệu kỹ năng đã biên soạn",
+                      )
+                    : tx(
+                        "legacy question format; no finer skill classification is authored",
+                        "định dạng câu hỏi cũ; chưa có phân loại kỹ năng chi tiết hơn",
+                      )}
+                  . {tx("Latest result:", "Kết quả gần nhất:")}{" "}
+                  {w.latestResult.replaceAll("_", " ")}.{" "}
+                  {tx("Topic review:", "Ôn tập chủ đề:")}{" "}
+                  {w.reviewDueAt
+                    ? dateText(w.reviewDueAt)
+                    : tx("not scheduled", "chưa lên lịch")}
+                  .{" "}
                   {w.lastCorrectedAt
-                    ? `Independent correction: ${dateText(w.lastCorrectedAt)}.`
+                    ? `${tx("Independent correction:", "Tự sửa được:")} ${dateText(w.lastCorrectedAt)}.`
                     : ""}
                 </p>
                 <ul>
@@ -192,26 +245,37 @@ export function WeaknessPractice() {
         <div className="panel">
           <h2>
             {all.length
-              ? "No skills match this filter."
-              : "No objectively graded mistakes recorded yet."}
+              ? tx(
+                  "No skills match this filter.",
+                  "Không có kỹ năng nào khớp bộ lọc này.",
+                )
+              : tx(
+                  "No objectively graded mistakes recorded yet.",
+                  "Chưa ghi nhận lỗi nào ở câu hỏi tự động chấm.",
+                )}
           </h2>
           <p>
-            Reading and ungraded rubric responses never count as mistakes. Try a
-            diagnostic or explore an authored practice skill below.
+            {tx(
+              "Reading and ungraded rubric responses never count as mistakes. Try a diagnostic or explore an authored practice skill below.",
+              "Đọc bài và câu trả lời rubric không chấm điểm không bao giờ bị tính là lỗi. Hãy thử một bài kiểm tra hoặc khám phá một kỹ năng luyện tập bên dưới.",
+            )}
           </p>
           <Link className="button" href="/assessments">
-            Open assessments
+            {tx("Open reviews", "Mở mục Ôn tập")}
           </Link>
         </div>
       )}
       <section id="targeted-practice" className="targeted-section">
         <div className="section-title">
-          <h2>Focused practice</h2>
+          <h2>{tx("Focused practice", "Luyện tập tập trung")}</h2>
         </div>
         <label>
-          Practice topic
+          {tx("Practice topic", "Chủ đề luyện tập")}
           <select
-            aria-label="Focused practice topic"
+            aria-label={tx(
+              "Focused practice topic",
+              "Chủ đề luyện tập tập trung",
+            )}
             value={topic}
             onChange={(e) => {
               router.push(weaknessUrl(e.target.value) + "#targeted-practice");
@@ -219,7 +283,7 @@ export function WeaknessPractice() {
           >
             {topics.map((t) => (
               <option key={t.id} value={t.id}>
-                {t.id} · {t.title}
+                {t.id} · {title(t.id)}
               </option>
             ))}
           </select>
@@ -248,7 +312,8 @@ function TargetedSet({
   skill?: string;
   defaultSkill?: string;
 }) {
-  const { act, busy } = useCore();
+  const { act, busy, title } = useCore();
+  const { t, lang, tx } = useI18n();
   const [selectedSkill] = useState(() => skill ?? defaultSkill);
   const router = useRouter();
   const [data, setData] = useState<{
@@ -266,6 +331,7 @@ function TargetedSet({
     setError("");
     const params = new URLSearchParams({ topic: topicId });
     if (selectedSkill) params.set("skill", selectedSkill);
+    if (lang === "vi") params.set("lang", "vi");
     fetch(`/api/practice?${params}`, { signal: controller.signal })
       .then(async (r) => {
         const body = await r.json();
@@ -277,7 +343,7 @@ function TargetedSet({
           setError(e instanceof Error ? e.message : "Unable to load practice.");
       });
     return () => controller.abort();
-  }, [topicId, selectedSkill, reload]);
+  }, [topicId, selectedSkill, reload, lang]);
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (!data) return;
@@ -291,16 +357,21 @@ function TargetedSet({
         assessmentVersion: data.plan.assessment.version,
         answers,
         assistance,
+        lang,
       })) as Attempt;
       setResult(attempt);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Unable to save practice.");
+      setError(
+        e instanceof Error
+          ? e.message
+          : tx("Unable to save practice.", "Không lưu được bài luyện tập."),
+      );
     }
   }
   if (!data)
     return (
       <div className="panel" role={error ? "alert" : "status"}>
-        {error || "Loading authored practice…"}
+        {error || tx("Loading authored practice…", "Đang tải bài luyện tập…")}
       </div>
     );
   const { plan, skills } = data;
@@ -308,9 +379,12 @@ function TargetedSet({
   return (
     <div>
       <label>
-        Weak skill / assessment type
+        {tx("Weak skill / assessment type", "Kỹ năng yếu / loại bài kiểm tra")}
         <select
-          aria-label="Focused practice skill"
+          aria-label={tx(
+            "Focused practice skill",
+            "Kỹ năng luyện tập tập trung",
+          )}
           value={plan.skillTag}
           onChange={(e) =>
             router.push(
@@ -328,15 +402,15 @@ function TargetedSet({
           ))}
         </select>
       </label>
-      <div className="info-banner">{plan.message}</div>
+      <div className="info-banner">{localizePlanText(plan.message, lang)}</div>
       {plan.prerequisiteActivities.length > 0 && (
         <section className="panel">
-          <h3>Check the foundation</h3>
+          <h3>{tx("Check the foundation", "Kiểm tra phần nền tảng")}</h3>
           {plan.prerequisiteActivities.map((a) => (
             <div key={a.topicId}>
-              <p className="small">{a.reason}</p>
+              <p className="small">{localizePlanText(a.reason, lang)}</p>
               <Link className="button" href={a.href}>
-                Check {a.topicId} · {topicMap[a.topicId].title}
+                {tx("Check", "Kiểm tra")} {a.topicId} · {title(a.topicId)}
               </Link>
             </div>
           ))}
@@ -348,7 +422,7 @@ function TargetedSet({
             <div className="between">
               <h2>{plan.skillLabel}</h2>
               <span className="mono small">
-                PRACTICE v{plan.assessment.version}
+                {tx("PRACTICE", "LUYỆN TẬP")} v{plan.assessment.version}
               </span>
             </div>
             <AssistanceSelect value={assistance} onChange={setAssistance} />
@@ -366,7 +440,7 @@ function TargetedSet({
             />
           ))}
           <button type="submit" className="button primary" disabled={busy}>
-            Save focused practice
+            {tx("Save focused practice", "Lưu bài luyện tập")}
             <ArrowRight size={16} />
           </button>
         </form>
@@ -380,12 +454,18 @@ function TargetedSet({
         <section className="panel assessment-result" role="status">
           <h2>
             {objective
-              ? `Focused result · ${result.grade.score}%`
-              : "Rubric response saved · unverified"}
+              ? `${tx("Focused result", "Kết quả luyện tập")} · ${result.grade.score}%`
+              : tx(
+                  "Rubric response saved · unverified",
+                  "Đã lưu câu trả lời rubric · chưa kiểm chứng",
+                )}
           </h2>
           <p>
-            Assistance: {result.assistance}. Focused results do not satisfy full
-            diagnostic gates or automatically raise L1/L2/L3 mastery.
+            {tx("Assistance:", "Mức trợ giúp:")} {result.assistance}.{" "}
+            {tx(
+              "Focused results do not satisfy the full check or automatically raise mastery.",
+              "Kết quả luyện tập tập trung không thay cho bài kiểm tra đầy đủ và không tự động tăng mức nắm vững.",
+            )}
           </p>
           {result.grade.items.map((i) => (
             <div className="feedback-item" key={i.id}>
@@ -400,12 +480,12 @@ function TargetedSet({
               >
                 {i.id} ·{" "}
                 {i.correct === null
-                  ? "Review against rubric"
+                  ? t("assess.rubric")
                   : i.correct
-                    ? "Correct"
-                    : "Not yet correct"}
+                    ? t("assess.correct")
+                    : t("assess.notYet")}
               </strong>
-              <p>{i.feedback}</p>
+              <p>{result.localizedFeedback?.[i.id] ?? i.feedback}</p>
             </div>
           ))}
           <button
@@ -418,17 +498,17 @@ function TargetedSet({
             }}
           >
             <RotateCcw size={15} />
-            Check next available set
+            {tx("Check next available set", "Kiểm tra bộ câu hỏi tiếp theo")}
           </button>
         </section>
       )}
       {!plan.assessment.questions.length && (
         <div className="topic-actions">
           <Link className="button" href={`/lessons/${topicId}`}>
-            Review Concept
+            {tx("Review Concept", "Xem lại khái niệm")}
           </Link>
           <Link className="button" href={`/assessments/${topicId}`}>
-            Retry Assessment
+            {tx("Retry Assessment", "Làm lại bài kiểm tra")}
           </Link>
         </div>
       )}

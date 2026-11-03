@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -15,17 +15,25 @@ import { domainTone } from "./domain-theme";
 import { topics, domains } from "@/lib/curriculum";
 import { useCore, Loading } from "./provider";
 import { PageHeading, Status } from "./ui";
+import { useI18n } from "@/lib/i18n";
+import { allSessionProgress, doneCount } from "@/lib/checkoff";
+import { sessionOrder } from "@/lib/lesson-plan";
 const Graph = dynamic(() => import("./graph").then((m) => m.Graph), {
   ssr: false,
-  loading: () => <div className="graph-loading">Loading graph…</div>,
+  loading: () => <div className="graph-loading">…</div>,
 });
 export function Catalog({
   mode,
 }: {
   mode: "roadmap" | "lessons" | "assessments";
 }) {
-  const { state } = useCore();
+  const { state, title } = useCore();
+  const { t, tx } = useI18n();
   const params = useSearchParams();
+  const sessionsDone = useMemo(
+    () => allSessionProgress(state?.progress.sessions ?? []),
+    [state?.progress.sessions],
+  );
   const [query, setQuery] = useState(""),
     [domain, setDomain] = useState(params.get("domain") ?? ""),
     [priority, setPriority] = useState(""),
@@ -39,65 +47,69 @@ export function Catalog({
       (!domain || t.domain === domain) &&
       (!priority || t.priority === priority) &&
       (!status || state.mastery[t.id].status === status) &&
-      `${t.id} ${t.title} ${t.domain}`
+      `${t.id} ${t.title} ${title(t.id)} ${t.domain}`
         .toLowerCase()
         .includes(query.toLowerCase()),
   );
+  const badge = (id: string) => {
+    const done = sessionsDone[id] ? doneCount(sessionsDone[id]) : 0;
+    return done > 0 ? (
+      <span className="session-badge">
+        {t("lesson.sessionsDone", { n: done, total: sessionOrder.length })}
+      </span>
+    ) : null;
+  };
   return (
     <div className="page">
       <PageHeading
         eyebrow={
           isRoad
-            ? "THE LONG-TERM MAP"
+            ? t("cat.road.eyebrow")
             : mode === "lessons"
-              ? "LEARN FROM FIRST PRINCIPLES"
-              : "EVIDENCE, NOT CHECKBOXES"
+              ? t("cat.lessons.eyebrow")
+              : t("cat.review.eyebrow")
         }
         title={
           isRoad
-            ? "Knowledge roadmap"
+            ? t("cat.road.title")
             : mode === "lessons"
-              ? "Go beyond reading. Understand deeply."
-              : "Verify what you understand."
+              ? t("cat.lessons.title")
+              : t("cat.review.title")
         }
         description={
           isRoad
-            ? `${topics.length} topics connected by prerequisites. A long-term map, not a mandatory checklist.`
+            ? t("cat.road.desc", { n: topics.length })
             : mode === "lessons"
-              ? `${state.lessonIds.length} authored lessons. Start with foundations and progress through evidence.`
-              : "Short diagnostics, clear feedback, and traceable evidence."
+              ? t("cat.lessons.desc", { n: state.lessonIds.length })
+              : t("cat.review.desc")
         }
       />
       {mode === "assessments" && (
         <div className="info-banner">
           <BookOpen size={18} />
-          <span>
-            An A0 quiz verifies evidence only with a score of at least 80% and
-            no failed critical items. Open responses use a rubric and never
-            automatically increase mastery.
-          </span>
+          <span>{t("cat.review.banner")}</span>
         </div>
       )}
       <div className="catalog-toolbar">
         <label className="search-field">
           <Search size={17} />
           <input
-            aria-label="Search topics"
-            placeholder="Search by topic name or ID…"
+            aria-label={tx("Search topics", "Tìm chủ đề")}
+            placeholder={t("cat.search")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <kbd>/</kbd>
         </label>
         {isRoad && (
-          <div className="segmented" aria-label="View mode">
+          <div className="segmented" aria-label={t("cat.viewMode")}>
             <button
               aria-pressed={view === "list"}
               className={view === "list" ? "selected" : ""}
               onClick={() => setView("list")}
             >
               <List size={16} />
-              List
+              {t("cat.list")}
             </button>
             <button
               aria-pressed={view === "graph"}
@@ -105,45 +117,47 @@ export function Catalog({
               onClick={() => setView("graph")}
             >
               <Network size={16} />
-              Graph
+              {t("cat.graph")}
             </button>
           </div>
         )}
       </div>
       <div className="filters">
         <select
-          aria-label="Filter by domain"
+          aria-label={t("cat.fDomain")}
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
         >
-          <option value="">All domains</option>
+          <option value="">{t("cat.allDomains")}</option>
           {domains.map((d) => (
             <option key={d}>{d}</option>
           ))}
         </select>
         <select
-          aria-label="Filter by priority"
+          aria-label={t("cat.fPriority")}
           value={priority}
           onChange={(e) => setPriority(e.target.value)}
         >
-          <option value="">All priorities</option>
-          <option value="P0">P0 · Core</option>
-          <option value="P1">P1 · Applied</option>
-          <option value="P2">P2 · Extension</option>
+          <option value="">{t("cat.allPriorities")}</option>
+          <option value="P0">P0 · {t("cat.p0")}</option>
+          <option value="P1">P1 · {t("cat.p1")}</option>
+          <option value="P2">P2 · {t("cat.p2")}</option>
         </select>
         <select
-          aria-label="Filter by status"
+          aria-label={t("cat.fStatus")}
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         >
-          <option value="">All statuses</option>
-          <option value="unassessed">Unassessed</option>
-          <option value="in_progress">In progress</option>
-          <option value="provisional">Self-assessed</option>
-          <option value="verified">Verified</option>
+          <option value="">{t("cat.allStatuses")}</option>
+          <option value="unassessed">{t("status.notStarted")}</option>
+          <option value="in_progress">{t("status.practised")}</option>
+          <option value="provisional">{t("status.selfRated")}</option>
+          <option value="verified">{t("status.mastered")}</option>
         </select>
         <span className="result-count">
-          {visible.length} {visible.length === 1 ? "topic" : "topics"}
+          {t(visible.length === 1 ? "cat.topic1" : "cat.topicN", {
+            n: visible.length,
+          })}
         </span>
       </div>
       {view === "graph" && isRoad ? (
@@ -157,8 +171,8 @@ export function Catalog({
       ) : visible.length === 0 ? (
         <div className="empty-state">
           <Search size={25} />
-          <h2>No topics found</h2>
-          <p>Try a shorter search or remove a filter.</p>
+          <h2>{t("cat.none")}</h2>
+          <p>{t("cat.noneNote")}</p>
           <button
             onClick={() => {
               setQuery("");
@@ -167,7 +181,7 @@ export function Catalog({
               setStatus("");
             }}
           >
-            Clear filters
+            {t("cat.clear")}
           </button>
         </div>
       ) : isRoad ? (
@@ -179,38 +193,41 @@ export function Catalog({
                 <div className="domain-heading">
                   <h2>{d}</h2>
                   <span>
-                    {visible.filter((t) => t.domain === d).length} topics
+                    {t("cat.topicN", {
+                      n: visible.filter((x) => x.domain === d).length,
+                    })}
                   </span>
                 </div>
                 <div className="panel topic-list">
                   {visible
-                    .filter((t) => t.domain === d)
-                    .map((t) => (
-                      <div className="topic-list-row" key={t.id}>
-                        <Link className="topic-main" href={`/lessons/${t.id}`}>
-                          <span className="topic-id">{t.id}</span>
+                    .filter((tp) => tp.domain === d)
+                    .map((tp) => (
+                      <div className="topic-list-row" key={tp.id}>
+                        <Link className="topic-main" href={`/lessons/${tp.id}`}>
+                          <span className="topic-id">{tp.id}</span>
                           <div>
-                            <strong>{t.title}</strong>
+                            <strong>{title(tp.id)}</strong>
                             <small>
-                              {state.lessonIds.includes(t.id)
-                                ? "Complete lesson + diagnostic"
-                                : "Overview · full lesson not yet available"}
+                              {state.lessonIds.includes(tp.id)
+                                ? t("cat.complete")
+                                : t("cat.overviewOnly")}
+                              {badge(tp.id)}
                             </small>
                           </div>
                         </Link>
-                        <span className={`priority ${t.priority}`}>
-                          {t.priority}
+                        <span className={`priority ${tp.priority}`}>
+                          {tp.priority}
                         </span>
                         <span className="prereq-count">
-                          {t.prerequisites.length
-                            ? `${t.prerequisites.length} prerequisites`
-                            : "Foundation"}
+                          {tp.prerequisites.length
+                            ? t("cat.prereqs", { n: tp.prerequisites.length })
+                            : t("cat.foundation")}
                         </span>
-                        <Status mastery={state.mastery[t.id]} />
+                        <Status mastery={state.mastery[tp.id]} />
                         <Link
                           className="icon-button"
-                          href={`/lessons/${t.id}`}
-                          aria-label={`Open ${t.id}`}
+                          href={`/lessons/${tp.id}`}
+                          aria-label={t("cat.open", { id: tp.id })}
                         >
                           <ChevronRight size={17} />
                         </Link>
@@ -222,25 +239,26 @@ export function Catalog({
         </div>
       ) : (
         <div className="lesson-grid">
-          {visible.map((t) => (
+          {visible.map((tp) => (
             <Link
-              href={`/${mode}/${t.id}`}
+              href={`/${mode}/${tp.id}`}
               className="lesson-card"
-              data-domain-tone={domainTone(t.domain)}
-              key={t.id}
+              data-domain-tone={domainTone(tp.domain)}
+              key={tp.id}
             >
               <div className="between">
-                <span className="topic-code">{t.id}</span>
-                <span className={`priority ${t.priority}`}>{t.priority}</span>
+                <span className="topic-code">{tp.id}</span>
+                <span className={`priority ${tp.priority}`}>{tp.priority}</span>
               </div>
-              <span className="small muted">{t.domain}</span>
-              <h2>{t.title}</h2>
-              <Status mastery={state.mastery[t.id]} />
+              <span className="small muted">{tp.domain}</span>
+              <h2>{title(tp.id)}</h2>
+              <Status mastery={state.mastery[tp.id]} />
+              {mode === "lessons" && badge(tp.id)}
               <div className="lesson-card-bottom">
                 <span>
                   {mode === "lessons"
-                    ? "Theory · Examples · Practice"
-                    : "Concept · Math · Rubric"}
+                    ? t("cat.cardLesson")
+                    : t("cat.cardCheck")}
                 </span>
                 <ArrowUpRight size={17} />
               </div>
@@ -248,12 +266,7 @@ export function Catalog({
           ))}
         </div>
       )}
-      <div className="catalog-note">
-        <strong>P0</strong> Core foundations <span>·</span>
-        <strong>P1</strong> Application <span>·</span>
-        <strong>P2</strong> Research extensions. Every topic is accessible;
-        prerequisites guide learning without locking pages.
-      </div>
+      <div className="catalog-note">{t("cat.note")}</div>
     </div>
   );
 }

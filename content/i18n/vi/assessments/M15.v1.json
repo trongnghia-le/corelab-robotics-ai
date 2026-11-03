@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Quay theo rotation vector a rồi theo b nói chung là",
+   "options": [
+    "không bằng quay theo a+b; sai số là bậc hai và liên quan đến a x b",
+    "chính xác là phép quay có vector a+b, vì các vector chỉ việc cộng lại",
+    "phép quay có vector a-b, vì phép quay thứ hai hoàn tác phép thứ nhất",
+    "giống như b rồi a, vì các phép quay luôn giao hoán"
+   ],
+   "explanation": "SO(3) không giao hoán; BCH cho exp(a)exp(b)=exp(a+b+1/2 a x b+...)."
+  },
+  "q2": {
+   "prompt": "Một ma trận quay có vết (trace) bằng 2. Góc quay của nó là bao nhiêu độ?",
+   "explanation": "cos(theta)=(tr-1)/2=0.5."
+  },
+  "q3": {
+   "prompt": "Rotation vector (0,0,pi/2) (rad). Phần tử (1,0) của exp([w]x) là bao nhiêu? (hàng 1, cột 0, đánh chỉ số từ 0)",
+   "explanation": "Đây là Rz(90 deg): hàng hai cột một = sin(90 deg)=1."
+  },
+  "q4": {
+   "prompt": "a=(0.2,0,0) và b=(0,0.2,0). Số hạng BCH bậc hai (1/2)(a x b) có thành phần z bằng bao nhiêu?",
+   "explanation": "(1/2)(0.2*0.2)=0.02."
+  },
+  "q5": {
+   "prompt": "Vì sao R <- R + R[w]x dt thất bại khi dùng làm bộ tích phân gyro?",
+   "options": [
+    "Ma trận phản đối xứng không thể nhân với ma trận quay theo dạng này",
+    "Nó tích phân sai vận tốc góc; phải dùng tốc độ trong hệ vật thể",
+    "Nó tính quá chậm, nên bước này phải thay bằng tra bảng các phép quay",
+    "Kết quả không trực giao: I+[w]x dt làm các cột co giãn theo sqrt(1+(w dt)^2)"
+   ],
+   "explanation": "Cập nhật này rời khỏi SO(3); hãy dùng R exp([w]x dt)."
+  },
+  "q6": {
+   "prompt": "Twist với v=(1,0,0) m/s và w=(0,0,pi/2) rad/s áp dụng trong 1 s. Tọa độ x của phần tịnh tiến của exp(xi) là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "Robot đi theo một cung phần tư bán kính 2/pi, nên x=2/pi=0.6366."
+  },
+  "q7": {
+   "prompt": "Một bộ lọc error-state lưu hướng dưới dạng quaternion nhưng biểu diễn sai số dưới dạng vector 3 chiều và cập nhật bằng exp. Hãy giải thích vì sao sai số được giữ trong không gian tiếp tuyến, và cách xử lý cập nhật và covariance.",
+   "explanation": "Bài luyện tập có rubric hướng dẫn, không được tự động kiểm chứng.",
+   "rubric": [
+    "Giải thích rằng không gian tiếp tuyến là một không gian vector 3 chiều phẳng, nơi covariance và các hiệu chỉnh cộng có ý nghĩa.",
+    "Nêu cập nhật R <- R exp(delta) (hoặc q <- q * exp(delta/2)) rồi đặt lại (reset).",
+    "Lưu ý rằng lựa chọn nhiễu loạn trái hay phải phải khớp với quy ước covariance."
+   ]
+  }
+ }
+}

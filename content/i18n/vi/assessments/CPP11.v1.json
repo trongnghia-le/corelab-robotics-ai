@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Vì sao giải bình phương tối thiểu qua phương trình chuẩn có thể mất nhiều gấp đôi số chữ số so với QR?",
+   "options": [
+    "Phương trình chuẩn cần gấp đôi bộ nhớ, buộc phải dùng độ chính xác thấp hơn",
+    "A^T A luôn suy biến, nên bộ giải mất một nửa số chữ số",
+    "cond(A^T A) = cond(A)^2, nên sai số làm tròn bị khuếch đại theo bình phương",
+    "Eigen không thể phân rã A^T A, nên nó quay về bộ giải float"
+   ],
+   "explanation": "Lập A^T A làm bình phương condition number; QR tránh lập nó."
+  },
+  "q2": {
+   "prompt": "cond(A) = 1e5 và độ chính xác kép có khoảng 16 chữ số. Một phép giải bình phương tối thiểu ổn định giữ được khoảng bao nhiêu chữ số chính xác? Cho một số nguyên.",
+   "explanation": "Số chữ số mất ~ log10(cond) = 5, nên còn khoảng 16-5 = 11 chữ số."
+  },
+  "q3": {
+   "prompt": "auto x = A.colPivHouseholderQr().solve(b); sau đó được in ra. Vấn đề là gì?",
+   "options": [
+    "auto không suy ra được kiểu Eigen, nên x bị cắt thành int",
+    "auto lưu một biểu thức tham chiếu tới một phép phân rã tạm đã bị hủy",
+    "solve không phải là thành viên của đối tượng phân rã và thất bại lặng lẽ",
+    "Kết quả luôn bằng không vì solve cần một giá trị đoán ban đầu"
+   ],
+   "explanation": "Dùng Eigen::VectorXd x = ... để biểu thức được đánh giá ngay lập tức."
+  },
+  "q4": {
+   "prompt": "Khớp y = a + b t bằng bình phương tối thiểu cho (0,0), (1,2), (2,3). a (hệ số chặn) là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "A^T A = [[3,3],[3,5]], A^T b = [5,8]; a = (5*5 - 3*8)/6 = 1/6 = 0.17 và b = (3*8 - 3*5)/6 = 1.5."
+  },
+  "q5": {
+   "prompt": "Phép phân rã Eigen nào phù hợp nhất với ma trận hiệp phương sai 6x6 đối xứng xác định dương khi giải K x = f?",
+   "options": [
+    "llt() hoặc ldlt() (Cholesky)",
+    "luôn luôn jacobiSvd()",
+    "fullPivLu() với float",
+    "Tính K.inverse() * f"
+   ],
+   "explanation": "Cholesky khai thác tính đối xứng và xác định dương: n^3/3 flop và ổn định."
+  },
+  "q6": {
+   "prompt": "Với phép khớp ở q4, vector phần dư là (1/6, -1/3, 1/6). Chuẩn Euclid của nó là bao nhiêu? Cho một số với 3 chữ số thập phân.",
+   "explanation": "sqrt(1/36 + 4/36 + 1/36) = sqrt(1/6) = 0.408."
+  },
+  "q7": {
+   "prompt": "Bạn đã cài đặt một phép khớp bình phương tối thiểu bằng C++ với Eigen. Mô tả cách bạn kiểm chứng nó, gồm một oracle độc lập và cách bạn chọn dung sai.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Các ca tính tay/nghiệm đã biết, và kiểm tra tối ưu A^T(Ax-b) ~ 0.",
+    "So sánh với numpy.linalg.lstsq trên cùng dữ liệu, trước hết là chuẩn phần dư và giá trị khớp.",
+    "Dung sai từ cond(A)*eps_machine, không phải một hằng số tùy tiện; cố ý kiểm thử các đầu vào điều kiện xấu."
+   ]
+  }
+ }
+}

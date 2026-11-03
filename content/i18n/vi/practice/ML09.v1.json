@@ -1,0 +1,85 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Query/key có d_k=256 với các phần tử độc lập phương sai đơn vị. Độ lệch chuẩn của q·k trước khi chia tỉ lệ là bao nhiêu? (số thập phân, sai số cho phép 0.01)",
+   "explanation": "sqrt(d_k)=16."
+  },
+  "b2": {
+   "prompt": "Các điểm (0, 0, ln 3) đi qua softmax. Trọng số trên key thứ ba là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "các hàm mũ 1,1,3 → 3/5=0.6."
+  },
+  "b3": {
+   "prompt": "Self-attention, d_k=2, X=[(1,0),(0,1)], Q=K=V=X. Thành phần 1 của đầu ra của token 1 là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Các trọng số (0.6698, 0.3302) trên các value (1,0),(0,1): thành phần đầu là 0.6698."
+  },
+  "b4": {
+   "prompt": "Ba token đều có điểm bằng nhau và dùng causal mask. Token 3 dành trọng số bao nhiêu cho token 1? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Hàng 3 thấy các token 1-3 như nhau: 1/3."
+  },
+  "b5": {
+   "prompt": "Cài đặt causal mask nào là đúng?",
+   "options": [
+    "các trọng số được tính trước, rồi xóa các hàng V với j > i",
+    "scores[i][j] = -inf với j > i, rồi softmax",
+    "weights[i][j] = 0 với j > i sau softmax, không chuẩn hóa lại",
+    "scores[i][j] = 0 với j > i, rồi softmax"
+   ],
+   "explanation": "Chỉ có -inf trước softmax mới cho các số không chính xác và một hàng được chuẩn hóa."
+  },
+  "b6": {
+   "prompt": "Độ dài chuỗi tăng từ 256 lên 1024. Số phần tử trọng số attention mỗi head tăng lên bao nhiêu lần? (số thập phân, sai số cho phép 0.01)",
+   "explanation": "(1024/256)²=16."
+  },
+  "b7": {
+   "prompt": "Positional encoding dạng sin với d=2: PE(pos) = (sin(pos), cos(pos)). Thành phần đầu tại pos=2 là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "sin(2)=0.9093 (radian)."
+  },
+  "b8": {
+   "prompt": "Một mô hình không có positional encoding được cho 'robot avoids obstacle' và 'obstacle avoids robot'. Điều gì đúng với đầu ra attention của mỗi từ?",
+   "options": [
+    "Mô hình báo lỗi với các token lặp lại",
+    "Đầu ra của mỗi từ giống nhau ở cả hai câu",
+    "Chỉ đầu ra của từ đầu tiên là giống nhau",
+    "Các đầu ra khác nhau vì thứ tự từ khác nhau"
+   ],
+   "explanation": "Cùng các token, cùng tập các hàng query/key/value; khi không có vị trí, đầu ra của từng token không phụ thuộc vào thứ tự."
+  },
+  "b9": {
+   "prompt": "Tokenize một từ hiếm bằng BPE thường cho kết quả là...",
+   "options": [
+    "Vài token subword có trong từ vựng",
+    "Một token từ-chưa-biết loại bỏ từ đó",
+    "Chỉ quay về mức ký tự",
+    "Luôn luôn một token duy nhất"
+   ],
+   "explanation": "Các phép merge được học từ các chuỗi thường gặp, nên từ hiếm quay về các mảnh; không cần token chưa biết."
+  },
+  "b10": {
+   "prompt": "Mô hình decoder-only của bạn có loss huấn luyện gần bằng không sau một giờ nhưng sinh ra văn bản vô nghĩa khi lấy mẫu. Hãy nêu ba phép kiểm tra đầu tiên bạn chạy, tập trung vào attention masking.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Xác minh rằng các trọng số bị mask đúng bằng 0 với j>i (ví dụ in ma trận trọng số).",
+    "Chạy kiểm tra tính nhân quả: đổi một token sau và xác nhận các đầu ra/logit trước đó không đổi.",
+    "Kiểm tra rằng các target được dịch đi một vị trí và các token padding được mask."
+   ]
+  },
+  "b11": {
+   "prompt": "Hãy viết một bài kiểm tra ngắn (bằng lời hoặc code) cho một cài đặt attention sao cho phát hiện được việc thiếu mask, sai trục softmax và thiếu sqrt(d_k).",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "So sánh với một ca nhỏ tính tay (ví dụ ví dụ 3 token có lời giải).",
+    "Khẳng định các hàng có tổng 1 và các phần tử bị mask đúng bằng 0, và rằng đổi một token tương lai không làm đổi các đầu ra trước đó.",
+    "Kiểm tra độ nhạy với tỉ lệ: các điểm phải có std gần 1 với đầu vào ngẫu nhiên phương sai đơn vị."
+   ]
+  },
+  "b12": {
+   "prompt": "Chạy hai phép merge BPE trên 'ababab' (khi hòa: lần xuất hiện đầu tiên) và nêu các token kết quả và vì sao phép merge thứ ba thay đổi mọi thứ.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Merge 1: (a,b) xuất hiện 3 lần, cho ab ab ab.",
+    "Merge 2: (ab,ab) xuất hiện 2 lần (không chồng lấp, từ trái sang phải) cho abab ab.",
+    "Phép merge thứ ba gộp (abab, ab) một lần, cho một token ababab; dừng khi không còn cặp nào lặp lại hoặc đạt ngân sách từ vựng."
+   ]
+  }
+ }
+}

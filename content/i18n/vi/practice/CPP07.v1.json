@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "main.o cần A, A cần B, cả hai là static archive. Dòng link viết tay nào chạy được với GNU ld?",
+   "options": [
+    "g++ main.o -lA -lB",
+    "Cả hai luôn chạy được",
+    "Không cái nào chạy được",
+    "g++ main.o -lB -lA"
+   ],
+   "explanation": "Archive được quét từ trái sang phải; B phải đứng sau library cần nó."
+  },
+  "b2": {
+   "prompt": "Một file source mới được thêm vào src/ nhưng dự án dùng file(GLOB SRC src/*.cpp). Build vẫn thất bại với undefined reference. Lý do nhiều khả năng nhất là gì?",
+   "options": [
+    "Glob được đánh giá lúc configure; CMake chưa được chạy lại",
+    "Static library bỏ qua mọi file mới đặt trong src/",
+    "ctest phải được chạy trước để đăng ký file mới",
+    "Linker không đọc được file source thêm sau lần build đầu tiên"
+   ],
+   "explanation": "Chạy lại cmake, liệt kê source tường minh, hoặc dùng CONFIGURE_DEPENDS."
+  },
+  "b3": {
+   "prompt": "Một thư viện toán chỉ có header không có file .cpp nào. Dạng CMake nào mô tả nó?",
+   "options": [
+    "add_library(mathlib INTERFACE) với target_include_directories(mathlib INTERFACE include)",
+    "add_library(mathlib STATIC) với danh sách source rỗng và các header được copy vào",
+    "chỉ include_directories(include), không định nghĩa target library cho người dùng",
+    "add_executable(mathlib) với tất cả file header được liệt kê làm source"
+   ],
+   "explanation": "Target INTERFACE mang usage requirement cho người dùng của nó nhưng tự nó không build gì."
+  },
+  "b4": {
+   "prompt": "Vì sao configure bằng cmake -S . -B build thay vì chạy cmake trong thư mục source?",
+   "options": [
+    "Nó vô hiệu hóa các cờ sanitizer đã đặt trước đó trong CMake cache",
+    "Nó làm compiler sinh code nhanh hơn so với build in-source",
+    "Nó bắt buộc, vì ctest chỉ chạy khi khởi động từ thư mục riêng",
+    "File sinh ra nằm ngoài cây source và nhiều cấu hình có thể cùng tồn tại"
+   ],
+   "explanation": "Thư mục build riêng giữ cây sạch và cho phép bạn giữ các bản build Debug, Release và ASAN cạnh nhau."
+  },
+  "b5": {
+   "prompt": "12 trong 80 object include header common.hpp; mỗi lần biên dịch mất 2 s và lần link cuối mất 5 s. Build lại sau khi động vào common.hpp mất bao nhiêu giây? Cho một số nguyên.",
+   "explanation": "12 x 2 = 24 s biên dịch cộng 5 s link = 29 s."
+  },
+  "b6": {
+   "prompt": "Đồ thị: x.o cần x.cpp và common.hpp; y.o cần y.cpp và common.hpp; libxy cần x.o và y.o; tool cần libxy và tool.o; tool.o cần tool.cpp. common.hpp được sửa. Có bao nhiêu node (kể cả chính common.hpp) trong tập build lại? Số nguyên.",
+   "explanation": "common.hpp, x.o, y.o, libxy, tool = 5. tool.o không phụ thuộc vào common.hpp."
+  },
+  "b7": {
+   "prompt": "7 test được đăng ký và 1 test thất bại. Bao nhiêu phần trăm pass? Cho một số với 1 chữ số thập phân.",
+   "explanation": "6/7 = 85.7%."
+  },
+  "b8": {
+   "prompt": "app link libA PRIVATE. libA link libB PUBLIC. libB link libC PRIVATE. libA, libB, libC mỗi cái xuất một include directory PUBLIC. app thấy bao nhiêu trong ba include directory này khi biên dịch? Số nguyên.",
+   "explanation": "app thấy thư mục của libA và, vì libA link libB PUBLIC, cả của libB. Thư mục của libC là private đối với libB."
+  },
+  "b9": {
+   "prompt": "demo thất bại với 'fatal error: robotmath/vec2.hpp: No such file or directory' dù library biên dịch được. Nêu nguyên nhân khả dĩ theo thuật ngữ CMake và cách sửa một dòng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "demo không được link với target library, hoặc library không xuất include directory của nó dưới dạng PUBLIC.",
+    "Cách sửa: target_link_libraries(demo PRIVATE robotmath) và target_include_directories(robotmath PUBLIC include).",
+    "Nêu tên giai đoạn: preprocessing, không phải linking."
+   ]
+  },
+  "b10": {
+   "prompt": "Viết các dòng CMake đăng ký một test executable tests/test_x.cpp cho library mylib với CTest.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "enable_testing() trong CMakeLists cấp cao nhất.",
+    "add_executable(test_x tests/test_x.cpp) và target_link_libraries(test_x PRIVATE mylib).",
+    "add_test(NAME x COMMAND test_x)."
+   ]
+  },
+  "b11": {
+   "prompt": "Nhóm của bạn tranh luận giữa một target lớn hay nhiều target library nhỏ cho một stack robot 200 file. Nêu hai lập luận ủng hộ việc tách và một cái giá phải trả.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Build lại chính xác: một thay đổi chỉ biên dịch lại các thứ phụ thuộc vào nó.",
+    "Phân tầng được thực thi qua đồ thị phụ thuộc và ngăn chu trình; PRIVATE che giấu chi tiết nội bộ.",
+    "Cái giá: nhiều CMake hơn để bảo trì, configure chậm hơn và một đồ thị cần hiểu."
+   ]
+  }
+ }
+}

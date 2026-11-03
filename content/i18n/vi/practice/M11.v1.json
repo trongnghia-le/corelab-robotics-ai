@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Số điều kiện tương đối của f(x)=sqrt(x) tại x=9 (3 chữ số thập phân).",
+   "explanation": "kappa=|x/(2 sqrt(x) sqrt(x))|=1/2."
+  },
+  "b2": {
+   "prompt": "Trong độ chính xác double, 1e16 + 1 cho kết quả",
+   "options": [
+    "1e16, vì khoảng cách giữa các double gần 1e16 là 2",
+    "đúng 1e16 + 1, vì double lưu chính xác mọi số nguyên",
+    "lỗi tràn số, vì tổng vượt double lớn nhất",
+    "1.0000000000000002e16, vì một đơn vị đi vào chữ số cuối"
+   ],
+   "explanation": "Các double gần 1e16 cách nhau 2, nên +1 làm tròn về lại (ties to even)."
+  },
+  "b3": {
+   "prompt": "Khoảng cách float32 gần 20,000 m là 2^-9. Biểu diễn theo milimét (3 chữ số thập phân).",
+   "explanation": "2^-9 m = 0.001953 m = 1.953 mm."
+  },
+  "b4": {
+   "prompt": "kappa=1e9, machine epsilon double là 2.22e-16. Xấp xỉ còn bao nhiêu chữ số thập phân của đáp án đúng (số nguyên gần nhất)?",
+   "explanation": "16-9=7 chữ số."
+  },
+  "b5": {
+   "prompt": "Một đồng nghiệp nói: 'Residual là 1e-15, nên các ước lượng tham số chính xác đến 15 chữ số.' Câu trả lời tốt nhất là",
+   "options": [
+    "Chỉ số học float128 mới kiểm chứng được độ chính xác, nên residual chẳng chứng minh gì",
+    "Residual và sai số luôn bằng nhau, nên residual 1e-15 nghĩa là sai số 1e-15",
+    "Residual vô nghĩa và nên bỏ qua để chỉ xem giá trị tham số",
+    "Residual đo thuật toán; độ chính xác của x còn phụ thuộc vào số điều kiện"
+   ],
+   "explanation": "Hãy kiểm tra kappa; sai số có thể lớn hơn residual đến kappa lần."
+  },
+  "b6": {
+   "prompt": "Hai điện áp gần nhau 5.0001 V và 5.0000 V đều có sai số tương đối tối đa 1e-6. Sai số tương đối của hiệu số khoảng bao nhiêu (phần trăm, số nguyên gần nhất)?",
+   "explanation": "kappa=5.0001/0.0001=5e4; sai số ~5e4*1e-6=5e-2=5%."
+  },
+  "b7": {
+   "prompt": "Phát biểu nào phân biệt thuật toán không ổn định với bài toán điều kiện xấu?",
+   "options": [
+    "Điều kiện xấu là độ nhạy của chính bài toán; không ổn định là sai số tránh được do thuật toán thêm vào",
+    "Chúng là một: bài toán điều kiện xấu đúng khi một thuật toán không ổn định trên nó",
+    "Điều kiện xấu chỉ xảy ra với ma trận suy biến; không ổn định chỉ xảy ra với ma trận gần suy biến",
+    "Không ổn định do dữ liệu của người dùng; điều kiện xấu do thuật toán được chọn"
+   ],
+   "explanation": "Conditioning thuộc về bài toán; tính ổn định thuộc về thuật toán."
+  },
+  "b8": {
+   "prompt": "Trong phương trình chuẩn kappa(X^T X) = kappa(X)^2. Nếu kappa(X)=1e5, số mũ của kappa(X^T X) là bao nhiêu (tương đương, phương trình chuẩn có thể mất khoảng bao nhiêu chữ số thập phân)?",
+   "explanation": "kappa bình phương = 1e10."
+  },
+  "b9": {
+   "prompt": "Cách tốt nhất để so sánh hai số thực a và b trong unit test là gì?",
+   "options": [
+    "assert a == b, dùng so sánh nhị phân chính xác",
+    "math.isclose(a, b, rel_tol=1e-9, abs_tol=1e-12)",
+    "str(a) == str(b), so sánh dạng in ra",
+    "abs(a - b) == 0.0, hiệu bằng đúng 0"
+   ],
+   "explanation": "Dùng dung sai theo thang sai số kỳ vọng."
+  },
+  "b10": {
+   "prompt": "Cộng 10 bản sao của 0.1 cho 0.9999999999999999. Sai số tuyệt đối là bao nhiêu, theo đơn vị 1e-16 (1 chữ số thập phân)?",
+   "explanation": "1-0.9999999999999999 = 1.1e-16."
+  },
+  "b11": {
+   "prompt": "Bạn phải chọn giữa inv(A)@b và một phép giải có pivot cho ma trận hiệu chuẩn có số điều kiện ước lượng 1e10. Giải thích bạn sẽ làm gì và báo cáo kết quả thế nào.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Ưu tiên phép giải có pivot (hoặc QR/SVD) hơn việc lập ma trận nghịch đảo.",
+    "Báo cáo kappa và số chữ số dự kiến mất, còn khoảng 6 chữ số trong độ chính xác double.",
+    "Gợi ý một cách kiểm chứng như làm nhiễu dữ liệu hoặc so sánh với độ chính xác cao hơn."
+   ]
+  },
+  "b12": {
+   "prompt": "Một bộ tích lũy odometry float32 ngừng thay đổi sau khi robot đi xa khỏi gốc tọa độ. Dự đoán nguyên nhân và đề xuất hai thay đổi code.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Nhận ra absorption: các lượng tăng nhỏ hơn nửa khoảng cách bị làm tròn mất.",
+    "Đề xuất float64 hoặc gốc cục bộ / bộ tích lũy riêng.",
+    "Nhắc đến cộng bù (compensated summation) hoặc test với độ lệch lớn."
+   ]
+  }
+ }
+}

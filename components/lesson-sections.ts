@@ -38,7 +38,13 @@ function nodeText(node: RootContent): string {
 }
 // Wrap authored h2 sections after Markdown parsing; never split source strings or fences.
 // Heading IDs/text remain the same for the existing table of contents and illustrations.
-export function rehypeLessonSections() {
+export type SectionOptions = {
+  /** Heading ids by section order; defaults to the id derived from the title. */
+  ids?: string[];
+  /** Displayed section numbers by section order; defaults to 1, 2, 3… */
+  numbers?: number[];
+};
+export function rehypeLessonSections(options: SectionOptions = {}) {
   return (tree: Root) => {
     const children: RootContent[] = [];
     let section: Element | undefined;
@@ -46,19 +52,18 @@ export function rehypeLessonSections() {
     for (const node of tree.children) {
       if (node.type === "element" && node.tagName === "h2") {
         const title = nodeText(node);
-        node.properties["data-section-number"] = String(++index).padStart(
-          2,
-          "0",
-        );
+        const id = options.ids?.[index] ?? headingId(title);
+        node.properties["data-section-id"] = id;
+        node.properties["data-section-number"] = String(
+          options.numbers?.[index] ?? index + 1,
+        ).padStart(2, "0");
+        index++;
         section = {
           type: "element",
           tagName: "section",
           properties: {
-            className: [
-              "lesson-section",
-              "lesson-section-" + sectionKind(title),
-            ],
-            "aria-labelledby": headingId(title),
+            className: ["lesson-section", "lesson-section-" + sectionKind(id)],
+            "aria-labelledby": id,
           },
           children: [],
         };

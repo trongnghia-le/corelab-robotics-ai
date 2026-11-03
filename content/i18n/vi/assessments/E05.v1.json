@@ -1,0 +1,65 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Trong STRIPS, một operator được áp dụng vào một state như thế nào?",
+   "options": [
+    "Xóa delete list, rồi thêm add list, nếu mọi precondition đều đúng",
+    "Thay toàn bộ state bằng add list, nếu mọi precondition đều đúng",
+    "Thêm add list trước, rồi xóa delete list, bất kể precondition",
+    "Xóa các precondition khỏi state, rồi thêm add list"
+   ],
+   "explanation": "s' = (s trừ del) hợp add; một fact nằm trong cả hai danh sách sẽ đúng ở cuối."
+  },
+  "q2": {
+   "prompt": "State là {at_robot(A), at(cup,A), handempty}. Operator pick(cup,A) có pre {at_robot(A), at(cup,A), handempty}, add {holding(cup)}, delete {at(cup,A), handempty}. Kết quả là:",
+   "options": [
+    "{at_robot(A), handempty, holding(cup)}",
+    "{holding(cup), at(cup,A)}",
+    "{at_robot(A), at(cup,A), holding(cup)}",
+    "{at_robot(A), holding(cup)}"
+   ],
+   "explanation": "Xóa at(cup,A) và handempty, thêm holding(cup)."
+  },
+  "q3": {
+   "prompt": "Một gripper, hai vật, ba vị trí, sức chứa một vật mỗi vị trí. Có bao nhiêu cách để cả hai vật nằm trên bàn (ở các vị trí khác nhau, chưa tính robot)?",
+   "explanation": "3 * 2 = 6."
+  },
+  "q4": {
+   "prompt": "Một gripper, hai vật, ba vị trí, sức chứa một vật mỗi vị trí. Có bao nhiêu state mà robot đang cầm một vật? Hãy đếm vật nào được cầm (2), vị trí của vật còn lại (3) và vị trí robot (3).",
+   "explanation": "2 * 3 * 3 = 18."
+  },
+  "q5": {
+   "prompt": "Fact đích g không nằm trong tập reachable của bài toán delete-relaxed. Bạn kết luận được gì?",
+   "options": [
+    "Đích thực sự không thể đạt được",
+    "Đích đạt được nhưng cần nhiều bước hơn",
+    "Phép relaxation sai",
+    "Planner cần một heuristic"
+   ],
+   "explanation": "Relaxation xấp xỉ quá mức (over-approximate) những gì đạt được, nên việc bị loại trừ là một chứng minh."
+  },
+  "q6": {
+   "prompt": "Các fact đích holding(cup) và holding(box) đều nằm trong tập relaxed reachable, nhưng không tồn tại plan thực nào với một gripper. Vì sao?",
+   "options": [
+    "Planner có lỗi trong cách đếm số gripper",
+    "Hai fact đích mâu thuẫn nhau trong bài toán relaxed",
+    "Breadth-first search không thể trả về plan cần hai lần pick",
+    "Relaxation bỏ qua delete, nên handempty không bao giờ bị mất"
+   ],
+   "explanation": "Sau khi pick một vật, handempty bị xóa."
+  },
+  "q7": {
+   "prompt": "Plan: move(A,B), pick(box,B), move(B,C), place(box,C). Mỗi bước tốn 1. Chi phí của plan là bao nhiêu?",
+   "explanation": "Bốn operator chi phí đơn vị."
+  },
+  "q8": {
+   "prompt": "Người dùng yêu cầu planner đặt một cái cốc lên ô kệ mà trong mô hình ô đó không bao giờ trở nên free. Hãy giải thích bạn sẽ chẩn đoán vì sao không có plan như thế nào và sẽ báo lại điều gì.",
+   "rubric": [
+    "Chạy reachability để thấy fact đích không thể được tạo ra.",
+    "Xác định precondition chặn (ví dụ free(slot)) mà không operator nào thiết lập được.",
+    "Báo fact còn thiếu và sửa mô hình hoặc tuyên bố tác vụ bất khả thi."
+   ],
+   "explanation": "Có rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

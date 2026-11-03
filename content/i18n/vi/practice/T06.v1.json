@@ -1,0 +1,98 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Các mount: /data (named volume) và /cfg (bind mount chỉ đọc). Chương trình ghi /data/out.csv, /cfg/new.yaml và /var/tmp/x. Lần ghi nào thất bại?",
+   "options": [
+    "/data/out.csv, vì một named volume là chỉ đọc bên trong container",
+    "Không cái nào, vì mọi đường dẫn đều chấp nhận ghi khi container đang chạy",
+    "/cfg/new.yaml (mount chỉ đọc)",
+    "/var/tmp/x, vì filesystem gốc của container là chỉ đọc"
+   ],
+   "explanation": "Một mount chỉ đọc từ chối các lần ghi; những cái khác thành công."
+  },
+  "b2": {
+   "prompt": "Các mount: chỉ /results (volume). Chương trình ghi 5 file: 3 dưới /results, 1 dưới /tmp, 1 dưới /root/.cache. Sau docker rm, có bao nhiêu file sống sót? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Chỉ 3 file dưới volume được gắn."
+  },
+  "b3": {
+   "prompt": "Mount target là /results nhưng chương trình ghi vào /result/run.json (lỗi gõ). Hệ quả là gì?",
+   "options": [
+    "Lần ghi thất bại ngay lập tức, vì thư mục /result không tồn tại",
+    "Docker tạo một volume mới tên /result và giữ file ở đó",
+    "File rơi vào layer ghi được và mất khi docker rm",
+    "File vẫn được ghi vào volume, vì Docker sửa lỗi gõ"
+   ],
+   "explanation": "/result không được mount bao phủ, nên nó âm thầm đi vào layer của container."
+  },
+  "b4": {
+   "prompt": "Các mount /results (volume) và /results/cache (bind mount). /results/cache/model.bin đi đâu?",
+   "options": [
+    "Bind mount (target khớp dài nhất)",
+    "Layer ghi được, vì các mount lồng nhau không được phép chồng lấp",
+    "Cả volume và bind mount, vì một lần ghi đi vào mọi mount",
+    "Volume, vì nó được khai báo trước nên được ưu tiên"
+   ],
+   "explanation": "Target cụ thể nhất (dài nhất) bao phủ đường dẫn sẽ thắng."
+  },
+  "b5": {
+   "prompt": "Một Dockerfile 7 chỉ thị có COPY code là chỉ thị 3 và việc cài dependency là chỉ thị 4. Sau khi sửa code, có bao nhiêu chỉ thị được tái dùng từ cache? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Các chỉ thị 1 và 2 không đổi; 3 và mọi thứ sau được dựng lại."
+  },
+  "b6": {
+   "prompt": "Sau khi sắp xếp lại để COPY lock là chỉ thị 3, việc cài là 4 và COPY code là 5 (tổng 7 chỉ thị), có bao nhiêu chỉ thị được tái dùng sau khi sửa code? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Các chỉ thị 1-4 không đổi."
+  },
+  "b7": {
+   "prompt": "Năm image dùng chung 200 MB layer cơ sở và mỗi cái thêm 10 MB. Dung lượng lưu trữ khi có chia sẻ? (MB nguyên, sai số cho phép 0.5)",
+   "explanation": "200 + 5×10 = 250 MB."
+  },
+  "b8": {
+   "prompt": "Điều nào là thực hành xấu trong một Dockerfile cho thí nghiệm tái lập được?",
+   "options": [
+    "COPY file lock trước code",
+    "FROM python:3.12-slim được ghim, bí mật truyền lúc chạy",
+    "Một .dockerignore loại trừ .git và .env",
+    "FROM python:latest và ENV API_KEY=... được nướng vào image"
+   ],
+   "explanation": "Một base không ghim thay đổi theo thời gian và bí mật trong ENV đọc được từ image."
+  },
+  "b9": {
+   "prompt": "Các file do một container root ghi vào một thư mục host được bind mount mà bạn không xóa được. Cách sửa chuẩn là gì?",
+   "options": [
+    "Chuyển sang image mới nhất, không còn chạy bằng root",
+    "Xóa volume để các file không được giữ sau lần chạy",
+    "Chạy container với --user \"$(id -u):$(id -g)\"",
+    "Từ nay dùng sudo cho mọi thao tác file trên host"
+   ],
+   "explanation": "Khi đó tiến trình ghi các file thuộc uid của bạn."
+  },
+  "b10": {
+   "prompt": "Một container được dừng (không bị xóa). Bạn khởi động lại nó. Điều gì đúng về layer ghi được của nó?",
+   "options": [
+    "Nó đã được chuyển vào một volume khi container dừng, nên nó tồn tại",
+    "Nó vẫn tồn tại cùng các file của nó, vì chỉ docker rm mới loại bỏ nó",
+    "Nó đã được chuyển vào image khi container dừng, như một layer mới",
+    "Nó đã bị loại bỏ khi container dừng, nên các file mất"
+   ],
+   "explanation": "Dừng giữ container và layer ghi được của nó; xóa mới loại bỏ nó."
+  },
+  "b11": {
+   "prompt": "Kết quả của đồng đội bạn biến mất sau khi họ cập nhật image và tạo lại container. Hãy giải thích nguyên nhân khả dĩ và đưa ra lệnh run đã sửa.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Kết quả được ghi vào filesystem của container (hoặc một đường dẫn không được mount), bị loại bỏ khi tạo lại.",
+    "Cách sửa: gắn một named volume hoặc bind mount tại đường dẫn kết quả, ví dụ -v results:/results, và ghi vào đó.",
+    "Kiểm chứng bằng ls trong container thứ hai và ghi lại image digest cùng kết quả."
+   ]
+  },
+  "b12": {
+   "prompt": "Một container không tái tạo điều gì về một thí nghiệm, và bạn ghi lại nó như thế nào?",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Kernel của host, driver GPU, model CPU và các kernel không tất định không được đóng gói trong image.",
+    "Dữ liệu và seed/cấu hình phải được cung cấp và quản lý phiên bản riêng.",
+    "Ghi lại image digest, phiên bản kernel và driver của host, phần cứng, id commit và cấu hình cùng mỗi kết quả."
+   ]
+  }
+ }
+}

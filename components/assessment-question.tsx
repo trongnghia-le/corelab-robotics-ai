@@ -1,5 +1,6 @@
 "use client";
 import type { Answers, Assistance, Question } from "@/lib/types";
+import { useI18n } from "@/lib/i18n";
 import {
   knowledgeTypeFor,
   knowledgeTypeInfo,
@@ -12,20 +13,27 @@ export function AssistanceSelect({
   value: Assistance;
   onChange: (value: Assistance) => void;
 }) {
+  const { t } = useI18n();
   return (
-    <label>
-      Assistance level
-      <select
-        aria-label="Assistance level"
-        value={value}
-        onChange={(e) => onChange(e.target.value as Assistance)}
-      >
-        <option value="A0">A0 · Independent, no assistance</option>
-        <option value="A1">A1 · Conceptual hint</option>
-        <option value="A2">A2 · Specific hint / example</option>
-        <option value="A3">A3 · Solution from AI / reference</option>
-      </select>
-    </label>
+    <div className="assistance-select">
+      <label>
+        {t("assist.label")}
+        <select
+          aria-label={t("assist.label")}
+          value={value}
+          onChange={(e) => onChange(e.target.value as Assistance)}
+        >
+          <option value="A0">{t("assist.A0")}</option>
+          <option value="A1">{t("assist.A1")}</option>
+          <option value="A2">{t("assist.A2")}</option>
+          <option value="A3">{t("assist.A3")}</option>
+        </select>
+      </label>
+      <details className="details-disclosure">
+        <summary>{t("common.details")}</summary>
+        <p className="small muted">{t("assist.note")}</p>
+      </details>
+    </div>
   );
 }
 export function AssessmentQuestion({
@@ -41,6 +49,7 @@ export function AssessmentQuestion({
   onAnswer: (id: string, value: string) => void;
   requireShort?: boolean;
 }) {
+  const { t } = useI18n();
   const type = knowledgeTypeFor(q),
     info = knowledgeTypeInfo[type];
   return (
@@ -52,16 +61,25 @@ export function AssessmentQuestion({
         <span>{q.prompt}</span>
       </legend>
       <div className="question-tags">
-        <span>{q.dimension}</span>
-        {q.critical && <span>CRITICAL</span>}
+        {q.critical && <span>{t("question.critical")}</span>}
         <span>
-          {info.label} — {info.goal}
-        </span>
-        <span>
-          {isObjective(q) ? "OBJECTIVE CHECK" : "RUBRIC · UNVERIFIED"}
+          {isObjective(q) ? t("question.auto") : t("question.rubric")}
         </span>
       </div>
-      {q.skillLabel && <p className="small muted">Skill: {q.skillLabel}</p>}
+      <details className="details-disclosure">
+        <summary>{t("common.details")}</summary>
+        <div className="question-tags">
+          <span>{q.dimension}</span>
+          <span>
+            {info.label} — {info.goal}
+          </span>
+        </div>
+      </details>
+      {q.skillLabel && (
+        <p className="small muted">
+          {t("question.skill")}: {q.skillLabel}
+        </p>
+      )}
       {q.kind === "choice" ? (
         <div className="choices">
           {q.options?.map((o, j) => (
@@ -85,13 +103,13 @@ export function AssessmentQuestion({
         </div>
       ) : q.kind === "number" ? (
         <label className="number-answer">
-          Answer (use a decimal point)
+          {t("question.number")}
           <input
             aria-label={`Answer ${q.id}`}
             required
             type="text"
             inputMode="decimal"
-            placeholder="Enter a number…"
+            placeholder={t("question.numberPlaceholder")}
             value={answers[q.id] ?? ""}
             onChange={(e) => onAnswer(q.id, e.target.value)}
           />
@@ -99,7 +117,7 @@ export function AssessmentQuestion({
       ) : (
         <>
           <textarea
-            aria-label="Rubric response"
+            aria-label={t("question.response")}
             rows={5}
             maxLength={10000}
             required={requireShort}

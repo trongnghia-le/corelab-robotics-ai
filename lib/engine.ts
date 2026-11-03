@@ -187,12 +187,12 @@ export function recommend(
           : state.gap
             ? "The latest attempt revealed a gap; read the feedback and try again independently."
             : state.level >= 1
-              ? "Conceptual evidence is available; next, implement independently and test your work."
+              ? "You have shown you understand the concepts; next, implement independently and test your work."
               : pinned.has(t.id)
-                ? `A foundation needed for your pinned goal ${p.focusTopic}; its prerequisites now have L1 evidence.`
+                ? `A foundation needed for your pinned goal ${p.focusTopic}; its prerequisites are now mastered.`
                 : t.prerequisites.length
-                  ? "Prerequisites have L1 evidence. This is the next step in building your foundations."
-                  : "No evidence yet. Start with a foundation that has no prerequisites.";
+                  ? "Its prerequisites are mastered. This is the next step in building your foundations."
+                  : "Not started yet. Begin with a foundation that has no prerequisites.";
       return [
         {
           topicId: t.id,
@@ -202,10 +202,10 @@ export function recommend(
           reason,
           prerequisites: t.prerequisites,
           exercise: weak
-            ? "Review the linked reasoning and solve a fresh focused A0 set. Focused correction is separate from full diagnostic mastery."
+            ? "Review the linked reasoning and solve a fresh focused set with no help (A0). Focused correction is separate from mastering the whole topic."
             : kind === "practice"
               ? "Implement the assignment independently, run local tests, and import the report."
-              : "Try an A0 diagnostic first; study and address gaps after your attempt.",
+              : "Take the short check first with no help (A0); study and address gaps after your attempt.",
         },
       ];
     })

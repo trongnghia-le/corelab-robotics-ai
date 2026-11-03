@@ -255,7 +255,7 @@ test("V2 dashboard opens the objective lab without changing either learning hist
     ),
   ).toBeVisible();
   await page
-    .getByRole("link", { name: "Open Robotics & AI lab", exact: true })
+    .getByRole("link", { name: "Open Extra practice lab", exact: true })
     .click();
   await expect(
     page.getByRole("heading", {

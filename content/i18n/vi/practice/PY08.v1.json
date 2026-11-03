@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Thiết lập nào ngăn lỗi gõ nhầm lặng lẽ trong file cấu hình?",
+   "options": [
+    "đặt giá trị mặc định cho mọi khóa, để không bao giờ thiếu khóa nào",
+    "dùng một dictionary toàn cục, để mọi module đọc cùng các khóa",
+    "từ chối khóa lạ khi nạp config",
+    "ghi config ở mức DEBUG, để lỗi gõ có thể thấy trong log"
+   ],
+   "explanation": "Một khóa lạ như learning_rat phải là lỗi."
+  },
+  "b2": {
+   "prompt": "Độ lệch chuẩn mỗi lần chạy là 0.0164 và có 20 seed. Sai số chuẩn của trung bình (4 chữ số thập phân)?",
+   "explanation": "0.0164/sqrt(20)."
+  },
+  "b3": {
+   "prompt": "Độ lệch chuẩn mỗi lần chạy là 0.5; cần bao nhiêu seed để sai số chuẩn bằng 0.1?",
+   "explanation": "(0.5/0.1)^2=25."
+  },
+  "b4": {
+   "prompt": "logging.warning('x') được gọi trước bất kỳ cấu hình logging nào. Chuyện gì xảy ra?",
+   "options": [
+    "không có gì được in, vì thông điệp bị bỏ khi không có handler",
+    "root logger được cấu hình tự động và WARNING:root:x được in ra",
+    "nó được ghi vào một file đặt theo tên root logger trong thư mục làm việc",
+    "một exception được ném vì chưa cấu hình handler nào"
+   ],
+   "explanation": "Các hàm logging cấp module gọi basicConfig nếu chưa có handler."
+  },
+  "b5": {
+   "prompt": "Root logger chưa có handler; lời gọi logging.warning('x') đầu tiên vừa cấu hình nó ngầm. Sau đó logging.basicConfig(level=logging.INFO) được gọi. Nó sẽ",
+   "options": [
+    "ném lỗi, vì logging bị cấu hình hai lần",
+    "hạ ngưỡng xuống INFO, vì basicConfig luôn đặt mức",
+    "không làm gì, vì handler đã tồn tại (trừ khi force=True)",
+    "xóa handler hiện có và cài một handler mới ở mức INFO"
+   ],
+   "explanation": "basicConfig là no-op nếu root logger đã có handler."
+  },
+  "b6": {
+   "prompt": "Dấu phẩy động: (0.1+0.2)+0.3 trừ 0.1+(0.2+0.3), theo đơn vị 1e-16 (1 chữ số thập phân).",
+   "explanation": "0.6000000000000001-0.6=1.1e-16."
+  },
+  "b7": {
+   "prompt": "So sánh bằng nhau từng bit của kết quả là phép thử đúng cho",
+   "options": [
+    "một phép tổng dấu phẩy động song song với số luồng khác nhau",
+    "một lần huấn luyện trên GPU",
+    "kết quả của các thư viện BLAS khác nhau",
+    "hash của một file dữ liệu đầu vào"
+   ],
+   "explanation": "Kết quả dấu phẩy động nên được so sánh bằng dung sai."
+  },
+  "b8": {
+   "prompt": "Với các giá trị PYTHONHASHSEED 1, 2 và 3, thứ tự set của ba chuỗi lần lượt là ABC, ABC, ACB. Quan sát được bao nhiêu thứ tự khác nhau?",
+   "explanation": "Thứ tự của seed 1 và 2 trùng nhau."
+  },
+  "b9": {
+   "prompt": "Git commit hash trong env.json nên bảo đảm điều gì?",
+   "options": [
+    "code đã chạy được xác định, nhưng chỉ khi cây làm việc sạch",
+    "kết quả khớp từng bit, vì cùng code cho cùng số",
+    "seed được cố định, vì commit hash bao gồm trạng thái ngẫu nhiên",
+    "phụ thuộc được ghim, vì commit bao gồm các package đã cài"
+   ],
+   "explanation": "Cây bẩn nghĩa là commit không mô tả đúng code."
+  },
+  "b10": {
+   "prompt": "Config hash được hiển thị dưới dạng các chữ số hex đầu của một digest sha256, ví dụ a0af821358e4. Nó giữ bao nhiêu chữ số hex?",
+   "explanation": "12 chữ số hex."
+  },
+  "b11": {
+   "prompt": "Hãy thiết kế nội dung của một thư mục chạy cho một thí nghiệm, nói mỗi file dùng để làm gì, và file nào nên được commit vào git.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Liệt kê config.json, result.json, run.log và env.json (hoặc tương đương) cùng mục đích.",
+    "Tách dữ liệu kết quả khỏi metadata như thời gian và host.",
+    "Nói rằng code, config và kết quả nhỏ có thể commit, còn dữ liệu lớn và log thì được tham chiếu hoặc bỏ qua."
+   ]
+  },
+  "b12": {
+   "prompt": "Thí nghiệm của một đồng đội cho số khác nhau mỗi lần dù seed cố định. Hãy liệt kê bốn thứ đầu tiên bạn kiểm tra và theo thứ tự nào.",
+   "explanation": "Câu luyện tập theo rubric, không được chấm tự động.",
+   "rubric": [
+    "Kiểm tra việc dùng RNG toàn cục và thứ tự gọi.",
+    "Kiểm tra thứ tự duyệt set/dict và PYTHONHASHSEED.",
+    "Kiểm tra timestamp, luồng/thứ tự dấu phẩy động và các phụ thuộc không được ghim."
+   ]
+  }
+ }
+}

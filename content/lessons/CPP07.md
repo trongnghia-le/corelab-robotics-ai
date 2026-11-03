@@ -4,7 +4,7 @@
   "module_id": "CPP07",
   "title": "Build systems: CMake, linking, and targets",
   "summary": "Understand compile and link stages, describe a project as targets with usage requirements in CMake, and test it out of source.",
-  "estimated_minutes": 80,
+  "estimated_minutes": 405,
   "prerequisites": [
     "CPP01",
     "T01"
@@ -452,6 +452,54 @@ and, for the CMake part, `100% tests passed, 0 tests failed out of 1` from `ctes
 
 Add `install(TARGETS robotmath ...)` plus a package config file so that another project can use `find_package(robotmath)` and `target_link_libraries(app PRIVATE robotmath::robotmath)`. Or extend the Python model with timestamps so that it reproduces Make's "is the target older than a prerequisite?" rule.
 
+### Library track
+
+Python's standard library already has the algorithm you wrote: `graphlib.TopologicalSorter` (3.9+). Cross-check your `topo_order` against it, then let the real build system confirm your `rebuild_set` model. Append this to your finished Python file and run it from the directory that contains `proj/` (the CMake part needs `cmake` and `make`; delete part 3 otherwise).
+
+```python
+import json, random, subprocess
+from graphlib import CycleError, TopologicalSorter   # standard library, Python 3.9+
+
+# 1. your topo_order against graphlib on 200 random DAGs: both must be valid orders
+rng = random.Random(0)
+for _ in range(200):
+    n = rng.randint(1, 12)
+    deps = {f"n{i}": [f"n{j}" for j in range(i) if rng.random() < 0.3] for i in range(n)}
+    mine = topo_order(deps)
+    ref = list(TopologicalSorter(deps).static_order())
+    assert sorted(mine) == sorted(ref)
+    pos = {x: i for i, x in enumerate(mine)}
+    assert all(pos[d] < pos[x] for x, ds in deps.items() for d in ds)
+
+# 2. cycle detection agrees with graphlib
+try:
+    TopologicalSorter({"a": ["b"], "b": ["a"]}).prepare()
+    raise AssertionError
+except CycleError:
+    pass
+
+# 3. let the REAL build system rebuild after a `touch` and compare its compile count with the model (needs cmake + make
+#    and the proj/ project from the lab; skip this part otherwise). Run from the directory containing proj/.
+import pathlib, time
+subprocess.run(["cmake", "-S", "proj", "-B", "build"], check=True, capture_output=True)
+subprocess.run(["cmake", "--build", "build"], check=True, capture_output=True)
+graph = {"vec2.o": ["vec2.cpp", "vec2.hpp"], "main.o": ["main.cpp", "vec2.hpp"], "test.o": ["test_vec2.cpp", "vec2.hpp"],
+         "librobotmath.a": ["vec2.o"], "demo": ["main.o", "librobotmath.a"], "test_vec2": ["test.o", "librobotmath.a"]}
+real_path = {"vec2.hpp": "proj/include/robotmath/vec2.hpp", "vec2.cpp": "proj/src/vec2.cpp", "main.cpp": "proj/src/main.cpp"}
+for changed in ("vec2.hpp", "vec2.cpp", "main.cpp"):
+    time.sleep(1.1)
+    pathlib.Path(real_path[changed]).touch()
+    out = subprocess.run(["cmake", "--build", "build"], check=True, capture_output=True, text=True).stdout
+    real_compiles = out.count("Building CXX")
+    model = rebuild_set(graph, {changed})
+    model_compiles = sum(1 for n in model if n.endswith(".o"))
+    print(changed, "real compiles:", real_compiles, "model:", model_compiles)
+    assert real_compiles == model_compiles
+print("library track ok")
+```
+
+Expected: three lines such as `vec2.hpp real compiles: 3 model: 3`, `vec2.cpp ... 1 ... 1`, `main.cpp ... 1 ... 1`, then `library track ok`. The model counts only `.o` nodes, which is what the build prints as `Building CXX object`.
+
 ## Verification
 
 - Run the build twice. The second `cmake --build build` must do nothing ("up to date"); if it rebuilds, a timestamp or a generated file is wrong.
@@ -499,7 +547,7 @@ Add `install(TARGETS robotmath ...)` plus a package config file so that another 
 7. In Release, `-DNDEBUG` turns `assert(...)` into nothing, so the wrong code is never checked and the test returns success. Use a test macro that does not depend on `NDEBUG` (a `CHECK` that prints and returns `EXIT_FAILURE`, as in the lab), or a framework such as GoogleTest/Catch2.
 8. `main.o -lA -lB` links: after scanning `libA.a`, `b_fn` is undefined and `libB.a` is scanned next. `main.o -lB -lA` fails because `libB.a` is scanned when nothing needs it and `libA.a`'s later need is never satisfied. In CMake: `target_link_libraries(A PUBLIC B)` or `PRIVATE B`, and `target_link_libraries(main PRIVATE A)`; the link line is ordered automatically. With `PRIVATE`, B's include directories do not propagate to `main`, so if `main` uses a B header it needs its own `target_link_libraries(main PRIVATE B)`; with `PUBLIC`, `main` inherits B's include directories (and B on its link line).
 9. Stage: link. `multiple definition of 'twice(int)'; ... first defined here`, because each translation unit has its own definition. Fixes: (1) `inline int twice(int x)` (idiomatic, definition stays in the header, the linker merges copies); (2) `static int twice(int)`, each file gets a private copy (wastes space, can duplicate state); (3) declare in the header and define in one `.cpp` (cleanest for non-trivial code, but prevents cross-file inlining without LTO).
-10. `core`: `add_library(core ...)`, `target_include_directories(core PUBLIC include)`. `planning`: `target_link_libraries(planning PUBLIC core)` (its headers use core types) and `PRIVATE Eigen3::Eigen`. `drivers`: `PRIVATE core`. `planner_node`: `PRIVATE planning`; `driver_node`: `PRIVATE drivers`; tests: `test_core -> core`, `test_planning -> planning`, `test_drivers -> drivers`. A change to `core/types.hpp` rebuilds the objects of `core`, `planning`, `drivers` and the nodes and tests that include it: all 3 libraries, 2 applications and 3 tests are affected (8 targets), the worst case. A cycle would have no valid build order: A needs B built first and B needs A built first.
+10. `core`: `add_library(core ...)`, `target_include_directories(core PUBLIC include)`. `planning`: `target_link_libraries(planning PUBLIC core)` (its headers use core types) and `PRIVATE Eigen3::Eigen`. `drivers`: `PRIVATE core`. `planner_node`: `PRIVATE planning`; `driver_node`: `PRIVATE drivers`; tests: `test_core -> core`, `test_planning -> planning`, `test_drivers -> drivers`. A change to `core/types.hpp` rebuilds the objects of `core`, `planning`, `drivers` and the nodes and tests that include it: all 3 libraries, 2 applications and 3 tests are affected (8 targets). Strictly, only targets whose sources include the header (directly or through a public header) recompile: `core`, `planning`, `drivers`, `planner_node`, `test_core`, `test_planning`; `driver_node` and `test_drivers` only relink, because `drivers` links `core` PRIVATE and its headers hide the types. A cycle would have no valid build order: A needs B built first and B needs A built first.
 11. A good answer: (a) `vec2.cpp`: 1 compile, archive, relink `demo`, `test_vec2` and the `robotplan` test; (b) `vec2.hpp`: every object that includes it, including `robotplan.cpp`; (c) `robotplan.cpp`: 1 compile, archive and relink of its own test, not `demo`. The `compile_commands.json` line shows `-I` flags inherited through `PUBLIC`; the ASAN build is in its own directory so the two configurations do not mix.
 
 ## Further reading
@@ -508,4 +556,4 @@ Add `install(TARGETS robotmath ...)` plus a package config file so that another 
 - [cmake-buildsystem(7)](https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html) - the precise semantics of targets, PUBLIC/PRIVATE/INTERFACE and transitive usage requirements.
 - [GNU Make Manual](https://www.gnu.org/software/make/manual/make.html) - rules, prerequisites and how rebuilds are decided.
 
-**More practice:** work through the later steps of the [CMake Tutorial](https://cmake.org/cmake/help/latest/guide/tutorial/index.html) (each step ends with a build-and-run exercise), and the [CTest manual](https://cmake.org/cmake/help/latest/manual/ctest.1.html) for test options.
+**More practice:** the [CMake Tutorial step "Adding a Library"](https://cmake.org/cmake/help/latest/guide/tutorial/Adding%20a%20Library.html) and the following steps (usage requirements, testing), the reference page for [`target_link_libraries`](https://cmake.org/cmake/help/latest/command/target_link_libraries.html) (PUBLIC/PRIVATE/INTERFACE semantics, then re-do exercise 10), the [`file(GLOB)`](https://cmake.org/cmake/help/latest/command/file.html) warning, the [CTest manual](https://cmake.org/cmake/help/latest/manual/ctest.1.html), and the [graphlib docs](https://docs.python.org/3/library/graphlib.html) for the build-order model.

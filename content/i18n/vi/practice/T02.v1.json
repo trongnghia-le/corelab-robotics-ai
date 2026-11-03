@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Lịch sử: C0←C1←C2←C3 trên main; feature rẽ nhánh từ C1 với C4←C5. Main hơn feature bao nhiêu commit? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "C2 và C3 chỉ có trên main."
+  },
+  "b2": {
+   "prompt": "Lịch sử: C0←C1←C2←C3 trên main; feature rẽ nhánh từ C1 với C4←C5. Generation number (1 cho gốc) của C5 là bao nhiêu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "C0=1, C1=2, C4=3, C5=4."
+  },
+  "b3": {
+   "prompt": "`git merge feature` được chạy khi đang ở main, và đỉnh của main là tổ tiên của đỉnh feature. Mặc định điều gì xảy ra?",
+   "options": [
+    "Merge bị từ chối vì main không có commit mới nào của riêng nó",
+    "Nhãn của main di chuyển tiến lên (fast-forward); không tạo commit merge",
+    "Luôn tạo một commit merge với hai commit cha, ngay cả khi không có phân kỳ",
+    "Mọi commit của main được viết lại trên đỉnh của feature"
+   ],
+   "explanation": "Khi không có phân kỳ, Git chỉ đẩy nhãn tiến lên."
+  },
+  "b4": {
+   "prompt": "Điều gì xảy ra với id của một commit nếu bạn chỉ đổi thông điệp của nó bằng `git commit --amend`?",
+   "options": [
+    "Một commit mới với id khác thay thế nó; các hậu duệ của nó cũng phải được viết lại",
+    "Id chỉ đổi nếu các file thay đổi, vì id hash tree",
+    "Id giữ nguyên vì thông điệp được lưu tách biệt với nội dung",
+    "Chỉ đối tượng thông điệp thay đổi, và id commit được giữ cho các commit cha"
+   ],
+   "explanation": "Thông điệp là một phần của nội dung được hash; amend tạo ra một commit mới."
+  },
+  "b5": {
+   "prompt": "Một đối tượng blob của Git cho file 6 byte bắt đầu bằng văn bản header 'blob 6', rồi một byte NUL, rồi nội dung. Văn bản header đó dài bao nhiêu ký tự? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "'blob 6' có 6 ký tự; đối tượng là nó, một byte NUL và 6 byte nội dung."
+  },
+  "b6": {
+   "prompt": "Header của một hunk diff ghi @@ -10,6 +10,9 @@. File mới có nhiều hơn bao nhiêu dòng trong hunk này? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "9−6=3."
+  },
+  "b7": {
+   "prompt": "Một diff cho thấy mọi dòng của một file đều đã đổi dù bạn chỉ sửa một dòng. Nguyên nhân khả dĩ là gì?",
+   "options": [
+    "Branch đã được fast-forward",
+    "Ký tự xuống dòng đã bị chuyển đổi (CRLF/LF)",
+    "Git lưu toàn bộ file cho mỗi commit",
+    "File có quá nhiều dòng"
+   ],
+   "explanation": "Ký tự xuống dòng khác nhau làm mọi dòng khác nhau."
+  },
+  "b8": {
+   "prompt": "Lệnh nào hủy vĩnh viễn các chỉnh sửa chưa commit đối với một file được theo dõi?",
+   "options": [
+    "git stash",
+    "git restore file",
+    "git branch new",
+    "git commit -a"
+   ],
+   "explanation": "git restore ghi đè file working tree từ index/HEAD; stash và commit giữ lại các chỉnh sửa."
+  },
+  "b9": {
+   "prompt": "Bạn chạy `git add .` trong một thư mục chứa .env với API key nhưng không có .gitignore. Phản ứng đúng trước khi commit là gì?",
+   "options": [
+    "Cứ commit, vì repository riêng tư là nơi an toàn để giữ API key lâu dài",
+    "Đổi tên file thành .env.bak và commit, vì các bộ quét chỉ tìm file tên .env",
+    "Bỏ stage nó (git restore --staged .env), thêm vào .gitignore, và xoay vòng key nếu nó đã bị commit",
+    "Commit nó, rồi xóa file ở commit kế tiếp để key biến mất khỏi lịch sử"
+   ],
+   "explanation": "Bất cứ thứ gì đã commit đều ở lại trong lịch sử; hãy tránh commit, và thu hồi các key đã bị lộ."
+  },
+  "b10": {
+   "prompt": "Một file kết quả ghi `dirty: true`. Có bao nhiêu kết quả từ những lần chạy như vậy nên được tin là tái lập được chỉ từ commit? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Dirty nghĩa là code khác với commit đã ghi, nên id commit không xác định code."
+  },
+  "b11": {
+   "prompt": "Hãy mô tả hai phép kiểm tra cho thấy một kết quả đã ghi là tái lập được từ commit của nó, và một phép kiểm tra cho thấy nó không phải.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Clone/checkout mới của commit, chạy lại với cấu hình và so sánh các con số.",
+    "Xác nhận cờ dirty là false và cấu hình trong kết quả bằng git show <commit>:config.",
+    "Sự không khớp, dữ liệu/dependency chưa commit, hoặc ngẫu nhiên không có seed cho thấy nó không tái lập được."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy viết chuỗi lệnh git bạn dùng để tìm commit nào trong 20 commit đầu tiên làm một bài kiểm thử thất bại, giả sử một script ./check.sh thoát với mã khác 0 khi lỗi hiện diện.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "git bisect start; git bisect bad (hiện tại); git bisect good <commit-tốt-đã-biết>.",
+    "git bisect run ./check.sh và đọc commit xấu đầu tiên được báo cáo.",
+    "git bisect reset để quay về branch ban đầu."
+   ]
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Trong scaled dot-product attention, vì sao các điểm được chia cho sqrt(d_k)?",
+   "options": [
+    "Nó làm attention độc lập với độ dài chuỗi, nên cùng một mô hình chạy được trên mọi đầu vào",
+    "Nó làm các trọng số attention có tổng bằng một trên các key cho mọi vị trí query",
+    "Nó chuyển trực tiếp các điểm thô thành xác suất, nên không cần softmax sau nó",
+    "Tích vô hướng của các vector phương sai đơn vị có phương sai d_k; chia tỉ lệ giữ cho softmax không bão hòa"
+   ],
+   "explanation": "Var(q·k)=d_k, nên điểm chưa chia tỉ lệ tăng theo d_k và đẩy softmax về one-hot với gradient biến mất."
+  },
+  "q2": {
+   "prompt": "softmax([2, 1, 0]): trọng số lớn nhất là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "e²/(e²+e+1)=7.389/11.107=0.6652."
+  },
+  "q3": {
+   "prompt": "Hai token với q1=(1,0), các key k1=(1,0), k2=(0,1), d_k=2. Token 1 dành trọng số bao nhiêu cho key 2 (scaled dot-product attention)? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Điểm (1/√2, 0)=(0.7071,0); trọng số e^0.7071/(e^0.7071+1)=0.6698 và 1/(...)=0.3302."
+  },
+  "q4": {
+   "prompt": "Với dự đoán token kế tiếp, các vị trí tương lai phải được mask như thế nào?",
+   "options": [
+    "Nhân các trọng số đã tính xong với 0 và để các hàng không chuẩn hóa",
+    "Bỏ các key nhưng giữ các value",
+    "Đặt điểm của chúng bằng 0 trước softmax",
+    "Đặt điểm của chúng bằng -infinity trước softmax"
+   ],
+   "explanation": "exp(-inf)=0 nên các trọng số đúng bằng không và hàng vẫn có tổng 1; điểm 0 cho exp(0)=1, tức là rò rỉ."
+  },
+  "q5": {
+   "prompt": "Một lớp có 8 head và một chuỗi 100 token. Nó tính bao nhiêu phần tử trọng số attention (mọi head, không dùng mẹo mask)? (số nguyên, sai số cho phép 1)",
+   "explanation": "h·n²=8·10,000=80,000."
+  },
+  "q6": {
+   "prompt": "Nếu không thêm thông tin vị trí, điều gì xảy ra khi các token đầu vào bị xáo trộn?",
+   "options": [
+    "Attention thất bại vì các trọng số không còn có tổng bằng một",
+    "Các đầu ra bị xáo trộn theo cùng cách; mô hình không thấy được thứ tự",
+    "Các đầu ra không đổi",
+    "Các đầu ra trở nên ngẫu nhiên"
+   ],
+   "explanation": "Attention là permutation-equivariant: Attn(PX)=P·Attn(X)."
+  },
+  "q7": {
+   "prompt": "Hãy giải thích byte-pair encoding bằng lời của bạn và nêu một ưu điểm và một chi phí khi dùng nó thay cho token cấp từ.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Bắt đầu từ ký tự/byte và lặp lại việc gộp cặp kề nhau xuất hiện thường xuyên nhất thành một token mới.",
+    "Ưu điểm: không có từ chưa biết, từ hiếm được tách thành các mảnh đã biết, từ vựng bị chặn.",
+    "Chi phí: chuỗi dài hơn so với từ, bảng merge phụ thuộc văn bản huấn luyện, cách tách lạ cho từ/số hiếm."
+   ]
+  }
+ }
+}

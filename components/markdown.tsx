@@ -20,6 +20,7 @@ import {
   Library,
 } from "lucide-react";
 import { CodeBlock } from "./code-block";
+import { useI18n } from "@/lib/i18n";
 import {
   headingId,
   sectionKind,
@@ -53,26 +54,36 @@ function textFromChildren(children: ReactNode): string {
 export function LessonMarkdown({
   body,
   illustrations = [],
+  headingIds,
+  numbers,
 }: {
   body: string;
   illustrations?: LessonMedia["illustrations"];
+  /** Stable (English) heading ids by section order, for translated bodies. */
+  headingIds?: string[];
+  /** Section numbers by order when only part of a lesson is rendered. */
+  numbers?: number[];
 }) {
+  const { tx } = useI18n();
   return (
     <div className="prose">
       <Markdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[
           [rehypeKatex, { strict: "warn", trust: false }],
-          rehypeLessonSections,
+          [rehypeLessonSections, { ids: headingIds, numbers }],
         ]}
         skipHtml
         components={{
           h2: ({ children, node }) => {
             const title = textFromChildren(children);
-            const Icon = sectionIcons[sectionKind(title)];
+            const id = String(
+              node?.properties["data-section-id"] ?? headingId(title),
+            );
+            const Icon = sectionIcons[sectionKind(id)];
             return (
               <>
-                <h2 id={headingId(title)} className="lesson-section-heading">
+                <h2 id={id} className="lesson-section-heading">
                   <span className="lesson-section-icon" aria-hidden="true">
                     <Icon size={20} />
                   </span>
@@ -82,7 +93,7 @@ export function LessonMarkdown({
                   </span>
                 </h2>
                 {illustrations
-                  .filter((i) => i.heading === headingId(title))
+                  .filter((i) => i.heading === id)
                   .map((i) => (
                     <ConceptIllustration key={i.id} illustration={i} />
                   ))}
@@ -106,7 +117,7 @@ export function LessonMarkdown({
             <div
               className="lesson-table-scroll"
               role="region"
-              aria-label="Lesson table"
+              aria-label={tx("Lesson table", "Bảng trong bài học")}
               tabIndex={0}
             >
               <table>{children}</table>

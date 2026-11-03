@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Công cụ nào là lựa chọn đầu tiên đúng để tìm một lần ghi vượt quá cuối một mảng heap?",
+   "options": [
+    "AddressSanitizer (-fsanitize=address)",
+    "ThreadSanitizer (-fsanitize=thread)",
+    "Một bản build Release với -O3",
+    "Chỉ -Wall, không thực thi"
+   ],
+   "explanation": "ASan instrument các truy cập bộ nhớ và báo heap-buffer-overflow kèm dòng lỗi."
+  },
+  "q2": {
+   "prompt": "Một báo cáo ASan nói '0 bytes to the right of 64-byte region' cho một mảng double. Chỉ số (bắt đầu từ 0) của phần tử đã bị truy cập là bao nhiêu? Cho một số nguyên.",
+   "explanation": "64 byte / 8 byte mỗi double = 8 phần tử (chỉ số 0-7); một truy cập cách 0 byte bên phải vùng là chỉ số 8."
+  },
+  "q3": {
+   "prompt": "Một chương trình lỗi in ra các con số hơi sai nhưng không bao giờ crash. Giải thích nhiều khả năng nhất là gì?",
+   "options": [
+    "Undefined behavior: lần đọc không hợp lệ trả về một giá trị nào đó mà không gây lỗi",
+    "Dấu phẩy động không mang tính xác định",
+    "Compiler bị hỏng",
+    "Cần sanitizer để chương trình chạy đúng"
+   ],
+   "explanation": "UB không đảm bảo gì, kể cả không đảm bảo một crash. Test phải kiểm tra giá trị."
+  },
+  "q4": {
+   "prompt": "Một regression được đưa vào ở đâu đó trong 600 commit. Số lần build tối đa mà git bisect cần là bao nhiêu? Cho một số nguyên.",
+   "explanation": "ceil(log2 600) = ceil(9.23) = 10."
+  },
+  "q5": {
+   "prompt": "Đâu là tính chất tốt nhất của một regression test?",
+   "options": [
+    "Nó tính giá trị mong đợi bằng cách gọi hàm đang được kiểm thử",
+    "Nó pass trên cả code lỗi và code đã sửa",
+    "Nó fail trên code lỗi và pass trên code đã sửa",
+    "Nó in kết quả để con người kiểm tra"
+   ],
+   "explanation": "Một test chưa bao giờ fail không chứng minh gì; giá trị mong đợi phải độc lập với code đang được kiểm thử."
+  },
+  "q6": {
+   "prompt": "Một test flaky thất bại với xác suất 0.05 mỗi lần chạy. Số lần chạy nhỏ nhất để có ít nhất 90% khả năng thấy một thất bại là bao nhiêu? Cho một số nguyên.",
+   "explanation": "n >= ln(0.1)/ln(0.95) = 44.9, nên 45."
+  },
+  "q7": {
+   "prompt": "Phác thảo các bước bạn sẽ làm với một robot node crash với segmentation fault mỗi giờ một lần, từ báo cáo đầu tiên tới một bản sửa được merge. Nêu tên các công cụ.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Làm cho nó tái hiện được/rút gọn: ghi lại đầu vào (rosbag hoặc log), chạy trong vòng lặp, thu nhỏ đầu vào.",
+    "Xác định vị trí bằng core dump và GDB bt, và bằng các bản build ASan/UBSan (hoặc TSan cho race).",
+    "Viết một regression test fail trước khi sửa, sửa lỗi, chạy lại dưới sanitizer trong CI."
+   ]
+  }
+ }
+}

@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Trường hợp nào trong số này KHÔNG phải data race?",
+   "options": [
+    "Hai thread gọi fetch_add trên một std::atomic<int>",
+    "Hai thread push_back vào cùng một std::vector không có lock",
+    "Một thread ghi một bool, thread khác thăm dò nó trong vòng lặp",
+    "Hai thread ghi cùng một int không đồng bộ"
+   ],
+   "explanation": "Các thao tác atomic không có race theo định nghĩa; ba trường hợp còn lại có truy cập xung đột không đồng bộ."
+  },
+  "b2": {
+   "prompt": "Vì sao một std::thread ra khỏi scope mà không join() là một bug?",
+   "options": [
+    "Thread tiếp tục chạy như một daemon thread bị detach",
+    "Destructor của một thread joinable gọi std::terminate",
+    "Destructor lặng lẽ detach thread để nó hoàn thành",
+    "Compiler từ chối biên dịch hoàn toàn một chương trình như vậy"
+   ],
+   "explanation": "Hãy join hoặc detach tường minh, hoặc dùng std::jthread trong C++20."
+  },
+  "b3": {
+   "prompt": "Một consumer dùng cv.wait(lk) không có predicate và thỉnh thoảng pop từ hàng đợi rỗng. Giải thích nào đúng?",
+   "options": [
+    "notify_one đánh thức không thread nào mỗi khi hàng đợi hiện đang rỗng",
+    "pop không được khai báo const, nên không thể gọi khi đang giữ lock",
+    "Mutex là đệ quy, nên lock bị consumer đó lấy hai lần",
+    "wait có thể trả về mà không có notification, và consumer khác có thể đã lấy phần tử"
+   ],
+   "explanation": "Điều kiện phải được kiểm tra lại trong một vòng lặp hoặc bằng predicate."
+  },
+  "b4": {
+   "prompt": "if (q.size() < cap) q.push(x); trên một hàng đợi dùng chung là sai vì?",
+   "options": [
+    "size() là O(n), nên chỉ riêng phép kiểm tra đã tốn quá nhiều trên hàng đợi dùng chung",
+    "Trạng thái có thể đổi giữa phép kiểm tra và push; một try_push nguyên tử tránh được điều đó",
+    "push không an toàn với exception, nên không bao giờ dùng được trên hàng đợi dùng chung giữa các thread",
+    "cap là const, nên phép so sánh với nó luôn cũ sau bất kỳ lời gọi push nào về sau"
+   ],
+   "explanation": "Mỗi lời gọi khóa riêng, nên hai bước không phải là một vùng găng."
+  },
+  "b5": {
+   "prompt": "Một counter của thread pool được mỗi thread trong 8 thread tăng 250,000 lần không có lock và giá trị cuối là 1,873,114. Mất bao nhiêu lần tăng? Số nguyên.",
+   "explanation": "8 x 250,000 = 2,000,000; 2,000,000 - 1,873,114 = 126,886."
+  },
+  "b6": {
+   "prompt": "Một cảm biến phát 120 phần tử/s trong 0.5 s như một đợt; consumer xử lý 100 phần tử/s. Dung lượng hàng đợi tối thiểu để producer không bao giờ bị chặn (lượng tồn đọng ở cuối đợt) là bao nhiêu? Số nguyên.",
+   "explanation": "Sinh ra 60, tiêu thụ 50 trong đợt, tồn đọng 10."
+  },
+  "b7": {
+   "prompt": "Lượng tồn đọng là 40 phần tử và consumer xử lý 160 phần tử/s không có đầu vào mới. Mất bao nhiêu giây để xả? Cho một số với 2 chữ số thập phân.",
+   "explanation": "40 / 160 = 0.25 s."
+  },
+  "b8": {
+   "prompt": "Bốn thread mỗi thread chạy 3 push và 3 pop trên một hàng đợi mà các consumer dùng predicate. Sau khi mọi thread join, size() phải là bao nhiêu nếu mỗi push được ghép với một pop? Số nguyên.",
+   "explanation": "Số phần tử vào = số phần tử ra, nên hàng đợi rỗng: 0."
+  },
+  "b9": {
+   "prompt": "Viết lại 'm.lock(); if (done) return; work(); m.unlock();' sao cho an toàn với exception và nhả mutex trên mọi đường đi. Giải thích vì sao.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Dùng std::lock_guard<std::mutex> lk(m); (hoặc unique_lock) ở đầu scope.",
+    "Destructor mở khóa khi return và khi có exception.",
+    "Nhắc rằng lock/unlock thủ công để mutex bị khóa ở lệnh return sớm."
+   ]
+  },
+  "b10": {
+   "prompt": "Hai mutex bảo vệ hai tài khoản. Viết code chuyển tiền mà không có nguy cơ deadlock và nói nó hoạt động thế nào.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "std::scoped_lock lk(from.m, to.m); rồi cập nhật cả hai số dư.",
+    "scoped_lock lấy tất cả mutex bằng thuật toán tránh deadlock, không phụ thuộc thứ tự đối số.",
+    "Cách khác: thứ tự khóa toàn cục (theo địa chỉ hoặc id)."
+   ]
+  },
+  "b11": {
+   "prompt": "Một vòng điều khiển phải dùng lần đọc cảm biến mới nhất và không bao giờ chờ một producer chậm. So sánh một hàng đợi có giới hạn với một mailbox giá trị mới nhất và chọn.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Mailbox ghi đè giá trị cũ, nên bộ điều khiển luôn đọc dữ liệu mới nhất và producer không bao giờ bị chặn.",
+    "Hàng đợi bảo toàn mọi phần tử nhưng có rủi ro dữ liệu cũ và back-pressure; cần cho logging, không cho điều khiển.",
+    "Nêu một hợp đồng: một mutex, set ghi đè, get copy giá trị (và có thể một phiên bản/timestamp)."
+   ]
+  }
+ }
+}

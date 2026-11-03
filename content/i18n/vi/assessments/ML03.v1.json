@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một mô hình có sai số huấn luyện 2% và sai số validation 25%. Chẩn đoán nhiều khả năng nhất là gì?",
+   "options": [
+    "Overfitting (variance cao): mô hình học thuộc tập huấn luyện",
+    "Nhiễu không thể giảm mà không mô hình nào loại bỏ được",
+    "Tập validation bị gán nhãn sai, còn bản thân huấn luyện thì ổn",
+    "Underfitting (bias cao): mô hình quá đơn giản cho dữ liệu"
+   ],
+   "explanation": "Khoảng cách lớn với sai số huấn luyện thấp chỉ ra variance cao. Cách khắc phục: thêm dữ liệu, regularization, mô hình đơn giản hơn."
+  },
+  "q2": {
+   "prompt": "Các quan sát có độ lệch chuẩn nhiễu 0.4. Một mô hình đạt MSE test 0.25. Bao nhiêu phần của MSE test là có thể giảm (trên mức nhiễu nền không thể giảm)? Cho một số với 2 chữ số thập phân.",
+   "explanation": "Sai số không thể giảm là sigma^2 = 0.16; phần có thể giảm = 0.25 - 0.16 = 0.09 (bias^2 + variance)."
+  },
+  "q3": {
+   "prompt": "Cả sai số huấn luyện và validation đều chững lại ở 0.28 khi tập huấn luyện lớn dần, trong khi mục tiêu là 0.10. Bạn nên làm gì?",
+   "options": [
+    "Thêm regularization mạnh hơn để giảm variance còn lại",
+    "Thu thập nhiều hơn mười lần dữ liệu, vì khoảng cách validation sẽ khép lại",
+    "Tăng capacity của mô hình hoặc cải thiện đặc trưng; thêm dữ liệu sẽ không giúp",
+    "Xáo trộn lại tập test để mức chững thấp hơn"
+   ],
+   "explanation": "Các sai số cao hội tụ là dấu hiệu của bias cao."
+  },
+  "q4": {
+   "prompt": "Tại một đầu vào giá trị thật là 1.0. Các mô hình khớp trên bốn tập huấn luyện dự đoán 0.9, 1.3, 1.1, 1.1. Bias bình phương của mô hình trung bình là bao nhiêu? Cho một số với 3 chữ số thập phân.",
+   "explanation": "Dự đoán trung bình là 1.1; bias = 0.1 nên bias^2 = 0.010."
+  },
+  "q5": {
+   "prompt": "Bạn chọn 10 đặc trưng tốt nhất trong 1000 đặc trưng bằng mọi nhãn, rồi chạy CV 5-fold trên 10 đặc trưng đó. Các nhãn là ngẫu nhiên. CV báo cáo gì?",
+   "options": [
+    "Độ chính xác cao hơn nhiều so với ngẫu nhiên, vì việc chọn đã dùng nhãn validation",
+    "Khoảng 50%, vì với nhãn ngẫu nhiên không đặc trưng nào giúp được",
+    "Đúng 50%, vì cross-validation luôn cân bằng các nhãn ngẫu nhiên",
+    "Một lỗi, vì scikit-learn cấm chọn đặc trưng trước CV"
+   ],
+   "explanation": "Việc chọn phải được lặp lại bên trong mỗi fold huấn luyện, nếu không thông tin validation bị rò rỉ."
+  },
+  "q6": {
+   "prompt": "103 mẫu được chia thành 5 fold với kích thước đều nhau nhất có thể. Có bao nhiêu mẫu trong tập huấn luyện nhỏ nhất được dùng bởi năm lần khớp? Cho một số nguyên.",
+   "explanation": "Các fold: 21,21,21,20,20. Kích thước huấn luyện là 103-21 = 82 hoặc 103-20 = 83; nhỏ nhất là 82."
+  },
+  "q7": {
+   "prompt": "Một bộ phân loại thành công khi gắp đạt 98% trên một phép chia ngẫu nhiên các lượt chạy robot nhưng 71% khi test trên một robot mới. Nêu hai nguyên nhân khả dĩ và giải thích cách bạn phân biệt chúng và thay đổi quy trình đánh giá.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu distribution shift (phần cứng, ánh sáng, gripper) và/hoặc leakage từ các lượt thử gần như trùng lặp trong phép chia ngẫu nhiên.",
+    "Phân biệt chúng: AUC của domain classifier, chia theo nhóm robot/phiên, so sánh train/val trên robot cũ.",
+    "Đề xuất chia theo nhóm (robot, địa điểm, ngày), một tập test cuối cùng nguyên vẹn, và báo cáo kèm khoảng tin cậy."
+   ]
+  }
+ }
+}

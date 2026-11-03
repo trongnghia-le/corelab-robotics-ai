@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "r1": {
+   "prompt": "Một policy tay máy được huấn luyện chỉ trên vị trí khớp, nhưng nhiệm vụ phụ thuộc vào tốc độ chuyển động của các khớp. Phát biểu nào đúng?",
+   "options": [
+    "Quan sát là Markov vì vị trí được đo chính xác",
+    "Chiết khấu với gamma nhỏ hơn sẽ sửa được vận tốc bị thiếu",
+    "Quan sát không phải Markov; hãy thêm vận tốc hoặc một lịch sử ngắn vào trạng thái",
+    "Tính chất Markov chỉ quan trọng với nhiệm vụ liên tục, không phải episodic"
+   ],
+   "explanation": "Nếu vận tốc ảnh hưởng đến các phép chuyển hoặc phần thưởng trong tương lai mà không có trong quan sát thì quan sát không phải Markov; thêm vận tốc (hoặc một lịch sử ngắn) khôi phục tính chất đó."
+  },
+  "r2": {
+   "prompt": "Các phần thưởng 1, 1, 1, 1 được nhận ở bốn bước liên tiếp (rồi episode kết thúc) với gamma = 0.8. Return có chiết khấu từ bước đầu tiên là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "1 + 0.8 + 0.64 + 0.512 = 2.952."
+  },
+  "r3": {
+   "prompt": "Một trạng thái tự lặp mãi mãi với phần thưởng 3 mỗi bước và gamma = 0.8. Giá trị của nó là bao nhiêu? Cho một số nguyên.",
+   "explanation": "V = 3 + 0.8 V, nên V = 3/(1-0.8) = 15."
+  },
+  "r4": {
+   "prompt": "Từ trạng thái s một policy cố định nhận phần thưởng 1, rồi chuyển đến s' với xác suất 0.5 (V(s') = 10) hoặc s'' với xác suất 0.5 (V(s'') = 4). Với gamma = 0.9, V(s) là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "V(s) = 1 + 0.9*(0.5*10 + 0.5*4) = 1 + 0.9*7 = 7.3."
+  },
+  "r5": {
+   "prompt": "Đệ quy nào cho return có chiết khấu là đúng?",
+   "options": [
+    "G_t = gamma * r_{t+1} + G_{t+1}",
+    "G_t = r_{t+1} + G_{t+1} / gamma",
+    "G_t = (r_{t+1} + G_{t+1}) * gamma",
+    "G_t = r_{t+1} + gamma * G_{t+1}"
+   ],
+   "explanation": "Tách phần thưởng đầu tiên ra cho G_t = r_{t+1} + gamma G_{t+1}."
+  },
+  "r6": {
+   "prompt": "Một agent với gamma = 0.98 nhìn trước hiệu dụng khoảng bao nhiêu bước (1/(1-gamma))? Cho một số nguyên.",
+   "explanation": "1/(1-0.98) = 50 bước."
+  },
+  "r7": {
+   "prompt": "Một episode của robot tuần tra bị cắt sau 200 bước, nhưng nếu không thì nhiệm vụ sẽ tiếp tục. Người học nên xử lý phép chuyển cuối cùng thế nào khi bootstrap?",
+   "options": [
+    "Bỏ qua hoàn toàn phép chuyển và không cập nhật",
+    "Như kết thúc: đặt giá trị tương lai bằng 0",
+    "Như không kết thúc: vẫn bootstrap từ V(s')",
+    "Thay phần thưởng bằng -1 ở bước cuối"
+   ],
+   "explanation": "Việc cắt do giới hạn thời gian không phải là trạng thái kết thúc thật: hãy bootstrap từ V(s'), nếu không các giá trị gần giới hạn sẽ nhỏ một cách sai lầm."
+  },
+  "r8": {
+   "prompt": "Một phần thưởng đến sau 20 bước nữa và gamma = 0.95. Nó bị chiết khấu theo hệ số nào (gamma^20)? Cho 3 chữ số thập phân.",
+   "explanation": "0.95^20 = 0.358."
+  },
+  "r9": {
+   "prompt": "Một trạng thái tự lặp với phần thưởng 1 và gamma = 0.5. Bắt đầu từ V = 0, V bằng bao nhiêu sau đúng 3 lượt quét đồng bộ V <- 1 + 0.5 V? Cho 3 chữ số thập phân.",
+   "explanation": "Sau lượt 1: 1; lượt 2: 1.5; lượt 3: 1.75 (giới hạn là 2)."
+  },
+  "r10": {
+   "prompt": "Bạn đã đánh giá một policy và tính Q(s,a) cho mọi hành động. Phép cập nhật nào được bảo đảm không làm policy tệ đi?",
+   "options": [
+    "Chọn hành động có phần thưởng tức thời cao nhất mà thôi",
+    "Chọn hành động có Q thấp nhất để khám phá",
+    "Chọn hành động ngẫu nhiên với cùng các xác suất",
+    "Chọn hành động có Q(s,a) cao nhất ở mỗi trạng thái"
+   ],
+   "explanation": "Hành động tham lam theo chính các giá trị Q của policy (định lý cải thiện policy) chỉ có thể cải thiện hoặc giữ nguyên giá trị."
+  },
+  "r11": {
+   "prompt": "Một robot giao hàng được thưởng +1 cho mỗi gói giao và -0.01 mỗi giây. Hãy mô tả hai hành vi ngoài ý muốn mà điều này có thể khuyến khích và sửa lại phần thưởng.",
+   "rubric": [
+    "Nêu các cách khai thác hợp lý: tốc độ không an toàn hoặc va chạm, nhiều lần nhặt và giao lại cùng một gói, hoặc né các lần giao khó",
+    "Sửa phần thưởng bằng điểm phạt an toàn/va chạm, điểm cộng một lần cho mỗi gói, hoặc các ràng buộc, và giữ nó gắn với mục tiêu thật",
+    "Đề cập việc kiểm thử phần thưởng bằng các chỉ số giữ lại hoặc kiểm tra quỹ đạo thay vì chỉ tin vào return"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "r12": {
+   "prompt": "Một robot cân bằng chỉ nhận góc nghiêng từ IMU. Hãy giải thích vì sao đây không phải là trạng thái Markov cho nhiệm vụ cân bằng và bạn sẽ thêm gì.",
+   "rubric": [
+    "Nêu rằng riêng độ nghiêng không xác định chuyển động tương lai; vận tốc góc (và có thể lịch sử hành động/độ trễ) cũng quan trọng",
+    "Đề xuất thêm vận tốc góc (hoặc xếp chồng các quan sát gần đây) vào trạng thái",
+    "Lưu ý rằng một policy hồi quy hoặc bộ ước lượng trạng thái là phương án thay thế cho trạng thái dựng tay"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

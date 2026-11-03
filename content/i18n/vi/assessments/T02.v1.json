@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Branch của Git là gì?",
+   "options": [
+    "Một nhãn di chuyển được trỏ tới một commit",
+    "Một bản sao đầy đủ của thư mục làm việc",
+    "Một máy chủ từ xa",
+    "Một danh sách các file đã thay đổi"
+   ],
+   "explanation": "Branch chỉ là một tham chiếu (một cái tên) tới một commit; commit đẩy nó tiến lên."
+  },
+  "q2": {
+   "prompt": "Điều gì quyết định id của một commit?",
+   "options": [
+    "Thời gian đồng hồ lúc commit được tạo, tính đến giây",
+    "Một bộ đếm tăng lên mỗi lần có bất kỳ commit nào",
+    "Một hash của nội dung của nó, gồm tree, commit cha, tác giả và thông điệp",
+    "Tên của branch mà commit được tạo trên đó"
+   ],
+   "explanation": "Id là SHA-1 của đối tượng commit; mọi thay đổi, kể cả id của commit cha, đều đổi nó."
+  },
+  "q3": {
+   "prompt": "Lịch sử: C0←C1←C2 trên main và C1←C3←C4 trên feature. Feature có bao nhiêu commit mà main thiếu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "C3 và C4 đến được từ feature nhưng không đến được từ main."
+  },
+  "q4": {
+   "prompt": "Lịch sử: C0←C1←C2 trên main (đỉnh C2) và C1←C3←C4 trên feature (đỉnh C4). `git merge feature` chạy từ main có phải fast-forward không?",
+   "options": [
+    "Có: chúng chia sẻ C1, đủ để Git fast-forward",
+    "Không: đỉnh C2 của main không phải tổ tiên của C4, nên một commit merge được tạo",
+    "Không: Git không thể merge các branch đã phân kỳ nếu không rebase một trong hai trước",
+    "Có: feature có nhiều commit hơn, nên Git chỉ việc đẩy con trỏ main tiến lên"
+   ],
+   "explanation": "Fast-forward cần đỉnh hiện tại là tổ tiên của đỉnh của branch kia."
+  },
+  "q5": {
+   "prompt": "Một hunk của unified diff có 3 dòng bắt đầu bằng '+' và 1 dòng bắt đầu bằng '-' (phần còn lại là ngữ cảnh). Độ dài file thay đổi bao nhiêu dòng? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Thêm 3 trừ xóa 1 = +2."
+  },
+  "q6": {
+   "prompt": "Bạn chỉnh sửa train.py, chạy `git add train.py`, rồi chỉnh sửa nó lần nữa. `git commit` ghi lại nội dung nào?",
+   "options": [
+    "Phiên bản tại thời điểm git add",
+    "Không gì cả, cho đến khi bạn chạy git add lần nữa",
+    "Phiên bản working tree mới nhất",
+    "Cả hai phiên bản"
+   ],
+   "explanation": "Index giữ nội dung như lúc được stage; các chỉnh sửa sau vẫn chưa được stage."
+  },
+  "q7": {
+   "prompt": "Bạn phải có khả năng tái tạo con số trong bảng kết quả sau sáu tháng. Hãy mô tả chính xác bạn commit gì, file kết quả của bạn ghi gì, và bạn phát hiện một kết quả đến từ code chưa commit bằng cách nào.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Commit code, cấu hình (và seed), khai báo môi trường và các bản tóm tắt kết quả nhỏ; bỏ qua bí mật, cache và dữ liệu lớn.",
+    "File kết quả ghi id commit, cấu hình, seed và phiên bản dữ liệu, cùng một cờ dirty (git status --porcelain).",
+    "Từ chối hoặc đánh dấu các lần chạy dirty, và kiểm chứng khả năng tái lập bằng cách chạy lại từ một checkout sạch của commit đã ghi."
+   ]
+  }
+ }
+}

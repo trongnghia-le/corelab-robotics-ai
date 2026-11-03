@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Trong bước huấn luyện chuẩn, thứ tự nào đúng?",
+   "options": [
+    "step, zero_grad, forward, loss, backward",
+    "backward, forward, loss, zero_grad, step",
+    "forward, loss, step, backward, zero_grad",
+    "zero_grad, forward, loss, backward, step"
+   ],
+   "explanation": "Gradient phải được xóa trước backward và được dùng trước lần xóa kế tiếp."
+  },
+  "b2": {
+   "prompt": "w=2 (requires_grad), L=3*w**2. Sau 2 lần gọi backward() không zero, w.grad bằng?",
+   "explanation": "Mỗi lần backward cho 6w=12."
+  },
+  "b3": {
+   "prompt": "Neuron với y=0.8 và target t=1 và L=0.5*(y-t)^2. dL/dz (4 chữ số thập phân; số âm)?",
+   "explanation": "(y-t) y (1-y)=-0.2*0.16."
+  },
+  "b4": {
+   "prompt": "f=(x*y+z)**2 tại x=2,y=-3,z=10: df/dz?",
+   "explanation": "2q=8."
+  },
+  "b5": {
+   "prompt": "w=2,x=3, z=(w*x).detach()*w. dz/dw do autograd tính là bao nhiêu?",
+   "explanation": "Thừa số bị detach là hằng số 6."
+  },
+  "b6": {
+   "prompt": "c = a.exp(); c.mul_(2); c.sum().backward() thất bại vì",
+   "options": [
+    "backward của exp cần đầu ra của nó, mà đầu ra này đã bị sửa in-place",
+    "c không có grad_fn, nên backward không thể bắt đầu",
+    "exp không thể áp dụng cho tensor có requires_grad",
+    "mul_ không phải phép toán khả vi trong PyTorch"
+   ],
+   "explanation": "Các tensor được lưu phải giữ nguyên."
+  },
+  "b7": {
+   "prompt": "Khớp y=ax+b với MSE trên x trong [-1,1] cho trị riêng Hessian 0.74 và 2.0. lr ổn định lớn nhất?",
+   "explanation": "2/2.0."
+  },
+  "b8": {
+   "prompt": "Tại learning rate đúng bằng 2/lambda_max trên một hàm bậc hai, phép lặp",
+   "options": [
+    "phân kỳ theo cấp số nhân theo hướng cứng nhất",
+    "hội tụ nhanh nhất theo hướng cứng nhất",
+    "hội tụ đơn điệu theo mọi hướng",
+    "dao động mà không hội tụ theo hướng cứng nhất"
+   ],
+   "explanation": "Hệ số (1-lr*lambda)=-1."
+  },
+  "b9": {
+   "prompt": "torch.tensor([1,2,3]).mean() gây lỗi vì",
+   "options": [
+    "mean cần requires_grad=True trên tensor",
+    "tensor không có phương thức mean; phải dùng numpy",
+    "tensor quá nhỏ để định nghĩa trung bình",
+    "dtype là int64 và mean yêu cầu dtype số thực"
+   ],
+   "explanation": "Ép kiểu bằng .float()."
+  },
+  "b10": {
+   "prompt": "float32 có sai số làm tròn đơn vị khoảng 6e-8. Với eps=1e-4, sai số làm tròn của một central difference khoảng roundoff/eps. Cho kết quả theo đơn vị 1e-4 (1 chữ số thập phân).",
+   "explanation": "6e-8/1e-4=6e-4=6.0 theo đơn vị 1e-4."
+  },
+  "b11": {
+   "prompt": "Loss của bạn đứng yên trong các epoch đầu. Hãy liệt kê bốn thứ bạn kiểm tra trong vòng lặp và thí nghiệm nhanh phân biệt vấn đề dữ liệu với vấn đề code.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Kiểm tra zero_grad, backward trước step, tham số có trong optimizer và learning rate.",
+    "Kiểm tra grad không phải None và shape/dtype đúng.",
+    "Chạy thí nghiệm overfit-một-batch."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy giải thích vì sao bạn sẽ kiểm thử một loss tùy chỉnh dựa trên autograd bằng cả suy dẫn tay lẫn kiểm tra finite difference thay vì tin một phương pháp.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Lưu ý suy dẫn tay có thể mắc cùng lỗi khái niệm với phần cài đặt.",
+    "Lưu ý finite difference độc lập nhưng bị giới hạn bởi độ chính xác.",
+    "Kết luận rằng sự đồng thuận của các oracle độc lập tạo ra độ tin cậy."
+   ]
+  }
+ }
+}

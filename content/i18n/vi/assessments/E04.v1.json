@@ -1,0 +1,59 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Tập nào liệt kê đúng các phần của một skill contract?",
+   "options": [
+    "Tín hiệu reward, hệ số chiết khấu và một horizon lập kế hoạch cố định cho cả episode",
+    "Precondition, postcondition (thành công) và các status kết thúc/thất bại có tên",
+    "Mô hình cảm biến, bảng giới hạn actuator và ngân sách pin được kiểm tra trước mỗi lần gọi",
+    "Bản đồ trạng thái, global planner và hàm chi phí được tính trên mọi đường đi ứng viên"
+   ],
+   "explanation": "Một skill nêu rõ khi nào được phép bắt đầu, đạt được gì và kết thúc ra sao."
+  },
+  "q2": {
+   "prompt": "Bộ điều khiển tỉ lệ, sai số nhân với (1-k) mỗi bước, k=0.5, e0=0.5. Sai số sau 3 bước là bao nhiêu? (4 chữ số thập phân)",
+   "explanation": "0.5*0.5^3=0.0625."
+  },
+  "q3": {
+   "prompt": "Bộ điều khiển tỉ lệ, sai số nhân với (1-k) mỗi bước, k=0.5, e0=0.5, dung sai 0.02. Bước n đầu tiên có sai số <= dung sai là bao nhiêu?",
+   "explanation": "e_4=0.03125 > 0.02, e_5=0.0156."
+  },
+  "q4": {
+   "prompt": "Thành công đòi hỏi sai số nằm trong dung sai trong 3 bước liên tiếp. Nếu sai số lần đầu nằm trong dung sai ở bước 5, SUCCEEDED được báo ở bước nào?",
+   "explanation": "5 + 3 - 1 = 7."
+  },
+  "q5": {
+   "prompt": "Một skill reaching lặp đến khi sai số nhỏ rồi trả về SUCCEEDED sau vòng lặp, kể cả khi vòng lặp kết thúc do chạm max_steps. Sai ở đâu?",
+   "options": [
+    "max_steps quá nhỏ, nên chỉ cần cho vòng lặp nhiều vòng hơn để hoàn thành",
+    "Nó báo thành công khi timeout; postcondition không hề được kiểm tra sau khi vòng lặp kết thúc",
+    "Dung sai quá lớn nên vòng lặp thoát sớm và sai số thực ra chưa bao giờ nhỏ",
+    "Không có gì sai, vì vòng lặp kết thúc luôn có nghĩa là sai số đã đạt dung sai"
+   ],
+   "explanation": "Thành công phải gắn với postcondition, không phải với việc thoát vòng lặp."
+  },
+  "q6": {
+   "prompt": "Đích cách base 1.5 m còn cánh tay với tới được 1.0 m. Hành vi đúng của skill là:",
+   "options": [
+    "REFUSE trước khi di chuyển, kèm lý do như goal_out_of_reach",
+    "Bắt đầu di chuyển rồi timeout, vì việc kiểm tra tầm với chỉ diễn ra trong lúc chuyển động",
+    "Chạy về phía đích và báo SUCCEEDED khi cánh tay tiến gần hết mức có thể",
+    "Di chuyển nửa đường tới đích, rồi dừng và báo thành công một phần cho bên gọi"
+   ],
+   "explanation": "Precondition được kiểm tra trước khi có bất kỳ chuyển động nào."
+  },
+  "q7": {
+   "prompt": "Một skill reach có postcondition với dung sai t cm, theo sau là skill grasp có precondition đòi hỏi gripper nằm trong 0.5 cm. Dung sai t lớn nhất (cm) mà skill reach được dùng để chuỗi này hợp lệ là bao nhiêu?",
+   "explanation": "Postcondition phải kéo theo precondition kế tiếp: dung sai <= 0.5 cm."
+  },
+  "q8": {
+   "prompt": "Hãy thiết kế contract cho skill 'nhặt cái cốc': precondition, postcondition, effect và ít nhất bốn failure status cùng bộ phát hiện. Nêu cách bạn kiểm thử từng status.",
+   "rubric": [
+    "Precondition: cốc nhìn thấy được và với tới được, gripper trống, không va chạm tại tư thế pregrasp.",
+    "Postcondition và effect: cốc đang được giữ (kiểm tra lực/độ mở), gripper đầy.",
+    "Các failure status cùng bộ phát hiện (collision, slip, timeout, stall) và một bài kiểm thử kích hoạt từng status."
+   ],
+   "explanation": "Có rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

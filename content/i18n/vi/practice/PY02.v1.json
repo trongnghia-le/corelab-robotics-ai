@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Xả một list 1000 mục bằng pop(0): tổng số phép dịch phần tử?",
+   "explanation": "1000*999/2."
+  },
+  "b2": {
+   "prompt": "deque.popleft() khác list.pop(0) vì",
+   "options": [
+    "nó chỉ di chuyển một con trỏ đầu, nên là O(1)",
+    "nó cần một lock, nên việc gỡ an toàn giữa các luồng",
+    "nó sắp xếp các mục trước, nên thứ tự gỡ luôn đúng",
+    "nó trả về một bản sao của list, nên không có gì phải dịch"
+   ],
+   "explanation": "deque là cấu trúc các khối liên kết đôi."
+  },
+  "b3": {
+   "prompt": "Để giữ lần đọc mới nhất của mỗi trong 12 cảm biến có tên, bạn nên dùng",
+   "options": [
+    "một deque của mọi lần đọc",
+    "một dict khóa theo tên cảm biến",
+    "một set các lần đọc",
+    "một list được tìm theo tên mỗi lần"
+   ],
+   "explanation": "Cập nhật theo khóa trong O(1)."
+  },
+  "b4": {
+   "prompt": "Khóa nào hợp lệ trong một dict?",
+   "options": [
+    "(3, 4)",
+    "[3, 4]",
+    "{'a': 1}",
+    "{3, 4}"
+   ],
+   "explanation": "Tuple của các thứ hashable là hashable."
+  },
+  "b5": {
+   "prompt": "Buffer drop-oldest dung lượng 4 nhận 10 thông điệp. Giá trị của thông điệp cũ nhất còn trong đó là gì? (các thông điệp đánh số 1..10)",
+   "explanation": "Nó giữ 7,8,9,10."
+  },
+  "b6": {
+   "prompt": "Bên sản xuất 50 Hz, bên tiêu thụ 30 Hz, chạy 10 s. Số thông điệp đang chờ ở cuối queue không giới hạn?",
+   "explanation": "(50-30)*10."
+  },
+  "b7": {
+   "prompt": "Bên sản xuất 50 Hz, bên tiêu thụ 30 Hz, queue không giới hạn, chạy 10 s. Độ trễ của thông điệp mới nhất khi hết 10 s là bao nhiêu giây (2 chữ số thập phân)?",
+   "explanation": "200/30."
+  },
+  "b8": {
+   "prompt": "Append 16 mục vào một list nhân đôi dung lượng từ 1: tổng số lần sao chép phần tử ở các lần cấp phát lại?",
+   "explanation": "1+2+4+8=15."
+  },
+  "b9": {
+   "prompt": "Append vào list Python được gọi là amortized O(1) vì",
+   "options": [
+    "lần đổi kích thước đắt đỏ thỉnh thoảng được trải ra trên nhiều lần append rẻ",
+    "mọi lần append mất đúng cùng một thời gian, bất kể kích thước list",
+    "list không bao giờ sao chép, nên mỗi lần append tốn cùng thời gian",
+    "các lần append được thực hiện song song, nên chi phí chồng lên nhau"
+   ],
+   "explanation": "Chi phí trung bình trên một chuỗi thao tác là hằng số."
+  },
+  "b10": {
+   "prompt": "Trong cực đại cửa sổ trượt bằng monotonic deque, khi một giá trị mới x đến bạn trước hết",
+   "options": [
+    "quét toàn bộ cửa sổ để tìm cực đại",
+    "luôn pop từ đầu",
+    "pop từ cuối khi giá trị ở cuối <= x",
+    "sắp xếp cửa sổ"
+   ],
+   "explanation": "Các giá trị nhỏ hơn đến trước không bao giờ có thể là cực đại nữa."
+  },
+  "b11": {
+   "prompt": "Nêu drop policy (cũ nhất, mới nhất hay chặn) bạn sẽ chọn cho (a) luồng camera dùng để tránh vật cản, (b) log của mọi lệnh gửi tới một motor, (c) một script xử lý dữ liệu theo lô, và biện minh cho từng cái.",
+   "explanation": "Bài luyện tập có rubric hướng dẫn, không được tự động kiểm chứng.",
+   "rubric": [
+    "Chọn drop-oldest cho camera (độ mới quan trọng).",
+    "Chọn drop-newest hoặc một log không giới hạn/lưu bền cho các lệnh (lịch sử quan trọng).",
+    "Chọn chặn/áp lực ngược (blocking/backpressure) cho công việc theo lô, kèm lý do."
+   ]
+  },
+  "b12": {
+   "prompt": "Viết bất biến của một deque cực đại cửa sổ trượt và giải thích vì sao mỗi phần tử được xử lý nhiều nhất hai lần.",
+   "explanation": "Bài luyện tập có rubric hướng dẫn, không được tự động kiểm chứng.",
+   "rubric": [
+    "Nêu rằng deque giữ các chỉ số của các giá trị giảm dần trong cửa sổ.",
+    "Giải thích rằng mỗi chỉ số được thêm một lần và gỡ nhiều nhất một lần.",
+    "Kết luận tổng cộng O(n) so với O(nk) của vét cạn."
+   ]
+  }
+ }
+}

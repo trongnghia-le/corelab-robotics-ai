@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "x = [1]; y = x; y = y + [2]. x là gì?",
+   "options": [
+    "[1, 2]",
+    "[1]",
+    "[2]",
+    "một lỗi"
+   ],
+   "explanation": "y + [2] tạo một list mới được gắn lại vào y."
+  },
+  "b2": {
+   "prompt": "x = [1]; y = x; y += [2, 3]. len(x) là bao nhiêu?",
+   "explanation": "+= mở rộng tại chỗ."
+  },
+  "b3": {
+   "prompt": "def f(x, acc=None): if acc is None: acc = []; acc.append(x); return acc. f(1) rồi f(2) trả về",
+   "options": [
+    "[1] rồi [1, 2]",
+    "[1, 2] cả hai lần",
+    "[1] rồi [2]",
+    "một lỗi"
+   ],
+   "explanation": "Mỗi lời gọi tạo một list mới."
+  },
+  "b4": {
+   "prompt": "grid = [[0]*4 for _ in range(3)]; grid[2][3] = 1. Có bao nhiêu ô bằng 1 trong toàn grid?",
+   "explanation": "Các hàng là riêng biệt."
+  },
+  "b5": {
+   "prompt": "grid = [[0]*4]*3; grid[2][3] = 1. Có bao nhiêu ô bằng 1 trong toàn grid?",
+   "explanation": "Một hàng được dùng chung bởi ba vị trí."
+  },
+  "b6": {
+   "prompt": "Lời gọi nào tạo bản copy hoàn toàn độc lập của một list lồng nhau a?",
+   "options": [
+    "a.copy(), copy cả list lẫn mọi list bên trong",
+    "copy.deepcopy(a), copy đệ quy cả các list bên trong",
+    "a[:], cắt ra bản copy mới của từng list bên trong",
+    "list(a), dựng một list chứa bản copy của các list bên trong"
+   ],
+   "explanation": "Chỉ deepcopy mới đệ quy."
+  },
+  "b7": {
+   "prompt": "fs = [lambda i=i: i for i in range(5)]; fs[2]() trả về gì?",
+   "explanation": "Đối số mặc định gắn giá trị ngay lúc định nghĩa."
+  },
+  "b8": {
+   "prompt": "Một hàm có dòng total += 1 nhưng không gán total ở chỗ nào khác; có một total global. Gọi hàm sẽ gây",
+   "options": [
+    "NameError lúc import, vì total không được định nghĩa trong hàm",
+    "không có gì; total global được tăng, vì nó nhìn thấy được trong hàm",
+    "UnboundLocalError, vì phép gán tăng cường làm total thành local",
+    "TypeError, vì số nguyên không thể bị đổi bên trong một hàm"
+   ],
+   "explanation": "Phép gán làm total thành local; nó bị đọc trước khi được gán."
+  },
+  "b9": {
+   "prompt": "Cái nào là khóa dict hợp lệ?",
+   "options": [
+    "{1, 2}",
+    "(1, 2)",
+    "{'a': 1}",
+    "[1, 2]"
+   ],
+   "explanation": "Chỉ các object immutable (hashable)."
+  },
+  "b10": {
+   "prompt": "a = [[1, 2], [3, 4]]; b = a.copy(); a[0][0] = 99. b[0][0] là bao nhiêu?",
+   "explanation": "List bên trong được dùng chung."
+  },
+  "b11": {
+   "prompt": "Một đồng nghiệp viết normalize(path) vừa sắp xếp và rescale list được truyền vào, vừa trả về chính nó. Hãy giải thích rủi ro và đề xuất một contract rõ ràng hơn kèm unit test.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Nêu rằng vừa sửa vừa trả về cùng một object dễ gây aliasing ngoài ý muốn.",
+    "Đề xuất trả về list mới (và không sửa input) hoặc sửa tại chỗ và trả về None.",
+    "Đưa ra một test deep-copy input và khẳng định nó không đổi."
+   ]
+  },
+  "b12": {
+   "prompt": "Viết một hàm ngắn phát hiện xem có hai hàng nào của grid là cùng một list object không, và giải thích vì sao so sánh các hàng bằng == là không đủ.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Dùng id() hoặc is để so sánh identity.",
+    "Giải thích == so sánh giá trị nên các hàng bằng nhau nhưng khác object sẽ bị đánh dấu sai.",
+    "Nhắc đến một test có cả grid bị aliasing và grid sạch."
+   ]
+  }
+ }
+}

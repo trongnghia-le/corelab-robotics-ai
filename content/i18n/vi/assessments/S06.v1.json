@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một bộ đếm encoder 16 bit được đọc là 65530 rồi 4. Cách xử lý đúng cho hiệu là gì?",
+   "options": [
+    "Lấy hiệu theo modulo 2^16 ánh xạ sang dải có dấu: +10.",
+    "Loại mẫu vì không hợp lệ và giữ vận tốc cũ.",
+    "Dùng 4 - 65530; giá trị âm lớn cho thấy chuyển động ngược.",
+    "Đặt lại bộ đếm về không và bỏ qua bước này."
+   ],
+   "explanation": "Delta theo modulo là +10 số đếm."
+  },
+  "q2": {
+   "prompt": "Encoder cầu phương 512 vạch (giải mã x4), hộp số 10:1. Số đếm mỗi vòng trục ra.",
+   "explanation": "4*512*10."
+  },
+  "q3": {
+   "prompt": "Với khớp đó, bước góc nhỏ nhất tính bằng radian. Độ chính xác 1e-6.",
+   "explanation": "2 pi / 20480."
+  },
+  "q4": {
+   "prompt": "Bộ đếm 8 bit được đọc là 250 rồi 6. Delta có dấu (số đếm).",
+   "explanation": "(6-250) mod 256 = 12."
+  },
+  "q5": {
+   "prompt": "Payload của frame [10,20,30], checksum = (độ dài + các byte payload) mod 256. Giá trị checksum?",
+   "explanation": "3+10+20+30=63."
+  },
+  "q6": {
+   "prompt": "Một cáp cảm biến rơi ra; driver vẫn trả về giá trị cuối được gắn cờ 'ok'. Cách sửa tốt nhất là gì?",
+   "options": [
+    "Khởi động lại driver mỗi phút để giá trị cũ không bị giữ quá lâu.",
+    "Hạ độ lợi điều khiển để giá trị cũ ít ảnh hưởng đến đầu ra được ra lệnh.",
+    "Tăng hằng số thời gian bộ lọc để giá trị cuối suy giảm chậm hơn theo thời gian.",
+    "Theo dõi tuổi mẫu, đánh dấu cũ sau vài chu kỳ lỡ, và ra lệnh một hành động an toàn."
+   ],
+   "explanation": "Độ cũ phải được phát hiện và có hành động đáp lại."
+  },
+  "q7": {
+   "prompt": "Mô tả cách một driver nên ánh xạ lệnh tốc độ rad/s sang giá trị PWM 8 bit một cách an toàn, và nó phải từ chối những đầu vào nào.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chuẩn hóa theo tốc độ tối đa, clamp về [-1,1], nhân tỉ lệ và làm tròn.",
+    "Từ chối giá trị NaN/vô hạn và giới hạn không hợp lệ thay vì để max/min cho chúng đi qua.",
+    "Định nghĩa đầu ra khi timeout hoặc đầu vào cũ (lệnh không) và kiểm thử các biên."
+   ]
+  }
+ }
+}

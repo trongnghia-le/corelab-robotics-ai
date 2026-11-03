@@ -35,6 +35,8 @@ CoreLab is a **free, local-first learning workspace** that takes you from vector
 - 🧪 **Labs you actually run.** Every topic has a hands-on lab with starter code, runnable tests and expected output. You code it yourself, on your own machine.
 - 🎬 **Curated videos for every topic.** There are 270 videos from 3Blue1Brown, MIT OpenCourseWare, Stanford, Steve Brunton, Cyrill Stachniss, CppCon and others. The player loads only when you click: no autoplay, with an original-source link.
 - 🖼️ **160 original diagrams.** Purpose-drawn figures explain the idea: feedback loops, Kalman updates, capture points, PPO clipping, friction cones and more.
+- 🇻🇳 **English or Vietnamese.** One click switches the whole interface — lessons, exercises, quizzes and practice — between English and Vietnamese. Code and math stay identical.
+- ⏱️ **Honest time plans.** Every lesson is split into four study sessions (Learn, Practice, Build, Review) with realistic time estimates, tick-off progress, and answers that stay hidden until you ask for them.
 - 🔒 **Yours.** Local SQLite, exportable backups, no analytics, no AI API keys. Copying context to an AI tutor is optional and manual, with a preview first.
 
 ## 🚀 Quick start
@@ -247,7 +249,7 @@ npm run test:e2e                 # browser tests on an isolated database
 ## 🗺️ Status and honest limits
 
 - ✅ All 169 topics have a lesson, exercises with answers, a lab, a diagnostic, a practice bank and curated video.
-- ⚠️ **The content was drafted with AI assistance and checked automatically**: lab tests were run, numeric answers recomputed, links checked and figures rendered. It has **not** been reviewed by a human expert. Spotted a mistake? Please [open an issue](https://github.com/trongnghia-le/corelab-robotics-ai/issues).
+- ⚠️ **The content was drafted with AI assistance.** It then went through a second, independent AI review pass that re-derived every answer key, recomputed the numbers, re-ran the code and fixed the errors it found. Lab tests were also run, links checked and figures rendered. It has **not** been reviewed by a human expert. Spotted a mistake? Please [open an issue](https://github.com/trongnghia-le/corelab-robotics-ai/issues).
 - ⚠️ ROS 2, simulator and hardware labs are not included. Local automated verification of submitted code is limited to a few fixed contracts.
 - 🧭 The browser UI is tested on Linux; CI runs the build and tests on Linux, Windows and macOS.
 

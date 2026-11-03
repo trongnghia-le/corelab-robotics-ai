@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "InfoNCE, N=2, các view trực giao giống hệt z=(1,0),(0,1), tau=0.5. Loss là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "log(1+e^-2)=0.1269."
+  },
+  "b2": {
+   "prompt": "Một anchor trong batch 5: độ tương đồng dương 0.9, bốn negative có độ tương đồng 0.3, tau=0.2. Loss của anchor này là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Khoảng cách logit (0.9−0.3)/0.2=3; loss=ln(1+4e^-3)=ln(1.19915)=0.1816."
+  },
+  "b3": {
+   "prompt": "Loss khi collapse với batch size 1024? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "ln 1024=6.931."
+  },
+  "b4": {
+   "prompt": "Cận InfoNCE I ≥ log N − L. Với N=128 và L đo được 1.2 nat, cận dưới của mutual information (nat) là bao nhiêu? (số thập phân, sai số cho phép 0.01)",
+   "explanation": "ln128=4.852; 4.852−1.2=3.652."
+  },
+  "b5": {
+   "prompt": "Loss của một lần chạy contrastive giữ ở 6.93 với batch size 1024 từ epoch đầu tiên trở đi. Nguyên nhân khả dĩ nhất là gì?",
+   "options": [
+    "Learning rate quá nhỏ nên thay đổi của loss không đo được",
+    "Mô hình được huấn luyện hoàn hảo, nên loss đã đạt giá trị cực tiểu",
+    "Temperature quá cao cho batch này, làm phẳng các logit",
+    "Encoder đã collapse về đầu ra hằng số (ln 1024 = 6.93)"
+   ],
+   "explanation": "ln(1024)=6.93 đúng là giá trị khi mọi logit bằng nhau."
+  },
+  "b6": {
+   "prompt": "Một ảnh có 196 patch và tỉ lệ che là 75%. Encoder nhìn thấy (không bị che) bao nhiêu patch? (số nguyên, sai số cho phép 0.01)",
+   "explanation": "0.25·196=49 patch nhìn thấy; 147 bị che."
+  },
+  "b7": {
+   "prompt": "Vì sao BERT thay một số token được chọn bằng token ngẫu nhiên hoặc để nguyên thay vì luôn dùng ký hiệu mask?",
+   "options": [
+    "Nó ngăn từ vựng lớn dần khi có token mới xuất hiện trong văn bản corpus theo thời gian",
+    "Ký hiệu mask không bao giờ xuất hiện khi fine-tuning, nên luôn dùng nó gây ra sự không khớp giữa train/test",
+    "Token ngẫu nhiên làm loss huấn luyện nhỏ hơn, nên mô hình học nhanh hơn nhiều",
+    "Nó tăng tốc softmax trên từ vựng bằng cách thu nhỏ rất nhiều kích thước lớp đầu ra"
+   ],
+   "explanation": "Quy tắc 80/10/10 giữ cho biểu diễn của mọi token hữu ích."
+  },
+  "b8": {
+   "prompt": "Augmentation nào nhiều khả năng phá hủy nhãn nhất cho nhận dạng rẽ trái so với rẽ phải từ camera hướng trước?",
+   "options": [
+    "Thay đổi độ sáng nhỏ",
+    "Làm mờ Gaussian nhẹ",
+    "Lật ngang",
+    "Crop ngẫu nhiên nhỏ"
+   ],
+   "explanation": "Lật ngang đổi chỗ trái và phải, vốn chính là nhãn."
+  },
+  "b9": {
+   "prompt": "Một augmentation ứng viên giữ nhãn downstream ở 87 trong 120 tín hiệu probe. Tỉ lệ được bảo toàn là bao nhiêu? (số thập phân, sai số cho phép 0.005)",
+   "explanation": "87/120=0.725: còn xa 1, nên không phải augmentation an toàn cho nhãn này."
+  },
+  "b10": {
+   "prompt": "Các batch được dựng từ các frame ngẫu nhiên của một video robot dài 10 phút. Rủi ro chính cho các negative trong batch là gì?",
+   "options": [
+    "Các cặp dương trở thành negative của chính chúng, làm loss contrastive bằng không",
+    "Các frame quá khác nhau, nên negative dễ một cách tầm thường",
+    "Các frame gần trùng lặp từ cùng một cảnh bị coi là negative (false negative)",
+    "Batch quá nhỏ để tính softmax trên các độ tương đồng"
+   ],
+   "explanation": "Các frame liền kề thể hiện cùng nội dung, nên đẩy chúng ra xa làm hại biểu diễn."
+  },
+  "b11": {
+   "prompt": "Hãy mô tả một quy trình để quyết định một tập augmentation có an toàn hay không trước khi tốn giờ GPU cho pretraining.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Đo mức bảo toàn nhãn (tỉ lệ được bảo toàn) của từng augmentation trên một tập probe có nhãn.",
+    "Chạy một pretraining ngắn cộng linear probe so với baseline thô qua nhiều seed, loại bỏ từng augmentation một (ablation).",
+    "Xác định một điều kiện bác bỏ (ví dụ không có lợi so với feature thô, hoặc dấu hiệu collapse/lối tắt) trước khi chạy."
+   ]
+  },
+  "b12": {
+   "prompt": "Phác thảo code (hoặc pseudocode) cho loss InfoNCE với một batch embedding hai view, gồm cả ổn định số học và shape của ma trận tương đồng.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chuẩn hóa embedding, tính ma trận cosine N×N giữa view 1 và view 2, chia cho tau.",
+    "Dùng log-sum-exp (trừ giá trị lớn nhất của hàng) và lấy đường chéo làm cặp dương: loss = mean(logsumexp(row) − diag).",
+    "Kiểm thử: các cặp trực giao giống hệt cho log(1+e^(-1/tau)); collapse cho log N."
+   ]
+  }
+ }
+}

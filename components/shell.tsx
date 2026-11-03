@@ -16,29 +16,32 @@ import {
   PanelLeftClose,
   Menu,
   ArrowUpRight,
+  Languages,
 } from "lucide-react";
+import { useI18n, type Dict } from "@/lib/i18n";
+type TKey = keyof Dict;
 const main = [
-  ["/", "Dashboard", LayoutDashboard],
-  ["/roadmap", "Roadmap", Network],
-  ["/lessons", "Lessons", BookOpen],
-  ["/assessments", "Assessments", ClipboardCheck],
+  ["/", "nav.dashboard", LayoutDashboard],
+  ["/roadmap", "nav.roadmap", Network],
+  ["/lessons", "nav.lessons", BookOpen],
+  ["/practice", "nav.practice", FlaskConical],
+  ["/assessments", "nav.review", ClipboardCheck],
 ] as const;
 const extra = [
-  ["/paths", "Learning paths", Route],
-  ["/practice", "Practice", FlaskConical],
-  ["/tutor", "AI Tutor handoff", MessageSquare],
-  ["/sources", "References", Library],
+  ["/paths", "nav.paths", Route],
+  ["/tutor", "nav.tutor", MessageSquare],
+  ["/sources", "nav.sources", Library],
 ] as const;
-const labels: Record<string, string> = {
-  objectives: "Robotics & AI lab",
-  roadmap: "Roadmap",
-  lessons: "Lessons",
-  assessments: "Assessments",
-  paths: "Learning paths",
-  practice: "Practice",
-  tutor: "AI Tutor handoff",
-  settings: "Data & settings",
-  sources: "References",
+const labels: Record<string, TKey> = {
+  objectives: "nav.lab",
+  roadmap: "nav.roadmap",
+  lessons: "nav.lessons",
+  assessments: "nav.review",
+  paths: "nav.paths",
+  practice: "nav.practice",
+  tutor: "nav.tutor",
+  settings: "nav.settings",
+  sources: "nav.sources",
 };
 export function Shell({
   children,
@@ -48,6 +51,7 @@ export function Shell({
   v2Enabled?: boolean;
 }) {
   const pathname = usePathname(),
+    { t, lang, setLang } = useI18n(),
     [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLButtonElement>(null);
@@ -63,18 +67,18 @@ export function Shell({
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
-        Skip navigation
+        {t("shell.skip")}
       </a>
       {open && (
         <button
           className="drawer-scrim"
-          aria-label="Close menu"
+          aria-label={t("shell.closeMenu")}
           onClick={close}
         />
       )}
       <aside
         className={`sidebar ${open ? "is-open" : ""}`}
-        aria-label="Main navigation"
+        aria-label={t("shell.mainNav")}
         role={open ? "dialog" : undefined}
         aria-modal={open || undefined}
         onKeyDown={(e) => {
@@ -109,33 +113,21 @@ export function Shell({
           ref={closeRef}
           className="icon-button drawer-close"
           onClick={close}
-          aria-label="Close menu"
+          aria-label={t("shell.closeMenu")}
         >
           <PanelLeftClose size={20} />
         </button>
         <div className="workspace-label">
           <span className="workspace-initial">N</span>
           <div>
-            Personal workspace<small>Robotics & AI learning</small>
+            {t("shell.workspace")}
+            <small>{t("shell.workspaceSub")}</small>
           </div>
           <span className="local-dot" />
         </div>
-        <div className="nav-caption">WORKSPACE</div>
+        <div className="nav-caption">{t("shell.captionLearn")}</div>
         <nav>
-          {v2Enabled && (
-            <Link
-              href="/objectives"
-              className={`nav-link ${pathname.startsWith("/objectives") ? "active" : ""}`}
-              aria-current={
-                pathname.startsWith("/objectives") ? "page" : undefined
-              }
-              onClick={() => setOpen(false)}
-            >
-              <FlaskConical size={18} />
-              Robotics & AI lab
-            </Link>
-          )}
-          {main.map(([href, label, Icon]) => (
+          {main.map(([href, key, Icon]) => (
             <Link
               key={href}
               href={href}
@@ -152,13 +144,13 @@ export function Shell({
               }
             >
               <Icon size={18} />
-              {label}
+              {t(key)}
             </Link>
           ))}
         </nav>
-        <div className="nav-caption">LEARNING TOOLS</div>
+        <div className="nav-caption">{t("shell.captionMore")}</div>
         <nav>
-          {extra.map(([href, label, Icon]) => (
+          {extra.map(([href, key, Icon]) => (
             <Link
               key={href}
               href={href}
@@ -166,19 +158,28 @@ export function Shell({
               className={`nav-link ${pathname.startsWith(href) ? "active" : ""}`}
             >
               <Icon size={18} />
-              {label}
+              {t(key)}
             </Link>
           ))}
+          {v2Enabled && (
+            <Link
+              href="/objectives"
+              className={`nav-link ${pathname.startsWith("/objectives") ? "active" : ""}`}
+              aria-current={
+                pathname.startsWith("/objectives") ? "page" : undefined
+              }
+              onClick={() => setOpen(false)}
+            >
+              <FlaskConical size={18} />
+              {t("nav.lab")}
+            </Link>
+          )}
         </nav>
         <div className="sidebar-bottom">
           <div className="local-card">
             <span className="local-dot" />
-            <strong>Local-first. Yours.</strong>
-            <p>
-              Your data stays on your machine.
-              <br />
-              No cloud, no API.
-            </p>
+            <strong>{t("shell.localTitle")}</strong>
+            <p>{t("shell.localBody")}</p>
           </div>
           <Link
             href="/settings"
@@ -186,7 +187,7 @@ export function Shell({
             onClick={() => setOpen(false)}
           >
             <Settings size={18} />
-            Data & settings
+            {t("nav.settings")}
           </Link>
           <div className="version">
             CORELAB <span>{v2Enabled ? "V2 workspace" : "v1.0"}</span>
@@ -200,32 +201,53 @@ export function Shell({
               ref={menuRef}
               className="icon-button mobile-menu"
               onClick={() => setOpen(true)}
-              aria-label="Open menu"
+              aria-label={t("shell.openMenu")}
               aria-expanded={open}
             >
               <Menu size={20} />
             </button>
-            <span>Workspace</span>
+            <span>{t("shell.crumb")}</span>
             <span className="slash">/</span>
             <strong>
               {pathname === "/"
-                ? "Dashboard"
-                : (labels[pathname.split("/")[1]] ?? "CoreLab")}
+                ? t("nav.dashboard")
+                : labels[pathname.split("/")[1]]
+                  ? t(labels[pathname.split("/")[1]])
+                  : "CoreLab"}
             </strong>
           </div>
-          <span className="topbar-note">
-            <span className="local-dot" /> Local workspace{" "}
-            <ArrowUpRight size={13} />
-          </span>
+          <div className="topbar-right">
+            <div
+              className="lang-switch"
+              role="group"
+              aria-label={t("shell.language")}
+            >
+              <Languages size={15} aria-hidden="true" />
+              {(["en", "vi"] as const).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  lang={l}
+                  aria-pressed={lang === l}
+                  className={lang === l ? "selected" : ""}
+                  onClick={() => setLang(l)}
+                >
+                  {l === "en" ? "EN" : "VI"}
+                </button>
+              ))}
+            </div>
+            <span className="topbar-note">
+              <span className="local-dot" /> {t("shell.local")}{" "}
+              <ArrowUpRight size={13} />
+            </span>
+          </div>
         </header>
         <main id="main" tabIndex={-1}>
           {children}
         </main>
         <footer className="footer">
-          <span>Understand principles. Implement independently. Verify.</span>
-          <span>
-            Diagnostic → Learn → Derive → Implement → Verify → Transfer
-          </span>
+          <span>{t("shell.footer1")}</span>
+          <span>{t("shell.footer2")}</span>
         </footer>
       </div>
     </div>

@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "AD chế độ thuận: đạo hàm của x^2 sin x tại x=1. Độ chính xác 0.001.",
+   "explanation": "2 sin1 + cos1."
+  },
+  "b2": {
+   "prompt": "PGS một lượt trên A=[[2,-1],[-1,2]], b=[-1,-1] từ không. lambda_2 sau lượt quét.",
+   "explanation": "lam1=0.5; lam2=0.75."
+  },
+  "b3": {
+   "prompt": "Hệ số sai số mỗi lượt (c/a)^2 cho A=[[4,-2],[-2,4]].",
+   "explanation": "(2/4)^2."
+  },
+  "b4": {
+   "prompt": "Sai số sai phân trung tâm của sin tại x=1 với h=0.1 (giá trị tuyệt đối, độ chính xác 0.0001).",
+   "explanation": "~ h^2/6 cos... = 9e-4."
+  },
+  "b5": {
+   "prompt": "Chi phí bước batched = t0 + N t1 với t0=50 us, t1=0.5 us, N=1000. Thông lượng theo world-steps mỗi giây (độ chính xác 5000).",
+   "explanation": "1000/550e-6."
+  },
+  "b6": {
+   "prompt": "Một bước batched tốn t0 + N t1 với t0=50 us và t1=0.5 us, N=1000. Một vòng lặp Python trả t0 + t1 cho mỗi thế giới. Mức tăng tốc của batching so với vòng lặp cho N=1000 (độ chính xác 0.5).",
+   "explanation": "50.5 ms / 0.55 ms."
+  },
+  "b7": {
+   "prompt": "Một bước batched sửa đổi tại chỗ các mảng đầu vào của nó. Lỗi nào xuất hiện?",
+   "options": [
+    "Kết quả phụ thuộc thứ tự gọi và dữ liệu của bên gọi bị hỏng, nên các bài kiểm thử batch-bằng-vòng-lặp thất bại.",
+    "Không có: cập nhật tại chỗ luôn vừa nhanh hơn vừa an toàn, nên không có lỗi nào xuất hiện trong kết quả.",
+    "Vật lý đổi bậc chính xác vì cập nhật dùng các giá trị đã bị ghi đè.",
+    "Gradient trở thành chính xác bằng không, vì việc ghi tại chỗ tách rời các mảng."
+   ],
+   "explanation": "Aliasing."
+  },
+  "b8": {
+   "prompt": "Triệu chứng của quá ít vòng lặp solver trong một chồng hộp?",
+   "options": [
+    "Độ chính xác năng lượng cao hơn vì solver chính xác hơn",
+    "Lực va chạm mượt hơn vì solver lấy trung bình chúng",
+    "Dùng ít bộ nhớ hơn vì lưu ít hàng ràng buộc hơn",
+    "Hộp lún hoặc bò vì các xung lượng va chạm chưa hội tụ"
+   ],
+   "explanation": "Vi phạm ràng buộc còn dư."
+  },
+  "b9": {
+   "prompt": "Vì sao các nhà nghiên cứu làm mềm va chạm khi họ muốn có gradient?",
+   "options": [
+    "Để mô phỏng chạy nhanh hơn, vì các va chạm đã làm mềm không cần vòng lặp solver.",
+    "Một lực va chạm trơn có đạo hàm dùng được, với cái giá là chệch so với va chạm cứng.",
+    "Để loại bỏ ảnh hưởng của trọng lực lên động lực học để bề mặt loss trở nên trơn.",
+    "Để khỏi cần bước thời gian, vì các lực trơn có thể được tích phân chính xác ở dạng đóng."
+   ],
+   "explanation": "Làm trơn đánh đổi độ chệch lấy tín hiệu gradient."
+  },
+  "b10": {
+   "prompt": "Một gradient chân trời dài gần trạng thái cân bằng không ổn định là đúng nhưng rất lớn. Cách khắc phục hợp lý là gì?",
+   "options": [
+    "Tăng learning rate để gradient lớn được lấy trung bình đi.",
+    "Tắt trọng lực để trạng thái cân bằng không ổn định không còn khuếch đại sai số.",
+    "Dùng bước sai phân hữu hạn nhỏ hơn để có gradient chính xác hơn.",
+    "Rút ngắn chân trời, cắt cụt lan truyền ngược hoặc dùng multiple shooting."
+   ],
+   "explanation": "Giảm sự khuếch đại."
+  },
+  "b11": {
+   "prompt": "Mô tả một bài kiểm thử đối chiếu cài đặt AD với sai phân hữu hạn tại nhiều điểm, gồm một điểm mà nó lẽ ra phải thất bại.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chọn các điểm trơn và một h gần 1e-6 với dung sai đã nêu.",
+    "Có một điểm không trơn (điểm gấp hoặc chuyển đổi va chạm) nơi AD và FD bất đồng và giải thích vì sao.",
+    "Có một hàm hằng (gradient bằng không) và một trường hợp với các kiểu số hỗn hợp."
+   ]
+  },
+  "b12": {
+   "prompt": "Một nhóm báo cáo bộ mô phỏng của họ '3 lần nhanh hơn' sau khi giảm số vòng lặp. Bạn yêu cầu thêm bằng chứng gì?",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Yêu cầu sai số so với một tham chiếu với cùng chỉ số trước và sau.",
+    "Yêu cầu thống kê độ xuyên hoặc phần dư và độ ổn định trên các trường hợp khó (chồng vật, va chạm nhanh).",
+    "Yêu cầu đường cong đánh đổi chi phí/độ chính xác, không phải một điểm đơn."
+   ]
+  }
+ }
+}

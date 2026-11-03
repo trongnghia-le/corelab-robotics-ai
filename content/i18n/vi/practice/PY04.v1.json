@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "n1": {
+   "prompt": "Các mảng A và B có shape (4,1,3) và (5,1). Shape của A + B là gì?",
+   "options": [
+    "(5,4,3)",
+    "Lỗi: các shape không tương thích",
+    "(4,5,3)",
+    "(4,1,3)"
+   ],
+   "explanation": "Căn từ bên phải: 3 với 1 cho 3, 1 với 5 cho 5, và 4 được ghép với chiều còn thiếu. Kết quả (4,5,3)."
+  },
+  "n2": {
+   "prompt": "X có shape (6,4). X.std(axis=1) chứa bao nhiêu phần tử? Cho một số nguyên.",
+   "explanation": "axis=1 rút gọn 4 cột và để lại một giá trị cho mỗi hàng: 6 phần tử."
+  },
+  "n3": {
+   "prompt": "Một cột đặc trưng chứa [2, 4, 6, 8]. Sau khi chuẩn hóa bằng độ lệch chuẩn tổng thể (ddof=0), giá trị thay thế cho 8 là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "Trung bình 5, độ lệch -3,-1,1,3, phương sai 5, std 2.236; (8-5)/2.236 = 1.342."
+  },
+  "n4": {
+   "prompt": "Sau a = np.arange(6.); b = a[1:4]; b[0] = 99, và riêng c = a[[1,2,3]]; c[0] = -5, phát biểu nào đúng về a?",
+   "options": [
+    "Cả hai lần ghi đều làm thay đổi a",
+    "Chỉ lần ghi qua b làm thay đổi a",
+    "Không lần ghi nào làm thay đổi a",
+    "Chỉ lần ghi qua c làm thay đổi a"
+   ],
+   "explanation": "Slicing cơ bản trả về một view (ghi được truyền xuống a); fancy indexing bằng list trả về một bản sao."
+  },
+  "n5": {
+   "prompt": "Hiệu từng cặp theo broadcast của N=2000 điểm 3D tạo ra một biến tạm float64 (N,N,3). Nó dùng bao nhiêu megabyte (1 MB = 10^6 byte)? Cho một số nguyên.",
+   "explanation": "2000*2000*3*8 B = 96,000,000 B = 96 MB."
+  },
+  "n6": {
+   "prompt": "Các hàng u=[1,2,2] và v=[2,1,2] được chuẩn hóa về độ dài đơn vị rồi nhân vô hướng với nhau. Kết quả là bao nhiêu? Cho 4 chữ số thập phân.",
+   "explanation": "Các chuẩn là 3 và 3; tích vô hướng là 2+2+4=8; 8/9 = 0.8889."
+  },
+  "n7": {
+   "prompt": "Một batch ảnh X có shape (N,224,224,3) và một đồng nghiệp chuẩn hóa nó bằng (X - X.mean(axis=0)) / X.std(axis=0). Hãy giải thích điều này tính cái gì, vì sao nhiều khả năng đó không phải ý định, và viết các phép rút gọn đúng.",
+   "rubric": [
+    "Nêu axis=0 cho một mean/std riêng cho từng vị trí điểm ảnh và từng kênh (shape (224,224,3)), không phải theo kênh",
+    "Nêu thống kê theo kênh mong muốn cần axis=(0,1,2) với keepdims=True (shape (1,1,1,3))",
+    "Đề cập việc đề phòng std bằng không hoặc kiểm tra mean~0 và std~1 theo từng kênh trên dữ liệu kiểm thử không vuông"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "n8": {
+   "prompt": "Thiết kế hợp đồng của normalize_rows(X) cho một batch float (N,D) có thể chứa các hàng toàn số không: đầu vào, shape đầu ra, chính sách cho hàng bằng không, và ba bài kiểm thử bạn sẽ viết.",
+   "rubric": [
+    "Nêu shape đầu ra (N,D), các hàng L2 đơn vị, đầu vào không bị sửa, dùng keepdims=True cho các chuẩn",
+    "Chọn và ghi lại một chính sách hàng bằng không tường minh (giữ bằng không, hoặc raise ValueError) thay vì để 0/0 sinh ra NaN",
+    "Liệt kê các kiểm thử gồm một hàng tính tay như [3,4]->[0.6,0.8], một hàng bằng không, và một tính chất chuẩn-bằng-1 trên dữ liệu ngẫu nhiên"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "n9": {
+   "prompt": "Các điểm được lưu thành các hàng của P với shape (N,3) và một phép quay R tác động lên vector cột theo p' = R p. Biểu thức nào quay mọi điểm?",
+   "options": [
+    "P @ R",
+    "R * P",
+    "R.T @ P",
+    "P @ R.T"
+   ],
+   "explanation": "(Rp)^T = p^T R^T, nên các vector hàng được nhân với R chuyển vị."
+  },
+  "n10": {
+   "prompt": "Tín hiệu [4, 8, 6, 2, 10] được làm mượt với cửa sổ 2 (trung bình các cặp liên tiếp, không đệm). Giá trị đầu ra thứ ba là bao nhiêu?",
+   "explanation": "Các cửa sổ: (4,8)=6, (8,6)=7, (6,2)=4, (2,10)=6; giá trị thứ ba là 4."
+  },
+  "n11": {
+   "prompt": "x = np.zeros(3, dtype=int); x[:] = 1.9; print(x). Cái gì được in ra?",
+   "options": [
+    "Một lỗi được raise",
+    "[1.9 1.9 1.9]",
+    "[1 1 1]",
+    "[2 2 2]"
+   ],
+   "explanation": "Gán float vào mảng int sẽ cắt cụt về phía không: [1 1 1]."
+  },
+  "n12": {
+   "prompt": "Một batch 64 ảnh RGB kích thước 224x224 được lưu dưới dạng float32. Mảng cần bao nhiêu megabyte (10^6 byte)? Cho một chữ số thập phân.",
+   "explanation": "64*224*224*3*4 B = 38,535,168 B = 38.5 MB."
+  }
+ }
+}

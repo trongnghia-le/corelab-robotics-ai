@@ -1,0 +1,90 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Một camera 30 Hz (P=33.3 ms) có callback 16.7 ms. Utilization. Độ chính xác 0.01.",
+   "explanation": "16.7/33.3."
+  },
+  "b2": {
+   "prompt": "Hàng đợi keep-last quá tải depth 4, P=20 ms. Cận dưới của độ trễ (ms).",
+   "explanation": "(N-1)P."
+  },
+  "b3": {
+   "prompt": "Hàng đợi quá tải depth 3, P=50 ms. Cận trên của độ trễ (ms).",
+   "explanation": "N*P."
+  },
+  "b4": {
+   "prompt": "Utilization 4 (callback chậm gấp bốn lần lượng đến). Tỉ lệ bị bỏ về lâu dài. Độ chính xác 0.01.",
+   "explanation": "1-1/4."
+  },
+  "b5": {
+   "prompt": "Một callback mất 25 ms. Thông lượng duy trì tối đa tính bằng message mỗi giây.",
+   "explanation": "1000/25."
+  },
+  "b6": {
+   "prompt": "Bộ điều khiển không được hành động trên dữ liệu cũ hơn 60 ms; lượng đến mỗi 20 ms, hàng đợi quá tải. Depth N lớn nhất với N*P <= 60.",
+   "explanation": "N<=3."
+  },
+  "b7": {
+   "prompt": "Luồng đơn bị chặn từ t=150 đến t=420 ms; một timer 100 ms đến hạn lúc 200 ms (thời gian callback 0). Độ trễ của lần gọi đó tính bằng ms.",
+   "explanation": "Bắt đầu lúc 420."
+  },
+  "b8": {
+   "prompt": "Vì sao một hàng đợi keep-last sâu là rủi ro cho đầu vào của bộ điều khiển?",
+   "options": [
+    "Nó che giấu quá tải: không có message bị bỏ nhưng dữ liệu dùng cũ tới N chu kỳ.",
+    "Hàng đợi sâu vô hiệu hóa thiết lập reliability của subscription.",
+    "Nó làm giảm tốc độ publisher vì bên ghi phải chờ hàng đợi.",
+    "Hàng đợi sâu làm message bị hỏng bên trong middleware."
+   ],
+   "explanation": "Độ sâu đánh đổi mất mát lấy độ cũ."
+  },
+  "b9": {
+   "prompt": "Cặp nào tương thích?",
+   "options": [
+    "publisher volatile, subscriber transient_local",
+    "publisher best_effort, subscriber yêu cầu deadline ngắn hơn mức được đề nghị",
+    "publisher best_effort, subscriber reliable",
+    "publisher reliable transient_local, subscriber best_effort volatile"
+   ],
+   "explanation": "Một đề nghị mạnh hơn thỏa mãn một yêu cầu yếu hơn."
+  },
+  "b10": {
+   "prompt": "Một MultiThreadedExecutor được dùng nhưng cả hai callback nằm trong callback group mặc định, và chúng không bao giờ chạy song song. Vì sao?",
+   "options": [
+    "Executor bỏ qua các callback của cùng một node và chỉ chạy một.",
+    "Group mặc định là mutually exclusive, nên các callback của nó được tuần tự hóa.",
+    "Callback không bao giờ chạy song song trong ROS 2, bất kể executor.",
+    "Python không có luồng thật, nên callback luôn chạy lần lượt."
+   ],
+   "explanation": "Hãy dùng các group riêng hoặc reentrant."
+  },
+  "b11": {
+   "prompt": "Mô tả một thí nghiệm đo độ trễ message dưới hai thiết lập QoS và nói kết quả nào sẽ bác bỏ mô hình hàng đợi của bạn.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Cố định tốc độ publish, thời gian callback và hai profile QoS; ghi lại số đã xử lý, số bị bỏ và độ trễ.",
+    "So với các cận (N-1)P..NP và bảo toàn đã xử lý+bị bỏ=đã gửi.",
+    "Nêu một kết quả bác bỏ (độ trễ vượt N*P hoặc số đếm không cộng khớp) và một nguyên nhân có thể."
+   ]
+  },
+  "b12": {
+   "prompt": "Chọn QoS và chiến lược callback group cho một mapper lidar (quét 10 Hz, xử lý 40 ms) và một lệnh dừng an toàn 100 Hz trong cùng một tiến trình. Biện minh.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Tính utilization của mapper (40 ms / 100 ms = 0.4) và lưu ý hạn chót an toàn.",
+    "Cô lập vòng an toàn bằng callback group/executor hoặc luồng riêng.",
+    "Chọn best-effort độ sâu nhỏ cho các lần quét và reliable độ sâu nhỏ cho lệnh an toàn."
+   ]
+  },
+  "b13": {
+   "prompt": "Cả hai đầu phải dùng QoS nào để một node khởi động muộn vẫn nhận được một phép biến đổi tĩnh hoặc bản đồ được publish một lần?",
+   "options": [
+    "best_effort và transient_local chỉ trên subscriber",
+    "best_effort và volatile",
+    "reliable và volatile với độ sâu lớn",
+    "reliable và transient_local"
+   ],
+   "explanation": "transient_local trên publisher giữ mẫu cho bên vào muộn; subscriber cũng phải yêu cầu nó."
+  }
+ }
+}

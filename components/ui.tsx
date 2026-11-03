@@ -2,8 +2,9 @@
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Clock3 } from "lucide-react";
 import type { Mastery } from "@/lib/types";
-import { dimensions, dimensionNames } from "@/lib/types";
-import { topicMap } from "@/lib/curriculum";
+import { dimensions } from "@/lib/types";
+import { useCore } from "./provider";
+import { useI18n, formatDuration } from "@/lib/i18n";
 export function PageHeading({
   eyebrow,
   title,
@@ -27,50 +28,54 @@ export function PageHeading({
   );
 }
 export function Status({ mastery }: { mastery: Mastery }) {
+  const { t } = useI18n();
   return (
     <span className={`status ${mastery.status}`}>
       {mastery.level > 0 ? (
         <>
           <CheckCircle2 size={13} />
-          Verified L{mastery.level}
+          {t("status.mastered")}
         </>
       ) : mastery.provisionalLevel > 0 ? (
-        `Self-assessed L${mastery.provisionalLevel}`
+        t("status.selfRated")
       ) : mastery.status === "in_progress" ? (
-        "In progress"
+        t("status.practised")
       ) : (
-        "Unassessed"
+        t("status.notStarted")
       )}
-      {mastery.reviewDue ? " · Review due" : ""}
+      {mastery.reviewDue ? ` · ${t("status.reviewDue")}` : ""}
     </span>
   );
 }
 export function TopicChips({ ids }: { ids: string[] }) {
+  const { t } = useI18n();
+  const { title } = useCore();
   return (
     <div className="chips">
       {ids.length ? (
         ids.map((id) => (
           <Link href={`/lessons/${id}`} className="chip" key={id}>
-            <span className="mono">{id}</span> {topicMap[id]?.title}
+            <span className="mono">{id}</span> {title(id)}
           </Link>
         ))
       ) : (
-        <span className="muted small">No prerequisites.</span>
+        <span className="muted small">{t("common.noPrereqs")}</span>
       )}
     </div>
   );
 }
 export function Matrix({ mastery }: { mastery: Mastery }) {
+  const { t } = useI18n();
   return (
     <div className="competency-matrix">
       {dimensions.map((d) => (
         <div key={d}>
           <span className="dimension-letter">{d}</span>
-          <strong>{dimensionNames[d]}</strong>
+          <strong>{t(`dim.${d}`)}</strong>
           <span className={mastery.dimensions[d] ? "verified-text" : "muted"}>
             {mastery.dimensions[d]
-              ? `Evidence L${mastery.dimensions[d]}`
-              : "No evidence yet"}
+              ? t("matrix.evidence", { n: mastery.dimensions[d] })
+              : t("matrix.none")}
           </span>
         </div>
       ))}
@@ -94,15 +99,18 @@ export function ActionLink({
   );
 }
 export function Time({ minutes }: { minutes: number }) {
+  const { lang } = useI18n();
   return (
     <span className="time">
       <Clock3 size={14} />
-      {minutes} min
+      {formatDuration(minutes, lang)}
     </span>
   );
 }
 export function dateText(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  const vi =
+    typeof document !== "undefined" && document.documentElement.lang === "vi";
+  return new Intl.DateTimeFormat(vi ? "vi-VN" : "en-GB", {
     dateStyle: "medium",
     timeStyle: "short",
     timeZone: "Asia/Ho_Chi_Minh",

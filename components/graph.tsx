@@ -15,6 +15,8 @@ import Link from "next/link";
 import { ancestors, topics, topicMap } from "@/lib/curriculum";
 import type { Mastery } from "@/lib/types";
 import { TopicChips, Status } from "./ui";
+import { useCore } from "./provider";
+import { useI18n } from "@/lib/i18n";
 export function Graph({
   domain,
   query,
@@ -29,6 +31,8 @@ export function Graph({
   mastery: Record<string, Mastery>;
 }) {
   const router = useRouter();
+  const { t } = useI18n();
+  const { title } = useCore();
   const [focus, setFocus] = useState("");
   const [selected, setSelected] = useState("");
   const { nodes, edges } = useMemo(() => {
@@ -38,7 +42,7 @@ export function Graph({
           (t) =>
             t.domain === domain &&
             (!query ||
-              `${t.id} ${t.title}`
+              `${t.id} ${t.title} ${title(t.id)}`
                 .toLowerCase()
                 .includes(query.toLowerCase())) &&
             (!priority || t.priority === priority) &&
@@ -60,16 +64,18 @@ export function Graph({
       rows[l] = row + 1;
       return {
         id,
-        position: { x: l * 300, y: row * 140 },
+        position: { x: l * 340, y: row * 170 },
         data: {
           label: (
             <div>
               <span className="mono">{id}</span>
-              <strong>{topicMap[id].title}</strong>
+              <strong>{title(id)}</strong>
               <small>
                 {mastery[id].level
-                  ? `Verified L${mastery[id].level}`
-                  : "Unassessed"}
+                  ? t("status.mastered")
+                  : mastery[id].status === "in_progress"
+                    ? t("status.practised")
+                    : t("status.notStarted")}
               </small>
             </div>
           ),
@@ -78,10 +84,12 @@ export function Graph({
           background: mastery[id].level ? "#15281f" : "#1b1f26",
           border: `1px solid ${mastery[id].level ? "#36714d" : "#3f4652"}`,
           color: "#f3f4f6",
-          width: 240,
+          width: 290,
           borderRadius: 10,
+          fontSize: 16,
+          padding: 12,
         },
-        ariaLabel: `${id} ${topicMap[id].title}`,
+        ariaLabel: `${id} ${title(id)}`,
       };
     });
     const es: Edge[] = [...ids].flatMap((id) =>
@@ -96,26 +104,26 @@ export function Graph({
         })),
     );
     return { nodes: ns, edges: es };
-  }, [domain, query, priority, status, focus, mastery]);
+  }, [domain, query, priority, status, focus, mastery, t, title]);
   return (
     <section className="graph-section">
       <div className="between">
         <p className="small muted">
-          {focus ? "Selected prerequisite chain" : `Scope: ${domain}`} ·{" "}
-          {nodes.length} nodes · drag to pan, scroll to zoom.
+          {focus ? t("graph.chain") : t("graph.scope", { domain })} ·{" "}
+          {t("graph.nodes", { n: nodes.length })}
         </p>
         <select
-          aria-label="Focus prerequisite chain"
+          aria-label={t("graph.focus")}
           value={focus}
           onChange={(e) => {
             setFocus(e.target.value);
             setSelected("");
           }}
         >
-          <option value="">Current domain</option>
+          <option value="">{t("graph.currentDomain")}</option>
           {topics.map((t) => (
             <option value={t.id} key={t.id}>
-              {t.id} · {t.title}
+              {t.id} · {title(t.id)}
             </option>
           ))}
         </select>
@@ -127,6 +135,7 @@ export function Graph({
           defaultEdges={edges}
           colorMode="dark"
           fitView
+          fitViewOptions={{ padding: 0.1, minZoom: 0.6, maxZoom: 1 }}
           minZoom={0.15}
           maxZoom={1.8}
           onNodeClick={(_, node) => setSelected(node.id)}
@@ -146,22 +155,18 @@ export function Graph({
         <div className="panel graph-detail">
           <div className="between">
             <h2>
-              {selected} · {topicMap[selected].title}
+              {selected} · {title(selected)}
             </h2>
             <Status mastery={mastery[selected]} />
           </div>
-          <p>Prerequisites</p>
+          <p>{t("graph.prereqs")}</p>
           <TopicChips ids={topicMap[selected].prerequisites} />
           <Link className="button" href={`/lessons/${selected}`}>
-            Open topic details
+            {t("graph.open")}
           </Link>
         </div>
       )}
-      <p className="small muted">
-        Select a node to inspect it. Prerequisites outside the domain remain
-        visible to preserve relationships. The list provides equivalent keyboard
-        navigation.
-      </p>
+      <p className="small muted">{t("graph.note")}</p>
     </section>
   );
 }

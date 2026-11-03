@@ -3,6 +3,13 @@ import { randomUUID } from "node:crypto";
 import { domains, topicMap } from "./curriculum";
 import { validateLab } from "./labs";
 import type { Store } from "./storage";
+import { gradeAssessment } from "./engine";
+import {
+  getAssessment,
+  getPracticeAssessment,
+  localizeAssessment,
+} from "./content";
+import type { Attempt } from "./types";
 const topicId = z.string().refine((v) => !!topicMap[v], "Unknown topic");
 const actionSchema = z.discriminatedUnion("type", [
   z.object({
@@ -10,6 +17,7 @@ const actionSchema = z.discriminatedUnion("type", [
     topicId,
     answers: z.record(z.string().max(100), z.string().max(10000)),
     assistance: z.enum(["A0", "A1", "A2", "A3"]),
+    lang: z.enum(["en", "vi"]).optional(),
   }),
   z.object({
     type: z.literal("targeted_attempt"),
@@ -19,6 +27,7 @@ const actionSchema = z.discriminatedUnion("type", [
     answers: z.record(z.string().max(100), z.string().max(10000)),
     assistance: z.enum(["A0", "A1", "A2", "A3"]),
     assessmentVersion: z.number().int().positive(),
+    lang: z.enum(["en", "vi"]).optional(),
   }),
   z.object({
     type: z.literal("session"),
@@ -59,12 +68,50 @@ const actionSchema = z.discriminatedUnion("type", [
     confirm: z.literal(true),
   }),
 ]);
+/**
+ * Display-only feedback in the learner's language. The stored attempt keeps
+ * the English feedback; grading itself is unchanged.
+ */
+function localizedFeedback(
+  attempt: Attempt,
+  kind: "assessments" | "practice",
+  lang: "en" | "vi" | undefined,
+) {
+  if (lang !== "vi") return undefined;
+  const contract =
+    kind === "assessments"
+      ? getAssessment(attempt.topicId, attempt.assessmentVersion)
+      : getPracticeAssessment(attempt.topicId, attempt.assessmentVersion);
+  const localized = localizeAssessment(contract, kind, "vi");
+  if (!localized) return undefined;
+  const ids = new Set(attempt.grade.items.map((i) => i.id));
+  const grade = gradeAssessment(
+    {
+      ...localized,
+      questions: localized.questions.filter((q) => ids.has(q.id)),
+    },
+    attempt.answers,
+  );
+  return Object.fromEntries(
+    grade.items.map((i) => [
+      i.id,
+      i.feedback.replace(
+        "Review against the rubric; unverified.",
+        "Đối chiếu với rubric; chưa kiểm chứng.",
+      ),
+    ]),
+  );
+}
+
 export function applyAction(store: Store, input: unknown) {
   const a = actionSchema.parse(input);
-  if (a.type === "attempt")
-    return store.attempt(a.topicId, a.answers, a.assistance);
-  if (a.type === "targeted_attempt")
-    return store.targetedAttempt(
+  if (a.type === "attempt") {
+    const attempt = store.attempt(a.topicId, a.answers, a.assistance);
+    const feedback = localizedFeedback(attempt, "assessments", a.lang);
+    return feedback ? { ...attempt, localizedFeedback: feedback } : attempt;
+  }
+  if (a.type === "targeted_attempt") {
+    const attempt = store.targetedAttempt(
       a.topicId,
       a.skillTag,
       a.questionIds,
@@ -72,6 +119,9 @@ export function applyAction(store: Store, input: unknown) {
       a.assistance,
       a.assessmentVersion,
     );
+    const feedback = localizedFeedback(attempt, "practice", a.lang);
+    return feedback ? { ...attempt, localizedFeedback: feedback } : attempt;
+  }
   if (a.type === "restore") return store.restore(a.backup, a.confirm);
   const at = new Date().toISOString();
   if (a.type === "session") {

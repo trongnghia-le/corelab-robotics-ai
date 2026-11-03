@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Tập ma trận 3x3 nào đóng với phép cộng?",
+   "options": [
+    "Các ma trận quay cùng một góc",
+    "Các ma trận trực giao có định thức 1",
+    "Các ma trận quay SO(3)",
+    "Các ma trận phản đối xứng (đại số Lie so(3))"
+   ],
+   "explanation": "Tổng hai ma trận quay không phải là phép quay, nhưng tổng hai ma trận phản đối xứng vẫn phản đối xứng."
+  },
+  "b2": {
+   "prompt": "Ma trận quay có vết bằng -1. Góc là bao nhiêu độ?",
+   "explanation": "cos(theta)=(-1-1)/2=-1."
+  },
+  "b3": {
+   "prompt": "Rotation vector (0,0,pi). Tính sin(theta)/theta và cho giá trị (3 chữ số thập phân)",
+   "explanation": "sin(pi)/pi=0."
+  },
+  "b4": {
+   "prompt": "Cho theta=pi/2. (1-cos theta)/theta^2 bằng bao nhiêu (3 chữ số thập phân)?",
+   "explanation": "1/(pi^2/4)=0.4053."
+  },
+  "b5": {
+   "prompt": "a=(0.1,0,0), b=(0,0.3,0). Chuẩn của hiệu chỉnh BCH (1/2)(a x b) (3 chữ số thập phân)?",
+   "explanation": "0.5*0.1*0.3=0.015."
+  },
+  "b6": {
+   "prompt": "Twist v=(2,0,0), w=(0,0,pi/2). Tọa độ y của phần tịnh tiến của exp(xi), 3 chữ số thập phân?",
+   "explanation": "Bán kính 4/pi: y=(4/pi)(1-cos(pi/2))=1.273."
+  },
+  "b7": {
+   "prompt": "Với twist (v, w=0), phần tịnh tiến của exp(xi) là",
+   "options": [
+    "v, một chuyển động thẳng",
+    "không, vì không có phép quay thì mũ không cho phép tịnh tiến",
+    "v quay đi pi/2, vì twist sinh ra một phần tư vòng quay",
+    "một cung phần tư đường tròn, vì mũ luôn bẻ cong đường đi"
+   ],
+   "explanation": "V=I khi w=0."
+  },
+  "b8": {
+   "prompt": "R exp(delta) bằng exp(delta') R với delta' =",
+   "options": [
+    "R delta",
+    "R^T delta",
+    "-delta",
+    "delta"
+   ],
+   "explanation": "R[delta]x R^T=[R delta]x."
+  },
+  "b9": {
+   "prompt": "Logarit của một ma trận quay bị mơ hồ gần",
+   "options": [
+    "góc pi, nơi dấu của trục bị lật",
+    "góc 0, nơi các phép quay nhỏ làm hướng trục không xác định",
+    "phần tử đơn vị, nơi ma trận gần với ma trận đơn vị và trục bị mất",
+    "góc pi/2, nơi sin và cos bằng nhau trong công thức"
+   ],
+   "explanation": "Tại pi, +trục và -trục cho cùng một ma trận."
+  },
+  "b10": {
+   "prompt": "Với w=(0,0,0.01) rad, phần tử (0,0) chính xác của exp([w]x) là cos(0.01), còn I+[w]x cho 1. Tính hiệu theo đơn vị 1e-5 (3 chữ số thập phân).",
+   "explanation": "1-cos(0.01)=5.0e-5, nên là 5.0 theo đơn vị 1e-5."
+  },
+  "b11": {
+   "prompt": "Bạn phải lấy trung bình ba ước lượng hướng có nhiễu từ các cảm biến khác nhau. Giải thích vì sao lấy trung bình ma trận hoặc góc Euler là sai và mô tả một cách làm đúng.",
+   "explanation": "Bài luyện tập có rubric hướng dẫn, không được tự động kiểm chứng.",
+   "rubric": [
+    "Nêu rằng lấy trung bình các phần tử làm hỏng tính trực giao hoặc bỏ qua việc quay vòng góc.",
+    "Mô tả trung bình trong không gian tiếp tuyến: log của các phép quay tương đối, lấy trung bình, rồi exp (lặp).",
+    "Nhắc đến trung bình quaternion hoặc chordal dựa trên SVD như các phương án khác."
+   ]
+  },
+  "b12": {
+   "prompt": "Lấy bộ tích phân Euler R+R[w]x dt làm ví dụ, hãy giải thích cách bạn kiểm tra một cập nhật quay đã trôi khỏi SO(3) hay chưa, và bạn sẽ assert điều gì trong unit test.",
+   "explanation": "Bài luyện tập có rubric hướng dẫn, không được tự động kiểm chứng.",
+   "rubric": [
+    "Kiểm tra R^T R = I và det R = 1 trong phạm vi dung sai.",
+    "Chạy nhiều bước và chặn độ trôi.",
+    "So sánh với cập nhật dựa trên exp làm oracle."
+   ]
+  }
+ }
+}

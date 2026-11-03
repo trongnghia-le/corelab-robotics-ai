@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Cho it = iter([4, 5, 6]), bạn chạy list(it) rồi lại list(it) lần nữa. Lần gọi thứ hai trả về gì?",
+   "options": [
+    "[6]",
+    "[]",
+    "[4, 5, 6]",
+    "StopIteration được raise cho phía gọi"
+   ],
+   "explanation": "List iterator đã cạn sau lượt đầu; list() nuốt StopIteration và trả về list rỗng. Chỉ có chính list, một iterable, mới tạo được iterator mới."
+  },
+  "q2": {
+   "prompt": "Một reader lazy đưa cho controller các batch 100 scan, mỗi scan có 360 range float64. Một batch chứa bao nhiêu byte (chỉ tính payload)? Cho một số nguyên.",
+   "explanation": "100 scan x 360 giá trị x 8 byte = 288,000 byte."
+  },
+  "q3": {
+   "prompt": "Một sliding mean ngây thơ cộng lại từng cửa sổ từ đầu. Với 10 mẫu và kích thước cửa sổ 4, tổng cộng có bao nhiêu phần tử riêng lẻ được cộng trên mọi cửa sổ? Cho một số nguyên.",
+   "explanation": "Có 10-4+1 = 7 cửa sổ đầy đủ và mỗi cửa sổ cộng 4 phần tử: 28."
+  },
+  "q4": {
+   "prompt": "Một class có data descriptor d và __dict__ của instance cũng chứa khóa 'd'. obj.d trả về gì?",
+   "options": [
+    "AttributeError, vì tên bị mơ hồ",
+    "Bất cứ thứ gì __get__ của descriptor trả về",
+    "Giá trị trong __dict__ của instance",
+    "Chính đối tượng thuộc tính của class"
+   ],
+   "explanation": "Data descriptor trên type được ưu tiên hơn instance dictionary. Một non-data descriptor mới thua instance dictionary."
+  },
+  "q5": {
+   "prompt": "Một descriptor Bounded lưu giá trị được chấp nhận vào self.value. Hai đối tượng Joint mỗi cái gán một góc hợp lệ khác nhau. Điều gì sai?",
+   "options": [
+    "Không sai gì cả; mỗi instance có bản sao descriptor riêng",
+    "Lần gán thứ hai raise ValueError vì đã có giá trị được lưu",
+    "Đọc raise AttributeError cho joint đầu tiên sau lần ghi thứ hai",
+    "Cả hai joint đều đọc ra giá trị ghi sau cùng, vì một descriptor phục vụ cả class"
+   ],
+   "explanation": "Descriptor là một thuộc tính class duy nhất, nên mọi thứ lưu trên self đều được dùng chung. Hãy lưu giá trị vào instance (obj.__dict__) thay vì vậy."
+  },
+  "q6": {
+   "prompt": "class Base định nghĩa __init_subclass__. Một module định nghĩa các subclass A(Base), B(Base), C(Base) và D(A). Tổng cộng Base.__init_subclass__ chạy bao nhiêu lần? Cho một số nguyên.",
+   "explanation": "Nó chạy một lần cho mỗi câu lệnh class tạo ra một hậu duệ của Base, kể cả hậu duệ gián tiếp: A, B, C, D = 4."
+  },
+  "q7": {
+   "prompt": "Hàm của một đồng nghiệp trả về một generator duyệt các dòng của một file CSV 5 GB. Viết một ghi chú vòng đời ngắn: ai sở hữu file đang mở, cho phép bao nhiêu lượt duyệt, và chuyện gì xảy ra nếu bên tiêu thụ dừng sau 10 dòng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu rằng generator sở hữu file handle và nó vẫn mở cho đến khi cạn, gọi close() hoặc bị garbage collect.",
+    "Nêu rằng chỉ có một lượt duyệt; lượt thứ hai cần một generator mới (hoặc một wrapper re-iterable).",
+    "Giải thích việc dừng sớm: file vẫn mở trừ khi dùng close()/with, và nêu một cách sửa xác định như context manager."
+   ]
+  }
+ }
+}

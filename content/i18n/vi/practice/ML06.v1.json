@@ -1,0 +1,90 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "f(θ)=½λθ² với λ=2, η=0.75, θ₀=1. θ₃ bằng bao nhiêu? (số thập phân, sai số cho phép 0.0005)",
+   "explanation": "Hệ số 1−0.75·2=−0.5, nên θ₃=(−0.5)³=−0.125."
+  },
+  "b2": {
+   "prompt": "Một loss có độ cong lớn nhất λ_max=8 trong vùng đang xét. Learning rate ổn định lớn nhất (biên, dạng số thập phân, sai số cho phép 0.001) là bao nhiêu?",
+   "explanation": "η<2/λ_max=0.25."
+  },
+  "b3": {
+   "prompt": "Loss của một lần chạy đi như sau: 0.8, 3.1, 12.9, 51, 204 với các trọng số đổi dấu mỗi bước. Nguyên nhân khả dĩ nhất là gì?",
+   "options": [
+    "Mô hình bị underfitting; hãy tăng batch size.",
+    "Trọng số được khởi tạo quá lớn; loss sẽ tự hồi phục.",
+    "Tập chia dữ liệu quá nhỏ để huấn luyện.",
+    "Learning rate vượt quá 2/λ_max theo hướng đổi dấu."
+   ],
+   "explanation": "Tăng theo cấp số nhân với dấu đổi luân phiên là dấu hiệu của (1−ηλ)^t với 1−ηλ<−1."
+  },
+  "b4": {
+   "prompt": "60000 ảnh huấn luyện, batch size 256, giữ lại batch cuối ngắn hơn. Mỗi epoch có bao nhiêu iteration? (số nguyên, sai số cho phép 0.01)",
+   "explanation": "60000/256=234.4, làm tròn lên 235 (batch cuối chứa 96 ảnh)."
+  },
+  "b5": {
+   "prompt": "N=1050, B=100, 12 epoch, giữ lại batch cuối ngắn hơn. Tổng cộng có bao nhiêu lần cập nhật tham số? (số nguyên, sai số cho phép 0.01)",
+   "explanation": "ceil(10.5)=11 lần cập nhật mỗi epoch, 11×12=132."
+  },
+  "b6": {
+   "prompt": "Một lớp tanh có 300 đầu vào và 100 đầu ra. Std trọng số Xavier/Glorot = sqrt(2/(n_in+n_out)). Hãy cho đáp án dạng số thập phân (sai số cho phép 0.001).",
+   "explanation": "sqrt(2/400)=sqrt(0.005)=0.0707."
+  },
+  "b7": {
+   "prompt": "Một mạng ReLU 30 lớp được khởi tạo với std trọng số 0.01 ở mọi lớp (n_in=256). Bạn kỳ vọng gì ở đầu ra tại bước 0?",
+   "options": [
+    "Activation nổ thành các giá trị rất lớn, vì trọng số nhỏ bị khuếch đại qua từng lớp.",
+    "Activation co lại qua từng lớp gần như bằng 0, nên loss bắt đầu phẳng và gradient biến mất.",
+    "Không có gì bất thường: trọng số nhỏ luôn an toàn và cho activation ổn định, đúng thang đo.",
+    "Mọi unit trở nên giống hệt nhau, vì trọng số nhỏ khiến mọi neuron tính cùng một giá trị."
+   ],
+   "explanation": "Mỗi lớp nhân std với khoảng 0.01·sqrt(256/2)=0.11, nên sau 30 lớp tín hiệu còn ~10^-29. Std He ở đây là 0.088."
+  },
+  "b8": {
+   "prompt": "Độ lệch chuẩn gradient của một mẫu đơn σ=6. Độ lệch chuẩn của gradient minibatch với B=144 là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "σ/√B=6/12=0.5."
+  },
+  "b9": {
+   "prompt": "Phát biểu nào về gradient minibatch là một quan niệm sai?",
+   "options": [
+    "Nhiễu có thể giúp thoát khỏi các vùng sắc nhọn, là một lý do dùng batch nhỏ.",
+    "Với lấy mẫu đồng đều, gradient minibatch là ước lượng không chệch của gradient đầy đủ.",
+    "Tăng gấp đôi B giảm std nhiễu đi một hệ số √2.",
+    "Batch lớn hơn làm ước lượng gradient bị chệch về phía các mẫu có loss lớn."
+   ],
+   "explanation": "Batch size thay đổi phương sai, không thay đổi độ chệch; lấy mẫu đồng đều giữ kỳ vọng bằng gradient đầy đủ."
+  },
+  "b10": {
+   "prompt": "Hai learning rate được so sánh; lần chạy A dùng cách chia 1 và seed 0, lần chạy B dùng cách chia 2 và seed 7. A thắng 1.5 điểm. Mô tả nào đúng nhất?",
+   "options": [
+    "Phép so sánh hợp lệ vì cả hai lần chạy huấn luyện cùng số epoch, nên ngân sách bằng nhau.",
+    "Phép so sánh chỉ không hợp lệ nếu tập test cũng được dùng để chỉnh learning rate.",
+    "Phép so sánh bị nhiễu yếu tố (confounded): cách chia và seed khác nhau, nên chênh lệch không thể quy cho learning rate.",
+    "Phép so sánh hợp lệ vì chênh lệch 1.5 điểm đủ lớn để bỏ qua cách chia và seed."
+   ],
+   "explanation": "Một phép so sánh có kiểm soát chỉ thay đổi một yếu tố. Cách chia và seed khác nhau thêm vào phương sai có độ lớn không rõ."
+  },
+  "b11": {
+   "prompt": "Loss của bạn thành nan ở bước 40 với learning rate 0.5. Hãy liệt kê, theo thứ tự, ba phép kiểm tra bạn sẽ chạy trước khi đổi kiến trúc, và mỗi phép cho biết điều gì.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chạy lại với learning rate nhỏ hơn nhiều (ví dụ giảm 10 lần) để kiểm tra đó có phải vấn đề ổn định hay không.",
+    "Kiểm tra thang đo của loss/gradient: trung bình so với tổng trên batch, đầu vào chưa chuẩn hóa, nhãn sai hoặc inf trong dữ liệu.",
+    "Chạy một bài kiểm tra overfit nhỏ hoặc gradient check trên một batch với seed cố định để tách lỗi code khỏi vấn đề siêu tham số."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy viết (bằng lời hoặc pseudocode) cách bạn làm cho một vòng huấn luyện có thể tái lập: mỗi seed được đặt ở đâu, cái gì được shuffle và khi nào, và bạn lưu gì cùng với kết quả.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Tạo một bộ sinh ngẫu nhiên có seed cho khởi tạo và một bộ cho shuffle, đặt trước khi huấn luyện, không bao giờ đặt lại seed trong vòng lặp epoch.",
+    "Cố định cách chia train/validation/test một lần (lưu chỉ số hoặc seed) và shuffle lại các chỉ số huấn luyện mỗi epoch.",
+    "Lưu seed, learning rate, batch size, số epoch, cách chia, phiên bản code và các metric cuối cùng cùng với kết quả."
+   ]
+  },
+  "b13": {
+   "prompt": "Một hàm bậc hai có các độ cong 1 và 10. Với learning rate hằng số tốt nhất 2/(λ_min+λ_max), hệ số co lại của sai số mỗi bước là bao nhiêu (số thập phân, sai số cho phép 0.001)?",
+   "explanation": "(κ−1)/(κ+1)=9/11=0.8182."
+  }
+ }
+}

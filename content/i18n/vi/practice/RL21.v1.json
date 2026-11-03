@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Các hành động A (1,0), B (2,0.1), C (3,0.4). Hỗn hợp 0.5 A, 0.5 C. Xác suất sự cố kỳ vọng là bao nhiêu? (2 chữ số thập phân)",
+   "explanation": "0.5*0+0.5*0.4=0.2."
+  },
+  "b2": {
+   "prompt": "Các hành động A (r=1, p=0), B (r=2, p=0.1), C (r=3, p=0.4), trong đó p là xác suất sự cố mỗi bước. Ngân sách d=0.25 mỗi bước. Giá trị có ràng buộc tốt nhất mỗi bước (trộn B và C) là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "w=(0.25-0.1)/0.3=0.5, giá trị 2+0.5=2.5."
+  },
+  "b3": {
+   "prompt": "Các hành động A (r=1, p=0), B (r=2, p=0.1), C (r=3, p=0.4), trong đó p là xác suất sự cố mỗi bước. Ngân sách d=0.15. Chặn đối ngẫu g(lambda)=max_a(r-lambda p)+lambda d tại lambda=2 là bao nhiêu? (2 chữ số thập phân)",
+   "explanation": "max(1,1.8,2.2)+0.3=2.5."
+  },
+  "b4": {
+   "prompt": "Đối ngẫu yếu phát biểu rằng với mọi lambda >= 0:",
+   "options": [
+    "g(lambda) bằng nghiệm tối ưu có ràng buộc",
+    "g(lambda) ít nhất bằng nghiệm tối ưu có ràng buộc",
+    "g(lambda) âm",
+    "g(lambda) tối đa bằng nghiệm tối ưu không ràng buộc trừ d"
+   ],
+   "explanation": "Với các policy khả thi lambda(J_C-d)<=0, nên Lagrangian lớn hơn hoặc bằng return."
+  },
+  "b5": {
+   "prompt": "Xác suất sự cố mỗi bước 0.02, H=30 bước. Số sự cố kỳ vọng mỗi episode là bao nhiêu?",
+   "explanation": "30*0.02=0.6."
+  },
+  "b6": {
+   "prompt": "Xác suất sự cố mỗi bước 0.02, độc lập, H=30 bước. Xác suất có ít nhất một sự cố trong một episode là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "1-0.98^30=0.4545."
+  },
+  "b7": {
+   "prompt": "H=10, q=0.1, giới hạn 1 sự cố. P(nhiều hơn 1 sự cố) là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "1-0.9^10-10*0.1*0.9^9=0.2639."
+  },
+  "b8": {
+   "prompt": "Cập nhật hệ số nhân là lambda <- max(0, lambda + eta (d - J_C)). Điều gì xảy ra?",
+   "options": [
+    "Ràng buộc không bao giờ được thực thi, vì lambda giảm khi cost quá cao",
+    "Nó thực thi ràng buộc nhanh hơn, vì lambda tăng theo mức vi phạm",
+    "Nó tương đương với quy tắc đúng, vì max(0, .) cắt cập nhật",
+    "lambda trở nên âm, biến khoản phạt thành phần thưởng cho cost"
+   ],
+   "explanation": "Dấu bị đảo; hệ số nhân co lại khi có vi phạm."
+  },
+  "b9": {
+   "prompt": "Một log huấn luyện chỉ báo cáo return trung bình. Bổ sung nào hỗ trợ tốt nhất cho một khẳng định về an toàn?",
+   "options": [
+    "Entropy của policy ở mỗi lần cập nhật, để cho thấy khám phá được duy trì",
+    "Cost trung bình và tỉ lệ episode vượt ngân sách, theo từng seed",
+    "Số tham số của policy, để cho thấy mô hình đủ lớn",
+    "Value-function loss trong quá trình huấn luyện, để cho thấy critic đã hội tụ"
+   ],
+   "explanation": "Các khẳng định về an toàn cần cost và tỉ lệ vi phạm được báo cáo riêng."
+  },
+  "b10": {
+   "prompt": "Đâu là lý do mạnh nhất để ưu tiên shield hơn khoản phạt reward cho một giới hạn cứng đã biết?",
+   "options": [
+    "Shield có thể đảm bảo giới hạn bất kể policy học được",
+    "Shield loại bỏ nhu cầu về bất kỳ mô hình hay định nghĩa nào của giới hạn",
+    "Khoản phạt không thể âm, nên không thể làm nản lòng các vi phạm",
+    "Shield tăng tốc các bước gradient của learner nền"
+   ],
+   "explanation": "Shield ghi đè hành động; khoản phạt chỉ ảnh hưởng đến việc học."
+  },
+  "b11": {
+   "prompt": "Ba hành động A (reward 1, xác suất sự cố 0), B (2, 0.1) và C (3, 0.4) và một ngân sách sự cố kỳ vọng 0.15 mỗi bước. Giải thích vì sao policy tối ưu có ràng buộc là ngẫu nhiên.",
+   "rubric": [
+    "Ngân sách nằm giữa cost của hai hành động, nên không hành động nào một mình là tối ưu.",
+    "Trộn chúng trên bao lồi đạt đúng ngân sách với reward cao hơn mọi hành động đơn khả thi.",
+    "Trọng số hỗn hợp là (d-p1)/(p2-p1)."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b12": {
+   "prompt": "Một đồng đội nói 'chúng tôi đã thêm khoản phạt 50 cho mỗi va chạm, nên robot an toàn'. Hãy viết các nhận xét review bạn sẽ đưa ra và các phép đo bạn sẽ yêu cầu.",
+   "rubric": [
+    "Khoản phạt không chặn được tỉ lệ va chạm; nó phụ thuộc vào thang đo reward và việc tinh chỉnh.",
+    "Yêu cầu tỉ lệ va chạm kèm các seed, tỉ lệ trong lúc huấn luyện, đuôi/CVaR.",
+    "Đề xuất một ràng buộc hoặc shield cho các trường hợp cứng."
+   ],
+   "explanation": "Theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

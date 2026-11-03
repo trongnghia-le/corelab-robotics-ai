@@ -21,7 +21,7 @@
         "A sensor model, an actuator limit table, and a battery budget checked before every call",
         "A state map, a global planner, and a cost function evaluated over every candidate path"
       ],
-      "answer": "2",
+      "answer": "1",
       "remediationRefs": [
         {
           "label": "Review: theory and derivation",
@@ -60,7 +60,7 @@
     },
     {
       "id": "q3",
-      "prompt": "Same controller (k=0.5, e0=0.5), tolerance 0.02. First step n with error <= tolerance?",
+      "prompt": "Proportional controller, error multiplied by (1-k) per step, k=0.5, e0=0.5, tolerance 0.02. First step n with error <= tolerance?",
       "kind": "number",
       "dimension": "M",
       "critical": false,
@@ -126,7 +126,7 @@
         "The tolerance is too large, so the loop exits early and the error is never really small",
         "Nothing is wrong, since a loop that ends always means the error reached the tolerance"
       ],
-      "answer": "2",
+      "answer": "1",
       "remediationRefs": [
         {
           "label": "Review: failure modes",
@@ -156,7 +156,7 @@
         "Run toward the goal and report SUCCEEDED once the arm is as close as it can get",
         "Move halfway to the goal, then stop and report a partial success to the caller"
       ],
-      "answer": "3",
+      "answer": "0",
       "remediationRefs": [
         {
           "label": "Review: failure modes",
@@ -170,7 +170,7 @@
     },
     {
       "id": "q7",
-      "prompt": "Reach skill ends one step with postcondition tolerance 1 cm, next skill needs 0.5 cm. What is the largest tolerance (in cm) the first skill may use for the sequence to be valid?",
+      "prompt": "A reach skill with postcondition tolerance t cm is followed by a grasp skill whose precondition needs the gripper within 0.5 cm. What is the largest tolerance t (in cm) the reach skill may use for the sequence to be valid?",
       "kind": "number",
       "dimension": "M",
       "critical": false,

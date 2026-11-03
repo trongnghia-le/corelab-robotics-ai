@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Các đỉnh 1.0 và 0.4 cách nhau một chu kỳ tắt dần. Độ giảm lôgarit delta = ln(p1/p2). Độ chính xác 0.001.",
+   "explanation": "ln 2.5."
+  },
+  "b2": {
+   "prompt": "I=1.5 kg m^2, các đỉnh 1.0 và 0.9, chu kỳ tắt dần 0.8 s. Giảm chấn b theo N m s/rad (b = I*2*delta/Td). Độ chính xác 0.005.",
+   "explanation": "1.5*2*0.10536/0.8."
+  },
+  "b3": {
+   "prompt": "Một tần số w=3 rad/s, I=1.5, c=12. Tổ hợp nhận dạng được c - w^2 I bằng? Độ chính xác 0.01.",
+   "explanation": "12-9*1.5."
+  },
+  "b4": {
+   "prompt": "Một sai số chuẩn là 0.002 với sigma=0.001 và N=1000. Dự đoán nó cho sigma=0.002 và N=4000 (se ~ sigma/sqrt(N)). Độ chính xác 0.0002.",
+   "explanation": "x2 cho sigma, /2 cho sqrt(N)."
+  },
+  "b5": {
+   "prompt": "RMSE giữa dự đoán [1,2,3] và phép đo [1,2,5]. Độ chính xác 0.001.",
+   "explanation": "sqrt((0+0+4)/3)."
+  },
+  "b6": {
+   "prompt": "theta=(2,0.5,10), qdd=1.2, qd=-2, sin q=0.25. Mô men, độ chính xác 0.01.",
+   "explanation": "2.4-1.0+2.5."
+  },
+  "b7": {
+   "prompt": "Vì sao hệ số giảm chấn vẫn nhận dạng được dưới kích thích một tần số trong khi I và c thì không?",
+   "options": [
+    "Nhiễu trên vận tốc nhỏ hơn trên gia tốc, nên cột của nó điều kiện tốt hơn.",
+    "Giảm chấn luôn có độ lớn lớn hơn quán tính, nên cột của nó chi phối lần khớp.",
+    "Giảm chấn được driver động cơ đo riêng, nên nó không bao giờ vào hồi quy.",
+    "qdot lệch pha 90 độ so với q, qdd và sin q, nên cột của nó vẫn độc lập."
+   ],
+   "explanation": "Cột độc lập."
+  },
+  "b8": {
+   "prompt": "Vector phần dư bình phương tối thiểu r thỏa tính chất nào tại nghiệm?",
+   "options": [
+    "Y^T r = 0 (trực giao với mọi cột regressor)",
+    "r có các giá trị dương và âm bằng nhau",
+    "r song song với cột đầu tiên",
+    "r = 0 chính xác với dữ liệu nhiễu"
+   ],
+   "explanation": "Các phương trình chuẩn."
+  },
+  "b9": {
+   "prompt": "Một lần khớp dùng cùng quỹ đạo chirp để khớp và kiểm thử và báo RMSE 1e-4. Phê bình đúng là gì?",
+   "options": [
+    "Các lần khớp bình phương tối thiểu không thể kiểm thử, chỉ regressor mới kiểm thử được.",
+    "Nó chỉ cho thấy mô hình khớp dữ liệu đã thấy; hãy kiểm thử trên một quỹ đạo khác.",
+    "Chirp quá ngắn, nên phải dùng kích thích dài hơn.",
+    "RMSE phải chính xác bằng không, nên mô hình đang thiếu một số hạng."
+   ],
+   "explanation": "Sai số huấn luyện không phải bằng chứng của khả năng dự đoán."
+  },
+  "b10": {
+   "prompt": "Nâng tốc độ lấy mẫu từ 100 Hz lên 1 kHz với cùng nhiễu vị trí, ước lượng gia tốc bằng sai phân bậc hai thay đổi thế nào?",
+   "options": [
+    "Nhiễu không đổi.",
+    "Nhiễu giảm 100 lần.",
+    "Nhiễu giảm 10 lần.",
+    "Nhiễu tăng 100 lần."
+   ],
+   "explanation": "sigma_a ~ 1/dt^2."
+  },
+  "b11": {
+   "prompt": "Mô tả cách bạn kiểm thử một script nhận dạng trên dữ liệu tổng hợp trước khi dùng dữ liệu robot, gồm các trường hợp phải đạt và phải thất bại.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Sinh dữ liệu không nhiễu từ tham số đã biết và mong đợi khôi phục tới dung sai.",
+    "Thêm nhiễu và kiểm tra hiệp phương sai; có một trường hợp một tần số phải cho số điều kiện lớn.",
+    "Kiểm chứng trên một quỹ đạo giữ lại và kiểm tra tính trực giao của phần dư."
+   ]
+  },
+  "b12": {
+   "prompt": "Giảm chấn đã khớp của bạn chênh 40% giữa một thí nghiệm chậm và một thí nghiệm nhanh. Liệt kê ba lời giải thích và một phép thử cho mỗi cái.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Ma sát Coulomb hoặc phụ thuộc tốc độ không có trong mô hình; thử bằng cách thêm cột sign(qd).",
+    "Kích thích kém hoặc nhiễu khi lấy đạo hàm; thử bằng số điều kiện, sai số chuẩn, lọc.",
+    "Nhiệt độ hoặc tải thay đổi (không dừng); lặp lại thí nghiệm theo thứ tự khác và so sánh."
+   ]
+  }
+ }
+}

@@ -1,0 +1,98 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Một launch configuration không có `cwd`. Chương trình được debug nhận thư mục làm việc nào theo mặc định?",
+   "options": [
+    "Thư mục workspace",
+    "Thư mục cài đặt Python",
+    "Thư mục gốc /",
+    "Thư mục của file đang hoạt động"
+   ],
+   "explanation": "VS Code mặc định cwd là ${workspaceFolder}."
+  },
+  "b2": {
+   "prompt": "`open('data/in.csv')` chạy được khi bạn chạy từ /w/exp nhưng thất bại khi launch từ /w. Cách sửa vững chắc nhất bên trong code là gì?",
+   "options": [
+    "Chỉ chạy từ /w/exp và không nói với ai",
+    "Đổi tên file",
+    "Dựng đường dẫn từ Path(__file__).parent",
+    "Thêm `import os` ở đầu"
+   ],
+   "explanation": "Các đường dẫn tương đối theo vị trí của chính module không phụ thuộc vào cwd."
+  },
+  "b3": {
+   "prompt": "`${fileBasenameNoExtension}` mở rộng thành gì cho file /home/u/proj/exp/train.py?",
+   "options": [
+    "/home/u/proj/exp",
+    "train.py",
+    "train",
+    "exp"
+   ],
+   "explanation": "Đó là tên file không có thư mục và phần mở rộng."
+  },
+  "b4": {
+   "prompt": "Mục launch.json nào sẽ bị từ chối hoặc hoạt động sai?",
+   "options": [
+    "\"env\": {\"SEED\": \"42\"}",
+    "\"cwd\": \"${workspaceFolder}\"",
+    "\"env\": {\"SEED\": 42}",
+    "\"args\": [\"--epochs\", \"3\"]"
+   ],
+   "explanation": "Giá trị env phải là chuỗi."
+  },
+  "b5": {
+   "prompt": "Trong pdb, một breakpoint `b f.py:11, i == 3` được đặt cho vòng lặp `for i in range(10): total += i` (dòng 11 là phép cập nhật). total bằng bao nhiêu khi nó dừng? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Trước khi cộng i=3: 0+1+2=3."
+  },
+  "b6": {
+   "prompt": "Một vòng lặp có 5,000 lần lặp và một conditional breakpoint `i == 4000`. Điều kiện được đánh giá bao nhiêu lần trước khi nó dừng? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Các lần lặp 0..4000 được đánh giá: 4001 lần đánh giá (lần cuối đúng)."
+  },
+  "b7": {
+   "prompt": "Một phép chia đôi có thể cần tối đa bao nhiêu lần thăm dò (không tính lần kiểm tra cuối đầu tiên) cho 300 commit? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "ceil(log2(300))=9."
+  },
+  "b8": {
+   "prompt": "Chia đôi trên 2^k bước cần khoảng k lần thăm dò. Với 4,096 bước, k là bao nhiêu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "2^12=4096."
+  },
+  "b9": {
+   "prompt": "Một phép chia đôi giả định tính chất nào của vị từ 'xấu'?",
+   "options": [
+    "Đúng tại đúng một bước, nên tìm kiếm chỉ cần một lần thăm dò",
+    "Đơn điệu: sai cho đến bước xấu đầu tiên và đúng sau đó",
+    "Hằng: giá trị của nó không bao giờ đổi khi n tăng qua khoảng",
+    "Ngẫu nhiên: mỗi bước xấu độc lập với một xác suất cố định nào đó"
+   ],
+   "explanation": "Chia đôi loại bỏ một nửa khoảng nhờ cấu trúc đơn điệu."
+  },
+  "b10": {
+   "prompt": "`python -c 'import sys; print(sys.executable)'` in ra các đường dẫn khác nhau trong terminal và trong debug console tích hợp của editor. Điều này chứng minh gì?",
+   "options": [
+    "Editor đã lỗi thời, nên nó in một đường dẫn interpreter cũ",
+    "Cả hai phiên dùng cùng một interpreter, nên đường dẫn chỉ là vấn đề hiển thị",
+    "Code có lỗi cú pháp chỉ xuất hiện trong debug console",
+    "Hai phiên dùng các interpreter khác nhau, nên các gói cài đặt có thể khác nhau"
+   ],
+   "explanation": "sys.executable xác định interpreter đang chạy code."
+  },
+  "b11": {
+   "prompt": "Hãy viết tài liệu bạn sẽ đặt cạnh một launch configuration để đồng đội chạy nó đúng cách (nêu gì và vì sao).",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu thư mục làm việc và vì sao nó được chọn (các đường dẫn tương đối nào phụ thuộc vào nó).",
+    "Liệt kê interpreter/môi trường, đối số và biến môi trường, và mọi file cần thiết.",
+    "Đưa ra lệnh tương đương trên dòng lệnh và một cách kiểm tra nó đã chạy đúng (một đầu ra mong đợi)."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy giải thích từng bước bạn sẽ dùng pdb để điều tra một exception không được bắt trong một script như thế nào, và bạn sẽ dùng những lệnh nào.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chạy `python -m pdb script.py` và continue (`c`) đến điểm dừng post-mortem tại dòng thất bại.",
+    "Kiểm tra các biến cục bộ bằng `p`, stack bằng `w`/`u`/`d`, và chạy lại với một conditional breakpoint nếu cần.",
+    "Ghi lại phát hiện và viết một regression test."
+   ]
+  }
+ }
+}

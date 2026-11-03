@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "MSE huấn luyện như một hàm của bậc đa thức trên dữ liệu cố định (bình phương tối thiểu) là:",
+   "options": [
+    "Không tăng, vì các mô hình lồng nhau",
+    "Hằng số",
+    "Luôn tăng",
+    "Giảm rồi tăng như sai số test"
+   ],
+   "explanation": "Một họ bậc cao hơn chứa họ thấp hơn, nên phép khớp huấn luyện tốt nhất của nó ít nhất cũng tốt bằng."
+  },
+  "b2": {
+   "prompt": "Thu thập nhiều hơn 10 lần dữ liệu giúp ích nhiều nhất khi learning curve cho thấy:",
+   "options": [
+    "Một khoảng cách lớn co lại khi n tăng (variance cao)",
+    "Sai số cao hội tụ trên cả hai đường cong (bias cao)",
+    "Sai số huấn luyện bằng không và sai số test bằng không rồi",
+    "Sai số test đã dưới mức nhiễu nền"
+   ],
+   "explanation": "Thêm dữ liệu giảm variance, không giảm bias."
+  },
+  "b3": {
+   "prompt": "Một đa thức bậc ba khớp trên x trong [-1, 0.5] được đánh giá trên x trong [0.5, 1]. Điều gì được kỳ vọng?",
+   "options": [
+    "Sai số thấp hơn, vì hàm phẳng hơn ở đó",
+    "Không xác định, vì phép khớp từ chối chạy ngoài khoảng",
+    "Cùng sai số, vì hàm trơn ở mọi nơi",
+    "Sai số lớn hơn nhiều so với khoảng huấn luyện (ngoại suy)"
+   ],
+   "explanation": "Đa thức ngoại suy kém; đây là covariate shift. Trong bài, MSE tăng từ 0.095 lên 0.687."
+  },
+  "b4": {
+   "prompt": "Trong hồi quy ridge, tăng lambda từ 0 lên một giá trị lớn có tác dụng gì?",
+   "options": [
+    "Cả bias và variance đều giảm",
+    "Không ảnh hưởng đến các hệ số",
+    "Variance giảm và bias tăng",
+    "Variance tăng và bias giảm"
+   ],
+   "explanation": "Các hệ số bị co về không: thêm bias, bớt variance."
+  },
+  "b5": {
+   "prompt": "Độ lệch chuẩn nhiễu là 0.5, và một mô hình có MSE test 0.40. Mức cải thiện tối đa có thể (sai số có thể giảm) là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "Mức nền = 0.25; phần có thể giảm = 0.15."
+  },
+  "b6": {
+   "prompt": "Sai số dự đoán tại một đầu vào của bốn mô hình được tóm tắt bởi các dự đoán 0.7, 1.1, 0.9, 1.3 với giá trị thật 1.0. Phương sai của các dự đoán (phương sai tổng thể, chia cho 4) là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "Trung bình 1.0; bình phương độ lệch 0.09, 0.01, 0.01, 0.09 có tổng 0.20; /4 = 0.05."
+  },
+  "b7": {
+   "prompt": "Một độ chính xác test 0.85 được đo trên 400 mẫu test độc lập. Nửa độ rộng của khoảng tin cậy 95% (1.96 sai số chuẩn) là bao nhiêu? Cho một số với 3 chữ số thập phân.",
+   "explanation": "SE = sqrt(0.85*0.15/400) = 0.01785; nhân 1.96 = 0.035."
+  },
+  "b8": {
+   "prompt": "103 mẫu, CV 10-fold với kích thước fold đều nhau nhất có thể. Có bao nhiêu fold có 11 mẫu? Số nguyên.",
+   "explanation": "103 = 10*10 + 3, nên 3 fold có 11 mẫu và 7 fold có 10."
+  },
+  "b9": {
+   "prompt": "Giải thích cách ước lượng sai số khái quát hóa của một mô hình có siêu tham số lambda được tinh chỉnh bằng cross-validation, mà không có thiên lệch lạc quan.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Giữ riêng một tập test trước khi tinh chỉnh và chỉ đụng tới nó một lần ở cuối, hoặc dùng nested cross-validation.",
+    "Tinh chỉnh lambda (và mọi tiền xử lý) chỉ dùng các fold huấn luyện.",
+    "Lưu ý rằng điểm CV tốt nhất là lạc quan vì nó đã được chọn."
+   ]
+  },
+  "b10": {
+   "prompt": "Cho bảng (n, train, val): (10, 0.04, 0.40), (50, 0.06, 0.18), (250, 0.08, 0.11), hãy chẩn đoán mô hình và đề xuất hai hành động.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Variance cao (khoảng cách ban đầu lớn) đang khép lại khi có thêm dữ liệu.",
+    "Hành động: thu thập thêm dữ liệu và/hoặc thêm regularization hoặc đơn giản hóa mô hình.",
+    "Lưu ý các đường cong đang hội tụ nên lớp mô hình là đủ."
+   ]
+  },
+  "b11": {
+   "prompt": "Viết các bước (pseudocode) của cross-validation k-fold chọn bậc đa thức và tránh leakage khi các đầu vào được chuẩn hóa.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chia các chỉ số thành k fold trước.",
+    "Với mỗi fold và bậc: tính mean/std chỉ trên các fold huấn luyện, chuẩn hóa cả hai phần bằng chúng, khớp trên huấn luyện, chấm điểm trên validation.",
+    "Lấy trung bình qua các fold, chọn bậc có trung bình thấp nhất, rồi khớp lại trên toàn bộ dữ liệu huấn luyện và đánh giá một lần trên tập test."
+   ]
+  }
+ }
+}

@@ -1,0 +1,92 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Timeout 0.3 s, tốc độ 0.8 m/s, phản ứng 0.05 s, gia tốc hãm 1.6 m/s^2. Tổng quãng đường từ lệnh hợp lệ cuối đến lúc đứng yên, m. Độ chính xác 0.005.",
+   "explanation": "0.24+0.04+0.2."
+  },
+  "b2": {
+   "prompt": "Khoảng trống 2.0 m, gia tốc hãm 4 m/s^2, phản ứng 0.05 s. Tốc độ tối đa tính bằng m/s, độ chính xác 0.005.",
+   "explanation": "-0.2+sqrt(0.04+16)."
+  },
+  "b3": {
+   "prompt": "v=2 m/s, a=5 m/s^2, phản ứng 0.2 s. Quãng đường dừng tính bằng m, độ chính xác 0.005.",
+   "explanation": "0.4+0.4."
+  },
+  "b4": {
+   "prompt": "Timeout lệnh 0.25 s ở 1.5 m/s: quãng đường đi được trước khi lần dừng thậm chí được kích hoạt (m).",
+   "explanation": "1.5*0.25."
+  },
+  "b5": {
+   "prompt": "Mức nghiêm trọng 4 và khả năng xảy ra 5 theo thang của bài học (điểm = S x L). Cho điểm.",
+   "explanation": "4*5."
+  },
+  "b6": {
+   "prompt": "Một lệnh đến đúng 250 ms sau lệnh trước và timeout là 250 ms với phép kiểm tra 'lớn hơn'. Điều gì xảy ra?",
+   "options": [
+    "Không có lỗi: tuổi bằng giới hạn và phép kiểm tra là chặt.",
+    "Robot khởi động lại, vì watchdog kích hoạt tại giới hạn.",
+    "Một lỗi timeout, vì tuổi đã đạt giới hạn.",
+    "Lệnh bị clip, vì nó đến tại giới hạn."
+   ],
+   "explanation": "Ngữ nghĩa tại biên phải được đặc tả và kiểm thử."
+  },
+  "b7": {
+   "prompt": "Phản ứng nào với giá trị cảm biến ngoài dải tuân theo thiết kế fail-safe?",
+   "options": [
+    "Từ chối như một lỗi và chuyển sang trạng thái an toàn.",
+    "Chuyển sang giá trị tốt cuối cùng vô thời hạn.",
+    "Clip về dải và tiếp tục chuyển động.",
+    "Bỏ qua cho đến khi ba giá trị liên tiếp không hợp lệ."
+   ],
+   "explanation": "Vi phạm dải là bằng chứng của một hỏng hóc."
+  },
+  "b8": {
+   "prompt": "Vì sao một timeout phần mềm đơn lẻ không thể là biện pháp bảo vệ duy nhất cho một robot có thể gây thương tích cho người?",
+   "options": [
+    "Phần mềm có thể crash, treo hoặc bị bỏ đói, và đường đầu ra có thể hỏng; hãy thêm phần cứng an toàn.",
+    "Python quá chậm để kiểm tra timeout đáng tin cậy, nên cần ngôn ngữ nhanh hơn.",
+    "Phần mềm không đọc được đồng hồ dùng để đo timeout, nên nó không an toàn.",
+    "Timeout không được phép trên robot có thể tiếp xúc với người."
+   ],
+   "explanation": "Lỗi nguyên nhân chung và lỗi của bộ giám sát."
+  },
+  "b9": {
+   "prompt": "Thay đổi thiết kế nào giảm một mối nguy thay vì điều khiển nó?",
+   "options": [
+    "Thêm nhãn cảnh báo lên robot, để mọi người tránh xa.",
+    "Thêm timeout trong phần mềm, để các lệnh cũ bị bỏ.",
+    "Dùng động cơ nhẹ hơn, mô men thấp hơn để tiếp xúc không gây thương tích.",
+    "Thêm clip tốc độ trong phần mềm, để lệnh luôn dưới một giới hạn."
+   ],
+   "explanation": "Loại bỏ > bảo vệ > cảnh báo."
+  },
+  "b10": {
+   "prompt": "Reset sau một lỗi khôi phục lệnh đã lưu cũ. Rủi ro là gì?",
+   "options": [
+    "Không có: lệnh cũ là giá trị an toàn để quay lại sau lỗi.",
+    "Các cảm biến được hiệu chuẩn lại, che giấu nguyên nhân của lỗi ban đầu.",
+    "Timeout trở nên dài hơn, vì lệnh cũ đặt lại đồng hồ.",
+    "Robot nhảy tới lệnh cũ; reset phải zero hóa nó và yêu cầu dữ liệu mới."
+   ],
+   "explanation": "Reset không được tự khởi động lại chuyển động."
+  },
+  "b11": {
+   "prompt": "Thiết kế một danh sách kiểm thử mô phỏng cho timeout lệnh và dữ liệu cảm biến không hợp lệ với đầu ra mong đợi và các trường hợp biên.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Liệt kê danh định, clip, timeout đúng tại giới hạn và một tick sau, NaN, ngoài dải, cũ, chốt và reset.",
+    "Cho state, speed và reason mong đợi của từng cái.",
+    "Lưu ý rằng vượt qua các bài kiểm thử chỉ kiểm chứng mô hình, không phải robot thật."
+   ]
+  },
+  "b12": {
+   "prompt": "Một đồng đội muốn đặt timeout là 2 s để tránh dừng giả. Hãy lập luận bằng quãng đường và đề xuất một phương pháp tốt hơn.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chuyển timeout thành quãng đường đi được ở tốc độ tối đa và so với khoảng trống.",
+    "Đề xuất timeout ngắn hơn gắn với chu kỳ lệnh hoặc giới hạn tốc độ thấp hơn.",
+    "Nhắc đến việc giảm dừng giả bằng cách sửa nguyên nhân (tốc độ, jitter) chứ không kéo dài timeout."
+   ]
+  }
+ }
+}

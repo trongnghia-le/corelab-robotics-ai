@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Cặp nào mô tả đúng nhất mô hình quá trình và mô hình đo của một robot 1-D có cảm biến vị trí?",
+   "options": [
+    "z = x + nhiễu (tiến triển trạng thái) và x_{k+1} = x_k + v dt (cảm biến báo cáo gì)",
+    "Mô hình quá trình chứa nhiễu cảm biến và không có gì khác",
+    "Cả hai là cùng một phương trình",
+    "x_{k+1} = x_k + v dt (tiến triển trạng thái) và z = x + nhiễu (cảm biến báo cáo gì)"
+   ],
+   "explanation": "Mô hình quá trình đưa trạng thái tiến lên theo thời gian; mô hình đo ánh xạ trạng thái sang giá trị đọc của cảm biến."
+  },
+  "b2": {
+   "prompt": "dt = 0.02, sigma = 0.002 m. Độ lệch chuẩn nhiễu của vận tốc sai phân hai mẫu (m/s, 3 chữ số thập phân)?",
+   "explanation": "sqrt(2)*0.002/0.02 = 0.1414."
+  },
+  "b3": {
+   "prompt": "Độ dốc bình phương tối thiểu 5 mẫu có phương sai 12 sigma^2/(N(N^2-1) dt^2). Với sigma = 0.01, dt = 0.05, N = 5 cho độ lệch chuẩn (m/s, 4 chữ số thập phân).",
+   "explanation": "sqrt(12e-4/(120*0.0025)) = sqrt(0.004)=0.0632."
+  },
+  "b4": {
+   "prompt": "dt = 0.05, trạng thái (2.0, 1.0), alpha = 0.4, beta = 0.1, z = 2.12. Phần dư r là bao nhiêu (3 chữ số thập phân)?",
+   "explanation": "x_pred = 2.05, r = 0.07."
+  },
+  "b5": {
+   "prompt": "Encoder 1024 số đếm/vòng, lấy mẫu mỗi 5 ms. Vận tốc nhỏ nhất khác không từ sai phân hai mẫu (rad/s, 3 chữ số thập phân)?",
+   "explanation": "2 pi/1024 = 0.006136 rad mỗi số đếm; /0.005 = 1.227."
+  },
+  "b6": {
+   "prompt": "alpha = 0.5 và beta = 0.2: vết của ma trận sai số 2 - alpha - beta (2 chữ số thập phân)?",
+   "explanation": "2-0.5-0.2 = 1.3."
+  },
+  "b7": {
+   "prompt": "Bộ theo dõi của một người bạn có v += beta*r (không chia cho dt). Khi dt giảm một nửa và beta giữ nguyên, hiệu chỉnh vận tốc hiệu dụng thay đổi thế nào?",
+   "options": [
+    "Nó chỉ trở nên bất ổn nếu beta < 0, còn lại hoạt động y hệt",
+    "Nó không được rescale, nên đáp ứng vận tốc mỗi giây thay đổi theo tần số lấy mẫu",
+    "Nó tự động giảm một nửa, vì giảm dt một nửa làm giảm một nửa mọi số hạng trong cập nhật",
+    "Nó giữ nguyên mỗi giây, vì beta đã bao gồm chu kỳ lấy mẫu"
+   ],
+   "explanation": "Dạng đúng dùng beta/dt để hệ số trên đơn vị thời gian độc lập với kích thước bước."
+  },
+  "b8": {
+   "prompt": "Một bộ lọc vận tốc không đổi theo dõi một mục tiêu đang tăng tốc. Ước lượng vận tốc đi sau sự thật một lượng gần như không đổi. Phát biểu nào đúng?",
+   "options": [
+    "Điều này nghĩa là bộ lọc bất ổn, nên phải giảm hệ số để sửa",
+    "Điều này cho thấy cảm biến bị chệch, nên phải hiệu chuẩn lại để sửa độ trễ",
+    "Đây là nhiễu đo trắng, và lấy trung bình nhiều mẫu hơn sẽ loại bỏ độ lệch",
+    "Đây là độ trễ do sai lệch mô hình; tăng hệ số hoặc mô hình hóa gia tốc sẽ giảm nó"
+   ],
+   "explanation": "Mô hình nói v là hằng số, nên gia tốc không được giải thích và hiện ra như một độ lệch ổn định."
+  },
+  "b9": {
+   "prompt": "Phát biểu nào đúng về tính quan sát được của vận tốc chỉ từ vị trí với x' = v, v' = 0?",
+   "options": [
+    "Chỉ quan sát được nếu không có nhiễu",
+    "Không quan sát được: vị trí không mang thông tin về vận tốc",
+    "Quan sát được: lịch sử vị trí qua hai mẫu xác định v",
+    "Chỉ quan sát được nếu có gia tốc trong mô hình"
+   ],
+   "explanation": "O = [[1,0],[1,dt]] có định thức dt > 0."
+  },
+  "b10": {
+   "prompt": "Một phép đo vị trí bị trễ 3 mẫu ở dt = 0.05 s. Một bộ lọc vận tốc không đổi theo dõi mục tiêu ở 1.5 m/s. Sai số vị trí hội tụ (m, 3 chữ số thập phân)?",
+   "explanation": "Ước lượng bám theo đường dốc bị trễ: sai số v*m*dt = 0.225 m."
+  },
+  "b11": {
+   "prompt": "Bạn muốn một ước lượng vận tốc từ encoder cho một khớp phần lớn thời gian chuyển động chậm và thỉnh thoảng tăng tốc mạnh. So sánh lấy sai phân, bộ lọc hệ số cố định và phương pháp dựa trên chu kỳ (thời gian giữa các xung); cho biết bạn sẽ thử cái nào trước và vì sao.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nhận ra lượng tử hóa ở tốc độ chậm là vấn đề của lấy sai phân.",
+    "Giải thích độ trễ so với nhiễu của các hệ số cố định dưới gia tốc mạnh.",
+    "Chọn một phương pháp kèm tiêu chí thử (RMSE ở tốc độ chậm, độ trễ ở quá độ)."
+   ]
+  },
+  "b12": {
+   "prompt": "Viết các bước để kiểm chứng code alpha-beta của bạn khi không có phần cứng: ba test, mỗi test có kết quả mong đợi và lỗi mà nó sẽ bắt được.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Một bước tính tay (bắt lỗi dấu/scale theo dt).",
+    "Hội tụ trên đường dốc không nhiễu hoặc mục tiêu đứng yên (bắt lỗi mô hình/hệ số).",
+    "Các cực của ma trận sai số hoặc kiểm tra độ trễ gia tốc (bắt các giả định về ổn định và độ trễ)."
+   ]
+  }
+ }
+}

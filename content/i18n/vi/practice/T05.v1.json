@@ -1,0 +1,98 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Phiên bản nào thỏa `>=1.4,<1.5`?",
+   "options": [
+    "1.3.9",
+    "2.0",
+    "1.4.9",
+    "1.5.0"
+   ],
+   "explanation": "1.4.9 ít nhất là 1.4 và dưới 1.5."
+  },
+  "b2": {
+   "prompt": "Phiên bản nào thỏa `~=2.1`?",
+   "options": [
+    "2.0.9",
+    "2.9.1",
+    "3.0",
+    "1.9"
+   ],
+   "explanation": "~=2.1 nghĩa là >=2.1 và <3."
+  },
+  "b3": {
+   "prompt": "Các phiên bản numpy khả dụng là 1.20.0, 1.24.1 và 1.26.4. Yêu cầu là `numpy>=1.21,<1.26`. Phiên bản nào được chọn? Hãy cho số minor (chữ 'y' trong 1.y.z). (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Phiên bản cao nhất thỏa mãn là 1.24.1."
+  },
+  "b4": {
+   "prompt": "Một yêu cầu không ghim `pandas>=2.0` được cài vào thứ Hai và lại cài vào thứ Sáu sau khi một phiên bản major mới được phát hành. Hệ quả khả dĩ nhất là gì?",
+   "options": [
+    "Không có gì, vì pip cache phiên bản thứ Hai",
+    "Lần cài thứ Sáu thất bại",
+    "Các phiên bản giống hệt nhau vì specifier là chính xác",
+    "Hai môi trường có thể khác nhau, và kết quả cũng vậy"
+   ],
+   "explanation": "Một khoảng cho phép resolver chọn bản phát hành mới hơn."
+  },
+  "b5": {
+   "prompt": "Mặc định lr=0.1, file lr=0.05, env EXP_LR=0.01, CLI không có. lr hiệu lực là bao nhiêu? (số thập phân, sai số cho phép 0.0001)",
+   "explanation": "Môi trường thắng file thắng mặc định."
+  },
+  "b6": {
+   "prompt": "`EXP_VERBOSE=false` được đặt. Trong Python, `bool(os.environ['EXP_VERBOSE'])` cho kết quả là...",
+   "options": [
+    "False, vì Python phân tích chuỗi 'false' thành boolean",
+    "Nó ném exception, vì một chuỗi không thể chuyển sang bool",
+    "None, vì biến không giữ giá trị boolean dùng được",
+    "True, vì mọi chuỗi không rỗng đều truthy trong Python"
+   ],
+   "explanation": "Giá trị môi trường là chuỗi; hãy phân tích tường minh."
+  },
+  "b7": {
+   "prompt": "Trong một venv, phép kiểm tra nào cho thấy Python bị cô lập khỏi interpreter cơ sở?",
+   "options": [
+    "os.getcwd() kết thúc bằng .venv, thư mục của môi trường",
+    "sys.version chứa từ 'venv' trong chuỗi phiên bản của nó",
+    "sys.prefix khác sys.base_prefix trong interpreter đang chạy",
+    "Dấu nhắc shell hiện (.venv) ở đầu mỗi dòng"
+   ],
+   "explanation": "Bên trong một venv, sys.prefix trỏ tới venv và sys.base_prefix trỏ tới bản cài cơ sở."
+  },
+  "b8": {
+   "prompt": "Một lock có 12 gói; môi trường đã cài có cả 12 nhưng 2 gói khác phiên bản và có 1 gói thừa. check_env báo cáo bao nhiêu mục? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "2 sai phiên bản + 1 thừa = 3."
+  },
+  "b9": {
+   "prompt": "Lock cũ {a 1.0, b 2.0, c 3.0}; lock mới {a 1.1, b 2.0, d 4.0}. Có bao nhiêu gói đổi phiên bản (có trong cả hai với phiên bản khác nhau)? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Chỉ a đổi; c bị xóa và d được thêm."
+  },
+  "b10": {
+   "prompt": "Sau khi source một script thiết lập robotics, một venv mới có thể import các gói không có trong lock của bạn. Nguyên nhân khả dĩ nhất là gì?",
+   "options": [
+    "pip bị hỏng và cài gói trên toàn hệ thống",
+    "PYTHONPATH đã được script thiết lập export và được kế thừa",
+    "File lock bị hỏng và liệt kê các gói thừa mà lẽ ra không nên có",
+    "Venv được tạo bằng sudo, nên nó dùng chung các gói hệ thống"
+   ],
+   "explanation": "Các mục PYTHONPATH hiển thị với mọi interpreter, kể cả của một venv."
+  },
+  "b11": {
+   "prompt": "Hãy liệt kê các phép kiểm tra bạn chạy khi một môi trường được dựng lại cho digest kết quả khác với lần chạy gốc.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "So sánh pip freeze/fingerprint của lock và các phiên bản Python.",
+    "So sánh biến môi trường (PYTHONPATH, EXP_*), cấu hình và seed, và checksum dữ liệu.",
+    "Xét phần cứng, luồng BLAS và kernel không tất định, và ghi lại dung sai."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy mô tả cách bạn lưu cấu hình và bí mật cho một thí nghiệm cần một API key và một learning rate, gồm cả những gì xuất hiện trong Git.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Learning rate trong một file cấu hình được commit (với mặc định trong code) và có thể ghi đè bằng môi trường/CLI.",
+    "API key chỉ trong biến môi trường hoặc kho bí mật; .env trong .gitignore và .env.example được commit chỉ với tên.",
+    "Ghi log cấu hình hiệu lực với key được che giấu và xoay vòng key nếu nó từng vào Git."
+   ]
+  }
+ }
+}

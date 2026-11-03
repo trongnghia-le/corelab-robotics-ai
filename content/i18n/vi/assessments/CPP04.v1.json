@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Class invariant là gì?",
+   "options": [
+    "Một data member được khai báo const để không bao giờ đổi sau khi dựng",
+    "Một điều kiện chỉ được kiểm tra trong constructor và không bao giờ kiểm tra lại",
+    "Một điều kiện trên trạng thái của đối tượng đúng mỗi khi quyền điều khiển nằm ngoài các hàm thành viên của nó",
+    "Một biến toàn cục dùng chung cho mọi instance để chúng nhất quán với nhau"
+   ],
+   "explanation": "Constructor thiết lập invariant và mọi thao tác public đều bảo toàn nó."
+  },
+  "q2": {
+   "prompt": "Một khớp có vmax = 3 rad/s đang ở q = 0.4 rad. dt nhỏ nhất (giây) để một bước tới 1.3 rad được chấp nhận là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "Cần |1.3-0.4|/dt <= 3, nên dt >= 0.9/3 = 0.30 s."
+  },
+  "q3": {
+   "prompt": "Một validator được viết là 'if (q < lo || q > hi) reject;'. Chuyện gì xảy ra với q = NaN?",
+   "options": [
+    "Nó bị từ chối, vì NaN nằm ngoài khoảng",
+    "Nó bị clamp về lo",
+    "Phép so sánh throw",
+    "Nó được chấp nhận, vì cả hai phép so sánh đều sai"
+   ],
+   "explanation": "Mọi phép so sánh thứ tự với NaN đều sai; hãy viết !(lo <= q && q <= hi) hoặc kiểm tra std::isfinite trước."
+  },
+  "q4": {
+   "prompt": "Thiết kế accessor nào cho phép phía gọi phá invariant của member private q_?",
+   "options": [
+    "double position() const { return q_; }",
+    "double& position() { return q_; }",
+    "bool try_set(double q);",
+    "const double& position() const { return q_; }"
+   ],
+   "explanation": "Một reference không-const tới trạng thái private là một cửa ghi công khai bỏ qua việc kiểm tra."
+  },
+  "q5": {
+   "prompt": "Một bộ điều khiển P với kp = 3 và dt = 0.05 đưa q về phía mục tiêu. Cập nhật là q += kp*(target-q)*dt. Bắt đầu tại q = 0 với mục tiêu 2, vị trí sau một bước là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "q1 = 0 + 3*(2-0)*0.05 = 0.30."
+  },
+  "q6": {
+   "prompt": "double run(Controller c) { return c.compute(1); } được gọi với một đối tượng PController. Vấn đề là gì?",
+   "options": [
+    "Đối số bị cắt (slice) còn phần Controller của nó, nên hành vi dẫn xuất bị mất",
+    "Không có gì sai; virtual dispatch vẫn tới PController::compute trên bản copy",
+    "Destructor của đối số chạy hai lần do bản copy theo giá trị",
+    "Lời gọi mơ hồ vì cả hai class đều định nghĩa member compute"
+   ],
+   "explanation": "Các kiểu đa hình phải được truyền bằng reference hoặc con trỏ."
+  },
+  "q7": {
+   "prompt": "FixedJoint kế thừa từ Joint và override set_position để throw. Giải thích quy tắc nào bị vi phạm và đề xuất một thiết kế tốt hơn.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu tên tính thay thế được (Liskov): code viết cho Joint& phải hoạt động với mọi class dẫn xuất.",
+    "Giải thích rằng phía gọi không thể biết từ kiểu rằng một lời gọi là không hợp lệ.",
+    "Đề xuất các interface tách riêng (base chỉ đọc, dẫn xuất có actuator) hoặc composition với một đối tượng limits."
+   ]
+  }
+ }
+}

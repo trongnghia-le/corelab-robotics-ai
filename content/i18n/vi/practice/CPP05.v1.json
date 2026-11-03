@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "std::accumulate(v.begin(), v.end(), 0) được áp dụng cho một vector<double> {0.6, 0.7, 0.8}. Kết quả là gì?",
+   "options": [
+    "0 (số học nguyên)",
+    "2.1 (số học double)",
+    "Lỗi biên dịch (kiểu không khớp)",
+    "2 (tổng được làm tròn)"
+   ],
+   "explanation": "Kiểu của init quyết định kiểu bộ tích lũy: mỗi tổng riêng bị cắt về int (0+0.6 -> 0, ...). Hãy dùng 0.0."
+  },
+  "b2": {
+   "prompt": "Một std::set dùng comparator viết là a <= b. Tiêu chuẩn nói gì?",
+   "options": [
+    "Nó chạy nhưng lặng lẽ sắp xếp các key theo thứ tự giảm dần",
+    "Nó chỉ chạy khi key là số nguyên, không phải dấu phẩy động",
+    "Undefined behavior: comparator phải là một strict weak ordering",
+    "Nó chạy, nhưng các key bằng nhau được lưu hai lần trong cây"
+   ],
+   "explanation": "Với <=, comp(a,a) là true, vi phạm tính irreflexive; bất biến của cây có thể bị phá vỡ."
+  },
+  "b3": {
+   "prompt": "Một cửa sổ trượt gồm 200 lần đọc gần nhất: push ở cuối, pop ở đầu. Container nào phù hợp nhất mà không cần quản lý thêm?",
+   "options": [
+    "std::set",
+    "std::vector với erase(begin())",
+    "std::deque",
+    "std::map"
+   ],
+   "explanation": "deque hỗ trợ push_back và pop_front O(1); xóa phần tử đầu của vector là O(n)."
+  },
+  "b4": {
+   "prompt": "Sau std::nth_element(v.begin(), v.begin()+k, v.end()), điều gì được đảm bảo?",
+   "options": [
+    "Toàn bộ vector được sắp xếp hoàn toàn tăng dần, nên mọi vị trí đều là cuối cùng và ổn định",
+    "Chỉ v[k] bị thay đổi bởi lời gọi; mọi phần tử khác giữ đúng vị trí trước đó",
+    "v[0] là giá trị nhỏ nhất và v.back() là giá trị lớn nhất của range sau khi lời gọi trả về",
+    "v[k] là phần tử mà thứ tự sắp xếp sẽ đặt ở đó; trước nó không có phần tử lớn hơn, sau nó không có phần tử nhỏ hơn"
+   ],
+   "explanation": "Đây là phép phân hoạch một phần, kỳ vọng O(n), đủ cho median hoặc percentile."
+  },
+  "b5": {
+   "prompt": "Một vector tăng trưởng với hệ số g = 1.5 và 300,000 phần tử được push từng cái một. Dùng cận g/(g-1)*n, số phần tử tối đa bị di chuyển trong các lần cấp phát lại là bao nhiêu? Số nguyên.",
+   "explanation": "1.5/0.5 = 3, nhân 300,000 = 900,000."
+  },
+  "b6": {
+   "prompt": "Các mẫu (t=2.0, v=5.0) và (t=2.5, v=9.0) kẹp truy vấn t=2.2. Giá trị nội suy là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "5 + 4*(0.2/0.5) = 6.6."
+  },
+  "b7": {
+   "prompt": "Một chuỗi có 100 mẫu tại t = 0, 10, 20, ..., 990 ms. Có bao nhiêu mẫu thỏa 250 <= t <= 600 (bao gồm cả hai đầu)? Số nguyên.",
+   "explanation": "Mẫu đầu là 250 và mẫu cuối 600: (600-250)/10+1 = 36."
+  },
+  "b8": {
+   "prompt": "Một vector chứa 40,000 mẫu, mỗi mẫu 24 byte. Chèn một mẫu vào đúng giữa làm di chuyển các mẫu sau nó. Bao nhiêu byte bị di chuyển? Số nguyên.",
+   "explanation": "20,000 phần tử x 24 B = 480,000 byte."
+  },
+  "b9": {
+   "prompt": "Một vòng lặp 'for (auto it = v.begin(); it != v.end(); ++it) if (bad(*it)) v.erase(it);' đôi khi bỏ sót phần tử và đôi khi crash. Giải thích vì sao và viết lại theo hai cách đúng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "erase vô hiệu hóa iterator và dịch các phần tử sau lên, nên ++it là undefined và bỏ sót một phần tử.",
+    "Cách sửa 1: it = v.erase(it) trong nhánh bad, ++it ở nhánh còn lại.",
+    "Cách sửa 2: v.erase(std::remove_if(first, last, bad), v.end())."
+   ]
+  },
+  "b10": {
+   "prompt": "Chọn một container để cache pose mới nhất của mỗi trong khoảng 50 đối tượng được theo dõi, tra cứu theo id nguyên, cập nhật ở 30 Hz. Biện minh, và nói điều gì sẽ thay đổi câu trả lời của bạn.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Đề xuất unordered_map<int,Pose> (hoặc một vector đánh chỉ số theo id khi id nhỏ và dày đặc).",
+    "Lưu ý rằng với 50 phần tử mọi lựa chọn đều rẻ, nên sự đơn giản và rõ ràng chiếm ưu thế.",
+    "Nêu một điều kiện để xem lại: cần duyệt có thứ tự, truy vấn khoảng, hoặc hàng triệu mục."
+   ]
+  },
+  "b11": {
+   "prompt": "Viết code xóa mọi giá trị âm khỏi std::vector<double> v và in ra số phần tử đã bị xóa, dùng erase-remove idiom.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "auto e = std::remove_if(v.begin(), v.end(), [](double x){ return x < 0; });",
+    "Tính removed = v.end() - e trước khi xóa và gọi v.erase(e, v.end()).",
+    "Nhắc đến O(n) và rằng riêng remove_if không thay đổi size()."
+   ]
+  }
+ }
+}

@@ -16,7 +16,7 @@ test("dashboard presents actual topic evidence and opens the selected curriculum
     page.getByRole("img", { name: "Robotics and AI concept sketch" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Open Robotics & AI lab" }),
+    page.getByRole("link", { name: "Open Extra practice lab" }),
   ).toHaveCount(0);
   await expect(
     page.getByRole("link", { name: "Explore Robotics & AI curriculum" }),
@@ -31,7 +31,7 @@ test("dashboard presents actual topic evidence and opens the selected curriculum
     new RegExp(`^${verified}\\s*of ${curriculum.length} curriculum topics$`),
   );
   await expect(page.getByTestId("dashboard-attempted-count")).toHaveText(
-    new RegExp(`^${attempted}\\s*through topic assessments$`),
+    new RegExp(`^${attempted}\\s*through topic checks$`),
   );
   await expect(page.locator(".dashboard-domain-card")).toHaveCount(
     new Set(curriculum.map((t) => t.domain)).size,
@@ -146,11 +146,9 @@ test("subject colors remain readable and consistent from dashboard to lesson", a
       ).toBeGreaterThanOrEqual(4.5);
     }
   }
-  const math = page
-    .locator(".dashboard-domain-card")
-    .filter({
-      has: page.getByRole("heading", { name: "Mathematics", exact: true }),
-    });
+  const math = page.locator(".dashboard-domain-card").filter({
+    has: page.getByRole("heading", { name: "Mathematics", exact: true }),
+  });
   const mathAccent = palette.find((p) => p.name === "Mathematics")!.accent;
   await math.focus();
   await expect(math).toBeFocused();

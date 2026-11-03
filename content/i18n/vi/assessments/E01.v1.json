@@ -1,0 +1,59 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Vì sao hành động tối ưu ở một trạng thái có thể phụ thuộc vào số bước còn lại?",
+   "options": [
+    "Phần thưởng tức thời và lợi ích tương lai đánh đổi khác nhau khi thời gian còn lại khác nhau",
+    "Hệ số chiết khấu được rút ngẫu nhiên ở mỗi bước, nên giá trị của một trạng thái thay đổi",
+    "Bản thân trạng thái thay đổi theo thời gian, nên cùng một hành động được đánh giá ở một nơi mới",
+    "Xác suất chuyển trạng thái trôi theo thời gian, nên mô hình dùng để lập kế hoạch khác nhau ở mỗi bước"
+   ],
+   "explanation": "Khi chỉ còn một bước thì chỉ phần thưởng tức thời có ý nghĩa; khi còn nhiều bước, lợi ích tương lai có thể chiếm ưu thế."
+  },
+  "q2": {
+   "prompt": "V_0=0. Trạng thái B: work cho 3 và ở lại B. Giá trị tối ưu V_3(B) là bao nhiêu?",
+   "explanation": "3 mỗi bước trong 3 bước = 9."
+  },
+  "q3": {
+   "prompt": "Walk thành công với xác suất p=0.5 (nếu không thì ở lại A, reward 0), V_1(B)=3, V_1(A)=1. Giá trị của walk ở A khi còn 2 bước là bao nhiêu?",
+   "explanation": "0.5*3+0.5*1=2."
+  },
+  "q4": {
+   "prompt": "Một kế hoạch open-loop cố định được so sánh với một chính sách closed-loop trên một hệ ngẫu nhiên. Điều nào luôn đúng?",
+   "options": [
+    "Kế hoạch open-loop tốt hơn vì nó đơn giản hơn",
+    "Chúng luôn bằng nhau",
+    "Giá trị tối ưu closed-loop ít nhất bằng mọi kế hoạch open-loop",
+    "Giá trị tối ưu closed-loop kém hơn vì nó cần cảm biến"
+   ],
+   "explanation": "Một kế hoạch open-loop là một chính sách đặc biệt bỏ qua phản hồi."
+  },
+  "q5": {
+   "prompt": "Belief (A=1). Walk: A ở lại với 0.2, B 0.8. Cảm biến: P('a'|A)=0.9, P('a'|B)=0.1. Posterior P(A) sau khi thấy 'a' là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "0.18/(0.18+0.08)=0.692."
+  },
+  "q6": {
+   "prompt": "Một kế hoạch open-loop chỉ thành công nếu một bước có xác suất 0.8 thành công; khi đó nó thu 9, nếu không thì 0. Return kỳ vọng là bao nhiêu?",
+   "explanation": "0.8*9=7.2."
+  },
+  "q7": {
+   "prompt": "Một robot đọc cảm biến nhiễu và luôn coi lần đọc cuối cùng là trạng thái thật. Rủi ro chính là:",
+   "options": [
+    "Vi phạm tính chất Markov của cảm biến, khiến mọi cách tiếp cận lọc đều không hợp lệ",
+    "Lập kế hoạch trên tầm dài hơn, vì các lần đọc cũ tích lũy qua các bước liên tiếp",
+    "Dùng quá nhiều bộ nhớ, vì bộ điều khiển phải lưu mọi lần đọc cũ của cảm biến",
+    "Hành động tự tin dựa trên một sai số; một belief sẽ giữ lại được sự bất định"
+   ],
+   "explanation": "Lần đọc cuối cùng sai với xác suất liên quan đến sai số cảm biến."
+  },
+  "q8": {
+   "prompt": "So sánh lựa chọn greedy với kế hoạch nhiều bước cho một robot chọn giữa việc chộp một vật ở gần và đi đến một trạm tốt hơn. Nêu bạn sẽ tính gì, sự phụ thuộc vào tầm và cách bạn kiểm tra rằng lập kế hoạch có ích.",
+   "explanation": "Có rubric hướng dẫn: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Tính return kỳ vọng của cả hai trên tầm của nhiệm vụ bằng backward induction.",
+    "Xác định tầm mà tại đó hành động được ưu tiên chuyển đổi.",
+    "Kiểm tra so với baseline greedy và so với việc vét cạn các kế hoạch."
+   ]
+  }
+ }
+}

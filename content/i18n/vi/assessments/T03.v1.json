@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một script chạy `open('config.json')`. Đường dẫn đó được phân giải từ thư mục nào?",
+   "options": [
+    "Thư mục làm việc hiện tại của tiến trình",
+    "Thư mục home của người dùng",
+    "Thư mục cài đặt Python",
+    "Thư mục chứa file script"
+   ],
+   "explanation": "Đường dẫn tương đối được phân giải theo cwd của tiến trình, không phải vị trí của script, trừ khi bạn dựng chúng từ __file__."
+  },
+  "q2": {
+   "prompt": "Trong launch.json của VS Code, giá trị nào cho 'args' là đúng?",
+   "options": [
+    "\"--lr 0.1\", dưới dạng một chuỗi đơn",
+    "{\"--lr\": \"0.1\"}",
+    "[\"--lr: 0.1\"]",
+    "[\"--lr\", \"0.1\"]"
+   ],
+   "explanation": "args là một list các chuỗi; một chuỗi đơn trở thành một đối số."
+  },
+  "q3": {
+   "prompt": "Hành động debugger nào thực thi dòng hiện tại mà không vào bất kỳ hàm nào nó gọi?",
+   "options": [
+    "Step into",
+    "Continue",
+    "Step out",
+    "Step over"
+   ],
+   "explanation": "Step over chạy cả dòng; step into vào hàm được gọi; step out hoàn thành hàm hiện tại; continue chạy đến breakpoint kế tiếp."
+  },
+  "q4": {
+   "prompt": "Một vòng lặp chạy for i in range(6) và thực hiện total += i*i. Một conditional breakpoint với điều kiện i == 3 dừng trước phép cập nhật của lần lặp đó. Lúc đó total bằng bao nhiêu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Trước phép cập nhật tại i=3, total giữ 0²+1²+2²=5."
+  },
+  "q5": {
+   "prompt": "Một pipeline có 1,000,000 giai đoạn. Một khi một giai đoạn làm hỏng dữ liệu, mọi giai đoạn sau đều hỏng. Tối đa bao nhiêu lần thăm dò (không tính lần kiểm tra cuối đầu tiên) mà một tìm kiếm nhị phân cần để tìm giai đoạn gây hỏng đầu tiên? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "ceil(log2(10^6))=20."
+  },
+  "q6": {
+   "prompt": "Một chương trình import numpy bình thường khi chạy từ terminal của bạn, nhưng lần chạy debug của editor ném ModuleNotFoundError cho numpy. Bạn nên kiểm tra gì trước?",
+   "options": [
+    "Liệu file có được lưu ở UTF-8 không, vì encoding làm hỏng câu lệnh import",
+    "Mỗi bên dùng interpreter nào (sys.executable) và nó có gói đó không",
+    "Độ phân giải màn hình của monitor, ảnh hưởng đến việc khởi động debugger",
+    "Cỡ chữ và theme của editor, vì chúng thay đổi cách phân giải import"
+   ],
+   "explanation": "Các interpreter/virtual environment khác nhau có các gói cài đặt khác nhau."
+  },
+  "q7": {
+   "prompt": "Hãy mô tả cách bạn biến 'script huấn luyện của tôi thỉnh thoảng bị crash' thành một lỗi đã được sửa kèm một regression test.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Làm cho thất bại trở nên tất định (seed, đầu vào, đối số, cwd, interpreter) và ghi lại môi trường.",
+    "Tối thiểu hóa và thu hẹp bằng một vị từ và chia đôi hoặc một conditional breakpoint, kiểm tra trạng thái tại bước hỏng đầu tiên.",
+    "Sửa và thêm một regression test thất bại trước khi sửa, với debug configuration được ghi lại."
+   ]
+  }
+ }
+}

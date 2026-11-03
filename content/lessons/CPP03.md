@@ -4,7 +4,7 @@
   "module_id": "CPP03",
   "title": "Resource management: RAII, unique ownership, and move semantics",
   "summary": "Tie every resource to an owning object, make ownership visible in types, and transfer it with moves instead of copies.",
-  "estimated_minutes": 80,
+  "estimated_minutes": 390,
   "prerequisites": [
     "CPP02"
   ],
@@ -393,6 +393,56 @@ With the unimplemented starter the program terminates with `NotImplemented`; wit
 
 Make `Buffer` copyable with a deep copy (copy-and-swap) and show with a counter that `std::vector<Buffer>` growth uses moves because they are `noexcept`. Then replace the raw `double*` by `std::unique_ptr<double[]>` and delete your destructor and move operations (rule of zero).
 
+### Library track
+
+Use only the standard library. Redo `Buffer` under the rule of zero and let the real library types do the work, then confirm the claims from the lesson with counters. Compile with `g++ -std=c++17 -Wall -Wextra -fsanitize=address,undefined`.
+
+```cpp
+#include <cassert>
+#include <cstdio>
+#include <iostream>
+#include <memory>
+#include <type_traits>
+#include <vector>
+
+// Rule of zero: no destructor, no copy or move declared. The unique_ptr member does everything.
+class Buffer0 {
+ public:
+  explicit Buffer0(std::size_t n) : data_(new double[n]()), size_(n) {}
+  std::size_t size() const { return size_; }
+  double& operator[](std::size_t i) { return data_[i]; }
+ private:
+  std::unique_ptr<double[]> data_;
+  std::size_t size_;
+};
+static_assert(!std::is_copy_constructible_v<Buffer0>);          // unique_ptr makes it move-only
+static_assert(std::is_nothrow_move_constructible_v<Buffer0>);   // generated, and noexcept
+
+// Counting types to watch std::vector growth (same as exercise 8)
+struct Safe  { Safe() = default;  Safe(const Safe&)  { ++c; } Safe(Safe&&) noexcept { ++m; } static inline int c = 0, m = 0; };
+struct Risky { Risky() = default; Risky(const Risky&) { ++c; } Risky(Risky&&)          { ++m; } static inline int c = 0, m = 0; };
+
+int main() {
+  std::vector<Buffer0> v;
+  for (int i = 0; i < 8; ++i) v.emplace_back(1000);   // growth relocates by moving
+  assert(v.size() == 8 && v[7].size() == 1000);
+
+  { std::vector<Safe> s;  for (int i = 0; i < 8; ++i) s.emplace_back(); }
+  { std::vector<Risky> r; for (int i = 0; i < 8; ++i) r.emplace_back(); }
+  std::cout << "Safe copies=" << Safe::c << " Risky copies=" << Risky::c << "\n";
+  assert(Safe::c == 0 && Risky::c == 7);              // 1 + 2 + 4 relocations
+
+  {  // a C resource with a custom deleter: closed exactly once, also on early exit
+    std::unique_ptr<FILE, int (*)(FILE*)> f(std::tmpfile(), &std::fclose);
+    assert(f != nullptr);
+    std::fputs("hello", f.get());
+  }  // fclose runs here
+  std::cout << "library track ok\n";
+}
+```
+
+Expected output: `Safe copies=0 Risky copies=7` then `library track ok`. Then run your lab tests on a `Buffer` that wraps `std::unique_ptr<double[]>` with all five special members deleted from your source, and note that the tests still pass.
+
 ## Verification
 
 - Compile with `-fsanitize=address,undefined`. A leak shows at exit as `LeakSanitizer: detected memory leaks` with the allocation stack; a double free as `attempting double-free`.
@@ -446,4 +496,4 @@ The same principle is `with` in Python, `defer` in Go and `Drop` in Rust (where 
 - [cppreference: std::unique_ptr](https://en.cppreference.com/w/cpp/memory/unique_ptr) - complete interface, deleters, and the moved-from guarantee.
 - [LearnCpp](https://www.learncpp.com/) - the chapters on smart pointers and move semantics, with step-by-step examples.
 
-**More practice:** the exercises at the end of the move semantics and smart pointer chapters on [LearnCpp](https://www.learncpp.com/) (quiz solutions are given on each page), and the enforceable rules in the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) which you can use as a checklist for your own code.
+**More practice:** the quizzes on [LearnCpp: intro to smart pointers and move semantics](https://www.learncpp.com/cpp-tutorial/introduction-to-smart-pointers-move-semantics/) and [LearnCpp: std::unique_ptr](https://www.learncpp.com/cpp-tutorial/stdunique_ptr/) (answers are shown on the page), [LearnCpp: std::move](https://www.learncpp.com/cpp-tutorial/stdmove/), and the [Core Guidelines resource management section (R)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#r-resource-management) as a review checklist for your own `Buffer`.

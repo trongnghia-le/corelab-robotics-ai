@@ -5,6 +5,8 @@ import matter from "gray-matter";
 import { z } from "zod";
 import { topicMap } from "./curriculum";
 import type { Assessment, Lesson, Overview, PracticeSkill } from "./types";
+import { splitSections, lessonSessions } from "./lesson-plan";
+import type { Lang } from "./lang";
 import {
   assessmentSchema,
   questionMetadataSchema,
@@ -48,6 +50,121 @@ export function getLesson(id: string): Lesson | null {
     body: parsed.content,
   };
 }
+function headingsOf(body: string) {
+  return splitSections(body).sections.map((s) => s.heading);
+}
+
+/** Lesson in the requested language, falling back to English per lesson. */
+export function getLocalizedLesson(
+  id: string,
+  lang: Lang = "en",
+): Lesson | null {
+  const base = getLesson(id);
+  if (!base) return null;
+  const lesson: Lesson = {
+    ...base,
+    sessionMinutes: Object.fromEntries(
+      lessonSessions(base.body).map((s) => [s.key, s.minutes]),
+    ),
+  };
+  if (lang === "en") return lesson;
+  const file = path.join(root, "lessons", "vi", `${id}.md`);
+  if (!fs.existsSync(file)) return { ...lesson, missingTranslation: true };
+  try {
+    const parsed = matter(fs.readFileSync(file, "utf8"));
+    const english = headingsOf(lesson.body);
+    if (headingsOf(parsed.content).length !== english.length)
+      return { ...lesson, missingTranslation: true };
+    const data = z
+      .object({
+        title: z.string().min(1),
+        summary: z.string().min(1),
+        objectives: z.array(z.string()).min(1),
+      })
+      .parse(parsed.data);
+    return {
+      meta: { ...lesson.meta, ...data },
+      body: parsed.content,
+      lang: "vi",
+      englishHeadings: english,
+      sessionMinutes: lesson.sessionMinutes,
+    };
+  } catch {
+    return { ...lesson, missingTranslation: true };
+  }
+}
+
+/** Titles of translated lessons by topic id (Vietnamese). */
+export function translatedTitles(): Record<string, string> {
+  const dir = path.join(root, "lessons", "vi");
+  if (!fs.existsSync(dir)) return {};
+  const out: Record<string, string> = {};
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".md"))) {
+    try {
+      const title = matter(fs.readFileSync(path.join(dir, file), "utf8")).data
+        .title;
+      if (typeof title === "string" && title.trim())
+        out[file.slice(0, -3)] = title;
+    } catch {}
+  }
+  return out;
+}
+
+type Translation = {
+  prompt?: string;
+  options?: string[];
+  explanation?: string;
+  rubric?: string[];
+};
+
+function readTranslations(
+  kind: "assessments" | "practice",
+  id: string,
+  version: number,
+): Record<string, Translation> | null {
+  const file = path.join(root, "i18n", "vi", kind, `${id}.v${version}.json`);
+  if (!fs.existsSync(file)) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
+    return parsed && typeof parsed.questions === "object"
+      ? parsed.questions
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Overlay translated display text; answers, ids, kinds and tolerances are untouched. */
+export function localizeAssessment(
+  a: Assessment | null,
+  kind: "assessments" | "practice",
+  lang: Lang,
+): Assessment | null {
+  if (!a || lang === "en") return a;
+  const tr = readTranslations(kind, a.topicId, a.version);
+  if (!tr) return a;
+  return {
+    ...a,
+    questions: a.questions.map((q) => {
+      const t = tr[q.id];
+      if (!t) return q;
+      return {
+        ...q,
+        prompt: t.prompt ?? q.prompt,
+        explanation: t.explanation ?? q.explanation,
+        options:
+          q.options && t.options?.length === q.options.length
+            ? t.options
+            : q.options,
+        rubric:
+          q.rubric && t.rubric?.length === q.rubric.length
+            ? t.rubric
+            : q.rubric,
+      };
+    }),
+  };
+}
+
 export function getAssessment(id: string, version = 1): Assessment | null {
   if (!topicMap[id]) return null;
   const file = path.join(root, "assessments", `${id}.v${version}.json`);

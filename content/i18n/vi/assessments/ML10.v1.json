@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "InfoNCE với N=2: z1=z1'=(1,0), z2=z2'=(0,1), tau=1. Loss là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Anchor 1: -log(e/(e+1))=log(1+e^-1)=0.3133; anchor 2 giống hệt."
+  },
+  "q2": {
+   "prompt": "Nếu một encoder collapse và ánh xạ mọi đầu vào về cùng một vector, loss InfoNCE cho một batch N=64 (với tau bất kỳ) là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Mọi logit bằng nhau, nên mỗi softmax là 1/64 và loss là ln 64=4.159."
+  },
+  "q3": {
+   "prompt": "Vì sao các phương pháp contrastive dùng loss kiểu InfoNCE cần negative (hoặc một cơ chế ngăn collapse khác)?",
+   "options": [
+    "Nếu không có chúng, ánh xạ mọi đầu vào về một điểm làm hai view đồng thuận một cách tầm thường",
+    "Chúng giảm batch size cần thiết, để mỗi bước huấn luyện rẻ hơn",
+    "Negative làm gradient lớn hơn, từ đó tăng tốc tối ưu hóa",
+    "Negative cung cấp các nhãn lớp mà loss contrastive cần để học"
+   ],
+   "explanation": "Chỉ riêng sự đồng thuận được cực tiểu hóa bởi một encoder hằng số; negative làm nghiệm đó tốn log N."
+  },
+  "q4": {
+   "prompt": "Masking kiểu BERT chọn 15% của một chuỗi 200 token. Có bao nhiêu token được chọn để dự đoán? (số nguyên, sai số cho phép 0.01)",
+   "explanation": "0.15·200=30."
+  },
+  "q5": {
+   "prompt": "Trong masked prediction, loss thường được tính trên những vị trí nào?",
+   "options": [
+    "Chỉ các vị trí không bị che",
+    "Chỉ các vị trí bị che",
+    "Mọi vị trí như nhau",
+    "Chỉ vị trí đầu tiên"
+   ],
+   "explanation": "Tính loss trên các token nhìn thấy được thưởng cho việc sao chép; nhiệm vụ là suy ra nội dung bị che."
+  },
+  "q6": {
+   "prompt": "Bạn huấn luyện một mô hình contrastive trên các tín hiệu mà nhãn downstream là tần số trội của tín hiệu. Augmentation nào nguy hiểm?",
+   "options": [
+    "Đổi dấu của tín hiệu, để nó bị đảo về biên độ",
+    "Thêm nhiễu Gaussian nhỏ với biên độ thấp vào mỗi mẫu",
+    "Dịch vòng thời gian của tín hiệu một số mẫu ngẫu nhiên",
+    "Kéo giãn thời gian với hệ số 2"
+   ],
+   "explanation": "Kéo giãn làm đổi tần số, vốn chính là nhãn; các cái còn lại giữ nguyên nó."
+  },
+  "q7": {
+   "prompt": "Bạn sẽ pretrain bằng contrastive learning trên các frame camera của một robot để sau đó nhận dạng các loại vật thể. Hãy mô tả cách bạn chọn và kiểm chứng các augmentation, và bạn sẽ tìm kiếm thất bại nào.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Liệt kê các augmentation gắn với các nhân tố nhiễu (crop, ánh sáng, làm mờ) và loại trừ những cái làm đổi nhãn (ví dụ đổi màu nếu màu xác định lớp, lật nếu tính thuận tay quan trọng).",
+    "Kiểm chứng bằng một tập probe có nhãn đã biết (tỉ lệ được bảo toàn) và một linear probe downstream so với baseline thô qua nhiều seed.",
+    "Tìm các lối tắt, false negative từ các frame gần trùng lặp, và collapse (loss kẹt ở log N)."
+   ]
+  }
+ }
+}

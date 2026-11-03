@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "j1": {
+   "prompt": "Một tay máy 2R phẳng duỗi thẳng hoàn toàn (q2 = 0). Jacobian thiếu hạng hàm ý điều gì?",
+   "options": [
+    "Tay máy không tới được điểm nào, vì không gian làm việc co lại thành một đường",
+    "Không thể tạo ra vận tốc đầu mút dọc theo hướng của tay",
+    "Vị trí đầu mút không xác định, nên không thể tính động học thuận",
+    "Các khớp hoàn toàn không thể chuyển động, vì cả hai trục khớp bị khóa"
+   ],
+   "explanation": "Cả hai cột vuông góc với tay, nên không chuyển động khớp nào có thể di chuyển đầu mút dọc theo tay; động học thuận vẫn xác định và các khớp vẫn có thể chuyển động."
+  },
+  "j2": {
+   "prompt": "Với l1 = l2 = 1 và q = (90 độ, 0), phần tử J11 = -l1 sin(q1) - l2 sin(q1+q2) là bao nhiêu? Cho một số nguyên.",
+   "explanation": "sin(90 độ) = 1 và sin(90 độ + 0) = 1, nên J11 = -1 - 1 = -2."
+  },
+  "j3": {
+   "prompt": "Một tay máy 2R có l1 = 0.6 m, l2 = 0.4 m và q2 = 30 độ. det J = l1 l2 sin(q2) là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "0.6*0.4*sin(30 độ) = 0.24*0.5 = 0.120."
+  },
+  "j4": {
+   "prompt": "J = [[-1,-1],[1,0]] và tốc độ khớp là (0.2, 0.3) rad/s. Thành phần x của vận tốc đầu mút là bao nhiêu m/s? Cho 2 chữ số thập phân.",
+   "explanation": "v_x = (-1)(0.2) + (-1)(0.3) = -0.5 m/s."
+  },
+  "j5": {
+   "prompt": "Với J = [[-1,-1],[1,0]] đầu mút đẩy với lực F = (2, 0) N. Dùng tau = J^T F, mô-men trên khớp 2 là bao nhiêu N m? Cho 1 chữ số thập phân.",
+   "explanation": "J^T = [[-1,1],[-1,0]]; tau_2 = (-1)(2) + 0*0 = -2 N m."
+  },
+  "j6": {
+   "prompt": "Một bộ điều khiển tốc độ phân giải (resolved-rate) đưa tay máy 2R về một tư thế gần như duỗi thẳng và các tốc độ khớp được ra lệnh tăng vọt. Cách sửa phù hợp nhất là gì?",
+   "options": [
+    "Chuyển sang bình phương tối thiểu có giảm chấn (và làm chậm nhiệm vụ gần điểm kỳ dị)",
+    "Dùng nghịch đảo ma trận chính xác với độ chính xác kép",
+    "Chỉ dùng bước thời gian tích phân nhỏ hơn",
+    "Tăng giới hạn tốc độ khớp để các lệnh được chấp nhận"
+   ],
+   "explanation": "Bình phương tối thiểu có giảm chấn chặn tốc độ gần điểm kỳ dị với cái giá là độ chính xác bám. Giảm bước thời gian không loại bỏ sự khuếch đại 1/sin(q2); bỏ qua tư thế là không an toàn."
+  },
+  "j7": {
+   "prompt": "Một phép kiểm tra Jacobian bằng sai phân trung tâm có sai số cắt cụt tỉ lệ với h^2. Nếu bước giảm từ 1e-2 xuống 1e-3 (và sai số làm tròn không đáng kể), sai số giảm bao nhiêu lần? Cho một số nguyên.",
+   "explanation": "Sai số ~ h^2, nên giảm h 10 lần giảm sai số 100 lần."
+  },
+  "j8": {
+   "prompt": "Phát biểu nào về nghiệm giả nghịch đảo qdot = J^+ v là đúng?",
+   "options": [
+    "Nó cho tốc độ khớp có chuẩn nhỏ nhất cho v, nhưng không áp đặt các giới hạn",
+    "Nó tự động tôn trọng giới hạn khớp, vì các tốc độ là nhỏ nhất",
+    "Nó không bao giờ tạo ra tốc độ khớp lớn, kể cả gần điểm kỳ dị",
+    "Nó tránh va chạm với vật cản, vì nó cực tiểu hóa chuyển động"
+   ],
+   "explanation": "Giả nghịch đảo cực tiểu hóa chuẩn tốc độ khớp cho nhiệm vụ, nhưng nó không biết gì về giới hạn khớp hay vật cản, và vẫn tạo ra tốc độ lớn gần điểm kỳ dị."
+  },
+  "j9": {
+   "prompt": "Một tay máy 2R có l1 = 0.6 m, l2 = 0.4 m và q2 = 30 độ, nên det J = 0.12 m^2. Diện tích của elip vận tốc đạt được bởi tốc độ khớp có chuẩn bằng một, pi*|det J|, là bao nhiêu m^2/s^2? Cho 3 chữ số thập phân.",
+   "explanation": "pi * 0.12 = 0.377."
+  },
+  "j10": {
+   "prompt": "Một tay máy 7 khớp chỉ điều khiển vị trí 3D của bàn tay. Số chiều của không gian null của Jacobian vị trí 3x7 là bao nhiêu (giả sử đủ hạng)?",
+   "options": [
+    "3",
+    "4",
+    "7",
+    "10"
+   ],
+   "explanation": "7 khớp trừ hạng 3 còn lại 4 chuyển động nội tại độc lập không làm di chuyển bàn tay."
+  },
+  "j11": {
+   "prompt": "Liệt kê ba bài kiểm thử độc lập cho một hàm trả về Jacobian của một tay máy phẳng, và nói mỗi cái bắt loại lỗi nào.",
+   "rubric": [
+    "So sánh với Jacobian sai phân hữu hạn trung tâm tại các giá trị khớp không tầm thường (bắt các số hạng đạo hàm sai, hàng hoặc cột bị hoán đổi, lệch góc)",
+    "Kiểm tra một tư thế tính tay như q = (0, pi/2) và tư thế kỳ dị q2 = 0 (bắt lỗi dấu và kiểm tra thiếu hạng)",
+    "Kiểm tra công thức định thức hoặc shape/tính tuyến tính J(q) u (bắt thiếu chiều dài hoặc sai kích thước); dùng q1 khác không và độ dài khâu không bằng nhau"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "j12": {
+   "prompt": "Hãy mô tả cách bạn giám sát và xử lý các điểm kỳ dị trong bộ điều khiển tốc độ phân giải cho tay máy 6 khớp, gồm cả những gì bạn sẽ ghi log và bộ điều khiển làm gì gần một điểm kỳ dị.",
+   "rubric": [
+    "Giám sát một đại lượng như giá trị suy biến nhỏ nhất, số điều kiện hoặc khả năng thao tác so với một ngưỡng",
+    "Áp dụng giảm chấn (DLS) hoặc làm chậm/dừng nhiệm vụ gần ngưỡng, và giới hạn tốc độ khớp",
+    "Ghi log đại lượng đó và các tốc độ khớp, và lưu ý giảm chấn đánh đổi độ chính xác bám để lấy tốc độ bị chặn"
+   ],
+   "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

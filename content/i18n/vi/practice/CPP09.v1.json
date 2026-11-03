@@ -1,0 +1,87 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Bố cục nào giảm thiểu lưu lượng bộ nhớ khi một vòng lặp chỉ đọc field z của 10^6 điểm {x, y, z, intensity}?",
+   "options": [
+    "Một std::map khóa theo chỉ số của mỗi điểm",
+    "Một danh sách liên kết giữ một node cho mỗi điểm",
+    "Cấu trúc của các mảng (một mảng z liên tục riêng)",
+    "Mảng các cấu trúc (cả một struct cho mỗi điểm)"
+   ],
+   "explanation": "SoA chỉ truyền field cần thiết; AoS kéo các field khác qua cache."
+  },
+  "b2": {
+   "prompt": "Một ma trận double 4096x4096 theo hàng được cộng theo từng cột. So với theo từng hàng, điều gì được kỳ vọng?",
+   "options": [
+    "Nhanh hơn, vì các cột ngắn hơn các hàng",
+    "Tốc độ giống hệt, vì cả hai thứ tự đều có tổng công việc O(n^2)",
+    "Chậm hơn nhiều, vì mọi truy cập chạm một cache line khác",
+    "Nhanh hơn, vì tổng theo cột vector hóa tốt hơn tổng theo hàng"
+   ],
+   "explanation": "Stride 32 KB giữa các truy cập liên tiếp lãng phí 7/8 mỗi line được nạp và phá vỡ prefetching."
+  },
+  "b3": {
+   "prompt": "Một đồ thị thời gian theo n trên trục log-log là một đường thẳng với độ dốc khoảng 1 cho n nhỏ và bẻ cong lên ở n lớn hơn. Nguyên nhân nhiều khả năng nhất?",
+   "options": [
+    "Các tối ưu hóa của compiler bị tắt",
+    "Working set đã vượt quá một tầng cache",
+    "Thuật toán chuyển sang hành vi O(2^n)",
+    "Đồng hồ bị tràn ở các kích thước lớn hơn"
+   ],
+   "explanation": "Chi phí bộ nhớ mỗi phần tử tăng khi dữ liệu vượt L1, L2, rồi L3."
+  },
+  "b4": {
+   "prompt": "Phát biểu nào về perf record / perf report là đúng?",
+   "options": [
+    "Nó yêu cầu chương trình được build với -fsanitize=address mới cho ra output",
+    "Nó in ra độ phức tạp tiệm cận chính xác của mọi hàm mà nó lấy mẫu",
+    "Nó lấy mẫu chương trình tốn thời gian ở đâu, nên các mục đứng đầu cho thấy nơi cần xem",
+    "Nó làm chương trình chạy nhanh hơn bằng cách sắp xếp lại các hàm nóng nhất trong bộ nhớ"
+   ],
+   "explanation": "Profiler lấy mẫu quy thời gian chạy cho các hàm; chúng cần symbol (-g) để output dễ đọc."
+  },
+  "b5": {
+   "prompt": "Một mảng 1000 double (8 byte) được đọc với stride 8 phần tử (64 byte). Có bao nhiêu line 64 byte khác nhau bị chạm? Số nguyên.",
+   "explanation": "Phần tử 0, 8, ..., 992 = 125 lần đọc, mỗi lần trong line riêng: 125 line (lượt tuần tự cũng chạm 125 line)."
+  },
+  "b6": {
+   "prompt": "Các phép đo: 1.5 s tại n=1000, 6.0 s tại n=2000, 24 s tại n=4000. Ước lượng số mũ p của t ~ n^p. Cho một số với 1 chữ số thập phân.",
+   "explanation": "Mỗi lần nhân đôi nhân thời gian với 4, nên p = 2."
+  },
+  "b7": {
+   "prompt": "Profile: tìm kiếm 50%, serialization 30%, filter 20%. Tìm kiếm được làm nhanh hơn 10 lần. Mức tăng tốc tổng thể? Cho một số với 2 chữ số thập phân.",
+   "explanation": "S = 1/(0.5+0.05) = 1.818, tức 1.82."
+  },
+  "b8": {
+   "prompt": "Dự đoán thời gian tại n = 10000 cho một hàm được khớp là t = 2e-6 * n^2 ms. Cho một số theo ms.",
+   "explanation": "2e-6 * 10^8 = 200 ms."
+  },
+  "b9": {
+   "prompt": "Một đồng nghiệp nói: chèn vào giữa std::list là O(1) còn vector là O(n), nên list nhanh hơn cho hàng đợi 5000 phần tử của chúng ta. Đánh giá nhận định này và đề xuất cách giải quyết.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Big-O bỏ qua hằng số và locality; với 5000 phần tử (hàng chục KB) việc dịch chuyển vector là một memmove nhanh trong cache.",
+    "Tìm vị trí chèn trong list là đuổi theo con trỏ O(n), thứ chi phối.",
+    "Giải quyết bằng benchmark ở kích thước và mẫu truy cập thật; nhắc đến median của các lần chạy tối ưu lặp lại."
+   ]
+  },
+  "b10": {
+   "prompt": "Node của bạn thỉnh thoảng trễ deadline frame 33 ms. Liệt kê các bước bạn sẽ làm, từ đo đạc đến thay đổi, và cách bạn kiểm chứng sự cải thiện.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Tái hiện với đầu vào đã ghi, đo bằng bộ đếm giờ/perf trong bản build tối ưu, xem phân phối (phần đuôi) chứ không chỉ trung bình.",
+    "Tìm đóng góp chi phối bằng profiler; chặn lợi ích bằng định luật Amdahl trước khi đổi code.",
+    "Thực hiện một thay đổi, đo lại bằng cùng phương pháp, giữ một benchmark hồi quy."
+   ]
+  },
+  "b11": {
+   "prompt": "Viết một hàm ước lượng số mũ p từ các vector kích thước và thời gian bằng bình phương tối thiểu trên logarit, và nói bạn kiểm tra gì trước khi tin nó.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Tính ln x và ln y, rồi slope = sum((lx-mx)(ly-my))/sum((lx-mx)^2).",
+    "Kiểm tra các giá trị dương, ít nhất hai kích thước khác nhau (tốt nhất là bốn trở lên).",
+    "Kiểm tra các điểm thẳng trên đồ thị log-log và không có ranh giới cache nào bị vượt qua trong khoảng được khớp."
+   ]
+  }
+ }
+}

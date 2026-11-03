@@ -1,0 +1,49 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Bạn gọi loss.backward() hai lần liên tiếp trên các graph mới mà không zero gradient. Điều gì xảy ra với w.grad?",
+   "options": [
+    "gradient thứ hai thay thế gradient thứ nhất, nên chỉ còn lại gradient cuối",
+    "PyTorch gây lỗi vì graph đã được duyệt một lần",
+    "w.grad trở thành None vì graph thứ hai giải phóng graph thứ nhất",
+    "gradient thứ hai được cộng vào gradient thứ nhất"
+   ],
+   "explanation": "Leaf .grad tích lũy; hãy dùng zero_grad() mỗi bước."
+  },
+  "q2": {
+   "prompt": "w=3 (requires_grad), L=w**2. Sau 4 lần gọi backward() không zero, w.grad bằng bao nhiêu?",
+   "explanation": "4*(2w)=24."
+  },
+  "q3": {
+   "prompt": "Neuron sigmoid: z=0.3. sigma'(z)=y(1-y) bằng bao nhiêu (4 chữ số thập phân)?",
+   "explanation": "y=0.574443; y(1-y)=0.2445."
+  },
+  "q4": {
+   "prompt": "f=(x*y+z)**2 tại x=2,y=-3,z=10. df/dy bằng bao nhiêu?",
+   "explanation": "q=4, df/dq=8, df/dy=8*x=16."
+  },
+  "q5": {
+   "prompt": "Shape của (x[:, None, :] - x[None]) với x có shape (5, 2)?",
+   "options": [
+    "(2, 5, 5), vì trục mới được broadcasting đặt lên đầu",
+    "(5, 2), vì broadcasting giữ shape của toán hạng đầu tiên",
+    "(5, 5, 2)",
+    "(10,), vì hiệu được làm phẳng thành một vector các cặp"
+   ],
+   "explanation": "Hiệu theo từng cặp: (5,1,2)-(1,5,2) broadcast thành (5,5,2)."
+  },
+  "q6": {
+   "prompt": "Loss bậc hai với trị riêng Hessian lớn nhất bằng 5. Gradient descent chỉ ổn định nếu learning rate nhỏ hơn giá trị nào?",
+   "explanation": "2/lambda_max=0.4."
+  },
+  "q7": {
+   "prompt": "Một custom loss cho gradient trông sai. Hãy mô tả cách bạn kiểm chứng autograd với gradient số, bao gồm lựa chọn dtype và tolerance.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Dùng central difference với eps nhỏ trên tensor float64.",
+    "So sánh với autograd bằng tolerance tương đối cỡ 1e-6 hoặc chặt hơn.",
+    "Kiểm tra nhiều điểm và tham số ngẫu nhiên, và báo cáo sai số lớn nhất."
+   ]
+  }
+ }
+}

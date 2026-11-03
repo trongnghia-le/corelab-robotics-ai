@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "update_rate 125 Hz. Chu kỳ theo ms.",
+   "explanation": "1000/125."
+  },
+  "b2": {
+   "prompt": "Chu kỳ 4 ms, read 0.4 ms, write 0.6 ms. Thời gian update lớn nhất (ms) trước khi overrun.",
+   "explanation": "4-0.4-0.6."
+  },
+  "b3": {
+   "prompt": "Chu kỳ 3.0 ms ở chu kỳ định thời 5 ms. Utilization. Độ chính xác 0.01.",
+   "explanation": "3/5."
+  },
+  "b4": {
+   "prompt": "PID kp=1.5, ki=0.5, sai số 2, dt=0.2, giới hạn đầu ra 1.0, anti-windup có điều kiện, tích phân bắt đầu 0. Tích phân sau bước. Độ chính xác 0.001.",
+   "explanation": "u=3.2 bão hòa với sai số đẩy sâu hơn: tích phân không được ghi nhận."
+  },
+  "b5": {
+   "prompt": "Vòng P bị giới hạn vận tốc: kp=4, vmax=2, bước e0=1, dải 0.02. Thời gian ổn định t=(e0-vmax/kp)/vmax + ln(vmax/(kp*band))/kp, s. Độ chính xác 0.01.",
+   "explanation": "0.25+0.25 ln 25."
+  },
+  "b6": {
+   "prompt": "Một khớp cách giới hạn trên 0.004 rad được ra lệnh +1 rad/s trong dt=0.02 s. Vận tốc báo cáo (rad/s), độ chính xác 0.001.",
+   "explanation": "0.004/0.02."
+  },
+  "b7": {
+   "prompt": "Nhiều controller có thể làm điều nào đồng thời?",
+   "options": [
+    "Đọc cùng một state interface",
+    "Ghi cùng một command interface",
+    "Sở hữu cùng một command interface trong cùng một chu kỳ",
+    "Ghi cả lệnh vị trí và vận tốc của cùng một khớp mà không có quy tắc sở hữu nào"
+   ],
+   "explanation": "State interface được chia sẻ."
+  },
+  "b8": {
+   "prompt": "Vì sao đạo hàm trên phép đo được ưu tiên trong update()?",
+   "options": [
+    "Nó cần ít mẫu hơn đạo hàm trên sai số",
+    "Nó làm số hạng tích phân bằng không ở trạng thái xác lập",
+    "Một bước của tham chiếu không tạo đỉnh nhọn trong đầu ra.",
+    "Nó loại bỏ hoàn toàn nhiễu đo khỏi đầu ra"
+   ],
+   "explanation": "Thay đổi tham chiếu không đi vào đạo hàm."
+  },
+  "b9": {
+   "prompt": "Một controller hardcode dt=0.01 trong khi manager chạy ở 50 Hz. Điều gì xảy ra?",
+   "options": [
+    "Độ lợi tích phân hiệu dụng giảm một nửa và đạo hàm gấp đôi.",
+    "Không có gì xảy ra, vì dt chỉ dùng để ghi log",
+    "Controller manager ghi đè dt bằng chu kỳ thật",
+    "Cả hai độ lợi tăng gấp đôi, vì dt xuất hiện trong mỗi số hạng"
+   ],
+   "explanation": "Chu kỳ thật là 0.02 s."
+  },
+  "b10": {
+   "prompt": "Switch strict yêu cầu kích hoạt B (cần vị trí j1 và j2) trong khi A giữ j1 và C giữ j2, và chỉ hủy kích hoạt A. Kết quả?",
+   "options": [
+    "A bị dừng và B chỉ hoạt động một phần",
+    "Yêu cầu thất bại; A và C vẫn hoạt động.",
+    "B được kích hoạt và C bị dừng để giải phóng j2",
+    "B được kích hoạt với j2 chia sẻ giữa B và C"
+   ],
+   "explanation": "C vẫn sở hữu j2."
+  },
+  "b11": {
+   "prompt": "Viết một bài kiểm thử chứng minh một lần switch thất bại để quyền sở hữu không đổi, với tên controller và interface cụ thể.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Thiết lập hai controller đang hoạt động với các interface có tên và một yêu cầu xung đột.",
+    "Chụp ảnh quyền sở hữu trước và so sánh sau lần switch thất bại.",
+    "Kiểm tra rằng yêu cầu thay thế thành công (kèm các lần hủy kích hoạt) hoạt động."
+   ]
+  },
+  "b12": {
+   "prompt": "Giải thích windup trước một chốt chặn cứng làm chậm việc đảo chiều thế nào và bạn phát hiện nó trong log ra sao.",
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Giải thích sai số dai dẳng được tích phân trong khi khớp không thể chuyển động.",
+    "Mô tả triệu chứng: đầu ra bị ghim/trễ sau khi tham chiếu đảo chiều.",
+    "Đề xuất anti-windup và một bài kiểm thử với số (số bước để rời chốt chặn)."
+   ]
+  }
+ }
+}

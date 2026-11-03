@@ -1,0 +1,86 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Quy tắc Bryson chọn Q_ii = 1/(x_i,max)^2. Một trạng thái có dung sai 1 mm được đo bằng mét. Quy tắc gợi ý trọng số nào?",
+   "options": [
+    "1e-6",
+    "1",
+    "1000",
+    "1e6"
+   ],
+   "explanation": "x_max = 0.001 m, nên Q_ii = 1/(1e-3)^2 = 1e6."
+  },
+  "b2": {
+   "prompt": "Quy tắc Bryson cho giới hạn momen 4 N·m: R = 1/u_max^2 (3 chữ số thập phân).",
+   "explanation": "1/16 = 0.0625."
+  },
+  "b3": {
+   "prompt": "Đối tượng vô hướng x' = x + u, q = 1, r = 0.25. Cho K (3 chữ số thập phân).",
+   "explanation": "P = (0.25+sqrt(0.0625+0.25)) = 0.8090, K = P/r = 3.236."
+  },
+  "b4": {
+   "prompt": "Đối tượng x' = x + u, q = 1, r = 0.25. Cực vòng kín (3 chữ số thập phân).",
+   "explanation": "1 - 3.236 = -2.236."
+  },
+  "b5": {
+   "prompt": "Đối tượng x' = 3x + 2u, q = 1, r = 4. Cho P (3 chữ số thập phân).",
+   "explanation": "b^2 P^2 / r - 2aP - q = 0: P^2 - 6P - 1 = 0, P = 3 + sqrt(10) = 6.162."
+  },
+  "b6": {
+   "prompt": "Khi r tăng không giới hạn với đối tượng bất ổn x' = a x + b u (a > 0), cực vòng kín tiến tới:",
+   "options": [
+    "0, ranh giới giữa ổn định và bất ổn",
+    "+a, chính cực vòng hở, không đổi",
+    "-a, ảnh gương của cực vòng hở",
+    "âm vô cùng, vì chi phí theo x chiếm ưu thế"
+   ],
+   "explanation": "LQR chỉ dời cực bất ổn xa đến mức cần thiết: nó phản chiếu cực qua trục ảo."
+  },
+  "b7": {
+   "prompt": "Một sinh viên lặp P <- Q + A'PA + A'PB (R + B'PB)^-1 B'PA và P tăng không giới hạn. Sai ở đâu?",
+   "options": [
+    "A phải được chuyển vị hai lần",
+    "Phép lặp cần P0 = 0 chính xác",
+    "Số hạng cuối phải bị trừ",
+    "R phải bằng không"
+   ],
+   "explanation": "Cập nhật Riccati trừ đi số hạng A'PB K."
+  },
+  "b8": {
+   "prompt": "Một người bạn nói: 'LQR đảm bảo các biên ổn định, nên tôi không cần mô phỏng độ trễ.' Phản hồi tốt nhất?",
+   "options": [
+    "Các biên chỉ áp dụng khi R lớn, và khi đó có thể bỏ qua mọi độ trễ một cách an toàn",
+    "Các biên đúng cho vòng liên tục lý tưởng; trễ 50 ms hoặc lấy mẫu có thể làm mất chúng",
+    "Đúng, vì biên LQR bao gồm mọi độ trễ như một phần của biên pha được đảm bảo",
+    "Các biên chỉ đúng cho hệ hai trạng thái, nên đối tượng lớn hơn cần mô phỏng"
+   ],
+   "explanation": "Trễ thêm độ trễ pha; các biên trong sách giáo khoa giả định không có động lực học chưa mô hình hóa."
+  },
+  "b9": {
+   "prompt": "LQR rời rạc: x0 = (1, 0), P00 = 17.8349 và tổng chi phí mô phỏng trên 200 bước là 17.8349. Nếu x0 là (2, 0), chi phí tối ưu sẽ là (4 chữ số thập phân)?",
+   "explanation": "J = x0' P x0 scale theo bình phương: 4 P00."
+  },
+  "b10": {
+   "prompt": "Hệ rời rạc vô hướng x_{k+1} = x_k + u_k với q = r = 1 có hệ số tối ưu K = 0.618 (u_k = -K x_k). Bắt đầu tại x0 = 2, trạng thái sau một bước là bao nhiêu (3 chữ số thập phân)?",
+   "explanation": "2*(1-0.618) = 0.764."
+  },
+  "b11": {
+   "prompt": "LQR của bạn cho vòng tư thế drone để lại một độ lệch ổn định dưới momen gió không đổi. Hãy giải thích vì sao, và bạn sẽ sửa thế nào trong khuôn khổ LQR.",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Nêu rằng phản hồi trạng thái không có tác dụng tích phân nên nhiễu không đổi cho độ lệch.",
+    "Đề xuất mở rộng trạng thái với tích phân của sai số và chạy lại LQR.",
+    "Nêu một phép kiểm tra: mô phỏng nhiễu bậc và ảnh hưởng lên đầu vào đỉnh."
+   ]
+  },
+  "b12": {
+   "prompt": "Hãy mô tả cách bạn sẽ kiểm chứng một bộ giải Riccati do bạn viết, chỉ dùng các tính chất của nghiệm (không có thư viện tham chiếu).",
+   "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Đề cập phần dư điểm cố định hoặc thêm một lần lặp.",
+    "Đề cập tính ổn định vòng kín (trị riêng) và tính đối xứng của P.",
+    "Đề cập đồng nhất thức chi phí x0'Px0 so với mô phỏng hoặc dạng đóng vô hướng."
+   ]
+  }
+ }
+}
