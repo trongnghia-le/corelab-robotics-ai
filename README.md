@@ -58,6 +58,22 @@ Most labs need only the Python standard library. The optional **Library track** 
 python3 -m pip install numpy scipy matplotlib scikit-learn torch opencv-python gymnasium
 ```
 
+### Open CoreLab like an app (no terminal each time)
+
+`npm run dev` recompiles pages as you open them. For daily study, use the one-click launcher instead:
+
+```bash
+npm run app           # first time: builds once (~30 s), then opens CoreLab
+npm run app:install   # Linux: adds CoreLab to the app menu
+```
+
+1. **Linux (GNOME, KDE, ...):** after `npm run app:install`, press the Super key, type **CoreLab** and click it. Right-click the icon and choose **Add to Favorites** to pin it to the dock.
+2. **macOS / Windows:** run `npm run app`. It opens in your browser; in Chrome or Edge choose **⋮ → Cast, save and share → Install page as app** to get a desktop/Start-menu icon. Clicking that icon works while the server is running; run `npm run app` again after a restart.
+
+How it works: the launcher keeps a light production server running in the background on **http://127.0.0.1:3210** and opens a standalone window (Chrome, Chromium, Brave or Edge if installed). Later launches take under a second, it rebuilds by itself after a `git pull`, and it shares the same progress database as `npm run dev`. Stop the background server with `npm run app:stop`; set `CORELAB_APP_PORT` to use another port. If something goes wrong, check `.local/app.log`.
+
+Other modes:
+
 ```bash
 npm run build && npm start   # production mode
 npm run dev:v2               # also enable the objective-based Extra practice lab at /objectives
