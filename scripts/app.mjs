@@ -1,13 +1,16 @@
 // One-click launcher: keeps a production server running in the background and
-// opens CoreLab in an app window. Rebuilds only when the checked-out commit changes.
+// opens CoreLab in an app window. Rebuilds only when the code changes (a new
+// commit, `git pull`, or uncommitted edits).
 //   node scripts/app.mjs          open (build/start if needed)
 //   node scripts/app.mjs stop     stop the background server
 import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
   openSync,
   readFileSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { createRequire } from "node:module";
@@ -25,12 +28,33 @@ const logFile = path.join(local, "app.log");
 const next = require.resolve("next/dist/bin/next");
 const env = { ...process.env, NEXT_TELEMETRY_DISABLED: "1" };
 
-function commit() {
-  const r = spawnSync("git", ["rev-parse", "HEAD"], {
+function git(args) {
+  const r = spawnSync("git", args, {
     cwd: root,
     encoding: "utf8",
+    maxBuffer: 256 * 1024 * 1024,
   });
-  return r.status === 0 ? r.stdout.trim() : "no-git";
+  return r.status === 0 ? r.stdout : null;
+}
+
+/** Fingerprint of the checked-out code: commit, uncommitted edits, new files. */
+function version() {
+  const head = git(["rev-parse", "HEAD"]);
+  if (head === null) return "no-git";
+  const hash = createHash("sha256").update(head);
+  // next-env.d.ts flips between dev and build; it never changes the app.
+  hash.update(
+    git(["diff", "HEAD", "--", ".", ":(exclude)next-env.d.ts"]) ?? "",
+  );
+  for (const file of (
+    git(["ls-files", "--others", "--exclude-standard", "-z"]) ?? ""
+  )
+    .split("\0")
+    .filter(Boolean)) {
+    const st = statSync(path.join(root, file), { throwIfNoEntry: false });
+    hash.update(`${file}:${st?.size}:${st?.mtimeMs}\n`);
+  }
+  return hash.digest("hex");
 }
 
 function read(file) {
@@ -68,7 +92,7 @@ function build() {
   });
   if (saved !== null) writeFileSync(envFile, saved);
   if (r.status !== 0) throw new Error("Build failed; see the output above.");
-  writeFileSync(stampFile, commit());
+  writeFileSync(stampFile, version());
 }
 
 function start() {
@@ -113,7 +137,7 @@ async function main() {
   if (process.argv[2] === "stop") return stop();
   const fresh =
     existsSync(path.join(root, ".next", "BUILD_ID")) &&
-    read(stampFile) === commit();
+    read(stampFile) === version();
   if (fresh && (await up())) return open();
   stop();
   if (!fresh) build();

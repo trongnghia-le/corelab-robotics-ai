@@ -70,7 +70,7 @@ npm run app:install   # Linux: adds CoreLab to the app menu
 1. **Linux (GNOME, KDE, ...):** after `npm run app:install`, press the Super key, type **CoreLab** and click it. Right-click the icon and choose **Add to Favorites** to pin it to the dock.
 2. **macOS / Windows:** run `npm run app`. It opens in your browser; in Chrome or Edge choose **⋮ → Cast, save and share → Install page as app** to get a desktop/Start-menu icon. Clicking that icon works while the server is running; run `npm run app` again after a restart.
 
-How it works: the launcher keeps a light production server running in the background on **http://127.0.0.1:3210** and opens a standalone window (Chrome, Chromium, Brave or Edge if installed). Later launches take under a second, it rebuilds by itself after a `git pull`, and it shares the same progress database as `npm run dev`. Stop the background server with `npm run app:stop`; set `CORELAB_APP_PORT` to use another port. If something goes wrong, check `.local/app.log`.
+How it works: the launcher keeps a light production server running in the background on **http://127.0.0.1:3210** and opens a standalone window (Chrome, Chromium, Brave or Edge if installed). Later launches take under a second, it rebuilds by itself whenever the code changes (for example after a `git pull`), and it shares the same progress database as `npm run dev`. Stop the background server with `npm run app:stop`; set `CORELAB_APP_PORT` to use another port. If something goes wrong, check `.local/app.log`.
 
 Other modes:
 
