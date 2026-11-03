@@ -31,7 +31,7 @@ CoreLab is a **free, local-first learning workspace** that takes you from vector
 
 - 🗺️ **A real roadmap, not a playlist.** A 169-topic prerequisite graph covers mathematics, programming, ML, robotics, vision, RL, embodied AI and research methods. It explains why each next step is recommended.
 - 📖 **Complete lessons for every topic.** Each one has intuition, derivation, a fully worked example, a reference implementation, failure modes, trade-offs and further reading. Mathematics renders with KaTeX.
-- ✍️ **Practice that builds real skill.** Every lesson has 8–12 graded exercises with worked answers, including problems adapted from well-known textbooks and courses. There are also interactive diagnostics and a targeted practice bank that finds your weak skills.
+- ✍️ **Practice that builds real skill.** Every lesson has 10–12 graded exercises with worked answers, including problems adapted from well-known textbooks and courses. There are also interactive diagnostics and a targeted practice bank that finds your weak skills.
 - 🧪 **Labs you actually run.** Every topic has a hands-on lab with starter code, runnable tests and expected output. You code it yourself, on your own machine.
 - 🎬 **Curated videos for every topic.** There are 270 videos from 3Blue1Brown, MIT OpenCourseWare, Stanford, Steve Brunton, Cyrill Stachniss, CppCon and others. The player loads only when you click: no autoplay, with an original-source link.
 - 🖼️ **160 original diagrams.** Purpose-drawn figures explain the idea: feedback loops, Kalman updates, capture points, PPO clipping, friction cones and more.
@@ -50,11 +50,17 @@ npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:3000**. The local database is created automatically.
+Open **http://127.0.0.1:3000**. The local database is created automatically. Click **VI** in the top bar for Vietnamese.
+
+Most labs need only the Python standard library. The optional **Library track** in each lab uses real tools; install the ones you need:
+
+```bash
+python3 -m pip install numpy scipy matplotlib scikit-learn torch opencv-python gymnasium
+```
 
 ```bash
 npm run build && npm start   # production mode
-npm run dev:v2               # also enable the objective-based Robotics & AI lab at /objectives
+npm run dev:v2               # also enable the objective-based Extra practice lab at /objectives
 ```
 
 <details>
@@ -82,7 +88,7 @@ Use another port with `npm run dev -- --port 3001` and stop the server with **Ct
 
 ### Your next step, explained
 
-The dashboard shows a single recommended next topic and tells you why. It also tracks the topics you have evidence for, the ones you have attempted, and the reviews that are due.
+The dashboard recommends one next topic and says why, and it counts the topics you have mastered, the ones you have practised and the reviews that are due.
 
 <img src="docs/images/dashboard.png" alt="Dashboard with the recommended next topic and progress counters"/>
 
@@ -91,7 +97,7 @@ The dashboard shows a single recommended next topic and tells you why. It also t
 
 ### A map of 169 connected topics
 
-Search, filter by domain or status, or switch to an interactive graph to see how the prerequisites connect.
+Search the map or filter it by domain or status. You can also switch to an interactive graph to see how the prerequisites connect.
 
 <img src="docs/images/roadmap-graph.png" alt="Interactive prerequisite graph of the mathematics topics"/>
 
@@ -100,40 +106,66 @@ Search, filter by domain or status, or switch to an interactive graph to see how
 <tr>
 <td width="50%" valign="top">
 
-### Lessons with original diagrams
+### Four study sessions per lesson
 
-Each topic comes with a long-form lesson that has a table of contents, rendered math and a figure drawn for the idea. Shown here: the Kalman update.
+Each lesson is split into Learn → Practice → Build → Review, and every session shows a realistic time estimate. You tick sessions off as you finish them, and a progress bar tracks how far you are.
 
-<img src="docs/images/lesson-figure.png" alt="Kalman filtering lesson showing the prior, measurement and posterior Gaussian figure"/>
+<img src="docs/images/lesson-sessions.png" alt="Kalman filtering lesson with the Learn, Practice, Build and Review session stepper and progress bar"/>
 
 </td>
 <td width="50%" valign="top">
 
-### Hands-on labs with tests
+### Original diagrams and rendered math
 
-Each lab gives you a goal, setup, tasks, starter code with clear contracts, runnable tests, the expected output and an extension challenge.
+Each lesson has a long-form text with rendered math and a figure drawn for its idea. Shown here: the Kalman update.
 
-<img src="docs/images/lesson-lab.png" alt="Lab starter code for a Kalman filter with syntax highlighting and a copy button"/>
+<img src="docs/images/lesson-figure.png" alt="Kalman filtering lesson showing the prior, measurement and posterior Gaussian figure"/>
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-### Curated video, on your terms
+### Hands-on labs with tests
 
-Each topic has one to three verified videos. They load only when you ask, so nothing autoplays, and every video links to its original source.
+Each lab gives you:
 
-<img src="docs/images/lesson-video.png" alt="Recommended video panel with three 3Blue1Brown linear algebra videos"/>
+- a goal, setup and tasks;
+- starter code with a clear contract;
+- runnable tests and the expected output;
+- an extension challenge;
+- a **Library track** that redoes the lab with real tools.
+
+<img src="docs/images/lesson-lab.png" alt="Lab starter code for a Kalman filter with syntax highlighting and a copy button"/>
 
 </td>
 <td width="50%" valign="top">
 
-### Evidence, not checkboxes
+### Curated video, on your terms
 
-Diagnostics separately track **C**oncept, **M**ath, **I**mplementation and **T**ransfer. Each one shows suggested prerequisites and your history of evidence.
+Each topic has one to three verified videos. A video loads only when you ask for it, nothing autoplays, and every video links to its original source.
 
-<img src="docs/images/assessment.png" alt="Kalman filtering diagnostic with C/M/I/T competence cards and suggested prerequisites"/>
+<img src="docs/images/lesson-video.png" alt="Recommended video panel with three 3Blue1Brown linear algebra videos"/>
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### Check what you know
+
+The quizzes mix concept, calculation and open questions, and they point you to the prerequisites. The detailed C/M/I/T tracking is still there, folded under **Details**.
+
+<img src="docs/images/assessment.png" alt="Kalman filtering check page with suggested prerequisites and mastery rules"/>
+
+</td>
+<td width="50%" valign="top">
+
+### Học bằng tiếng Việt
+
+The **EN/VI** switch translates the interface and every lesson, exercise and quiz. Code and math stay identical.
+
+<img src="docs/images/vi-lesson.png" alt="Kalman filter lesson shown in Vietnamese"/>
 
 </td>
 </tr>
@@ -186,9 +218,9 @@ flowchart LR
 | Why this matters · Intuition       | Where the idea shows up in real robots and AI systems, with an original figure |
 | Theory and derivation              | The math step by step, with assumptions and units stated                       |
 | Worked example                     | A fully worked numeric example you can check by hand                           |
-| **Exercises** (8–12)               | Easy → mini-project: conceptual, numeric, find-the-bug, predict, design, proof |
+| **Exercises** (10–12)              | Easy → mini-project: conceptual, numeric, find-the-bug, predict, design, proof |
 | Reference implementation           | Short, runnable code with a self-test                                          |
-| **Independent practice (lab)**     | Goal, setup, tasks, starter code, tests, expected output, extension challenge  |
+| **Independent practice (lab)**     | Goal, tasks, starter code, tests, expected output, extension, library track    |
 | Verification · Failure modes       | How to check your result, and the mistakes people really make                  |
 | Alternatives and trade-offs        | When to pick which method                                                      |
 | Exercise answers · Further reading | Worked solutions, sources and links to official problem sets for more practice |
@@ -198,10 +230,10 @@ flowchart LR
 **Diagnostic → Watch → Visualize → Understand → Derive → Implement → Verify → Review**
 
 1. **Start** from the dashboard recommendation or a learning path, and check the prerequisites.
-2. **Diagnose** first. Record any help honestly: **A0** none, **A1** hint, **A2** example, **A3** solution.
-3. **Watch and explore.** Predict before you press play or move a slider.
+2. **Check what you know** first. Say honestly how much help you used, from _No help (A0)_ to _Saw the solution (A3)_.
+3. **Learn session.** Watch and explore, predicting before you press play or move a slider.
 4. **Derive.** Rebuild the key equation on a blank page and explain every term.
-5. **Implement** the lab from scratch, then make the tests pass. Treat copied or AI-written code as assisted practice.
+5. **Practice and Build sessions.** Do the exercises before opening the answers, then implement the lab from scratch until the tests pass. Treat copied or AI-written code as assisted practice.
 6. **Verify.** Use hand calculations, boundaries and deliberately broken cases, then re-take the diagnostic.
 7. **Fix your weaknesses** in **Practice → My Weaknesses**, which targets the exact skills you missed.
 8. **Review** on a 1/3/7/21-day schedule and reconstruct the result from memory.
@@ -219,7 +251,7 @@ Reading, watching and clicking never count as mastery. A full independent (A0) d
 
 <p align="center"><img src="docs/images/mobile-lesson.png" alt="CoreLab lesson on a phone-width screen" width="260"/><br/><sub>Responsive down to phone width, with keyboard-friendly navigation.</sub></p>
 
-## 🧪 Robotics & AI lab (V2 preview)
+## 🧪 Extra practice lab (V2 preview)
 
 Run `npm run dev:v2` to open `/objectives`. This adds an **objective-based workspace** next to the curriculum:
 
@@ -250,7 +282,7 @@ npm run test:e2e                 # browser tests on an isolated database
 
 - ✅ All 169 topics have a lesson, exercises with answers, a lab, a diagnostic, a practice bank and curated video.
 - ⚠️ **The content was drafted with AI assistance.** It then went through a second, independent AI review pass that re-derived every answer key, recomputed the numbers, re-ran the code and fixed the errors it found. Lab tests were also run, links checked and figures rendered. It has **not** been reviewed by a human expert. Spotted a mistake? Please [open an issue](https://github.com/trongnghia-le/corelab-robotics-ai/issues).
-- ⚠️ ROS 2, simulator and hardware labs are not included. Local automated verification of submitted code is limited to a few fixed contracts.
+- ⚠️ The app does not run ROS 2, simulators or hardware for you. Some library tracks include optional ROS 2/MuJoCo code to run on your own machine. Automatic verification of your submitted code is limited to a few fixed contracts.
 - 🧭 The browser UI is tested on Linux; CI runs the build and tests on Linux, Windows and macOS.
 
 ## 🤝 Contributing
