@@ -72,7 +72,17 @@ npm run app:install   # Linux: adds CoreLab to the app menu
 1. **Linux (GNOME, KDE, ...):** after `npm run app:install`, press the Super key, type **CoreLab** and click it. Right-click the icon and choose **Add to Favorites** to pin it to the dock.
 2. **macOS / Windows:** run `npm run app`. It opens in your browser; in Chrome or Edge choose **⋮ → Cast, save and share → Install page as app** to get a desktop/Start-menu icon. Clicking that icon works while the server is running; run `npm run app` again after a restart.
 
-How it works: the launcher keeps a light production server running in the background on **http://127.0.0.1:3210** and opens a standalone window (Chrome, Chromium, Brave or Edge if installed). Later launches take under a second, it rebuilds by itself whenever the code changes (for example after a `git pull`), and it shares the same progress database as `npm run dev`. Stop the background server with `npm run app:stop`; set `CORELAB_APP_PORT` to use another port. If something goes wrong, check `.local/app.log`.
+How it works: the launcher keeps a light production server running in the background on **http://127.0.0.1:3210** and opens two standalone windows side by side (Chrome, Chromium, Brave or Edge if installed): the lesson on the left and the study desk on the right (`CORELAB_DESK=0` opens the lesson only). Later launches take under a second, it rebuilds by itself whenever the code changes (for example after a `git pull`), and it shares the same progress database as `npm run dev`. Stop the background server with `npm run app:stop`; set `CORELAB_APP_PORT` to use another port. If something goes wrong, check `.local/app.log`.
+
+### Study desk: notes, exercises and code beside the lesson
+
+Click **Desk** in the top bar (or let the launcher open it) to get a second window that follows the lesson you have open:
+
+- **Notes**: Markdown with math preview, autosaved per topic.
+- **Exercises**: every numbered exercise with a box for your working, a done tick and a hidden answer you open when ready.
+- **Code**: a CodeMirror editor. **Load lab code** puts the lesson's starter and tests in one `lab.py` (or `lab.cpp`); **Run** (Ctrl+Enter) runs it with your own Python 3 or C/C++ compiler, with a 20-second limit.
+
+Everything is saved as plain files in `.local/desk/<TOPIC>/`, so you can also open them in VS Code. Code runs on your machine with your rights, exactly like running it in a terminal; the desk only accepts requests from CoreLab's own pages.
 
 Other modes:
 

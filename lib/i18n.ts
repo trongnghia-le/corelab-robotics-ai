@@ -324,6 +324,9 @@ const en = {
   "dom.Hardware & Embedded":
     "Sensors, motors, power and the firmware that runs them.",
   "dom.Capstone": "One robot that uses everything you learned.",
+  "shell.desk": "Desk",
+  "shell.deskHint":
+    "Open the study desk beside this window: notes, exercises and code",
   // practice & tools
   "practice.eyebrow": "IMPLEMENT → VERIFY → TRANSFER",
   "practice.title": "Implement independently. Verify your work.",
@@ -662,6 +665,8 @@ const vi: Dict = {
   "dom.Hardware & Embedded":
     "Cảm biến, động cơ, nguồn điện và firmware điều khiển chúng.",
   "dom.Capstone": "Một robot vận dụng mọi điều bạn đã học.",
+  "shell.desk": "Bàn học",
+  "shell.deskHint": "Mở bàn học bên cạnh cửa sổ này: ghi chú, bài tập và code",
   "practice.eyebrow": "CÀI ĐẶT → KIỂM CHỨNG → VẬN DỤNG",
   "practice.title": "Tự cài đặt. Tự kiểm chứng.",
   "practice.desc":

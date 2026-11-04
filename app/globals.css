@@ -5177,3 +5177,241 @@ html:has(.media-navigation) {
 [id^="explore-"] {
   scroll-margin-top: 84px;
 }
+
+/* Study desk: a compact second window for notes, exercises and code. */
+.desk-root {
+  min-height: 100vh;
+  background: var(--bg);
+}
+.desk {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 12px 16px 24px;
+  gap: 10px;
+}
+.desk-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.desk-header select {
+  flex: 1 1 260px;
+  min-width: 0;
+  font-size: 0.9375rem;
+}
+.desk-header .icon-button {
+  gap: 6px;
+  font-size: 0.875rem;
+}
+.desk-header .icon-button.is-on {
+  color: var(--primary);
+}
+.desk-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.desk-tabs button,
+.desk-files button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-bottom: 2px solid transparent;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+.desk-tabs button.selected,
+.desk-files button.selected {
+  color: var(--text);
+  border-bottom-color: var(--primary);
+}
+.desk-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+.desk-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 0.9375rem;
+}
+.desk-save {
+  font-size: 0.8125rem;
+  color: var(--subtle);
+  white-space: nowrap;
+}
+.desk-save.is-error {
+  color: var(--danger);
+}
+.desk-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.desk-files {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  gap: 2px;
+}
+.desk-textarea,
+.desk-answer {
+  width: 100%;
+  background: var(--surface-1);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  font:
+    0.9375rem/1.6 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  resize: vertical;
+}
+.desk-textarea {
+  min-height: 60vh;
+}
+.desk-preview {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 18px;
+  min-height: 60vh;
+}
+.desk-exercises ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.desk-exercises li {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.desk-exercises li.is-done {
+  border-color: #2e7a4b;
+}
+.desk-exercise-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.desk-exercise-head label {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.desk-exercise-n {
+  font-weight: 700;
+  color: var(--primary);
+}
+.desk-exercises .prose {
+  font-size: 0.9375rem;
+}
+.desk-solution summary {
+  cursor: pointer;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.code-editor {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 45vh;
+}
+.code-editor .cm-editor {
+  min-height: 45vh;
+  font-size: 0.9375rem;
+}
+.code-editor.is-loading {
+  background: var(--surface-1);
+}
+.desk-code kbd {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  margin-left: 4px;
+}
+.desk-output {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  max-height: 40vh;
+  overflow: auto;
+}
+.desk-output-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.8125rem;
+  color: var(--subtle);
+  flex-wrap: wrap;
+}
+.desk-output-head .good {
+  color: var(--success);
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.desk-output-head .bad {
+  color: var(--danger);
+}
+.desk-output pre {
+  margin: 8px 0 0;
+  white-space: pre-wrap;
+  font-size: 0.875rem;
+}
+.desk-output pre.stderr {
+  color: #fca5a5;
+}
+.desk-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--subtle);
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.desk-footer code {
+  overflow-wrap: anywhere;
+}
+.link-button {
+  background: none;
+  border: 0;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 0;
+}
+.desk-error {
+  color: var(--danger);
+}
+.desk-open {
+  gap: 6px;
+}
+/* The desk is a second window beside the lesson: a desktop feature. */
+@media (max-width: 900px) {
+  .topbar-right .button.desk-open {
+    display: none;
+  }
+}

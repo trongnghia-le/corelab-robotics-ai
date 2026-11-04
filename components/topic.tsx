@@ -16,6 +16,7 @@ import { topicMap, topics } from "@/lib/curriculum";
 import { contextFor } from "@/lib/engine";
 import type { TopicPayload, Attempt, Assistance, Answers } from "@/lib/types";
 import { useCore, Loading, copyText } from "./provider";
+import { announceTopic } from "@/lib/desk-channel";
 import { TopicChips, Status, Matrix, dateText } from "./ui";
 import { LessonReader, SessionProgressBar } from "./lesson-study";
 import { lessonPlan } from "@/lib/lesson-plan";
@@ -59,6 +60,7 @@ export function TopicPage({
   const { t, lang } = useI18n();
   const { data, error } = useTopic(id);
   const [context, setContext] = useState("");
+  useEffect(() => announceTopic(id), [id]);
   if (error)
     return (
       <div className="page empty-state" role="alert">

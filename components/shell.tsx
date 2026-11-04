@@ -17,9 +17,22 @@ import {
   Menu,
   ArrowUpRight,
   Languages,
+  PanelRight,
 } from "lucide-react";
 import { useI18n, type Dict } from "@/lib/i18n";
 type TKey = keyof Dict;
+/** Open (or focus) the study desk as a window beside the lesson. */
+export function openDesk() {
+  const width = Math.min(760, Math.round(screen.availWidth * 0.42));
+  const left = screen.availWidth - width;
+  window
+    .open(
+      "/desk",
+      "corelab-desk",
+      `popup,width=${width},height=${screen.availHeight},left=${left},top=0`,
+    )
+    ?.focus();
+}
 const main = [
   ["/", "nav.dashboard", LayoutDashboard],
   ["/roadmap", "nav.roadmap", Network],
@@ -64,6 +77,13 @@ export function Shell({
   function close() {
     setOpen(false);
   }
+  // The study desk is its own compact window: no sidebar or footer.
+  if (pathname.startsWith("/desk"))
+    return (
+      <main id="main" className="desk-root">
+        {children}
+      </main>
+    );
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
@@ -217,6 +237,15 @@ export function Shell({
             </strong>
           </div>
           <div className="topbar-right">
+            <button
+              type="button"
+              className="button secondary desk-open"
+              onClick={() => openDesk()}
+              title={t("shell.deskHint")}
+            >
+              <PanelRight size={15} aria-hidden="true" />
+              {t("shell.desk")}
+            </button>
             <div
               className="lang-switch"
               role="group"

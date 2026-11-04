@@ -27,3 +27,19 @@ export function checkLocalRequest(
   )
     throw new Error("Request too large");
 }
+/**
+ * Stricter guard for the study desk, which can run code: the request must come
+ * from a CoreLab page itself (same Origin, same-site fetch metadata) and carry
+ * a custom header, which a cross-origin page cannot send without a preflight.
+ */
+export function checkDeskRequest(request: Request, maxBytes = 1_000_000) {
+  checkLocalRequest(request, { maxBytes });
+  if (request.method === "GET") return;
+  if (!request.headers.get("origin"))
+    throw new Error("Desk requests need an Origin header");
+  if (request.headers.get("x-corelab-desk") !== "1")
+    throw new Error("Missing desk header");
+  const site = request.headers.get("sec-fetch-site");
+  if (site && site !== "same-origin")
+    throw new Error("Cross-site desk request blocked");
+}

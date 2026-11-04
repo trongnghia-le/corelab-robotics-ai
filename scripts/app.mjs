@@ -3,6 +3,7 @@
 // commit, `git pull`, or uncommitted edits).
 //   node scripts/app.mjs          open (build/start if needed)
 //   node scripts/app.mjs stop     stop the background server
+//   CORELAB_DESK=0 node scripts/app.mjs   open without the study desk window
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -110,11 +111,20 @@ function which(command) {
   return spawnSync("which", [command], { encoding: "utf8" }).stdout.trim();
 }
 
+/** Usable screen size on Linux/X11 or XWayland, if xrandr can tell us. */
+function screenSize() {
+  const out = spawnSync("xrandr", ["--current"], { encoding: "utf8" }).stdout;
+  const m = out?.match(/current (\d+) x (\d+)/);
+  return m ? { w: Number(m[1]), h: Number(m[2]) } : null;
+}
+
 function open() {
+  const desk = process.env.CORELAB_DESK !== "0";
   if (process.platform === "darwin") return spawn("open", [url]).unref();
   if (process.platform === "win32")
     return spawn("cmd", ["/c", "start", "", url], { shell: false }).unref();
-  // A Chromium-family browser gives a standalone app window.
+  // A Chromium-family browser gives standalone app windows: the lesson on the
+  // left and the study desk (notes, exercises, code) on the right.
   for (const b of [
     "google-chrome",
     "chromium",
@@ -123,11 +133,27 @@ function open() {
     "microsoft-edge",
   ]) {
     const exe = which(b);
-    if (exe)
-      return spawn(exe, [`--app=${url}`], {
-        detached: true,
-        stdio: "ignore",
-      }).unref();
+    if (!exe) continue;
+    const size = screenSize();
+    const split = size ? Math.round(size.w * 0.58) : 0;
+    const app = (target, x, w) =>
+      spawn(
+        exe,
+        [
+          `--app=${target}`,
+          ...(size
+            ? [`--window-position=${x},0`, `--window-size=${w},${size.h}`]
+            : []),
+        ],
+        { detached: true, stdio: "ignore" },
+      ).unref();
+    app(url, 0, split);
+    if (desk)
+      setTimeout(
+        () => app(`${url}/desk`, split, size ? size.w - split : 0),
+        600,
+      );
+    return;
   }
   spawn("xdg-open", [url], { detached: true, stdio: "ignore" }).unref();
 }

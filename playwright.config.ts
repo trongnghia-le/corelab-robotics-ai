@@ -19,6 +19,7 @@ export default defineConfig({
     timeout: 60000,
     env: {
       CORELAB_DB_PATH: `.local/e2e-${Date.now()}.sqlite`,
+      CORELAB_DESK_DIR: `.local/e2e-desk-${Date.now()}`,
       NEXT_TELEMETRY_DISABLED: "1",
     },
   },
