@@ -1,0 +1,61 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Thứ tự bring-up nào đúng cho một board robot mới?",
+      "options": [
+        "Động cơ, rồi cảm biến, rồi comms, rồi nguồn, vì động cơ lộ vấn đề nhanh nhất rồi thử lại mọi thứ.",
+        "Nguồn, reset và clock, comms, cảm biến, cơ cấu chấp hành ở công suất thấp, rồi vòng kín.",
+        "Vòng kín trước, rồi comms, rồi cảm biến, rồi nguồn, để code điều khiển được chứng minh sớm.",
+        "Cảm biến, rồi nguồn, rồi cơ cấu chấp hành, rồi comms, theo thứ tự linh kiện về rồi thử lại mọi thứ."
+      ],
+      "explanation": "Một lỗi ở thượng nguồn làm mọi thứ phía sau trông như hỏng, nên kiểm từ nguồn: nguồn trước, động cơ và vòng điều khiển sau cùng, với bánh xe nhấc khỏi mặt đất."
+    },
+    "q2": {
+      "prompt": "Bốn pin NiMH (4,8 V hở mạch, tổng điện trở nối tiếp 0,4 ohm) cấp cho động cơ kéo 2 A lúc khởi động. Điện áp (V) khi khởi động là bao nhiêu?",
+      "explanation": "4,8 - 2*0,4 = 4,0 V."
+    },
+    "q3": {
+      "prompt": "Board ESP32 chỉ reset khi động cơ khởi động và log boot ghi BROWNOUT_RST. Nguyên nhân khả dĩ nhất là gì?",
+      "options": [
+        "Tốc độ baud nối tiếp sai rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Chân nút bấm bị floating rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Hai thiết bị I2C dùng chung một địa chỉ rồi thử lại mọi thứ.",
+        "Điện áp nguồn bị sụt dưới dòng khởi động của động cơ."
+      ],
+      "explanation": "BROWNOUT_RST nghĩa là nguồn tụt dưới mức bộ phát hiện. Reset trùng với lúc động cơ khởi động chỉ ra sụt áp do dòng xung (V = Voc - I*R)."
+    },
+    "q4": {
+      "prompt": "I2C chế độ fast: giới hạn thời gian lên 300 ns, điện dung bus 100 pF. Điện trở kéo lên tối đa Rp,max = tr / (0,8473 * Cb) tính bằng ohm, độ chính xác 5.",
+      "explanation": "300e-9 / (0,8473 * 100e-12) = 3541 ohm."
+    },
+    "q5": {
+      "prompt": "Một chân nút bấm không nối gì đọc ra 0 và 1 ngẫu nhiên. Cách sửa là gì?",
+      "options": [
+        "Bật INPUT_PULLUP, hoặc thêm điện trở kéo lên hoặc kéo xuống 10 k bên ngoài.",
+        "Tăng tốc độ baud rồi thử lại mọi thứ trước khi động vào thứ gì khác, như nhiều người mới vẫn nghĩ.",
+        "Thêm delay(100) vào loop() rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Cấp nguồn board bằng pin lớn hơn rồi thử lại mọi thứ trước khi động vào thứ gì khác."
+      ],
+      "explanation": "Chân floating bắt nhiễu. Điện trở kéo lên hoặc kéo xuống cho nó một mức xác định."
+    },
+    "q6": {
+      "prompt": "Một MPU-6050 và một DS1307 chung một bus I2C và cùng trả lời ở 0x68. Cách sửa nào hiệu quả?",
+      "options": [
+        "Giảm tốc độ baud của cổng nối tiếp rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Thêm điện trở kéo lên 10 k thứ hai cho SDA rồi thử lại mọi thứ.",
+        "Nối chân AD0 của MPU-6050 lên cao để nó chuyển sang 0x69.",
+        "Đổi chỗ dây SDA và SCL rồi thử lại mọi thứ trước khi động vào thứ gì khác."
+      ],
+      "explanation": "MPU-6050 có chân chọn địa chỉ: AD0 cao cho 0x69. Địa chỉ DS1307 cố định, nên dời thiết bị kia, dùng bộ ghép kênh hoặc bus thứ hai."
+    },
+    "q7": {
+      "prompt": "Viết kế hoạch kiểm thử tối thiểu cho một wheel module mới trước khi bánh chạm đất: ít nhất năm bài kiểm theo thứ tự, mỗi bài có tiêu chí đạt đo được.",
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+      "rubric": [
+        "Sắp xếp nguồn trước (thông mạch, dòng chờ, các rail), rồi lý do reset, comms, cảm biến, và chỉ sau đó mới chạy động cơ ở duty thấp với bánh nhấc lên.",
+        "Đưa ra tiêu chí đạt đo được như rail trong 5 %, một banner boot, kết quả scan khớp bản đồ, chiều và số đếm mỗi vòng, dòng dưới giới hạn.",
+        "Có bài kiểm an toàn (timeout dừng đầu ra) và nêu cần ghi lại gì: phiên bản firmware, bản đồ chân và các số đo."
+      ]
+    }
+  }
+}

@@ -91,7 +91,7 @@ test("subject colors remain readable and consistent from dashboard to lesson", a
 }) => {
   const before = await (await page.request.get("/api/state")).json();
   await page.goto("/");
-  await expect(page.locator(".dashboard-domain-card")).toHaveCount(8);
+  await expect(page.locator(".dashboard-domain-card")).toHaveCount(10);
   const palette = await page
     .locator(".dashboard-domain-card")
     .evaluateAll((cards) =>
@@ -129,7 +129,7 @@ test("subject colors remain readable and consistent from dashboard to lesson", a
       y = luminance(b);
     return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
   };
-  expect(new Set(palette.map((p) => p.accent)).size).toBe(8);
+  expect(new Set(palette.map((p) => p.accent)).size).toBe(10);
   for (const p of palette) {
     expect(
       contrast(p.accent, p.iconBackground),

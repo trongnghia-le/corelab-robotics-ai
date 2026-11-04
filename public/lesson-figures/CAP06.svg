@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="Inter, Arial, sans-serif" role="img">
+<title>CAP06 learned grasp skill: train, randomise, evaluate on held-out seeds</title>
+<desc>A training loop with a domain randomiser feeds a Gymnasium grasp environment and a PPO or behaviour cloning policy. A separate evaluation harness uses held-out seeds and perturbations, reports Wilson bounds, and compares with the scripted skill behind the same GraspSkill interface.</desc>
+<rect width="900" height="470" fill="#111827" rx="12"/>
+<text x="450" y="28" font-size="17" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Learned grasp skill: train on randomised worlds, judge on held-out ones</text>
+<text x="30" y="62" font-size="13" fill="#a3e635" text-anchor="start" font-weight="bold">TRAIN  (seeds 0-999, CPU, 1 thread)</text>
+<rect x="30" y="75" width="170" height="70" rx="8" fill="#1f2937" stroke="#f59e0b" stroke-width="2"/>
+<text x="115.0" y="99.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Domain randomiser</text>
+<text x="115.0" y="114.2" font-size="12" fill="#e5e7eb" text-anchor="middle">mass, friction,</text>
+<text x="115.0" y="129.2" font-size="12" fill="#e5e7eb" text-anchor="middle">delay, light, camera</text>
+<rect x="250" y="75" width="190" height="70" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
+<text x="345.0" y="99.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">GraspReachEnv</text>
+<text x="345.0" y="114.2" font-size="12" fill="#e5e7eb" text-anchor="middle">obs 17, action 4</text>
+<text x="345.0" y="129.2" font-size="12" fill="#e5e7eb" text-anchor="middle">reward terms + guard</text>
+<rect x="490" y="75" width="170" height="70" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<text x="575.0" y="99.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">PPO  /  BC</text>
+<text x="575.0" y="114.2" font-size="12" fill="#e5e7eb" text-anchor="middle">seeds 0-4,</text>
+<text x="575.0" y="129.2" font-size="12" fill="#e5e7eb" text-anchor="middle">demo sweep 50-500</text>
+<rect x="710" y="75" width="160" height="70" rx="8" fill="#1f2937" stroke="#c084fc" stroke-width="2"/>
+<text x="790.0" y="99.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Policy file</text>
+<text x="790.0" y="114.2" font-size="12" fill="#e5e7eb" text-anchor="middle">+ run metadata</text>
+<text x="790.0" y="129.2" font-size="12" fill="#e5e7eb" text-anchor="middle">(steps, wall clock)</text>
+<line x1="200" y1="110" x2="250" y2="110" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="250,110 241.0,113.5 241.0,106.5" fill="#e5e7eb"/>
+<line x1="440" y1="110" x2="490" y2="110" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="490,110 481.0,113.5 481.0,106.5" fill="#e5e7eb"/>
+<line x1="660" y1="110" x2="710" y2="110" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="710,110 701.0,113.5 701.0,106.5" fill="#e5e7eb"/>
+<line x1="575" y1="145" x2="575" y2="185" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="575,185 571.5,176.0 578.5,176.0" fill="#e5e7eb"/>
+<text x="660" y="172" font-size="11" fill="#9ca3af" text-anchor="start">reward, loss curves</text>
+<rect x="490" y="185" width="170" height="50" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="2"/>
+<text x="575.0" y="206.8" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Learning curves</text>
+<text x="575.0" y="220.8" font-size="11" fill="#e5e7eb" text-anchor="middle">per seed, not best-of-N</text>
+<text x="30" y="278" font-size="13" fill="#f87171" text-anchor="start" font-weight="bold">EVALUATE  (seeds &gt;= 1000, never trained on)</text>
+<rect x="30" y="292" width="190" height="70" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
+<text x="125.0" y="316.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Nominal split</text>
+<text x="125.0" y="331.2" font-size="12" fill="#e5e7eb" text-anchor="middle">5 seeds x 100 episodes</text>
+<text x="125.0" y="346.2" font-size="12" fill="#e5e7eb" text-anchor="middle">mean + bootstrap CI</text>
+<rect x="260" y="292" width="200" height="70" rx="8" fill="#1f2937" stroke="#f59e0b" stroke-width="2"/>
+<text x="360.0" y="316.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Held-out perturbations</text>
+<text x="360.0" y="331.2" font-size="12" fill="#e5e7eb" text-anchor="middle">mass +-30%, friction +-40%</text>
+<text x="360.0" y="346.2" font-size="12" fill="#e5e7eb" text-anchor="middle">+40 ms action delay</text>
+<rect x="500" y="292" width="170" height="70" rx="8" fill="#1f2937" stroke="#f87171" stroke-width="2"/>
+<text x="585.0" y="316.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Wilson bounds</text>
+<text x="585.0" y="331.2" font-size="12" fill="#e5e7eb" text-anchor="middle">DR vs no-DR,</text>
+<text x="585.0" y="346.2" font-size="12" fill="#e5e7eb" text-anchor="middle">learned vs scripted</text>
+<rect x="710" y="292" width="160" height="70" rx="8" fill="#1f2937" stroke="#c084fc" stroke-width="2"/>
+<text x="790.0" y="316.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">runs/cap06/*.json</text>
+<text x="790.0" y="331.2" font-size="12" fill="#e5e7eb" text-anchor="middle">summary, episodes,</text>
+<text x="790.0" y="346.2" font-size="12" fill="#e5e7eb" text-anchor="middle">bc_summary, meta</text>
+<line x1="220" y1="327" x2="260" y2="327" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="260,327 251.0,330.5 251.0,323.5" fill="#e5e7eb"/>
+<line x1="460" y1="327" x2="500" y2="327" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="500,327 491.0,330.5 491.0,323.5" fill="#e5e7eb"/>
+<line x1="670" y1="327" x2="710" y2="327" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="710,327 701.0,330.5 701.0,323.5" fill="#e5e7eb"/>
+<line x1="790" y1="145" x2="790" y2="292" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="790,292 786.5,283.0 793.5,283.0" fill="#e5e7eb"/>
+<text x="796" y="225" font-size="11" fill="#9ca3af" text-anchor="start">load policy</text>
+<rect x="30" y="395" width="420" height="55" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<text x="240.0" y="419.4" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">GraspSkill.attempt(goal, obs) -&gt; GraspResult</text>
+<text x="240.0" y="433.4" font-size="11" fill="#e5e7eb" text-anchor="middle"> scripted (CAP05) and learned are interchangeable</text>
+<rect x="490" y="395" width="380" height="55" rx="8" fill="#1f2937" stroke="#f87171" stroke-width="2"/>
+<text x="680.0" y="419.4" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Safety wrapper: clip action, workspace guard</text>
+<text x="680.0" y="433.4" font-size="11" fill="#e5e7eb" text-anchor="middle">0 joint-limit / table violations in every episode</text>
+</svg>

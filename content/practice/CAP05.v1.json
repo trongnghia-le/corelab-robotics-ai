@@ -1,0 +1,513 @@
+{
+  "id": "CAP05-targeted",
+  "topicId": "CAP05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "43 successes in 50 trials. Lower bound of the 95 % Wilson interval, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.738",
+      "tolerance": 0.002,
+      "explanation": "[0.738, 0.930]: the lower bound is 0.738.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-gate"
+      ],
+      "skillLabel": "Judge success rates with the Wilson bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP05#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "41 successes in 50 trials. Lower bound of the 95 % Wilson interval, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.692",
+      "tolerance": 0.002,
+      "explanation": "[0.692, 0.902]: the lower bound 0.692 is above 0.68, so this run passes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-gate"
+      ],
+      "skillLabel": "Judge success rates with the Wilson bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Why use the median of the per-pixel 3D points of a mask rather than the mean as the object centre?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Edge pixels blend block and background depth; the median ignores them.",
+        "The median is computationally cheaper than the mean, which matters on a CPU.",
+        "The mean of 3D points cannot be computed because depth is not linear.",
+        "The median always lies exactly on the object's visible surface."
+      ],
+      "answer": "0",
+      "explanation": "Edge pixels often take the depth of the table or the far wall. A few such points drag the mean away from the block while the median is robust.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "deprojection"
+      ],
+      "skillLabel": "Deproject pixels to 3D",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A 720-pixel-high image with a vertical field of view of 45 degrees. f_y in pixels, 1 decimal.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "869.1",
+      "tolerance": 0.3,
+      "explanation": "f_y = 360 / tan(22.5 deg) = 869.1 px.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "deprojection"
+      ],
+      "skillLabel": "Deproject pixels to 3D",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP05#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "f_x = 500, c_x = 320, pixel column u = 240, depth 0.6 m. Camera-frame X in metres, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-0.096",
+      "tolerance": 0.0005,
+      "explanation": "X = (240 - 320) / 500 * 0.6 = -0.096 m (left of the optical axis).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "deprojection"
+      ],
+      "skillLabel": "Deproject pixels to 3D",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A joint moves 1.0 rad with v_max = 2 rad/s and a_max = 6 rad/s^2 using a quintic. Shortest duration in seconds, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.981",
+      "tolerance": 0.005,
+      "explanation": "Velocity: 1.875/2 = 0.9375 s; acceleration: sqrt(5.7735/6) = 0.981 s; the larger binds.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quintic-limits"
+      ],
+      "skillLabel": "Quintic duration under limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Peak velocity of a quintic that moves 0.5 rad in 1.0 s, in rad/s (4 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.9375",
+      "tolerance": 0.001,
+      "explanation": "1.875 * 0.5 / 1.0 = 0.9375 rad/s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quintic-limits"
+      ],
+      "skillLabel": "Quintic duration under limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A planar solution has the wrist at -137 degrees but the joint limit is +/-110 degrees, while the other elbow branch needs -85 degrees. What should the planner do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Clip the wrist to -110 degrees and accept the error.",
+        "Ignore the limit in simulation.",
+        "Increase the damping until the solver converges.",
+        "Choose the other branch, which satisfies the limits."
+      ],
+      "answer": "3",
+      "explanation": "Branch selection must check limits and prefer the branch that is feasible and closest to the current joints.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ik-branch"
+      ],
+      "skillLabel": "Keep IK on one branch",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP05#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "What does the damping term lambda^2 I do in the damped least squares step?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It speeds up convergence everywhere, far from singularities too.",
+        "It bounds the step near a singularity but does not remove the error exactly.",
+        "It converts the 4 x 5 Jacobian into a square 5 x 5 matrix for inversion.",
+        "It enforces the joint limits automatically on every iteration."
+      ],
+      "answer": "1",
+      "explanation": "The gain sigma/(sigma^2 + lambda^2) is at most 1/(2 lambda), unlike the pseudo-inverse gain 1/sigma which blows up.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ik-damping"
+      ],
+      "skillLabel": "Damped least squares near singularities",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Class A: TP 90, FP 5, FN 5. Class B: TP 40, FP 10, FN 10. Mean IoU over the two classes, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.783",
+      "tolerance": 0.002,
+      "explanation": "IoU A = 90/100 = 0.90; IoU B = 40/60 = 0.667; mean 0.783.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seg-metrics"
+      ],
+      "skillLabel": "Compute mean IoU",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "How should the segmentation dataset be split?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Randomly by frame, 80/20.",
+        "By class, so each class is only in one split.",
+        "By scene seed, with different textures and lighting in the test scenes.",
+        "Use the benchmark seeds for validation to save rendering time."
+      ],
+      "answer": "2",
+      "explanation": "Frames of the same scene are near duplicates; the split must be by scene. Benchmark seeds (1000+) must stay untouched until the final run.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "train-test-leak"
+      ],
+      "skillLabel": "Avoid train/test leakage in segmentation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP05#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "A 0.2 kg arm segment acts at a lever arm of 0.25 m from the shoulder. Static gravity torque in N m (g = 9.81), 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.491",
+      "tolerance": 0.005,
+      "explanation": "0.2 * 9.81 * 0.25 = 0.491 N m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "torque-check"
+      ],
+      "skillLabel": "Static torque feasibility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Justify why CoreBot uses top-down grasps with a 5-DOF arm and how the wrist roll is chosen.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Counts the constraints: 3 position plus approach pitch equals 4, so 5 joints suffice, with one left for roll.",
+        "Sets the roll from the object yaw minus the pan, reduced modulo 180 degrees for a symmetric gripper, inside the limits.",
+        "Names the limitation (no arbitrary orientations, reachable subset only) and how the test set respects it."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "grasp-design"
+      ],
+      "skillLabel": "Justify the grasp strategy",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "Write a test plan for fit_rigid_transform that would catch a reflection, a swapped pair and an overfit.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Builds synthetic points with a known rotation and translation, adds small noise, and checks recovery and det(R) = +1.",
+        "Includes a degenerate case (collinear points) and a mismatched pair to see the failure.",
+        "Evaluates on held-out points and states the RMS threshold (5 mm) and why."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "hand-eye"
+      ],
+      "skillLabel": "Validate the hand-eye calibration",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP05#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    },
+    {
+      "id": "b15",
+      "prompt": "Design the failure taxonomy for the 50-trial pick benchmark so that the counts always add up and lead to fixes.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Defines a fixed enumeration (for example no_detection, ik_fail, joint_limit, slip, knocked, place_miss, timeout) and logs one reason per failed trial.",
+        "Checks in a test that the counts sum to the number of failures and match the log.",
+        "Pairs the largest category with a concrete fix and a re-run to see it shrink."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "failure-taxonomy"
+      ],
+      "skillLabel": "Build a failure taxonomy",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "R05",
+        "R06",
+        "R07",
+        "V10",
+        "V13"
+      ]
+    }
+  ]
+}

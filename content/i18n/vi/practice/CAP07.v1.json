@@ -1,0 +1,111 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "\"Put it in the bin\" là câu đầu tiên của một phiên. Parser nên làm gì?",
+   "options": [
+    "Chọn vật cuối cùng mà robot nhắc đến.",
+    "Trả về mục tiêu với vật gần nhất.",
+    "Trả về Clarify hỏi vật nào được ý nói.",
+    "Trả về Unparseable và im lặng."
+   ],
+   "explanation": "Đại từ không có tiền ngữ là một nhập nhằng, nên hãy hỏi."
+  },
+  "b2": {
+   "prompt": "Vì sao \"không có parse sai tự tin nào trên câu đối kháng\" là con số không cứng chứ không phải một tỉ lệ phần trăm?",
+   "options": [
+    "Parse sai tự tin dẫn tới hành động vật lý sai, còn từ chối chỉ tốn một lần nhắc lại.",
+    "Câu đối kháng quá hiếm để tính phần trăm.",
+    "Parser chỉ được đánh giá bằng tỉ lệ khớp chính xác.",
+    "Không thể tính phần trăm trên mười câu."
+   ],
+   "explanation": "Từ chối thì rẻ; thực thi hành động sai thì không."
+  },
+  "b3": {
+   "prompt": "Thiết kế năm câu đối kháng cho parser dọn dẹp và nêu mỗi câu phải trả về gì và vì sao.",
+   "rubric": [
+    "Bao phủ ít nhất bốn loại lỗi khác nhau (động từ không an toàn, phủ định, màu lạ, quá nhiều vật, đại từ, mâu thuẫn với cảnh).",
+    "Nêu Clarify hoặc Unparseable cho từng câu kèm lý do.",
+    "Giải thích rằng không câu nào được trả về mục tiêu."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b4": {
+   "prompt": "Robot bắt đầu xa bàn, mục tiêu là một vật vào một thùng. Số hành động tối thiểu (nav, pick, nav, place)?",
+   "explanation": "nav(table), pick, nav(bin), place = 4."
+  },
+  "b5": {
+   "prompt": "Vì sao planner có giới hạn mở rộng dù breadth-first search với tập đã thăm vốn kết thúc?",
+   "options": [
+    "Để kế hoạch dài hơn nên an toàn hơn.",
+    "Để chặn thời gian trên bài toán lớn hoặc không với tới và trả về None thay vì làm đứng lớp tác vụ.",
+    "Vì breadth-first search có thể lặp trên trạng thái lặp lại.",
+    "Để kế hoạch tối ưu."
+   ],
+   "explanation": "Kết thúc không đồng nghĩa với thời gian có chặn; giới hạn bảo vệ hành vi thời gian thực."
+  },
+  "b6": {
+   "prompt": "Bắt đầu ở bàn, hai vật vào cùng một thùng, một gripper. Số hành động tối thiểu?",
+   "explanation": "pick, nav, place, nav, pick, nav, place = 7."
+  },
+  "b7": {
+   "prompt": "Một lần nhấc thành công với xác suất 0.7 mỗi lần thử, độc lập, tối đa hai lần thử lại. Xác suất lần nhấc cuối cùng thành công (3 chữ số thập phân).",
+   "explanation": "1 - 0.3^3 = 0.973."
+  },
+  "b8": {
+   "prompt": "Vì sao giới hạn thử lại ở hai lần rồi hủy hoặc lập kế hoạch lại kèm lý do?",
+   "options": [
+    "Vì lần thử thứ ba luôn thành công.",
+    "Vì behaviour tree không thể lặp một con quá hai lần.",
+    "Thất bại lặp lại thường chung một nguyên nhân, nên thử thêm tốn thời gian và che lỗi thật.",
+    "Vì thử lại làm robot chạy nhanh hơn."
+   ],
+   "explanation": "Các lần thử hiếm khi độc lập; lý do hủy là thứ planner hoặc người dùng cần."
+  },
+  "b9": {
+   "prompt": "Giới hạn tick trong bộ chạy behaviour tree bảo vệ khỏi điều gì?",
+   "options": [
+    "Một skill quá chính xác.",
+    "Rò rỉ bộ nhớ trong parser.",
+    "Frame nối tiếp có checksum sai.",
+    "Một lỗi hoặc một node không bao giờ kết thúc làm treo cả tác vụ."
+   ],
+   "explanation": "Mọi vòng lặp trong lớp tác vụ cần một giới hạn được kiểm thử."
+  },
+  "b10": {
+   "prompt": "Tốc độ vùng người 0.15 m/s, thời gian phản ứng 0.3 s, giảm tốc 1 m/s bình phương. Quãng dừng theo mét (3 chữ số thập phân).",
+   "explanation": "0.15*0.3 + 0.0225/2 = 0.045 + 0.01125 = 0.056 m."
+  },
+  "b11": {
+   "prompt": "Timeout heartbeat là 0.2 s và tick của supervisor là 10 ms. Biên độ tính bằng mili giây tới yêu cầu 300 ms.",
+   "explanation": "300 - 200 - 10 = 90 ms."
+  },
+  "b12": {
+   "prompt": "Trong 20 episode danh định supervisor đã dừng robot ở 6 episode mà không có hazard nào được tiêm. Phản ứng hữu ích nhất là gì?",
+   "options": [
+    "Chấp nhận: dừng luôn là an toàn.",
+    "Ghi lý do, so ngưỡng với giá trị danh định đo được và nâng ngưỡng gây lỗi trong khi kiểm tra lại thời gian tiêm.",
+    "Tắt supervisor khi chạy danh định.",
+    "Xóa các hazard đã kích hoạt khỏi bảng."
+   ],
+   "explanation": "Dừng phiền toái là một lỗi; sửa bằng dữ liệu mà không phá ngân sách thời gian."
+  },
+  "b13": {
+   "prompt": "Viết đoạn của docs/safety_architecture.md giải thích vì sao supervisor độc lập với planner và nó không bảo vệ chống lại điều gì.",
+   "rubric": [
+    "Nêu các cơ chế độc lập: tiến trình hoặc luồng và đồng hồ riêng, đầu vào cảm biến và heartbeat, dừng firmware trực tiếp.",
+    "Liệt kê ít nhất hai điều nó không bảo vệ chống lại (ví dụ ảnh camera sai, lỗi trong chính supervisor).",
+    "Nêu rõ rằng nó bảo vệ một mô phỏng và không phải an toàn được chứng nhận."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b14": {
+   "prompt": "Thiết kế test tiêm cho \"liên kết nối tiếp chết 200 ms\": đầu vào, cách đo thời gian đến trạng thái an toàn, giới hạn đạt và một trường hợp biên.",
+   "rubric": [
+    "Mô tả việc tiêm tuổi liên kết tăng từ lúc tiêm, các đầu vào khác danh định.",
+    "Đo thời gian từ lúc tiêm đến khi vận tốc chuyển tiếp bằng 0 và cánh tay giữ, ở tick 10 ms.",
+    "Nêu giới hạn (300 ms) và một trường hợp biên như tuổi liên kết ngay dưới timeout không được kích hoạt."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

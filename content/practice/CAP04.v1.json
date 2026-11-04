@@ -1,0 +1,517 @@
+{
+  "id": "CAP04-targeted",
+  "topicId": "CAP04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "28 successes in 30 episodes. Lower bound of the 95 % Wilson interval, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.787",
+      "tolerance": 0.002,
+      "explanation": "[0.787, 0.982]: the lower bound is 0.787, above 0.75.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-gate"
+      ],
+      "skillLabel": "Judge success rates with the Wilson bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "45 successes in 50 episodes. Lower bound of the 95 % Wilson interval, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.786",
+      "tolerance": 0.002,
+      "explanation": "[0.786, 0.957]: the lower bound is 0.786.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-gate"
+      ],
+      "skillLabel": "Judge success rates with the Wilson bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "All 30 episodes succeed. Which claim is justified?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "At least about 88 % (95 % confidence); 100 % is not proven.",
+        "The success rate is exactly 100 %, because no episode failed in the sample.",
+        "The robot can never fail in simulation, since the sample had no failure.",
+        "The benchmark is too easy to tell us anything, so it can be ignored."
+      ],
+      "answer": "0",
+      "explanation": "The Wilson lower bound for 30/30 is 0.886. A perfect sample still leaves uncertainty.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "wilson-gate"
+      ],
+      "skillLabel": "Judge success rates with the Wilson bound",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Circumscribed radius 0.18 m, margin 0.04 m, position sigma 0.05 m (use 2 sigma). Inflation radius in 5 cm cells, rounded up.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "0.18 + 0.04 + 0.10 = 0.32 m = 6.4 cells, rounded up to 7.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inflation-radius"
+      ],
+      "skillLabel": "Choose the inflation radius",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "The goal lies inside a lethal (inflated) cell. What should the navigator do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Plan to it anyway and let the tracker stop at the inflation boundary.",
+        "Delete the obstacle from the map so that the goal becomes a free cell.",
+        "Snap to the nearest free cell, or report no_path and say why.",
+        "Lower the inflation radius to zero for this one episode only."
+      ],
+      "answer": "2",
+      "explanation": "A goal inside lethal space is unreachable by construction. Snapping with a logged reason or failing explicitly keeps the result interpretable; the other options hide a bug or reduce safety.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "inflation-radius"
+      ],
+      "skillLabel": "Choose the inflation radius",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Octile heuristic for dx = 40 and dy = 15 cells (cells, 2 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "46.21",
+      "tolerance": 0.01,
+      "explanation": "(40 + 15) + (sqrt(2) - 2) * 15 = 55 - 8.79 = 46.21.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "astar-heuristic"
+      ],
+      "skillLabel": "Admissible heuristics on a grid",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Why is Manhattan distance a poor heuristic for A* on an 8-connected grid?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is far too expensive to compute at every single node of the search.",
+        "It does not depend on the goal position, so A* degenerates.",
+        "It cannot be computed from integer cell indices on a regular grid.",
+        "It overestimates diagonal moves, so it is inadmissible: A* may return a longer path."
+      ],
+      "answer": "3",
+      "explanation": "For dx = 24, dy = 10 Manhattan gives 34 but the true free-space cost is 28.14.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "astar-heuristic"
+      ],
+      "skillLabel": "Admissible heuristics on a grid",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: exercises",
+          "href": "/lessons/CAP04#exercises"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A cell is crossed by 4 free beams with p_free = 0.4 (starting at p = 0.5). Occupancy probability, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.165",
+      "tolerance": 0.002,
+      "explanation": "l = 4 ln(0.4/0.6) = -1.622; p = 0.165.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "log-odds"
+      ],
+      "skillLabel": "Log-odds occupancy update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP04#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Why clamp cell log-odds to a range such as [-4, 4]?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "So the grid can be stored as 8-bit integers only.",
+        "So a cell that was marked wrongly, or a door that opened, can change its mind within a few scans.",
+        "So the probabilities always sum to one across the grid.",
+        "So the inverse sensor model can be skipped."
+      ],
+      "answer": "1",
+      "explanation": "Unbounded evidence makes a cell stubborn: after hundreds of hits it would need hundreds of free readings to flip.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "log-odds"
+      ],
+      "skillLabel": "Log-odds occupancy update",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Lookahead point at (0.6, 0.2) m in the robot frame. Curvature kappa = 2 y / L^2 in 1/m.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.0",
+      "tolerance": 0.01,
+      "explanation": "L^2 = 0.36 + 0.04 = 0.40; kappa = 0.4/0.4 = 1.0 1/m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pure-pursuit"
+      ],
+      "skillLabel": "Pure pursuit curvature",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "v = 0.4 m/s, deceleration 0.8 m/s^2, total latency 200 ms. Stopping distance in metres.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.18",
+      "tolerance": 0.005,
+      "explanation": "0.16/1.6 + 0.4*0.2 = 0.10 + 0.08 = 0.18 m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stop-distance"
+      ],
+      "skillLabel": "Stopping distance with latency",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "A heading error of 1.5 degrees while mapping a wall 4 m away. Sideways error of the wall cells in metres, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.105",
+      "tolerance": 0.003,
+      "explanation": "4 * tan(1.5 deg) = 0.105 m, about two 5 cm cells.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "map-pose-error"
+      ],
+      "skillLabel": "Pose error spreads into the map",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: exercises",
+          "href": "/lessons/CAP04#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Design the checks that prove the navigation code never uses simulator ground truth.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Static check: an AST scan of mapping/ and planning/ for banned imports and truth attributes.",
+        "Dynamic check: give the navigator an env wrapper that exposes only observe(), or perturb the truth and confirm the result does not change.",
+        "Names a failure case the checks would catch (for example reading the world occupancy grid instead of lidar) and what test fails."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "nav-integrity"
+      ],
+      "skillLabel": "Detect leaked ground truth",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP04#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "Write a test plan that shows your A* is optimal and that the heuristic is admissible.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Generates seeded random grids (including unreachable goals) and compares path cost with a Dijkstra reference to 1e-9.",
+        "Checks that the path is 8-connected, avoids lethal cells and does not cut blocked corners.",
+        "Includes edge cases (start equals goal, goal blocked) and records expansions to see the heuristic's benefit."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "astar-verification"
+      ],
+      "skillLabel": "Verify A* against a reference",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP04#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b15",
+      "prompt": "An obstacle appears 1.5 m ahead while the robot follows a path. Describe the behaviour your navigator should show and what it logs.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Detects the obstacle in the next scan, marks it in the costmap and stops or slows when the inflated cost ahead becomes lethal.",
+        "Replans a bounded number of times and returns blocked with a reason when no path exists; no endless oscillation.",
+        "Logs the minimum clearance and the outcome so the acceptance test can check them."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "dynamic-obstacle"
+      ],
+      "skillLabel": "Stop and replan on obstacles",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    },
+    {
+      "id": "b16",
+      "prompt": "The robot must pass a 0.9 m wide door. Explain how growing pose covariance should change your planner's behaviour.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes the inflated free width from the footprint, margin and 2 sigma and shows when the door becomes impassable.",
+        "Prefers relocalising (landmarks) or slowing before the door to shrinking sigma, rather than silently blocking.",
+        "Reports a distinct failure reason such as localisation uncertain, not a generic timeout."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "pose-uncertainty"
+      ],
+      "skillLabel": "Use pose uncertainty in planning",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02",
+        "C05",
+        "S05"
+      ]
+    }
+  ]
+}

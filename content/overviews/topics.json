@@ -1688,5 +1688,253 @@
     "overview": "Advanced research requires a well-scoped unanswered question and credible evidence.",
     "application": "Propose a minimal study with baselines, risks, and a falsifier.",
     "task": "Build a small reproducible example. Propose a minimal study with baselines, risks, and a falsifier. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW07": {
+    "concepts": [
+      "GPIO, ADC and PWM",
+      "millis() non-blocking timing",
+      "state machines",
+      "ESP32 and MicroPython"
+    ],
+    "overview": "Embedded programming turns pins, ADC codes and PWM counts into behaviour that never blocks the loop.",
+    "application": "Run several jobs at once on a microcontroller, such as blinking, button handling and PWM output.",
+    "task": "Build a small reproducible example. Model a millis()-based blink task and a button-hold state machine on a simulated clock, and run the same logic in Wokwi. State assumptions, a baseline, a boundary case such as the 32-bit rollover, and a check that could reject your result."
+  },
+  "HW08": {
+    "concepts": [
+      "interrupts and ISR rules",
+      "debouncing",
+      "quadrature decoding",
+      "hardware timers"
+    ],
+    "overview": "Interrupts and timers let firmware react to fast events and run at an exact rate without polling.",
+    "application": "Count wheel-encoder edges and generate a fixed control tick on a microcontroller.",
+    "task": "Build a small reproducible example. Model a quadrature decoder, a debouncer and the timer-register arithmetic on host-side samples, then run the encoder and a 1 kHz timer tick in Wokwi. State assumptions, a baseline, a boundary case such as an illegal transition, and a check that could reject your result."
+  },
+  "HW09": {
+    "concepts": [
+      "I2C addressing and ACK",
+      "register maps",
+      "raw bytes to units",
+      "pull-up sizing",
+      "SPI modes"
+    ],
+    "overview": "Reading I2C and SPI sensors means configuring registers, burst-reading raw bytes and scaling them with datasheet factors.",
+    "application": "Decode an MPU-6050 burst read into g, deg/s and deg C and debug a dead I2C bus.",
+    "task": "Decode a 14-byte MPU-6050 trace and an I2C scanner transcript in plain Python, then run the same scan, WHO_AM_I check and burst read in the Wokwi simulator. State assumptions, a baseline, a boundary case, and a check that could reject your decoder."
+  },
+  "HW10": {
+    "concepts": [
+      "fixed-rate loop",
+      "velocity from counts",
+      "PI with anti-windup",
+      "dead-zone PWM mapping",
+      "safety gates"
+    ],
+    "overview": "A firmware speed loop turns encoder counts into rad/s, runs a clamped PI on a timer tick and drives signed PWM safely.",
+    "application": "Tune and test a PI motor speed loop against a simulated motor with an encoder, and run it as firmware in Wokwi.",
+    "task": "Implement speed estimation, a PI with anti-windup, dead-zone PWM mapping and a watchdog in Python, then read a step test. State assumptions, a baseline, a boundary case, and a check that could reject your tuning."
+  },
+  "HW01": {
+    "concepts": [
+      "compute, sensor, driver, actuator, power and communication blocks",
+      "MCU versus SBC versus GPU module",
+      "sensing and command paths",
+      "bus time and latency chains",
+      "usual failure points"
+    ],
+    "overview": "Every robot is the same six hardware blocks joined by interfaces, and knowing the blocks lets you trace any signal and budget its time.",
+    "application": "Draw the block diagram of a robot, label each interface and check that the buses and the latency chain can carry what the design needs.",
+    "task": "Build a small reproducible example. Draw the block diagram of a differential-drive robot, compute the bus time and latency chain for its IMU, serial link and motor loop, and list five failure points. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW02": {
+    "concepts": [
+      "Ohm's law and power",
+      "series, parallel and voltage dividers",
+      "datasheet absolute maximum, test conditions and typical values",
+      "multimeter modes",
+      "logic levels and pull-ups"
+    ],
+    "overview": "A handful of circuit laws and the habit of reading datasheet tables prevent most beginner hardware failures.",
+    "application": "Size an LED resistor, scale a battery voltage into an ADC range, check 3.3 V and 5 V logic compatibility and verify each with a multimeter.",
+    "task": "Build a small reproducible example. Size an LED resistor and a battery-monitor divider from real datasheet numbers and check their loading and logic-level limits. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW03": {
+    "concepts": [
+      "battery energy and C-rate",
+      "power budget and runtime",
+      "linear vs buck regulator",
+      "fuse, brown-out and star ground",
+      "E-stop chain"
+    ],
+    "overview": "Power design turns datasheet numbers for batteries, regulators and fuses into a robot that runs long enough and fails safely.",
+    "application": "Size the battery, regulator, fuse and E-stop of a small mobile robot from its loads.",
+    "task": "Build a small reproducible example. Write the power budget of a small robot and compute its runtime, regulator loss and fuse rating with a tested calculator. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW04": {
+    "concepts": [
+      "encoder resolution",
+      "IMU scale factors and drift",
+      "ultrasonic and time-of-flight ranging",
+      "sensor failure modes",
+      "choosing a sensor from a spec"
+    ],
+    "overview": "Robot sensors turn physical quantities into raw numbers whose scale, resolution and failure modes are written in the datasheet.",
+    "application": "Convert raw sensor readings to units, estimate their resolution and drift, and choose a sensor for a robot.",
+    "task": "Build a small reproducible example. Convert encoder, IMU and ultrasonic readings to SI units with a tested library and choose a sensor from a spec table. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW05": {
+    "concepts": [
+      "motor types",
+      "H-bridge and PWM",
+      "stall current",
+      "servo and stepper rates"
+    ],
+    "overview": "Motors and drivers turn electrical power into motion, and a good choice checks the load, the running current and the stall current against the driver.",
+    "application": "Choose a motor type and driver for a wheeled robot and verify torque, current and stall limits.",
+    "task": "Build a small reproducible example. Model PWM to speed, a stall and driver check, servo pulse to angle and stepper step rate for a wheeled robot. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW06": {
+    "concepts": [
+      "MCU vs SBC",
+      "ADC resolution",
+      "UART, I2C, SPI, CAN",
+      "bus load and pull-ups"
+    ],
+    "overview": "Compute tiers and buses decide what runs your loops and how fast data can move, and each link needs a timing and load check.",
+    "application": "Budget the buses of a small robot and choose where each loop runs.",
+    "task": "Build a small reproducible example. Compute wire time, bus load, ADC step and pull-up limits for a robot with an IMU, wheel controllers and a single-board computer. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW11": {
+    "concepts": [
+      "framing and CRC8",
+      "byte stuffing and COBS",
+      "sequence numbers and watchdog",
+      "micro-ROS client and agent",
+      "ros2_control hardware interface"
+    ],
+    "overview": "A robust MCU-to-PC link frames bytes with a CRC, resynchronises after damage and stops the robot when the link goes quiet; micro-ROS moves this plumbing into a ROS 2 client and agent.",
+    "application": "Choose and test a serial protocol or micro-ROS link between a microcontroller and a ROS 2 computer for a 2-wheel robot.",
+    "task": "Implement a CRC8, byte-stuffed frame encoder, a resynchronising parser with sequence-gap counting and a watchdog in Python, then run the same protocol as firmware in Wokwi. State assumptions, a baseline, a boundary case, and a check that could reject your parser."
+  },
+  "HW12": {
+    "concepts": [
+      "bring-up order",
+      "multimeter and logic analyser",
+      "brownout and ground bounce",
+      "I2C address conflicts",
+      "wheel-module capstone"
+    ],
+    "overview": "Bring-up finds faults by testing power, reset, comms, sensors and actuators in order, with a measurement before every change.",
+    "application": "Bring up and debug a small wheel module that combines the scheduler, I2C check, PI loop and serial protocol from HW07 to HW11.",
+    "task": "Classify fault logs and bring-up results in Python, then run the combined wheel-module sketch in Wokwi and inject three faults. State assumptions, a baseline, a boundary case, and a check that could reject your diagnosis."
+  },
+  "CAP01": {
+    "concepts": [
+      "measurable spec with metric, threshold, rationale and test",
+      "seeded reproducible environment",
+      "MJCF and URDF consistency",
+      "forward kinematics cross-check within 1 mm",
+      "Wilson lower bound for success rates"
+    ],
+    "overview": "The capstone starts by turning a robot idea into a spec, a reproducible repository and a model whose own kinematics, MuJoCo and URDF agree.",
+    "application": "Every later milestone of CoreBot Tidy reuses the seeded Env, the interfaces contract, the evalkit helpers and the acceptance-test habit built here.",
+    "task": "Build a small reproducible example. Create the repository skeleton, write a SPEC.md with ten testable requirements, model the base and SO-101 arm in MJCF and URDF, and make the acceptance suite pass with determinism, forward kinematics and rest stability. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "CAP08": {
+    "concepts": [
+      "seeded end-to-end benchmark",
+      "Wilson bounds and paired McNemar test",
+      "bootstrap confidence intervals",
+      "sealed twin and sim-to-real gap",
+      "failure taxonomy and error budget"
+    ],
+    "overview": "Evaluate the whole robot stack on held-out seeds, with intervals and paired tests, and measure how much success is lost on a sealed perturbed twin.",
+    "application": "Report a robot or model result so that a stranger can trust it: held-out seeds, confidence intervals, paired ablations and a table of why it fails.",
+    "task": "Run 120 nominal, 80 twin and 4 x 30 paired ablation episodes of your CoreBot Tidy stack, recompute every metric from episodes.jsonl, and recalibrate against the sealed twin without reading its parameters. State hypotheses before the ablations and pass the CAP08 acceptance suite."
+  },
+  "CAP09": {
+    "concepts": [
+      "reproducible release with Docker and make",
+      "reproduce-smoke seeded rerun",
+      "report numbers generated from metrics.json",
+      "calibrated claims and limitations",
+      "graduation rubric: gates, Merit, Distinction"
+    ],
+    "overview": "Package the finished project so a stranger can rerun it, write a report whose numbers come from your logs, and run the graduation check.",
+    "application": "Release any research or portfolio project with pinned environments, a smoke test, generated numbers and honest scope claims.",
+    "task": "Build the Dockerfile, Makefile and release checklist, pass make reproduce-smoke on a clean checkout, render a 3000 to 6000 word report from placeholders, record a 3-minute demo and run the graduation calculator on your own scores."
+  },
+  "CAP04": {
+    "concepts": [
+      "log-odds occupancy grid",
+      "costmap inflation from footprint and uncertainty",
+      "A* with an admissible octile heuristic",
+      "pure pursuit with velocity limits",
+      "Wilson-bound navigation benchmark"
+    ],
+    "overview": "Navigation turns lidar and an estimated pose into a map, a cost surface, a path and safe wheel commands, and is judged by seeded benchmarks.",
+    "application": "Build and test a mapper, A* planner and path tracker for a differential-drive robot and prove them against reference fixtures and a 30-episode benchmark.",
+    "task": "Build a small reproducible example. Implement a log-odds occupancy grid, an inflated costmap, A* and a pure-pursuit tracker, then run a 30-episode seeded benchmark. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "CAP05": {
+    "concepts": [
+      "deprojection and hand-eye calibration",
+      "segmentation mIoU and leakage",
+      "damped least squares IK for a 5-DOF arm",
+      "quintic trajectories and torque feasibility",
+      "failure taxonomy"
+    ],
+    "overview": "A perception-driven grasp chains segmentation, depth deprojection, a hand-eye transform, inverse kinematics and a smooth trajectory, each with its own numeric check.",
+    "application": "Build and test the chain from RGB-D pixels to joint trajectories for an SO-101 style arm and judge it on a 50-trial seeded pick-and-place benchmark.",
+    "task": "Build a small reproducible example. Deproject a pixel to the arm base frame, solve a top-down IK, time a quintic trajectory and run a seeded pick benchmark with a failure taxonomy. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "CAP06": {
+    "concepts": [
+      "Gymnasium environment and reward design",
+      "PPO and behaviour cloning on CPU",
+      "domain randomisation and held-out evaluation",
+      "Wilson and bootstrap confidence bounds",
+      "GraspSkill interface and safety wrapper"
+    ],
+    "overview": "A learned grasp skill is only a result when it is reproducible, evaluated on held-out seeds with confidence bounds and compared honestly with the scripted baseline.",
+    "application": "Train PPO and behaviour cloning for a reach-and-grasp primitive in the CoreBot Tidy simulator, randomise the physics and report success with Wilson bounds against the scripted skill.",
+    "task": "Wrap the grasp primitive as a Gymnasium environment, train PPO on CPU with and without domain randomisation and a behaviour-cloning policy with a demo-count sweep, then run the CAP06 acceptance suite. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "CAP07": {
+    "concepts": [
+      "slot-filling parser with Clarify and Unparseable",
+      "STRIPS-style planning with bounds",
+      "behaviour trees with retries",
+      "object belief age",
+      "safety supervisor and hazard injection tests"
+    ],
+    "overview": "A language-driven task layer must refuse or ask rather than guess, and a safety supervisor must be independent of the stack it supervises and proven by fault injection.",
+    "application": "Parse text instructions into symbolic goals, plan and run them with a behaviour tree, and test a supervisor with ten injected hazards in the CoreBot Tidy simulator (a simulation safeguard, not certified safety).",
+    "task": "Build an LLM-free parser, a bounded planner, a behaviour tree with at most two retries and a safety supervisor with a hazard table, then run the CAP07 acceptance suite. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "CAP02": {
+    "concepts": [
+      "quadrature decoder and 16-bit counts",
+      "PI speed loop with anti-windup",
+      "CRC-8 framed protocol",
+      "command watchdog",
+      "odometry calibration"
+    ],
+    "overview": "A firmware-in-the-loop drive base turns portable C (speed loop, protocol, watchdog) into a tested wheel layer that the whole capstone stands on.",
+    "application": "Build the C core, call it from the simulator through ctypes, and prove step response, protocol and watchdog behaviour with an acceptance suite.",
+    "task": "Build a small reproducible example. Implement a PI wheel-speed loop, a CRC-8 frame codec and a watchdog in C, log a step response and a silent-host test, and calibrate odometry. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "CAP03": {
+    "concepts": [
+      "EKF predict and update",
+      "range-bearing landmark measurement",
+      "camera calibration and PnP",
+      "NEES and NIS consistency",
+      "gating and observability"
+    ],
+    "overview": "Localisation fuses odometry, gyro and landmark detections in an EKF, and consistency statistics tell you whether its uncertainty can be trusted.",
+    "application": "Calibrate the simulated camera, detect wall markers, run an EKF on seeded trajectories and audit it with NEES and NIS.",
+    "task": "Build a small reproducible example. Implement an EKF with a range-bearing landmark update, a Joseph-form covariance and a gate, run seeded trajectories with ground truth and compute NEES and NIS. State assumptions, a baseline, a boundary case, and a check that could reject your result."
   }
 }

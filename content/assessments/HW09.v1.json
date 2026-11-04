@@ -1,0 +1,233 @@
+{
+  "id": "HW09-diagnostic",
+  "topicId": "HW09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "An MPU-6050 scan finds address 0x68 and WHO_AM_I reads 0x68, but every acceleration and gyro value stays at zero. What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The pull-up resistors are too large for 400 kHz.",
+        "The chip is still in sleep mode: the SLEEP bit of PWR_MGMT_1 was never cleared.",
+        "The address is wrong, so the controller is reading another device.",
+        "The data are big-endian and must be byte-swapped."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "register-access"
+      ],
+      "skillLabel": "Register access and configuration",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "PWR_MGMT_1 resets to 0x40 with SLEEP set, so the chip answers on the bus (WHO_AM_I works) but does not measure until 0x00 or 0x01 is written."
+    },
+    {
+      "id": "q2",
+      "prompt": "The two bytes 0xFF (high) and 0x5C (low) are one big-endian two's-complement value. What is the signed integer?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-164",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raw-to-units"
+      ],
+      "skillLabel": "Raw bytes to physical units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "0xFF5C = 65372; minus 65536 gives -164."
+    },
+    {
+      "id": "q3",
+      "prompt": "An MPU-6050 at the +-2 g range (16384 LSB/g) reports a raw Z value of 16500. Acceleration in g, precision 0.0005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.0071",
+      "tolerance": 0.0005,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raw-to-units"
+      ],
+      "skillLabel": "Raw bytes to physical units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "16500 / 16384 = 1.0071 g."
+    },
+    {
+      "id": "q4",
+      "prompt": "A 400 kHz I2C bus allows a 300 ns rise time and has 150 pF of capacitance. Largest pull-up in ohms (t_r = 0.8473 Rp Cb), tolerance 5.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2360",
+      "tolerance": 5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pullups-debug"
+      ],
+      "skillLabel": "Pull-ups and dead-bus debugging",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "300e-9 / (0.8473 * 150e-12) = 2360 ohm."
+    },
+    {
+      "id": "q5",
+      "prompt": "An SPI device needs the clock idle high and data sampled on the rising edge, which is the second edge. Which mode is it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Mode 0 (CPOL=0, CPHA=0)",
+        "Mode 1 (CPOL=0, CPHA=1)",
+        "Mode 2 (CPOL=1, CPHA=0)",
+        "Mode 3 (CPOL=1, CPHA=1)"
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "i2c-vs-spi"
+      ],
+      "skillLabel": "I2C versus SPI",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "Idle high is CPOL=1; sampling on the second edge is CPHA=1; mode = 2*CPOL + CPHA = 3."
+    },
+    {
+      "id": "q6",
+      "prompt": "An Uno talks to a breakout board with no pull-ups, using only the microcontroller's internal pull-ups (20-50 kOhm). Why can it fail at 400 kHz?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The internal resistors let too little current through for the sensor to wake.",
+        "The weak pull-up makes the lines rise too slowly for the 300 ns limit.",
+        "The internal pull-ups make the lines swing above Vcc.",
+        "I2C cannot run on 5 V controllers."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pullups-debug"
+      ],
+      "skillLabel": "Pull-ups and dead-bus debugging",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW09#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "The rise time is about 0.8473*Rp*Cb; with 20 kOhm and 100 pF that is 1.7 us, far above 300 ns, so the edges are too slow."
+    },
+    {
+      "id": "q7",
+      "prompt": "List the steps firmware takes to read acceleration from an MPU-6050 at address 0x68, from power-up to a value in g.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Checks the address with a scan or WHO_AM_I (0x68) before trusting data.",
+        "Wakes the chip (writes PWR_MGMT_1) and sets the ranges, noting the matching scale factors.",
+        "Burst-reads 0x3B..0x48 in one transaction (write pointer, repeated start, read), assembles big-endian signed values and divides by LSB/g."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "register-access"
+      ],
+      "skillLabel": "Register access and configuration",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q8",
+      "prompt": "Time on the bus for a burst read of 14 data bytes at 400 kHz, using 9 clocks per byte and 3 header bytes (address+W, register, address+R). Answer in microseconds, tolerance 1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "382.5",
+      "tolerance": 1,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "i2c-scan-addressing"
+      ],
+      "skillLabel": "I2C addresses, ACK and timing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "9 * (3 + 14) / 400000 = 382.5 us."
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "id": "CAP06-diagnostic",
+  "topicId": "CAP06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "You tuned PPO learning rate and reward weights by looking at success on evaluation seeds 1000-1099, then report the best result on those same seeds. What is wrong?",
+      "kind": "choice",
+      "dimension": "I",
+      "critical": true,
+      "options": [
+        "Nothing is wrong: with 100 episodes per seed the sample is large enough to remove any bias from tuning.",
+        "The learning rate should have been tuned on the nominal split rather than on the perturbed split.",
+        "The evaluation seeds were used for tuning, so the number is optimistic; tune elsewhere and freeze first.",
+        "The seeds should be negative integers to avoid overlap with the simulator seed."
+      ],
+      "answer": "2",
+      "explanation": "Choices made after seeing evaluation results make evaluation part of training. The number is biased upward, whatever the sample size.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "eval-seed-hygiene"
+      ],
+      "skillLabel": "Held-out seeds and honest reporting",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP06#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "27 successes in 30 held-out episodes. Lower end of the 95 % Wilson interval (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.744",
+      "tolerance": 0.002,
+      "explanation": "Wilson: [0.744, 0.965]. The lower bound is below 0.80.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-bound"
+      ],
+      "skillLabel": "Wilson bounds for success rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Two runs of train_ppo.py with the same seed give different evaluation returns on CPU. Which first step is most likely to fix it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Use a larger batch size and fewer epochs per update so that the averaging removes the noise.",
+        "Set torch to one thread and seed python, numpy, torch and the environment.",
+        "Switch to a GPU, which is deterministic by default.",
+        "Lower the learning rate until the runs agree."
+      ],
+      "answer": "1",
+      "explanation": "Multi-threaded reductions and unseeded components are the usual causes. Fix determinism first; do not hide it with hyperparameters.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cpu-reproducibility"
+      ],
+      "skillLabel": "Reproducible CPU training",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP06#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A behaviour-cloning policy has a very low held-out action MSE but fails often in closed loop. What is the best explanation?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The MSE must have been computed on the training demos.",
+        "The network is far too large for 500 demonstrations and only needs more weight decay to fix it.",
+        "Closed-loop success can never be predicted from any offline number, so offline MSE is useless.",
+        "Small errors push the policy into states the demonstrations never visited, and they compound."
+      ],
+      "answer": "3",
+      "explanation": "Covariate shift: the policy is evaluated on its own state distribution, not the expert's.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bc-compounding-error"
+      ],
+      "skillLabel": "Behaviour cloning versus closed loop",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Training runs at 300 environment steps per second. How many hours do 1.8 M steps take? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.667",
+      "tolerance": 0.01,
+      "explanation": "1.8e6 / 300 = 6000 s = 1.667 h, close to the 2 h limit.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compute-budget"
+      ],
+      "skillLabel": "Compute budget arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Write the reward for the reach-and-grasp primitive: list the terms, say what each one is for, and name one way a policy could exploit your design (reward hacking) plus how you would detect it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Lists a dense distance term, one-off grasp/lift bonuses, an action penalty and a time penalty with a reason for each.",
+        "Names a concrete exploit (for example hovering near the object, or lifting without holding) tied to the chosen terms.",
+        "Gives a detection method: watch episodes, log the terms separately, check success against return."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "reward-design"
+      ],
+      "skillLabel": "Reward design and hacking",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Domain randomisation for training uses mass +-5 % and no action delay, but the real robot and the held-out test have +-30 % mass and 40 ms delay. What do you expect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The policy will be robust everywhere because training was clean, stable and easy.",
+        "Little robustness: the test lies outside the training distribution, so success may drop sharply.",
+        "Exactly the same success as on the nominal simulator, since training converged.",
+        "The policy will fail to train at all."
+      ],
+      "answer": "1",
+      "explanation": "A policy is only robust over what it saw. Narrow ranges mean extrapolation at test time.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "domain-randomisation"
+      ],
+      "skillLabel": "Domain randomisation ranges",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    }
+  ]
+}

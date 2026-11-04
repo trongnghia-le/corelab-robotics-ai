@@ -1,0 +1,202 @@
+{
+  "id": "CAP04-diagnostic",
+  "topicId": "CAP04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A 30-episode navigation benchmark has 27 successes. The gate requires a lower 95 % Wilson bound of at least 75 %. What is the right conclusion?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Pass: 27/30 is 90 %, above 75 %.",
+        "Fail: the lower bound is about 74.4 %, so the evidence is not yet strong enough; improve the system or run more seeded episodes.",
+        "Pass: 30 episodes is a large enough sample that the bound does not matter.",
+        "Re-run with new seeds until the benchmark passes, then report that run."
+      ],
+      "answer": "1",
+      "explanation": "The Wilson 95 % interval for 27/30 is [0.744, 0.965]; the lower bound is below 0.75. Choosing seeds until a run passes is a form of tuning on the test set.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "wilson-gate"
+      ],
+      "skillLabel": "Judge success rates with the Wilson bound",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "On an 8-connected grid where straight steps cost 1 and diagonal steps cost sqrt(2), which heuristic is admissible and exact in free space?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Manhattan distance dx + dy.",
+        "Twice the Euclidean distance.",
+        "Octile distance (dx + dy) + (sqrt(2) - 2) * min(dx, dy).",
+        "The number of cells in the bounding box of start and goal."
+      ],
+      "answer": "2",
+      "explanation": "Octile equals the true free-space cost, so it never overestimates. Manhattan and the others overestimate diagonal travel and can make A* return a non-optimal path.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "astar-heuristic"
+      ],
+      "skillLabel": "Admissible heuristics on a grid",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "E02"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Circumscribed radius 0.22 m, safety margin 0.05 m, EKF position standard deviation 0.04 m (use 2 sigma). Inflation radius in 5 cm cells, rounded up.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "0.22 + 0.05 + 0.08 = 0.35 m = 7 cells.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inflation-radius"
+      ],
+      "skillLabel": "Choose the inflation radius",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A cell starts at p = 0.5 and is hit by 3 beams with p_occ = 0.7 (no free updates). Its occupancy probability, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.927",
+      "tolerance": 0.002,
+      "explanation": "l = 3 ln(0.7/0.3) = 2.542; p = 1/(1+e^-2.542) = 0.927.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "log-odds"
+      ],
+      "skillLabel": "Log-odds occupancy update",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP04#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "The robot drives at 0.5 m/s, brakes at 1.0 m/s^2 and the total latency from lidar to firmware is 150 ms. Stopping distance in metres.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.005,
+      "explanation": "0.5^2/(2*1) + 0.5*0.15 = 0.125 + 0.075 = 0.20 m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stop-distance"
+      ],
+      "skillLabel": "Stopping distance with latency",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "C05"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "After you switch the navigator to the simulator's true pose, navigation success jumps from 80 % to 97 %. What do you conclude?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The benchmark no longer measures your pipeline: it bypasses the EKF, so the number is invalid and the AST test should fail.",
+        "The planner has improved and the true pose is a legitimate input for the acceptance run.",
+        "The EKF is now redundant and can be removed from the capstone.",
+        "The result proves the lidar map is accurate enough for the gate."
+      ],
+      "answer": "0",
+      "explanation": "Navigation must run on the estimated pose. Using truth hides localisation errors and any result obtained that way is not a measurement of the system; the pipeline must never import simulator truth.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nav-integrity"
+      ],
+      "skillLabel": "Detect leaked ground truth",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Explain how the EKF covariance from CAP03 should influence the inflation radius and the navigator's behaviour, and what the cost is of ignoring it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Adds an allowance of about 2 sigma of position uncertainty to the inflation radius (or inflates when the covariance grows).",
+        "Describes behaviour when uncertainty is large: slow down, relocalise, or report a clear reason instead of driving on.",
+        "States the trade-off: bigger inflation can block narrow passages, while ignoring uncertainty risks collisions."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "pose-uncertainty"
+      ],
+      "skillLabel": "Use pose uncertainty in planning",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03",
+        "E02"
+      ]
+    }
+  ]
+}

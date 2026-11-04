@@ -1,0 +1,208 @@
+{
+  "id": "HW07-diagnostic",
+  "topicId": "HW07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A loop() ends with delay(500) and also polls a push button. Short taps on the button are often ignored. What is the best fix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Lower the Serial baud rate so printing takes less time.",
+        "Raise the delay so the loop runs less often.",
+        "Drop delay() and act only when now - last >= period.",
+        "Replace the button with a faster switch part."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "millis-timing"
+      ],
+      "skillLabel": "Non-blocking timing with millis()",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "The button is read only once per delay period, so a tap shorter than the delay is often missed. Scheduling with millis() lets the loop pass hundreds of times per second."
+    },
+    {
+      "id": "q2",
+      "prompt": "An Uno runs analogWrite(pin, 64). What duty cycle is that, in percent? Precision 0.1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "25.1",
+      "tolerance": 0.06,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gpio-adc-pwm-math"
+      ],
+      "skillLabel": "ADC, PWM and duty arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "64/255 = 0.251."
+    },
+    {
+      "id": "q3",
+      "prompt": "An Uno ADC (5 V reference, 10 bit) reads 307. What is the input voltage in volts? Precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.499",
+      "tolerance": 0.005,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gpio-adc-pwm-math"
+      ],
+      "skillLabel": "ADC, PWM and duty arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "307 * 5 / 1024 = 1.499 V."
+    },
+    {
+      "id": "q4",
+      "prompt": "Which test is safe across the 32-bit rollover of millis()?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "now >= last + period",
+        "now - last >= period, all unsigned long",
+        "now > last && now - last >= period",
+        "(int)now >= (int)last + (int)period"
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "millis-timing"
+      ],
+      "skillLabel": "Non-blocking timing with millis()",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "Unsigned subtraction is modulo 2^32, so now - last stays correct after now wraps past zero."
+    },
+    {
+      "id": "q5",
+      "prompt": "ESP32 LEDC runs from an 80 MHz clock. What is the maximum duty resolution in bits at 10 kHz?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "esp32-specifics"
+      ],
+      "skillLabel": "ESP32 pins, ADC and LEDC",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "floor(log2(80e6/10e3)) = floor(log2 8000) = 12."
+    },
+    {
+      "id": "q6",
+      "prompt": "A sensor outputs 5 V logic. How should it connect to an ESP32 input?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Directly: ESP32 pins tolerate 5 V.",
+        "Directly: the internal pull-up limits the current.",
+        "Through an ADC2 pin, which protects the input.",
+        "Through a divider or level shifter to 3.3 V."
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "esp32-specifics"
+      ],
+      "skillLabel": "ESP32 pins, ADC and LEDC",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "ESP32 pins are 3.3 V and not 5 V tolerant, so a divider or level shifter is needed."
+    },
+    {
+      "id": "q7",
+      "prompt": "A sketch blinks an LED with delay(500) and checks a button once per loop pass. Describe how to restructure it so both react promptly, and name one hazard to avoid.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Removes delay() and calls both jobs on every pass of loop().",
+        "Keeps a last-time variable per job and tests now - last >= period, then advances last by the period.",
+        "Names a hazard: rollover with signed or summed comparisons, a hidden delay or long print, or int overflow."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "millis-timing",
+        "state-machine"
+      ],
+      "skillLabel": "Non-blocking timing with millis()",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

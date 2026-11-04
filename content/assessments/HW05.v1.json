@@ -1,0 +1,233 @@
+{
+  "id": "HW05-diagnostic",
+  "topicId": "HW05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A gearmotor draws 1.2 A at its working torque and the driver is rated 1.7 A continuous. Which further check is essential before calling the pair safe?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Compare the PWM frequency with the motor's rated voltage.",
+        "Compare the stall current V/R with the driver's peak rating, since a jam draws it.",
+        "Compare the no-load speed with the driver's maximum supply voltage.",
+        "Nothing more: staying under the continuous rating covers every case."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "driver-stall-check"
+      ],
+      "skillLabel": "Driver and stall check",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02",
+        "HW03"
+      ],
+      "explanation": "A blocked shaft draws V/R, often several times the running current. The driver must survive it or be protected with a current limit or stall detection."
+    },
+    {
+      "id": "q2",
+      "prompt": "A 12 V supply drives a motor at 35 % PWM duty. Average voltage in volts.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.2",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "h-bridge-pwm"
+      ],
+      "skillLabel": "H-bridge and PWM drive",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02",
+        "HW03"
+      ],
+      "explanation": "0.35 x 12 = 4.2 V."
+    },
+    {
+      "id": "q3",
+      "prompt": "A hobby servo maps a 1 ms pulse to 0 degrees and 2 ms to 180 degrees at 50 Hz. Angle for a 1.75 ms pulse, in degrees.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "135",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "servo-stepper-rates"
+      ],
+      "skillLabel": "Servo and stepper rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02",
+        "HW03"
+      ],
+      "explanation": "(1.75 - 1) / 1 x 180 = 135 degrees."
+    },
+    {
+      "id": "q4",
+      "prompt": "A stepper with 200 steps per revolution at 1/16 microstepping drives a screw with an 8 mm lead at 20 mm/s. Step pulses per second.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8000",
+      "tolerance": 1,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "servo-stepper-rates"
+      ],
+      "skillLabel": "Servo and stepper rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02",
+        "HW03"
+      ],
+      "explanation": "20 / 8 x 200 x 16 = 8000 pulses per second."
+    },
+    {
+      "id": "q5",
+      "prompt": "In an H-bridge, which state lets the motor spin freely (coast)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Both low-side switches on.",
+        "One high-side and the opposite low-side switch on.",
+        "All four switches off.",
+        "Both high-side switches on."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "h-bridge-pwm"
+      ],
+      "skillLabel": "H-bridge and PWM drive",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02",
+        "HW03"
+      ],
+      "explanation": "With every switch off the motor terminals are open, so it coasts. Shorting the terminals (both low-side or both high-side on) brakes instead."
+    },
+    {
+      "id": "q6",
+      "prompt": "A 12 V gearmotor has 0.3 A no-load current, 5.5 A stall current and 0.9 N m stall torque. Current in amperes at a 0.3 N m load at full voltage. Precision 0.02.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.03",
+      "tolerance": 0.02,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "motor-spec-line"
+      ],
+      "skillLabel": "Read a motor spec",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02",
+        "HW03"
+      ],
+      "explanation": "0.3 + (5.5 - 0.3) x 0.3 / 0.9 = 2.03 A."
+    },
+    {
+      "id": "q7",
+      "prompt": "An axis must move to repeatable positions at moderate load with no encoder fitted. Which motor type fits best?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A stepper motor with a STEP and DIR driver.",
+        "A brushed DC gearmotor with plain PWM and no feedback.",
+        "A brushless motor with a hobby ESC as throttle.",
+        "A DC motor in the coast state between moves."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "motor-type-selection"
+      ],
+      "skillLabel": "Choose a motor type",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02",
+        "HW03"
+      ],
+      "explanation": "A stepper moves a fixed angle per pulse, so position follows the pulse count without an encoder, as long as no steps are lost."
+    },
+    {
+      "id": "q8",
+      "prompt": "Describe the checks you would run before connecting a gearmotor to a driver in a wheeled robot, and what you would do if the stall current is above the driver's peak rating.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes the required torque and compares it with the stall torque, with headroom.",
+        "Checks supply voltage range, running current against the continuous rating and stall current V/R against the peak rating.",
+        "Names a remedy: current limit, stall detection in firmware, larger driver or lower voltage, and a fuse on the supply."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "driver-stall-check"
+      ],
+      "skillLabel": "Driver and stall check",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02",
+        "HW03"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

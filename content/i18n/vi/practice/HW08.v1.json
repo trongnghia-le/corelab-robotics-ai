@@ -1,0 +1,129 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "Timer1 của Uno, CTC, 16 MHz, prescaler 64, tốc độ ngắt mục tiêu 500 Hz. OCR1A là bao nhiêu?",
+      "explanation": "16e6/(64*500) - 1 = 499."
+    },
+    "b2": {
+      "prompt": "Timer1 của Uno, CTC, 16 MHz, prescaler 256, mục tiêu 50 Hz. OCR1A là bao nhiêu?",
+      "explanation": "16e6/(256*50) - 1 = 1249."
+    },
+    "b3": {
+      "prompt": "Cầu phương (x4), A dẫn trước B là chiều tiến. Các mẫu 00, 01, 11, 10, 00, 01 đến. Số đếm thuần là bao nhiêu?",
+      "explanation": "Năm bước lùi liên tiếp: -5."
+    },
+    "b4": {
+      "prompt": "Một encoder 64 vạch mỗi vòng được giải mã x4 trên động cơ có hộp số 20:1. Có bao nhiêu số đếm mỗi vòng trục ra?",
+      "explanation": "4 * 64 * 20 = 5120."
+    },
+    "b5": {
+      "prompt": "Một ISR mất 5 us và kích hoạt 12 000 lần mỗi giây. Nó dùng bao nhiêu phần trăm CPU?",
+      "explanation": "12 000 * 5e-6 = 0,06 = 6 %."
+    },
+    "b6": {
+      "prompt": "Với một ISR 4 us, tốc độ cạnh cao nhất (mỗi giây) giữ tải ngắt ở 20 % là bao nhiêu?",
+      "explanation": "0,20 / 4e-6 = 50 000."
+    },
+    "b7": {
+      "prompt": "Một bộ chống rung theo thời gian có khoảng 30 ms (một thay đổi được nhận khi mức thô đứng yên hơn 30 ms). Đầu vào thô đổi lần cuối lúc t = 40 ms và được lấy mẫu mỗi 1 ms. Mức ổn định đổi ở t bằng bao nhiêu?",
+      "explanation": "Mẫu đầu tiên có t - 40 > 30 là t = 71."
+    },
+    "b8": {
+      "prompt": "Vì sao một biến dùng chung giữa ISR và loop() phải khai báo volatile?",
+      "options": [
+        "Nó làm phép đọc nhiều byte thành nguyên tử.",
+        "Nó chuyển biến vào flash để tiết kiệm RAM.",
+        "Ngăn trình biên dịch lưu đệm nó trong thanh ghi.",
+        "Nó cho phép ISR gọi delay() an toàn."
+      ],
+      "explanation": "Không có volatile, trình biên dịch có thể giữ giá trị trong thanh ghi và loop() không bao giờ thấy ISR cập nhật. Nó không làm phép đọc nhiều byte thành nguyên tử."
+    },
+    "b9": {
+      "prompt": "Một bộ giải mã thấy chuyển tiếp 11 sang 00. Điều đó có nghĩa gì và bộ giải mã nên làm gì?",
+      "options": [
+        "Một cạnh bị lỡ: ghi một lỗi, đừng đoán.",
+        "Một bước tiến kép, nên cộng +2 vào số đếm.",
+        "Một bước lùi kép, nên cộng -2 vào số đếm.",
+        "Một bước tiến bình thường, nên cộng +1 vào số đếm."
+      ],
+      "explanation": "Hai bit đổi cùng lúc, nên một cạnh đã bị bỏ lỡ và không thể biết chiều. Đếm một lỗi và không cộng gì."
+    },
+    "b10": {
+      "prompt": "Một ISR Timer1 đảo chân 8 một lần mỗi ngắt và tốc độ ngắt là 2 kHz. Bộ phân tích logic hiển thị gì trên chân 8?",
+      "options": [
+        "4 kHz",
+        "2 kHz",
+        "500 Hz",
+        "1 kHz"
+      ],
+      "explanation": "Một lần đảo mỗi ngắt nghĩa là một chu kỳ đầy đủ (cao và thấp) mỗi hai ngắt: 1 kHz."
+    },
+    "b11": {
+      "prompt": "Một ESP32 phải đếm 80 000 cạnh encoder mỗi giây trên mỗi trong hai encoder. Cấu trúc nào tốt nhất?",
+      "options": [
+        "Một ISR pin-change trên mọi chân kèm gỡ lỗi bằng Serial.",
+        "Bộ đếm xung phần cứng (PCNT), chế độ cầu phương.",
+        "Thăm dò trong loop() với delay(1).",
+        "Chống rung 50 ms trên cả hai kênh."
+      ],
+      "explanation": "Tải ngắt sẽ vượt 100 %. Bộ đếm xung phần cứng đếm cạnh mà không tốn thời gian CPU."
+    },
+    "b12": {
+      "prompt": "Tình huống nào ủng hộ rõ nhất các task FreeRTOS hơn một super-loop với nhịp timer?",
+      "options": [
+        "Một LED nháy ở 1 Hz và không có gì khác chạy.",
+        "Đọc một biến trở mỗi giây một lần.",
+        "Điều khiển 1 kHz, IMU 50 Hz, tải Wi-Fi bị chặn.",
+        "Một nút đảo một rơ le khi được bấm."
+      ],
+      "explanation": "Các hoạt động có tốc độ và độ ưu tiên khác nhau, một số chờ I/O chậm, hưởng lợi từ task và queue; một nhịp là đủ cho vài việc đơn giản."
+    },
+    "b13": {
+      "prompt": "Cách chống rung nào không tốn thời gian CPU và dùng được với mọi firmware?",
+      "options": [
+        "Bộ lọc RC vào đầu vào Schmitt.",
+        "Một delay() 50 ms sau mỗi lần bấm phát hiện được.",
+        "Đọc chân hai lần bên trong trình xử lý ISR.",
+        "Một điện trở pull-up lớn hơn ở đầu vào công tắc."
+      ],
+      "explanation": "Một bộ lọc RC vào đầu vào Schmitt trigger làm chậm và làm sạch cạnh bằng phần cứng."
+    },
+    "b14": {
+      "prompt": "Trên một ESP32 một trình xử lý ngắt thỉnh thoảng làm sập board khi chương trình ghi vào flash. Cách khắc phục thông thường là gì?",
+      "options": [
+        "Thêm delay(10) trong trình xử lý để chờ.",
+        "Hạ xung nhịp CPU.",
+        "Dùng một String làm tên trình xử lý.",
+        "Đánh dấu IRAM_ATTR để nó chạy từ RAM."
+      ],
+      "explanation": "Khi ghi flash, cache bị tắt, nên code của trình xử lý phải ở RAM trong: đánh dấu IRAM_ATTR."
+    },
+    "b15": {
+      "prompt": "Một encoder bánh xe robot (x4, 1800 cạnh mỗi giây khi chạy đều, tới 9000 ở đỉnh) được đọc trên một Uno. Thiết kế phía ngắt: chân, nội dung ISR, dữ liệu dùng chung, và cách loop() đọc số đếm.",
+      "rubric": [
+        "Đặt A và B trên INT0/INT1 (chân 2 và 3) với ngắt CHANGE và giải mã bằng bảng trạng thái.",
+        "Giữ ISR ở một phép tra bảng và cập nhật bộ đếm trên biến volatile, và đếm chuyển tiếp không hợp lệ; không Serial hay delay.",
+        "Chép số đếm 4 byte bằng noInterrupts() và kiểm tra tải: 9000 cạnh/s nhân vài us là vài phần trăm."
+      ],
+      "explanation": "Có rubric hướng dẫn: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b16": {
+      "prompt": "Viết kế hoạch kiểm thử cho một lớp bộ giải mã cầu phương mà bạn sẽ chạy trên các mẫu phía máy tính trước khi nạp.",
+      "rubric": [
+        "Kiểm thử các chu kỳ tiến và lùi sạch với số đếm mong đợi chính xác cho x1, x2 và x4.",
+        "Kiểm thử một lần rung ở cạnh, một bước nhảy không hợp lệ (đếm lỗi, số đếm không đổi) và giá trị đầu vào không hợp lệ.",
+        "Thêm một ca bước đi ngẫu nhiên dài với tổng tính độc lập và một chuyển động đối xứng trở về không."
+      ],
+      "explanation": "Có rubric hướng dẫn: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b17": {
+      "prompt": "Một công tắc hành trình trên khung gantry phải dừng động cơ ngay lập tức nhưng công tắc rung khoảng 5 ms. Mô tả cách bạn đọc nó (ngắt hay thăm dò, cách chống rung) và trình xử lý làm gì.",
+      "rubric": [
+        "Dùng ngắt ở cạnh đầu tiên để phản ứng ngay và làm hành động an toàn (yêu cầu dừng) trước, vì chống rung không được làm trễ lệnh dừng an toàn.",
+        "Giữ ISR ngắn: đặt cờ volatile hoặc dừng đầu ra, không Serial hay delay.",
+        "Chống rung phần nhả hoặc tái kích hoạt bằng cửa sổ thời gian (lớn hơn 5 ms, chẳng hạn 20 ms) hoặc bộ lọc RC, và giữ đường dừng khẩn phần cứng độc lập với phần mềm."
+      ],
+      "explanation": "Có rubric hướng dẫn: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

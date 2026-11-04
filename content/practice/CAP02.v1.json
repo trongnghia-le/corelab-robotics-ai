@@ -1,0 +1,505 @@
+{
+  "id": "CAP02-targeted",
+  "topicId": "CAP02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Encoder 7 pulses per motor revolution (x4), gearbox 50:1. Counts per wheel turn?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1400",
+      "tolerance": 0.5,
+      "explanation": "4*7*50 = 1400.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counts-quantisation"
+      ],
+      "skillLabel": "Counts per turn and speed quantum",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "With N = 1496 counts per wheel turn and a speed estimate from the counts of one 10 ms period, what is the speed quantum in rad/s?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.42",
+      "tolerance": 0.01,
+      "explanation": "2*pi/(1496*0.01) = 0.42 rad/s, 7 % of a 6 rad/s target.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counts-quantisation"
+      ],
+      "skillLabel": "Counts per turn and speed quantum",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A uint16_t counter reads 65500 and then 40. The correct signed delta is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "-65460, because the counter simply went down by that many counts.",
+        "+65460, because the wheel must have turned forward a long way.",
+        "0, because a jump this large is an invalid sample and is discarded.",
+        "+76, because (40 - 65500) mod 65536 = 76."
+      ],
+      "answer": "3",
+      "explanation": "Modular subtraction maps the difference into the signed range: +76.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "counter-wrap"
+      ],
+      "skillLabel": "Wrap-safe counter delta",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A parser receives 50 bytes of garbage and then a valid stuffed frame. Which design lets it recover?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "Each delimiter byte 0x7E discards the partial buffer and starts a new frame, which is then validated by length and CRC.",
+        "The parser must be restarted by the host after every CRC failure, since it cannot recover alone.",
+        "The parser waits until it has received exactly 12 bytes and then validates them wherever they started, which is simple to implement.",
+        "The parser keeps all garbage and tries every offset when the CRC fails, until some offset passes."
+      ],
+      "answer": "0",
+      "explanation": "Delimiter-based resynchronisation bounds the damage of garbage to one frame.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "frame-crc"
+      ],
+      "skillLabel": "Frame codec tests",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP02#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A 26-byte worst-case wire frame is sent at 100 Hz over 115200 baud. What is the worst-case link load in percent?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "22.6",
+      "tolerance": 0.3,
+      "explanation": "26*10*100/115200 = 22.6 %.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "link-load"
+      ],
+      "skillLabel": "Serial link load",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "With Ki = 1.5 and a 6 rad/s error held for 1 s, the integrator reaches 9.0 without anti-windup. What does that number mean?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "The integrator will settle to 9.0, which is the correct duty for 6 rad/s at steady state.",
+        "Nine times the full duty range is stored, so the output stays saturated long after the wheel is released.",
+        "The loop gain is 9, so the loop is unstable and Kp has to be reduced by that factor.",
+        "The wheel will run at 9 rad/s after release, which is the steady-state speed of the loop."
+      ],
+      "answer": "1",
+      "explanation": "The stored integral is far outside the output range [-1, 1]; unwinding it takes a long time.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "anti-windup"
+      ],
+      "skillLabel": "Integrator anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "What should the PWM output be right after the firmware boots, before any command has arrived?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The last speed stored in flash, so the robot resumes the task it was doing before the reset.",
+        "A small creep duty so the encoders can be checked immediately, then zero when a command arrives.",
+        "Zero: the watchdog starts in the expired state and is only armed by the first valid command.",
+        "Undefined until the first frame: the pins are left floating so the driver chip decides its own default."
+      ],
+      "answer": "2",
+      "explanation": "Safe defaults: outputs are zero at boot and whenever data is stale.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "watchdog-failsafe"
+      ],
+      "skillLabel": "Watchdog and fail-safe output",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A robot drives at 0.4 m/s and the watchdog timeout is 80 ms. How far (in cm) does it travel before the PWM is cut, ignoring coasting?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.2",
+      "tolerance": 0.05,
+      "explanation": "0.4*0.08 = 0.032 m = 3.2 cm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "watchdog-failsafe"
+      ],
+      "skillLabel": "Watchdog and fail-safe output",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP02#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "With the radius already corrected, a robot with b_est = 0.150 m spins 5 true turns (1800 degrees) and odometry reports 1930 degrees. What is the new track width in metres?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1608",
+      "tolerance": 0.0005,
+      "explanation": "b = 0.150*1930/1800 = 0.1608 m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "odometry-calibration"
+      ],
+      "skillLabel": "Odometry calibration order",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "A step to 6.0 rad/s peaks at 6.4 rad/s. What is the overshoot in percent of the target?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.7",
+      "tolerance": 0.1,
+      "explanation": "(6.4-6.0)/6.0 = 6.7 %, inside the 10 % limit.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "step-specs"
+      ],
+      "skillLabel": "Step-response specifications",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP02#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Why does the CAP02 log compute omega over a 50 ms window instead of one 10 ms period?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Because the motor needs 50 ms to respond, so shorter windows would show the wrong speed.",
+        "One 10 ms period has a 0.42 rad/s quantum (7 % of 6 rad/s); 50 ms gives 0.084 rad/s, so the spec can be checked at 2 %.",
+        "Because the CRC check needs five frames before the counts are valid enough to use, as the parser buffers them.",
+        "Because the decoder only updates the count every 50 ms in the simulator."
+      ],
+      "answer": "1",
+      "explanation": "Count quantisation limits what a short window can show.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "step-specs"
+      ],
+      "skillLabel": "Step-response specifications",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP02#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Build a worst-case latency budget for the spec 'command to first response within 20 ms' with a 100 Hz firmware loop and a 115200-baud link.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Lists the three terms: wait for the next 10 ms tick, link time of the 14-byte frame (about 1.2 ms), and time for the first count (about 7 ms).",
+        "Adds them (about 18 ms) and compares with 20 ms, noting how little margin remains.",
+        "Names one thing that breaks the budget (USB-serial latency timers, extra buffering) and what to do about it."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "latency-budget"
+      ],
+      "skillLabel": "Latency and loop timing",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Write a test plan for the frame parser: exhaustive bit flips, resynchronisation after garbage, and a long clean run.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Builds a valid frame with a known CRC (check value 0xF4 for the string 123456789) and flips every one of its 96 bits, expecting rejection.",
+        "Feeds 50 random garbage bytes (seeded) before a valid stuffed frame and expects exactly one frame out, and includes a frame whose body contains 0x7E and 0x7D.",
+        "Runs 10 000 clean frames expecting zero loss and checks the link load figure against the 50 % limit."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "frame-crc"
+      ],
+      "skillLabel": "Frame codec tests",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP02#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "Explain why the speed loop is written in portable C and called from the simulator through ctypes, instead of being written in Python. Name two risks of this choice.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Says that integer widths, wrap-around, timing and buffer limits are exactly the bugs that appear on an MCU, and that the same sources can be flashed to an ESP32.",
+        "Names a risk such as float versus double differences between host and MCU, or ctypes silently assuming int argument types.",
+        "Names a second risk such as the simulator tick not reproducing interrupt timing or the toolchain (gcc, cmake) not being installed."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "fil-design"
+      ],
+      "skillLabel": "Firmware-in-the-loop design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CAP02#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    }
+  ]
+}

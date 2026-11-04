@@ -1,0 +1,138 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "Thành phần nào sau đây thuộc khối nguồn (power)?",
+      "options": [
+        "Cầu chì và công tắc nằm giữa pin và phần còn lại của robot.",
+        "Một mạch cầu H kép TB6612FNG.",
+        "Một cảm biến quán tính MPU-6050.",
+        "Một board phát triển ESP32."
+      ],
+      "explanation": "Cầu chì và công tắc bảo vệ và điều khiển nguồn năng lượng. Ba thứ còn lại là driver, cảm biến và thành phần tính toán."
+    },
+    "b2": {
+      "prompt": "Danh sách nào nêu đủ sáu khối phần cứng của một robot?",
+      "options": [
+        "Tính toán, cảm biến, động cơ, pin, dây, phần mềm.",
+        "Cảm biến, bộ nhớ, driver, động cơ, xung nhịp, cáp.",
+        "Tính toán, cảm biến, driver, cơ cấu chấp hành, nguồn, truyền thông.",
+        "Bộ xử lý, camera, bánh xe, pin, bộ sạc, vỏ."
+      ],
+      "explanation": "Sáu khối là tính toán, cảm biến, driver, cơ cấu chấp hành, nguồn và truyền thông."
+    },
+    "b3": {
+      "prompt": "Vẽ (mô tả) sơ đồ khối của một cánh tay robot 6 khớp dùng servo thông minh nối tiếp trên bus và một PC nhỏ. Nêu sáu khối, giao diện trên mỗi liên kết và một rủi ro của bus dùng chung.",
+      "rubric": [
+        "Đặt đủ sáu khối: tính toán (PC và MCU hoặc bộ chuyển USB tùy chọn), cảm biến và driver tích hợp trong servo, cơ cấu chấp hành, nguồn (bộ nguồn, cầu chì, bộ điều áp) và bus.",
+        "Nêu giao diện (bus nối tiếp bán song công hoặc bộ chuyển USB-nối tiếp) và đường nguồn tách khỏi đường dữ liệu.",
+        "Nêu một rủi ro của bus dùng chung (ngân sách message, một lỗi chặn tất cả, điện trở kết cuối, trùng ID) và kiểm bằng một con số."
+      ],
+      "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b4": {
+      "prompt": "Một số đọc encoder bánh xe cuối cùng nằm trong message odometry của ROS 2. Thứ tự các chặng nào đúng?",
+      "options": [
+        "Encoder, node ROS 2, ngắt MCU, liên kết nối tiếp.",
+        "Encoder, ngắt và bộ đếm trên MCU, liên kết nối tiếp, node ROS 2.",
+        "Ngắt MCU, encoder, node ROS 2, liên kết nối tiếp.",
+        "Encoder, liên kết nối tiếp, bộ đếm MCU, node ROS 2."
+      ],
+      "explanation": "MCU đếm xung trước; số đếm sau đó được đóng gói và gửi qua liên kết; node ROS 2 trên máy tính xuất bản message."
+    },
+    "b5": {
+      "prompt": "Vi điều khiển thường gửi loại tín hiệu nào tới motor driver như TB6612FNG để đặt tốc độ và chiều quay?",
+      "options": [
+        "Dòng điện động cơ ở mức điện áp pin trên chân tín hiệu.",
+        "Một điện áp tương tự từ đầu vào ADC 12 bit.",
+        "Lệnh I2C đi trên dây nguồn động cơ.",
+        "Tín hiệu PWM cho tốc độ và các chân logic cho chiều quay."
+      ],
+      "explanation": "MCU chỉ cung cấp logic công suất nhỏ. PWM đặt điện áp trung bình của động cơ, chân chiều đặt cực tính; driver đóng cắt dòng điện động cơ."
+    },
+    "b6": {
+      "prompt": "Vì sao chạy giới hạn dòng động cơ 1 kHz trên máy tính nhúng Linux là rủi ro?",
+      "options": [
+        "Linux hoàn toàn không đọc được chân số.",
+        "Lập lịch của Linux có thể làm trễ code của bạn vài mili giây một cách ngẫu nhiên.",
+        "Linux không gửi được dữ liệu qua USB.",
+        "Máy tính nhúng không đếm được đến 1000."
+      ],
+      "explanation": "Hệ điều hành đa dụng không phải thời gian thực cứng: tiến trình hoặc ngắt khác có thể tạm dừng tác vụ của bạn, nên vòng an toàn nhạy thời gian thuộc về MCU."
+    },
+    "b7": {
+      "prompt": "Tác vụ nào phù hợp nhất với module GPU loại Jetson Orin Nano?",
+      "options": [
+        "Tạo xung PWM 20 kHz sạch cho động cơ.",
+        "Đếm xung cầu phương ở 50 000 cạnh mỗi giây.",
+        "Cắt điện động cơ trong vài micro giây khi có lỗi.",
+        "Chạy mạng nơ-ron phát hiện vật thể trên khung hình camera."
+      ],
+      "explanation": "Module GPU dành cho tính toán song song nặng như mạng thị giác. Đếm xung, PWM và phản ứng lỗi tức thì thuộc về phần cứng MCU."
+    },
+    "b8": {
+      "prompt": "Một nút cảm biến chạy pin lấy một giá trị mỗi phút trong một tháng. Lựa chọn tính toán nào phù hợp nhất?",
+      "options": [
+        "Một vi điều khiển ngủ giữa các lần lấy mẫu.",
+        "Một Raspberry Pi chạy Linux liên tục.",
+        "Một module Jetson với GPU để nhàn rỗi.",
+        "Một laptop gập nắp."
+      ],
+      "explanation": "Vi điều khiển có thể ngủ ở dòng cỡ micro ampe (datasheet ATmega328P ghi vài chục micro ampe ở chế độ power-down); board Linux tiêu thụ nhiều hơn rất nhiều."
+    },
+    "b9": {
+      "prompt": "MPU-6050 thuộc khối nào và vì sao?",
+      "options": [
+        "Driver, vì nó điều khiển bus I2C.",
+        "Cơ cấu chấp hành, vì nó có bộ phận chuyển động.",
+        "Cảm biến, vì nó đo gia tốc và tốc độ quay.",
+        "Tính toán, vì nó có bộ xử lý tích hợp."
+      ],
+      "explanation": "MPU-6050 là một đơn vị đo quán tính: nó biến chuyển động thành các số đọc số gửi qua I2C."
+    },
+    "b10": {
+      "prompt": "Linh kiện nào thuộc khối truyền thông?",
+      "options": [
+        "Một RPLIDAR A1.",
+        "Một bộ điều khiển CAN MCP2515.",
+        "Một cell 18650.",
+        "Một gearmotor Pololu 37D."
+      ],
+      "explanation": "MCP2515 cung cấp giao diện bus CAN cho MCU. RPLIDAR là cảm biến, 18650 là linh kiện nguồn và gearmotor là cơ cấu chấp hành."
+    },
+    "b11": {
+      "prompt": "Một lần đọc burst I2C 6 byte ở 400 kHz (9 xung clock mỗi byte cộng 3 byte địa chỉ/thanh ghi). Thời gian tính bằng micro giây.",
+      "explanation": "9*(3+6)=81 xung clock; 81/400000 s = 202,5 us."
+    },
+    "b12": {
+      "prompt": "Một message 8 byte trên UART 57600 baud 8N1. Thời gian tính bằng mili giây.",
+      "explanation": "8*10/57600 s = 1,389 ms."
+    },
+    "b13": {
+      "prompt": "Các chặng trễ: chờ mẫu 4 ms, I2C 1,5 ms, xử lý 12 ms, nối tiếp 2 ms, bộ điều khiển 8 ms, driver và động cơ 15 ms. Ở 0,6 m/s, robot di chuyển bao nhiêu centimet trong tổng độ trễ?",
+      "explanation": "Tổng 42,5 ms; 0,6 * 0,0425 = 0,0255 m = 2,55 cm."
+    },
+    "b14": {
+      "prompt": "8 khớp trên bus CAN 1 Mbit/s, mỗi chu kỳ có một frame lệnh và một frame phản hồi cho mỗi khớp, 250 Hz, 111 micro giây mỗi frame. Mức sử dụng bus dưới dạng phân số.",
+      "explanation": "8*2*250 = 4000 frame/s; 4000*111e-6 = 0,444."
+    },
+    "b15": {
+      "prompt": "Thứ tự nào liệt kê các điểm hỏng thường gặp của một robot mới từ nên kiểm tra trước nhất đến sau cùng?",
+      "options": [
+        "Nguồn, đầu nối và dây, nối đất, mức logic, định thời.",
+        "Định thời, mức logic, nối đất, đầu nối, nguồn.",
+        "Lỗi phần mềm, rồi trình biên dịch, rồi nguồn.",
+        "Nối đất, định thời, nguồn, rồi mức logic, rồi đầu nối."
+      ],
+      "explanation": "Người có kinh nghiệm kiểm tra nguồn và kết nối cơ khí trước vì chúng phổ biến và rẻ để thử, sau đó đến nối đất, mức logic và định thời."
+    },
+    "b16": {
+      "prompt": "Arduino của một robot bị reset mỗi khi động cơ khởi động. Viết một kế hoạch gỡ lỗi ngắn, có thứ tự, kèm phép đo ở mỗi bước và cách quyết định khối nào gây lỗi.",
+      "rubric": [
+        "Bắt đầu từ nguồn: đo đường nguồn logic (đồng hồ vạn năng hoặc dao động ký) khi động cơ khởi động và kiểm tra pin, cầu chì, dây dẫn.",
+        "Cô lập bằng chia đôi: chạy MCU riêng, rồi thêm driver, rồi thêm động cơ, ghi lại bước nào gây reset.",
+        "Nêu cách sửa phù hợp với phát hiện (bộ điều áp riêng, dây lớn hơn, tụ điện) và một phép kiểm chứng rằng reset không còn xảy ra."
+      ],
+      "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

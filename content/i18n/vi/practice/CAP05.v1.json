@@ -1,0 +1,103 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "43 thành công trong 50 lượt. Cận dưới của khoảng Wilson 95 %, 3 chữ số thập phân.",
+   "explanation": "[0.738, 0.930]: cận dưới là 0.738."
+  },
+  "b2": {
+   "prompt": "41 thành công trong 50 lượt. Cận dưới của khoảng Wilson 95 %, 3 chữ số thập phân.",
+   "explanation": "[0.692, 0.902]: cận dưới 0.692 cao hơn 0.68, nên lần chạy này đạt."
+  },
+  "b3": {
+   "prompt": "Vì sao dùng median của các điểm 3D theo pixel của một mask thay vì mean làm tâm vật?",
+   "options": [
+    "Pixel viền trộn độ sâu khối và nền; median bỏ qua chúng.",
+    "Median rẻ hơn mean về tính toán, điều quan trọng trên CPU.",
+    "Mean của điểm 3D không tính được vì độ sâu không tuyến tính.",
+    "Median luôn nằm đúng trên bề mặt nhìn thấy của vật."
+   ],
+   "explanation": "Các pixel viền thường lấy độ sâu của bàn hoặc tường xa. Vài điểm như vậy kéo mean lệch khỏi khối còn median thì bền."
+  },
+  "b4": {
+   "prompt": "Ảnh cao 720 pixel với góc nhìn dọc 45 độ. f_y theo pixel, 1 chữ số thập phân.",
+   "explanation": "f_y = 360 / tan(22.5 độ) = 869.1 px."
+  },
+  "b5": {
+   "prompt": "f_x = 500, c_x = 320, cột pixel u = 240, độ sâu 0.6 m. X trong frame camera theo mét, 3 chữ số thập phân.",
+   "explanation": "X = (240 - 320) / 500 * 0.6 = -0.096 m (bên trái trục quang)."
+  },
+  "b6": {
+   "prompt": "Một khớp di chuyển 1.0 rad với v_max = 2 rad/s và a_max = 6 rad/s^2 bằng quintic. Thời lượng ngắn nhất theo giây, 3 chữ số thập phân.",
+   "explanation": "Vận tốc: 1.875/2 = 0.9375 s; gia tốc: sqrt(5.7735/6) = 0.981 s; giá trị lớn hơn ràng buộc."
+  },
+  "b7": {
+   "prompt": "Vận tốc đỉnh của một quintic di chuyển 0.5 rad trong 1.0 s, theo rad/s (4 chữ số thập phân).",
+   "explanation": "1.875 * 0.5 / 1.0 = 0.9375 rad/s."
+  },
+  "b8": {
+   "prompt": "Một nghiệm phẳng có cổ tay ở -137 độ nhưng giới hạn khớp là +/-110 độ, trong khi nhánh khuỷu còn lại cần -85 độ. Planner nên làm gì?",
+   "options": [
+    "Kẹp cổ tay về -110 độ và chấp nhận sai số.",
+    "Bỏ qua giới hạn trong mô phỏng.",
+    "Tăng damping đến khi bộ giải hội tụ.",
+    "Chọn nhánh còn lại, thỏa các giới hạn."
+   ],
+   "explanation": "Việc chọn nhánh phải kiểm tra giới hạn và ưu tiên nhánh khả thi gần các khớp hiện tại nhất."
+  },
+  "b9": {
+   "prompt": "Số hạng damping lambda^2 I làm gì trong bước damped least squares?",
+   "options": [
+    "Nó tăng tốc hội tụ ở mọi nơi, kể cả xa điểm kỳ dị.",
+    "Nó chặn bước gần điểm kỳ dị nhưng không triệt sai số chính xác.",
+    "Nó biến Jacobian 4 x 5 thành ma trận vuông 5 x 5 để nghịch đảo.",
+    "Nó tự động áp giới hạn khớp ở mỗi vòng lặp."
+   ],
+   "explanation": "Độ lợi sigma/(sigma^2 + lambda^2) nhiều nhất là 1/(2 lambda), khác với độ lợi giả nghịch đảo 1/sigma bùng nổ."
+  },
+  "b10": {
+   "prompt": "Lớp A: TP 90, FP 5, FN 5. Lớp B: TP 40, FP 10, FN 10. IoU trung bình trên hai lớp, 3 chữ số thập phân.",
+   "explanation": "IoU A = 90/100 = 0.90; IoU B = 40/60 = 0.667; trung bình 0.783."
+  },
+  "b11": {
+   "prompt": "Nên chia dataset phân đoạn như thế nào?",
+   "options": [
+    "Ngẫu nhiên theo frame, 80/20.",
+    "Theo lớp, mỗi lớp chỉ ở một phần.",
+    "Theo seed cảnh, với texture và ánh sáng khác trong các cảnh test.",
+    "Dùng seed benchmark làm validation để tiết kiệm thời gian render."
+   ],
+   "explanation": "Các frame của cùng một cảnh gần như trùng nhau; phải chia theo cảnh. Seed benchmark (1000+) phải để nguyên đến lần chạy cuối."
+  },
+  "b12": {
+   "prompt": "Một đoạn cánh tay 0.2 kg tác dụng ở tay đòn 0.25 m so với vai. Mô-men trọng lực tĩnh theo N m (g = 9.81), 3 chữ số thập phân.",
+   "explanation": "0.2 * 9.81 * 0.25 = 0.491 N m."
+  },
+  "b13": {
+   "prompt": "Giải thích vì sao CoreBot dùng gắp từ trên xuống với cánh tay 5 bậc và roll cổ tay được chọn ra sao.",
+   "rubric": [
+    "Đếm ràng buộc: 3 vị trí cộng pitch tiếp cận bằng 4, nên 5 khớp đủ, còn một khớp cho roll.",
+    "Đặt roll từ yaw vật trừ pan, rút gọn modulo 180 độ cho gripper đối xứng, trong giới hạn.",
+    "Nêu hạn chế (không có hướng tùy ý, chỉ tập con với tới được) và cách bộ test tôn trọng nó."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b14": {
+   "prompt": "Viết kế hoạch test cho fit_rigid_transform có thể bắt phản chiếu, cặp điểm bị đảo và overfit.",
+   "rubric": [
+    "Dựng điểm tổng hợp với phép quay và tịnh tiến đã biết, thêm nhiễu nhỏ, và kiểm tra khôi phục cùng det(R) = +1.",
+    "Gồm trường hợp suy biến (điểm thẳng hàng) và một cặp sai khớp để thấy lỗi.",
+    "Đánh giá trên điểm giữ lại và nêu ngưỡng RMS (5 mm) cùng lý do."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b15": {
+   "prompt": "Thiết kế taxonomy lỗi cho benchmark gắp 50 lượt sao cho số đếm luôn cộng đúng và dẫn đến cách sửa.",
+   "rubric": [
+    "Định nghĩa một enumeration cố định (ví dụ no_detection, ik_fail, joint_limit, slip, knocked, place_miss, timeout) và ghi một lý do cho mỗi lượt thất bại.",
+    "Kiểm tra trong một test rằng số đếm cộng bằng số thất bại và khớp với log.",
+    "Ghép loại lớn nhất với một cách sửa cụ thể và chạy lại để thấy nó giảm."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

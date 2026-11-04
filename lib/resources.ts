@@ -50,6 +50,36 @@ export const sources = [
     domain: "Machine Learning",
   },
   {
+    title: "SparkFun · Learn tutorials",
+    url: "https://learn.sparkfun.com/tutorials",
+    domain: "Hardware & Embedded",
+  },
+  {
+    title: "Arduino · Documentation",
+    url: "https://docs.arduino.cc/",
+    domain: "Hardware & Embedded",
+  },
+  {
+    title: "Espressif · Arduino-ESP32 documentation",
+    url: "https://docs.espressif.com/projects/arduino-esp32/en/latest/",
+    domain: "Hardware & Embedded",
+  },
+  {
+    title: "MicroPython · Documentation",
+    url: "https://docs.micropython.org/en/latest/",
+    domain: "Hardware & Embedded",
+  },
+  {
+    title: "Battery University",
+    url: "https://batteryuniversity.com/",
+    domain: "Hardware & Embedded",
+  },
+  {
+    title: "Wokwi · Simulator documentation",
+    url: "https://docs.wokwi.com/",
+    domain: "Hardware & Embedded",
+  },
+  {
     title: "Stanford · CS231n",
     url: "https://cs231n.stanford.edu/",
     domain: "Computer Vision",
@@ -88,5 +118,25 @@ export const sources = [
     title: "CLVR · Research publications",
     url: "https://clvrai.com/publications/",
     domain: "Scientific Research",
+  },
+  {
+    title: "MIT 6.4210 · Robotic Manipulation",
+    url: "https://manipulation.csail.mit.edu/",
+    domain: "Capstone",
+  },
+  {
+    title: "MuJoCo Menagerie · Robot models",
+    url: "https://github.com/google-deepmind/mujoco_menagerie",
+    domain: "Capstone",
+  },
+  {
+    title: "Nav2 · ROS 2 navigation",
+    url: "https://docs.nav2.org/",
+    domain: "Capstone",
+  },
+  {
+    title: "ROS 2 Jazzy documentation",
+    url: "https://docs.ros.org/en/jazzy/",
+    domain: "Capstone",
   },
 ];

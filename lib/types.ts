@@ -141,6 +141,7 @@ export type LessonMeta = {
   title: string;
   summary: string;
   estimated_minutes: number;
+  project_minutes?: number;
   prerequisites: string[];
   source_refs: { title: string; url: string }[];
   objectives: string[];

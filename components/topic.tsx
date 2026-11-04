@@ -278,6 +278,10 @@ const resourceMap: Record<string, { title: string; url: string }[]> = {
   "Computer Vision": [
     { title: "Stanford CS231n", url: "https://cs231n.stanford.edu/" },
   ],
+  "Hardware & Embedded": [
+    { title: "SparkFun Learn", url: "https://learn.sparkfun.com/tutorials" },
+    { title: "Arduino documentation", url: "https://docs.arduino.cc/" },
+  ],
   "Reinforcement & Robot Learning": [
     {
       title: "David Silver lectures",
@@ -286,6 +290,16 @@ const resourceMap: Record<string, { title: string; url: string }[]> = {
   ],
   "Embodied & Cognitive Robotics": [
     { title: "LeRobot", url: "https://github.com/huggingface/lerobot" },
+  ],
+  Capstone: [
+    {
+      title: "MIT 6.4210 Robotic Manipulation",
+      url: "https://manipulation.csail.mit.edu/",
+    },
+    {
+      title: "MuJoCo Menagerie",
+      url: "https://github.com/google-deepmind/mujoco_menagerie",
+    },
   ],
   "Scientific Research": [
     { title: "CLVR publications", url: "https://clvrai.com/publications/" },

@@ -1,0 +1,59 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Vì sao vòng điều khiển motor 1 kHz nên chạy trên vi điều khiển thay vì trên Linux của Raspberry Pi?",
+   "options": [
+    "Lập lịch Linux là best effort, nên một vòng lặp có thể bị trễ.",
+    "Linux không chạy Python đủ nhanh để cộng hai số trong 1 ms.",
+    "Raspberry Pi không có chân GPIO nên không điều khiển được gì.",
+    "Vi điều khiển luôn có nhiều RAM hơn máy tính nhúng một bo mạch."
+   ],
+   "explanation": "Vòng điều khiển motor cần đúng hạn mọi lần. MCU chạy trần với ngắt timer đảm bảo điều đó; Linux chia CPU cho nhiều tác vụ."
+  },
+  "q2": {
+   "prompt": "Bước của một ADC 12 bit với điện áp tham chiếu 3.3 V, tính bằng millivolt. Độ chính xác 0.005.",
+   "explanation": "3.3 / 4096 = 0.806 mV."
+  },
+  "q3": {
+   "prompt": "Frame 20 byte ở 200 Hz trên UART 8N1 115200 baud. Tải liên kết dưới dạng phân số. Độ chính xác 0.002.",
+   "explanation": "20 x 10 x 200 / 115200 = 0.347."
+  },
+  "q4": {
+   "prompt": "Một lần đọc burst thanh ghi I2C 14 byte (địa chỉ, thanh ghi, repeated start, địa chỉ, 14 byte dữ liệu, 9 xung mỗi byte) trên bus 400 kHz. Thời gian tính bằng micro giây. Độ chính xác 1.",
+   "explanation": "9 x (14 + 3) = 153 xung; 153 / 400000 = 382.5 us."
+  },
+  "q5": {
+   "prompt": "Bus nào dùng cặp xoắn vi sai, điện trở kết cuối 120 ohm ở hai đầu và ID thông điệp để xác định ưu tiên?",
+   "options": [
+    "I2C",
+    "SPI",
+    "CAN",
+    "UART"
+   ],
+   "explanation": "CAN phân xử theo ID thông điệp trên cặp vi sai có kết cuối ở hai đầu."
+  },
+  "q6": {
+   "prompt": "Độ dài xấu nhất, tính bằng bit, của một frame dữ liệu CAN cổ điển ID 11 bit với 8 byte dữ liệu, gồm cả bit stuffing và khoảng nghỉ.",
+   "explanation": "47 + 64 = 111, cộng floor((34 + 64 - 1) / 4) = 24 bit nhồi: 135."
+  },
+  "q7": {
+   "prompt": "Một ngõ ra cảm biến 5 V phải nối vào chân vào ESP32 (logic 3.3 V, không chịu được 5 V). Cách xử lý đúng cho tín hiệu một chiều?",
+   "options": [
+    "Nối thẳng: ESP32 tự kẹp điện áp thừa an toàn.",
+    "Thêm điện trở kéo lên 3.3 V ở ngõ vào.",
+    "Nâng nguồn ESP32 lên 5 V để mức điện áp khớp.",
+    "Dùng cầu phân áp 1 kohm trên 2 kohm, hoặc bộ dịch mức."
+   ],
+   "explanation": "Cầu phân áp biến 5 V thành khoảng 3.33 V. Nối thẳng có thể làm hỏng chân."
+  },
+  "q8": {
+   "prompt": "Một robot có camera, LiDAR 2D, hai motor bánh và một IMU. Đề xuất phần tính toán và các bus và biện luận cách chia.",
+   "rubric": [
+    "Đặt ROS 2, camera và LiDAR trên SBC và vòng lặp nhanh của motor và IMU trên MCU, kèm lý do (best effort so với real-time cứng).",
+    "Chọn bus cho từng liên kết (UART hoặc USB giữa SBC và MCU, I2C hoặc SPI cho IMU, Ethernet hoặc USB cho LiDAR) có tính đến số dây và tốc độ.",
+    "Kiểm tra tải của liên kết bận nhất so với khoảng 50 % và nói điều gì sẽ làm thay đổi kế hoạch."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

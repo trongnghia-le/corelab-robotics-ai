@@ -1,0 +1,128 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "Payload 8 byte theo bố cục của bài (13 byte mỗi frame, không stuffing) gửi ở 100 Hz trên đường 57600 baud 8N1. Tải đường truyền dạng phân số, độ chính xác 0.001.",
+      "explanation": "13*10*100/57600 = 0.2257."
+    },
+    "b2": {
+      "prompt": "Một frame telemetry mang 24 byte payload (SOF, LEN, ID, SEQ, payload, CRC8). Frame dài bao nhiêu byte trước khi stuffing?",
+      "explanation": "1 + 1 + 1 + 1 + 24 + 1 = 29."
+    },
+    "b3": {
+      "prompt": "Tối đa bao nhiêu frame 11 byte mỗi giây vừa trên đường 115200 baud 8N1 khi tải 100 %? Độ chính xác 1.",
+      "explanation": "115200 / (11 * 10) = 1047.3."
+    },
+    "b4": {
+      "prompt": "ATmega328P 16 MHz dùng chế độ double-speed (B = f/(8(UBRR+1))) với UBRR = 16. Baud thực tế lệch bao nhiêu phần trăm so với 115200? Cho giá trị có dấu, độ chính xác 0.05.",
+      "explanation": "16e6/(8*17) = 117647 baud; (117647/115200 - 1) = +2.12 %."
+    },
+    "b5": {
+      "prompt": "CRC-8 (đa thức 0x07, init 0, không đảo bit) của một byte 0x03, dưới dạng số thập phân.",
+      "explanation": "CRC tuyến tính theo XOR: crc(0x03) = crc(0x01) xor crc(0x02) = 0x07 xor 0x0E = 0x09 = 9."
+    },
+    "b6": {
+      "prompt": "CRC8 trên frame phát hiện được lỗi nào mà tổng một byte thông thường của cùng các byte đó không phát hiện?",
+      "options": [
+        "Một bit bị lật.",
+        "Hai byte payload bị đổi chỗ.",
+        "Payload ngắn hơn trường LEN cho biết.",
+        "Thiếu byte bắt đầu."
+      ],
+      "explanation": "Đổi chỗ hai byte không làm đổi tổng, nhưng CRC phụ thuộc vào vị trí của từng byte. Một bit bị lật thì cả hai đều bắt được."
+    },
+    "b7": {
+      "prompt": "Dữ liệu 7E 7D 00 7E có bao nhiêu byte sau khi byte stuffing (7E và 7D mỗi byte thành hai byte)?",
+      "explanation": "7E -> 2, 7D -> 2, 00 -> 1, 7E -> 2: 7 byte."
+    },
+    "b8": {
+      "prompt": "Parser đang gom một frame thì một byte 0x7E trần đến. Nó nên làm gì?",
+      "options": [
+        "Coi là dữ liệu payload và tiếp tục chờ đủ LEN byte.",
+        "Reset vi điều khiển vì đường truyền hỏng.",
+        "Kiểm tra CRC của frame dở và gửi phản hồi lỗi.",
+        "Đếm một frame bị cắt, bỏ các byte dở và bắt đầu một frame mới."
+      ],
+      "explanation": "Sau stuffing, một 0x7E trần chỉ có thể là dấu bắt đầu. Frame dở bị mất; parser khởi động lại mà không cần reset tường minh."
+    },
+    "b9": {
+      "prompt": "Vì sao parser phải từ chối ngay một byte LEN lớn hơn kích thước payload tối đa?",
+      "options": [
+        "Nếu không, một byte rác khiến nó chờ nhiều byte không bao giờ đến và nuốt mất các frame tốt.",
+        "Vì không tính được CRC trên frame dài.",
+        "Vì phần cứng UART bỏ các frame dài hơn 64 byte.",
+        "Vì LEN phải bằng số thứ tự."
+      ],
+      "explanation": "Một byte rác đọc thành LEN = 200 sẽ khiến máy trạng thái chờ 204 byte, nuốt các frame hợp lệ tiếp theo. Kiểm tra LEN so với mức tối đa giữ cho việc đồng bộ lại nhanh."
+    },
+    "b10": {
+      "prompt": "Các frame tốt liên tiếp có số thứ tự 100 và 105. Đã mất bao nhiêu frame?",
+      "explanation": "(105 - 100 - 1) mod 256 = 4."
+    },
+    "b11": {
+      "prompt": "Số thứ tự 254 rồi 1 đến (bộ đếm 8 bit). Đã mất bao nhiêu frame?",
+      "explanation": "(1 - 254 - 1) mod 256 = 2: các frame 255 và 0."
+    },
+    "b12": {
+      "prompt": "Một robot chạy 0.8 m/s và timeout watchdog của MCU là 250 ms. Nó đi thêm tối đa bao xa (cm) sau khi host im lặng, bỏ qua quãng phanh?",
+      "explanation": "0.8 * 0.25 = 0.2 m = 20 cm."
+    },
+    "b13": {
+      "prompt": "Host gửi lệnh ở 50 Hz. Timeout watchdog nào của MCU là mặc định hợp lý nhất?",
+      "options": [
+        "20 ms, một chu kỳ, để robot dừng nhanh nhất có thể.",
+        "Khoảng 60 đến 100 ms, vài chu kỳ, để một frame trễ không làm robot dừng.",
+        "2 phút, để robot không bao giờ dừng ngoài ý muốn.",
+        "Không timeout; CRC đã bảo vệ đường truyền."
+      ],
+      "explanation": "Timeout nên bao vài chu kỳ lệnh để một frame trễ hoặc mất không làm robot dừng, nhưng đủ ngắn để quãng đường đi thêm sau khi mất liên kết nhỏ."
+    },
+    "b14": {
+      "prompt": "Vì sao Arduino Uno (ATmega328P, 2 kB SRAM) không phải mục tiêu của micro-ROS trong khi ESP32 (520 kB RAM) thì có?",
+      "options": [
+        "micro-ROS cần MCU 32 bit với hàng chục kilobyte RAM cho stack rcl/rclc và bộ đệm message.",
+        "micro-ROS chỉ chạy qua Wi-Fi mà Uno không có.",
+        "Uno không tạo được PWM.",
+        "micro-ROS yêu cầu Linux trên MCU."
+      ],
+      "explanation": "Tài liệu Vulcanexus nêu mục tiêu chính là MCU 32 bit tầm trung với hàng chục kilobyte RAM. micro-ROS cũng chạy qua cổng nối tiếp nên không cần Wi-Fi, và chạy trên RTOS hoặc Arduino cho các board được hỗ trợ."
+    },
+    "b15": {
+      "prompt": "Trên PC bạn chạy `ros2 topic list` trong khi một node micro-ROS trên ESP32 đang publish. Điều nào đúng?",
+      "options": [
+        "Topic của MCU không thấy cho đến khi cài driver cho ESP32.",
+        "Topic xuất hiện như bất kỳ topic nào, vì micro-ROS agent đã tạo các thực thể DDS cho node MCU.",
+        "Chỉ `ros2 topic echo` chạy được; `ros2 topic list` không thấy topic MCU.",
+        "Topic chỉ xuất hiện khi PC chạy Windows."
+      ],
+      "explanation": "Agent đại diện cho client trong mạng DDS nên công cụ chuẩn thấy topic. Nếu agent không chạy thì phía PC không có gì."
+    },
+    "b16": {
+      "prompt": "Một robot bốn chân 12 động cơ cần điều khiển khớp 500 Hz với độ trễ có giới hạn. Đường truyền nào hợp nhất?",
+      "options": [
+        "Adapter USB-serial phổ thông với giao thức văn bản.",
+        "Wi-Fi UDP tới từng động cơ.",
+        "micro-ROS qua USB với topic DDS nằm trong vòng lặp.",
+        "Driver CAN hoặc EtherCAT với chu kỳ có giới hạn."
+      ],
+      "explanation": "Adapter USB-serial gom dữ liệu và không có độ trễ giới hạn, Wi-Fi không tất định, và DDS trong vòng lặp 500 Hz thêm jitter. CAN hoặc EtherCAT cho định thời có giới hạn."
+    },
+    "b17": {
+      "prompt": "Viết kế hoạch kiểm thử cho một parser frame trong firmware chứng minh nó đồng bộ lại được: liệt kê các luồng bị hỏng bạn đưa vào, các frame mong đợi được chuyển ra và các bộ đếm bạn kiểm tra.",
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+      "rubric": [
+        "Đưa vào một frame sạch làm đối chứng và cùng luồng đó từng byte một.",
+        "Chèn rác trước frame, một bit bị lật (lỗi CRC), một frame bị cắt rồi đến một frame hợp lệ, LEN quá lớn và payload chứa 7E và 7D.",
+        "Nêu các frame và bộ đếm mong đợi (crc_errors, truncated, bad_length, lost) cho từng trường hợp và kết quả nào sẽ loại parser."
+      ]
+    },
+    "b18": {
+      "prompt": "So sánh giao thức serial tùy chỉnh cùng hardware interface ros2_control với micro-ROS cho robot 2 bánh, và cho biết bạn dùng gì cho cánh tay 6 khớp với servo thông minh.",
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+      "rubric": [
+        "Serial tùy chỉnh cộng hardware interface: gọn, chu kỳ read/write tất định, nhưng bạn phải tự viết và kiểm thử giao thức và plugin.",
+        "micro-ROS: client và agent ROS 2 có sẵn, cảm biến thành topic, nhưng tốn RAM và flash hơn, agent phải chạy và kết nối lại, và không hợp cho vòng lặp nhanh qua DDS.",
+        "Cánh tay servo thông minh: dùng bus của servo qua driver hoặc hardware interface có sẵn thay vì giao thức mới, và giữ các vòng lặp quan trọng về thời gian khỏi USB-serial và DDS."
+      ]
+    }
+  }
+}

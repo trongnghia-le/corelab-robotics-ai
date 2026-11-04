@@ -1,0 +1,513 @@
+{
+  "id": "CAP06-targeted",
+  "topicId": "CAP06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which seeds may appear in a training log if the evaluation seeds are 1000-1099?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Only seeds below 1000, with a test for disjoint ranges.",
+        "Any seed at all, as long as the number of episodes is the same in both logs.",
+        "Seeds 1000-1099 as well, because evaluation and training episodes come from the same distribution.",
+        "Seeds above 1099, so evaluation is always later in time."
+      ],
+      "answer": "0",
+      "explanation": "Disjoint seed ranges, enforced by a test, are the cheapest protection against leakage.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "eval-seed-hygiene"
+      ],
+      "skillLabel": "Held-out seeds and honest reporting",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "18 successes in 20 episodes. Lower end of the 95 % Wilson interval (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.699",
+      "tolerance": 0.002,
+      "explanation": "Wilson [0.699, 0.972]: with 20 episodes the interval is wide.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-bound"
+      ],
+      "skillLabel": "Wilson bounds for success rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "0 successes in 50 episodes. Upper end of the 95 % Wilson interval (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.071",
+      "tolerance": 0.002,
+      "explanation": "Wilson [0.000, 0.071]: zero observed successes still allows about 7 %.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-bound"
+      ],
+      "skillLabel": "Wilson bounds for success rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP06#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Why is the Wilson interval preferred to the normal approximation for 29 successes in 30 episodes?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is always narrower, which makes results look better.",
+        "It needs no assumption that episodes are independent.",
+        "The normal approximation can exceed 1 and is unreliable near 0 and 1.",
+        "It only works for 100 or more episodes."
+      ],
+      "answer": "2",
+      "explanation": "Wilson stays inside [0,1] and has better coverage for small n and extreme p. It still assumes independent episodes.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "wilson-bound"
+      ],
+      "skillLabel": "Wilson bounds for success rates",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Which setting list makes CPU PPO training repeatable on one machine?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A random seed for the environment only, since the policy network is deterministic anyway.",
+        "Larger vectorised environments, a fixed batch size and a fixed number of rollout steps.",
+        "A fixed wall-clock budget together with an automatic seed taken from the system time.",
+        "One torch thread, one numpy Generator, seeded python, torch and environment, pinned versions."
+      ],
+      "answer": "3",
+      "explanation": "Every source of randomness and every threaded reduction must be pinned.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cpu-reproducibility"
+      ],
+      "skillLabel": "Reproducible CPU training",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP06#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Two identical training runs differ in their logged evaluation return by 3e-3. Describe how you would find the cause.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Checks threads, seeding of every component and version differences first.",
+        "Logs the loss or parameters after every update in both runs and finds the first update that differs.",
+        "Fixes the cause and re-runs the reproducibility gate instead of loosening the tolerance."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "cpu-reproducibility"
+      ],
+      "skillLabel": "Reproducible CPU training",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP06#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A BC policy trained on demos of joint-position targets is run with an end-effector-delta action space. Which test catches this before training?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Replay the demo actions open loop and check the scripted episode still succeeds.",
+        "Increase the number of demonstrations to 500 and retrain with a lower learning rate.",
+        "Compare the training loss with the validation loss after every single epoch.",
+        "Normalise the observations again with fresh statistics."
+      ],
+      "answer": "0",
+      "explanation": "A replay test needs no training and exposes any action-space or timing mismatch.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bc-compounding-error"
+      ],
+      "skillLabel": "Behaviour cloning versus closed loop",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP06#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Why must the BC train/validation split be made by demonstration rather than by timestep?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Timesteps are too few to split into two useful sets for an MLP.",
+        "Neighbouring timesteps are almost identical, so a timestep split leaks validation data.",
+        "Splitting by demonstration always makes the reported validation loss smaller.",
+        "The optimiser requires whole demonstrations in every mini-batch."
+      ],
+      "answer": "1",
+      "explanation": "Leakage between neighbouring frames makes validation MSE look better than it is.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bc-compounding-error"
+      ],
+      "skillLabel": "Behaviour cloning versus closed loop",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "8 environments give 500 steps per second in total. How many hours do 2 M steps take? (3 decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.111",
+      "tolerance": 0.01,
+      "explanation": "2e6 / 500 = 4000 s = 1.111 h.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compute-budget"
+      ],
+      "skillLabel": "Compute budget arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP06#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Control runs at 20 Hz. An action delay of 120 ms must be simulated with a FIFO. How many whole control steps of buffering (round up)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "120 ms / 50 ms = 2.4, rounded up is 3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "domain-randomisation"
+      ],
+      "skillLabel": "Domain randomisation ranges",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "With discount gamma = 0.95, about how many steps is the effective horizon 1/(1-gamma)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20",
+      "tolerance": 0.5,
+      "explanation": "1/(1-0.95) = 20 steps.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reward-design"
+      ],
+      "skillLabel": "Reward design and hacking",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "A reward pays +1 per step for being within 3 cm of the object and 10 once for lifting. What failure do you expect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The policy will never move at all because the reward per step is much too small.",
+        "The policy will lift immediately because the bonus of 10 is large.",
+        "The policy may hover within 3 cm all episode, because that out-earns the lift.",
+        "The policy will leave the workspace to find more reward."
+      ],
+      "answer": "2",
+      "explanation": "A positive per-step pay for a pre-goal state can dominate a one-off goal bonus: reward hacking.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reward-design"
+      ],
+      "skillLabel": "Reward design and hacking",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP06#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Training uses mass 0.8-1.2, friction 0.7-1.3 and delay 0-30 ms. The held-out set is mass 0.7-1.3, friction 0.6-1.4, delay 40 ms. Propose new training ranges and say how you would report results.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Widens ranges so the held-out values are covered, in particular delay up to at least 50 ms.",
+        "Checks the scripted policy still succeeds at the extremes so the task stays feasible.",
+        "Reports nominal, in-range and out-of-range splits separately with Wilson intervals."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "domain-randomisation"
+      ],
+      "skillLabel": "Domain randomisation ranges",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "Five PPO seeds gave success counts 96, 61, 90, 88 and 20 out of 100. Write the paragraph of your report that describes this honestly.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Reports all five seeds and the mean (71 %) with an interval, not the best seed.",
+        "States that the learning gate fails and gives a hypothesis for the failing seed.",
+        "Proposes a follow-up experiment (more seeds or changed hyperparameters) fixed before evaluating."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "eval-seed-hygiene"
+      ],
+      "skillLabel": "Held-out seeds and honest reporting",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP06#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP05",
+        "RL10",
+        "RL12",
+        "RL16",
+        "RL17",
+        "E07",
+        "ML07"
+      ]
+    }
+  ]
+}

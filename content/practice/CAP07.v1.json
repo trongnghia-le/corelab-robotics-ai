@@ -1,0 +1,473 @@
+{
+  "id": "CAP07-targeted",
+  "topicId": "CAP07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "\"Put it in the bin\" is the first sentence of a session. What should the parser do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Choose the last object mentioned by the robot.",
+        "Return a goal with the nearest object.",
+        "Return Clarify asking which object is meant.",
+        "Return Unparseable and stay silent about why."
+      ],
+      "answer": "2",
+      "explanation": "A pronoun without an antecedent is an ambiguity, so ask.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "parser-ambiguity"
+      ],
+      "skillLabel": "Parser ambiguity and refusal",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Why is \"zero wrong-but-confident parses on adversarial sentences\" a hard zero rather than a percentage?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A wrong parse leads to a wrong physical action.",
+        "Adversarial sentences are too rare to compute a percentage.",
+        "The parser is judged on the exact-match rate only.",
+        "Percentages cannot be computed on ten sentences."
+      ],
+      "answer": "0",
+      "explanation": "Refusing is cheap; executing the wrong action is not.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "parser-ambiguity"
+      ],
+      "skillLabel": "Parser ambiguity and refusal",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Design five adversarial sentences for the tidy-up parser and state what each must return and why.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Covers at least four different failure types (unsafe verb, negation, unknown colour, too many objects, pronoun, contradiction with the scene).",
+        "States Clarify or Unparseable for each with a reason.",
+        "Explains that none may return a goal."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "parser-ambiguity"
+      ],
+      "skillLabel": "Parser ambiguity and refusal",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Robot starts away from the table, goal is one object into a bin. Minimum number of actions (nav, pick, nav, place)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "nav(table), pick, nav(bin), place = 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "plan-bfs-bounds"
+      ],
+      "skillLabel": "Bounded symbolic planning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Why does the planner have an expansion cap even though breadth-first search with a visited set terminates?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "To make the plan longer so it is safer.",
+        "To bound the time on unreachable problems and return None.",
+        "Because breadth-first search can loop forever on repeated states.",
+        "To make the plan optimal."
+      ],
+      "answer": "1",
+      "explanation": "Termination is not the same as bounded time; the cap protects real-time behaviour.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "plan-bfs-bounds"
+      ],
+      "skillLabel": "Bounded symbolic planning",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Start at the table, two objects into the same bin, one gripper. Minimum number of actions?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "pick, nav, place, nav, pick, nav, place = 7.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "plan-bfs-bounds"
+      ],
+      "skillLabel": "Bounded symbolic planning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A pick succeeds with probability 0.7 per try, independently, with at most two retries. Probability the pick eventually succeeds (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.973",
+      "tolerance": 0.002,
+      "explanation": "1 - 0.3^3 = 0.973.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bt-retries"
+      ],
+      "skillLabel": "Behaviour tree retries and bounds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Why limit retries to two and then abort or replan with a reason?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Because a third try always succeeds.",
+        "Because behaviour trees cannot repeat children more than twice.",
+        "Repeated failures usually share a cause, so extra retries waste time and hide the real fault.",
+        "Because retries make the robot move faster."
+      ],
+      "answer": "2",
+      "explanation": "Attempts are rarely independent; the abort reason is what the planner or the user needs.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bt-retries"
+      ],
+      "skillLabel": "Behaviour tree retries and bounds",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP07#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "What does a tick bound in the behaviour tree runner protect against?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A skill that is too accurate.",
+        "Memory leaks in the parser.",
+        "Serial frames with a bad checksum.",
+        "A bug or a never-finishing node hanging the whole task."
+      ],
+      "answer": "3",
+      "explanation": "Every loop in the task layer needs a bound that is tested.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bt-retries"
+      ],
+      "skillLabel": "Behaviour tree retries and bounds",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Human-zone speed 0.15 m/s, reaction time 0.3 s, deceleration 1 m/s squared. Stopping distance in metres (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.056",
+      "tolerance": 0.002,
+      "explanation": "0.15*0.3 + 0.0225/2 = 0.045 + 0.01125 = 0.056 m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "safety-time-budget"
+      ],
+      "skillLabel": "Safety time budget and stopping distance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Heartbeat timeout is 0.2 s and the supervisor tick is 10 ms. Margin in milliseconds to the 300 ms requirement.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "90",
+      "tolerance": 0.5,
+      "explanation": "300 - 200 - 10 = 90 ms.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "safety-time-budget"
+      ],
+      "skillLabel": "Safety time budget and stopping distance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "In 20 nominal episodes the supervisor stopped the robot in 6 of them with no injected hazard. What is the most useful reaction?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Accept it, because stopping is always the safe thing to do.",
+        "Log the reasons, raise the thresholds that fired above nominal and recheck the injection times.",
+        "Disable the supervisor during all nominal runs from now on.",
+        "Remove the hazards that fired from the hazard table."
+      ],
+      "answer": "1",
+      "explanation": "Nuisance stops are a defect; fix them with data without breaking the time budget.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "estop-latch"
+      ],
+      "skillLabel": "E-stop latch and false stops",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP07#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Write the paragraph of docs/safety_architecture.md that explains why the supervisor is independent of the planner and what it does not protect against.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names the mechanisms of independence: own process or thread and clock, sensor and heartbeat inputs, direct firmware stop.",
+        "Lists at least two things it does not protect against (for example a wrong camera image, a bug in the supervisor itself).",
+        "States clearly that it protects a simulation and is not certified safety."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "supervisor-independence"
+      ],
+      "skillLabel": "Independence of the safety layer",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "Design the injection test for \"serial link dead for 200 ms\": inputs, how you measure time to the safe state, the pass limit and one boundary case.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Describes injecting link age growing from the injection time, with nominal inputs otherwise.",
+        "Measures the time from injection to forwarded velocity zero and arm hold, at the 10 ms tick.",
+        "Gives the limit (300 ms) and a boundary case such as a link age just below the timeout that must not trigger."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "hazard-table"
+      ],
+      "skillLabel": "Hazard table and injection tests",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    }
+  ]
+}

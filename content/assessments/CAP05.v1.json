@@ -1,0 +1,200 @@
+{
+  "id": "CAP05-diagnostic",
+  "topicId": "CAP05",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A 50-trial pick benchmark has 40 successes. The gate needs a point estimate of at least 80 % and a lower 95 % Wilson bound of at least 68 %. What is the right conclusion?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Pass: the point estimate is exactly 80 %.",
+        "Pass: 50 trials is enough that the bound can be ignored.",
+        "Fail: the lower bound is about 67.0 %, so one more success would be needed; do not rerun until it passes.",
+        "Fail: the Wilson bound only applies above 100 trials."
+      ],
+      "answer": "2",
+      "explanation": "The Wilson interval for 40/50 is [0.670, 0.888]. 41/50 would give a lower bound of 0.692. Rerunning until a lucky pass is tuning on the test seeds.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "wilson-gate"
+      ],
+      "skillLabel": "Judge success rates with the Wilson bound",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Your segmentation network reports mIoU 0.99 in its log but only 0.70 on the benchmark scenes. What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Train and test frames came from the same scenes (split by frame), so the test set leaked.",
+        "The learning rate was too small.",
+        "The network is too large for 128 x 96 input.",
+        "MuJoCo renders depth in millimetres."
+      ],
+      "answer": "0",
+      "explanation": "Frames from one scene are near duplicates; splitting by frame lets the model memorise the test scenes. Split by scene seed and use different textures and lighting for the test.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "train-test-leak"
+      ],
+      "skillLabel": "Avoid train/test leakage in segmentation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A camera image is 480 pixels high with a vertical field of view of 60 degrees. Focal length f_y in pixels, 1 decimal.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "415.7",
+      "tolerance": 0.1,
+      "explanation": "f_y = 240 / tan(30 deg) = 415.7 px.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "deprojection"
+      ],
+      "skillLabel": "Deproject pixels to 3D",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "With f_x = 415.7 and c_x = 320, pixel column u = 400 at depth 0.5 m. Camera-frame X in metres, 4 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0962",
+      "tolerance": 0.0005,
+      "explanation": "X = (400 - 320) / 415.7 * 0.5 = 0.0962 m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "deprojection"
+      ],
+      "skillLabel": "Deproject pixels to 3D",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP05#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A joint moves 0.6 rad with v_max = 1.5 rad/s and a_max = 4 rad/s^2 using a quintic (peak v = 1.875 dq / T, peak a = 5.7735 dq / T^2). Shortest duration in seconds, 3 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.931",
+      "tolerance": 0.005,
+      "explanation": "Velocity gives 0.75 s, acceleration gives sqrt(5.7735*0.6/4) = 0.931 s. The larger one binds.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quintic-limits"
+      ],
+      "skillLabel": "Quintic duration under limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Why should every IK solve along a path start from the previous waypoint's joint angles?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It makes the Jacobian square.",
+        "It keeps the solution on one branch, so consecutive waypoints do not jump between elbow-up and elbow-down.",
+        "It removes the need for joint limits.",
+        "It makes damped least squares converge in exactly one step."
+      ],
+      "answer": "1",
+      "explanation": "A planar arm has two solutions for most targets. Starting from the previous solution keeps the iteration on the nearest branch; the test limits any joint step to 0.2 rad.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ik-branch"
+      ],
+      "skillLabel": "Keep IK on one branch",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP05#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R05"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Design a calibration and validation procedure for T_base_cam that would reveal an error of a few millimetres.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Collects at least 10 well-spread, non-collinear point pairs and fits the rigid transform (Kabsch/SVD, det = +1).",
+        "Validates on held-out points not used in the fit and reports RMS in millimetres.",
+        "Notes pixel size (about 1 mm at 0.4 m) and depth bias as the error budget, and re-checks after moving the camera."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "hand-eye"
+      ],
+      "skillLabel": "Validate the hand-eye calibration",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP05#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP03"
+      ]
+    }
+  ]
+}

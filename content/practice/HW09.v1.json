@@ -1,0 +1,477 @@
+{
+  "id": "HW09-targeted",
+  "topicId": "HW09",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Bytes 0xFE (high) and 0x70 (low), big-endian two's complement. Signed integer?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-400",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raw-to-units"
+      ],
+      "skillLabel": "Raw bytes to physical units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "0xFE70 = 65136; minus 65536 gives -400."
+    },
+    {
+      "id": "b2",
+      "prompt": "At the +-4 g range (8192 LSB/g) the raw Z value is 8200. Acceleration in g, precision 0.0005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.001",
+      "tolerance": 0.0005,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raw-to-units"
+      ],
+      "skillLabel": "Raw bytes to physical units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW09#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "8200 / 8192 = 1.001 g."
+    },
+    {
+      "id": "b3",
+      "prompt": "Gyro raw value -655 at the +-500 deg/s range (65.5 LSB per deg/s). Rate in deg/s, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-10",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raw-to-units"
+      ],
+      "skillLabel": "Raw bytes to physical units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "-655 / 65.5 = -10.0 deg/s."
+    },
+    {
+      "id": "b4",
+      "prompt": "Raw temperature -3400 on an MPU-6050 (T = raw/340 + 36.53). Temperature in deg C, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "26.53",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raw-to-units"
+      ],
+      "skillLabel": "Raw bytes to physical units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "-3400/340 = -10; -10 + 36.53 = 26.53 deg C."
+    },
+    {
+      "id": "b5",
+      "prompt": "A sensor has the 7-bit address 0x68. What is the first byte on the wire for a write transaction?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "0x68",
+        "0xD1",
+        "0xD0",
+        "0x34"
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "i2c-scan-addressing"
+      ],
+      "skillLabel": "I2C addresses, ACK and timing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "The address is shifted left by one and the R/W bit is appended: 0x68<<1 = 0xD0 for a write (0xD1 for a read)."
+    },
+    {
+      "id": "b6",
+      "prompt": "On the ninth clock after an address byte the SDA line stays high. What does this tell the controller?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The target acknowledged and is ready to send data.",
+        "Nobody acknowledged: there is no device at that address, or a wire is loose.",
+        "The target is stretching the clock.",
+        "The controller must send a repeated start."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "i2c-scan-addressing"
+      ],
+      "skillLabel": "I2C addresses, ACK and timing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "A low SDA on the ninth clock is an ACK. SDA left high is a NACK, which is how a scanner detects an absent address."
+    },
+    {
+      "id": "b7",
+      "prompt": "After power-up a gyro chip answers its address and WHO_AM_I, but its data registers never change. Which first action is the most useful?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Replace the pull-ups with 10 kOhm resistors.",
+        "Swap SDA and SCL.",
+        "Lower the I2C clock to 10 kHz.",
+        "Read PWR_MGMT_1 and clear the SLEEP bit."
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "register-access"
+      ],
+      "skillLabel": "Register access and configuration",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW09#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "The chip is alive (it ACKs and returns WHO_AM_I) but asleep after reset. Writing 0x00 to PWR_MGMT_1 starts the measurements."
+    },
+    {
+      "id": "b8",
+      "prompt": "ACCEL_CONFIG reads 0x18. Bits 4:3 (AFS_SEL) select the range 0..3 = +-2, 4, 8, 16 g. How many LSB per g does that setting give (16384, 8192, 4096, 2048 for 0..3)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2048",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "register-access"
+      ],
+      "skillLabel": "Register access and configuration",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "0x18 = 0b00011000; bits 4:3 = 3, which is +-16 g and 2048 LSB/g."
+    },
+    {
+      "id": "b9",
+      "prompt": "With the DLPF on the gyro output rate is 1 kHz and rate = 1000/(1+SMPLRT_DIV). Which SMPLRT_DIV gives 250 Hz?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "register-access"
+      ],
+      "skillLabel": "Register access and configuration",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW09#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "1000/250 = 4, so SMPLRT_DIV = 4 - 1 = 3."
+    },
+    {
+      "id": "b10",
+      "prompt": "Standard-mode bus: rise time limit 1000 ns, capacitance 200 pF. Largest pull-up in ohms (t_r = 0.8473 Rp Cb), tolerance 10.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5901",
+      "tolerance": 10,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pullups-debug"
+      ],
+      "skillLabel": "Pull-ups and dead-bus debugging",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "1000e-9 / (0.8473 * 200e-12) = 5901 ohm."
+    },
+    {
+      "id": "b11",
+      "prompt": "Why not choose a 100 ohm pull-up to get the fastest edges?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A device must sink the current through the resistor and still pull the line below 0.4 V, and the sink limit is about 3 mA.",
+        "A low-value resistor lowers the bus capacitance too much.",
+        "I2C requires the pull-up to be at least 10 kOhm.",
+        "The resistor would add a parity error."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pullups-debug"
+      ],
+      "skillLabel": "Pull-ups and dead-bus debugging",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "At 3.3 V the minimum is (3.3 - 0.4)/3 mA = 967 ohm; 100 ohm would need about 29 mA of sink current."
+    },
+    {
+      "id": "b12",
+      "prompt": "A device uses a clock that idles low and samples data on the falling edge (the second edge). Which SPI mode?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Mode 0",
+        "Mode 3",
+        "Mode 1",
+        "Mode 2"
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "i2c-vs-spi"
+      ],
+      "skillLabel": "I2C versus SPI",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "Idle low is CPOL=0; sampling on the second edge is CPHA=1; mode = 2*0 + 1 = 1."
+    },
+    {
+      "id": "b13",
+      "prompt": "You must stream data from a sensor at 8 Mbit/s and have spare pins. Which bus is the better fit?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "I2C at 400 kHz, because it needs fewer wires.",
+        "SPI, with one chip-select line and a clock of several MHz.",
+        "I2C with larger pull-ups.",
+        "Either one: their speeds are about the same."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "i2c-vs-spi"
+      ],
+      "skillLabel": "I2C versus SPI",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "Common I2C modes top out at 1 MHz (fast-mode plus; the rare high-speed mode reaches 3.4 MHz), still below 8 Mbit/s, and boards usually run 100 to 400 kHz; SPI runs at several to tens of MHz, at the cost of a chip-select per device."
+    },
+    {
+      "id": "b14",
+      "prompt": "An I2C scan returns nothing. Describe your debugging order and what each check rules out.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Starts with the cheap checks: power and ground, SDA/SCL not swapped, solder and connector, 3.3 V versus 5 V levels.",
+        "Checks the pull-ups (present, 2.2-10 kOhm range, not doubled) and tries a lower clock speed.",
+        "Checks the address pins and the expected address, then uses a scope or logic analyser to look for an ACK."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "pullups-debug"
+      ],
+      "skillLabel": "Pull-ups and dead-bus debugging",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW09#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b15",
+      "prompt": "Write a function plan (or code) that turns 14 burst bytes into g, deg C and deg/s, and list the tests that would catch a wrong byte order, a wrong sign and a wrong range.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Assembles each pair as a big-endian signed 16-bit value (sign-converts values of 32768 and above).",
+        "Divides by the LSB/g and LSB/(deg/s) that match the configured ranges and applies T = raw/340 + 36.53.",
+        "Tests a hand-decoded trace, the boundaries 0x7FFF, 0x8000 and 0xFFFF, and the 1 g gravity magnitude for a still board."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "raw-to-units"
+      ],
+      "skillLabel": "Raw bytes to physical units",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW09#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b16",
+      "prompt": "Time of a burst read of 6 data bytes at 100 kHz with 9 clocks per byte and 3 header bytes. Answer in microseconds, tolerance 1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "810",
+      "tolerance": 1,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "i2c-scan-addressing"
+      ],
+      "skillLabel": "I2C addresses, ACK and timing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW09#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW06"
+      ],
+      "explanation": "9 * (3 + 6) / 100000 = 810 us."
+    }
+  ]
+}

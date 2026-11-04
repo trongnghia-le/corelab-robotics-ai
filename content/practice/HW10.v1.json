@@ -1,0 +1,491 @@
+{
+  "id": "HW10-targeted",
+  "topicId": "HW10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "360 counts per output revolution, a 20 ms tick, 9 counts in one tick. Speed in rad/s, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7.854",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "speed-from-counts"
+      ],
+      "skillLabel": "Speed from encoder counts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "9 * 2*pi / (360 * 0.02) = 7.854 rad/s."
+    },
+    {
+      "id": "b2",
+      "prompt": "2000 counts per revolution and a 5 ms tick. Smallest nonzero speed in rad/s, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.6283",
+      "tolerance": 0.001,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "speed-from-counts"
+      ],
+      "skillLabel": "Speed from encoder counts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "2*pi / (2000 * 0.005) = 0.6283 rad/s."
+    },
+    {
+      "id": "b3",
+      "prompt": "A shaft turns at 31.4159 rad/s. Speed in rpm, tolerance 0.5.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "300",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "speed-from-counts"
+      ],
+      "skillLabel": "Speed from encoder counts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "31.4159 * 60 / (2*pi) = 300 rpm."
+    },
+    {
+      "id": "b4",
+      "prompt": "With a fixed encoder, what happens to the speed quantum 2*pi/(N*T) when the loop rate is raised from 100 Hz to 1 kHz?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It becomes ten times smaller, so the estimate is smoother and less noisy.",
+        "Ten times larger: one count now means more speed.",
+        "It does not change, because it only depends on the counts per revolution N.",
+        "It becomes zero because the loop is faster than the motor."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "speed-from-counts"
+      ],
+      "skillLabel": "Speed from encoder counts",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "T is ten times smaller, so one count per tick corresponds to ten times more speed. Faster is not better for counting; filter, use more counts, or measure the period."
+    },
+    {
+      "id": "b5",
+      "prompt": "A speed filter y += alpha*(x - y) with alpha = 0.25 runs at T = 0.02 s. Approximate time constant T*(1-alpha)/alpha in seconds, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.06",
+      "tolerance": 0.001,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "speed-from-counts"
+      ],
+      "skillLabel": "Speed from encoder counts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "0.02 * 0.75 / 0.25 = 0.06 s."
+    },
+    {
+      "id": "b6",
+      "prompt": "With the clamp (conditional integration) rule, when may the integral state change?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Never while the output is nonzero or the motor is moving.",
+        "Only when the error is exactly zero at the sample instant.",
+        "Always, but with a gain reduced to one tenth.",
+        "When u is unsaturated, or the error pulls it back into range."
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pi-antiwindup"
+      ],
+      "skillLabel": "PI loop with clamp and anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "The integrator updates if u equals u_raw, or if the saturated output and the error have opposite sense (the error would unwind it). Otherwise it holds."
+    },
+    {
+      "id": "b7",
+      "prompt": "Kp = 0.2, Ki = 2, dt = 0.05, umax = 1. Setpoint 4, measured 1, integral state 0.3. Output u after clamping, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.001,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pi-antiwindup"
+      ],
+      "skillLabel": "PI loop with clamp and anti-windup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "e = 3; I_new = 0.3 + 2*0.05*3 = 0.6; u_raw = 0.2*3 + 0.6 = 1.2; clamped to 1.0."
+    },
+    {
+      "id": "b8",
+      "prompt": "Same tick as the previous question, with the clamp rule. What is the integral state afterwards, precision 0.001?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.3",
+      "tolerance": 0.001,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pi-antiwindup"
+      ],
+      "skillLabel": "PI loop with clamp and anti-windup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW10#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "u_raw (1.2) exceeds the limit and the error (3) is positive, pushing further: the integrator holds at 0.3."
+    },
+    {
+      "id": "b9",
+      "prompt": "The setpoint drops from an unreachable value to 10 rad/s, but the PWM stays at 255 for seconds. What is the likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Integrator windup: stored integral still saturates u.",
+        "The encoder wiring is loose or the A and B channels are swapped.",
+        "The dead zone compensation is set too small for this motor.",
+        "The PWM frequency is too high for the driver to follow."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pi-antiwindup"
+      ],
+      "skillLabel": "PI loop with clamp and anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW10#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "A PWM column stuck at full scale after the error changed sign is the signature of an unclamped integral."
+    },
+    {
+      "id": "b10",
+      "prompt": "Dead zone 30 of 255, controller output u = -0.25. Signed duty (round to an integer).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-86",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pwm-mapping"
+      ],
+      "skillLabel": "Signed PWM and dead-zone mapping",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "30 + 225*0.25 = 86.25, rounded 86; negative sign: -86."
+    },
+    {
+      "id": "b11",
+      "prompt": "Why add the dead-zone offset when mapping u to the duty?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "To make the PWM frequency audible to the user.",
+        "To increase the supply voltage seen by the motor.",
+        "Duty below the stiction threshold moves nothing, so the integrator winds up.",
+        "To invert the direction."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pwm-mapping"
+      ],
+      "skillLabel": "Signed PWM and dead-zone mapping",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "Below the stiction duty the motor stays still; mapping u to start at the dead-zone edge makes the loop gain roughly linear."
+    },
+    {
+      "id": "b12",
+      "prompt": "A robot at 0.4 m/s keeps driving until a 250 ms command timeout fires. Distance travelled in metres, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1",
+      "tolerance": 0.001,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "safety-gates"
+      ],
+      "skillLabel": "Firmware safety gates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "0.4 * 0.25 = 0.1 m."
+    },
+    {
+      "id": "b13",
+      "prompt": "Which condition best defines a stall that the firmware should latch as a fault?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Speed above the setpoint for a single tick of the loop.",
+        "High duty with almost no speed for a sustained time.",
+        "Any change of direction.",
+        "A step response that shows 5 % overshoot at the peak."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "safety-gates"
+      ],
+      "skillLabel": "Firmware safety gates",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "A blocked shaft or a dead encoder shows as a large drive with no motion for longer than the normal acceleration time."
+    },
+    {
+      "id": "b14",
+      "prompt": "A step test gives K = 25 rad/s per unit of u and tau = 0.3 s. Lambda-tuned Kp for tau_c = 0.2 s (Kp = tau/(K tau_c)), precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.06",
+      "tolerance": 0.001,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "step-test-tuning"
+      ],
+      "skillLabel": "Step test and tuning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "Kp = 0.3 / (25 * 0.2) = 0.06."
+    },
+    {
+      "id": "b15",
+      "prompt": "Describe how you would run and read a step test of a speed loop, and which numbers you would report.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Applies a step in setpoint from rest, logs time, setpoint, estimated speed and PWM at the fixed rate (CSV over Serial).",
+        "Computes rise time (10-90 %), overshoot, steady-state error from the final samples and settling time into a 2 % band.",
+        "Looks at the PWM trace for saturation or windup and tunes in order: feed-forward and Kp, then Ki, reducing Ki if overshoot is too high."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "step-test-tuning"
+      ],
+      "skillLabel": "Step test and tuning",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW10#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b16",
+      "prompt": "Write the skeleton of the firmware loop: a timer sets a flag, the loop reads the encoder count once, estimates speed, runs a clamped PI, maps to PWM and checks a command timeout.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Timer interrupt only sets a flag; one loop iteration per tick with a fixed dt (no delay or blocking Serial inside).",
+        "Reads the count once per tick, computes speed in rad/s from the difference and the counts per revolution, optionally filters it.",
+        "Runs the PI with clamp and conditional integration, maps u to signed duty with the dead zone, and forces zero output (and integrator reset) when the command timeout expires."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "pi-antiwindup"
+      ],
+      "skillLabel": "PI loop with clamp and anti-windup",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW10#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

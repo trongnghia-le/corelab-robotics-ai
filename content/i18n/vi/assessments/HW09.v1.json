@@ -1,0 +1,59 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Quét I2C thấy địa chỉ 0x68 và WHO_AM_I đọc ra 0x68, nhưng mọi giá trị gia tốc và gyro đều bằng không. Nguyên nhân khả dĩ nhất là gì?",
+   "options": [
+    "Điện trở pull-up quá lớn cho 400 kHz.",
+    "Chip vẫn ở chế độ ngủ: bit SLEEP của PWR_MGMT_1 chưa bao giờ được xóa.",
+    "Địa chỉ sai nên controller đang đọc một thiết bị khác.",
+    "Dữ liệu là big-endian và phải đảo byte."
+   ],
+   "explanation": "PWR_MGMT_1 reset về 0x40 với SLEEP được đặt, nên chip trả lời trên bus (WHO_AM_I chạy) nhưng không đo cho đến khi ghi 0x00 hoặc 0x01."
+  },
+  "q2": {
+   "prompt": "Hai byte 0xFF (cao) và 0x5C (thấp) là một giá trị big-endian dạng bù hai. Số nguyên có dấu là bao nhiêu?",
+   "explanation": "0xFF5C = 65372; trừ 65536 được -164."
+  },
+  "q3": {
+   "prompt": "Một MPU-6050 ở dải +-2 g (16384 LSB/g) báo giá trị Z thô là 16500. Gia tốc theo g, độ chính xác 0.0005.",
+   "explanation": "16500 / 16384 = 1.0071 g."
+  },
+  "q4": {
+   "prompt": "Bus I2C 400 kHz cho phép thời gian lên 300 ns và có điện dung 150 pF. Pull-up lớn nhất tính bằng ohm (t_r = 0.8473 Rp Cb), dung sai 5.",
+   "explanation": "300e-9 / (0.8473 * 150e-12) = 2360 ohm."
+  },
+  "q5": {
+   "prompt": "Một thiết bị SPI cần xung nhịp nghỉ ở mức cao và lấy mẫu ở cạnh lên, là cạnh thứ hai. Đó là mode nào?",
+   "options": [
+    "Mode 0 (CPOL=0, CPHA=0)",
+    "Mode 1 (CPOL=0, CPHA=1)",
+    "Mode 2 (CPOL=1, CPHA=0)",
+    "Mode 3 (CPOL=1, CPHA=1)"
+   ],
+   "explanation": "Nghỉ ở mức cao là CPOL=1; lấy mẫu ở cạnh thứ hai là CPHA=1; mode = 2*CPOL + CPHA = 3."
+  },
+  "q6": {
+   "prompt": "Một Uno nói chuyện với một board breakout không có pull-up, chỉ dùng pull-up nội của vi điều khiển (20-50 kOhm). Vì sao nó có thể hỏng ở 400 kHz?",
+   "options": [
+    "Các điện trở nội cho quá ít dòng nên cảm biến không thức dậy.",
+    "Pull-up yếu làm đường lên quá chậm so với giới hạn 300 ns.",
+    "Pull-up nội làm đường dao động vượt quá Vcc.",
+    "I2C không chạy được trên controller 5 V."
+   ],
+   "explanation": "Thời gian lên khoảng 0.8473*Rp*Cb; với 20 kOhm và 100 pF là 1.7 us, vượt xa 300 ns, nên cạnh quá chậm."
+  },
+  "q7": {
+   "prompt": "Liệt kê các bước firmware thực hiện để đọc gia tốc từ một MPU-6050 ở địa chỉ 0x68, từ lúc cấp nguồn đến một giá trị theo g.",
+   "rubric": [
+    "Kiểm tra địa chỉ bằng scan hoặc WHO_AM_I (0x68) trước khi tin dữ liệu.",
+    "Đánh thức chip (ghi PWR_MGMT_1) và đặt dải đo, ghi nhận hệ số tỉ lệ tương ứng.",
+    "Đọc burst 0x3B..0x48 trong một transaction (ghi con trỏ, repeated start, đọc), ghép các giá trị có dấu big-endian và chia cho LSB/g."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "q8": {
+   "prompt": "Thời gian trên bus cho một lần đọc burst 14 byte dữ liệu ở 400 kHz, dùng 9 xung mỗi byte và 3 byte đầu (địa chỉ+W, register, địa chỉ+R). Trả lời bằng micro giây, dung sai 1.",
+   "explanation": "9 * (3 + 14) / 400000 = 382.5 us."
+  }
+ }
+}

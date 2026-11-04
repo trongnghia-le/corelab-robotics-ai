@@ -58,6 +58,17 @@ export const practices = [
     verified: false,
   },
   {
+    id: "hardware-lab",
+    topicId: "HW03",
+    domain: "Hardware & Embedded",
+    title: "Will the battery last the demo?",
+    kind: "Numerical + datasheet",
+    task: "Build a power budget for a small robot: list each part's voltage and typical/peak current from its datasheet, sum the load per rail, add regulator losses, and estimate runtime from a real battery's capacity with a derating margin. Test a stall-current peak, a missing ground return and an undersized fuse.",
+    starter: "/practice/experiment.md",
+    command: "python3 your_power_budget.py",
+    verified: false,
+  },
+  {
     id: "vision-lab",
     topicId: "V01",
     domain: "Computer Vision",

@@ -1,0 +1,119 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "Cận dưới Wilson 95 % cho 95 điểm với tới được trong 100, độ chính xác 0.005.",
+      "explanation": "wilson_interval(95, 100) = (0.888, 0.978)."
+    },
+    "b2": {
+      "prompt": "Cận trên Wilson 95 % cho 9 thành công trong 10 episode, độ chính xác 0.005.",
+      "explanation": "wilson_interval(9, 10) = (0.596, 0.982)."
+    },
+    "b3": {
+      "prompt": "Vì sao các acceptance test sau này kiểm tra cận dưới Wilson thay vì phần trăm thành công?",
+      "options": [
+        "Số episode hữu hạn để lại bất định, và cận dưới là một khẳng định mà dữ liệu hỗ trợ với độ tin cậy 95 %.",
+        "Phần trăm luôn thấp hơn cận Wilson. Nên kiểm tra nó chỉ làm test dễ vượt qua hơn một cách an toàn.",
+        "Cận Wilson làm test chạy nhanh hơn.",
+        "Cận dưới loại bỏ nhu cầu cố định seed."
+      ],
+      "explanation": "Ước lượng điểm che giấu việc bạn chỉ chạy ít episode."
+    },
+    "b4": {
+      "prompt": "Trong một MJCF không có thẻ compiler, một khớp có range=\"0 1.57\". Giới hạn trên của nó theo radian, độ chính xác 0.0005.",
+      "explanation": "1.57 độ = 0.0274 rad."
+    },
+    "b5": {
+      "prompt": "Một giới hạn URDF upper=\"1.92\" được chép từ MJCF range=\"-110 110\". Phát biểu nào đúng?",
+      "options": [
+        "Giới hạn URDF sai vì giới hạn URDF cũng phải là 110.",
+        "Cả hai mô tả 110 độ, với điều kiện MJCF dùng cài đặt compiler độ mặc định.",
+        "Cả hai đều theo radian nên chúng khác nhau 57 lần.",
+        "Giá trị URDF theo độ còn giá trị MJCF theo radian."
+      ],
+      "explanation": "110 độ là 1.92 rad."
+    },
+    "b6": {
+      "prompt": "Cổ tay cách tool 0.1 m. Sai số góc theo độ làm tool lệch 1 mm, độ chính xác 0.01.",
+      "explanation": "0.001/0.1 = 0.01 rad = 0,573 độ."
+    },
+    "b7": {
+      "prompt": "FK của bạn khớp MuJoCo trong 0.1 mm nhưng FK dựa trên URDF lệch 4 cm. Lỗi nhiều khả năng nằm ở đâu?",
+      "options": [
+        "Ở bước thời gian vật lý của MuJoCo. Bước thời gian sai sẽ làm lệch mọi tư thế mô phỏng hàng cm.",
+        "Ở đơn vị của khối lượng.",
+        "Ở seed của môi trường.",
+        "Ở dấu trục, thứ tự rpy hoặc offset gốc của URDF."
+      ],
+      "explanation": "Hai mô tả khớp nhau và một mô tả lệch chỉ ra tệp lệch."
+    },
+    "b8": {
+      "prompt": "Đoạn code nào làm rò ngẫu nhiên vào một môi trường có seed?",
+      "options": [
+        "rng = np.random.default_rng(seed); x = rng.uniform(0, 1)",
+        "x = rng.permutation(objects) với rng được truyền vào",
+        "x = np.random.rand() bên trong reset()",
+        "seed_hash = hash((seed, 'scene')) với PYTHONHASHSEED được cố định"
+      ],
+      "explanation": "Trạng thái NumPy toàn cục dùng chung với mọi thư viện và phụ thuộc thứ tự gọi."
+    },
+    "b9": {
+      "prompt": "Bước vật lý 0.5 ms. Số bước trong 5 s nghỉ.",
+      "explanation": "5 / 0.0005 = 10000."
+    },
+    "b10": {
+      "prompt": "Trong MuJoCo, một contact có dist âm nghĩa là gì?",
+      "options": [
+        "Hai geom đang xuyên vào nhau với độ sâu đó.",
+        "Contact bị vô hiệu.",
+        "Hai geom cách nhau khoảng đó.",
+        "Lực contact hướng xuống."
+      ],
+      "explanation": "mjContact.dist là khoảng cách có dấu; âm nghĩa là xuyên."
+    },
+    "b11": {
+      "prompt": "Hàng yêu cầu nào là đầy đủ?",
+      "options": [
+        "SR4 | Robot nghỉ tốt | trông ổn định | tốt | - | - | có vẻ ổn",
+        "SR4 | Robot nghỉ | - | - | - | test_rest_stability",
+        "SR4 | Robot nghỉ | độ trôi base trong 5 s | < 2 mm | - | -",
+        "SR4 | Robot nghỉ | độ trôi base trong 5 s | < 2 mm | dưới độ phân giải odometry | test_rest_stability"
+      ],
+      "explanation": "Một hàng cần metric, ngưỡng, lý do và test."
+    },
+    "b12": {
+      "prompt": "Tổng khối lượng MJCF 2.40 kg, URDF 2.47 kg. Chênh lệch tương đối theo phần trăm (chia cho khối lượng MJCF), độ chính xác 0.05.",
+      "explanation": "0.07/2.40 = 2.92 %: không đạt giới hạn 2 %."
+    },
+    "b13": {
+      "prompt": "Với hình học từ đế tay đến bàn mà 36 trong 100 điểm bàn lấy mẫu với tới được, nó hụt cổng 95 % bao nhiêu điểm phần trăm?",
+      "explanation": "95 - 36 = 59 điểm: tỉ lệ mô hình sai, không phải code."
+    },
+    "b14": {
+      "prompt": "Thiết kế một test độ ổn định khi nghỉ không thể vượt qua một cách ngẫu nhiên. Nói bạn ghi lại gì, khi nào và với ngưỡng nào.",
+      "rubric": [
+        "Ghi vị trí base, góc khớp tay, tính hữu hạn và độ xuyên lớn nhất ở mọi bước, không chỉ trạng thái cuối.",
+        "Dùng lệnh bằng không, seed cố định và 5 s thời gian mô phỏng với ngưỡng tường minh (khoảng 2 mm, 0.5 độ, 2 mm).",
+        "Giải thích rằng giá trị lớn nhất theo thời gian bắt được hiện tượng thoáng qua và biện minh từng ngưỡng."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b15": {
+      "prompt": "Mô tả cách biến 'mọi yêu cầu đều truy vết được tới một test' thành kiểm tra tự động và nó không thể chứng minh điều gì.",
+      "rubric": [
+        "Phân tích SPEC.md lấy id yêu cầu và tên test được trích dẫn, và dùng ast kiểm tra mỗi hàm test tồn tại.",
+        "Yêu cầu số lượng tối thiểu (khoảng 8) và thất bại với mọi hàng không có test.",
+        "Nêu giới hạn: nó chứng minh test tồn tại, không chứng minh test có ý nghĩa, nên vẫn cần review và kill-test."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b16": {
+      "prompt": "Một đồng nghiệp đề xuất bỏ URDF và chỉ giữ MJCF. Nêu một lợi ích, một chi phí và quyết định của bạn cho capstone này.",
+      "rubric": [
+        "Lợi ích: bớt một tệp phải giữ nhất quán.",
+        "Chi phí: mất cầu nối tới ROS 2, Nav2 và các thư viện kinematics dựa trên URDF.",
+        "Đưa ra quyết định có lý do (ví dụ giữ cả hai và kiểm tra chúng với nhau)."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

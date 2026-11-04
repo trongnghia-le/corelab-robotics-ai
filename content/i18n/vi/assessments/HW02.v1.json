@@ -1,0 +1,65 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Bạn muốn đo dòng điện mà một mạch động cơ nhỏ tiêu thụ bằng đồng hồ vạn năng. Bạn nối đồng hồ thế nào?",
+      "options": [
+        "Song song qua động cơ, núm xoay ở chế độ đo dòng.",
+        "Nối tiếp với động cơ, ngắt mạch, núm xoay ở chế độ đo dòng.",
+        "Song song qua pin, núm xoay ở chế độ đo dòng.",
+        "Chạm que đo vào dây động cơ với núm xoay ở chế độ ohm."
+      ],
+      "explanation": "Dòng điện là lưu lượng chạy qua một đường, nên đồng hồ phải là một phần của đường đó: nối tiếp. Ở chế độ đo dòng đồng hồ gần như một mạch ngắn nên không bao giờ được đặt song song qua nguồn."
+    },
+    "q2": {
+      "prompt": "Một chân output của ESP32 (3,3 V) điều khiển một chân input của ATmega328P cấp nguồn 5 V. ESP32 đảm bảo VOH tối thiểu 2,64 V; ATmega328P cần ít nhất 3,0 V để đọc là mức cao. Kết luận đúng là gì?",
+      "options": [
+        "An toàn, vì 2,64 V cao hơn ngưỡng thấp 1,5 V.",
+        "An toàn, vì cả hai chip đều dùng logic CMOS và 3,3 V là đủ cao.",
+        "Hỏng, vì ESP32 chỉ có thể đưa tín hiệu 5 V vào chip 5 V.",
+        "Mức cao không được đảm bảo sẽ đọc là cao, nên dùng bộ dịch mức (level shifter)."
+      ],
+      "explanation": "VOH được đảm bảo 2,64 V thấp hơn mức VIH tối thiểu 3,0 V ở 5 V, nên phép đọc có thể hỏng theo nhiệt độ hay sai khác linh kiện. Hãy so VOH(min) với VIH(min), không dùng giá trị điển hình."
+    },
+    "q3": {
+      "prompt": "Trong datasheet, mức tối đa tuyệt đối (absolute maximum rating) cho bạn biết điều gì?",
+      "options": [
+        "Một giới hạn chịu đựng: vượt qua có thể làm hỏng linh kiện, và hoạt động bình thường ở đó không được hứa.",
+        "Giá trị mà linh kiện đạt trung bình ở 25 độ C.",
+        "Dải trong đó mọi thông số được liệt kê đều được đảm bảo.",
+        "Giá trị hãng khuyến nghị để có độ chính xác tốt nhất."
+      ],
+      "explanation": "Mức tối đa tuyệt đối là giới hạn để không hỏng, không phải dải hoạt động. Sự đảm bảo nằm ở bảng điều kiện hoạt động khuyến nghị hoặc điều kiện thử; giá trị điển hình chỉ là điển hình."
+    },
+    "q4": {
+      "prompt": "Một bộ chia áp 10 k và 20 k từ 5 V đọc 3,33 V khi chưa nối gì. Bạn nối một đầu vào 47 k vào đầu ra. Điện áp ra thay đổi thế nào?",
+      "options": [
+        "Vẫn 3,33 V, vì tỉ lệ chia do R1 và R2 quyết định.",
+        "Tăng lên, vì tải thêm dòng vào nút ra.",
+        "Giảm còn khoảng 2,9 V, vì tải mắc song song với R2.",
+        "Giảm về 0 V, vì mọi tải đều làm ngắn mạch bộ chia áp."
+      ],
+      "explanation": "Tải song song với R2: 20k || 47k = 14,0k, nên Vout = 5 * 14,0 / 24,0 = 2,92 V. Tỉ lệ cố định chỉ đúng khi đầu ra không có tải."
+    },
+    "q5": {
+      "prompt": "Một LED đỏ (Vf = 2,0 V) chạy từ 3,3 V ở khoảng 5 mA. Cho điện trở chuẩn E12 nhỏ nhất (tính bằng ohm) mà không nhỏ hơn giá trị tính được.",
+      "explanation": "(3,3-2,0)/0,005 = 260 ohm; các giá trị E12 là 220 và 270, làm tròn lên 270."
+    },
+    "q6": {
+      "prompt": "Pin 12 V cấp cho bộ chia áp 30 k trên 10 k (đầu ra ở giữa). Điện áp ra tính bằng volt.",
+      "explanation": "12 * 10 / (30 + 10) = 3,0 V."
+    },
+    "q7": {
+      "prompt": "Một điện trở 24 ohm được nối qua 12 V. Công suất tiêu tán tính bằng watt.",
+      "explanation": "P = V^2 / R = 144 / 24 = 6 W."
+    },
+    "q8": {
+      "prompt": "Một bộ chia áp cấp cho ADC đọc thấp hơn công thức dự đoán. Giải thích nguyên nhân khả dĩ và nêu hai cách sửa.",
+      "rubric": [
+        "Nhận ra hiện tượng tải: ADC hoặc mạch nối vào song song với R2, làm giảm điện trở dưới hiệu dụng.",
+        "Tính hoặc nêu hiệu ứng bằng công thức song song (ví dụ R2 || RL) chứ không chỉ gọi tên.",
+        "Nêu hai cách sửa: điện trở nhỏ hơn (bộ chia cứng hơn, tốn dòng hơn), bộ đệm hoặc op-amp, hoặc chọn tải lớn hơn R2 ít nhất mười lần."
+      ],
+      "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

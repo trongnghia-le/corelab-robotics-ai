@@ -1,0 +1,484 @@
+{
+  "id": "CAP03-targeted",
+  "topicId": "CAP03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "A camera 480 pixels high has a vertical field of view of 60 degrees. What is the focal length in pixels?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "415.7",
+      "tolerance": 1.0,
+      "explanation": "240/tan(30 deg) = 415.7 px.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "camera-model"
+      ],
+      "skillLabel": "Pinhole focal length",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A marker of side 0.2 m is 2.5 m away and f = 500 px. What is its width in pixels?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "40",
+      "tolerance": 0.5,
+      "explanation": "w = f*s/Z = 500*0.2/2.5 = 40 px.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "landmark-noise"
+      ],
+      "skillLabel": "Marker size and range error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Predicted bearing -3.0 rad, measured +3.0 rad. The wrapped innovation (measured minus predicted) is:",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "+6.0 rad, because wrapping is only needed for the heading state and not for the measurement.",
+        "+0.283 rad, because the sign of the wrapped innovation is always taken from the measurement.",
+        "-0.283 rad, because 6.0 - 2*pi is -0.283.",
+        "0 rad, because both angles are close to pi and are therefore treated as the same direction."
+      ],
+      "answer": "2",
+      "explanation": "Subtract 2*pi from 6.0 to bring it into [-pi, pi).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "angle-wrapping"
+      ],
+      "skillLabel": "Angle wrapping in the update",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "A filter's mean 3-dof NEES is 1.0 and its mean NIS is 0.4 (expected 2). What is the likely problem?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The filter is perfectly consistent, because a mean NEES below 3 is always better than the expected value, so no further checks are needed.",
+        "The filter is underconfident: Q and R are inflated, possibly to hide a bug, and should be recomputed from data.",
+        "The filter is overconfident, because small NEES and NIS values mean the covariance is too small.",
+        "The gate is too loose, because it lets too many outliers through and that lowers every statistic."
+      ],
+      "answer": "1",
+      "explanation": "Values far below the expectation mean the covariance is larger than the real errors.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nees-interpretation"
+      ],
+      "skillLabel": "Reading NEES and NIS",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "NEES looks fine (mean 3.1) but the mean NIS of the 2-dof landmark updates is 6. What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The process noise Q is too large, which always raises NIS while leaving NEES untouched in a long run, as long as the gyro stays accurate.",
+        "The wheel odometry scale is wrong, which affects NIS only and never changes the NEES of the pose.",
+        "The NIS expectation is 6 for a range-bearing update, so the filter is in fact consistent.",
+        "The landmark measurement noise R is too small, or the detector produces outliers that the gate lets through."
+      ],
+      "answer": "3",
+      "explanation": "NIS tests the innovations directly; a mean three times its expectation means S is too small for them.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nees-interpretation"
+      ],
+      "skillLabel": "Reading NEES and NIS",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "A 99 % gate is applied to 500 good detections. How many are expected to be rejected?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 1.0,
+      "explanation": "1 % of 500 = 5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "outlier-gating"
+      ],
+      "skillLabel": "Mahalanobis gate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP03#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "With no injected outliers, 8 % of the detections are gated. What is the most likely explanation?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "The covariance or the measurement model is wrong (overconfident filter, frame or sign error), so good innovations look large.",
+        "The gate is working as designed, because a 99 % gate rejects about 8 % of good detections.",
+        "The camera has too many pixels, which makes the detector produce more outliers at high resolution.",
+        "The landmarks are too far apart, which is fixed by tightening the gate to the 95 % quantile."
+      ],
+      "answer": "0",
+      "explanation": "A correct 99 % gate rejects about 1 % of good detections.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "outlier-gating"
+      ],
+      "skillLabel": "Mahalanobis gate",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP03#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Which check best catches a covariance that has lost its numerical health during a 60 s run?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "Check that the final position error is below 5 cm, since a damaged covariance always spoils the mean, so accuracy alone is a sufficient check.",
+        "Check that the mean NIS is exactly 2, since any deviation from 2 shows that P is not positive definite.",
+        "Check that the update takes less than 2 ms, since slow updates are always caused by a damaged covariance.",
+        "Test that P stays symmetric (max asymmetry below 1e-9) and that its smallest eigenvalue stays positive at every step."
+      ],
+      "answer": "3",
+      "explanation": "Numerical health is a property of P itself.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ekf-numerics"
+      ],
+      "skillLabel": "Joseph form and numerical health",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP03#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "During a 20 s gap without landmarks the plotted 2-sigma band of the x error stays flat while the true error grows to 14 cm. What does this show?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "The filter is honest, because the band is flat only when the error is within what the gyro can correct.",
+        "The plot is wrong, because the 2-sigma band is only defined at the moments when a landmark is accepted.",
+        "The filter is lying: the covariance should have grown, so process noise or the bias model is too optimistic.",
+        "The odometry is perfect, because the band would only grow when the wheel counts had been lost."
+      ],
+      "answer": "2",
+      "explanation": "Without measurements the covariance must grow.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "observability"
+      ],
+      "skillLabel": "Observability without landmarks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP03#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Which protocol is correct for tuning Q and R and reporting accuracy?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "Tune on the test seeds until every threshold passes, then report the best of the runs, which is common practice in many papers.",
+        "Tune on a separate seed set, freeze the values, run once on the test seeds and report both seed lists.",
+        "Tune on a single trajectory and report the accuracy of the average of the five test trajectories.",
+        "Tune until the NEES fraction is exactly 95 % on the test seeds and then stop changing values."
+      ],
+      "answer": "1",
+      "explanation": "Separate seeds make the final numbers an honest estimate.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "eval-hygiene"
+      ],
+      "skillLabel": "Tuning versus test seeds",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP03#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "A marker is 21.7 px wide at 4 m and the width noise is 0.7 px. What is the range error sigma_Z = Z*sigma_w/w in metres?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.129",
+      "tolerance": 0.005,
+      "explanation": "4*0.7/21.7 = 0.129 m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "landmark-noise"
+      ],
+      "skillLabel": "Marker size and range error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Design the consistency section of your report: what you compute, from which data, and how you present it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes NEES of the pose block (3 dof) with ground truth and NIS (2 dof) per accepted update, on subsampled data, and states the expected values (3 and 2) and the 95 % interval.",
+        "Reports the fraction inside the interval and the mean for every test trajectory, with tuning and test seeds listed separately.",
+        "Shows error versus time with 2-sigma bands and interprets deviations (overconfident, underconfident, outliers) with a concrete next step."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "nees-interpretation"
+      ],
+      "skillLabel": "Reading NEES and NIS",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP03#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Write the test plan for the outlier requirement: 10 percent wrong detections must raise RMSE by less than 50 percent and the filter must report gated detections.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Runs the same seed twice, clean and with 10 % wrong-ID or wrong-pose detections injected by a seeded generator.",
+        "Asserts RMSE(outliers) < 1.5 * RMSE(clean) and that the gated count is greater than zero.",
+        "Also checks that on the clean run the gated count is about 1 % of the attempts, so the gate is not hiding a bug."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "outlier-gating"
+      ],
+      "skillLabel": "Mahalanobis gate",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP03#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "The room has eight distinct markers and a good gyro. Argue for an EKF over a particle filter, and name one situation that would change your mind.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Argues that the pose is unimodal, the markers are distinct (known data association) and the EKF is cheap and gives a covariance directly.",
+        "Names a situation that favours a particle filter, such as symmetric rooms, ambiguous markers or global localisation after a kidnap.",
+        "Mentions that robot_localization or AMCL could replace the hand-written filter and that writing it once explains their parameters."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "filter-choice"
+      ],
+      "skillLabel": "Choosing an estimator",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/CAP03#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Các byte 0xFE (cao) và 0x70 (thấp), big-endian bù hai. Số nguyên có dấu?",
+   "explanation": "0xFE70 = 65136; trừ 65536 được -400."
+  },
+  "b2": {
+   "prompt": "Ở dải +-4 g (8192 LSB/g) giá trị Z thô là 8200. Gia tốc theo g, độ chính xác 0.0005.",
+   "explanation": "8200 / 8192 = 1.001 g."
+  },
+  "b3": {
+   "prompt": "Giá trị gyro thô -655 ở dải +-500 deg/s (65.5 LSB mỗi deg/s). Tốc độ góc theo deg/s, độ chính xác 0.01.",
+   "explanation": "-655 / 65.5 = -10.0 deg/s."
+  },
+  "b4": {
+   "prompt": "Nhiệt độ thô -3400 trên một MPU-6050 (T = raw/340 + 36.53). Nhiệt độ theo độ C, độ chính xác 0.01.",
+   "explanation": "-3400/340 = -10; -10 + 36.53 = 26.53 độ C."
+  },
+  "b5": {
+   "prompt": "Một cảm biến có địa chỉ 7 bit 0x68. Byte đầu tiên trên dây của một transaction ghi là gì?",
+   "options": [
+    "0x68",
+    "0xD1",
+    "0xD0",
+    "0x34"
+   ],
+   "explanation": "Địa chỉ được dịch trái một bit và bit R/W được nối thêm: 0x68<<1 = 0xD0 khi ghi (0xD1 khi đọc)."
+  },
+  "b6": {
+   "prompt": "Ở xung nhịp thứ chín sau một byte địa chỉ, đường SDA vẫn ở mức cao. Điều này cho controller biết gì?",
+   "options": [
+    "Target đã xác nhận và sẵn sàng gửi dữ liệu.",
+    "Không ai xác nhận: không có thiết bị ở địa chỉ đó, hoặc một dây bị lỏng.",
+    "Target đang kéo giãn xung nhịp.",
+    "Controller phải gửi một repeated start."
+   ],
+   "explanation": "SDA thấp ở xung thứ chín là ACK. SDA để cao là NACK, đó là cách scanner phát hiện một địa chỉ vắng mặt."
+  },
+  "b7": {
+   "prompt": "Sau khi cấp nguồn, một chip gyro trả lời địa chỉ và WHO_AM_I, nhưng các register dữ liệu không bao giờ đổi. Hành động đầu tiên hữu ích nhất là gì?",
+   "options": [
+    "Thay pull-up bằng điện trở 10 kOhm.",
+    "Đổi chỗ SDA và SCL.",
+    "Hạ xung I2C xuống 10 kHz.",
+    "Đọc PWR_MGMT_1 và xóa bit SLEEP."
+   ],
+   "explanation": "Chip còn sống (nó ACK và trả WHO_AM_I) nhưng đang ngủ sau reset. Ghi 0x00 vào PWR_MGMT_1 để bắt đầu đo."
+  },
+  "b8": {
+   "prompt": "ACCEL_CONFIG đọc ra 0x18. Bit 4:3 (AFS_SEL) chọn dải 0..3 = +-2, 4, 8, 16 g. Thiết lập đó cho bao nhiêu LSB mỗi g (16384, 8192, 4096, 2048 cho 0..3)?",
+   "explanation": "0x18 = 0b00011000; bit 4:3 = 3, tức +-16 g và 2048 LSB/g."
+  },
+  "b9": {
+   "prompt": "Khi bật DLPF, tần số đầu ra gyro là 1 kHz và tần số = 1000/(1+SMPLRT_DIV). SMPLRT_DIV nào cho 250 Hz?",
+   "explanation": "1000/250 = 4, nên SMPLRT_DIV = 4 - 1 = 3."
+  },
+  "b10": {
+   "prompt": "Bus standard-mode: giới hạn thời gian lên 1000 ns, điện dung 200 pF. Pull-up lớn nhất tính bằng ohm (t_r = 0.8473 Rp Cb), dung sai 10.",
+   "explanation": "1000e-9 / (0.8473 * 200e-12) = 5901 ohm."
+  },
+  "b11": {
+   "prompt": "Vì sao không chọn pull-up 100 ohm để có cạnh nhanh nhất?",
+   "options": [
+    "Thiết bị phải hút dòng qua điện trở mà vẫn kéo đường xuống dưới 0.4 V, và giới hạn hút khoảng 3 mA.",
+    "Điện trở nhỏ làm điện dung bus giảm quá nhiều.",
+    "I2C yêu cầu pull-up ít nhất 10 kOhm.",
+    "Điện trở sẽ gây lỗi parity."
+   ],
+   "explanation": "Ở 3.3 V mức tối thiểu là (3.3 - 0.4)/3 mA = 967 ohm; 100 ohm cần khoảng 29 mA dòng hút."
+  },
+  "b12": {
+   "prompt": "Một thiết bị dùng xung nhịp nghỉ mức thấp và lấy mẫu ở cạnh xuống (cạnh thứ hai). Mode SPI nào?",
+   "options": [
+    "Mode 0",
+    "Mode 3",
+    "Mode 1",
+    "Mode 2"
+   ],
+   "explanation": "Nghỉ mức thấp là CPOL=0; lấy mẫu ở cạnh thứ hai là CPHA=1; mode = 2*0 + 1 = 1."
+  },
+  "b13": {
+   "prompt": "Bạn phải truyền dữ liệu từ một cảm biến ở 8 Mbit/s và còn dư chân. Bus nào phù hợp hơn?",
+   "options": [
+    "I2C ở 400 kHz, vì cần ít dây hơn.",
+    "SPI, với một đường chip-select và xung nhịp vài MHz.",
+    "I2C với pull-up lớn hơn.",
+    "Cái nào cũng được: tốc độ chúng gần như nhau."
+   ],
+   "explanation": "Các chế độ I2C thông dụng tối đa 1 MHz (fast-mode plus; chế độ high-speed hiếm gặp đạt 3,4 MHz), vẫn thấp hơn 8 Mbit/s, và board thường chạy 100 đến 400 kHz; SPI chạy ở vài đến hàng chục MHz, đổi lại một chip-select cho mỗi thiết bị."
+  },
+  "b14": {
+   "prompt": "Một I2C scan không trả về gì. Mô tả thứ tự gỡ lỗi của bạn và mỗi bước loại trừ điều gì.",
+   "rubric": [
+    "Bắt đầu bằng các kiểm tra rẻ: nguồn và đất, SDA/SCL không bị đảo, mối hàn và đầu nối, mức 3.3 V so với 5 V.",
+    "Kiểm tra pull-up (có, trong khoảng 2.2-10 kOhm, không bị gấp đôi) và thử xung nhịp thấp hơn.",
+    "Kiểm tra chân địa chỉ và địa chỉ mong đợi, rồi dùng oscilloscope hoặc logic analyser để tìm một ACK."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b15": {
+   "prompt": "Viết kế hoạch hàm (hoặc code) đổi 14 byte burst sang g, độ C và deg/s, và liệt kê các test sẽ bắt được lỗi thứ tự byte, lỗi dấu và lỗi dải đo.",
+   "rubric": [
+    "Ghép mỗi cặp thành giá trị 16 bit có dấu big-endian (đổi dấu các giá trị từ 32768 trở lên).",
+    "Chia cho LSB/g và LSB/(deg/s) khớp với dải đo đã cấu hình và áp dụng T = raw/340 + 36.53.",
+    "Kiểm thử một trace giải mã tay, các biên 0x7FFF, 0x8000 và 0xFFFF, và độ lớn trọng lực 1 g cho board đứng yên."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b16": {
+   "prompt": "Thời gian của một lần đọc burst 6 byte dữ liệu ở 100 kHz với 9 xung mỗi byte và 3 byte đầu. Trả lời bằng micro giây, dung sai 1.",
+   "explanation": "9 * (3 + 6) / 100000 = 810 us."
+  }
+ }
+}

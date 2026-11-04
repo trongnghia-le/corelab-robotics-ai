@@ -1,0 +1,270 @@
+{
+  "id": "CAP01-diagnostic",
+  "topicId": "CAP01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Two runs of reset(seed=7) plus 500 identical steps give a maximum qpos difference of 3e-4 on the same machine. What do you check first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Whether your forward kinematics uses the right link lengths. Wrong lengths would also shift the tool pose in every run.",
+        "Whether the physics time step should be made even smaller.",
+        "Any randomness that does not come from np.random.default_rng(seed), such as global random state or set ordering.",
+        "Whether the URDF mass matches the MJCF mass."
+      ],
+      "answer": "2",
+      "explanation": "On one machine a seeded simulation is a function of its seed; a difference means some state outside the seed leaked in.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "seed"
+      ],
+      "skillLabel": "Seeded reproducibility",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "27 successes in 30 episodes. Lower end of the Wilson 95 % interval, precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.744",
+      "tolerance": 0.005,
+      "explanation": "Wilson gives (0.744, 0.965).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson"
+      ],
+      "skillLabel": "Success rates and the Wilson bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "An MJCF has no <compiler> tag and a hinge with range=\"-90 90\". What does this range mean?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Plus and minus 90 degrees, because degrees are the MJCF default.",
+        "Plus and minus 90 radians.",
+        "Plus and minus 90 milliradians.",
+        "It is invalid without an explicit angle attribute. MuJoCo refuses to compile such a model and reports an error."
+      ],
+      "answer": "0",
+      "explanation": "MuJoCo's compiler angle attribute defaults to degree; a URDF limit would be 1.571 rad.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "units"
+      ],
+      "skillLabel": "Units in MJCF and URDF",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A joint 0.25 m from the tool has a small angle error. Which error in degrees moves the tool by 1 mm? Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.229",
+      "tolerance": 0.01,
+      "explanation": "0.001/0.25 = 0.004 rad = 0.229 degrees.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fk"
+      ],
+      "skillLabel": "Forward kinematics tolerance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Which requirement is falsifiable in the sense of the SPEC.md format?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The robot should be accurate. It must behave well in every situation the lab will present.",
+        "The code should be clean and well structured.",
+        "The simulator should look realistic.",
+        "Idle base drift over 5 s is below 2 mm, checked by test_rest_stability."
+      ],
+      "answer": "3",
+      "explanation": "It has a metric, a threshold and a named test that can fail.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "spec"
+      ],
+      "skillLabel": "Write falsifiable requirements",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "MJCF mass 3.18 kg, URDF mass 3.10 kg. Relative difference in percent (divide by the MJCF mass), precision 0.05.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.52",
+      "tolerance": 0.05,
+      "explanation": "0.08/3.18 = 2.52 %, above the 2 % limit.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "consist"
+      ],
+      "skillLabel": "MJCF and URDF consistency",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe a test that shows the URDF and the MJCF describe the same robot, and say what failure each part of it catches.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Compares joint names and limits within a tolerance of about 1e-6 (catches missing joints and degree/radian slips).",
+        "Compares total mass within about 2 % (catches missing bodies or unit slips).",
+        "Compares forward-kinematics tool positions for random configurations within about 1 mm (catches axis sign and offset errors)."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "consist"
+      ],
+      "skillLabel": "MJCF and URDF consistency",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP01#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "Why does the FK test use 20 random joint configurations rather than only the zero pose?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Random configurations make the test run longer, which improves confidence. A longer run also exposes rare numerical issues in the solver.",
+        "Axis sign or offset errors can cancel at the zero pose and only show when joints move.",
+        "MuJoCo cannot compute forward kinematics at the zero pose.",
+        "The zero pose is outside the joint limits."
+      ],
+      "answer": "1",
+      "explanation": "Many mistakes are invisible when every angle is zero.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fk"
+      ],
+      "skillLabel": "Forward kinematics tolerance",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP01#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    }
+  ]
+}

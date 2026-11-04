@@ -1,0 +1,461 @@
+{
+  "id": "HW01-targeted",
+  "topicId": "HW01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Which of these is a power-block component?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A fuse and switch after the battery.",
+        "A TB6612FNG dual H-bridge motor driver.",
+        "An MPU-6050 inertial measurement sensor.",
+        "An ESP32 development board with Wi-Fi."
+      ],
+      "answer": "0",
+      "explanation": "A fuse and switch protect and control the energy source. The others are a driver, a sensor and a compute part.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "block-diagram"
+      ],
+      "skillLabel": "Draw the robot block diagram",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b2",
+      "prompt": "Which list names all six hardware blocks of a robot?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Compute, sensors, motors, battery, wires, software, firmware.",
+        "Sensors, memory, drivers, motors, a clock, cables, connectors.",
+        "Compute, sensors, drivers, actuators, power, communications.",
+        "Processor, camera, wheels, battery, charger, case, screws."
+      ],
+      "answer": "2",
+      "explanation": "The six blocks are compute, sensors, drivers, actuators, power and communications.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "block-diagram"
+      ],
+      "skillLabel": "Draw the robot block diagram",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b3",
+      "prompt": "Draw (describe) the block diagram of a 6-joint robot arm that uses smart serial-bus servos and a small PC. Name the six blocks, the interface on each link and one risk of the shared bus.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Places all six blocks: compute (PC and optional MCU or USB adapter), sensors and driver built into the servo, actuators, power (supply, fuse, regulator) and the bus.",
+        "Names the interface (half-duplex serial bus or USB-to-serial adapter) and the power path separate from the data path.",
+        "Names a shared-bus risk (message budget, one fault blocks all, termination, ID clashes) and checks it with a number."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "block-diagram"
+      ],
+      "skillLabel": "Draw the robot block diagram",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b4",
+      "prompt": "A wheel encoder reading ends up in a ROS 2 odometry message. Which order of stages is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Encoder, ROS 2 node, MCU interrupt and counter, serial link.",
+        "Encoder, MCU interrupt and counter, serial link, ROS 2 node.",
+        "MCU interrupt and counter, encoder, ROS 2 node, serial link.",
+        "Encoder, serial link, MCU interrupt and counter, ROS 2 node."
+      ],
+      "answer": "1",
+      "explanation": "Pulses are counted by the MCU first; the counts are then packed and sent over the link; the ROS 2 node on the computer publishes the message.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "signal-tracing"
+      ],
+      "skillLabel": "Trace sensing and command paths",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b5",
+      "prompt": "What kind of signal does a microcontroller typically send to a motor driver such as the TB6612FNG to set speed and direction?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Motor current at full battery voltage on the signal pin.",
+        "An analog voltage from a 12-bit ADC input pin.",
+        "I2C commands carried on the motor power wires.",
+        "PWM for speed plus logic pins for direction."
+      ],
+      "answer": "3",
+      "explanation": "The MCU only provides low-power logic. PWM sets the average motor voltage, and direction pins set the polarity; the driver switches the motor current.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "signal-tracing"
+      ],
+      "skillLabel": "Trace sensing and command paths",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b6",
+      "prompt": "Why is it risky to run a 1 kHz motor current limit on a Linux single-board computer?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Linux cannot read digital input pins at any speed at all.",
+        "Scheduling can delay your code by random milliseconds.",
+        "Linux cannot send data over a USB port for robots.",
+        "Single-board computers cannot count up to 1000 per second."
+      ],
+      "answer": "1",
+      "explanation": "A general-purpose operating system is not hard real-time: other processes or interrupts can pause your task, so a time-critical safety loop belongs on the MCU.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compute-tiers"
+      ],
+      "skillLabel": "Choose MCU or SBC for a task",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b7",
+      "prompt": "Which task is the best fit for a Jetson Orin Nano class GPU module?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Generating a clean 20 kHz PWM waveform for a motor.",
+        "Counting quadrature pulses at 50 000 edges per second.",
+        "Cutting motor power within microseconds on a fault.",
+        "Neural-network object detection on camera frames."
+      ],
+      "answer": "3",
+      "explanation": "GPU modules are for heavy parallel compute such as vision networks. Pulse counting, PWM and instant fault reactions belong on MCU hardware.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compute-tiers"
+      ],
+      "skillLabel": "Choose MCU or SBC for a task",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b8",
+      "prompt": "A battery-powered sensor node samples one value per minute for a month. Which compute choice fits best?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A microcontroller that sleeps between samples.",
+        "A Raspberry Pi running Linux continuously all month.",
+        "A Jetson module with its GPU left mostly idle.",
+        "A laptop left running with the lid closed."
+      ],
+      "answer": "0",
+      "explanation": "A microcontroller can sleep at microamp-level currents (the ATmega328P datasheet lists tens of microamps in power-down); Linux boards draw far more.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compute-tiers"
+      ],
+      "skillLabel": "Choose MCU or SBC for a task",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b9",
+      "prompt": "An MPU-6050 belongs to which block, and why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Driver, because it drives the I2C bus lines.",
+        "Actuator, because it contains moving parts.",
+        "Sensor, because it measures motion.",
+        "Compute, because it has a built-in processor."
+      ],
+      "answer": "2",
+      "explanation": "The MPU-6050 is an inertial measurement unit: it turns motion into digital readings sent over I2C.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "classify-parts"
+      ],
+      "skillLabel": "Classify parts into blocks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b10",
+      "prompt": "Which part is a communications block?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "An RPLIDAR A1 laser scanner.",
+        "An MCP2515 CAN controller.",
+        "A 18650 lithium-ion cell.",
+        "A Pololu 37D gearmotor."
+      ],
+      "answer": "1",
+      "explanation": "The MCP2515 provides a CAN bus interface for an MCU. The RPLIDAR is a sensor, the 18650 a power part and the gearmotor an actuator.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "classify-parts"
+      ],
+      "skillLabel": "Classify parts into blocks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b11",
+      "prompt": "A 6-byte I2C burst read at 400 kHz (9 clocks per byte plus 3 address/register bytes). Time in microseconds.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "202.5",
+      "tolerance": 0.5,
+      "explanation": "9*(3+6)=81 clocks; 81/400000 s = 202.5 us.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b12",
+      "prompt": "An 8-byte message on a 57600 baud 8N1 UART. Time in milliseconds.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.389",
+      "tolerance": 0.005,
+      "explanation": "8*10/57600 s = 1.389 ms.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b13",
+      "prompt": "Latency stages: sample wait 4 ms, I2C 1.5 ms, processing 12 ms, serial 2 ms, controller 8 ms, driver and motor 15 ms. At 0.6 m/s, how many centimetres does the robot move during the total latency?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.55",
+      "tolerance": 0.02,
+      "explanation": "Total 42.5 ms; 0.6 * 0.0425 = 0.0255 m = 2.55 cm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b14",
+      "prompt": "8 joints on a 1 Mbit/s CAN bus, each cycle one command and one feedback frame per joint, 250 Hz, 111 microseconds per frame. Bus utilization as a fraction.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.444",
+      "tolerance": 0.005,
+      "explanation": "8*2*250 = 4000 frames/s; 4000*111e-6 = 0.444.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b15",
+      "prompt": "Which order lists the usual failure points of a new robot from most to least likely to check first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Power, connectors and wires, ground, logic levels, timing.",
+        "Timing, logic levels, ground, connectors, power.",
+        "Software bugs, then compiler, then power.",
+        "Ground, timing, power, then logic levels, then connectors."
+      ],
+      "answer": "0",
+      "explanation": "Experienced builders check power and mechanical connections first because they are common and cheap to test, then ground, logic levels and timing.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "b16",
+      "prompt": "A robot's Arduino resets whenever the motors start. Write a short, ordered debugging plan with the measurement you take at each step and how you decide which block is at fault.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Starts with power: measures the logic rail (multimeter or oscilloscope) while the motors start and checks the battery, fuse and wiring.",
+        "Isolates by bisection: runs the MCU alone, then adds the driver, then the motors, noting which step triggers the reset.",
+        "States a fix suited to the finding (separate regulator, bigger wire, capacitor) and a check that the reset no longer occurs."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW01#verification"
+        }
+      ],
+      "relatedPrerequisites": []
+    }
+  ]
+}

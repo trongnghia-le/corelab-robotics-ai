@@ -1,0 +1,200 @@
+{
+  "id": "HW03-diagnostic",
+  "topicId": "HW03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which E-stop wiring is fail-safe for a robot's motor supply?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A normally open button wired to an MCU input; firmware stops the motors when it reads high.",
+        "A button that sets a flag in the software stack, checked once per control loop.",
+        "A normally closed button in series with the coil of a contactor that feeds the motor rail.",
+        "A normally open button in parallel with the motor driver's enable pin and a pull-up."
+      ],
+      "answer": "2",
+      "explanation": "A series normally closed chain opens on a press, a cut wire or a loose connector, and works even if the software has crashed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "estop-handling"
+      ],
+      "skillLabel": "E-stop and battery handling",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A 3S1P pack of cells rated 3.7 V and 2.5 Ah. Energy in Wh. Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "27.75",
+      "tolerance": 0.01,
+      "explanation": "3 x 3.7 V = 11.1 V; 11.1 x 2.5 Ah = 27.75 Wh.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pack-energy"
+      ],
+      "skillLabel": "Pack energy and C-rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A 40 Wh pack, 75 % usable, powers a robot whose average battery-side power is 12 W. Runtime in hours.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.5",
+      "tolerance": 0.01,
+      "explanation": "40 x 0.75 / 12 = 2.5 h.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "runtime-budget"
+      ],
+      "skillLabel": "Power budget and runtime",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A linear regulator converts 9 V to 5 V at 0.5 A. Heat dissipated in watts.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "(9 - 5) x 0.5 = 2 W.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "regulator-choice"
+      ],
+      "skillLabel": "Linear versus buck regulators",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A robot works on the bench but its computer resets whenever the wheels start. What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Start-up current sags the battery and the logic rail drops.",
+        "The motors have too many gear teeth, so the encoder overflows its counter.",
+        "The battery capacity in Wh is too large for the converter to regulate.",
+        "The fuse is rated too high, which lets extra voltage reach the computer."
+      ],
+      "answer": "0",
+      "explanation": "Stall and inrush current multiplied by internal resistance sags the bus, and the buck converter's input falls under its lock-out.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "brownout-grounding"
+      ],
+      "skillLabel": "Brown-out, sag and grounding",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "What does a fuse in a robot's battery lead mainly protect?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The motors from overheating while they are stalled.",
+        "The microcontroller from ever resetting during a surge.",
+        "The battery from being discharged below its cut-off.",
+        "The wiring, in a short circuit or overload."
+      ],
+      "answer": "3",
+      "explanation": "A fuse limits fault current to what the wire can carry; it does not protect motors from stall or the battery from deep discharge.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fuse-wire"
+      ],
+      "skillLabel": "Fuse and wire sizing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how you would build the power budget of a new robot and turn it into a battery choice, naming the numbers you need and the checks you make.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Lists every load with peak and average power, including converter efficiency, and sums peak current and average power.",
+        "Computes runtime from Wh with a usable fraction and checks the peak current against the C-rate limit of the pack.",
+        "Chooses fuse, wire and regulator type from the numbers and states a cut-off and a test for sag at start-up."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "runtime-budget"
+      ],
+      "skillLabel": "Power budget and runtime",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW02"
+      ]
+    }
+  ]
+}

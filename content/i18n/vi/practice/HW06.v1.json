@@ -1,0 +1,133 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Bước của một ADC 10 bit với điện áp tham chiếu 3.3 V, tính bằng millivolt. Độ chính xác 0.005.",
+   "explanation": "3.3 / 1024 = 3.223 mV."
+  },
+  "b2": {
+   "prompt": "Một ADC 12 bit tham chiếu 3.3 V trả về 1000. Điện áp tại chân tính bằng volt. Độ chính xác 0.002.",
+   "explanation": "1000 / 4096 x 3.3 = 0.806 V."
+  },
+  "b3": {
+   "prompt": "Frame 10 byte ở 500 Hz trên UART 8N1 115200 baud. Tải dưới dạng phân số. Độ chính xác 0.002.",
+   "explanation": "10 x 10 x 500 / 115200 = 0.434."
+  },
+  "b4": {
+   "prompt": "Một lần đọc thanh ghi I2C 6 byte trên bus 400 kHz (9 x (6 + 3) xung). Thời gian tính bằng micro giây. Độ chính xác 0.5.",
+   "explanation": "81 / 400000 = 202.5 us."
+  },
+  "b5": {
+   "prompt": "Lần đọc 6 byte được lặp ở 200 Hz trên bus 100 kHz. Tải bus dưới dạng phân số. Độ chính xác 0.002.",
+   "explanation": "81 / 100000 = 0.81 ms; x 200 = 0.162."
+  },
+  "b6": {
+   "prompt": "Độ dài, tính bằng bit, của một frame dữ liệu CAN cổ điển có 4 byte dữ liệu, không nhồi bit, gồm cả khoảng nghỉ.",
+   "explanation": "47 + 8 x 4 = 79."
+  },
+  "b7": {
+   "prompt": "I2C chế độ chuẩn: thời gian lên 1000 ns, điện dung bus 300 pF. Điện trở kéo lên tối đa tính bằng ohm (công thức 0.8473). Độ chính xác 20.",
+   "explanation": "1000e-9 / (0.8473 x 300e-12) = 3934 ohm."
+  },
+  "b8": {
+   "prompt": "Một bus I2C 5 V với VOL 0.4 V ở 3 mA. Điện trở kéo lên tối thiểu tính bằng ohm. Độ chính xác 5.",
+   "explanation": "(5 - 0.4) / 0.003 = 1533 ohm."
+  },
+  "b9": {
+   "prompt": "Bus nào cần thêm một dây chọn cho mỗi thiết bị bổ sung?",
+   "options": [
+    "I2C, vì mỗi thiết bị cần xung clock riêng.",
+    "SPI, vì host chọn thiết bị bằng dây chip-select của nó.",
+    "UART, vì mỗi thiết bị cần baud rate riêng.",
+    "CAN, vì mỗi node cần điện trở kết cuối riêng."
+   ],
+   "explanation": "SPI dùng chung SCLK, MOSI và MISO và có một dây chip-select cho mỗi thiết bị."
+  },
+  "b10": {
+   "prompt": "Hai thiết bị UART chỉ trao đổi ký tự rác. Nguyên nhân khả dĩ nhất?",
+   "options": [
+    "Điện trở kéo lên quá yếu so với điện dung bus.",
+    "Dây chip-select bị thiết bị kia giữ ở mức cao.",
+    "Hai thiết bị dùng chung một địa chỉ bus.",
+    "Hai đầu dùng baud rate khác nhau."
+   ],
+   "explanation": "UART không có clock hay địa chỉ nên hai đầu phải cùng baud rate; cũng kiểm tra TX nối RX và mass chung."
+  },
+  "b11": {
+   "prompt": "Một cảm biến I2C chạy ở 100 kHz trên bàn nhưng hỏng ở 400 kHz trên dây dài của robot. Nguyên nhân khả dĩ?",
+   "options": [
+    "Điện dung dây thêm làm cạnh lên chậm đi.",
+    "Địa chỉ cảm biến thay đổi khi lắp dây dài hơn.",
+    "Điện áp tham chiếu ADC quá thấp cho cảm biến.",
+    "Dây thiếu điện trở kết cuối của bus CAN."
+   ],
+   "explanation": "Thời gian lên khoảng 0.8473 x Rp x Cb. Điện dung nhiều hơn làm cạnh chậm đi; dùng điện trở kéo lên mạnh hơn, tốc độ thấp hơn hoặc dây ngắn hơn."
+  },
+  "b12": {
+   "prompt": "Một robot phải chạy bộ phát hiện bằng mạng nơ-ron trên camera 30 fps và đồng thời đóng các vòng motor nhanh. Cách chia nào phù hợp nhất?",
+   "options": [
+    "Chỉ một MCU 8 bit, không có Linux.",
+    "Chỉ một ESP32, dùng Wi-Fi để giao tiếp.",
+    "Module GPU cho thị giác cộng MCU cho motor.",
+    "Một Raspberry Pi làm cả hai việc bằng Python."
+   ],
+   "explanation": "Suy luận mạng nơ-ron cần module cỡ GPU; các vòng motor ràng buộc thời hạn thuộc về MCU."
+  },
+  "b13": {
+   "prompt": "Phát biểu nào về chân của ESP32 và Arduino Uno là đúng?",
+   "options": [
+    "Cả hai chịu được 5 V nên không bao giờ cần dịch mức.",
+    "Uno logic 5 V; ESP32 logic 3.3 V, không chịu được 5 V.",
+    "ESP32 đọc ngõ vào 5 V an toàn qua ADC của chính nó.",
+    "Cả hai dùng logic 3.3 V và ADC 10 bit trên mọi chân."
+   ],
+   "explanation": "Uno: logic 5 V và ADC 10 bit. ESP32: logic 3.3 V, ADC 12 bit, ngõ vào không chịu được 5 V."
+  },
+  "b14": {
+   "prompt": "Trong một vòng điều khiển, jitter nghĩa là gì?",
+   "options": [
+    "Tốc độ trung bình của xung nhịp CPU tính bằng MHz.",
+    "Kích thước chương trình lưu trong bộ nhớ flash.",
+    "Số dây mà bus cần dùng.",
+    "Biến thiên thời gian giữa các lần lặp."
+   ],
+   "explanation": "Jitter là biến thiên về thời gian. Vòng real-time cứng giữ nó nhỏ so với chu kỳ."
+  },
+  "b15": {
+   "prompt": "Một kế hoạch bus tải một liên kết tới 90 %. Nhận định tốt nhất?",
+   "options": [
+    "Quá sát: nhắm 50 % đến 70 % hoặc thấp hơn.",
+    "Ổn: chỉ tải trên 100 % mới gây ra vấn đề.",
+    "Ổn: liên kết bận hơn luôn là liên kết nhanh hơn.",
+    "Quá rộng: tăng tốc độ cho đến khi liên kết đạt 100 %."
+   ],
+   "explanation": "Liên kết thật cần dư địa cho gửi lại, phân xử và jitter."
+  },
+  "b16": {
+   "prompt": "Viết kế hoạch kiểm thử cho i2c_transfer_time(fscl, nbytes, reg_read) và bus_load(time, rate).",
+   "rubric": [
+    "Tính tay lần đọc 14 byte ở 400 kHz (153 xung, 382.5 us) và thêm một trường hợp nữa.",
+    "Kiểm thử biên: không có byte dữ liệu, một lần ghi thường, tải đúng bằng 1.0 và một kế hoạch vượt 1.0.",
+    "Nêu quan sát sẽ bác bỏ mô hình, ví dụ thời gian đo bằng logic analyzer thấp hơn mức tối thiểu lý thuyết."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b17": {
+   "prompt": "Chọn UART, I2C, SPI hay CAN cho bốn bộ điều khiển bánh cách bo chính 3 m và biện luận so với một phương án khác.",
+   "rubric": [
+    "Chọn CAN (hoặc RS-485) cho nhiều node trải dài vài mét trong robot nhiễu, nêu tín hiệu vi sai và phân xử.",
+    "Giải thích vì sao I2C hoặc SPI hỏng ở 3 m: điện dung và thời gian lên, hoặc một dây chọn cho mỗi node.",
+    "Ước lượng tải, ví dụ 4 frame 135 bit ở 200 Hz trên 1 Mbit/s, và so với khoảng 50 %."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b18": {
+   "prompt": "Chọn tầng tính toán cho một node cảm biến chạy pin báo cáo mỗi phút trong một năm, và cho một robot lập bản đồ dùng ROS 2. Biện luận cả hai.",
+   "rubric": [
+    "Chọn MCU công suất thấp có chế độ ngủ cho node cảm biến, nêu điện năng và không cần Linux.",
+    "Chọn SBC (cộng MCU cho vòng motor) cho robot ROS 2, nêu hệ sinh thái và sức tính toán.",
+    "Nhắc đến best-effort so với real-time cứng, hoặc ngưỡng công suất và nhiệt, trong ít nhất một lập luận."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

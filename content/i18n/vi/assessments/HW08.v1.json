@@ -1,0 +1,55 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Một ISR cập nhật một volatile long count. Trên AVR 8 bit, loop() phải làm gì để đọc nó an toàn?",
+      "options": [
+        "Không cần gì: volatile đã làm phép đọc nguyên tử.",
+        "Gọi delay(1) trước để ISR kịp kết thúc.",
+        "Đọc hai lần và giữ giá trị lớn hơn.",
+        "Chép nó giữa noInterrupts() và interrupts()."
+      ],
+      "explanation": "Đọc 4 byte cần nhiều lệnh và ISR có thể chạy giữa chúng; hãy chép nó khi ngắt đang tắt."
+    },
+    "q2": {
+      "prompt": "Timer1 của Uno ở chế độ CTC, 16 MHz, prescaler 8, tốc độ ngắt mục tiêu 2 kHz. Giá trị OCR1A là bao nhiêu?",
+      "explanation": "16e6/(8*2000) - 1 = 999."
+    },
+    "q3": {
+      "prompt": "Một bộ giải mã cầu phương (x4) nhận các mẫu (A,B) 00, 10, 11, 01, 00, 10 với A dẫn trước B là chiều tiến. Số đếm thuần là bao nhiêu?",
+      "explanation": "Năm bước tiến liên tiếp: +5."
+    },
+    "q4": {
+      "prompt": "Vì sao chống rung bằng cửa sổ thời gian 50 ms là cách đọc encoder kém?",
+      "options": [
+        "Cửa sổ tốn quá nhiều bộ nhớ.",
+        "Các cạnh thật đến nhanh hơn 50 ms và sẽ bị bỏ.",
+        "Encoder không bao giờ rung nên chống rung là không cần.",
+        "Chống rung chỉ được phép trong ISR."
+      ],
+      "explanation": "Ở tốc độ cao các cạnh thật gần nhau hơn cửa sổ, nên số đếm thật bị loại; bảng trạng thái triệt tiêu rung mà không cần cửa sổ."
+    },
+    "q5": {
+      "prompt": "Một ISR encoder mất 10 us và kích hoạt 25 000 lần mỗi giây. Nó dùng bao nhiêu phần trăm CPU?",
+      "explanation": "25 000 * 10e-6 = 0,25 = 25 %."
+    },
+    "q6": {
+      "prompt": "Câu lệnh nào chấp nhận được bên trong một ISR Arduino?",
+      "options": [
+        "Serial.println(count);",
+        "delay(2);",
+        "count++; trên một biến volatile",
+        "String s = String(count);"
+      ],
+      "explanation": "Tăng một bộ đếm volatile chỉ vài lệnh. Serial.print, delay và cấp phát String đều chặn hoặc cấp phát."
+    },
+    "q7": {
+      "prompt": "Hai encoder trên ESP32 mỗi cái tạo 90 000 cạnh mỗi giây. Giải thích bạn sẽ đếm chúng đáng tin cậy thế nào và vẫn phải kiểm tra gì.",
+      "rubric": [
+        "Tính tải ngắt (180 000 cạnh/s nhân thời gian ISR) và cho thấy nó quá cao.",
+        "Dùng bộ đếm xung phần cứng (PCNT) ở chế độ cầu phương, với bộ lọc nhiễu gai, và đọc nó ở tốc độ vừa phải.",
+        "Xử lý dải hay tràn của bộ đếm và đọc nguyên tử, và kiểm chứng bằng một chuyển động đã biết."
+      ],
+      "explanation": "Có rubric hướng dẫn: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

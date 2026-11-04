@@ -1,0 +1,129 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "Một Uno chạy analogWrite(pin, 191). Đó là duty cycle bao nhiêu phần trăm? Độ chính xác 0.1.",
+      "explanation": "191/255 = 0,749."
+    },
+    "b2": {
+      "prompt": "ADC của Uno (tham chiếu 5 V, 10 bit) đọc 820. Đó là bao nhiêu volt? Độ chính xác 0.005.",
+      "explanation": "820 * 5 / 1024 = 4,004 V."
+    },
+    "b3": {
+      "prompt": "ADC 12 bit của ESP32 (toàn thang danh định 3,3 V) đọc 1000. Đó là bao nhiêu volt? Độ chính xác 0.002.",
+      "explanation": "1000 * 3,3 / 4096 = 0,806 V (danh định; ADC thật phi tuyến)."
+    },
+    "b4": {
+      "prompt": "LEDC của ESP32 với xung nhịp 80 MHz ở 40 kHz. Độ phân giải duty tối đa tính bằng bit?",
+      "explanation": "floor(log2(80e6/40e3)) = floor(log2 2000) = 10."
+    },
+    "b5": {
+      "prompt": "Biểu thức map(300, 0, 1023, 0, 255) của Arduino trả về gì? (Số học nguyên.)",
+      "explanation": "300 * 255 / 1023 = 74,78, cắt thành 74."
+    },
+    "b6": {
+      "prompt": "Đồng hồ millis() 32 bit đọc now = 30 sau khi quay vòng; last = 4294967290. Hiệu không dấu now - last là bao nhiêu ms?",
+      "explanation": "(30 - 4294967290) mod 2^32 = 30 + 6 = 36."
+    },
+    "b7": {
+      "prompt": "Vì sao các sketch vững chắc viết last += period thay vì last = now?",
+      "options": [
+        "Nó tránh đọc millis() hai lần trong một lượt.",
+        "Chu kỳ giữ chính xác; last = now sẽ trôi.",
+        "Nó ngăn millis() tràn sau 49 ngày.",
+        "Nó làm delay() trong setup() thành không cần thiết."
+      ],
+      "explanation": "Tiến đúng một chu kỳ giữ tốc độ dài hạn chính xác ngay cả khi một lượt đến trễ; last = now cộng dồn độ trễ."
+    },
+    "b8": {
+      "prompt": "Một nút nối giữa một chân Arduino và đất với pinMode(pin, INPUT_PULLUP). digitalRead trả về gì khi nó đang bị nhấn?",
+      "options": [
+        "HIGH, vì bấm nối chân với nguồn.",
+        "Một giá trị không xác định, vì chân để hở.",
+        "Nó đảo giữa HIGH và LOW theo tần số PWM.",
+        "LOW, vì công tắc kéo chân xuống đất."
+      ],
+      "explanation": "Pull-up giữ chân ở HIGH khi hở; đóng công tắc nối nó xuống đất: LOW (active low)."
+    },
+    "b9": {
+      "prompt": "Một sketch ESP32 đọc một cảm biến ở GPIO25 bằng analogRead. Nó chạy tốt đến khi Wi-Fi được khởi động, rồi trả về rác. Vì sao?",
+      "options": [
+        "ADC2 dùng chung với Wi-Fi; dùng chân ADC1.",
+        "ADC 12 bit không đọc được khi CPU bận.",
+        "Wi-Fi nâng mức logic của GPIO25 lên 5 V.",
+        "analogRead cần điện trở pull-up khi Wi-Fi bật."
+      ],
+      "explanation": "GPIO25 là kênh ADC2; driver Wi-Fi chiếm ADC2. Hãy dùng chân ADC1 (GPIO32 đến 39)."
+    },
+    "b10": {
+      "prompt": "Một vòng lặp in một dòng 30 byte ở mỗi lượt ở 9600 baud và dường như kẹt ở khoảng 30 lượt mỗi giây. Nguyên nhân và cách khắc phục là gì?",
+      "options": [
+        "Trình biên dịch chậm; bật cờ tối ưu hóa trong IDE.",
+        "millis() bị Serial chặn, nên gọi nó ít hơn.",
+        "In phải chờ đường truyền; in thưa ở 115200.",
+        "Xung nhịp Uno giảm một nửa khi serial monitor mở."
+      ],
+      "explanation": "30 byte * 10 bit / 9600 = 31 ms mỗi dòng, nên bộ đệm đầy và print phải chờ. In thưa và dùng 115200 baud."
+    },
+    "b11": {
+      "prompt": "Việc nào phù hợp nhất với MicroPython hơn C++ trên ESP32?",
+      "options": [
+        "Một vòng lấy mẫu dòng điện 20 kHz.",
+        "Một bộ ghi Wi-Fi gửi mỗi phút.",
+        "Giải mã cạnh encoder ở 50 000 mỗi giây.",
+        "Một giao thức bit-bang với định thời 5 us."
+      ],
+      "explanation": "MicroPython lặp nhanh và ổn cho việc chậm; ngắt quãng GC và tốc độ khiến nó kém hợp cho định thời chặt."
+    },
+    "b12": {
+      "prompt": "Trên một Uno (int 16 bit) đoạn code int x = 200 * 200; chạy. x chứa giá trị gì?",
+      "explanation": "40000 không vừa số có dấu 16 bit, nên quay về 40000 - 65536 = -25536."
+    },
+    "b13": {
+      "prompt": "Trong bộ phát hiện giữ nút ba trạng thái (IDLE, PRESSED, HELD), nút được nhả sau 300 ms của thời gian giữ 1000 ms. Trạng thái kế tiếp là gì?",
+      "options": [
+        "IDLE, và LED giữ vẫn tắt.",
+        "HELD, vì lần bấm đã bắt đầu.",
+        "PRESSED, cho đến hết 1000 ms.",
+        "HELD, nhưng với LED tắt."
+      ],
+      "explanation": "Nhả trước thời gian giữ: PRESSED quay về IDLE và LED không bao giờ bật."
+    },
+    "b14": {
+      "prompt": "Chân ESP32 nào là lựa chọn an toàn nhất cho một đầu ra LED thông thường?",
+      "options": [
+        "GPIO12",
+        "GPIO34",
+        "GPIO6",
+        "GPIO18"
+      ],
+      "explanation": "GPIO18 là chân đa dụng tự do. GPIO12 là strapping pin, GPIO34 chỉ làm đầu vào, GPIO6 đến 11 nối với flash."
+    },
+    "b15": {
+      "prompt": "Một sketch có loop(){ digitalWrite(13,HIGH); delay(500); digitalWrite(13,LOW); delay(500); if(digitalRead(2)==LOW) digitalWrite(12,HIGH); }. Viết lại logic để LED nháy và nút được kiểm tra ở mỗi lượt, và nêu thời gian phản ứng tệ nhất mới.",
+      "rubric": [
+        "Dùng biến thời điểm cuối và now - last >= 500 với last += 500 để đảo chân 13, không có delay().",
+        "Đọc chân 2 ở mọi lượt của loop() (INPUT_PULLUP, bấm = LOW) và ghi chân 12 ngay.",
+        "Nêu phản ứng tệ nhất là một lượt loop (thấp xa hơn 1 ms) thay vì tới 1000 ms."
+      ],
+      "explanation": "Có rubric hướng dẫn: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b16": {
+      "prompt": "Viết kế hoạch kiểm thử cho một tác vụ nháy dựa trên millis() chứng minh nó sống sót qua tràn 32 bit và giữ được chu kỳ.",
+      "rubric": [
+        "Đưa vào đồng hồ mô phỏng và khởi động nó ngay trước 2^32 để chỗ tràn xảy ra trong lúc kiểm thử.",
+        "Khẳng định đúng thời điểm đảo (cách nhau một chu kỳ) qua chỗ tràn, kể cả đúng một chu kỳ và thiếu một nhịp.",
+        "Có một ca lượt trễ (bỏ lỡ một nhịp) để cho thấy last += period giữ tốc độ dài hạn."
+      ],
+      "explanation": "Có rubric hướng dẫn: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b17": {
+      "prompt": "Chuyển một vòng lặp đọc biến trở và đặt độ sáng LED từ Arduino C++ sang MicroPython trên ESP32, và liệt kê hai đánh đổi của việc chuyển.",
+      "rubric": [
+        "Ánh xạ analogRead sang ADC(Pin(n)).read_u16() với suy hao được đặt, và analogWrite/LEDC sang PWM(Pin(m), freq=...).duty_u16().",
+        "Ghi chú thang đã đổi (0 đến 65535) và dùng ticks_ms/ticks_diff cho mọi định thời.",
+        "Nêu các đánh đổi: chạy chậm hơn, ngắt quãng GC và tốn RAM hơn, so với sửa nhanh hơn và thư viện dễ hơn."
+      ],
+      "explanation": "Có rubric hướng dẫn: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "id": "HW11-diagnostic",
+  "topicId": "HW11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why does a binary serial protocol byte-stuff (or COBS-encode) the data after the start byte 0x7E?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "To compress the payload so the frame is shorter on the wire and a lower baud rate can be used.",
+        "To encrypt the data so other devices sharing the cable cannot read or forge the commands.",
+        "To keep a bare 0x7E for real frame starts only, so the parser can resynchronise after damage.",
+        "To force the CRC8 value to come out as zero so the receiver can skip checking the frame."
+      ],
+      "answer": "2",
+      "explanation": "The marker must never appear inside the data. After stuffing, 0x7E only means 'a new frame starts here', so after garbage or truncation the parser just waits for the next 0x7E.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "crc-stuffing"
+      ],
+      "skillLabel": "CRC8, framing and byte stuffing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A frame has a 12-byte payload in the lesson's layout (SOF, LEN, ID, SEQ, payload, CRC8), no byte needs stuffing, and it is sent at 200 Hz on a 115200 baud 8N1 link. Link load as a fraction, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2951",
+      "tolerance": 0.001,
+      "explanation": "Frame = 12 + 5 = 17 bytes; 17*10*200/115200 = 0.295.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "link-budget"
+      ],
+      "skillLabel": "Link budget and baud rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "CRC-8 with polynomial 0x07, initial value 0 and no reflection, over the single byte 0x02. Give the CRC as a decimal number.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "14",
+      "tolerance": 0.5,
+      "explanation": "0x01 gives 0x07; the CRC is linear, so 0x02 gives 0x07 shifted once: 0x0E = 14.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "crc-stuffing"
+      ],
+      "skillLabel": "CRC8, framing and byte stuffing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Two consecutive good frames carry sequence numbers 253 and then 2 (8-bit counter). How many frames were lost between them?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "(2 - 253 - 1) mod 256 = 4: frames 254, 255, 0 and 1 are missing.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seq-watchdog"
+      ],
+      "skillLabel": "Sequence numbers and watchdog timeout",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "Which event should reset (feed) the MCU's command watchdog?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A complete frame with a valid CRC.",
+        "Any byte received on the UART, because bytes prove the cable is connected.",
+        "The host PC opening the serial port.",
+        "The motor current dropping below the limit."
+      ],
+      "answer": "0",
+      "explanation": "Only a valid frame proves that the host is alive and sending sensible commands. Feeding on any byte lets a stream of garbage keep the motors running.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "seq-watchdog"
+      ],
+      "skillLabel": "Sequence numbers and watchdog timeout",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW11#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Where do the micro-ROS client and the micro-ROS agent run, and what does the agent do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Both on the MCU; the agent compresses the messages before they leave the board over the serial port.",
+        "Client on the PC and agent on the MCU; the agent turns the PC's velocity commands into motor PWM.",
+        "Both on the PC; the client is a software simulator of the MCU that is used only for unit testing.",
+        "Client on the MCU, agent on the host; the agent creates DDS entities for the client."
+      ],
+      "answer": "3",
+      "explanation": "micro-ROS nodes run on the microcontroller and talk the XRCE-DDS protocol to an agent on the host, which bridges them into normal DDS/ROS 2 traffic.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "microros-roles"
+      ],
+      "skillLabel": "micro-ROS client and agent roles",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A 2-wheel robot has a Raspberry Pi running ROS 2 and a microcontroller with two encoders and two motor drivers. Choose and justify a link design: transport, protocol features, where the speed loop runs and what happens when the cable is pulled.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names a transport that fits the budget (UART or USB CDC at 115200 to 250000 baud) and checks the link load against about 50 %.",
+        "Keeps the fast speed loop on the MCU and sends setpoints and measurements at a modest rate; names custom serial plus a ros2_control hardware interface or micro-ROS as the options.",
+        "Includes framing with CRC and sequence number, and a watchdog on the MCU that stops the motors when no valid frame arrives."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "transport-choice"
+      ],
+      "skillLabel": "Choosing a transport",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/HW11#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,553 @@
+{
+  "id": "CAP01-targeted",
+  "topicId": "CAP01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Wilson 95 % lower bound for 95 reachable points out of 100, precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.888",
+      "tolerance": 0.005,
+      "explanation": "wilson_interval(95, 100) = (0.888, 0.978).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson"
+      ],
+      "skillLabel": "Success rates and the Wilson bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Wilson 95 % upper bound for 9 successes in 10 episodes, precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.982",
+      "tolerance": 0.005,
+      "explanation": "wilson_interval(9, 10) = (0.596, 0.982).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson"
+      ],
+      "skillLabel": "Success rates and the Wilson bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Why do later acceptance tests assert the lower Wilson bound instead of the success percentage?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A finite episode count leaves uncertainty, and the lower bound is a claim the data supports at 95 % confidence.",
+        "The percentage is always lower than the Wilson bound. So asserting it can only make a test easier to pass in a safe way.",
+        "Wilson bounds make the tests run faster.",
+        "The lower bound removes the need to fix the seeds."
+      ],
+      "answer": "0",
+      "explanation": "The point estimate hides how few episodes you ran.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "wilson"
+      ],
+      "skillLabel": "Success rates and the Wilson bound",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "In an MJCF without a compiler tag a joint has range=\"0 1.57\". Its upper limit in radians, precision 0.0005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0274",
+      "tolerance": 0.0005,
+      "explanation": "1.57 degrees = 0.0274 rad.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "units"
+      ],
+      "skillLabel": "Units in MJCF and URDF",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP01#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "A URDF limit upper=\"1.92\" is copied from an MJCF range=\"-110 110\". Which statement is right?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The URDF limit is wrong because URDF limits must also be 110.",
+        "Both describe 110 degrees, provided the MJCF uses the default degree compiler setting.",
+        "Both are in radians, so the limits differ by a factor of 57.",
+        "The URDF value is in degrees and the MJCF one is in radians."
+      ],
+      "answer": "1",
+      "explanation": "110 degrees is 1.92 rad.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "units"
+      ],
+      "skillLabel": "Units in MJCF and URDF",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP01#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "The wrist is 0.1 m from the tool. Angle error in degrees that moves the tool by 1 mm, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.573",
+      "tolerance": 0.01,
+      "explanation": "0.001/0.1 = 0.01 rad = 0.573 degrees.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "fk"
+      ],
+      "skillLabel": "Forward kinematics tolerance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Your FK matches MuJoCo to 0.1 mm but the URDF-based FK is 4 cm away. Where is the most likely error?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "In the MuJoCo physics time step. A wrong time step would shift every simulated pose by centimetres.",
+        "In the unit of the mass.",
+        "In the seed of the environment.",
+        "In an axis sign, rpy order or origin offset of the URDF."
+      ],
+      "answer": "3",
+      "explanation": "Two agreeing descriptions and one outlier point at the outlier file.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "fk"
+      ],
+      "skillLabel": "Forward kinematics tolerance",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP01#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Which code leaks randomness into a seeded environment?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "rng = np.random.default_rng(seed); x = rng.uniform(0, 1)",
+        "x = rng.permutation(objects) with a rng passed in",
+        "x = np.random.rand() inside reset()",
+        "seed_hash = hash((seed, 'scene')) with PYTHONHASHSEED fixed"
+      ],
+      "answer": "2",
+      "explanation": "Global NumPy state is shared with every library and depends on call order.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "seed"
+      ],
+      "skillLabel": "Seeded reproducibility",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP01#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Physics step 0.5 ms. Number of steps in 5 s of rest.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10000",
+      "tolerance": 0.5,
+      "explanation": "5 / 0.0005 = 10000.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rest"
+      ],
+      "skillLabel": "Rest stability and contacts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "In MuJoCo, what does a contact with negative dist mean?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The two geoms are penetrating by that depth.",
+        "The contact is disabled.",
+        "The two geoms are separated by that distance.",
+        "The contact force points downward."
+      ],
+      "answer": "0",
+      "explanation": "mjContact.dist is the signed distance; negative means penetration.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rest"
+      ],
+      "skillLabel": "Rest stability and contacts",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Which requirement row is complete?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "SR4 | Robot rests well | looks stable | good | - | - | seems fine",
+        "SR4 | Robot rests | - | - | - | test_rest_stability",
+        "SR4 | Robot rests | base drift in 5 s | < 2 mm | - | -",
+        "SR4 | Robot rests | base drift in 5 s | < 2 mm | below odometry resolution | test_rest_stability"
+      ],
+      "answer": "3",
+      "explanation": "A row needs metric, threshold, rationale and test.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "spec"
+      ],
+      "skillLabel": "Write falsifiable requirements",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "MJCF total mass 2.40 kg, URDF 2.47 kg. Relative difference in percent (divide by the MJCF mass), precision 0.05.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.92",
+      "tolerance": 0.05,
+      "explanation": "0.07/2.40 = 2.92 %: fails the 2 % limit.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "consist"
+      ],
+      "skillLabel": "MJCF and URDF consistency",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP01#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "With an arm base to table geometry where 36 of 100 sampled table points are reachable, by how many percentage points does it miss the 95 % gate?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "59",
+      "tolerance": 0.5,
+      "explanation": "95 - 36 = 59 points: the model scale is wrong, not the code.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reach"
+      ],
+      "skillLabel": "Workspace and reachability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP01#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "Design a rest-stability test that cannot pass by accident. Say what you record, when and with which thresholds.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Records base position, arm joint angles, finiteness and the maximum penetration at every step, not only the final state.",
+        "Uses zero command, a fixed seed and 5 s of simulated time with explicit thresholds (about 2 mm, 0.5 degrees, 2 mm).",
+        "Explains that the maximum over time catches transients and justifies each threshold."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "rest"
+      ],
+      "skillLabel": "Rest stability and contacts",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP01#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b15",
+      "prompt": "Describe how you would make 'every requirement is traceable to a test' an automatic check and what it cannot prove.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Parses SPEC.md for requirement ids and the cited test names, and checks with ast that each test function exists.",
+        "Requires a minimum number of requirements (about 8) and fails on any row without a test.",
+        "States the limit: it proves a test exists, not that it is meaningful, so review and kill-tests are still needed."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "hygiene"
+      ],
+      "skillLabel": "Repository hygiene and tests",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP01#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    },
+    {
+      "id": "b16",
+      "prompt": "A colleague proposes to drop the URDF and keep only the MJCF. Give one benefit, one cost and your decision for this capstone.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Benefit: one fewer file to keep consistent.",
+        "Cost: loses the bridge to ROS 2, Nav2 and URDF-based kinematics libraries.",
+        "Gives a decision with a reason (for example keep both and test them against each other)."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "seed"
+      ],
+      "skillLabel": "Seeded reproducibility",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade-offs",
+          "href": "/lessons/CAP01#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S02",
+        "S04",
+        "R04",
+        "T04",
+        "T05",
+        "RS02"
+      ]
+    }
+  ]
+}

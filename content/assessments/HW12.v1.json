@@ -1,0 +1,219 @@
+{
+  "id": "HW12-diagnostic",
+  "topicId": "HW12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which is the right bring-up order for a new robot board?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Motors, then sensors, then comms, then power, because motors show problems fastest and then retest everything.",
+        "Power, reset and clock, comms, sensors, actuators at low power, then the closed loop.",
+        "Closed loop first, then comms, then sensors, then power, so the control code is proven early.",
+        "Sensors, then power, then actuators, then comms, in whatever order the parts arrive and then retest everything."
+      ],
+      "answer": "1",
+      "explanation": "A fault upstream makes everything downstream look broken, so test from the source: power first, motors and the loop last, with the wheels off the ground.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bringup-order"
+      ],
+      "skillLabel": "Bring-up order and checklist",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Four NiMH cells (4.8 V open circuit, 0.4 ohm total series resistance) supply a motor that draws 2 A at start. What is the voltage in volts during the start?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.0",
+      "tolerance": 0.01,
+      "explanation": "4.8 - 2*0.4 = 4.0 V.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "brownout-ground"
+      ],
+      "skillLabel": "Brownout, sag and ground bounce",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "An ESP32 board resets only when the motor starts and the boot log says BROWNOUT_RST. What is the most likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The serial baud rate is wrong and then retest everything before touching anything else.",
+        "A floating input on the button pin and then retest everything.",
+        "Two I2C devices share one address and then retest everything.",
+        "The supply voltage sags under the motor's start current."
+      ],
+      "answer": "3",
+      "explanation": "BROWNOUT_RST means the supply dipped below the detector level. Resets that line up with motor start point to sag from inrush current (V = Voc - I*R).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "brownout-ground"
+      ],
+      "skillLabel": "Brownout, sag and ground bounce",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "I2C fast mode: rise time limit 300 ns, bus capacitance 100 pF. Maximum pull-up resistance Rp,max = tr / (0.8473 * Cb) in ohms, precision 5.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3541",
+      "tolerance": 5,
+      "explanation": "300e-9 / (0.8473 * 100e-12) = 3541 ohm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "i2c-conflict"
+      ],
+      "skillLabel": "I2C addresses and pull-up sizing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A button input with nothing attached reads random 0 and 1. What fixes it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Enable INPUT_PULLUP, or add an external 10 k pull-up or pull-down.",
+        "Raise the baud rate and then retest everything before touching anything else.",
+        "Add a delay(100) in loop() and then retest everything before touching anything else.",
+        "Power the board from a bigger battery and then retest everything before touching anything else."
+      ],
+      "answer": "0",
+      "explanation": "A floating input picks up noise. A pull-up or pull-down gives it a defined level.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "levels-pullups"
+      ],
+      "skillLabel": "Logic levels, pull-ups and floating inputs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW12#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "An MPU-6050 and a DS1307 are on one I2C bus and both answer at 0x68. Which fix works?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Lower the baud rate of the serial port and then retest everything.",
+        "Add a second 10 k pull-up to SDA and then retest everything.",
+        "Wire the MPU-6050 AD0 pin high so it moves to 0x69.",
+        "Swap the SDA and SCL wires and then retest everything before touching anything else."
+      ],
+      "answer": "2",
+      "explanation": "The MPU-6050 has an address pin: AD0 high gives 0x69. The DS1307 address is fixed, so move the other device, use a multiplexer or a second bus.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "i2c-conflict"
+      ],
+      "skillLabel": "I2C addresses and pull-up sizing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Write a minimal test plan for a new wheel module before the wheel touches the ground: at least five tests in order, each with a measurable pass criterion.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Orders the tests power first (continuity, idle current, rails), then reset reason, comms, sensors, and only then the motor at low duty with the wheel in the air.",
+        "Gives measurable pass criteria such as rails within 5 %, one boot banner, scan matches the map, count direction and counts per revolution, current under a limit.",
+        "Includes a safety test (timeout stops the output) and says what to record: firmware version, pin map and measurements."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "blocking-testplan"
+      ],
+      "skillLabel": "Blocking code and test plans",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW12#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Một Raspberry Pi được cấp nguồn từ power bank. Một Arduino cắm vào cổng USB của Pi gửi PWM tới motor driver, còn driver và động cơ chạy bằng một pin 12 V riêng. Động cơ giật ngẫu nhiên. Lỗi nhiều khả năng nhất là gì?",
+      "options": [
+        "Tần số PWM quá thấp so với chip driver.",
+        "Động cơ cần tụ điện lớn hơn gắn vào cổng USB của Pi.",
+        "Arduino và driver không có chung điểm nối đất (common ground) làm tham chiếu.",
+        "Cáp USB của Pi quá dài nên không truyền được dữ liệu nối tiếp."
+      ],
+      "explanation": "Một tín hiệu là điện áp đo so với một mức tham chiếu. Nếu GND của Arduino và GND của driver không nối với nhau, đầu vào của driver bị thả nổi. Hãy nối các GND tại một điểm."
+    },
+    "q2": {
+      "prompt": "Tác vụ nào nên đặt trên vi điều khiển thay vì máy tính nhúng (SBC)?",
+      "options": [
+        "Chạy vòng điều khiển tốc độ bánh xe 200 Hz với định thời dự đoán được.",
+        "Dựng bản đồ từ các lần quét LiDAR bằng SLAM.",
+        "Nhận diện người trong khung hình camera bằng mạng nơ-ron.",
+        "Ghi mọi topic cảm biến xuống đĩa để phát lại sau."
+      ],
+      "explanation": "Điều khiển chu kỳ cố định với jitter nhỏ là việc của tầng thời gian thực. Ba việc còn lại cần bộ nhớ, sức tính hoặc lưu trữ mà máy tính Linux có."
+    },
+    "q3": {
+      "prompt": "Một lần đọc burst 14 byte qua I2C ở 400 kHz. Thời gian tính bằng micro giây, dùng 9 xung clock mỗi byte và thêm 3 byte (địa chỉ+W, thanh ghi, địa chỉ+R). Bỏ qua START và STOP.",
+      "explanation": "9*(3+14)=153 xung clock; 153/400000 s = 382,5 us."
+    },
+    "q4": {
+      "prompt": "MCU gửi các message 20 byte ở 50 Hz qua UART 115200 baud 8N1. Liên kết được dùng bao nhiêu phần? Độ chính xác 0.001.",
+      "explanation": "20*10*50/115200 = 0,0868."
+    },
+    "q5": {
+      "prompt": "TB6612FNG thuộc khối nào?",
+      "options": [
+        "Cảm biến, vì nó đo dòng điện động cơ.",
+        "Tính toán, vì nó chứa logic điều khiển.",
+        "Nguồn, vì nó cấp điện cho động cơ.",
+        "Driver, vì nó đóng cắt dòng điện động cơ theo lệnh."
+      ],
+      "explanation": "TB6612FNG là một driver động cơ cầu H kép: nó biến tín hiệu logic công suất nhỏ thành dòng điện động cơ lấy từ pin."
+    },
+    "q6": {
+      "prompt": "Một robot di chuyển ở 0,8 m/s. Độ trễ từ cảm biến đến bánh xe là 45 ms. Robot đi được bao nhiêu centimet trước khi bánh xe phản ứng?",
+      "explanation": "0,8 m/s * 0,045 s = 0,036 m = 3,6 cm."
+    },
+    "q7": {
+      "prompt": "Lần theo đường đi của một lệnh vận tốc ROS 2 tới bánh xe của robot vi sai có một Pi và một vi điều khiển. Nêu từng chặng và giao diện giữa các chặng.",
+      "rubric": [
+        "Nêu chuỗi: node ROS 2 trên SBC, liên kết nối tiếp tới MCU, vòng tốc độ trên MCU, PWM và chiều quay tới driver, nguồn động cơ tới gearmotor.",
+        "Nêu giao diện trên mỗi liên kết (topic, serial USB hoặc UART, PWM cùng chân chiều, dây nguồn động cơ).",
+        "Giải thích vì sao vòng tốc độ đặt trên MCU (định thời thời gian thực) và nêu một điểm dễ hỏng như nối đất hoặc nguồn."
+      ],
+      "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "q8": {
+      "prompt": "Một robot chạy tốt trên bàn thử qua USB nhưng Arduino bị reset mỗi khi hai động cơ khởi động từ pin. Bạn kiểm tra gì trước tiên?",
+      "options": [
+        "Sketch Arduino có lỗi trong setup() hay không.",
+        "Điện áp nguồn logic lúc động cơ khởi động: nhiều khả năng nó bị sụt.",
+        "Baud rate nối tiếp có khớp ở hai đầu hay không.",
+        "Dây encoder có bị xoắn vào nhau hay không."
+      ],
+      "explanation": "Reset đúng lúc tải thay đổi mạnh là dấu hiệu kinh điển của sụt nguồn (brownout). Hãy đo đường nguồn logic khi động cơ khởi động."
+    }
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "id": "CAP03-diagnostic",
+  "topicId": "CAP03",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Over a 60 s run with ground truth, the mean NEES of a 3-dof pose filter is 9. What does this mean?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The filter is overconfident: its covariance is about three times smaller than the real errors justify.",
+        "The filter is very accurate, because a large NEES means the estimate is close to the truth in absolute metres.",
+        "The filter is underconfident, because a large NEES means the reported covariance is far too large for the errors.",
+        "Nothing can be concluded, because NEES values are only meaningful for a filter without a gyro bias state."
+      ],
+      "answer": "0",
+      "explanation": "NEES is the squared error normalised by the covariance; its expectation is the dimension (3). A mean of 9 means errors are larger than P admits.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nees-interpretation"
+      ],
+      "skillLabel": "Reading NEES and NIS",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A simulated camera is 480 pixels high with a vertical field of view of 45 degrees. What is the ideal focal length in pixels?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "579.4",
+      "tolerance": 1.0,
+      "explanation": "f = (H/2)/tan(fovy/2) = 240/tan(22.5 deg) = 579.4 px.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "camera-model"
+      ],
+      "skillLabel": "Pinhole focal length",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "The bearing is predicted as -3.10 rad and measured as +3.10 rad. Which innovation should the EKF use?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "+6.20 rad, because the update must use the exact difference of the two numbers without any modification.",
+        "About -0.083 rad: the raw difference 6.20 rad wrapped into [-pi, pi).",
+        "0 rad, because the two angles describe the same direction and therefore the update can be skipped.",
+        "+3.10 rad, because the innovation is limited to the measured bearing when the sign differs."
+      ],
+      "answer": "1",
+      "explanation": "Angles are circular; an unwrapped 6.2 rad innovation would throw the pose far off.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "angle-wrapping"
+      ],
+      "skillLabel": "Angle wrapping in the update",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP03#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Why do we update the covariance in Joseph form, P = (I-KH)P(I-KH)^T + K R K^T?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "It makes the filter converge faster than the standard form, because it uses a larger effective gain.",
+        "It removes the need for the gate, because the extra term already rejects measurement outliers on its own.",
+        "It is a sum of positive semi-definite terms, so P stays symmetric and positive definite even with rounding or a non-optimal gain.",
+        "It avoids computing the matrix inverse of S, which cannot be done on a laptop in less than a millisecond."
+      ],
+      "answer": "2",
+      "explanation": "The standard update (I-KH)P is only equivalent for the exact optimal gain and loses symmetry in floating point.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "ekf-numerics"
+      ],
+      "skillLabel": "Joseph form and numerical health",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A gate at the 99 % chi-square quantile (2 dof) is applied to 770 good detections. About how many are expected to be rejected?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7.7",
+      "tolerance": 1.0,
+      "explanation": "1 % of 770 = 7.7.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "outlier-gating"
+      ],
+      "skillLabel": "Mahalanobis gate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "No marker is visible for 20 s. What should the reported covariance do, and why?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "It should stay constant, because the last correction fixed the pose and the gyro keeps it exact while the wheel odometry adds nothing.",
+        "It should shrink, because every prediction step adds information about the pose from the wheel odometry.",
+        "It should be reset to its initial value, because the filter has lost track and must start again from scratch.",
+        "It should grow, because the pose is only predicted and nothing bounds the accumulated odometry and gyro errors."
+      ],
+      "answer": "3",
+      "explanation": "Prediction adds process noise; only a landmark measurement reduces uncertainty.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "observability"
+      ],
+      "skillLabel": "Observability without landmarks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP03#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You tuned Q and R on trajectories 1000 to 1004 and report the accuracy on the same five. What is the flaw?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "The numbers measure how well you fitted those runs; tune on other seeds, freeze, then test once on 1000 to 1004.",
+        "There is no flaw as long as the thresholds are met, because the seeds are fixed and the runs are reproducible.",
+        "The flaw is that five trajectories are too few, so the only fix is to add more trajectories to the same tuning set.",
+        "The flaw is that Q and R should never be tuned; they must be copied from the sensor datasheets without change."
+      ],
+      "answer": "0",
+      "explanation": "Reusing data for tuning and test hides overfitting.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "eval-hygiene"
+      ],
+      "skillLabel": "Tuning versus test seeds",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP03#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "A run has mean NEES 9.0 but mean NIS 2.0. Name the most likely cause and the first thing you would change.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies an overconfident prediction step: process noise Q too small or a missing state such as the gyro bias.",
+        "Notes that NIS near 2 says the measurement noise R and the landmark model are about right, so R is not the first suspect.",
+        "Proposes increasing Q (or adding the bias state), then re-running on separate tuning seeds and checking NEES again."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "nees-interpretation"
+      ],
+      "skillLabel": "Reading NEES and NIS",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP03#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP02",
+        "C08",
+        "C12",
+        "V04",
+        "V11"
+      ]
+    }
+  ]
+}

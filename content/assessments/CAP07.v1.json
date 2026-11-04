@@ -1,0 +1,233 @@
+{
+  "id": "CAP07-diagnostic",
+  "topicId": "CAP07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "The scene has three blocks of different colours. The instruction is \"put the block in the blue bin\". What must the parser return?",
+      "kind": "choice",
+      "dimension": "I",
+      "critical": true,
+      "options": [
+        "A goal using the first object in the scene list.",
+        "A Clarify result listing the three candidate objects.",
+        "Unparseable, because the word \"block\" is not in the vocabulary.",
+        "A goal using the object nearest to the robot."
+      ],
+      "answer": "1",
+      "explanation": "Ambiguity is resolved by asking, never by picking silently.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "parser-ambiguity"
+      ],
+      "skillLabel": "Parser ambiguity and refusal",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP07#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "Where should the safety supervisor run relative to the planner?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "In the planner's thread, so they share data without delay.",
+        "Inside the behaviour tree as a high-priority node.",
+        "In the planner process but on a timer callback.",
+        "In its own process or thread with its own clock, reading sensors and heartbeats, with a direct line to the firmware watchdog."
+      ],
+      "answer": "3",
+      "explanation": "A supervisor that depends on the component it supervises fails when that component hangs.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "supervisor-independence"
+      ],
+      "skillLabel": "Independence of the safety layer",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "Perception timeout is 0.25 s, the supervisor tick is 10 ms and the requirement is 300 ms to the safe state. How many milliseconds of margin remain?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "40",
+      "tolerance": 0.5,
+      "explanation": "300 - 250 - 10 = 40 ms.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "safety-time-budget"
+      ],
+      "skillLabel": "Safety time budget and stopping distance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP07#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "The operator presses e-stop for 20 ms and releases it. What must the supervisor do afterwards?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Resume motion as soon as the button is released.",
+        "Resume after 0.5 s without any hazard, like a HOLD.",
+        "Stay in ESTOP and forward no motion until an explicit reset by the operator.",
+        "Reset itself when the planner sends a new command."
+      ],
+      "answer": "2",
+      "explanation": "An e-stop that clears itself is not an e-stop; the latch ends only with an explicit reset.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "estop-latch"
+      ],
+      "skillLabel": "E-stop latch and false stops",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP07#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A robot at 0.4 m/s, reaction time 0.25 s, deceleration 0.8 m/s squared. Stopping distance v*tr + v^2/(2a) in metres.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.005,
+      "explanation": "0.4*0.25 + 0.16/1.6 = 0.1 + 0.1 = 0.2 m.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "safety-time-budget"
+      ],
+      "skillLabel": "Safety time budget and stopping distance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Write the hazard-table row for \"perception dropout\": cause, detection rule with a numeric threshold, response and the injection test that checks it. Say how you chose the threshold.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Gives a plausible cause (camera stall, driver crash, stale frame).",
+        "States a numeric detection rule (perception age above a timeout) and a response (HOLD or arm hold).",
+        "Describes an injection test with a time-to-safe-state limit and justifies the threshold against nominal ages and the time budget."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "hazard-table"
+      ],
+      "skillLabel": "Hazard table and injection tests",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "The belief about the red cube was last updated 40 s ago and a person works nearby. What should the task layer do before picking?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Insert an observe action and plan with the fresh detection.",
+        "Pick at the stored pose, since planning is faster than observing.",
+        "Increase the gripper force to compensate.",
+        "Ask the user to confirm the stored pose."
+      ],
+      "answer": "0",
+      "explanation": "A stale belief is replaced by a fresh observation; if observation fails, abort with a reason.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stale-belief"
+      ],
+      "skillLabel": "Object belief age",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP04",
+        "CAP05",
+        "E05",
+        "E06",
+        "S07"
+      ]
+    }
+  ]
+}

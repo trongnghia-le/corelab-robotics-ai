@@ -1,0 +1,490 @@
+{
+  "id": "CAP08-targeted",
+  "topicId": "CAP08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "94 successes in 120 episodes. Upper end of the Wilson 95 % interval.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.848",
+      "tolerance": 0.003,
+      "explanation": "Wilson upper bound for 94/120 is 0.848.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-bound"
+      ],
+      "skillLabel": "Success rates with Wilson bounds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "Why is the CAP08 nominal gate written on the Wilson lower bound and not on the point estimate?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The lower bound is always closer to the true rate than the point estimate is.",
+        "It is the claim you can defend given your n.",
+        "It makes the test easier to pass with fewer episodes.",
+        "Wilson intervals remove the effect of seeds."
+      ],
+      "answer": "1",
+      "explanation": "The lower bound reflects both the rate and the uncertainty; small n lowers it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "wilson-bound"
+      ],
+      "skillLabel": "Success rates with Wilson bounds",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "Expected rate 0.8. About how many episodes give a 95 % half-width of 0.10? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "61",
+      "tolerance": 2,
+      "explanation": "1.96^2 * 0.16 / 0.01 = 61.5, so about 61-62.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sample-size"
+      ],
+      "skillLabel": "Planning the number of episodes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q8"
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "Discordant seeds b=6, c=2. Exact two-sided McNemar p-value.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.289",
+      "tolerance": 0.005,
+      "explanation": "p = 2 (1+8+28)/256 = 0.289.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "paired-test"
+      ],
+      "skillLabel": "Paired comparison of ablations",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "An ablation has b=15, c=2 over 30 paired seeds. Effect (b-c)/pairs in percentage points.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "43.3",
+      "tolerance": 0.2,
+      "explanation": "(15-2)/30 = 0.433, i.e. 43.3 points.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "paired-test"
+      ],
+      "skillLabel": "Paired comparison of ablations",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "An ablation shows effect +10 points with exact p = 0.55 at n = 30. What may you write?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The component has no effect on success.",
+        "The component hurts success, because p-values above 0.5 are fine for large effects.",
+        "The experiment proves the component is redundant and can be removed.",
+        "No reliable evidence at n = 30; run more seeds."
+      ],
+      "answer": "3",
+      "explanation": "Non-significant is not the same as no effect; the experiment may simply be too small.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "paired-test"
+      ],
+      "skillLabel": "Paired comparison of ablations",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "Holm over 4 tests at alpha 0.05: the threshold applied to the second-smallest p-value.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0167",
+      "tolerance": 0.0005,
+      "explanation": "alpha/(m-1) = 0.05/3 = 0.0167.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "multiple-tests"
+      ],
+      "skillLabel": "Multiple comparisons",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "Four independent tests, each at 0.05, all null. Probability of at least one false positive.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.1855",
+      "tolerance": 0.002,
+      "explanation": "1 - 0.95^4 = 0.1855.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "multiple-tests"
+      ],
+      "skillLabel": "Multiple comparisons",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Which protocol keeps tuning and evaluation seeds apart?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Two seed files plus a test that they do not intersect.",
+        "Draw seeds at random each run and simply trust that collisions are unlikely.",
+        "Tune on the first half of the episodes of each run and evaluate on the second half.",
+        "Use the same seeds but average over more runs."
+      ],
+      "answer": "0",
+      "explanation": "A written list and an automatic intersection check make leakage visible.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "seed-hygiene"
+      ],
+      "skillLabel": "Seed hygiene and leakage",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP08#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "In the illustrative run 36 of 108 failures are GRASP_SLIP. Share of failures (0-1).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.333",
+      "tolerance": 0.005,
+      "explanation": "36/108 = 0.333.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-budget"
+      ],
+      "skillLabel": "Failure taxonomy and error budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/CAP08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "94 of 120 succeed and 9 of the 26 failures are GRASP_SLIP. Best-case success rate if that cause is removed completely.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.858",
+      "tolerance": 0.003,
+      "explanation": "(94+9)/120 = 0.858.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-budget"
+      ],
+      "skillLabel": "Failure taxonomy and error budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "Median perception-to-command latency is 71 ms and the robot drives at 0.5 m/s. Distance travelled in that time, in cm.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.55",
+      "tolerance": 0.1,
+      "explanation": "0.5 m/s * 0.071 s = 3.55 cm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "latency-budget"
+      ],
+      "skillLabel": "Latency budget",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "Stage medians are 38 ms, 21 ms and 9 ms. Why is 68 ms not a safe estimate of the total median?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Medians are only defined for a single stage.",
+        "Because 68 ms is always going to be smaller than the true total.",
+        "A median of a sum is not a sum of medians; log per-frame totals.",
+        "Because the stage timings are measured in different units."
+      ],
+      "answer": "2",
+      "explanation": "Compute the median (and a high percentile) of the per-frame total.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "latency-budget"
+      ],
+      "skillLabel": "Latency budget",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "The sealed twin shows a 21-point success drop. What is the correct claim?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The real robot will lose about 21 points of success, as the twin does.",
+        "The stack is that sensitive to this perturbation family; reality may differ.",
+        "Sim2real is solved because the twin is a different simulator.",
+        "The drop is an artefact because simulators are deterministic."
+      ],
+      "answer": "1",
+      "explanation": "A twin estimates sensitivity, not the real gap.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sim2real-gap"
+      ],
+      "skillLabel": "Estimating the sim-to-real gap",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade-offs",
+          "href": "/lessons/CAP08#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b15",
+      "prompt": "Design the evaluation protocol for the twin and its recalibration so that nobody (including you) can leak the hidden parameters.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Generates the twin with a secret seed that is never printed, logged or committed.",
+        "Allows only experiments on the twin (step tests, square drives) as input to system identification.",
+        "Separates twin tuning seeds from twin evaluation seeds.",
+        "Defines the success criterion (>= 25 % relative improvement or a negative result with a CI) in advance."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "experiment-design"
+      ],
+      "skillLabel": "Designing an evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "b16",
+      "prompt": "Write a test plan for bench/metrics.py that catches (a) a hand-edited metrics.json, (b) a tuning seed in the evaluation set and (c) failures without a cause.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Recomputes metrics from episodes.jsonl and compares with the stored file to a tight tolerance (a).",
+        "Computes the intersection of the tuning seed list and the nominal/twin seeds and asserts it is empty (b).",
+        "Asserts that at least 90 % of failed episodes carry a cause from the fixed list and the counts sum to the failures (c).",
+        "Includes a passing control and mutation checks, for example editing one line and expecting the test to fail."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "seed-hygiene"
+      ],
+      "skillLabel": "Seed hygiene and leakage",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP08#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    }
+  ]
+}

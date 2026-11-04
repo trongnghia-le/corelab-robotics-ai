@@ -1,0 +1,108 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "360 số đếm mỗi vòng trục ra, tick 20 ms, 9 số đếm trong một tick. Tốc độ theo rad/s, độ chính xác 0.01.",
+   "explanation": "9 * 2*pi / (360 * 0.02) = 7.854 rad/s."
+  },
+  "b2": {
+   "prompt": "2000 số đếm mỗi vòng và tick 5 ms. Tốc độ khác không nhỏ nhất theo rad/s, độ chính xác 0.001.",
+   "explanation": "2*pi / (2000 * 0.005) = 0.6283 rad/s."
+  },
+  "b3": {
+   "prompt": "Một trục quay ở 31.4159 rad/s. Tốc độ theo rpm, dung sai 0.5.",
+   "explanation": "31.4159 * 60 / (2*pi) = 300 rpm."
+  },
+  "b4": {
+   "prompt": "Với một encoder cố định, lượng tử tốc độ 2*pi/(N*T) thay đổi thế nào khi tần số vòng lặp tăng từ 100 Hz lên 1 kHz?",
+   "options": [
+    "Nhỏ đi mười lần, nên ước lượng mượt hơn.",
+    "Lớn lên mười lần: một số đếm mỗi tick giờ ứng với tốc độ lớn hơn nhiều.",
+    "Không đổi: nó chỉ phụ thuộc N.",
+    "Thành không vì vòng lặp nhanh hơn động cơ."
+   ],
+   "explanation": "T nhỏ đi mười lần, nên một số đếm mỗi tick ứng với tốc độ lớn gấp mười. Nhanh hơn không tốt hơn khi đếm; hãy lọc, dùng nhiều số đếm hơn, hoặc đo chu kỳ."
+  },
+  "b5": {
+   "prompt": "Một bộ lọc tốc độ y += alpha*(x - y) với alpha = 0.25 chạy ở T = 0.02 s. Hằng số thời gian xấp xỉ T*(1-alpha)/alpha tính bằng giây, độ chính xác 0.001.",
+   "explanation": "0.02 * 0.75 / 0.25 = 0.06 s."
+  },
+  "b6": {
+   "prompt": "Với quy tắc clamp (tích phân có điều kiện), trạng thái tích phân được phép thay đổi khi nào?",
+   "options": [
+    "Không bao giờ khi đầu ra khác không.",
+    "Chỉ khi sai số bằng không.",
+    "Luôn luôn, nhưng với độ lợi nhỏ hơn.",
+    "Khi đầu ra không bão hòa, hoặc khi sai số kéo đầu ra trở về dải cho phép."
+   ],
+   "explanation": "Bộ tích phân cập nhật nếu u bằng u_raw, hoặc nếu đầu ra bão hòa và sai số ngược chiều nhau (sai số sẽ xả nó). Ngược lại nó được giữ nguyên."
+  },
+  "b7": {
+   "prompt": "Kp = 0.2, Ki = 2, dt = 0.05, umax = 1. Setpoint 4, đo được 1, trạng thái tích phân 0.3. Đầu ra u sau khi clamp, độ chính xác 0.001.",
+   "explanation": "e = 3; I_new = 0.3 + 2*0.05*3 = 0.6; u_raw = 0.2*3 + 0.6 = 1.2; bị clamp về 1.0."
+  },
+  "b8": {
+   "prompt": "Cùng tick với câu trước, với quy tắc clamp. Trạng thái tích phân sau đó là bao nhiêu, độ chính xác 0.001?",
+   "explanation": "u_raw (1.2) vượt giới hạn và sai số (3) dương, đẩy xa hơn: bộ tích phân giữ ở 0.3."
+  },
+  "b9": {
+   "prompt": "Setpoint giảm từ một giá trị không thể đạt xuống 10 rad/s, nhưng PWM vẫn ở 255 trong nhiều giây. Nguyên nhân khả dĩ là gì?",
+   "options": [
+    "Windup tích phân: tích phân đã lưu vẫn làm bão hòa đầu ra.",
+    "Dây encoder bị lỏng.",
+    "Vùng chết quá nhỏ.",
+    "Tần số PWM quá cao."
+   ],
+   "explanation": "Cột PWM kẹt ở toàn thang sau khi sai số đổi dấu là dấu hiệu của một tích phân không bị chặn."
+  },
+  "b10": {
+   "prompt": "Vùng chết 30 trên 255, đầu ra bộ điều khiển u = -0.25. Duty có dấu (làm tròn thành số nguyên).",
+   "explanation": "30 + 225*0.25 = 86.25, làm tròn 86; dấu âm: -86."
+  },
+  "b11": {
+   "prompt": "Vì sao thêm độ lệch vùng chết khi ánh xạ u sang duty?",
+   "options": [
+    "Để tần số PWM nghe thấy được.",
+    "Để tăng điện áp nguồn.",
+    "Duty nhỏ dưới ngưỡng ma sát tĩnh không làm động cơ chuyển động, nên bộ tích phân sẽ windup trước khi có gì xảy ra.",
+    "Để đảo chiều quay."
+   ],
+   "explanation": "Dưới duty ma sát tĩnh động cơ đứng yên; ánh xạ u bắt đầu từ mép vùng chết làm độ lợi vòng lặp gần như tuyến tính."
+  },
+  "b12": {
+   "prompt": "Một robot ở 0.4 m/s tiếp tục chạy cho đến khi timeout lệnh 250 ms kích hoạt. Quãng đường đi được theo mét, độ chính xác 0.001.",
+   "explanation": "0.4 * 0.25 = 0.1 m."
+  },
+  "b13": {
+   "prompt": "Điều kiện nào định nghĩa tốt nhất một tình trạng kẹt mà firmware nên chốt thành lỗi?",
+   "options": [
+    "Tốc độ cao hơn setpoint trong một tick.",
+    "Duty cao mà gần như không đo được tốc độ trong một cửa sổ thời gian kéo dài.",
+    "Bất kỳ lần đổi chiều nào.",
+    "Một đáp ứng bước có overshoot 5 %."
+   ],
+   "explanation": "Trục bị chặn hoặc encoder chết biểu hiện bằng một lực lái lớn không có chuyển động lâu hơn thời gian tăng tốc bình thường."
+  },
+  "b14": {
+   "prompt": "Một phép thử bước cho K = 25 rad/s trên mỗi đơn vị u và tau = 0.3 s. Kp tinh chỉnh lambda cho tau_c = 0.2 s (Kp = tau/(K tau_c)), độ chính xác 0.001.",
+   "explanation": "Kp = 0.3 / (25 * 0.2) = 0.06."
+  },
+  "b15": {
+   "prompt": "Mô tả cách bạn chạy và đọc một phép thử bước của vòng tốc độ, và bạn sẽ báo cáo những con số nào.",
+   "rubric": [
+    "Áp một bước setpoint từ trạng thái nghỉ, ghi thời gian, setpoint, tốc độ ước lượng và PWM ở tần số cố định (CSV qua Serial).",
+    "Tính thời gian lên (10-90 %), overshoot, sai số xác lập từ các mẫu cuối và thời gian xác lập vào dải 2 %.",
+    "Xem vết PWM để tìm bão hòa hoặc windup và tinh chỉnh theo thứ tự: feed-forward và Kp, rồi Ki, giảm Ki nếu overshoot quá cao."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b16": {
+   "prompt": "Viết khung của vòng lặp firmware: một timer đặt cờ, vòng lặp đọc số đếm encoder một lần, ước lượng tốc độ, chạy PI có clamp, ánh xạ sang PWM và kiểm tra timeout lệnh.",
+   "rubric": [
+    "Ngắt timer chỉ đặt một cờ; một lần lặp mỗi tick với dt cố định (không delay hay Serial chặn bên trong).",
+    "Đọc số đếm một lần mỗi tick, tính tốc độ theo rad/s từ hiệu số và số đếm mỗi vòng, tùy chọn lọc nó.",
+    "Chạy PI với clamp và tích phân có điều kiện, ánh xạ u sang duty có dấu với vùng chết, và ép đầu ra bằng không (cùng reset tích phân) khi timeout lệnh hết hạn."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

@@ -1,0 +1,230 @@
+{
+  "id": "HW02-diagnostic",
+  "topicId": "HW02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "You want to measure the current drawn by a small motor circuit with a multimeter. How do you connect the meter?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "In parallel across the motor, with the dial on current.",
+        "In series with the motor, dial on current.",
+        "In parallel across the battery, dial on current.",
+        "Touch the probes to the motor wires with the dial on ohms."
+      ],
+      "answer": "1",
+      "explanation": "Current is the flow through a path, so the meter must be part of that path: in series. In current mode the meter is nearly a short circuit, so it must never be placed across a source.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "multimeter"
+      ],
+      "skillLabel": "Use a multimeter correctly",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M01"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "An ESP32 (3.3 V) output pin drives an input of an ATmega328P powered at 5 V. The ESP32 guarantees VOH of at least 2.64 V; the ATmega328P needs at least 3.0 V to read high. What is the right conclusion?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is safe, because 2.64 V is above the 1.5 V low threshold.",
+        "It is safe, because both chips use CMOS logic and 3.3 V is high enough.",
+        "It fails, because the ESP32 can only drive 5 V signals into 5 V chips.",
+        "A high is not guaranteed to read as high, so use a level shifter."
+      ],
+      "answer": "3",
+      "explanation": "A guaranteed output high of 2.64 V is below the 3.0 V minimum input high at 5 V, so the read can fail with temperature or part variation. Check VOH(min) against VIH(min), not typical values.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "logic-pullups"
+      ],
+      "skillLabel": "Logic levels and pull-ups",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M01"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "In a datasheet, what does an absolute maximum rating tell you?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A stress limit: exceeding it may damage the part.",
+        "The value the part will reach on average at 25 degrees Celsius.",
+        "The range in which every listed specification is guaranteed.",
+        "The value the manufacturer recommends for the best accuracy."
+      ],
+      "answer": "0",
+      "explanation": "Absolute maximum ratings are stress limits for survival, not operating ranges. Guarantees come from the recommended operating or test-condition tables; typical values are only typical.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "datasheet-reading"
+      ],
+      "skillLabel": "Read datasheet tables",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M01"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A 10 k and 20 k divider from 5 V reads 3.33 V with nothing attached. You connect a 47 k input to the output. What happens to the output voltage?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It stays 3.33 V, because the divider ratio is fixed by R1 and R2.",
+        "It rises, because the load adds current to the output node.",
+        "It drops to about 2.9 V, because the load is in parallel with R2.",
+        "It drops to 0 V, because any load short-circuits a divider."
+      ],
+      "answer": "2",
+      "explanation": "The load is in parallel with R2: 20k || 47k = 14.0k, so Vout = 5 * 14.0 / 24.0 = 2.92 V. The fixed ratio holds only for an unloaded output.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "divider-adc"
+      ],
+      "skillLabel": "Voltage dividers and ADC scaling",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M01"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A red LED (Vf = 2.0 V) runs from 3.3 V at about 5 mA. Give the smallest standard E12 resistor (in ohms) that is at least the calculated value.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "270",
+      "tolerance": 0.5,
+      "explanation": "(3.3-2.0)/0.005 = 260 ohm; E12 values are 220 and 270, round up to 270.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "series-parallel"
+      ],
+      "skillLabel": "Series, parallel and LED resistors",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M01"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A 12 V battery feeds a 30 k over 10 k divider (output at the middle). Output voltage in volts.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.0",
+      "tolerance": 0.01,
+      "explanation": "12 * 10 / (30 + 10) = 3.0 V.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "divider-adc"
+      ],
+      "skillLabel": "Voltage dividers and ADC scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M01"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "A 24 ohm resistor is connected across 12 V. Power dissipated in watts.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.0",
+      "tolerance": 0.01,
+      "explanation": "P = V^2 / R = 144 / 24 = 6 W.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ohm-power"
+      ],
+      "skillLabel": "Ohm's law and power",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M01"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "A divider feeding an ADC reads lower than the formula predicts. Explain the likely cause and give two ways to fix it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies loading: the ADC or connected circuit is in parallel with R2, lowering the effective bottom resistance.",
+        "Computes or states the effect with the parallel formula (for example R2 || RL) rather than only naming it.",
+        "Gives two fixes: lower resistor values (stiffer divider, more current), a buffer or op-amp, or choosing a load at least ten times R2."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "divider-adc"
+      ],
+      "skillLabel": "Voltage dividers and ADC scaling",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "M01"
+      ]
+    }
+  ]
+}

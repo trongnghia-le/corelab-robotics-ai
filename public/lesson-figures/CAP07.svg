@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="Inter, Arial, sans-serif" role="img">
+<title>CAP07 language task layer and independent safety supervisor</title>
+<desc>An instruction goes through a parser that returns a goal, a clarification request or an unparseable result. A planner and behaviour tree call navigation and grasp skills. A separate safety supervisor reads heartbeats and hazard inputs and can inhibit motion and stop the firmware directly.</desc>
+<rect width="900" height="470" fill="#111827" rx="12"/>
+<text x="450" y="28" font-size="17" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Text to goal to plan to skills, with a supervisor that does not trust any of them</text>
+<rect x="20" y="70" width="150" height="64" rx="8" fill="#1f2937" stroke="#c084fc" stroke-width="2"/>
+<text x="95.0" y="91.8" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Instruction</text>
+<text x="95.0" y="105.8" font-size="11" fill="#e5e7eb" text-anchor="middle">"put the red cube</text>
+<text x="95.0" y="119.8" font-size="11" fill="#e5e7eb" text-anchor="middle">in the blue bin"</text>
+<rect x="215" y="70" width="150" height="64" rx="8" fill="#1f2937" stroke="#c084fc" stroke-width="2"/>
+<text x="290.0" y="91.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Parser</text>
+<text x="290.0" y="106.2" font-size="12" fill="#e5e7eb" text-anchor="middle">slots + synonyms</text>
+<text x="290.0" y="121.2" font-size="12" fill="#e5e7eb" text-anchor="middle">LLM-free baseline</text>
+<rect x="410" y="70" width="150" height="64" rx="8" fill="#1f2937" stroke="#c084fc" stroke-width="2"/>
+<text x="485.0" y="91.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">TaskGoal</text>
+<text x="485.0" y="106.2" font-size="12" fill="#e5e7eb" text-anchor="middle">on(cube_red,</text>
+<text x="485.0" y="121.2" font-size="12" fill="#e5e7eb" text-anchor="middle">bin_blue)</text>
+<rect x="605" y="70" width="130" height="64" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<text x="670.0" y="91.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Planner</text>
+<text x="670.0" y="106.2" font-size="12" fill="#e5e7eb" text-anchor="middle">BFS / STRIPS</text>
+<text x="670.0" y="121.2" font-size="12" fill="#e5e7eb" text-anchor="middle">min actions</text>
+<rect x="770" y="70" width="110" height="64" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<text x="825.0" y="91.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Behaviour</text>
+<text x="825.0" y="106.2" font-size="12" fill="#e5e7eb" text-anchor="middle">tree</text>
+<text x="825.0" y="121.2" font-size="12" fill="#e5e7eb" text-anchor="middle">retry &lt;= 2</text>
+<line x1="170" y1="102" x2="215" y2="102" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="215,102 206.0,105.5 206.0,98.5" fill="#e5e7eb"/>
+<line x1="365" y1="102" x2="410" y2="102" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="410,102 401.0,105.5 401.0,98.5" fill="#e5e7eb"/>
+<line x1="560" y1="102" x2="605" y2="102" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="605,102 596.0,105.5 596.0,98.5" fill="#e5e7eb"/>
+<line x1="735" y1="102" x2="770" y2="102" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="770,102 761.0,105.5 761.0,98.5" fill="#e5e7eb"/>
+<rect x="215" y="175" width="150" height="50" rx="8" fill="#1f2937" stroke="#f59e0b" stroke-width="2"/>
+<text x="290.0" y="196.8" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Clarify / Unparseable</text>
+<text x="290.0" y="210.8" font-size="11" fill="#e5e7eb" text-anchor="middle">ask, never guess</text>
+<line x1="290" y1="134" x2="290" y2="175" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="290,175 286.5,166.0 293.5,166.0" fill="#e5e7eb"/>
+<line x1="215" y1="200" x2="95" y2="200" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="95,200 104.0,196.5 104.0,203.5" fill="#e5e7eb"/>
+<line x1="95" y1="200" x2="95" y2="134" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="95,134 98.5,143.0 91.5,143.0" fill="#e5e7eb"/>
+<rect x="770" y="175" width="110" height="50" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
+<text x="825.0" y="196.8" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Skills</text>
+<text x="825.0" y="210.8" font-size="11" fill="#e5e7eb" text-anchor="middle">nav, grasp</text>
+<line x1="825" y1="134" x2="825" y2="175" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="825,175 821.5,166.0 828.5,166.0" fill="#e5e7eb"/>
+<rect x="20" y="285" width="640" height="120" rx="8" fill="#1f2937" stroke="#f87171" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="340.0" y="326.7" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Safety supervisor (own process, 100 Hz, stdlib only)</text>
+<text x="340.0" y="341.7" font-size="12" fill="#e5e7eb" text-anchor="middle"></text>
+<text x="340.0" y="356.7" font-size="12" fill="#e5e7eb" text-anchor="middle">inputs: person distance, link age, perception age, planner heartbeat,</text>
+<text x="340.0" y="371.7" font-size="12" fill="#e5e7eb" text-anchor="middle">estimator flag, torque, battery, e-stop, commanded speed, workspace</text>
+<rect x="700" y="285" width="180" height="56" rx="8" fill="#1f2937" stroke="#f87171" stroke-width="2"/>
+<text x="790.0" y="309.9" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Forwarded command</text>
+<text x="790.0" y="323.9" font-size="11" fill="#e5e7eb" text-anchor="middle">v = 0, arm hold on HOLD</text>
+<rect x="700" y="355" width="180" height="50" rx="8" fill="#1f2937" stroke="#f59e0b" stroke-width="2"/>
+<text x="790.0" y="376.9" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Firmware watchdog</text>
+<text x="790.0" y="390.9" font-size="11" fill="#e5e7eb" text-anchor="middle">direct stop frame</text>
+<line x1="660" y1="313" x2="700" y2="313" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="700,313 691.0,316.5 691.0,309.5" fill="#e5e7eb"/>
+<line x1="660" y1="380" x2="700" y2="380" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="700,380 691.0,383.5 691.0,376.5" fill="#e5e7eb"/>
+<line x1="825" y1="225" x2="825" y2="285" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="825,285 821.5,276.0 828.5,276.0" fill="#e5e7eb"/>
+<text x="832" y="258" font-size="11" fill="#9ca3af" text-anchor="start">cmd</text>
+<rect x="20" y="420" width="860" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="2"/>
+<text x="450.0" y="440.9" font-size="11" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Hazard injection tests: 10 hazards x time-to-safe-state (150 ms e-stop, 300 ms others). Protects a SIMULATION. Not certified safety.</text>
+</svg>

@@ -1,0 +1,233 @@
+{
+  "id": "HW06-diagnostic",
+  "topicId": "HW06",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Why should a 1 kHz motor loop run on a microcontroller rather than on Linux on a Raspberry Pi?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Linux scheduling is best effort, so an iteration can be late.",
+        "Linux cannot run Python fast enough to add two numbers in 1 ms.",
+        "A Raspberry Pi has no GPIO pins, so it cannot drive anything.",
+        "Microcontrollers always have more RAM than a single-board computer."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "real-time"
+      ],
+      "skillLabel": "Real-time and jitter",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ],
+      "explanation": "A motor loop needs its deadline every time. A bare-metal MCU with timer interrupts gives it; Linux shares the CPU among many tasks."
+    },
+    {
+      "id": "q2",
+      "prompt": "Step size of a 12-bit ADC with a 3.3 V reference, in millivolts. Precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.806",
+      "tolerance": 0.005,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "adc-resolution"
+      ],
+      "skillLabel": "ADC and logic levels",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ],
+      "explanation": "3.3 / 4096 = 0.806 mV."
+    },
+    {
+      "id": "q3",
+      "prompt": "20-byte frames at 200 Hz on a 115200 baud 8N1 UART. Link load as a fraction. Precision 0.002.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.347",
+      "tolerance": 0.002,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-timing-load"
+      ],
+      "skillLabel": "Bus time and load",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ],
+      "explanation": "20 x 10 x 200 / 115200 = 0.347."
+    },
+    {
+      "id": "q4",
+      "prompt": "A 14-byte I2C register burst read (address, register, repeated start, address, 14 data bytes, 9 clocks per byte) on a 400 kHz bus. Time in microseconds. Precision 1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "382.5",
+      "tolerance": 1,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-timing-load"
+      ],
+      "skillLabel": "Bus time and load",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ],
+      "explanation": "9 x (14 + 3) = 153 clocks; 153 / 400000 = 382.5 us."
+    },
+    {
+      "id": "q5",
+      "prompt": "Which bus uses a differential twisted pair, 120 ohm terminators at both ends and message IDs for priority?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "I2C",
+        "SPI",
+        "CAN",
+        "UART"
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bus-comparison"
+      ],
+      "skillLabel": "Compare buses",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ],
+      "explanation": "CAN arbitrates by message ID on a differential pair terminated at both ends."
+    },
+    {
+      "id": "q6",
+      "prompt": "Worst-case length in bits of a classic 11-bit-ID CAN data frame with 8 data bytes, including bit stuffing and intermission.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "135",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-timing-load"
+      ],
+      "skillLabel": "Bus time and load",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ],
+      "explanation": "47 + 64 = 111, plus floor((34 + 64 - 1) / 4) = 24 stuff bits: 135."
+    },
+    {
+      "id": "q7",
+      "prompt": "A 5 V sensor output must go to an ESP32 input (3.3 V logic, not 5 V tolerant). What is a sound fix for a one-way signal?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Connect it directly: the ESP32 clamps the extra voltage safely.",
+        "Add a pull-up resistor to 3.3 V on the input.",
+        "Raise the ESP32 supply to 5 V so levels match.",
+        "Use a 1 kohm over 2 kohm divider, or a level shifter."
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "adc-resolution"
+      ],
+      "skillLabel": "ADC and logic levels",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ],
+      "explanation": "A divider turns 5 V into about 3.33 V. Direct connection can damage the pin."
+    },
+    {
+      "id": "q8",
+      "prompt": "A robot has a camera, a 2D LiDAR, two wheel motors and an IMU. Propose compute and buses and justify the split.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Puts ROS 2, camera and LiDAR on an SBC and the fast motor and IMU loop on an MCU, with a reason (best effort against hard real-time).",
+        "Chooses a bus for each link (UART or USB between SBC and MCU, I2C or SPI for the IMU, Ethernet or USB for the LiDAR) with wires and speed in mind.",
+        "Checks the load of the busiest link against about 50 % and says what would change the plan."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "compute-tier-choice"
+      ],
+      "skillLabel": "Choose compute tier",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade-offs",
+          "href": "/lessons/HW06#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

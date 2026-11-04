@@ -1,0 +1,129 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Nguồn 24 V cấp cho động cơ với duty 25 %. Điện áp trung bình tính bằng volt.",
+   "explanation": "0.25 x 24 = 6 V."
+  },
+  "b2": {
+   "prompt": "Một servo dùng 1 ms cho 0 độ và 2 ms cho 180 độ. Góc cho xung 1.4 ms, tính bằng độ. Độ chính xác 0.5.",
+   "explanation": "0.4 x 180 = 72 độ."
+  },
+  "b3": {
+   "prompt": "Một stepper 1.8 độ được điều khiển ở vi bước 1/8. Số vi bước mỗi vòng.",
+   "explanation": "200 x 8 = 1600."
+  },
+  "b4": {
+   "prompt": "Một stepper 200 bước mỗi vòng ở vi bước 1/16 kéo vít me bước 2 mm với tốc độ 15 mm/s. Số xung bước mỗi giây.",
+   "explanation": "15 / 2 x 200 x 16 = 24000."
+  },
+  "b5": {
+   "prompt": "Cùng động cơ (0.3 A không tải, 5.5 A kẹt, mô-men kẹt 0.9 N m, 12 V). Dòng tính bằng ampe ở tải 0.45 N m.",
+   "explanation": "0.3 + 5.2 x 0.5 = 2.9 A."
+  },
+  "b6": {
+   "prompt": "Một động cơ 12 V (200 rpm không tải, mô-men kẹt 0.9 N m) chạy ở duty 80 % từ nguồn 12 V với tải 0.3 N m. Tốc độ tính bằng rpm. Độ chính xác 0.5.",
+   "explanation": "200 x 0.8 - 200 x 0.3 / 0.9 = 160 - 66.7 = 93.3 rpm."
+  },
+  "b7": {
+   "prompt": "Với cùng động cơ và nguồn, duty (dạng phân số) nào cho 100 rpm ở tải 0.15 N m? Độ chính xác 0.005.",
+   "explanation": "100 = 200 D - 33.3 nên D = 133.3 / 200 = 0.667."
+  },
+  "b8": {
+   "prompt": "Một động cơ chịu tải 0.2 N m. So với duty 100 %, tải lấy đi bao nhiêu rpm ở duty 50 %?",
+   "options": [
+    "Một nửa, vì duty giảm một nửa.",
+    "Gấp đôi, vì động cơ yếu hơn ở duty thấp.",
+    "Như nhau: độ sụt tốc không phụ thuộc duty.",
+    "Không gì cả, vì PWM loại bỏ ảnh hưởng của tải."
+   ],
+   "explanation": "Tốc độ có tải là w_nl x V/V_rated - w_nl x mô-men / mô-men kẹt; số hạng thứ hai không chứa duty."
+  },
+  "b9": {
+   "prompt": "Trong một H-bridge tự chế, Q1 (phía cao, bên trái) và Q3 (phía thấp, bên trái) cùng bật. Điều gì xảy ra?",
+   "options": [
+    "Nguồn bị nối tắt xuống đất qua một nhánh.",
+    "Động cơ phanh bằng cách nối tắt hai đầu của nó.",
+    "Động cơ đảo chiều quay.",
+    "Không có gì: động cơ thấy 0 V và chỉ quay tự do."
+   ],
+   "explanation": "Hai công tắc cùng nhánh nối nguồn thẳng xuống đất; chip driver thật thêm dead time để ngăn điều này."
+  },
+  "b10": {
+   "prompt": "Một khớp tay robot phải báo vị trí, tải và nhiệt độ qua bus nối tiếp dùng chung. Loại nào phù hợp?",
+   "options": [
+    "Servo sở thích điều khiển bằng xung 1 đến 2 ms.",
+    "Stepper với driver STEP và DIR.",
+    "Động cơ DC chổi than với H-bridge.",
+    "Servo nối tiếp thông minh với gói số."
+   ],
+   "explanation": "Servo nối tiếp thông minh trao đổi gói số và báo vị trí, tải, nhiệt độ; servo sở thích không có phản hồi."
+  },
+  "b11": {
+   "prompt": "Servo giật mỗi khi motor bánh xe khởi động, và cả hai dùng chung một nguồn 5 V. Nguyên nhân khả dĩ nhất và cách sửa?",
+   "options": [
+    "Xung quá dài: rút còn 1 ms rồi thử lại.",
+    "Nguồn sụt khi dòng tăng vọt: cấp nguồn riêng cho servo, chung mass.",
+    "Servo bị kẹt: tăng tần số PWM lên 20 kHz.",
+    "Xung đang tính bằng micro giây: đổi sang mili giây."
+   ],
+   "explanation": "Dòng tăng vọt của motor kéo nguồn chung xuống và làm nhiễu servo và logic; tách nguồn nhưng chung mass sẽ sửa được."
+  },
+  "b12": {
+   "prompt": "Một stepper chạy tốt ở 200 bước/s nhưng mất vị trí ở 6000 bước/s khi có tải. Cách khắc phục đầu tiên tốt nhất?",
+   "options": [
+    "Bỏ tải ra và vẫn tin vào số bước đếm.",
+    "Tăng tần số PWM của nguồn lên 20 kHz.",
+    "Chọn cỡ vi bước lớn hơn và bỏ qua tốc độ bước.",
+    "Tăng tốc dần và hạ tốc độ tối đa."
+   ],
+   "explanation": "Mô-men kéo ra giảm theo tốc độ. Tăng tốc dần, tốc độ tối đa thấp hơn hoặc nhiều điện áp hơn giữ rotor đồng bộ; stepper vòng hở không báo được bước bị mất."
+  },
+  "b13": {
+   "prompt": "Một động cơ chổi than nhỏ rít to ở tốc độ thấp khi dùng analogWrite mặc định của Arduino Uno. Nguyên nhân thường gặp?",
+   "options": [
+    "Tần số PWM, vài trăm hertz, nghe được.",
+    "Duty cycle vượt quá 100 % ở tốc độ thấp.",
+    "H-bridge ở trạng thái coast trong thời gian tắt.",
+    "Điện áp động cơ trên giới hạn 36 V của driver."
+   ],
+   "explanation": "Mặc định của Uno khoảng 490 Hz trên hầu hết chân, nghe được; khoảng 20 kHz thì không nghe được nhưng tổn thất chuyển mạch lớn hơn."
+  },
+  "b14": {
+   "prompt": "Một động cơ 12 V kẹt ở 5.5 A; driver định mức 1.7 A liên tục và 2.5 A đỉnh. Kết luận đúng là gì?",
+   "options": [
+    "An toàn: dòng chạy dưới định mức liên tục 1.7 A.",
+    "An toàn: định mức đỉnh áp dụng cho cả lần chạy, không chỉ vài giây.",
+    "Không an toàn khi kẹt: thêm giới hạn dòng và phát hiện kẹt.",
+    "Chỉ không an toàn nếu tần số PWM dưới khoảng 1 kHz."
+   ],
+   "explanation": "Dòng kẹt vượt định mức đỉnh nghĩa là bánh bị chặn có thể làm quá nhiệt hoặc ngắt driver; hãy giới hạn, phát hiện hoặc chọn driver lớn hơn."
+  },
+  "b15": {
+   "prompt": "Viết kế hoạch kiểm thử cho hàm driver_check(i_needed, i_stall, i_cont, i_peak) trả về overload, stall-exceeds-peak, stall-short-only hoặc ok.",
+   "rubric": [
+    "Tính tay một trường hợp cho mỗi trong bốn kết quả.",
+    "Kiểm thử biên: dòng chạy đúng bằng định mức liên tục và dòng kẹt đúng bằng định mức đỉnh.",
+    "Kiểm tra thứ tự ưu tiên khi nhiều điều kiện cùng đúng, và đầu vào không hợp lệ như dòng âm."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b16": {
+   "prompt": "Chọn loại động cơ và driver cho một robot hai bánh nặng 1 kg và biện luận so với hai phương án khác.",
+   "rubric": [
+    "Chọn loại theo công việc (ví dụ gearmotor chổi than kèm encoder) và nêu yêu cầu mô-men.",
+    "So sánh ít nhất hai phương án (stepper, BLDC, servo thông minh) về phản hồi, hiệu suất, chi phí và độ phức tạp.",
+    "Liệt kê các con số driver đã kiểm tra: dải điện áp, dòng liên tục và dòng kẹt so với định mức đỉnh."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b17": {
+   "prompt": "Một robot bị reset mỗi khi cả hai bánh bắt đầu chạy. Đưa ra kế hoạch chẩn đoán: bạn đo gì, nguyên nhân khả dĩ và cách sửa.",
+   "rubric": [
+    "Đo điện áp nguồn lúc khởi động bằng oscilloscope hoặc đồng hồ ghi và đo dòng motor.",
+    "Nêu dòng khởi động hoặc dòng kẹt làm sụt nguồn (brown-out) và nguồn logic và motor dùng chung là nguyên nhân.",
+    "Đề xuất cách sửa: tách nguồn nhưng chung mass, tụ lớn, khởi động mềm hoặc giới hạn dòng, rồi kiểm tra lại."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

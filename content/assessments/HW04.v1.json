@@ -1,0 +1,202 @@
+{
+  "id": "HW04-diagnostic",
+  "topicId": "HW04",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "An HC-SR04 read with pulseIn returns 0 because no echo came back. What should the firmware do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Report a distance of 0 cm, since nothing returned a signal.",
+        "Treat it as no echo, not a distance, and react safely.",
+        "Report the maximum range of 400 cm, since the path is clear.",
+        "Reuse the last valid distance until an echo returns."
+      ],
+      "answer": "1",
+      "explanation": "A timeout means the sensor is blind (soft or angled surface, out of range), not that the distance is 0 or that the path is free.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sensor-failures"
+      ],
+      "skillLabel": "Sensor failure modes",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW04#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "A quadrature encoder has 6 lines per revolution, x4 decoding, and a 50:1 gearbox. Counts per output revolution.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1200",
+      "tolerance": 0.5,
+      "explanation": "6 x 4 x 50 = 1200.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "encoder-resolution"
+      ],
+      "skillLabel": "Encoder resolution and speed",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "With 1200 counts per revolution and a 100 Hz sample rate, the smallest nonzero speed in rad/s. Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.5236",
+      "tolerance": 0.001,
+      "explanation": "2 pi / (1200 x 0.01) = 0.5236 rad/s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "encoder-resolution"
+      ],
+      "skillLabel": "Encoder resolution and speed",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "An MPU-6050 gyro set to the +/-500 deg/s range (65.5 LSB per deg/s) reads raw 2620. Rate in deg/s.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "40",
+      "tolerance": 0.01,
+      "explanation": "2620 / 65.5 = 40.0 deg/s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "imu-conversion"
+      ],
+      "skillLabel": "IMU scale factors and drift",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "An HC-SR04 echo pulse lasts 11600 microseconds. Distance in cm using the datasheet rule.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "200",
+      "tolerance": 0.5,
+      "explanation": "11600 / 58 = 200 cm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ultrasonic-distance"
+      ],
+      "skillLabel": "Echo time to distance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "A robot sits still but its integrated gyro angle keeps growing. What is the cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A small constant bias in the rate is integrated over time.",
+        "The accelerometer is stuck at 1 g and pushes the angle upward.",
+        "The I2C bus is too slow, so samples are repeated.",
+        "Gyros measure angle directly, so the angle must be true."
+      ],
+      "answer": "0",
+      "explanation": "Integrating a bias b gives an error b times t, which is why gyros drift and need correction (C08).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "imu-conversion"
+      ],
+      "skillLabel": "IMU scale factors and drift",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "You must choose a distance sensor for a small indoor robot. Which numbers do you take from the datasheets and in what order do you check them?",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Writes the need as numbers: minimum and maximum range, rate, interface and budget.",
+        "Checks range on the worst surface, then rate against the control loop, then interface and field of view.",
+        "Names the expected failure (soft or angled surface, sunlight, glass) and picks the cheapest candidate that passes."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "sensor-selection"
+      ],
+      "skillLabel": "Choosing a sensor",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW04#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW01",
+        "HW02"
+      ]
+    }
+  ]
+}

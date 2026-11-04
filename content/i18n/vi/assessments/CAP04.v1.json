@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Benchmark điều hướng 30 episode có 27 thành công. Cổng yêu cầu cận dưới Wilson 95 % ít nhất 75 %. Kết luận đúng là gì?",
+   "options": [
+    "Đạt: 27/30 là 90 %, cao hơn 75 %.",
+    "Trượt: cận dưới khoảng 74.4 %, bằng chứng chưa đủ mạnh; hãy cải thiện hệ thống hoặc chạy thêm episode có seed cố định.",
+    "Đạt: 30 episode là mẫu đủ lớn nên cận không quan trọng.",
+    "Chạy lại với seed mới đến khi đạt rồi báo cáo lần chạy đó."
+   ],
+   "explanation": "Khoảng Wilson 95 % cho 27/30 là [0.744, 0.965]; cận dưới thấp hơn 0.75. Chọn seed đến khi đạt là một dạng chỉnh trên tập test."
+  },
+  "q2": {
+   "prompt": "Trên lưới 8 hướng, bước thẳng tốn 1 và bước chéo tốn sqrt(2), heuristic nào admissible và chính xác trong không gian trống?",
+   "options": [
+    "Khoảng cách Manhattan dx + dy.",
+    "Hai lần khoảng cách Euclid.",
+    "Khoảng cách octile (dx + dy) + (sqrt(2) - 2) * min(dx, dy).",
+    "Số ô trong hộp bao của điểm đầu và đích."
+   ],
+   "explanation": "Octile bằng chi phí thật trong không gian trống, nên không bao giờ đánh giá quá. Manhattan và các lựa chọn khác đánh giá quá chuyển động chéo và có thể khiến A* trả về đường không tối ưu."
+  },
+  "q3": {
+   "prompt": "Bán kính ngoại tiếp 0.22 m, biên an toàn 0.05 m, độ lệch chuẩn vị trí EKF 0.04 m (dùng 2 sigma). Bán kính inflation theo ô 5 cm, làm tròn lên.",
+   "explanation": "0.22 + 0.05 + 0.08 = 0.35 m = 7 ô."
+  },
+  "q4": {
+   "prompt": "Một ô bắt đầu ở p = 0.5 và bị 3 tia đánh trúng với p_occ = 0.7 (không có cập nhật trống). Xác suất bị chiếm của nó, 3 chữ số thập phân.",
+   "explanation": "l = 3 ln(0.7/0.3) = 2.542; p = 1/(1+e^-2.542) = 0.927."
+  },
+  "q5": {
+   "prompt": "Robot chạy 0.5 m/s, hãm 1.0 m/s^2 và tổng độ trễ từ lidar đến firmware là 150 ms. Khoảng cách dừng theo mét.",
+   "explanation": "0.5^2/(2*1) + 0.5*0.15 = 0.125 + 0.075 = 0.20 m."
+  },
+  "q6": {
+   "prompt": "Sau khi chuyển navigator sang pose thật của simulator, thành công điều hướng nhảy từ 80 % lên 97 %. Bạn kết luận gì?",
+   "options": [
+    "Benchmark không còn đo pipeline của bạn: nó bỏ qua EKF, nên con số vô giá trị và test AST phải thất bại.",
+    "Planner đã tốt hơn và pose thật là đầu vào hợp lệ cho lần chạy nghiệm thu.",
+    "EKF giờ thừa và có thể bỏ khỏi capstone.",
+    "Kết quả chứng minh bản đồ lidar đủ chính xác cho cổng."
+   ],
+   "explanation": "Điều hướng phải chạy trên pose ước lượng. Dùng truth che giấu sai số định vị và mọi kết quả thu được theo cách đó không đo hệ thống; pipeline không bao giờ được import truth của simulator."
+  },
+  "q7": {
+   "prompt": "Giải thích hiệp phương sai EKF từ CAP03 nên ảnh hưởng thế nào đến bán kính inflation và hành vi của navigator, và cái giá của việc bỏ qua nó.",
+   "rubric": [
+    "Cộng phần dự phòng khoảng 2 sigma bất định vị trí vào bán kính inflation (hoặc inflate khi hiệp phương sai tăng).",
+    "Mô tả hành vi khi bất định lớn: giảm tốc, định vị lại, hoặc báo lý do rõ ràng thay vì cứ chạy tiếp.",
+    "Nêu đánh đổi: inflate nhiều có thể chặn lối hẹp, còn bỏ qua bất định có nguy cơ va chạm."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

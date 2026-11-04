@@ -1,0 +1,540 @@
+{
+  "id": "HW08-targeted",
+  "topicId": "HW08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Uno Timer1, CTC, 16 MHz, prescaler 64, target interrupt rate 500 Hz. What OCR1A?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "499",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "timer-arithmetic"
+      ],
+      "skillLabel": "Timer prescaler and compare arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "16e6/(64*500) - 1 = 499."
+    },
+    {
+      "id": "b2",
+      "prompt": "Uno Timer1, CTC, 16 MHz, prescaler 256, target 50 Hz. What OCR1A?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1249",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "timer-arithmetic"
+      ],
+      "skillLabel": "Timer prescaler and compare arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "16e6/(256*50) - 1 = 1249."
+    },
+    {
+      "id": "b3",
+      "prompt": "Quadrature (x4), A leading B is forward. The samples 00, 01, 11, 10, 00, 01 arrive. What is the net count?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-5",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quad-decode"
+      ],
+      "skillLabel": "Quadrature decoding and edge rates",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Five consecutive reverse steps: -5."
+    },
+    {
+      "id": "b4",
+      "prompt": "An encoder with 64 lines per revolution is decoded x4 on a motor with a 20:1 gearbox. How many counts per output revolution?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5120",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quad-decode"
+      ],
+      "skillLabel": "Quadrature decoding and edge rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "4 * 64 * 20 = 5120."
+    },
+    {
+      "id": "b5",
+      "prompt": "An ISR takes 5 us and fires 12 000 times per second. What percentage of the CPU does it use?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6",
+      "tolerance": 0.05,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quad-decode"
+      ],
+      "skillLabel": "Quadrature decoding and edge rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "12 000 * 5e-6 = 0.06 = 6 %."
+    },
+    {
+      "id": "b6",
+      "prompt": "With a 4 us ISR, what is the highest edge rate (per second) that keeps the interrupt load at 20 %?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "50000",
+      "tolerance": 1,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quad-decode"
+      ],
+      "skillLabel": "Quadrature decoding and edge rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "0.20 / 4e-6 = 50 000."
+    },
+    {
+      "id": "b7",
+      "prompt": "A time-based debouncer has a 30 ms interval (a change is accepted when the raw level has been steady for more than 30 ms). The raw input last changes at t = 40 ms and is sampled every 1 ms. At which t does the stable level change?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "71",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "debounce"
+      ],
+      "skillLabel": "Debouncing",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "The first sample with t - 40 > 30 is t = 71."
+    },
+    {
+      "id": "b8",
+      "prompt": "Why must a variable shared between an ISR and loop() be declared volatile?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It makes multi-byte reads atomic.",
+        "It moves the variable to flash to save RAM.",
+        "Stops the compiler caching it in a register.",
+        "It lets the ISR call delay() safely."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "isr-atomic"
+      ],
+      "skillLabel": "ISR rules and atomic access",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Without volatile the compiler may keep the value in a register and loop() never sees the ISR update. It does not make multi-byte reads atomic."
+    },
+    {
+      "id": "b9",
+      "prompt": "A decoder sees the transition 11 to 00. What does it mean and what should the decoder do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A missed edge: log an error, do not guess.",
+        "A forward double step, so add +2 to the count.",
+        "A reverse double step, so add -2 to the count.",
+        "A normal forward step, so add +1 to the count."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "quad-decode"
+      ],
+      "skillLabel": "Quadrature decoding and edge rates",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Two bits changed at once, so an edge was missed and the direction cannot be known. Count an error and add nothing."
+    },
+    {
+      "id": "b10",
+      "prompt": "A Timer1 ISR toggles pin 8 once per interrupt and the interrupt rate is 2 kHz. What does a logic analyzer show on pin 8?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "4 kHz",
+        "2 kHz",
+        "500 Hz",
+        "1 kHz"
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "timer-arithmetic"
+      ],
+      "skillLabel": "Timer prescaler and compare arithmetic",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW08#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "One toggle per interrupt means one full period (high and low) per two interrupts: 1 kHz."
+    },
+    {
+      "id": "b11",
+      "prompt": "An ESP32 must count 80 000 encoder edges per second on each of two encoders. Which structure is best?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A pin-change ISR on every pin with Serial debugging.",
+        "Hardware pulse counter (PCNT), quadrature mode.",
+        "Polling in loop() with delay(1).",
+        "A 50 ms debounce on both channels."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hw-counter-rtos"
+      ],
+      "skillLabel": "Hardware counters and RTOS",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade-offs",
+          "href": "/lessons/HW08#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "The interrupt load would exceed 100 %. Hardware pulse counters count edges with no CPU time."
+    },
+    {
+      "id": "b12",
+      "prompt": "Which situation most clearly favours FreeRTOS tasks over a super-loop with a timer tick?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "One LED blinking at 1 Hz with nothing else running.",
+        "Reading one potentiometer once every second.",
+        "1 kHz control, 50 Hz IMU, blocking Wi-Fi upload.",
+        "A button that toggles a relay when pressed."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hw-counter-rtos"
+      ],
+      "skillLabel": "Hardware counters and RTOS",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade-offs",
+          "href": "/lessons/HW08#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Activities with different rates and priorities, some waiting on slow I/O, benefit from tasks and queues; a single tick is enough for a few simple jobs."
+    },
+    {
+      "id": "b13",
+      "prompt": "Which debouncing approach needs no CPU time and works with any firmware?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "An RC filter feeding a Schmitt input.",
+        "A 50 ms delay() after each detected press.",
+        "Reading the pin twice inside the ISR handler.",
+        "A larger pull-up resistor on the switch input."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "debounce"
+      ],
+      "skillLabel": "Debouncing",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "An RC filter into a Schmitt-trigger input slows and cleans the edge in hardware."
+    },
+    {
+      "id": "b14",
+      "prompt": "On an ESP32 an interrupt handler occasionally crashes the board while the program writes to flash. What is the usual remedy?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Add delay(10) inside the handler to wait.",
+        "Lower the CPU clock.",
+        "Use a String for the handler name.",
+        "Mark it IRAM_ATTR so it runs from RAM."
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "isr-atomic"
+      ],
+      "skillLabel": "ISR rules and atomic access",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW08#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "During a flash write the cache is disabled, so handler code must be in internal RAM: mark it IRAM_ATTR."
+    },
+    {
+      "id": "b15",
+      "prompt": "A robot wheel encoder (x4, 1800 edges per second at cruise, up to 9000 at peak) is read on an Uno. Design the interrupt side: pins, ISR contents, shared data, and how loop() reads the count.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Puts A and B on INT0/INT1 (pins 2 and 3) with CHANGE interrupts and decodes with a state table.",
+        "Keeps the ISR to a table lookup and counter update on volatile variables, and counts illegal transitions; no Serial or delay.",
+        "Copies the 4-byte count with noInterrupts() and checks the load: 9000 edges/s times a few us is a few percent."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "isr-atomic",
+        "quad-decode"
+      ],
+      "skillLabel": "ISR rules and atomic access",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW08#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b16",
+      "prompt": "Write a test plan for a quadrature decoder class that you will run on host-side samples before flashing.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Tests clean forward and reverse cycles with the exact expected counts for x1, x2 and x4.",
+        "Tests a bounce on an edge, an illegal jump (error counted, count unchanged) and invalid input values.",
+        "Adds a long random-walk case with an independently computed total and a symmetric move returning to zero."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "quad-decode"
+      ],
+      "skillLabel": "Quadrature decoding and edge rates",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW08#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b17",
+      "prompt": "A limit switch on a gantry must stop the motor immediately but the switch bounces for about 5 ms. Describe how you would read it (interrupt or polling, debounce method) and what the handler does.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Uses an interrupt on the first edge for immediate response and does the safe action (stop request) first, because debouncing must not delay a safety stop.",
+        "Keeps the ISR short: sets a volatile flag or stops the output, with no Serial or delay.",
+        "Debounces the release or re-arming with a time window (more than 5 ms, say 20 ms) or an RC filter, and keeps the hardware E-stop path independent of software."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "debounce",
+        "isr-atomic"
+      ],
+      "skillLabel": "Debouncing",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "Encoder 7 xung mỗi vòng động cơ (x4), hộp số 50:1. Số đếm mỗi vòng bánh?",
+      "explanation": "4*7*50 = 1400."
+    },
+    "b2": {
+      "prompt": "Với N = 1496 số đếm mỗi vòng bánh và ước lượng tốc độ từ số đếm của một chu kỳ 10 ms, bước lượng tử tốc độ là bao nhiêu rad/s?",
+      "explanation": "2*pi/(1496*0.01) = 0.42 rad/s, 7 % của mục tiêu 6 rad/s."
+    },
+    "b3": {
+      "prompt": "Một bộ đếm uint16_t đọc 65500 rồi 40. Delta có dấu đúng là:",
+      "options": [
+        "-65460, vì bộ đếm đơn giản đã giảm đúng chừng đó số đếm.",
+        "+65460, vì bánh hẳn đã quay tiến rất xa.",
+        "0, vì bước nhảy lớn thế này là mẫu không hợp lệ và bị bỏ.",
+        "+76, vì (40 - 65500) mod 65536 = 76."
+      ],
+      "explanation": "Phép trừ modulo ánh xạ hiệu vào dải có dấu: +76."
+    },
+    "b4": {
+      "prompt": "Một parser nhận 50 byte rác rồi một frame đã stuffing hợp lệ. Thiết kế nào cho phép nó phục hồi?",
+      "options": [
+        "Mỗi byte phân cách 0x7E bỏ bộ đệm dở dang và bắt đầu frame mới, sau đó được kiểm tra bằng độ dài và CRC.",
+        "Parser phải được host khởi động lại sau mỗi lần CRC thất bại, vì nó không tự phục hồi được.",
+        "Parser chờ đến khi nhận đúng 12 byte rồi kiểm tra chúng dù bắt đầu ở đâu, cách này dễ cài đặt.",
+        "Parser giữ mọi rác và thử mọi độ lệch khi CRC thất bại, cho tới khi một độ lệch qua."
+      ],
+      "explanation": "Đồng bộ lại dựa trên dấu phân cách giới hạn thiệt hại của rác trong phạm vi một frame."
+    },
+    "b5": {
+      "prompt": "Một frame trường hợp xấu nhất 26 byte trên dây gửi ở 100 Hz qua 115200 baud. Tải liên kết xấu nhất là bao nhiêu phần trăm?",
+      "explanation": "26*10*100/115200 = 22.6 %."
+    },
+    "b6": {
+      "prompt": "Với Ki = 1.5 và sai số 6 rad/s giữ trong 1 s, bộ tích phân đạt 9.0 khi không có anti-windup. Con số đó nghĩa là gì?",
+      "options": [
+        "Bộ tích phân sẽ ổn định ở 9.0, đó là duty đúng cho 6 rad/s ở trạng thái xác lập.",
+        "Lượng bằng chín lần dải duty đầy đủ được tích trữ, nên đầu ra vẫn bão hòa rất lâu sau khi bánh được thả.",
+        "Độ lợi vòng là 9, nên vòng mất ổn định và phải giảm Kp theo hệ số đó.",
+        "Bánh sẽ chạy 9 rad/s sau khi thả, đó là tốc độ xác lập của vòng."
+      ],
+      "explanation": "Tích phân tích trữ nằm xa ngoài dải đầu ra [-1, 1]; gỡ nó mất nhiều thời gian."
+    },
+    "b7": {
+      "prompt": "PWM đầu ra nên là bao nhiêu ngay sau khi firmware khởi động, trước khi có bất kỳ lệnh nào?",
+      "options": [
+        "Tốc độ cuối lưu trong flash, để robot tiếp tục việc nó đang làm trước khi reset.",
+        "Một duty bò nhỏ để kiểm tra encoder ngay, rồi về 0 khi có lệnh.",
+        "Bằng 0: watchdog bắt đầu ở trạng thái đã hết hạn và chỉ được kích hoạt bởi lệnh hợp lệ đầu tiên.",
+        "Không xác định tới frame đầu tiên: chân được thả nổi để chip driver tự chọn mặc định."
+      ],
+      "explanation": "Mặc định an toàn: đầu ra bằng 0 lúc khởi động và bất cứ khi nào dữ liệu cũ."
+    },
+    "b8": {
+      "prompt": "Một robot chạy 0.4 m/s và timeout watchdog là 80 ms. Nó đi được bao xa (cm) trước khi PWM bị cắt, bỏ qua quán tính?",
+      "explanation": "0.4*0.08 = 0.032 m = 3.2 cm."
+    },
+    "b9": {
+      "prompt": "Khi bán kính đã được sửa, một robot có b_est = 0.150 m quay 5 vòng thật (1800 độ) và odometry báo 1930 độ. Track width mới là bao nhiêu mét?",
+      "explanation": "b = 0.150*1930/1800 = 0.1608 m."
+    },
+    "b10": {
+      "prompt": "Một bước tới 6.0 rad/s đạt đỉnh 6.4 rad/s. Vọt lố là bao nhiêu phần trăm của mục tiêu?",
+      "explanation": "(6.4-6.0)/6.0 = 6.7 %, trong giới hạn 10 %."
+    },
+    "b11": {
+      "prompt": "Vì sao log CAP02 tính omega trên cửa sổ 50 ms thay vì một chu kỳ 10 ms?",
+      "options": [
+        "Vì động cơ cần 50 ms để đáp ứng, nên cửa sổ ngắn hơn sẽ hiện sai tốc độ.",
+        "Một chu kỳ 10 ms có bước lượng tử 0.42 rad/s (7 % của 6 rad/s); 50 ms cho 0.084 rad/s, nên có thể kiểm tra đặc tả ở mức 2 %.",
+        "Vì việc kiểm tra CRC cần năm frame trước khi số đếm đủ hợp lệ để dùng, vì parser phải đệm chúng.",
+        "Vì bộ giải mã chỉ cập nhật số đếm mỗi 50 ms trong simulator."
+      ],
+      "explanation": "Lượng tử hóa số đếm giới hạn điều một cửa sổ ngắn có thể hiển thị."
+    },
+    "b12": {
+      "prompt": "Lập ngân sách độ trễ xấu nhất cho đặc tả 'từ lệnh đến phản hồi đầu tiên trong 20 ms' với vòng firmware 100 Hz và liên kết 115200 baud.",
+      "rubric": [
+        "Liệt kê ba số hạng: chờ tick 10 ms kế tiếp, thời gian liên kết của frame 14 byte (khoảng 1.2 ms), và thời gian cho số đếm đầu tiên (khoảng 7 ms).",
+        "Cộng chúng (khoảng 18 ms) và so với 20 ms, lưu ý dư địa còn lại ít thế nào.",
+        "Nêu một thứ phá ngân sách (bộ định thời độ trễ USB-serial, bộ đệm thêm) và cách xử lý."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b13": {
+      "prompt": "Viết kế hoạch kiểm thử cho parser frame: lật bit vét cạn, đồng bộ lại sau rác, và một lần chạy sạch dài.",
+      "rubric": [
+        "Dựng một frame hợp lệ với CRC đã biết (giá trị kiểm tra 0xF4 cho chuỗi 123456789) và lật từng bit trong 96 bit của nó, mong đợi bị từ chối.",
+        "Đưa 50 byte rác ngẫu nhiên (có seed) trước một frame đã stuffing hợp lệ và mong đợi đúng một frame ra, và gồm một frame mà thân chứa 0x7E và 0x7D.",
+        "Chạy 10 000 frame sạch mong đợi không mất frame nào và kiểm tra con số tải liên kết so với giới hạn 50 %."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b14": {
+      "prompt": "Giải thích vì sao vòng tốc độ được viết bằng C portable và gọi từ simulator qua ctypes, thay vì viết bằng Python. Nêu hai rủi ro của lựa chọn này.",
+      "rubric": [
+        "Nói rằng độ rộng số nguyên, quay vòng, định thời và giới hạn buffer chính là các lỗi xuất hiện trên MCU, và các nguồn giống nhau có thể nạp vào ESP32.",
+        "Nêu một rủi ro như khác biệt float so với double giữa host và MCU, hoặc ctypes âm thầm giả định kiểu đối số là int.",
+        "Nêu rủi ro thứ hai như tick của simulator không tái tạo được định thời ngắt hoặc toolchain (gcc, cmake) chưa cài."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

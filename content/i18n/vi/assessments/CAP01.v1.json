@@ -1,0 +1,65 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Hai lần chạy reset(seed=7) cộng 500 bước giống hệt cho chênh lệch qpos lớn nhất là 3e-4 trên cùng một máy. Bạn kiểm tra điều gì trước tiên?",
+      "options": [
+        "Xem forward kinematics của bạn có dùng đúng độ dài link không. Độ dài sai cũng làm lệch tư thế tool trong mọi lần chạy.",
+        "Xem có nên giảm bước thời gian vật lý nhỏ hơn nữa không.",
+        "Mọi nguồn ngẫu nhiên không đến từ np.random.default_rng(seed), như trạng thái random toàn cục hay thứ tự của set.",
+        "Xem khối lượng URDF có khớp khối lượng MJCF không."
+      ],
+      "explanation": "Trên một máy, mô phỏng có seed là hàm của seed; sự khác biệt nghĩa là có trạng thái ngoài seed đã rò vào."
+    },
+    "q2": {
+      "prompt": "27 lần thành công trong 30 episode. Cận dưới của khoảng Wilson 95 %, độ chính xác 0.005.",
+      "explanation": "Wilson cho (0.744, 0.965)."
+    },
+    "q3": {
+      "prompt": "Một MJCF không có thẻ <compiler> và một hinge với range=\"-90 90\". Dải này nghĩa là gì?",
+      "options": [
+        "Cộng trừ 90 độ, vì độ là mặc định của MJCF.",
+        "Cộng trừ 90 radian.",
+        "Cộng trừ 90 milliradian.",
+        "Không hợp lệ nếu không có thuộc tính angle tường minh. MuJoCo từ chối biên dịch mô hình đó và báo lỗi."
+      ],
+      "explanation": "Thuộc tính angle của compiler trong MuJoCo mặc định là degree; giới hạn URDF sẽ là 1.571 rad."
+    },
+    "q4": {
+      "prompt": "Một khớp cách tool 0.25 m có sai số góc nhỏ. Sai số bao nhiêu độ làm tool lệch 1 mm? Độ chính xác 0.01.",
+      "explanation": "0.001/0.25 = 0.004 rad = 0.229 độ."
+    },
+    "q5": {
+      "prompt": "Yêu cầu nào có thể bị bác bỏ (falsifiable) theo định dạng SPEC.md?",
+      "options": [
+        "Robot nên chính xác. Nó phải hoạt động tốt trong mọi tình huống mà phòng lab đưa ra.",
+        "Code nên sạch và có cấu trúc tốt.",
+        "Trình mô phỏng nên trông thực tế.",
+        "Độ trôi của base khi nghỉ trong 5 s dưới 2 mm, kiểm tra bởi test_rest_stability."
+      ],
+      "explanation": "Nó có metric, ngưỡng và một test có tên có thể thất bại."
+    },
+    "q6": {
+      "prompt": "Khối lượng MJCF 3.18 kg, URDF 3.10 kg. Chênh lệch tương đối theo phần trăm (chia cho khối lượng MJCF), độ chính xác 0.05.",
+      "explanation": "0.08/3.18 = 2.52 %, vượt giới hạn 2 %."
+    },
+    "q7": {
+      "prompt": "Mô tả một test cho thấy URDF và MJCF mô tả cùng một robot, và nói mỗi phần của nó bắt loại lỗi nào.",
+      "rubric": [
+        "So sánh tên khớp và giới hạn trong dung sai khoảng 1e-6 (bắt khớp thiếu và lỗi độ/radian).",
+        "So sánh tổng khối lượng trong khoảng 2 % (bắt body thiếu hoặc lỗi đơn vị).",
+        "So sánh vị trí tool theo forward kinematics cho các cấu hình ngẫu nhiên trong khoảng 1 mm (bắt lỗi dấu trục và offset)."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "q8": {
+      "prompt": "Vì sao test FK dùng 20 cấu hình khớp ngẫu nhiên thay vì chỉ tư thế zero?",
+      "options": [
+        "Cấu hình ngẫu nhiên làm test chạy lâu hơn, giúp tăng độ tin cậy. Chạy lâu hơn cũng làm lộ các vấn đề số hiếm gặp trong solver.",
+        "Lỗi dấu trục hoặc offset có thể triệt tiêu ở tư thế zero và chỉ lộ ra khi các khớp chuyển động.",
+        "MuJoCo không thể tính forward kinematics ở tư thế zero.",
+        "Tư thế zero nằm ngoài giới hạn khớp."
+      ],
+      "explanation": "Nhiều lỗi không thấy được khi mọi góc bằng không."
+    }
+  }
+}

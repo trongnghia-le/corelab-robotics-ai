@@ -321,6 +321,9 @@ const en = {
     "Make decisions from rewards and dynamics.",
   "dom.Embodied & Cognitive Robotics": "Connect perception, memory and action.",
   "dom.Scientific Research": "Design experiments. Question results.",
+  "dom.Hardware & Embedded":
+    "Sensors, motors, power and the firmware that runs them.",
+  "dom.Capstone": "One robot that uses everything you learned.",
   // practice & tools
   "practice.eyebrow": "IMPLEMENT → VERIFY → TRANSFER",
   "practice.title": "Implement independently. Verify your work.",
@@ -656,6 +659,9 @@ const vi: Dict = {
     "Ra quyết định từ phần thưởng và động lực học.",
   "dom.Embodied & Cognitive Robotics": "Nối nhận thức, trí nhớ và hành động.",
   "dom.Scientific Research": "Thiết kế thí nghiệm. Đặt câu hỏi cho kết quả.",
+  "dom.Hardware & Embedded":
+    "Cảm biến, động cơ, nguồn điện và firmware điều khiển chúng.",
+  "dom.Capstone": "Một robot vận dụng mọi điều bạn đã học.",
   "practice.eyebrow": "CÀI ĐẶT → KIỂM CHỨNG → VẬN DỤNG",
   "practice.title": "Tự cài đặt. Tự kiểm chứng.",
   "practice.desc":

@@ -15,6 +15,8 @@ import {
   BrainCircuit,
   ScanEye,
   Bot,
+  Cpu,
+  GraduationCap,
   Workflow,
   Network,
   Microscope,
@@ -63,9 +65,17 @@ const domainDetails: Record<
     Icon: Network,
     description: "dom.Embodied & Cognitive Robotics",
   },
+  "Hardware & Embedded": {
+    Icon: Cpu,
+    description: "dom.Hardware & Embedded",
+  },
   "Scientific Research": {
     Icon: Microscope,
     description: "dom.Scientific Research",
+  },
+  Capstone: {
+    Icon: GraduationCap,
+    description: "dom.Capstone",
   },
 };
 export function Dashboard({ v2Enabled = false }: { v2Enabled?: boolean }) {

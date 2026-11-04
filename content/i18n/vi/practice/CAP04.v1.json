@@ -1,0 +1,112 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "28 thành công trong 30 episode. Cận dưới của khoảng Wilson 95 %, 3 chữ số thập phân.",
+   "explanation": "[0.787, 0.982]: cận dưới là 0.787, cao hơn 0.75."
+  },
+  "b2": {
+   "prompt": "45 thành công trong 50 episode. Cận dưới của khoảng Wilson 95 %, 3 chữ số thập phân.",
+   "explanation": "[0.786, 0.957]: cận dưới là 0.786."
+  },
+  "b3": {
+   "prompt": "Cả 30 episode đều thành công. Khẳng định nào có cơ sở?",
+   "options": [
+    "Ít nhất khoảng 88 % (độ tin cậy 95 %); chưa chứng minh được 100 %.",
+    "Tỉ lệ thành công chính xác là 100 %, vì không episode nào thất bại trong mẫu.",
+    "Robot không bao giờ thất bại trong mô phỏng, vì mẫu không có lỗi nào.",
+    "Benchmark quá dễ nên không cho biết gì và có thể bỏ qua."
+   ],
+   "explanation": "Cận dưới Wilson cho 30/30 là 0.886. Một mẫu hoàn hảo vẫn còn bất định."
+  },
+  "b4": {
+   "prompt": "Bán kính ngoại tiếp 0.18 m, biên 0.04 m, sigma vị trí 0.05 m (dùng 2 sigma). Bán kính inflation theo ô 5 cm, làm tròn lên.",
+   "explanation": "0.18 + 0.04 + 0.10 = 0.32 m = 6.4 ô, làm tròn lên 7."
+  },
+  "b5": {
+   "prompt": "Goal nằm trong một ô lethal (đã inflate). Navigator nên làm gì?",
+   "options": [
+    "Cứ lập kế hoạch đến đó và để tracker dừng ở biên inflation.",
+    "Xóa vật cản khỏi bản đồ để goal trở thành ô trống.",
+    "Đưa về ô trống gần nhất, hoặc báo no_path và nói rõ vì sao.",
+    "Hạ bán kính inflation về 0 chỉ cho một episode này."
+   ],
+   "explanation": "Goal trong không gian lethal là không thể đến theo định nghĩa. Snap kèm lý do được ghi lại hoặc thất bại tường minh giữ kết quả diễn giải được; các lựa chọn khác che giấu lỗi hoặc giảm an toàn."
+  },
+  "b6": {
+   "prompt": "Heuristic octile cho dx = 40 và dy = 15 ô (theo ô, 2 chữ số thập phân).",
+   "explanation": "(40 + 15) + (sqrt(2) - 2) * 15 = 55 - 8.79 = 46.21."
+  },
+  "b7": {
+   "prompt": "Vì sao khoảng cách Manhattan là heuristic kém cho A* trên lưới 8 hướng?",
+   "options": [
+    "Nó quá tốn kém để tính ở từng nút của tìm kiếm.",
+    "Nó không phụ thuộc vị trí goal nên A* suy biến.",
+    "Nó không tính được từ chỉ số ô nguyên trên lưới đều.",
+    "Nó đánh giá quá bước chéo nên không admissible: A* có thể trả về đường dài hơn."
+   ],
+   "explanation": "Với dx = 24, dy = 10 Manhattan cho 34 nhưng chi phí thật trong không gian trống là 28.14."
+  },
+  "b8": {
+   "prompt": "Một ô bị 4 tia trống đi qua với p_free = 0.4 (bắt đầu ở p = 0.5). Xác suất bị chiếm, 3 chữ số thập phân.",
+   "explanation": "l = 4 ln(0.4/0.6) = -1.622; p = 0.165."
+  },
+  "b9": {
+   "prompt": "Vì sao kẹp log-odds của ô trong một khoảng như [-4, 4]?",
+   "options": [
+    "Để lưới chỉ cần lưu bằng số nguyên 8 bit.",
+    "Để một ô bị đánh dấu sai, hoặc một cánh cửa đã mở, có thể đổi ý sau vài scan.",
+    "Để xác suất luôn cộng lại bằng một trên toàn lưới.",
+    "Để bỏ qua được mô hình cảm biến nghịch."
+   ],
+   "explanation": "Bằng chứng không giới hạn làm ô cứng đầu: sau hàng trăm lần trúng nó cần hàng trăm lần đo trống để lật."
+  },
+  "b10": {
+   "prompt": "Điểm lookahead tại (0.6, 0.2) m trong frame robot. Độ cong kappa = 2 y / L^2 theo 1/m.",
+   "explanation": "L^2 = 0.36 + 0.04 = 0.40; kappa = 0.4/0.4 = 1.0 1/m."
+  },
+  "b11": {
+   "prompt": "v = 0.4 m/s, gia tốc hãm 0.8 m/s^2, tổng độ trễ 200 ms. Khoảng cách dừng theo mét.",
+   "explanation": "0.16/1.6 + 0.4*0.2 = 0.10 + 0.08 = 0.18 m."
+  },
+  "b12": {
+   "prompt": "Sai số heading 1.5 độ khi dựng bản đồ một bức tường cách 4 m. Sai số ngang của các ô tường theo mét, 3 chữ số thập phân.",
+   "explanation": "4 * tan(1.5 độ) = 0.105 m, khoảng hai ô 5 cm."
+  },
+  "b13": {
+   "prompt": "Thiết kế các kiểm tra chứng minh code điều hướng không bao giờ dùng ground truth của simulator.",
+   "rubric": [
+    "Kiểm tra tĩnh: quét AST mapping/ và planning/ tìm import bị cấm và thuộc tính truth.",
+    "Kiểm tra động: đưa cho navigator một wrapper env chỉ lộ observe(), hoặc làm nhiễu truth và xác nhận kết quả không đổi.",
+    "Nêu một trường hợp lỗi mà các kiểm tra sẽ bắt (ví dụ đọc lưới chiếm dụng của world thay vì lidar) và test nào thất bại."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b14": {
+   "prompt": "Viết kế hoạch test cho thấy A* của bạn tối ưu và heuristic admissible.",
+   "rubric": [
+    "Sinh lưới ngẫu nhiên có seed (gồm cả goal không đến được) và so chi phí đường với tham chiếu Dijkstra đến 1e-9.",
+    "Kiểm tra đường 8 hướng liên thông, tránh ô lethal và không cắt góc bị chặn.",
+    "Gồm các trường hợp biên (đầu bằng đích, goal bị chặn) và ghi số nút mở rộng để thấy lợi ích của heuristic."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b15": {
+   "prompt": "Một vật cản xuất hiện cách 1.5 m phía trước khi robot đang bám đường. Mô tả hành vi navigator nên có và những gì nó ghi log.",
+   "rubric": [
+    "Phát hiện vật cản ở scan kế tiếp, đánh dấu trong costmap và dừng hoặc giảm tốc khi chi phí inflate phía trước thành lethal.",
+    "Lập kế hoạch lại một số lần giới hạn và trả về blocked kèm lý do khi không có đường; không dao động vô hạn.",
+    "Ghi log khoảng hở nhỏ nhất và kết quả để test nghiệm thu kiểm tra được."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b16": {
+   "prompt": "Robot phải đi qua cửa rộng 0.9 m. Giải thích hiệp phương sai pose tăng nên thay đổi hành vi planner ra sao.",
+   "rubric": [
+    "Tính bề rộng trống sau inflate từ footprint, biên và 2 sigma và chỉ ra khi nào cửa không đi qua được.",
+    "Ưu tiên định vị lại (landmark) hoặc giảm tốc trước cửa để giảm sigma, thay vì lặng lẽ chặn.",
+    "Báo lý do thất bại riêng như localisation uncertain, không phải timeout chung chung."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

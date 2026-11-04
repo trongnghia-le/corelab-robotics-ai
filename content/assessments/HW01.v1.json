@@ -1,0 +1,214 @@
+{
+  "id": "HW01-diagnostic",
+  "topicId": "HW01",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A Raspberry Pi is powered by a power bank. An Arduino on the Pi's USB port sends PWM to a motor driver, and the driver and motors run from a separate 12 V battery. The motors twitch randomly. What is the most likely fault?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The PWM frequency is set too low for the driver chip to follow.",
+        "The motors need a much larger capacitor on the Pi's USB port.",
+        "The Arduino and driver share no common ground.",
+        "The Pi's USB cable is too long to carry serial data reliably."
+      ],
+      "answer": "2",
+      "explanation": "A signal is a voltage measured against a reference. If the Arduino ground and the driver ground are not joined, the driver sees a floating input. Join the grounds at one point.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "common-ground"
+      ],
+      "skillLabel": "Power, ground and signal wiring",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "q2",
+      "prompt": "Which task belongs on the microcontroller rather than on the single-board computer?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A 200 Hz wheel speed loop with fixed timing.",
+        "Building a map from LiDAR scans with SLAM algorithms.",
+        "Detecting people in camera frames with a neural network.",
+        "Logging all sensor topics to disk for later replay."
+      ],
+      "answer": "0",
+      "explanation": "Fixed-period control with little jitter is the job of the real-time tier. The other three need memory, compute or file storage that a Linux computer has.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "compute-tiers"
+      ],
+      "skillLabel": "Choose MCU or SBC for a task",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "q3",
+      "prompt": "A 14-byte register burst read over I2C at 400 kHz. Time in microseconds, using 9 clocks per byte and 3 extra bytes (address+W, register, address+R). Ignore START and STOP.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "382.5",
+      "tolerance": 0.5,
+      "explanation": "9*(3+14)=153 clocks; 153/400000 s = 382.5 us.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "q4",
+      "prompt": "The MCU sends 20-byte messages at 50 Hz over a 115200 baud 8N1 UART. What fraction of the link is used? Precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0868",
+      "tolerance": 0.001,
+      "explanation": "20*10*50/115200 = 0.0868.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "q5",
+      "prompt": "Which block does a TB6612FNG belong to?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Sensor, because it measures the motor current.",
+        "Compute, because it contains some control logic.",
+        "Power, because it supplies the motors with energy.",
+        "Driver, because it switches motor current."
+      ],
+      "answer": "3",
+      "explanation": "The TB6612FNG is a dual H-bridge motor driver: it turns low-power logic signals into motor current from the battery.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "classify-parts"
+      ],
+      "skillLabel": "Classify parts into blocks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "q6",
+      "prompt": "A robot moves at 0.8 m/s. Its sensor-to-wheel latency is 45 ms. How many centimetres does it move before the wheels react?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.6",
+      "tolerance": 0.05,
+      "explanation": "0.8 m/s * 0.045 s = 0.036 m = 3.6 cm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "q7",
+      "prompt": "Trace a ROS 2 velocity command to the wheel of a differential-drive robot with a Pi and a microcontroller. Name each stage and the interface between stages.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Names the chain: ROS 2 node on the SBC, serial link to the MCU, speed loop on the MCU, PWM and direction to the driver, motor power to the gearmotor.",
+        "Names an interface on each link (topic, USB or UART serial, PWM plus direction pins, motor power leads).",
+        "Says why the speed loop sits on the MCU (real-time timing) and mentions one failure point such as ground or power."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "signal-tracing"
+      ],
+      "skillLabel": "Trace sensing and command paths",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW01#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": []
+    },
+    {
+      "id": "q8",
+      "prompt": "A robot works on the bench over USB but the Arduino resets whenever both motors start from the battery. What do you check first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Whether the sketch has a bug in the setup() function.",
+        "The logic supply voltage when the motors start.",
+        "Whether the serial baud rate matches on both ends.",
+        "Whether the encoder wires are twisted together neatly."
+      ],
+      "answer": "1",
+      "explanation": "A reset at the moment of a big load change is the classic sign of a supply sag or brownout. Measure the logic rail while the motors start.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bus-latency-faults"
+      ],
+      "skillLabel": "Bus time, latency and failure points",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW01#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": []
+    }
+  ]
+}

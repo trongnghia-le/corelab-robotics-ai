@@ -1,0 +1,558 @@
+{
+  "id": "HW11-targeted",
+  "topicId": "HW11",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "An 8-byte payload in the lesson's layout (13 bytes per frame, no stuffing) is sent at 100 Hz on a 57600 baud 8N1 link. Link load as a fraction, precision 0.001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2257",
+      "tolerance": 0.001,
+      "explanation": "13*10*100/57600 = 0.2257.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "link-budget"
+      ],
+      "skillLabel": "Link budget and baud rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A telemetry frame carries 24 payload bytes (SOF, LEN, ID, SEQ, payload, CRC8). How many bytes is the frame before stuffing?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "29",
+      "tolerance": 0.01,
+      "explanation": "1 + 1 + 1 + 1 + 24 + 1 = 29.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "link-budget"
+      ],
+      "skillLabel": "Link budget and baud rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "At most how many 11-byte frames per second fit on a 115200 baud 8N1 link at 100 % load? Precision 1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1047.3",
+      "tolerance": 1,
+      "explanation": "115200 / (11 * 10) = 1047.3.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "link-budget"
+      ],
+      "skillLabel": "Link budget and baud rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "An ATmega328P at 16 MHz uses double-speed mode (B = f/(8(UBRR+1))) with UBRR = 16. By how many percent does the actual baud rate differ from 115200? Give the signed value, precision 0.05.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.12",
+      "tolerance": 0.05,
+      "explanation": "16e6/(8*17) = 117647 baud; (117647/115200 - 1) = +2.12 %.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "link-budget"
+      ],
+      "skillLabel": "Link budget and baud rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "CRC-8 (polynomial 0x07, init 0, no reflection) of the single byte 0x03, as a decimal number.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9",
+      "tolerance": 0.5,
+      "explanation": "CRC is linear over XOR: crc(0x03) = crc(0x01) xor crc(0x02) = 0x07 xor 0x0E = 0x09 = 9.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "crc-stuffing"
+      ],
+      "skillLabel": "CRC8, framing and byte stuffing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Which error does a CRC8 over the frame detect that a plain one-byte sum of the same bytes does not?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A single flipped bit.",
+        "Two payload bytes swapped.",
+        "A payload shorter than the LEN field says.",
+        "A missing start byte."
+      ],
+      "answer": "1",
+      "explanation": "Swapping two bytes leaves the sum unchanged, but the CRC depends on the position of each byte. A flipped bit is caught by both.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "crc-stuffing"
+      ],
+      "skillLabel": "CRC8, framing and byte stuffing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "How many bytes does the data 7E 7D 00 7E take after byte stuffing (7E and 7D become two bytes each)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7",
+      "tolerance": 0.01,
+      "explanation": "7E -> 2, 7D -> 2, 00 -> 1, 7E -> 2: 7 bytes.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "crc-stuffing"
+      ],
+      "skillLabel": "CRC8, framing and byte stuffing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "The parser is collecting a frame and a bare 0x7E arrives. What should it do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Treat it as payload data and keep waiting until LEN more bytes have arrived.",
+        "Reset the whole microcontroller, because a bare 0x7E proves that the link is corrupt.",
+        "Verify the CRC of the partial frame and then send an error reply to the host.",
+        "Count a truncated frame, drop the partial bytes and start a new frame."
+      ],
+      "answer": "3",
+      "explanation": "After stuffing, a bare 0x7E can only be a start marker. The partial frame is lost; the parser restarts without any explicit reset.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rx-resync"
+      ],
+      "skillLabel": "Receive state machine and resync",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Why must the parser reject a LEN byte above the maximum payload size immediately?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Otherwise one garbage byte makes it wait for bytes that never come and swallow good frames.",
+        "Because the CRC cannot be computed on frames longer than a few bytes at all.",
+        "Because the UART hardware silently drops any frame longer than 64 bytes.",
+        "Because LEN must always be equal to the sequence number of the frame."
+      ],
+      "answer": "0",
+      "explanation": "A garbage byte read as LEN = 200 would make the state machine wait for 204 bytes, swallowing the next valid frames. Checking LEN against the maximum keeps the resync fast.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rx-resync"
+      ],
+      "skillLabel": "Receive state machine and resync",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW11#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Consecutive good frames have sequence numbers 100 and 105. How many frames were lost?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4",
+      "tolerance": 0.01,
+      "explanation": "(105 - 100 - 1) mod 256 = 4.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seq-watchdog"
+      ],
+      "skillLabel": "Sequence numbers and watchdog timeout",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "Sequence numbers 254 then 1 arrive (8-bit counter). How many frames were lost?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2",
+      "tolerance": 0.01,
+      "explanation": "(1 - 254 - 1) mod 256 = 2: frames 255 and 0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seq-watchdog"
+      ],
+      "skillLabel": "Sequence numbers and watchdog timeout",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "A robot drives at 0.8 m/s and the MCU watchdog timeout is 250 ms. How far (in cm) can it travel after the host goes silent, ignoring braking distance?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20",
+      "tolerance": 0.5,
+      "explanation": "0.8 * 0.25 = 0.2 m = 20 cm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seq-watchdog"
+      ],
+      "skillLabel": "Sequence numbers and watchdog timeout",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "The host sends commands at 50 Hz. Which MCU watchdog timeout is the most sensible default?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "20 ms, a single period, so the robot stops as fast as possible after any glitch.",
+        "About 60 to 100 ms, a few periods, so one late frame does not stop the robot.",
+        "2 minutes, so the robot never stops by accident while the operator looks away.",
+        "No timeout is needed because the CRC already protects the link against any problem."
+      ],
+      "answer": "1",
+      "explanation": "The timeout should span several command periods so one late or lost frame does not stop the robot, but remain short so the distance covered after link loss is small.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "seq-watchdog"
+      ],
+      "skillLabel": "Sequence numbers and watchdog timeout",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW11#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "Why is an Arduino Uno (ATmega328P, 2 kB SRAM) not a micro-ROS target while an ESP32 (520 kB RAM) is?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "micro-ROS needs a 32-bit MCU with tens of kilobytes of RAM for the rcl/rclc stack and buffers.",
+        "micro-ROS only works over Wi-Fi or Ethernet transports, and the Uno has neither on its own board.",
+        "The Uno cannot generate PWM, and micro-ROS needs PWM output to talk to the agent at all.",
+        "micro-ROS requires a full Linux operating system on the microcontroller, which only the ESP32 can run."
+      ],
+      "answer": "0",
+      "explanation": "The Vulcanexus documentation states the main targets are mid-range 32-bit MCUs with tens of kilobytes of RAM. micro-ROS also runs over serial, so Wi-Fi is not required, and it runs on RTOSes or Arduino for supported boards.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "microros-roles"
+      ],
+      "skillLabel": "micro-ROS client and agent roles",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b15",
+      "prompt": "On the PC you run `ros2 topic list` while an ESP32 micro-ROS node publishes. What is true?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The MCU topic stays invisible until you install a vendor driver for the ESP32 on the PC side.",
+        "The topic appears like any other, because the micro-ROS agent created the DDS entities.",
+        "Only `ros2 topic echo` works; `ros2 topic list` cannot see topics coming from microcontrollers.",
+        "The topic appears only when the PC runs Windows, because Linux has no micro-ROS support yet."
+      ],
+      "answer": "1",
+      "explanation": "The agent represents the client in the DDS network, so standard tools see the topic. If the agent is not running, there is nothing on the PC side.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "microros-roles"
+      ],
+      "skillLabel": "micro-ROS client and agent roles",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW11#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b16",
+      "prompt": "A 12-motor quadruped needs 500 Hz joint control with bounded latency. Which link is the best fit?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A hobby USB-serial adapter with a text protocol and a high baud rate.",
+        "Wi-Fi UDP from the controller to each of the twelve motors.",
+        "micro-ROS over USB with DDS topics inside the 500 Hz loop.",
+        "CAN or EtherCAT drivers with bounded cycle times."
+      ],
+      "answer": "3",
+      "explanation": "USB-serial adapters batch data and have no bounded latency, Wi-Fi is not deterministic, and DDS in a 500 Hz loop adds jitter. CAN or EtherCAT give bounded timing.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "transport-choice"
+      ],
+      "skillLabel": "Choosing a transport",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/HW11#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b17",
+      "prompt": "Write a test plan for a firmware frame parser that proves it resynchronises: list the damaged streams you feed, the expected delivered frames and the counters you check.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Feeds a clean frame as the baseline and the same stream one byte at a time.",
+        "Injects garbage before a frame, a flipped bit (CRC error), a truncated frame followed by a valid one, an oversized LEN and a payload containing 7E and 7D.",
+        "States the expected frames and counters (crc_errors, truncated, bad_length, lost) for each case and says what result would reject the parser."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "rx-resync"
+      ],
+      "skillLabel": "Receive state machine and resync",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW11#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    },
+    {
+      "id": "b18",
+      "prompt": "Compare a custom serial protocol with a ros2_control hardware interface against micro-ROS for a 2-wheel robot, and say which you would use for a 6-joint arm with smart servos.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Custom serial plus a hardware interface: compact, deterministic read/write cycle, but you write and test the protocol and the plugin.",
+        "micro-ROS: a ready ROS 2 client and agent, sensors as topics, but more RAM and flash, an agent that must run and reconnect, and not suitable for a fast loop through DDS.",
+        "Arm with smart servos: use the servo bus through an existing driver or hardware interface rather than a new protocol, and keep timing-critical loops off USB-serial and DDS."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "transport-choice"
+      ],
+      "skillLabel": "Choosing a transport",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade offs",
+          "href": "/lessons/HW11#alternatives-and-trade-offs"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "S03"
+      ]
+    }
+  ]
+}

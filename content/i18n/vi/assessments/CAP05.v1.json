@@ -1,0 +1,55 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Benchmark gắp 50 lượt có 40 thành công. Cổng cần ước lượng điểm ít nhất 80 % và cận dưới Wilson 95 % ít nhất 68 %. Kết luận đúng là gì?",
+   "options": [
+    "Đạt: ước lượng điểm đúng 80 %.",
+    "Đạt: 50 lượt đủ nhiều nên có thể bỏ qua cận.",
+    "Trượt: cận dưới khoảng 67.0 %, cần thêm một thành công; đừng chạy lại đến khi đạt.",
+    "Trượt: cận Wilson chỉ áp dụng trên 100 lượt."
+   ],
+   "explanation": "Khoảng Wilson cho 40/50 là [0.670, 0.888]. 41/50 cho cận dưới 0.692. Chạy lại đến khi may mắn đạt là chỉnh trên seed test."
+  },
+  "q2": {
+   "prompt": "Mạng phân đoạn của bạn báo mIoU 0.99 trong log nhưng chỉ 0.70 trên các cảnh benchmark. Nguyên nhân khả dĩ nhất là gì?",
+   "options": [
+    "Frame train và test đến từ cùng các cảnh (chia theo frame), nên tập test bị rò rỉ.",
+    "Learning rate quá nhỏ.",
+    "Mạng quá lớn cho đầu vào 128 x 96.",
+    "MuJoCo render độ sâu theo milimét."
+   ],
+   "explanation": "Các frame của một cảnh gần như trùng nhau; chia theo frame cho phép mô hình học thuộc các cảnh test. Hãy chia theo seed cảnh và dùng texture, ánh sáng khác cho test."
+  },
+  "q3": {
+   "prompt": "Ảnh camera cao 480 pixel với góc nhìn dọc 60 độ. Tiêu cự f_y theo pixel, 1 chữ số thập phân.",
+   "explanation": "f_y = 240 / tan(30 độ) = 415.7 px."
+  },
+  "q4": {
+   "prompt": "Với f_x = 415.7 và c_x = 320, cột pixel u = 400 ở độ sâu 0.5 m. X trong frame camera theo mét, 4 chữ số thập phân.",
+   "explanation": "X = (400 - 320) / 415.7 * 0.5 = 0.0962 m."
+  },
+  "q5": {
+   "prompt": "Một khớp di chuyển 0.6 rad với v_max = 1.5 rad/s và a_max = 4 rad/s^2 bằng quintic (v đỉnh = 1.875 dq / T, a đỉnh = 5.7735 dq / T^2). Thời lượng ngắn nhất theo giây, 3 chữ số thập phân.",
+   "explanation": "Vận tốc cho 0.75 s, gia tốc cho sqrt(5.7735*0.6/4) = 0.931 s. Giá trị lớn hơn ràng buộc."
+  },
+  "q6": {
+   "prompt": "Vì sao mỗi lần giải IK dọc một đường nên bắt đầu từ góc khớp của waypoint trước?",
+   "options": [
+    "Nó làm Jacobian thành ma trận vuông.",
+    "Nó giữ nghiệm trên một nhánh, nên các waypoint liên tiếp không nhảy giữa khuỷu lên và khuỷu xuống.",
+    "Nó loại bỏ nhu cầu giới hạn khớp.",
+    "Nó làm damped least squares hội tụ đúng trong một bước."
+   ],
+   "explanation": "Cánh tay phẳng có hai nghiệm cho đa số đích. Bắt đầu từ nghiệm trước giữ vòng lặp trên nhánh gần nhất; test giới hạn mọi bước khớp ở 0.2 rad."
+  },
+  "q7": {
+   "prompt": "Thiết kế quy trình hiệu chuẩn và kiểm chứng T_base_cam có thể phát hiện sai số vài milimét.",
+   "rubric": [
+    "Thu ít nhất 10 cặp điểm phân tán tốt, không thẳng hàng và fit phép biến đổi cứng (Kabsch/SVD, det = +1).",
+    "Kiểm chứng trên các điểm giữ lại không dùng trong lúc fit và báo RMS theo milimét.",
+    "Ghi nhận kích thước pixel (khoảng 1 mm ở 0.4 m) và độ lệch độ sâu là ngân sách sai số, và kiểm tra lại sau khi dời camera."
+   ],
+   "explanation": "Chấm theo rubric: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

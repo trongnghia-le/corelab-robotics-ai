@@ -1,0 +1,111 @@
+{
+ "questions": {
+  "b1": {
+   "prompt": "Những seed nào được phép xuất hiện trong log huấn luyện nếu seed đánh giá là 1000-1099?",
+   "options": [
+    "Chỉ seed nhỏ hơn 1000, kèm test kiểm tra hai khoảng rời nhau.",
+    "Seed nào cũng được, miễn số episode bằng nhau.",
+    "Cả seed 1000-1099, vì chúng cùng phân phối.",
+    "Seed lớn hơn 1099, để đánh giá luôn đến sau."
+   ],
+   "explanation": "Khoảng seed rời nhau, được ép bằng test, là bảo vệ rẻ nhất chống rò rỉ."
+  },
+  "b2": {
+   "prompt": "18 thành công trong 20 episode. Cận dưới của khoảng Wilson 95 % (3 chữ số thập phân).",
+   "explanation": "Wilson [0.699, 0.972]: với 20 episode khoảng rất rộng."
+  },
+  "b3": {
+   "prompt": "0 thành công trong 50 episode. Cận trên của khoảng Wilson 95 % (3 chữ số thập phân).",
+   "explanation": "Wilson [0.000, 0.071]: không quan sát được thành công nào vẫn cho phép khoảng 7 %."
+  },
+  "b4": {
+   "prompt": "Vì sao khoảng Wilson được ưa hơn xấp xỉ chuẩn cho 29 thành công trong 30 episode?",
+   "options": [
+    "Nó luôn hẹp hơn nên kết quả trông tốt hơn.",
+    "Nó không cần giả định các episode độc lập.",
+    "Xấp xỉ chuẩn có thể cho cận trên lớn hơn 1 và không đáng tin gần 0 và 1.",
+    "Nó chỉ dùng được từ 100 episode trở lên."
+   ],
+   "explanation": "Wilson nằm trong [0,1] và phủ tốt hơn khi n nhỏ và p cực đoan. Nó vẫn giả định episode độc lập."
+  },
+  "b5": {
+   "prompt": "Danh sách thiết lập nào làm huấn luyện PPO trên CPU lặp lại được trên một máy?",
+   "options": [
+    "Chỉ seed cho môi trường.",
+    "Môi trường vector hóa lớn hơn và batch cố định.",
+    "Ngân sách wall-clock cố định và seed tự động từ đồng hồ hệ thống.",
+    "torch.set_num_threads(1), một numpy Generator, seed cho python, torch và môi trường, cùng phiên bản gói."
+   ],
+   "explanation": "Mọi nguồn ngẫu nhiên và mọi phép gộp đa luồng đều phải được cố định."
+  },
+  "b6": {
+   "prompt": "Hai lần huấn luyện giống hệt nhau cho return đánh giá được ghi lệch nhau 3e-3. Mô tả cách bạn tìm nguyên nhân.",
+   "rubric": [
+    "Kiểm tra trước số luồng, seed của từng thành phần và khác biệt phiên bản.",
+    "Ghi loss hoặc tham số sau mỗi lần cập nhật ở cả hai lần chạy và tìm lần cập nhật đầu tiên khác nhau.",
+    "Sửa nguyên nhân và chạy lại cổng tái lập thay vì nới dung sai."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b7": {
+   "prompt": "Một policy BC huấn luyện trên demo đích vị trí khớp lại được chạy với không gian action delta end-effector. Test nào bắt được điều này trước khi huấn luyện?",
+   "options": [
+    "Phát lại action của demo vòng hở qua môi trường và kiểm tra episode viết tay vẫn thành công.",
+    "Tăng số demonstration lên 500.",
+    "So loss huấn luyện với loss validation.",
+    "Chuẩn hóa lại observation."
+   ],
+   "explanation": "Test phát lại không cần huấn luyện và lộ ra mọi không khớp không gian action hoặc thời gian."
+  },
+  "b8": {
+   "prompt": "Vì sao việc chia train/validation của BC phải theo demonstration chứ không theo timestep?",
+   "options": [
+    "Timestep quá ít để chia.",
+    "Các timestep kề nhau của một demonstration gần như giống hệt, nên chia theo timestep làm rò dữ liệu validation vào huấn luyện.",
+    "Chia theo demonstration làm loss nhỏ hơn.",
+    "Bộ tối ưu đòi hỏi nguyên demonstration."
+   ],
+   "explanation": "Rò rỉ giữa các khung kề nhau làm MSE validation đẹp hơn thực tế."
+  },
+  "b9": {
+   "prompt": "8 môi trường cho tổng 500 bước mỗi giây. 2 M bước mất bao nhiêu giờ? (3 chữ số thập phân)",
+   "explanation": "2e6 / 500 = 4000 s = 1.111 h."
+  },
+  "b10": {
+   "prompt": "Điều khiển chạy ở 20 Hz. Độ trễ action 120 ms phải được mô phỏng bằng hàng đợi FIFO. Cần bao nhiêu bước điều khiển đệm (làm tròn lên)?",
+   "explanation": "120 ms / 50 ms = 2.4, làm tròn lên là 3."
+  },
+  "b11": {
+   "prompt": "Với hệ số chiết khấu gamma = 0.95, chân trời hiệu dụng 1/(1-gamma) khoảng bao nhiêu bước?",
+   "explanation": "1/(1-0.95) = 20 bước."
+  },
+  "b12": {
+   "prompt": "Reward trả +1 mỗi bước khi ở trong 3 cm quanh vật và 10 một lần khi nhấc. Bạn kỳ vọng lỗi gì?",
+   "options": [
+    "Policy sẽ không bao giờ di chuyển vì reward quá nhỏ.",
+    "Policy sẽ nhấc ngay vì 10 là lớn.",
+    "Policy có thể lơ lửng trong 3 cm suốt episode vì cách đó kiếm nhiều hơn thưởng nhấc một lần.",
+    "Policy sẽ rời khỏi workspace."
+   ],
+   "explanation": "Trả dương mỗi bước cho một trạng thái trước đích có thể lấn át thưởng đích một lần: reward hacking."
+  },
+  "b13": {
+   "prompt": "Huấn luyện dùng khối lượng 0.8-1.2, ma sát 0.7-1.3 và trễ 0-30 ms. Tập giữ riêng là khối lượng 0.7-1.3, ma sát 0.6-1.4, trễ 40 ms. Đề xuất khoảng huấn luyện mới và nói bạn báo cáo kết quả thế nào.",
+   "rubric": [
+    "Nới các khoảng để bao các giá trị giữ riêng, đặc biệt trễ lên ít nhất 50 ms.",
+    "Kiểm tra policy viết tay vẫn thành công ở các cực trị để tác vụ còn khả thi.",
+    "Báo riêng các phần chia danh định, trong khoảng và ngoài khoảng kèm khoảng Wilson."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "b14": {
+   "prompt": "Năm seed PPO cho số thành công 96, 61, 90, 88 và 20 trên 100. Viết đoạn báo cáo mô tả điều này một cách trung thực.",
+   "rubric": [
+    "Báo cả năm seed và trung bình (71 %) kèm khoảng, không báo seed tốt nhất.",
+    "Nêu rằng cổng học thất bại và đưa giả thuyết cho seed hỏng.",
+    "Đề xuất thí nghiệm tiếp theo (thêm seed hoặc đổi siêu tham số) được cố định trước khi đánh giá."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

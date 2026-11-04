@@ -24,6 +24,11 @@ export const practiceVi: Record<
     kind: "So sánh thuật toán",
     task: "Cài đặt gradient descent cho y=2x+1. Kiểm tra gradient bằng sai phân trung tâm, so sánh với bình phương tối thiểu và giữ các tập train/validation/test tách biệt. Ghi lại loss, seed, learning rate và chuẩn của gradient.",
   },
+  "hardware-lab": {
+    title: "Pin có đủ cho buổi demo không?",
+    kind: "Tính toán + datasheet",
+    task: "Lập ngân sách công suất cho một robot nhỏ: liệt kê điện áp và dòng điển hình/đỉnh của từng linh kiện theo datasheet, cộng tải trên mỗi đường nguồn, thêm tổn hao của mạch ổn áp, rồi ước thời gian chạy từ dung lượng của một viên pin thật có hệ số dự phòng. Kiểm thử trường hợp dòng kẹt (stall) đỉnh, thiếu đường nối đất chung và cầu chì quá nhỏ.",
+  },
   "robot-lab": {
     title: "Hai cách tính cùng một end effector",
     kind: "Lập trình + kiểm chứng",

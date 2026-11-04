@@ -1,0 +1,117 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "Một camera cao 480 pixel có góc nhìn dọc 60 độ. Tiêu cự tính bằng pixel là bao nhiêu?",
+      "explanation": "240/tan(30 độ) = 415.7 px."
+    },
+    "b2": {
+      "prompt": "Một marker cạnh 0.2 m ở cách 2.5 m và f = 500 px. Bề rộng của nó theo pixel là bao nhiêu?",
+      "explanation": "w = f*s/Z = 500*0.2/2.5 = 40 px."
+    },
+    "b3": {
+      "prompt": "Góc phương vị dự đoán -3.0 rad, đo được +3.0 rad. Innovation đã wrap (đo trừ dự đoán) là:",
+      "options": [
+        "+6.0 rad, vì wrap chỉ cần cho trạng thái hướng chứ không cho phép đo.",
+        "+0.283 rad, vì dấu của innovation đã wrap luôn lấy theo phép đo.",
+        "-0.283 rad, vì 6.0 - 2*pi bằng -0.283.",
+        "0 rad, vì cả hai góc gần pi và do đó được coi là cùng một hướng."
+      ],
+      "explanation": "Trừ 2*pi khỏi 6.0 để đưa nó vào [-pi, pi)."
+    },
+    "b4": {
+      "prompt": "NEES 3 bậc tự do trung bình của một bộ lọc là 1.0 và NIS trung bình là 0.4 (kỳ vọng 2). Vấn đề có khả năng là gì?",
+      "options": [
+        "Bộ lọc hoàn toàn nhất quán, vì NEES trung bình dưới 3 luôn tốt hơn giá trị kỳ vọng, nên không cần kiểm tra gì thêm.",
+        "Bộ lọc thiếu tự tin: Q và R bị thổi phồng, có thể để che một lỗi, và nên tính lại từ dữ liệu.",
+        "Bộ lọc quá tự tin, vì NEES và NIS nhỏ nghĩa là hiệp phương sai quá nhỏ.",
+        "Cổng quá lỏng, vì nó để lọt quá nhiều outlier và làm giảm mọi thống kê."
+      ],
+      "explanation": "Giá trị thấp hơn nhiều so với kỳ vọng nghĩa là hiệp phương sai lớn hơn các sai số thật."
+    },
+    "b5": {
+      "prompt": "NEES trông ổn (trung bình 3.1) nhưng NIS trung bình của các cập nhật landmark 2 bậc tự do là 6. Nguyên nhân có khả năng nhất?",
+      "options": [
+        "Nhiễu quá trình Q quá lớn, điều luôn làm tăng NIS mà không đụng tới NEES trong lần chạy dài, miễn là gyro còn chính xác.",
+        "Tỉ lệ odometry bánh sai, điều chỉ ảnh hưởng NIS và không bao giờ đổi NEES của tư thế.",
+        "Kỳ vọng NIS là 6 cho cập nhật khoảng cách-góc phương vị, nên bộ lọc thực ra nhất quán.",
+        "Nhiễu đo landmark R quá nhỏ, hoặc bộ phát hiện tạo ra outlier mà cổng để lọt."
+      ],
+      "explanation": "NIS kiểm tra trực tiếp các innovation; trung bình gấp ba kỳ vọng nghĩa là S quá nhỏ so với chúng."
+    },
+    "b6": {
+      "prompt": "Một cổng 99 % được áp cho 500 phát hiện tốt. Kỳ vọng bao nhiêu bị từ chối?",
+      "explanation": "1 % của 500 = 5."
+    },
+    "b7": {
+      "prompt": "Khi không chèn outlier, 8 % phát hiện bị gate. Lời giải thích có khả năng nhất?",
+      "options": [
+        "Hiệp phương sai hoặc mô hình đo sai (bộ lọc quá tự tin, lỗi hệ quy chiếu hoặc dấu), nên các innovation tốt trông lớn.",
+        "Cổng đang hoạt động như thiết kế, vì cổng 99 % từ chối khoảng 8 % phát hiện tốt.",
+        "Camera có quá nhiều pixel, khiến bộ phát hiện tạo nhiều outlier hơn ở độ phân giải cao.",
+        "Các landmark cách nhau quá xa, điều được sửa bằng cách siết cổng xuống lượng tử 95 %."
+      ],
+      "explanation": "Một cổng 99 % đúng từ chối khoảng 1 % phát hiện tốt."
+    },
+    "b8": {
+      "prompt": "Kiểm tra nào bắt tốt nhất một hiệp phương sai đã mất sức khỏe số học trong lần chạy 60 s?",
+      "options": [
+        "Kiểm tra sai số vị trí cuối dưới 5 cm, vì một hiệp phương sai hỏng luôn làm hỏng giá trị trung bình, nên chỉ cần độ chính xác là đủ.",
+        "Kiểm tra NIS trung bình đúng bằng 2, vì bất kỳ lệch nào khỏi 2 cho thấy P không xác định dương.",
+        "Kiểm tra cập nhật mất dưới 2 ms, vì cập nhật chậm luôn do hiệp phương sai hỏng.",
+        "Kiểm tra P giữ đối xứng (bất đối xứng tối đa dưới 1e-9) và trị riêng nhỏ nhất luôn dương ở mọi bước."
+      ],
+      "explanation": "Sức khỏe số học là tính chất của chính P."
+    },
+    "b9": {
+      "prompt": "Trong khoảng trống 20 s không có landmark, dải 2-sigma của sai số x vẽ ra phẳng trong khi sai số thật tăng đến 14 cm. Điều này cho thấy gì?",
+      "options": [
+        "Bộ lọc trung thực, vì dải chỉ phẳng khi sai số nằm trong mức gyro hiệu chỉnh được.",
+        "Đồ thị sai, vì dải 2-sigma chỉ được định nghĩa lúc một landmark được chấp nhận.",
+        "Bộ lọc đang nói dối: hiệp phương sai lẽ ra phải tăng, nên nhiễu quá trình hoặc mô hình bias quá lạc quan.",
+        "Odometry hoàn hảo, vì dải chỉ tăng khi số đếm bánh bị mất."
+      ],
+      "explanation": "Không có phép đo thì hiệp phương sai phải tăng."
+    },
+    "b10": {
+      "prompt": "Quy trình nào đúng để chỉnh Q và R và báo cáo độ chính xác?",
+      "options": [
+        "Chỉnh trên seed kiểm thử cho tới khi mọi ngưỡng qua, rồi báo cáo lần chạy tốt nhất, điều phổ biến trong nhiều bài báo.",
+        "Chỉnh trên một tập seed riêng, đóng băng giá trị, chạy một lần trên seed kiểm thử và báo cáo cả hai danh sách seed.",
+        "Chỉnh trên một quỹ đạo duy nhất và báo cáo độ chính xác của trung bình năm quỹ đạo kiểm thử.",
+        "Chỉnh cho tới khi tỉ lệ NEES đúng 95 % trên seed kiểm thử rồi ngừng đổi giá trị."
+      ],
+      "explanation": "Seed riêng biệt làm các con số cuối là ước lượng trung thực."
+    },
+    "b11": {
+      "prompt": "Một marker rộng 21.7 px ở 4 m và nhiễu bề rộng là 0.7 px. Sai số khoảng cách sigma_Z = Z*sigma_w/w là bao nhiêu mét?",
+      "explanation": "4*0.7/21.7 = 0.129 m."
+    },
+    "b12": {
+      "prompt": "Thiết kế phần nhất quán của báo cáo: bạn tính gì, từ dữ liệu nào, và trình bày ra sao.",
+      "rubric": [
+        "Tính NEES của khối tư thế (3 bậc tự do) với sự thật nền và NIS (2 bậc tự do) cho mỗi cập nhật được chấp nhận, trên dữ liệu lấy mẫu thưa, và nêu giá trị kỳ vọng (3 và 2) và khoảng 95 %.",
+        "Báo cáo tỉ lệ trong khoảng và giá trị trung bình cho mỗi quỹ đạo kiểm thử, với seed chỉnh và seed kiểm thử liệt kê riêng.",
+        "Hiển thị sai số theo thời gian với dải 2-sigma và diễn giải các lệch (quá tự tin, thiếu tự tin, outlier) bằng một bước tiếp theo cụ thể."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b13": {
+      "prompt": "Viết kế hoạch kiểm thử cho yêu cầu outlier: 10 phần trăm phát hiện sai phải làm RMSE tăng dưới 50 phần trăm và bộ lọc phải báo số phát hiện bị gate.",
+      "rubric": [
+        "Chạy cùng một seed hai lần, sạch và với 10 % phát hiện sai ID hoặc sai tư thế được chèn bởi bộ sinh có seed.",
+        "Khẳng định RMSE(outlier) < 1.5 * RMSE(sạch) và số bị gate lớn hơn không.",
+        "Cũng kiểm tra rằng ở lần chạy sạch số bị gate khoảng 1 % số lần thử, để cổng không che một lỗi."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b14": {
+      "prompt": "Căn phòng có tám marker phân biệt và một gyro tốt. Lập luận cho EKF thay vì particle filter, và nêu một tình huống sẽ làm bạn đổi ý.",
+      "rubric": [
+        "Lập luận rằng tư thế đơn đỉnh, các marker phân biệt (liên kết dữ liệu đã biết) và EKF rẻ và cho hiệp phương sai trực tiếp.",
+        "Nêu một tình huống ưu tiên particle filter, như phòng đối xứng, marker nhập nhằng hoặc định vị toàn cục sau khi bị bế đi.",
+        "Nhắc rằng robot_localization hoặc AMCL có thể thay bộ lọc tự viết và rằng tự viết một lần giúp hiểu các tham số của chúng."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

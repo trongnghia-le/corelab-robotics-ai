@@ -1,0 +1,129 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "Vì sao nên thử động cơ sau cùng trong bring-up?",
+      "options": [
+        "Động cơ là phần đắt nhất nên không bao giờ thử trước khi bán.",
+        "Driver động cơ không chạy được cho tới khi code xong hẳn.",
+        "Lỗi ở nguồn, clock, comms hay cảm biến làm hành vi động cơ gây hiểu lầm, và động cơ thêm sụt áp và nhiễu.",
+        "Datasheet cấm chạy động cơ dưới 50 % duty."
+      ],
+      "explanation": "Lỗi thượng nguồn làm triệu chứng động cơ vô nghĩa, và chính dòng động cơ làm nguồn căng thẳng. Hãy thử các giai đoạn yên tĩnh trước."
+    },
+    "b2": {
+      "prompt": "Một pin LiPo 2S (7,4 V hở mạch, tổng điện trở 0,3 ohm) cấp cho động cơ kéo 3 A lúc khởi động. Điện áp lúc khởi động là bao nhiêu volt?",
+      "explanation": "7,4 - 3*0,3 = 6,5 V."
+    },
+    "b3": {
+      "prompt": "Một tụ phải cấp 3 A trong 2 ms trong khi rail được tụt tối đa 0,5 V. Điện dung cần C = I*dt/dV tính bằng microfarad?",
+      "explanation": "3*0,002/0,5 = 0,012 F = 12000 uF."
+    },
+    "b4": {
+      "prompt": "I2C ở 3,3 V, VOL = 0,4 V, IOL = 3 mA. Điện trở kéo lên tối thiểu (Vcc - VOL)/IOL tính bằng ohm, độ chính xác 1.",
+      "explanation": "(3,3 - 0,4)/0,003 = 966,7 ohm."
+    },
+    "b5": {
+      "prompt": "Chế độ fast (tr = 300 ns), điện dung bus 200 pF. Pull-up tối đa Rp,max = tr/(0,8473*Cb) tính bằng ohm, độ chính xác 5.",
+      "explanation": "300e-9/(0,8473*200e-12) = 1770 ohm."
+    },
+    "b6": {
+      "prompt": "Tốc độ lấy mẫu tối thiểu của logic analyser (MS/s) để giải mã UART 230400 baud với 10 mẫu mỗi bit (dùng tốc độ bit)? Độ chính xác 0,01.",
+      "explanation": "10 * 230400 = 2,304 MS/s."
+    },
+    "b7": {
+      "prompt": "Đồng hồ vạn năng cho thấy rail 5,0 V ổn định, vậy mà board reset khi động cơ khởi động. Vì sao?",
+      "options": [
+        "Đồng hồ lấy trung bình nên một chỗ tụt 5 ms không hiện; hãy dùng oscilloscope hoặc log lý do reset.",
+        "Đồng hồ đang ở chế độ đo dòng rồi thử lại mọi thứ trước khi động vào thứ gì khác, như nhiều người mới vẫn nghĩ.",
+        "Một rail không bao giờ đổi, nên đồng hồ hỏng rồi thử lại mọi thứ trước khi động vào thứ gì khác, như nhiều người mới vẫn nghĩ.",
+        "Reset đến từ cổng nối tiếp rồi thử lại mọi thứ trước khi động vào thứ gì khác, như nhiều người mới vẫn nghĩ."
+      ],
+      "explanation": "Đồng hồ vạn năng lấy trung bình qua nhiều mili giây. Chỗ tụt nhanh cần oscilloscope, logic analyser có đầu vào analog hoặc log lý do reset của MCU."
+    },
+    "b8": {
+      "prompt": "Một chân đọc ra 1, 0, 1, 1, 0 khi dây bị tháo. Lỗi gì và cách sửa nào?",
+      "options": [
+        "Sai baud; hạ baud rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Xung đột I2C; đổi địa chỉ rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Brownout; thêm tụ rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Chân floating; thêm điện trở kéo lên hoặc kéo xuống."
+      ],
+      "explanation": "Một đầu vào bị tháo là không xác định và chạy theo nhiễu. Điện trở kéo lên hoặc xuống xác định mức nghỉ."
+    },
+    "b9": {
+      "prompt": "Hai cảm biến cần cùng một địa chỉ I2C cố định. Cách sửa hợp lệ là gì?",
+      "options": [
+        "Hạ điện áp nguồn.",
+        "Đặt chúng sau một bộ ghép kênh I2C hoặc trên các bus riêng.",
+        "Dùng cáp dài hơn để làm trễ một cái.",
+        "Đảo cực một cảm biến."
+      ],
+      "explanation": "Với địa chỉ cố định, các thiết bị không được chung đoạn bus: bộ ghép kênh hoặc bus thứ hai tách chúng ra."
+    },
+    "b10": {
+      "prompt": "Dòng hồi của động cơ 2 A chạy qua dây đất chung 50 milliohm. Đất logic dịch bao nhiêu milivolt?",
+      "explanation": "2 * 0,05 = 0,1 V = 100 mV."
+    },
+    "b11": {
+      "prompt": "Một vòng lặp có delay(50) trong khi byte đến ở 115200 baud 8N1. Có bao nhiêu byte đến trong một lần delay? Độ chính xác 1.",
+      "explanation": "115200/10 = 11520 byte/s; 0,05 s cho 576 byte, vượt xa bộ đệm 64 byte."
+    },
+    "b12": {
+      "prompt": "TX của một Arduino 5 V nối thẳng vào chân RX của board 3,3 V có chân không chịu được 5 V. Rủi ro là gì?",
+      "options": [
+        "Không có, 5 V được đọc là mức cao bình thường rồi thử lại mọi thứ.",
+        "Dữ liệu đến bị đảo rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Đầu vào 3,3 V có thể hỏng; dùng cầu chia áp hoặc bộ chuyển mức.",
+        "Tốc độ baud tăng gấp đôi rồi thử lại mọi thứ trước khi động vào thứ gì khác."
+      ],
+      "explanation": "Mức cao của bên phát vượt giá trị tối đa tuyệt đối của bên nhận. Cầu chia áp (tín hiệu một chiều) hoặc bộ chuyển mức giải quyết."
+    },
+    "b13": {
+      "prompt": "Board chạy ổn, rồi log cho thấy reset do task watchdog sau một lệnh in dài và một lần chờ cảm biến. Nguyên nhân khả dĩ?",
+      "options": [
+        "Code chặn làm vòng lặp bị bỏ đói.",
+        "Một chân floating rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Giá trị pull-up I2C sai rồi thử lại mọi thứ.",
+        "Thiếu đất chung rồi thử lại mọi thứ trước khi động vào thứ gì khác."
+      ],
+      "explanation": "In dài và chờ không giới hạn chặn vòng lặp nên watchdog không được feed kịp. Dùng máy trạng thái không chặn và timeout."
+    },
+    "b14": {
+      "prompt": "Serial monitor hiện ký tự rác từ một board vốn in tốt trước khi bạn đổi clock. Bạn kiểm tra gì trước?",
+      "options": [
+        "Dòng điện động cơ rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Địa chỉ I2C rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Điện trở kéo lên của nút bấm rồi thử lại mọi thứ trước khi động vào thứ gì khác.",
+        "Cài đặt baud so với clock thực và sai số bộ chia."
+      ],
+      "explanation": "Chữ rác là dấu hiệu của lệch baud, thường sau khi đổi clock. So sánh hai cài đặt baud và sai số bộ chia."
+    },
+    "b15": {
+      "prompt": "Viết checklist bring-up cho một board mới có IMU và driver động cơ: các giai đoạn theo thứ tự, công cụ cho mỗi giai đoạn và một tiêu chí đạt cho mỗi giai đoạn.",
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+      "rubric": [
+        "Sắp xếp các giai đoạn nguồn, reset và clock, comms, cảm biến, cơ cấu chấp hành ở công suất thấp, rồi vòng điều khiển và an toàn.",
+        "Nêu công cụ cho từng giai đoạn (đồng hồ vạn năng, log serial hoặc LED, logic analyser hoặc scan, đọc WHO_AM_I, nguồn giới hạn dòng) và dừng ở giai đoạn lỗi đầu tiên.",
+        "Đưa tiêu chí đạt bằng số (rail trong 5 %, một banner boot, scan khớp bản đồ địa chỉ, dòng dưới giới hạn) và giữ bản đồ chân và địa chỉ."
+      ]
+    },
+    "b16": {
+      "prompt": "Viết các bài kiểm chứng minh timeout của wheel module hoạt động: thiết lập, thứ bạn chèn vào, phép đo và tiêu chí đạt.",
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+      "rubric": [
+        "Chạy đường cơ sở với frame hợp lệ và động cơ ở tốc độ đã biết.",
+        "Chèn lần lượt khoảng im lặng (ngừng gửi), một frame hỏng và một frame bị cắt.",
+        "Đo thời gian từ frame hợp lệ cuối đến khi đầu ra về không (logic analyser hoặc timestamp trong log), so với timeout đã quy định, và kiểm tra chỉ frame hợp lệ mới khởi động lại động cơ."
+      ]
+    },
+    "b17": {
+      "prompt": "Một robot reset mỗi khi động cơ khởi động. Hãy mô tả chẩn đoán: hai phép đo đầu tiên, phép tính bạn làm, hai cách sửa và cách xác nhận đã sửa.",
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+      "rubric": [
+        "Đọc lý do reset và đo rail lúc động cơ khởi động (oscilloscope hoặc log), không chỉ lúc nghỉ.",
+        "Ước lượng sụt áp V = Voc - I*R và so với điện áp vào tối thiểu của bộ ổn áp.",
+        "Đề xuất nguồn logic riêng hoặc nguồn cứng hơn, khởi động mềm hoặc giới hạn dòng, đất hình sao, và chạy lại checklist từ giai đoạn 1 để xác nhận."
+      ]
+    }
+  }
+}

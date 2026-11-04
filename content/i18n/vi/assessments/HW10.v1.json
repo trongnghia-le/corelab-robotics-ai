@@ -1,0 +1,54 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một vòng tốc độ đòi hỏi nhiều hơn mức động cơ đáp ứng được trong một lúc và bộ tích phân tiếp tục tích lũy. Điều gì xảy ra khi setpoint lại đạt được?",
+   "options": [
+    "Bộ tích phân tự reset và không có gì đặc biệt xảy ra.",
+    "Số hạng tỉ lệ triệt tiêu ngay phần tích phân đã lưu.",
+    "Tích phân đã lưu giữ đầu ra bão hòa, nên tốc độ overshoot hoặc phục hồi muộn (windup).",
+    "Bộ đếm encoder quay vòng và vòng lặp báo lỗi."
+   ],
+   "explanation": "Không có anti-windup, tích phân tiếp tục tăng khi đầu ra bị cắt, và phải được xả bằng sai số âm trước khi đầu ra rời khỏi bão hòa."
+  },
+  "q2": {
+   "prompt": "1440 số đếm mỗi vòng trục ra, tick 10 ms, đếm được 17 số đếm trong một tick. Tốc độ theo rad/s, độ chính xác 0.01.",
+   "explanation": "17 * 2*pi / (1440 * 0.01) = 7.418 rad/s."
+  },
+  "q3": {
+   "prompt": "Cùng encoder đó (1440 số đếm mỗi vòng) đọc ở 1 kHz. Tốc độ khác không nhỏ nhất theo rad/s là bao nhiêu, độ chính xác 0.01?",
+   "explanation": "2*pi / (1440 * 0.001) = 4.363 rad/s, thô hơn mười lần so với ở 100 Hz."
+  },
+  "q4": {
+   "prompt": "Một phép thử bước cho độ lợi đối tượng K = 10 rad/s trên mỗi đơn vị u và hằng số thời gian 0.2 s. Với tinh chỉnh lambda và tau_c = 0.1 s (Kp = tau/(K tau_c)), Kp là bao nhiêu, độ chính xác 0.001?",
+   "explanation": "Kp = 0.2 / (10 * 0.1) = 0.2."
+  },
+  "q5": {
+   "prompt": "Vì sao vòng tốc độ nên chạy từ một timer tick thay vì một vòng lặp kết thúc bằng delay(10)?",
+   "options": [
+    "Chu kỳ thực sẽ gồm cả thời gian làm việc và các lời gọi chặn, nên dt trong công thức tích phân và tốc độ sẽ sai.",
+    "delay() không dùng được với analogWrite.",
+    "Timer tick làm tần số PWM cao hơn.",
+    "delay() vô hiệu hóa việc đếm của encoder."
+   ],
+   "explanation": "Các công thức giả định đúng dt giữa các lần cập nhật. Thời gian làm việc, lệnh in Serial và jitter làm chu kỳ thực khác đi, làm sai tỉ lệ cả ước lượng tốc độ lẫn độ lợi tích phân."
+  },
+  "q6": {
+   "prompt": "Vùng chết 40 trên 255. Đầu ra bộ điều khiển u = 0.6. Duty có dấu (làm tròn thành số nguyên; đáp án là số dương).",
+   "explanation": "40 + (255 - 40) * 0.6 = 169."
+  },
+  "q7": {
+   "prompt": "Nêu bốn cổng an toàn mà firmware tốc độ động cơ nên có và mỗi cái làm gì với đầu ra.",
+   "rubric": [
+    "Timeout lệnh hoặc watchdog: ép đầu ra bằng không khi không có lệnh hợp lệ trong vài chu kỳ lệnh.",
+    "Clamp đầu ra (và tùy chọn ramp): giới hạn u và tốc độ thay đổi của nó.",
+    "Phát hiện kẹt và giới hạn dòng: duty cao mà gần như không có tốc độ, hoặc dòng quá lớn, đặt đầu ra về không và chốt lỗi.",
+    "Trạng thái khởi động an toàn và reset tích phân: đầu ra bằng không lúc bắt đầu và khi vòng lặp bị vô hiệu."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "q8": {
+   "prompt": "Một bước lên 10 rad/s đạt đỉnh 11.2 rad/s. Overshoot theo phần trăm, độ chính xác 0.1.",
+   "explanation": "(11.2 - 10) / 10 = 12 %."
+  }
+ }
+}

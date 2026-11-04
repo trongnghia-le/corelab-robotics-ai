@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Bạn chỉnh learning rate và trọng số reward bằng cách nhìn thành công trên các seed đánh giá 1000-1099, rồi báo kết quả tốt nhất trên chính các seed đó. Sai ở đâu?",
+   "options": [
+    "Không sai: 100 episode đủ để loại bỏ mọi thiên lệch.",
+    "Learning rate lẽ ra phải chỉnh trên tập danh định, không phải tập nhiễu loạn.",
+    "Seed đánh giá đã bị dùng để chỉnh, nên con số báo cáo lạc quan; hãy chỉnh trên seed huấn luyện hoặc validation và đóng băng trước khi đánh giá.",
+    "Seed nên là số nguyên âm để tránh trùng với seed của simulator."
+   ],
+   "explanation": "Các lựa chọn đưa ra sau khi thấy kết quả đánh giá biến đánh giá thành một phần của huấn luyện. Con số bị lệch lên bất kể cỡ mẫu."
+  },
+  "q2": {
+   "prompt": "27 thành công trong 30 episode giữ riêng. Cận dưới của khoảng Wilson 95 % (3 chữ số thập phân).",
+   "explanation": "Wilson: [0.744, 0.965]. Cận dưới thấp hơn 0.80."
+  },
+  "q3": {
+   "prompt": "Hai lần chạy train_ppo.py cùng seed cho return đánh giá khác nhau trên CPU. Bước đầu tiên nào nhiều khả năng sửa được nhất?",
+   "options": [
+    "Dùng batch lớn hơn để trung bình hóa loại nhiễu.",
+    "Đặt torch về một luồng và seed python, numpy, torch và môi trường.",
+    "Chuyển sang GPU, vốn tất định theo mặc định.",
+    "Giảm learning rate cho tới khi hai lần chạy khớp."
+   ],
+   "explanation": "Các phép gộp đa luồng và thành phần chưa seed là nguyên nhân thường gặp. Sửa tính tất định trước; đừng che bằng siêu tham số."
+  },
+  "q4": {
+   "prompt": "Một policy behaviour cloning có MSE action giữ riêng rất thấp nhưng thất bại nhiều ở vòng kín. Lời giải thích tốt nhất là gì?",
+   "options": [
+    "Chắc MSE được tính trên chính demo huấn luyện.",
+    "Mạng quá lớn và chỉ cần weight decay.",
+    "Không thể dự đoán thành công vòng kín từ bất kỳ số đo offline nào.",
+    "Lỗi nhỏ đẩy policy vào các state mà demonstration chưa từng đi qua, và lỗi tích lũy."
+   ],
+   "explanation": "Covariate shift: policy được đánh giá trên phân phối state của chính nó, không phải của chuyên gia."
+  },
+  "q5": {
+   "prompt": "Huấn luyện chạy 300 bước môi trường mỗi giây. 1.8 M bước mất bao nhiêu giờ? (3 chữ số thập phân)",
+   "explanation": "1.8e6 / 300 = 6000 s = 1.667 h, sát giới hạn 2 h."
+  },
+  "q6": {
+   "prompt": "Viết reward cho primitive reach-and-grasp: liệt kê các số hạng, nói mỗi số hạng để làm gì, và nêu một cách policy có thể khai thác thiết kế của bạn (reward hacking) cùng cách bạn phát hiện nó.",
+   "rubric": [
+    "Liệt kê số hạng khoảng cách dày, thưởng một lần cho gắp/nhấc, phạt action và phạt thời gian, có lý do cho từng cái.",
+    "Nêu một cách khai thác cụ thể (ví dụ lơ lửng gần vật, hoặc nhấc mà không giữ) gắn với các số hạng đã chọn.",
+    "Đưa ra cách phát hiện: xem episode, ghi riêng từng số hạng, đối chiếu thành công với return."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "q7": {
+   "prompt": "Domain randomisation lúc huấn luyện dùng khối lượng +-5 % và không có trễ action, nhưng robot thật và tập test giữ riêng có khối lượng +-30 % và trễ 40 ms. Bạn kỳ vọng gì?",
+   "options": [
+    "Policy sẽ bền vì huấn luyện sạch và dễ.",
+    "Độ bền thấp: test nằm ngoài phân phối huấn luyện, nên thành công có thể tụt mạnh.",
+    "Đúng bằng thành công trên simulator danh định.",
+    "Policy sẽ không huấn luyện được gì."
+   ],
+   "explanation": "Policy chỉ bền trên những gì nó đã thấy. Khoảng hẹp nghĩa là phải ngoại suy lúc test."
+  }
+ }
+}

@@ -1,0 +1,71 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Trong một lần chạy 60 s có sự thật nền, NEES trung bình của bộ lọc tư thế 3 bậc tự do là 9. Điều đó nghĩa là gì?",
+      "options": [
+        "Bộ lọc quá tự tin: hiệp phương sai của nó nhỏ hơn khoảng ba lần so với điều các sai số thật biện minh.",
+        "Bộ lọc rất chính xác, vì NEES lớn nghĩa là ước lượng gần sự thật theo mét tuyệt đối.",
+        "Bộ lọc thiếu tự tin, vì NEES lớn nghĩa là hiệp phương sai báo cáo quá lớn so với các sai số.",
+        "Không kết luận được gì, vì giá trị NEES chỉ có ý nghĩa với bộ lọc không có trạng thái bias gyro."
+      ],
+      "explanation": "NEES là sai số bình phương chuẩn hóa bởi hiệp phương sai; kỳ vọng của nó bằng số chiều (3). Trung bình 9 nghĩa là sai số lớn hơn điều P thừa nhận."
+    },
+    "q2": {
+      "prompt": "Một camera mô phỏng cao 480 pixel với góc nhìn dọc 45 độ. Tiêu cự lý tưởng tính theo pixel là bao nhiêu?",
+      "explanation": "f = (H/2)/tan(fovy/2) = 240/tan(22.5 độ) = 579.4 px."
+    },
+    "q3": {
+      "prompt": "Góc phương vị được dự đoán là -3.10 rad và đo được +3.10 rad. EKF nên dùng innovation nào?",
+      "options": [
+        "+6.20 rad, vì cập nhật phải dùng đúng hiệu của hai số mà không sửa đổi gì.",
+        "Khoảng -0.083 rad: hiệu thô 6.20 rad được wrap vào [-pi, pi).",
+        "0 rad, vì hai góc mô tả cùng một hướng nên có thể bỏ qua cập nhật.",
+        "+3.10 rad, vì innovation bị giới hạn bằng góc phương vị đo được khi dấu khác nhau."
+      ],
+      "explanation": "Góc có tính tuần hoàn; innovation 6.2 rad không wrap sẽ làm tư thế lệch rất xa."
+    },
+    "q4": {
+      "prompt": "Vì sao ta cập nhật hiệp phương sai ở dạng Joseph, P = (I-KH)P(I-KH)^T + K R K^T?",
+      "options": [
+        "Nó làm bộ lọc hội tụ nhanh hơn dạng chuẩn, vì dùng độ lợi hiệu dụng lớn hơn.",
+        "Nó loại bỏ nhu cầu về cổng, vì số hạng phụ tự nó đã từ chối các outlier của phép đo.",
+        "Nó là tổng các số hạng nửa xác định dương, nên P giữ đối xứng và xác định dương ngay cả khi có làm tròn hoặc độ lợi không tối ưu.",
+        "Nó tránh phải tính nghịch đảo ma trận của S, việc không thể làm dưới một mili giây trên laptop."
+      ],
+      "explanation": "Cập nhật chuẩn (I-KH)P chỉ tương đương với độ lợi tối ưu chính xác và mất đối xứng trong dấu phẩy động."
+    },
+    "q5": {
+      "prompt": "Một cổng ở lượng tử chi bình phương 99 % (2 bậc tự do) được áp cho 770 phát hiện tốt. Kỳ vọng khoảng bao nhiêu bị từ chối?",
+      "explanation": "1 % của 770 = 7.7."
+    },
+    "q6": {
+      "prompt": "Không marker nào thấy được trong 20 s. Hiệp phương sai báo cáo nên làm gì, và vì sao?",
+      "options": [
+        "Nó nên giữ không đổi, vì lần hiệu chỉnh cuối đã cố định tư thế và gyro giữ nó chính xác trong khi odometry bánh không thêm gì.",
+        "Nó nên giảm, vì mỗi bước dự đoán thêm thông tin về tư thế từ odometry bánh.",
+        "Nó nên được reset về giá trị ban đầu, vì bộ lọc đã mất dấu và phải bắt đầu lại từ đầu.",
+        "Nó nên tăng, vì tư thế chỉ được dự đoán và không có gì chặn sai số odometry và gyro tích lũy."
+      ],
+      "explanation": "Dự đoán thêm nhiễu quá trình; chỉ phép đo landmark mới giảm bất định."
+    },
+    "q7": {
+      "prompt": "Bạn chỉnh Q và R trên các quỹ đạo 1000 đến 1004 và báo cáo độ chính xác trên chính năm quỹ đạo đó. Lỗi ở đâu?",
+      "options": [
+        "Các con số đo việc bạn khớp những lần chạy đó tốt đến đâu; hãy chỉnh trên seed khác, đóng băng, rồi kiểm thử một lần trên 1000 đến 1004.",
+        "Không có lỗi miễn là đạt ngưỡng, vì các seed cố định và các lần chạy tái lập được.",
+        "Lỗi là năm quỹ đạo quá ít, nên cách sửa duy nhất là thêm quỹ đạo vào cùng tập chỉnh.",
+        "Lỗi là Q và R không bao giờ được chỉnh; chúng phải được chép từ datasheet cảm biến mà không đổi."
+      ],
+      "explanation": "Dùng lại dữ liệu để chỉnh và kiểm thử che giấu overfitting."
+    },
+    "q8": {
+      "prompt": "Một lần chạy có NEES trung bình 9.0 nhưng NIS trung bình 2.0. Nêu nguyên nhân có khả năng nhất và điều đầu tiên bạn sẽ đổi.",
+      "rubric": [
+        "Nhận ra bước dự đoán quá tự tin: nhiễu quá trình Q quá nhỏ hoặc thiếu một trạng thái như bias gyro.",
+        "Lưu ý rằng NIS gần 2 cho thấy nhiễu đo R và mô hình landmark gần đúng, nên R không phải nghi phạm đầu tiên.",
+        "Đề xuất tăng Q (hoặc thêm trạng thái bias), rồi chạy lại trên các seed chỉnh riêng và kiểm tra NEES lần nữa."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

@@ -1,0 +1,540 @@
+{
+  "id": "HW12-targeted",
+  "topicId": "HW12",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "Why should the motor be tested last in a bring-up?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Motors are the most expensive part, so they are never tested before sales.",
+        "Motor drivers cannot run until the code is final.",
+        "A fault in power, clock, comms or sensors makes motor behaviour misleading, and a motor adds sag and noise.",
+        "The datasheet forbids running a motor below 50 % duty."
+      ],
+      "answer": "2",
+      "explanation": "Upstream faults make the motor symptoms meaningless, and motor current itself stresses the supply. Test the quiet stages first.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "bringup-order"
+      ],
+      "skillLabel": "Bring-up order and checklist",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q1"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b2",
+      "prompt": "A 2S LiPo (7.4 V open circuit, 0.3 ohm total resistance) feeds a motor that draws 3 A at start. Voltage during the start, in volts?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.5",
+      "tolerance": 0.01,
+      "explanation": "7.4 - 3*0.3 = 6.5 V.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "brownout-ground"
+      ],
+      "skillLabel": "Brownout, sag and ground bounce",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b3",
+      "prompt": "A capacitor must supply 3 A for 2 ms while the rail may drop by at most 0.5 V. Required capacitance C = I*dt/dV in microfarads?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12000",
+      "tolerance": 1,
+      "explanation": "3*0.002/0.5 = 0.012 F = 12000 uF.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "brownout-ground"
+      ],
+      "skillLabel": "Brownout, sag and ground bounce",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b4",
+      "prompt": "I2C at 3.3 V, VOL = 0.4 V, IOL = 3 mA. Minimum pull-up resistance (Vcc - VOL)/IOL in ohms, precision 1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "967",
+      "tolerance": 1,
+      "explanation": "(3.3 - 0.4)/0.003 = 966.7 ohm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "i2c-conflict"
+      ],
+      "skillLabel": "I2C addresses and pull-up sizing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b5",
+      "prompt": "Fast mode (tr = 300 ns), bus capacitance 200 pF. Maximum pull-up Rp,max = tr/(0.8473*Cb) in ohms, precision 5.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1770",
+      "tolerance": 5,
+      "explanation": "300e-9/(0.8473*200e-12) = 1770 ohm.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "i2c-conflict"
+      ],
+      "skillLabel": "I2C addresses and pull-up sizing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b6",
+      "prompt": "Minimum logic-analyser sample rate in MS/s to decode UART at 230400 baud with 10 samples per bit (10 bits per byte is irrelevant, use the bit rate)? Precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.304",
+      "tolerance": 0.01,
+      "explanation": "10 * 230400 = 2.304 MS/s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "tools"
+      ],
+      "skillLabel": "Multimeter, logs and logic analyser",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b7",
+      "prompt": "A multimeter showed a steady 5.0 V on the rail, yet the board reset when the motor started. Why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The meter averages, so a 5 ms dip does not show; use a scope or log the reset reason.",
+        "The meter was in current mode and then retest everything before touching anything else, as many beginners assume.",
+        "A rail never changes, so the meter is broken and then retest everything before touching anything else.",
+        "The reset came from the serial port and then retest everything before touching anything else."
+      ],
+      "answer": "0",
+      "explanation": "A multimeter averages over many milliseconds. Fast dips need a scope, a logic analyser with analog input, or the MCU's reset-reason log.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "tools"
+      ],
+      "skillLabel": "Multimeter, logs and logic analyser",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b8",
+      "prompt": "A pin reads 1, 0, 1, 1, 0 with the wire disconnected. What is the fault and what fixes it?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Wrong baud rate; lower the baud and then retest everything.",
+        "I2C conflict; change the address and then retest everything.",
+        "Brownout; add a capacitor and then retest everything.",
+        "Floating input; add a pull-up or pull-down."
+      ],
+      "answer": "3",
+      "explanation": "A disconnected input is undefined and follows noise. A pull-up or pull-down defines the idle level.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "levels-pullups"
+      ],
+      "skillLabel": "Logic levels, pull-ups and floating inputs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW12#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b9",
+      "prompt": "Two sensors need the same fixed I2C address. Which is a valid fix?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Lower the supply voltage.",
+        "Put them behind an I2C multiplexer or on separate buses.",
+        "Use a longer cable to delay one of them.",
+        "Reverse the polarity of one sensor."
+      ],
+      "answer": "1",
+      "explanation": "With fixed addresses the devices must not share a bus segment: a multiplexer or a second bus separates them.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "i2c-conflict"
+      ],
+      "skillLabel": "I2C addresses and pull-up sizing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b10",
+      "prompt": "Motor return current of 2 A flows through a shared ground wire of 50 milliohm. By how many millivolts does the logic ground move?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "100",
+      "tolerance": 0.5,
+      "explanation": "2 * 0.05 = 0.1 V = 100 mV.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "brownout-ground"
+      ],
+      "skillLabel": "Brownout, sag and ground bounce",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b11",
+      "prompt": "A loop has delay(50) while bytes arrive at 115200 baud 8N1. How many bytes arrive during one delay? Precision 1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "576",
+      "tolerance": 1,
+      "explanation": "115200/10 = 11520 bytes/s; 0.05 s gives 576 bytes, far above a 64-byte buffer.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "blocking-testplan"
+      ],
+      "skillLabel": "Blocking code and test plans",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW12#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b12",
+      "prompt": "A 5 V Arduino TX is wired straight to the RX pin of a 3.3 V board whose pins are not 5 V tolerant. What is the risk?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "None, 5 V is read as a normal high and then retest everything before touching anything else.",
+        "The data arrives inverted and then retest everything before touching anything else.",
+        "The 3.3 V input can be damaged; use a divider or level shifter.",
+        "The baud rate doubles and then retest everything before touching anything else."
+      ],
+      "answer": "2",
+      "explanation": "The driver's high level exceeds the receiver's absolute maximum. A divider (one-way signals) or a level shifter fixes it.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "levels-pullups"
+      ],
+      "skillLabel": "Logic levels, pull-ups and floating inputs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW12#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b13",
+      "prompt": "A board runs fine, then the log shows a task watchdog reset after a long print and a wait for a sensor. Likely cause?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Blocking code starved the loop.",
+        "A floating input and then retest everything.",
+        "A wrong I2C pull-up value and then retest everything.",
+        "A missing common ground and then retest everything."
+      ],
+      "answer": "0",
+      "explanation": "Long prints and unbounded waits block the loop, so the watchdog is not fed in time. Use a non-blocking state machine and timeouts.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "blocking-testplan"
+      ],
+      "skillLabel": "Blocking code and test plans",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW12#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b14",
+      "prompt": "The serial monitor shows garbage characters from a board that printed fine before you changed the clock. What do you check first?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Motor current and then retest everything before touching anything else.",
+        "The I2C address and then retest everything before touching anything else.",
+        "The pull-up on the button and then retest everything before touching anything else.",
+        "The baud rate setting against the actual clock and divisor error."
+      ],
+      "answer": "3",
+      "explanation": "Garbage text is the signature of a baud mismatch, often after a clock change. Compare both baud settings and the divisor error.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "levels-pullups"
+      ],
+      "skillLabel": "Logic levels, pull-ups and floating inputs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW12#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b15",
+      "prompt": "Write a bring-up checklist for a new board with an IMU and a motor driver: stages in order, the tool for each and one pass criterion each.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Orders the stages power, reset and clock, comms, sensors, actuators at low power, then loop and safety.",
+        "Names a tool for each (multimeter, serial log or LED, logic analyser or scan, WHO_AM_I read, current-limited supply) and says to stop at the first failing stage.",
+        "Gives numeric pass criteria (rails within 5 %, one boot banner, scan matches the address map, current under a limit) and keeps a pin and address map."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "bringup-order"
+      ],
+      "skillLabel": "Bring-up order and checklist",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b16",
+      "prompt": "Write the tests that prove a wheel module's timeout works: setup, what you inject, the measurement and the pass criterion.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Runs a baseline with valid frames and the motor at a known speed.",
+        "Injects silence (stop sending), a corrupted frame and a truncated frame, one at a time.",
+        "Measures the time from the last valid frame to zero output (logic analyser or log timestamps), compares it with the specified timeout, and checks that only a valid frame restarts the motor."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "blocking-testplan"
+      ],
+      "skillLabel": "Blocking code and test plans",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW12#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    },
+    {
+      "id": "b17",
+      "prompt": "A robot resets whenever the motor starts. Describe your diagnosis: the first two measurements, the calculation you do, two fixes and how you confirm the fix.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Reads the reset reason and measures the rail during the motor start (scope or log), not only at idle.",
+        "Estimates the sag V = Voc - I*R and compares it with the regulator's minimum input.",
+        "Proposes a separate logic supply or stiffer source, soft start or current limit, a star ground, and re-runs the checklist from stage 1 to confirm."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "brownout-ground"
+      ],
+      "skillLabel": "Brownout, sag and ground bounce",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW12#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW09",
+        "HW10",
+        "HW11"
+      ]
+    }
+  ]
+}

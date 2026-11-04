@@ -236,7 +236,10 @@ describe("lesson time is language independent", () => {
       const en = getLocalizedLesson(id, "en")!;
       const vi = getLocalizedLesson(id, "vi")!;
       const enPlan = lessonPlan(en);
-      expect(enPlan.minutes, id).toBe(lessonMinutes(en.body));
+      // Project lessons (capstone) declare their total effort; others use the body.
+      expect(enPlan.minutes, id).toBe(
+        Math.max(lessonMinutes(en.body), en.meta.project_minutes ?? 0),
+      );
       if (vi.lang !== "vi") continue;
       checked++;
       const viPlan = lessonPlan(vi);
@@ -251,5 +254,17 @@ describe("lesson time is language independent", () => {
       ).toBe(enPlan.minutes);
     }
     expect(checked).toBeGreaterThan(0);
+  });
+});
+
+describe("practice assignments", () => {
+  it("have Vietnamese text for every assignment", async () => {
+    const { practices } = await import("../lib/practice");
+    const { practiceVi } = await import("../lib/practice-vi");
+    for (const p of practices) {
+      expect(practiceVi[p.id], p.id).toBeDefined();
+      for (const key of ["title", "kind", "task"] as const)
+        expect(practiceVi[p.id][key].trim(), `${p.id}.${key}`).not.toBe("");
+    }
   });
 });

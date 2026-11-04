@@ -1,0 +1,110 @@
+{
+  "questions": {
+    "b1": {
+      "prompt": "94 lần thành công trong 120 episode. Cận trên của khoảng Wilson 95 %.",
+      "explanation": "Cận trên Wilson của 94/120 là 0.848."
+    },
+    "b2": {
+      "prompt": "Vì sao gate nominal của CAP08 viết trên cận dưới Wilson chứ không trên ước lượng điểm?",
+      "options": [
+        "Cận dưới luôn gần tỉ lệ thật hơn là ước lượng điểm.",
+        "Đó là khẳng định bạn bảo vệ được với n của mình.",
+        "Nó làm bài kiểm tra dễ qua hơn với ít episode hơn.",
+        "Khoảng Wilson loại bỏ ảnh hưởng của seed."
+      ],
+      "explanation": "Cận dưới phản ánh cả tỉ lệ lẫn độ bất định; n nhỏ làm nó thấp đi."
+    },
+    "b3": {
+      "prompt": "Tỉ lệ kỳ vọng 0.8. Cần khoảng bao nhiêu episode để nửa độ rộng khoảng 95 % là 0.10? (số nguyên)",
+      "explanation": "1.96^2 * 0.16 / 0.01 = 61.5, tức khoảng 61-62."
+    },
+    "b4": {
+      "prompt": "Seed bất đồng b=6, c=2. p-value McNemar chính xác hai phía.",
+      "explanation": "p = 2 (1+8+28)/256 = 0.289."
+    },
+    "b5": {
+      "prompt": "Một ablation có b=15, c=2 trên 30 seed ghép cặp. Hiệu ứng (b-c)/số cặp tính bằng điểm phần trăm.",
+      "explanation": "(15-2)/30 = 0.433, tức 43.3 điểm."
+    },
+    "b6": {
+      "prompt": "Một ablation cho hiệu ứng +10 điểm với p chính xác = 0.55 tại n = 30. Bạn được viết gì?",
+      "options": [
+        "Thành phần đó không ảnh hưởng đến thành công.",
+        "Thành phần đó làm giảm thành công, vì p trên 0.5 vẫn ổn với hiệu ứng lớn.",
+        "Thí nghiệm chứng minh thành phần dư thừa và có thể bỏ.",
+        "Chưa có bằng chứng đáng tin ở n = 30; chạy thêm seed."
+      ],
+      "explanation": "Không có ý nghĩa thống kê không có nghĩa là không có hiệu ứng; thí nghiệm có thể chỉ quá nhỏ."
+    },
+    "b7": {
+      "prompt": "Holm trên 4 phép kiểm định ở alpha 0.05: ngưỡng áp cho p-value nhỏ thứ hai.",
+      "explanation": "alpha/(m-1) = 0.05/3 = 0.0167."
+    },
+    "b8": {
+      "prompt": "Bốn phép kiểm định độc lập, mỗi phép ở 0.05, đều là giả thuyết không. Xác suất có ít nhất một dương tính giả.",
+      "explanation": "1 - 0.95^4 = 0.1855."
+    },
+    "b9": {
+      "prompt": "Quy trình nào giữ seed chỉnh và seed đánh giá tách biệt?",
+      "options": [
+        "Hai file seed cộng một test kiểm tra chúng không giao nhau.",
+        "Bốc seed ngẫu nhiên mỗi lần chạy và đơn giản là tin rằng trùng lặp khó xảy ra.",
+        "Chỉnh trên nửa đầu episode của mỗi lần chạy và đánh giá trên nửa sau.",
+        "Dùng cùng seed nhưng lấy trung bình qua nhiều lần chạy hơn."
+      ],
+      "explanation": "Danh sách ghi sẵn và phép kiểm tra giao tự động làm rò rỉ lộ ra."
+    },
+    "b10": {
+      "prompt": "Trong lần chạy minh họa, 36 trong 108 lần thất bại là GRASP_SLIP. Tỉ lệ trong các lần thất bại (0-1).",
+      "explanation": "36/108 = 0.333."
+    },
+    "b11": {
+      "prompt": "94 trên 120 thành công và 9 trong 26 lần thất bại là GRASP_SLIP. Tỉ lệ thành công tốt nhất nếu loại hẳn nguyên nhân đó.",
+      "explanation": "(94+9)/120 = 0.858."
+    },
+    "b12": {
+      "prompt": "Độ trễ trung vị từ nhận thức đến lệnh là 71 ms và robot chạy 0.5 m/s. Quãng đường đi được trong thời gian đó, tính bằng cm.",
+      "explanation": "0.5 m/s * 0.071 s = 3.55 cm."
+    },
+    "b13": {
+      "prompt": "Trung vị các khâu là 38 ms, 21 ms và 9 ms. Vì sao 68 ms không phải ước lượng an toàn cho trung vị tổng?",
+      "options": [
+        "Trung vị chỉ được định nghĩa cho một khâu.",
+        "Vì 68 ms lúc nào cũng sẽ nhỏ hơn tổng thật.",
+        "Trung vị của tổng không bằng tổng trung vị; log tổng từng frame.",
+        "Vì các khâu đo bằng đơn vị khác nhau."
+      ],
+      "explanation": "Hãy tính trung vị (và một phân vị cao) của tổng theo từng frame."
+    },
+    "b14": {
+      "prompt": "Twin niêm phong cho thấy tỉ lệ thành công giảm 21 điểm. Khẳng định đúng là gì?",
+      "options": [
+        "Robot thật sẽ mất khoảng 21 điểm thành công, giống như twin.",
+        "Stack nhạy đến mức đó với họ nhiễu loạn này; thực tế có thể khác.",
+        "Sim2real đã được giải vì twin là một trình mô phỏng khác.",
+        "Mức giảm là giả tạo vì trình mô phỏng có tính xác định."
+      ],
+      "explanation": "Twin ước lượng độ nhạy, không phải khoảng cách thật."
+    },
+    "b15": {
+      "prompt": "Thiết kế quy trình đánh giá cho twin và việc hiệu chỉnh lại sao cho không ai (kể cả bạn) làm rò rỉ tham số ẩn.",
+      "rubric": [
+        "Sinh twin bằng secret seed không bao giờ in, ghi log hay commit.",
+        "Chỉ cho phép thí nghiệm trên twin (step test, lái hình vuông) làm đầu vào cho system identification.",
+        "Tách seed chỉnh và seed đánh giá của twin.",
+        "Định nghĩa trước tiêu chí thành công (cải thiện tương đối >= 25 % hoặc kết quả âm có CI)."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "b16": {
+      "prompt": "Viết kế hoạch kiểm thử cho bench/metrics.py để bắt (a) metrics.json bị sửa tay, (b) seed chỉnh nằm trong tập đánh giá, (c) lần thất bại không có nguyên nhân.",
+      "rubric": [
+        "Tính lại metric từ episodes.jsonl và so với file đã lưu với dung sai chặt (a).",
+        "Tính giao giữa danh sách seed chỉnh và seed nominal/twin và khẳng định rỗng (b).",
+        "Khẳng định ít nhất 90 % episode thất bại có nguyên nhân thuộc danh sách cố định và tổng đếm bằng số lần thất bại (c).",
+        "Có đối chứng đạt và kiểm tra đột biến, ví dụ sửa một dòng và mong test fail."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

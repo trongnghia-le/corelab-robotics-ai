@@ -1,0 +1,237 @@
+{
+  "id": "HW10-diagnostic",
+  "topicId": "HW10",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A speed loop asks for more than the motor can deliver for a while and the integrator keeps accumulating. What happens when the setpoint becomes reachable again?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The integrator resets itself and nothing special happens.",
+        "The proportional term cancels the stored integral at once.",
+        "The stored integral keeps the output saturated, so the speed overshoots or recovers late (windup).",
+        "The encoder count wraps around and the loop faults."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pi-antiwindup"
+      ],
+      "skillLabel": "PI loop with clamp and anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "Without anti-windup the integral keeps growing while the output is clipped, and it must be unwound by negative error before the output leaves saturation."
+    },
+    {
+      "id": "q2",
+      "prompt": "1440 counts per output revolution, a 10 ms tick, 17 counts counted in one tick. Speed in rad/s, precision 0.01.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7.418",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "speed-from-counts"
+      ],
+      "skillLabel": "Speed from encoder counts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW10#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "17 * 2*pi / (1440 * 0.01) = 7.418 rad/s."
+    },
+    {
+      "id": "q3",
+      "prompt": "Same encoder (1440 counts per revolution) read at 1 kHz. What is the smallest nonzero speed in rad/s, precision 0.01?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.363",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "speed-from-counts"
+      ],
+      "skillLabel": "Speed from encoder counts",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "2*pi / (1440 * 0.001) = 4.363 rad/s, ten times coarser than at 100 Hz."
+    },
+    {
+      "id": "q4",
+      "prompt": "A step test gives plant gain K = 10 rad/s per unit of u and a time constant of 0.2 s. For lambda tuning with tau_c = 0.1 s (Kp = tau/(K tau_c)), what is Kp, precision 0.001?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2",
+      "tolerance": 0.001,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "step-test-tuning"
+      ],
+      "skillLabel": "Step test and tuning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "Kp = 0.2 / (10 * 0.1) = 0.2."
+    },
+    {
+      "id": "q5",
+      "prompt": "Why should the speed loop run from a timer tick rather than from a loop that ends with delay(10)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The real period would include the work time and any blocking calls, so dt in the integral and speed formulas would be wrong.",
+        "delay() cannot be used with analogWrite.",
+        "A timer tick makes the PWM frequency higher.",
+        "delay() disables the encoder counting."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "speed-from-counts"
+      ],
+      "skillLabel": "Speed from encoder counts",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "The formulas assume exactly dt between updates. Work time, Serial prints and jitter make the real period differ, scaling both the speed estimate and the integral gain."
+    },
+    {
+      "id": "q6",
+      "prompt": "Dead zone 40 of 255. Controller output u = 0.6. Signed duty (round to an integer; the answer is positive).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "169",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pwm-mapping"
+      ],
+      "skillLabel": "Signed PWM and dead-zone mapping",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "40 + (255 - 40) * 0.6 = 169."
+    },
+    {
+      "id": "q7",
+      "prompt": "Name four safety gates a motor-speed firmware should have and what each does to the output.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Command timeout or watchdog: forces zero output when no valid command arrives within a few command periods.",
+        "Output clamp (and optionally a ramp): limits u and how fast it may change.",
+        "Stall detection and current limit: high duty with almost no speed, or too much current, zeroes the output and latches a fault.",
+        "Safe boot state and integrator reset: outputs zero at start and when the loop is disabled."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "safety-gates"
+      ],
+      "skillLabel": "Firmware safety gates",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "q8",
+      "prompt": "A step to 10 rad/s peaks at 11.2 rad/s. Overshoot in percent, precision 0.1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12",
+      "tolerance": 0.1,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "step-test-tuning"
+      ],
+      "skillLabel": "Step test and tuning",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW10#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05",
+        "HW08",
+        "C03"
+      ],
+      "explanation": "(11.2 - 10) / 10 = 12 %."
+    }
+  ]
+}

@@ -44,3 +44,22 @@ describe("lesson plan", () => {
     }
   });
 });
+
+describe("project lessons", () => {
+  it("tops up the build session to the declared project effort", async () => {
+    const { projectSessionMinutes, getLocalizedLesson } =
+      await import("../lib/content");
+    const base = { learn: 60, practice: 120, build: 200, review: 20 };
+    expect(projectSessionMinutes(base, 1000).build).toBe(800);
+    expect(projectSessionMinutes(base, 300)).toEqual(base);
+    expect(projectSessionMinutes(base)).toEqual(base);
+    for (const lang of ["en", "vi"] as const) {
+      const cap = getLocalizedLesson("CAP02", lang)!;
+      const total = Object.values(cap.sessionMinutes!).reduce(
+        (n, m) => n + m,
+        0,
+      );
+      expect(total).toBe(cap.meta.project_minutes);
+    }
+  });
+});

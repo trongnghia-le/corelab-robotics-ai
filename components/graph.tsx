@@ -46,6 +46,8 @@ const toneAccent: Record<string, string> = {
   amber: "#fde68a",
   lime: "#bef264",
   red: "#fca5a5",
+  steel: "#cbd5e1",
+  fuchsia: "#f0abfc",
 };
 const columnWidth = 400;
 export function Graph({

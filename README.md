@@ -4,7 +4,7 @@
 
 ### Learn Robotics & AI from first principles — on your own machine.
 
-**169 topics · 169 full lessons · 1,746 worked exercises · 3,133 interactive questions · 169 hands-on labs · 270 curated videos**
+**190 topics · 190 full lessons · 1,981 worked exercises · 3,625 interactive questions · 190 hands-on labs · 309 curated videos · 1 graduation capstone**
 
 [![Node.js 24+](https://img.shields.io/badge/Node.js-24%2B-43853d?logo=node.js&logoColor=white)](package.json)
 [![Next.js](https://img.shields.io/badge/Next.js-App_Router-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -29,12 +29,14 @@ CoreLab is a **free, local-first learning workspace** that takes you from vector
 
 ## ✨ Why CoreLab?
 
-- 🗺️ **A real roadmap, not a playlist.** A 169-topic prerequisite graph covers mathematics, programming, ML, robotics, vision, RL, embodied AI and research methods. It explains why each next step is recommended.
+- 🗺️ **A real roadmap, not a playlist.** A 190-topic prerequisite graph covers mathematics, programming, ML, robotics, hardware and embedded systems, vision, RL, embodied AI and research methods. It explains why each next step is recommended.
 - 📖 **Complete lessons for every topic.** Each one has intuition, derivation, a fully worked example, a reference implementation, failure modes, trade-offs and further reading. Mathematics renders with KaTeX.
 - ✍️ **Practice that builds real skill.** Every lesson has 10–12 graded exercises with worked answers, including problems adapted from well-known textbooks and courses. There are also interactive diagnostics and a targeted practice bank that finds your weak skills.
+- 🔌 **Hardware, not just theory.** A 12-topic Hardware & Embedded track covers sensors, motors and drivers, power and batteries, buses, then Arduino/ESP32 and MicroPython firmware: interrupts, I²C sensors, closed-loop motor control and a serial/micro-ROS link to ROS 2. Every lab runs without buying parts, with optional free [Wokwi](https://wokwi.com) simulator projects.
+- 🎓 **A graduation capstone.** Nine milestones build one robot that uses everything: a simulated mobile manipulator that takes a text command, localises, navigates, finds an object with its camera, grasps it and delivers it, with firmware-in-the-loop, learned skills, a safety supervisor and a reproducible report.
 - 🧪 **Labs you actually run.** Every topic has a hands-on lab with starter code, runnable tests and expected output. You code it yourself, on your own machine.
-- 🎬 **Curated videos for every topic.** There are 270 videos from 3Blue1Brown, MIT OpenCourseWare, Stanford, Steve Brunton, Cyrill Stachniss, CppCon and others. The player loads only when you click: no autoplay, with an original-source link.
-- 🖼️ **160 original diagrams.** Purpose-drawn figures explain the idea: feedback loops, Kalman updates, capture points, PPO clipping, friction cones and more.
+- 🎬 **Curated videos for every topic.** There are 309 videos from 3Blue1Brown, MIT OpenCourseWare, Stanford, Steve Brunton, Cyrill Stachniss, CppCon and others. The player loads only when you click: no autoplay, with an original-source link.
+- 🖼️ **182 original diagrams.** Purpose-drawn figures explain the idea: feedback loops, Kalman updates, capture points, PPO clipping, friction cones and more.
 - 🇻🇳 **English or Vietnamese.** One click switches the whole interface — lessons, exercises, quizzes and practice — between English and Vietnamese. Code and math stay identical.
 - ⏱️ **Honest time plans.** Every lesson is split into four study sessions (Learn, Practice, Build, Review) with realistic time estimates, tick-off progress, and answers that stay hidden until you ask for them.
 - 🔒 **Yours.** Local SQLite, exportable backups, no analytics, no AI API keys. Copying context to an AI tutor is optional and manual, with a preview first.
@@ -111,7 +113,7 @@ The dashboard recommends one next topic and says why, and it counts the topics y
 </td>
 <td width="50%" valign="top">
 
-### A map of 169 connected topics
+### A map of 190 connected topics
 
 Search the map or filter it by domain or status. You can also switch to an interactive graph to see how the prerequisites connect.
 
@@ -189,7 +191,7 @@ The **EN/VI** switch translates the interface and every lesson, exercise and qui
 
 <div align="center">
 
-**160 original teaching diagrams across the curriculum**
+**182 original teaching diagrams across the curriculum**
 
 <img src="docs/images/figure-gallery.png" alt="Gallery of lesson figures: PID loop, Kalman update, capture point, SARSA vs Q-learning, LQR, friction-cone grasp, PPO clipping, C++ encapsulation" width="100%"/>
 
@@ -211,6 +213,15 @@ flowchart LR
     V --> E
     RL --> E
     M --> S[Scientific Research<br/>10 topics]
+    M --> H[Hardware &<br/>Embedded<br/>12 topics]
+    P --> H
+    H --> R
+    R --> CAP[🎓 Capstone<br/>9 milestones]
+    H --> CAP
+    V --> CAP
+    RL --> CAP
+    E --> CAP
+    S --> CAP
 ```
 
 | Domain                         |  Topics | A taste of what's inside                                                                     |
@@ -222,10 +233,32 @@ flowchart LR
 | Computer Vision                |      20 | Camera models, calibration, features, CNNs, detection, tracking, visual odometry & SLAM      |
 | Reinforcement & Robot Learning |      24 | MDPs, TD learning, Q-learning, policy gradients, PPO, offline RL, imitation, sim-to-real     |
 | Embodied & Cognitive Robotics  |      15 | Task & motion planning, world models, diffusion policies, vision-language-action models      |
+| Hardware & Embedded            |      12 | Sensors, motors and drivers, batteries and safety, buses, Arduino/ESP32 firmware, micro-ROS  |
 | Scientific Research            |      10 | Experimental design, reproducibility, ablations, reading and writing papers                  |
-| **Total**                      | **169** | **Every topic has a full lesson, a diagnostic, a practice bank, a lab and video**            |
+| Capstone                       |       9 | One robot, nine milestones: firmware, localisation, navigation, grasping, RL, language, eval |
+| **Total**                      | **190** | **Every topic has a full lesson, a diagnostic, a practice bank, a lab and video**            |
 
 **Beginner path:** `M01 → M02 → PY01 → M03` (notation, vectors, Python, matrices). From there, follow the dashboard. Prerequisites are suggestions, never locks.
+
+**Hardware path:** `HW01 → HW02 → HW06 → HW04 → HW03 → HW05` for the overview, then `HW07 → HW12` for embedded programming. The overview half needs no coding and can run alongside mathematics.
+
+### 🎓 Graduation capstone: CoreBot Tidy
+
+The course ends with one project that uses all ten domains. You build a simulated mobile manipulator in MuJoCo that hears _"put the red block in the blue bin"_, localises, drives to the table, finds the block with its camera, grasps it with an SO-101 arm and drops it in the bin, while a safety supervisor can stop it at any time.
+
+| Milestone | What you build                                                         | Hours |
+| --------- | ---------------------------------------------------------------------- | ----: |
+| CAP01     | Spec, repository, robot and world model                                |    22 |
+| CAP02     | Firmware-in-the-loop base: C speed loop, CRC-8 protocol, odometry      |    28 |
+| CAP03     | State estimation and localisation (EKF, landmarks, camera calibration) |    26 |
+| CAP04     | Mapping, planning and navigation                                       |    26 |
+| CAP05     | Perception-driven grasping                                             |    30 |
+| CAP06     | Learned skills with RL/imitation and domain randomisation              |    32 |
+| CAP07     | Language-conditioned task layer and safety supervisor                  |    26 |
+| CAP08     | Full-system integration, sim-to-real gap and evaluation                |    34 |
+| CAP09     | Demo, technical report, reproducible release and graduation            |    16 |
+
+Each milestone is a lesson whose lab is the milestone brief, with a pytest acceptance file, a rubric and a scoring weight. You graduate when every gate passes, every milestone scores at least 60 and the total reaches 70 (Merit at 80, Distinction at 90 plus a stretch goal). Everything runs in simulation for free; a real ESP32 or SO-101 tier is optional. Download the shared [`evalkit.py`](public/practice/capstone/evalkit.py) and [`make_skeleton.sh`](public/practice/capstone/make_skeleton.sh) to start. Acceptance thresholds are provisional starting values: tighten them once you have your own reference run.
 
 ### Anatomy of a lesson
 
@@ -296,8 +329,9 @@ npm run test:e2e                 # browser tests on an isolated database
 
 ## 🗺️ Status and honest limits
 
-- ✅ All 169 topics have a lesson, exercises with answers, a lab, a diagnostic, a practice bank and curated video.
+- ✅ All 190 topics have a lesson, exercises with answers, a lab, a diagnostic, a practice bank and curated video.
 - ⚠️ **The content was drafted with AI assistance.** It then went through a second, independent AI review pass that re-derived every answer key, recomputed the numbers, re-ran the code and fixed the errors it found. Lab tests were also run, links checked and figures rendered. It has **not** been reviewed by a human expert. Spotted a mistake? Please [open an issue](https://github.com/trongnghia-le/corelab-robotics-ai/issues).
+- ⚠️ **Hardware and capstone caveats.** Arduino/ESP32 sketches were syntax-checked and their logic simulated in Python, but not yet run inside Wokwi or on a board; capstone acceptance thresholds are provisional and were not calibrated against a full reference solution.
 - ⚠️ The app does not run ROS 2, simulators or hardware for you. Some library tracks include optional ROS 2/MuJoCo code to run on your own machine. Automatic verification of your submitted code is limited to a few fixed contracts.
 - 🧭 The browser UI is tested on Linux; CI runs the build and tests on Linux, Windows and macOS.
 

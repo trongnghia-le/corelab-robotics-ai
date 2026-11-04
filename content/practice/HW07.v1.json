@@ -1,0 +1,528 @@
+{
+  "id": "HW07-targeted",
+  "topicId": "HW07",
+  "version": 1,
+  "questions": [
+    {
+      "id": "b1",
+      "prompt": "An Uno runs analogWrite(pin, 191). What duty cycle is that, in percent? Precision 0.1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "74.9",
+      "tolerance": 0.06,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gpio-adc-pwm-math"
+      ],
+      "skillLabel": "ADC, PWM and duty arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "191/255 = 0.749."
+    },
+    {
+      "id": "b2",
+      "prompt": "An Uno ADC (5 V reference, 10 bit) reads 820. What voltage is that, in volts? Precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.004",
+      "tolerance": 0.005,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gpio-adc-pwm-math"
+      ],
+      "skillLabel": "ADC, PWM and duty arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "820 * 5 / 1024 = 4.004 V."
+    },
+    {
+      "id": "b3",
+      "prompt": "An ESP32 12-bit ADC (nominal 3.3 V full scale) reads 1000. What voltage is that, in volts? Precision 0.002.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.806",
+      "tolerance": 0.002,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gpio-adc-pwm-math",
+        "esp32-specifics"
+      ],
+      "skillLabel": "ADC, PWM and duty arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q3"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "1000 * 3.3 / 4096 = 0.806 V (nominal; the real ADC is non-linear)."
+    },
+    {
+      "id": "b4",
+      "prompt": "ESP32 LEDC with an 80 MHz clock at 40 kHz. Maximum duty resolution in bits?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "esp32-specifics"
+      ],
+      "skillLabel": "ESP32 pins, ADC and LEDC",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q5"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "floor(log2(80e6/40e3)) = floor(log2 2000) = 10."
+    },
+    {
+      "id": "b5",
+      "prompt": "What does the Arduino expression map(300, 0, 1023, 0, 255) return? (Integer arithmetic.)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "74",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gpio-adc-pwm-math"
+      ],
+      "skillLabel": "ADC, PWM and duty arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q2"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "300 * 255 / 1023 = 74.78, truncated to 74."
+    },
+    {
+      "id": "b6",
+      "prompt": "A 32-bit millis() clock reads now = 30 after wrapping; last = 4294967290. What is the unsigned difference now - last, in ms?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "36",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "millis-timing"
+      ],
+      "skillLabel": "Non-blocking timing with millis()",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "(30 - 4294967290) mod 2^32 = 30 + 6 = 36."
+    },
+    {
+      "id": "b7",
+      "prompt": "Why do robust sketches write last += period instead of last = now?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It avoids reading millis() twice in one pass.",
+        "The period stays exact; last = now would drift.",
+        "It stops millis() from overflowing after 49 days.",
+        "It makes delay() unnecessary in setup()."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "millis-timing"
+      ],
+      "skillLabel": "Non-blocking timing with millis()",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "Advancing by a whole period keeps the long-run rate exact even when a pass is late; last = now accumulates the lateness."
+    },
+    {
+      "id": "b8",
+      "prompt": "A button is wired between an Arduino pin and ground with pinMode(pin, INPUT_PULLUP). What does digitalRead return while it is pressed?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "HIGH, because pressing connects the pin to the supply.",
+        "An undefined value, because the pin floats.",
+        "It alternates between HIGH and LOW at the PWM rate.",
+        "LOW, because the switch pulls the pin to ground."
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gpio-adc-pwm-math"
+      ],
+      "skillLabel": "GPIO inputs and active-low buttons",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "The pull-up holds the pin HIGH when open; closing the switch connects it to ground: LOW (active low)."
+    },
+    {
+      "id": "b9",
+      "prompt": "An ESP32 sketch reads a sensor on GPIO25 with analogRead. It works until Wi-Fi is started, then returns garbage. Why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "ADC2 is shared with Wi-Fi; use an ADC1 pin.",
+        "The 12-bit ADC cannot read while the CPU is busy.",
+        "Wi-Fi raises the logic level of GPIO25 to 5 V.",
+        "analogRead needs a pull-up resistor once Wi-Fi is on."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "esp32-specifics"
+      ],
+      "skillLabel": "ESP32 pins, ADC and LEDC",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW07#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "GPIO25 is an ADC2 channel; the Wi-Fi driver takes ADC2. Use an ADC1 pin (GPIO32 to 39)."
+    },
+    {
+      "id": "b10",
+      "prompt": "A loop prints a 30-byte line on every pass at 9600 baud and seems stuck at about 30 passes per second. What is the cause and the remedy?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The compiler is slow; turn on optimisation flags in the IDE.",
+        "millis() is blocked by Serial, so call it less often.",
+        "Printing waits for the link; print rarely at 115200.",
+        "The Uno clock halves while the Serial monitor is open."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "serial-debug"
+      ],
+      "skillLabel": "Serial debugging cost",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "30 bytes * 10 bits / 9600 = 31 ms per line, so the buffer fills and print waits. Print rarely and use 115200 baud."
+    },
+    {
+      "id": "b11",
+      "prompt": "Which job is the best fit for MicroPython rather than C++ on an ESP32?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A 20 kHz current-sampling loop.",
+        "A Wi-Fi logger posting once a minute.",
+        "Decoding encoder edges at 50 000 per second.",
+        "A bit-banged protocol with 5 us timing."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "micropython-port"
+      ],
+      "skillLabel": "MicroPython and trade-offs",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade-offs",
+          "href": "/lessons/HW07#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "MicroPython is quick to iterate and fine for slow jobs; GC pauses and speed make it a poor fit for tight timing."
+    },
+    {
+      "id": "b12",
+      "prompt": "On an Uno (16-bit int) the code int x = 200 * 200; runs. What value does x hold?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "-25536",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "integer-sizes"
+      ],
+      "skillLabel": "Integer sizes and overflow",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW07#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "40000 does not fit in 16-bit signed, so it wraps to 40000 - 65536 = -25536."
+    },
+    {
+      "id": "b13",
+      "prompt": "In a three-state hold detector (IDLE, PRESSED, HELD), the button is released after 300 ms of a 1000 ms hold time. What is the next state?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "IDLE, and the hold LED stays off.",
+        "HELD, because the press already started.",
+        "PRESSED, until the 1000 ms is over.",
+        "HELD, but with the LED off."
+      ],
+      "answer": "0",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "state-machine"
+      ],
+      "skillLabel": "Small state machines",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "Released before the hold time: PRESSED goes back to IDLE and the LED never turns on."
+    },
+    {
+      "id": "b14",
+      "prompt": "Which ESP32 pin is the safest choice for a plain LED output?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "GPIO12",
+        "GPIO34",
+        "GPIO6",
+        "GPIO18"
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "esp32-specifics"
+      ],
+      "skillLabel": "ESP32 pins, ADC and LEDC",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW07#failure-modes"
+        }
+      ],
+      "equivalentTo": [
+        "q6"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "GPIO18 is a free general-purpose pin. GPIO12 is a strapping pin, GPIO34 is input only, GPIO6 to 11 connect the flash."
+    },
+    {
+      "id": "b15",
+      "prompt": "A sketch has loop(){ digitalWrite(13,HIGH); delay(500); digitalWrite(13,LOW); delay(500); if(digitalRead(2)==LOW) digitalWrite(12,HIGH); }. Rewrite the logic so the LED blinks and the button is checked on every pass, and state the new worst-case reaction time.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Uses a last-time variable and now - last >= 500 with last += 500 to toggle pin 13, with no delay().",
+        "Reads pin 2 on every pass of loop() (INPUT_PULLUP, pressed = LOW) and writes pin 12 immediately.",
+        "States the worst-case reaction as one loop pass (well under 1 ms) instead of up to 1000 ms."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "millis-timing",
+        "state-machine"
+      ],
+      "skillLabel": "Non-blocking timing with millis()",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW07#worked-example"
+        }
+      ],
+      "equivalentTo": [
+        "q7"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b16",
+      "prompt": "Write a test plan for a millis()-based blink task that proves it survives the 32-bit rollover and keeps its period.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Injects a simulated clock and starts it shortly before 2^32 so the wrap happens during the test.",
+        "Asserts the exact toggle times (one period apart) across the rollover, including exactly one period and one tick short.",
+        "Includes a late-pass case (a skipped tick) to show last += period keeps the long-run rate."
+      ],
+      "knowledgeType": "implementation",
+      "skillTags": [
+        "millis-timing"
+      ],
+      "skillLabel": "Non-blocking timing with millis()",
+      "mistakeCategory": "implementation",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/HW07#verification"
+        }
+      ],
+      "equivalentTo": [
+        "q4"
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "b17",
+      "prompt": "Port a loop that reads a pot and sets an LED brightness from Arduino C++ to MicroPython on an ESP32, and list two trade-offs of the port.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Maps analogRead to ADC(Pin(n)).read_u16() with attenuation set, and analogWrite/LEDC to PWM(Pin(m), freq=...).duty_u16().",
+        "Notes the changed scale (0 to 65535) and uses ticks_ms/ticks_diff for any timing.",
+        "Names trade-offs: slower execution, GC pauses and more RAM, versus faster editing and easier libraries."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "micropython-port"
+      ],
+      "skillLabel": "MicroPython and trade-offs",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW06",
+        "CPP01"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

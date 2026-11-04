@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" font-family="Inter, Arial, sans-serif">
+<title>Four robot buses and three compute tiers</title>
+<desc>Top: UART point to point, I2C with two pull-up resistors and many devices, SPI with one chip-select per device, and CAN differential multi-drop with two 120 ohm terminators, each with wire count and typical speed. Bottom: a spectrum from microcontroller through single-board computer to GPU module, from hard real-time to heavy compute.</desc>
+<rect width="900" height="640" fill="#111827" rx="12"/>
+<text x="24" y="30" font-size="16" fill="#e5e7eb" text-anchor="start" font-weight="bold">Buses: wires, speed, who talks</text>
+<rect x="20" y="44" width="420" height="170" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
+<text x="34" y="68" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">UART: point to point</text>
+<text x="34" y="88" font-size="12" fill="#9ca3af" text-anchor="start">2 signal wires + GND; 115200 baud typical, up to a few Mbit/s</text>
+<rect x="50" y="134" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="82" y="156" font-size="12" fill="#e5e7eb" text-anchor="middle">MCU</text>
+<rect x="346" y="134" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="378" y="156" font-size="12" fill="#e5e7eb" text-anchor="middle">GPS / PC</text>
+<line x1="114" y1="144" x2="346" y2="164" stroke="#a3e635" stroke-width="2"/>
+<line x1="114" y1="164" x2="346" y2="144" stroke="#38bdf8" stroke-width="2"/>
+<text x="230" y="128" font-size="12" fill="#e5e7eb" text-anchor="middle">TX to RX, RX to TX</text>
+<text x="230" y="204" font-size="12" fill="#9ca3af" text-anchor="middle">no clock, no address: both sides agree on the baud rate</text>
+<rect x="460" y="44" width="420" height="170" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<text x="474" y="68" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">I2C: two wires, many devices</text>
+<text x="474" y="88" font-size="12" fill="#9ca3af" text-anchor="start">SDA + SCL (+GND); 100 / 400 kHz, 1 MHz fast-mode plus; 7-bit address</text>
+<line x1="490" y1="114" x2="850" y2="114" stroke="#f97316" stroke-width="2"/>
+<line x1="490" y1="134" x2="850" y2="134" stroke="#f97316" stroke-width="2"/>
+<text x="854" y="118" font-size="11" fill="#f97316" text-anchor="start">Vcc</text>
+<rect x="490" y="98" width="0.1" height="0.1" rx="8" fill="none" stroke="none" stroke-width="0"/>
+<text x="464" y="118" font-size="11" fill="#e5e7eb" text-anchor="start">SDA</text>
+<text x="464" y="138" font-size="11" fill="#e5e7eb" text-anchor="start">SCL</text>
+<rect x="570" y="158" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="602" y="180" font-size="12" fill="#e5e7eb" text-anchor="middle">MCU</text>
+<line x1="592" y1="158" x2="592" y2="114" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="612" y1="158" x2="612" y2="134" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="666" y="158" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="698" y="180" font-size="12" fill="#e5e7eb" text-anchor="middle">IMU 0x68</text>
+<line x1="688" y1="158" x2="688" y2="114" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="708" y1="158" x2="708" y2="134" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="762" y="158" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="794" y="180" font-size="12" fill="#e5e7eb" text-anchor="middle">OLED 0x3C</text>
+<line x1="784" y1="158" x2="784" y2="114" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="804" y1="158" x2="804" y2="134" stroke="#e5e7eb" stroke-width="1"/>
+<text x="670" y="204" font-size="12" fill="#9ca3af" text-anchor="middle">open-drain lines: pull-up resistors to Vcc set the rise time</text>
+<rect x="20" y="224" width="420" height="170" rx="8" fill="#1f2937" stroke="#f97316" stroke-width="2"/>
+<text x="34" y="248" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">SPI: fast, one CS per device</text>
+<text x="34" y="268" font-size="12" fill="#9ca3af" text-anchor="start">SCLK + MOSI + MISO + 1 CS per device; MHz to tens of MHz; short wires</text>
+<rect x="40" y="284" width="64" height="90" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="72" y="334" font-size="12" fill="#e5e7eb" text-anchor="middle">MCU</text>
+<rect x="290" y="286" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="322" y="308" font-size="12" fill="#e5e7eb" text-anchor="middle">IMU</text>
+<rect x="290" y="336" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="322" y="358" font-size="12" fill="#e5e7eb" text-anchor="middle">SD card</text>
+<line x1="104" y1="302" x2="240" y2="302" stroke="#38bdf8" stroke-width="2"/>
+<line x1="240" y1="302" x2="240" y2="352" stroke="#38bdf8" stroke-width="2"/>
+<line x1="240" y1="302" x2="290" y2="302" stroke="#38bdf8" stroke-width="2"/>
+<line x1="240" y1="352" x2="290" y2="352" stroke="#38bdf8" stroke-width="2"/>
+<text x="112" y="296" font-size="11" fill="#e5e7eb" text-anchor="start">SCLK, MOSI, MISO (shared)</text>
+<line x1="104" y1="316" x2="290" y2="316" stroke="#a3e635" stroke-width="2"/>
+<text x="112" y="330" font-size="11" fill="#a3e635" text-anchor="start">CS1</text>
+<line x1="104" y1="366" x2="290" y2="366" stroke="#a3e635" stroke-width="2"/>
+<text x="112" y="362" font-size="11" fill="#a3e635" text-anchor="start">CS2</text>
+<text x="230" y="388" font-size="12" fill="#9ca3af" text-anchor="middle">host picks a device by pulling its CS line low</text>
+<rect x="460" y="224" width="420" height="170" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
+<text x="474" y="248" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">CAN: differential multi-drop</text>
+<text x="474" y="268" font-size="12" fill="#9ca3af" text-anchor="start">CANH + CANL twisted pair; 1 Mbit/s up to about 40 m; message IDs</text>
+<line x1="490" y1="308" x2="850" y2="308" stroke="#38bdf8" stroke-width="2"/>
+<line x1="490" y1="324" x2="850" y2="324" stroke="#a3e635" stroke-width="2"/>
+<text x="464" y="312" font-size="11" fill="#38bdf8" text-anchor="start">H</text>
+<text x="464" y="328" font-size="11" fill="#a3e635" text-anchor="start">L</text>
+<rect x="474" y="302" width="16" height="28" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<rect x="850" y="302" width="16" height="28" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="482" y="348" font-size="10" fill="#9ca3af" text-anchor="middle">120</text>
+<text x="858" y="348" font-size="10" fill="#9ca3af" text-anchor="middle">120</text>
+<rect x="520" y="344" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="552" y="366" font-size="12" fill="#e5e7eb" text-anchor="middle">Motor 1</text>
+<line x1="542" y1="344" x2="542" y2="324" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="562" y1="344" x2="562" y2="308" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="630" y="344" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="662" y="366" font-size="12" fill="#e5e7eb" text-anchor="middle">Motor 2</text>
+<line x1="652" y1="344" x2="652" y2="324" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="672" y1="344" x2="672" y2="308" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="740" y="344" width="64" height="34" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-width="1"/>
+<text x="772" y="366" font-size="12" fill="#e5e7eb" text-anchor="middle">Master</text>
+<line x1="762" y1="344" x2="762" y2="324" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="782" y1="344" x2="782" y2="308" stroke="#e5e7eb" stroke-width="1"/>
+<text x="670" y="390" font-size="12" fill="#9ca3af" text-anchor="middle">8-byte frame about 111 bits; lowest ID wins arbitration</text>
+<text x="24" y="424" font-size="16" fill="#e5e7eb" text-anchor="start" font-weight="bold">Compute tiers: where the loop lives</text>
+<line x1="60" y1="520" x2="840" y2="520" stroke="#e5e7eb" stroke-width="2"/>
+<text x="60" y="548" font-size="12" fill="#9ca3af" text-anchor="start">hard real-time, small, low power</text>
+<text x="840" y="548" font-size="12" fill="#9ca3af" text-anchor="end">best-effort, big, hot</text>
+<rect x="40" y="440" width="260" height="66" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<text x="52" y="462" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">MCU</text>
+<text x="52" y="480" font-size="12" fill="#e5e7eb" text-anchor="start">ATmega328P, ESP32, RP2040, STM32</text>
+<text x="52" y="497" font-size="11" fill="#9ca3af" text-anchor="start">1 kHz motor loop; jitter in us; 0.1-1 W</text>
+<rect x="310" y="440" width="260" height="66" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
+<text x="322" y="462" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">SBC (Linux)</text>
+<text x="322" y="480" font-size="12" fill="#e5e7eb" text-anchor="start">Raspberry Pi</text>
+<text x="322" y="497" font-size="11" fill="#9ca3af" text-anchor="start">ROS 2, camera; jitter in ms; about 3-8 W</text>
+<rect x="580" y="440" width="260" height="66" rx="8" fill="#1f2937" stroke="#f97316" stroke-width="2"/>
+<text x="592" y="462" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">GPU module</text>
+<text x="592" y="480" font-size="12" fill="#e5e7eb" text-anchor="start">Jetson Orin Nano class</text>
+<text x="592" y="497" font-size="11" fill="#9ca3af" text-anchor="start">neural nets; tens of TOPS; 7-25 W</text>
+<text x="24" y="586" font-size="13" fill="#f97316" text-anchor="start">Rule: put the time-critical loop on the MCU, the heavy thinking on the SBC or GPU, and join them with a bus.</text>
+<text x="24" y="608" font-size="12" fill="#9ca3af" text-anchor="start">Wire time: UART byte = 10 bits at 8N1; I2C byte = 9 clocks; CAN data frame = 47 + 8n bits.</text>
+</svg>

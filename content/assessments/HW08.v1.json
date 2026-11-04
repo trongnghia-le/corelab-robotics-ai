@@ -1,0 +1,207 @@
+{
+  "id": "HW08-diagnostic",
+  "topicId": "HW08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "An ISR updates a volatile long count. On an 8-bit AVR, what must loop() do to read it safely?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Nothing: volatile already makes the read atomic.",
+        "Call delay(1) first so the ISR can finish.",
+        "Read it twice and keep the larger value.",
+        "Copy it between noInterrupts() and interrupts()."
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "isr-atomic"
+      ],
+      "skillLabel": "ISR rules and atomic access",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "A 4-byte read takes several instructions and the ISR can run between them; copy it with interrupts disabled."
+    },
+    {
+      "id": "q2",
+      "prompt": "Uno Timer1 in CTC mode, 16 MHz, prescaler 8, target interrupt rate 2 kHz. What OCR1A value?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "999",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "timer-arithmetic"
+      ],
+      "skillLabel": "Timer prescaler and compare arithmetic",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "16e6/(8*2000) - 1 = 999."
+    },
+    {
+      "id": "q3",
+      "prompt": "A quadrature decoder (x4) receives the (A,B) samples 00, 10, 11, 01, 00, 10 with A leading B being forward. What is the net count?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.01,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quad-decode"
+      ],
+      "skillLabel": "Quadrature decoding and edge rates",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Five consecutive forward steps: +5."
+    },
+    {
+      "id": "q4",
+      "prompt": "Why is a 50 ms time-window debounce a poor way to read an encoder?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The window costs too much memory.",
+        "Genuine edges come faster than 50 ms and would be thrown away.",
+        "Encoders never bounce, so debouncing is unnecessary.",
+        "Debouncing is only allowed inside an ISR."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "debounce"
+      ],
+      "skillLabel": "Debouncing",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "At speed the genuine edges are closer together than the window, so real counts would be discarded; a state table cancels bounce without a window."
+    },
+    {
+      "id": "q5",
+      "prompt": "An encoder ISR takes 10 us and fires 25 000 times per second. What fraction of the CPU does it use, in percent?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "25",
+      "tolerance": 0.1,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quad-decode"
+      ],
+      "skillLabel": "Quadrature decoding and edge rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "25 000 * 10e-6 = 0.25 = 25 %."
+    },
+    {
+      "id": "q6",
+      "prompt": "Which statement is acceptable inside an Arduino ISR?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Serial.println(count);",
+        "delay(2);",
+        "count++; on a volatile variable",
+        "String s = String(count);"
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "isr-atomic"
+      ],
+      "skillLabel": "ISR rules and atomic access",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Incrementing a volatile counter is a few instructions. Serial.print, delay and String allocation all block or allocate."
+    },
+    {
+      "id": "q7",
+      "prompt": "Two encoders on an ESP32 each produce 90 000 edges per second. Explain how you would count them reliably and what you must still check.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes the interrupt load (180 000 edges/s times the ISR time) and shows it is too high.",
+        "Uses the hardware pulse counter (PCNT) in quadrature mode, with its glitch filter, and reads it at a modest rate.",
+        "Handles the counter range or overflow and reads atomically, and validates against a known move."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "hw-counter-rtos"
+      ],
+      "skillLabel": "Hardware counters and RTOS",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW07",
+        "HW04"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

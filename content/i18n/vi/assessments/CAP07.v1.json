@@ -1,0 +1,61 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Cảnh có ba khối khác màu. Câu lệnh là \"put the block in the blue bin\". Parser phải trả về gì?",
+   "options": [
+    "Một mục tiêu dùng vật đầu tiên trong danh sách cảnh.",
+    "Một kết quả Clarify liệt kê ba vật ứng viên.",
+    "Unparseable, vì từ \"block\" không có trong từ vựng.",
+    "Một mục tiêu dùng vật gần robot nhất."
+   ],
+   "explanation": "Nhập nhằng được giải quyết bằng cách hỏi, không bao giờ chọn âm thầm."
+  },
+  "q2": {
+   "prompt": "Bộ giám sát an toàn nên chạy ở đâu so với planner?",
+   "options": [
+    "Trong luồng của planner, để chia sẻ dữ liệu không trễ.",
+    "Bên trong behaviour tree như một node ưu tiên cao.",
+    "Trong tiến trình của planner nhưng ở callback timer.",
+    "Trong tiến trình hoặc luồng riêng với đồng hồ riêng, đọc cảm biến và heartbeat, có đường trực tiếp tới watchdog firmware."
+   ],
+   "explanation": "Bộ giám sát phụ thuộc vào thành phần nó giám sát sẽ hỏng khi thành phần đó bị treo."
+  },
+  "q3": {
+   "prompt": "Timeout perception là 0.25 s, tick của supervisor là 10 ms và yêu cầu là 300 ms đến trạng thái an toàn. Còn lại bao nhiêu mili giây biên độ?",
+   "explanation": "300 - 250 - 10 = 40 ms."
+  },
+  "q4": {
+   "prompt": "Người vận hành nhấn e-stop 20 ms rồi nhả. Supervisor phải làm gì sau đó?",
+   "options": [
+    "Tiếp tục chuyển động ngay khi nhả nút.",
+    "Tiếp tục sau 0.5 s không có hazard, như HOLD.",
+    "Ở lại ESTOP và không chuyển tiếp chuyển động nào cho tới khi người vận hành reset tường minh.",
+    "Tự reset khi planner gửi một lệnh mới."
+   ],
+   "explanation": "E-stop tự xóa thì không phải e-stop; chốt chỉ kết thúc bằng reset tường minh."
+  },
+  "q5": {
+   "prompt": "Một robot ở 0.4 m/s, thời gian phản ứng 0.25 s, giảm tốc 0.8 m/s bình phương. Quãng dừng v*tr + v^2/(2a) theo mét.",
+   "explanation": "0.4*0.25 + 0.16/1.6 = 0.1 + 0.1 = 0.2 m."
+  },
+  "q6": {
+   "prompt": "Viết dòng bảng hazard cho \"mất perception\": nguyên nhân, quy tắc phát hiện với ngưỡng bằng số, phản ứng và test tiêm kiểm tra nó. Nói bạn chọn ngưỡng thế nào.",
+   "rubric": [
+    "Nêu nguyên nhân hợp lý (camera treo, driver sập, khung hình cũ).",
+    "Nêu quy tắc phát hiện bằng số (tuổi perception vượt timeout) và phản ứng (HOLD hoặc giữ cánh tay).",
+    "Mô tả test tiêm với giới hạn thời gian đến trạng thái an toàn và biện minh ngưỡng theo tuổi danh định và ngân sách thời gian."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "q7": {
+   "prompt": "Belief về khối đỏ được cập nhật lần cuối cách đây 40 s và có người làm việc gần đó. Lớp tác vụ nên làm gì trước khi nhấc?",
+   "options": [
+    "Chèn một hành động quan sát và lập kế hoạch với phát hiện mới.",
+    "Nhấc ở tư thế đã lưu, vì lập kế hoạch nhanh hơn quan sát.",
+    "Tăng lực gripper để bù.",
+    "Yêu cầu người dùng xác nhận tư thế đã lưu."
+   ],
+   "explanation": "Belief cũ được thay bằng quan sát mới; nếu quan sát thất bại thì hủy kèm lý do."
+  }
+ }
+}

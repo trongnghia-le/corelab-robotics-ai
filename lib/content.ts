@@ -22,6 +22,8 @@ const metaSchema = z.object({
   title: z.string(),
   summary: z.string(),
   estimated_minutes: z.number().positive(),
+  /** Total effort for project lessons (capstone milestones); tops up "build". */
+  project_minutes: z.number().positive().optional(),
   prerequisites: z.array(z.string()),
   source_refs: z.array(z.object({ title: z.string(), url: z.url() })),
   objectives: z.array(z.string()).min(2),
@@ -55,6 +57,20 @@ function headingsOf(body: string) {
 }
 
 /** Lesson in the requested language, falling back to English per lesson. */
+/** Project lessons spend most of their time building: give "build" the rest. */
+export function projectSessionMinutes(
+  minutes: Record<string, number>,
+  projectMinutes?: number,
+) {
+  if (!projectMinutes || !("build" in minutes)) return minutes;
+  const others = Object.entries(minutes)
+    .filter(([key]) => key !== "build")
+    .reduce((n, [, m]) => n + m, 0);
+  return {
+    ...minutes,
+    build: Math.max(minutes.build, projectMinutes - others),
+  };
+}
 export function getLocalizedLesson(
   id: string,
   lang: Lang = "en",
@@ -63,8 +79,11 @@ export function getLocalizedLesson(
   if (!base) return null;
   const lesson: Lesson = {
     ...base,
-    sessionMinutes: Object.fromEntries(
-      lessonSessions(base.body).map((s) => [s.key, s.minutes]),
+    sessionMinutes: projectSessionMinutes(
+      Object.fromEntries(
+        lessonSessions(base.body).map((s) => [s.key, s.minutes]),
+      ),
+      base.meta.project_minutes,
     ),
   };
   if (lang === "en") return lesson;

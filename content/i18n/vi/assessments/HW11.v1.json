@@ -1,0 +1,55 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Vì sao một giao thức nối tiếp nhị phân phải byte-stuff (hoặc mã hóa COBS) dữ liệu sau byte bắt đầu 0x7E?",
+      "options": [
+        "Để nén payload cho frame ngắn hơn trên đường truyền.",
+        "Để mã hóa dữ liệu nhằm các thiết bị khác trên cáp không đọc được.",
+        "Để byte 0x7E trần chỉ xuất hiện ở đầu frame thật, nhờ đó parser đồng bộ lại được sau mọi hỏng hóc.",
+        "Để giá trị CRC8 luôn bằng không."
+      ],
+      "explanation": "Byte đánh dấu không bao giờ được xuất hiện trong dữ liệu. Sau khi stuffing, 0x7E chỉ có nghĩa là 'một frame mới bắt đầu ở đây', nên sau rác hoặc frame bị cắt, parser chỉ cần chờ 0x7E kế tiếp."
+    },
+    "q2": {
+      "prompt": "Một frame có payload 12 byte theo bố cục của bài (SOF, LEN, ID, SEQ, payload, CRC8), không byte nào cần stuffing, gửi ở 200 Hz trên đường 115200 baud 8N1. Tải đường truyền dạng phân số, độ chính xác 0.001.",
+      "explanation": "Frame = 12 + 5 = 17 byte; 17*10*200/115200 = 0.295."
+    },
+    "q3": {
+      "prompt": "CRC-8 với đa thức 0x07, giá trị khởi tạo 0, không đảo bit, trên một byte 0x02. Cho CRC dưới dạng số thập phân.",
+      "explanation": "0x01 cho 0x07; CRC là tuyến tính nên 0x02 cho 0x07 dịch một bit: 0x0E = 14."
+    },
+    "q4": {
+      "prompt": "Hai frame tốt liên tiếp mang số thứ tự 253 rồi 2 (bộ đếm 8 bit). Có bao nhiêu frame đã mất giữa chúng?",
+      "explanation": "(2 - 253 - 1) mod 256 = 4: thiếu các frame 254, 255, 0 và 1."
+    },
+    "q5": {
+      "prompt": "Sự kiện nào nên reset (feed) watchdog lệnh của MCU?",
+      "options": [
+        "Một frame hoàn chỉnh có CRC hợp lệ.",
+        "Bất kỳ byte nào nhận được trên UART, vì có byte nghĩa là cáp đang nối.",
+        "Máy PC mở cổng nối tiếp.",
+        "Dòng điện động cơ giảm xuống dưới giới hạn."
+      ],
+      "explanation": "Chỉ một frame hợp lệ mới chứng minh host còn sống và đang gửi lệnh hợp lý. Feed theo bất kỳ byte nào khiến một dòng rác vẫn giữ động cơ chạy."
+    },
+    "q6": {
+      "prompt": "Client micro-ROS và agent micro-ROS chạy ở đâu, và agent làm gì?",
+      "options": [
+        "Cả hai trên MCU; agent nén các message.",
+        "Client trên PC và agent trên MCU; agent điều khiển động cơ.",
+        "Cả hai trên PC; client mô phỏng MCU để kiểm thử.",
+        "Client trên MCU, agent trên host; agent tạo publisher và subscriber DDS thay cho client để node xuất hiện trong đồ thị ROS 2."
+      ],
+      "explanation": "Các node micro-ROS chạy trên vi điều khiển và nói giao thức XRCE-DDS với một agent trên host; agent nối chúng vào lưu lượng DDS/ROS 2 thông thường."
+    },
+    "q7": {
+      "prompt": "Một robot 2 bánh có Raspberry Pi chạy ROS 2 và một vi điều khiển với hai encoder và hai driver động cơ. Hãy chọn và biện luận một thiết kế đường truyền: transport, các tính năng giao thức, vòng tốc độ chạy ở đâu và chuyện gì xảy ra khi rút cáp.",
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+      "rubric": [
+        "Nêu một transport phù hợp ngân sách (UART hoặc USB CDC ở 115200 đến 250000 baud) và kiểm tra tải đường truyền so với khoảng 50 %.",
+        "Giữ vòng tốc độ nhanh trên MCU và gửi setpoint cùng số đo ở tốc độ vừa phải; nêu serial tùy chỉnh cộng hardware interface ros2_control hoặc micro-ROS làm các lựa chọn.",
+        "Có đóng khung với CRC và số thứ tự, và watchdog trên MCU dừng động cơ khi không có frame hợp lệ."
+      ]
+    }
+  }
+}

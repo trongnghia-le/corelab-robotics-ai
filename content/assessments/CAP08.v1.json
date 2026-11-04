@@ -1,0 +1,247 @@
+{
+  "id": "CAP08-diagnostic",
+  "topicId": "CAP08",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "You tuned thresholds on seeds 0-99 and then report the success rate on seeds 0-99. What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Nothing is wrong, because 100 episodes is already enough for a narrow interval.",
+        "The interval should use a normal approximation instead of Wilson.",
+        "Tuning saw those seeds, so the rate is optimistic; use unseen seeds.",
+        "The seeds are too few; always use at least 10 000 episodes."
+      ],
+      "answer": "2",
+      "explanation": "Tuning absorbs the quirks of the seeds it saw. Only unseen seeds give an unbiased estimate.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "seed-hygiene"
+      ],
+      "skillLabel": "Seed hygiene and leakage",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP08#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "27 successes in 30 episodes. Lower end of the Wilson 95 % interval (give a number between 0 and 1).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.744",
+      "tolerance": 0.004,
+      "explanation": "Wilson lower bound for 27/30 is about 0.744.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wilson-bound"
+      ],
+      "skillLabel": "Success rates with Wilson bounds",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "In a paired McNemar test on the same 30 seeds, which seeds carry the information?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Seeds where exactly one condition succeeded.",
+        "All seeds, each weighted by its episode duration in seconds.",
+        "Only the seeds where both conditions succeeded.",
+        "Only the seeds where both conditions failed."
+      ],
+      "answer": "0",
+      "explanation": "Concordant seeds (both ok or both failed) say nothing about which condition is better; only discordant seeds count.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "paired-test"
+      ],
+      "skillLabel": "Paired comparison of ablations",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "Discordant seeds: nominal won 9, the ablation won 1 (b=9, c=1). Exact two-sided McNemar p-value.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0215",
+      "tolerance": 0.001,
+      "explanation": "p = 2 (1+10)/1024 = 0.0215.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "paired-test"
+      ],
+      "skillLabel": "Paired comparison of ablations",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "40 % of your failed episodes are labelled OTHER. What does that mean for the error budget?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is fine: OTHER is a legitimate root cause, so fix it first and move on.",
+        "Delete those episodes from the log so the rate improves.",
+        "Rename OTHER to NAV_TIMEOUT, the most common cause in practice.",
+        "Taxonomy or logging too thin; replay to split OTHER."
+      ],
+      "answer": "3",
+      "explanation": "A budget that says OTHER cannot direct work; improve the logging or the categories.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "error-budget"
+      ],
+      "skillLabel": "Failure taxonomy and error budget",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP08#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "While recalibrating against the sealed twin you are tempted to open models/corebot_real.xml to read the true wheel radius. Why is that wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The file is stored in a binary format and cannot be parsed by hand anyway.",
+        "It becomes an answer key; the gain says nothing about sim-to-real.",
+        "It breaks MuJoCo determinism for later seeds.",
+        "It is allowed as long as you also run step tests afterwards."
+      ],
+      "answer": "1",
+      "explanation": "On a real robot you can only run experiments. Reading the parameters destroys the point of the twin.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sim2real-gap"
+      ],
+      "skillLabel": "Estimating the sim-to-real gap",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Describe how you would pre-register the four ablations of CAP08 before running them.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States for each ablation a hypothesis with a predicted direction and rough size.",
+        "Fixes seeds, n per ablation and the test (paired exact McNemar) before running.",
+        "Names the correction for multiple comparisons (Holm) and the number of tests.",
+        "Gives one outcome that would cast doubt on the pipeline rather than on the robot."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "experiment-design"
+      ],
+      "skillLabel": "Designing an evaluation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "You expect a success rate near 0.8. About how many episodes give a 95 % half-width of 0.05? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "246",
+      "tolerance": 3,
+      "explanation": "n = 1.96^2 * 0.8 * 0.2 / 0.05^2 = 246.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sample-size"
+      ],
+      "skillLabel": "Planning the number of episodes",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "S09",
+        "RS03",
+        "RS05"
+      ]
+    }
+  ]
+}

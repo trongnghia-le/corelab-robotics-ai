@@ -12,12 +12,14 @@ const domainTones = {
   "Computer Vision": "teal",
   CV: "teal",
   Robotics: "orange",
+  "Hardware & Embedded": "steel",
   Control: "orange",
   Planning: "orange",
   "Reinforcement & Robot Learning": "rose",
   RL: "rose",
   "Embodied & Cognitive Robotics": "red",
   "Scientific Research": "amber",
+  Capstone: "fuchsia",
 } as const;
 
 export function domainTone(domain: string | undefined) {

@@ -1,0 +1,283 @@
+{
+  "id": "CAP02-diagnostic",
+  "topicId": "CAP02",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "The firmware has an 80 ms command watchdog. The host sends no command for 120 ms. What must the firmware do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Keep driving at the last commanded speed, because the wheel loop is closed locally and still stable.",
+        "Force PWM to zero, reset the speed integrator and keep reporting counts until a valid command arrives.",
+        "Ramp the speed down slowly over 500 ms so the robot never stops abruptly, then wait for a command.",
+        "Stop sending state frames so that the host notices the problem, and leave the PWM unchanged."
+      ],
+      "answer": "1",
+      "explanation": "Silence means the host may be hung or the link dead; the only safe output is zero, the integrator is reset so recovery has no stale integral, and reporting counts lets the host see the stop.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "watchdog-failsafe"
+      ],
+      "skillLabel": "Watchdog and fail-safe output",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP02#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "q2",
+      "prompt": "An encoder has 11 pulses per motor revolution (x4 decoding) and a 34:1 gearbox. How many counts per wheel turn?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1496",
+      "tolerance": 0.5,
+      "explanation": "4*11*34 = 1496.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "counts-quantisation"
+      ],
+      "skillLabel": "Counts per turn and speed quantum",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "q3",
+      "prompt": "A uint16_t counter goes from 65530 to 4 and the C code computes `int delta = cur - prev;`. What is wrong?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Nothing: a negative delta correctly shows the wheel turned backwards by 65526 counts, and the controller should use it as the measured speed.",
+        "The counter should be read twice and the smaller value kept, which removes the wrap.",
+        "Both operands are promoted to int, so the result is -65526 instead of +10; cast the difference back to uint16_t first.",
+        "uint16_t cannot hold 65530, so the encoder must be changed to a 32-bit counter."
+      ],
+      "answer": "2",
+      "explanation": "Integer promotion makes the subtraction exact in 32 bits, so the wrap is lost. Casting the difference to uint16_t (then to a signed range) gives +10.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "counter-wrap"
+      ],
+      "skillLabel": "Wrap-safe counter delta",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/CAP02#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "q4",
+      "prompt": "A 14-byte wire frame is sent at 100 Hz over a 115200-baud UART with 8N1 (10 bits per byte). What is the link load in percent?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12.2",
+      "tolerance": 0.3,
+      "explanation": "14*10*100/115200 = 12.2 %.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "link-load"
+      ],
+      "skillLabel": "Serial link load",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "q5",
+      "prompt": "A wheel is blocked for 1 s while the PI loop demands 6 rad/s. After release the wheel races far above 6 rad/s. What is the best fix?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "Stop integrating while the output is saturated (conditional integration) or back-calculate the integrator.",
+        "Lower the proportional gain until the wheel no longer overshoots, because windup comes from Kp.",
+        "Reset the integrator to zero once per second regardless of the state of the output; a fixed timer is simple and robust.",
+        "Raise the sampling rate of the loop from 100 Hz to 1 kHz so the integrator accumulates less."
+      ],
+      "answer": "0",
+      "explanation": "Windup comes from the integral growing while the output cannot respond; limiting integration during saturation removes the stored excess.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "anti-windup"
+      ],
+      "skillLabel": "Integrator anti-windup",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "q6",
+      "prompt": "Which order calibrates the two odometry constants correctly?",
+      "kind": "choice",
+      "dimension": "M",
+      "critical": false,
+      "options": [
+        "Fix the track width first by spinning, then the wheel radius, because heading errors dominate position, as many textbooks do.",
+        "Fit both at once from a single square, since one run contains all the information in both constants.",
+        "Calibrate neither: tune the EKF noise instead, because odometry errors are random, not systematic.",
+        "Drive a measured straight line to fix the wheel radius first, then spin a known angle to fix the track width."
+      ],
+      "answer": "3",
+      "explanation": "A radius error scales every distance, including the arc used for turning; fixing it with a straight line first leaves the spin to isolate the track width.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "odometry-calibration"
+      ],
+      "skillLabel": "Odometry calibration order",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CAP02#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "q7",
+      "prompt": "Which test best supports the claim that the 12-byte frame detects every single-bit error?",
+      "kind": "choice",
+      "dimension": "T",
+      "critical": false,
+      "options": [
+        "Send 10 000 clean frames and check that none is lost, which also proves error detection.",
+        "Compute the CRC of the string 123456789 and compare it with 0xF4, which proves the frame format.",
+        "Flip each of the 96 bits of a valid frame in turn and check that the parser rejects every one.",
+        "Corrupt 5 random bytes per frame in 1000 frames and check that the rejection rate is high."
+      ],
+      "answer": "2",
+      "explanation": "The claim is exhaustive over a small space, so test the whole space; the other tests check different properties.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "frame-crc"
+      ],
+      "skillLabel": "Frame codec tests",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP02#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    },
+    {
+      "id": "q8",
+      "prompt": "Choose a watchdog timeout for a host that sends commands at 100 Hz and a robot that drives at up to 0.5 m/s. Justify it with numbers.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "States a timeout of several host periods (for example 30 to 100 ms) and why one late command must not stop the robot.",
+        "Computes the distance travelled during the timeout (for example 0.5 m/s times 0.08 s = 4 cm) and compares it with a stop budget.",
+        "Mentions the nuisance-stop rate and the 100 ms zero-PWM spec, and states that the integrator is reset when the watchdog fires."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "watchdog-failsafe"
+      ],
+      "skillLabel": "Watchdog timeout design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: verification",
+          "href": "/lessons/CAP02#verification"
+        }
+      ],
+      "relatedPrerequisites": [
+        "CAP01",
+        "HW10",
+        "HW11",
+        "C09",
+        "S06",
+        "CPP08",
+        "S08"
+      ]
+    }
+  ]
+}

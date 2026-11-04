@@ -1,0 +1,71 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Firmware có watchdog lệnh 80 ms. Host không gửi lệnh nào trong 120 ms. Firmware phải làm gì?",
+      "options": [
+        "Tiếp tục chạy ở tốc độ lệnh cuối, vì vòng bánh đóng cục bộ và vẫn ổn định.",
+        "Ép PWM về 0, reset bộ tích phân tốc độ và tiếp tục báo số đếm cho tới khi có lệnh hợp lệ.",
+        "Giảm tốc từ từ trong 500 ms để robot không bao giờ dừng đột ngột, rồi chờ lệnh.",
+        "Ngừng gửi frame trạng thái để host nhận ra vấn đề, và giữ nguyên PWM."
+      ],
+      "explanation": "Im lặng nghĩa là host có thể treo hoặc liên kết đã chết; đầu ra an toàn duy nhất là 0, bộ tích phân được reset để phục hồi không có tích phân cũ, và việc báo số đếm cho host thấy được việc dừng."
+    },
+    "q2": {
+      "prompt": "Một encoder có 11 xung mỗi vòng động cơ (giải mã x4) và hộp số 34:1. Bao nhiêu số đếm mỗi vòng bánh?",
+      "explanation": "4*11*34 = 1496."
+    },
+    "q3": {
+      "prompt": "Một bộ đếm uint16_t đi từ 65530 sang 4 và mã C tính `int delta = cur - prev;`. Sai ở đâu?",
+      "options": [
+        "Không sai: delta âm cho thấy bánh quay ngược 65526 số đếm là đúng, và bộ điều khiển nên dùng nó làm tốc độ đo.",
+        "Nên đọc bộ đếm hai lần và giữ giá trị nhỏ hơn, việc này loại bỏ quay vòng.",
+        "Cả hai toán hạng được thăng cấp lên int, nên kết quả là -65526 thay vì +10; hãy ép hiệu về uint16_t trước.",
+        "uint16_t không chứa được 65530, nên phải đổi encoder sang bộ đếm 32 bit."
+      ],
+      "explanation": "Thăng cấp số nguyên làm phép trừ chính xác trong 32 bit, nên việc quay vòng mất đi. Ép hiệu về uint16_t (rồi sang dải có dấu) cho +10."
+    },
+    "q4": {
+      "prompt": "Một frame 14 byte trên dây gửi ở 100 Hz qua UART 115200 baud 8N1 (10 bit mỗi byte). Tải liên kết là bao nhiêu phần trăm?",
+      "explanation": "14*10*100/115200 = 12.2 %."
+    },
+    "q5": {
+      "prompt": "Một bánh bị chặn 1 s trong khi vòng PI đòi 6 rad/s. Sau khi thả, bánh lao vượt xa 6 rad/s. Cách sửa tốt nhất là gì?",
+      "options": [
+        "Ngừng tích phân khi đầu ra bão hòa (tích phân có điều kiện) hoặc dùng back-calculation cho bộ tích phân.",
+        "Giảm hệ số tỉ lệ cho tới khi bánh không vọt lố, vì windup đến từ Kp.",
+        "Reset bộ tích phân về 0 mỗi giây một lần bất kể trạng thái đầu ra; bộ hẹn giờ cố định thì đơn giản và bền.",
+        "Tăng tần số lấy mẫu của vòng từ 100 Hz lên 1 kHz để bộ tích phân tích lũy ít hơn."
+      ],
+      "explanation": "Windup đến từ tích phân tăng trong khi đầu ra không thể đáp ứng; giới hạn tích phân khi bão hòa loại bỏ phần dư đã tích trữ."
+    },
+    "q6": {
+      "prompt": "Thứ tự nào hiệu chuẩn đúng hai hằng số odometry?",
+      "options": [
+        "Sửa track width trước bằng cách quay, rồi bán kính bánh, vì sai hướng chi phối vị trí, như nhiều giáo trình làm.",
+        "Khớp cả hai cùng lúc từ một hình vuông, vì một lần chạy chứa mọi thông tin của cả hai hằng số.",
+        "Không hiệu chuẩn cái nào: chỉnh nhiễu EKF, vì sai số odometry là ngẫu nhiên, không có hệ thống.",
+        "Chạy một đường thẳng đã đo để sửa bán kính bánh trước, rồi quay một góc đã biết để sửa track width."
+      ],
+      "explanation": "Sai bán kính làm co giãn mọi quãng đường, kể cả cung dùng khi quay; sửa nó bằng đường thẳng trước để lần quay cô lập track width."
+    },
+    "q7": {
+      "prompt": "Bài kiểm thử nào ủng hộ tốt nhất tuyên bố rằng frame 12 byte phát hiện mọi lỗi một bit?",
+      "options": [
+        "Gửi 10 000 frame sạch và kiểm tra không mất frame nào, việc này cũng chứng minh phát hiện lỗi.",
+        "Tính CRC của chuỗi 123456789 và so với 0xF4, việc này chứng minh định dạng frame.",
+        "Lật lần lượt từng bit trong 96 bit của một frame hợp lệ và kiểm tra parser từ chối mọi trường hợp.",
+        "Làm hỏng 5 byte ngẫu nhiên mỗi frame trong 1000 frame và kiểm tra tỉ lệ từ chối cao."
+      ],
+      "explanation": "Tuyên bố là vét cạn trên một không gian nhỏ, nên hãy kiểm thử cả không gian; các bài kiểm thử khác kiểm tra các tính chất khác."
+    },
+    "q8": {
+      "prompt": "Chọn timeout watchdog cho một host gửi lệnh ở 100 Hz và một robot chạy tới 0.5 m/s. Biện minh bằng số liệu.",
+      "rubric": [
+        "Nêu một timeout bằng vài chu kỳ host (ví dụ 30 đến 100 ms) và vì sao một lệnh trễ không được làm robot dừng.",
+        "Tính quãng đường đi trong thời gian timeout (ví dụ 0.5 m/s nhân 0.08 s = 4 cm) và so với ngân sách dừng.",
+        "Nhắc tới tỉ lệ dừng nhầm và đặc tả PWM về 0 trong 100 ms, và nêu rằng bộ tích phân được reset khi watchdog kích hoạt."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

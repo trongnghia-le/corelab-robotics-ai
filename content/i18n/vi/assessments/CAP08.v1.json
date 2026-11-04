@@ -1,0 +1,66 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Bạn chỉnh ngưỡng trên seed 0-99 rồi báo cáo tỉ lệ thành công trên seed 0-99. Sai ở đâu?",
+      "options": [
+        "Không có gì sai, vì 100 episode đã đủ để có một khoảng hẹp.",
+        "Khoảng nên dùng xấp xỉ chuẩn thay vì Wilson.",
+        "Việc chỉnh đã thấy các seed đó nên tỉ lệ lạc quan; dùng seed chưa thấy.",
+        "Seed quá ít; luôn dùng ít nhất 10 000 episode."
+      ],
+      "explanation": "Việc chỉnh hấp thụ đặc điểm của các seed nó đã thấy. Chỉ seed chưa thấy mới cho ước lượng không chệch."
+    },
+    "q2": {
+      "prompt": "27 lần thành công trong 30 episode. Cận dưới của khoảng Wilson 95 % (một số từ 0 đến 1).",
+      "explanation": "Cận dưới Wilson của 27/30 khoảng 0.744."
+    },
+    "q3": {
+      "prompt": "Trong kiểm định McNemar ghép cặp trên cùng 30 seed, những seed nào mang thông tin?",
+      "options": [
+        "Seed mà đúng một điều kiện thành công.",
+        "Mọi seed, mỗi seed có trọng số theo thời lượng episode của nó.",
+        "Chỉ các seed mà cả hai điều kiện đều thành công.",
+        "Chỉ các seed mà cả hai điều kiện đều thất bại."
+      ],
+      "explanation": "Các seed đồng nhất (cùng ok hoặc cùng fail) không nói điều kiện nào tốt hơn; chỉ seed bất đồng mới tính."
+    },
+    "q4": {
+      "prompt": "Seed bất đồng: nominal thắng 9, ablation thắng 1 (b=9, c=1). p-value McNemar chính xác hai phía.",
+      "explanation": "p = 2 (1+10)/1024 = 0.0215."
+    },
+    "q5": {
+      "prompt": "40 % episode thất bại của bạn được gắn nhãn OTHER. Điều đó nghĩa là gì với ngân sách lỗi?",
+      "options": [
+        "Ổn: OTHER là một nguyên nhân hợp lệ nên cứ sửa nó trước rồi đi tiếp.",
+        "Xóa các episode đó khỏi log để tỉ lệ tốt lên.",
+        "Đổi tên OTHER thành NAV_TIMEOUT, nguyên nhân phổ biến nhất trong thực tế.",
+        "Phân loại hoặc log quá sơ sài; phát lại để tách OTHER."
+      ],
+      "explanation": "Một ngân sách chỉ ghi OTHER không chỉ đường được; hãy cải thiện log hoặc danh mục."
+    },
+    "q6": {
+      "prompt": "Khi hiệu chỉnh lại với twin được niêm phong, bạn muốn mở models/corebot_real.xml để đọc bán kính bánh thật. Vì sao sai?",
+      "options": [
+        "File được lưu ở dạng nhị phân nên dù sao cũng không thể phân tích bằng tay.",
+        "Nó thành đọc đáp án; mức cải thiện không nói gì về sim-to-real.",
+        "Nó làm hỏng tính xác định của MuJoCo cho các seed sau.",
+        "Được phép miễn là sau đó bạn vẫn chạy các step test."
+      ],
+      "explanation": "Trên robot thật bạn chỉ có thể chạy thí nghiệm. Đọc tham số phá hỏng mục đích của twin."
+    },
+    "q7": {
+      "prompt": "Mô tả cách bạn đăng ký trước (pre-register) bốn ablation của CAP08 trước khi chạy.",
+      "rubric": [
+        "Với mỗi ablation nêu giả thuyết có hướng và độ lớn dự đoán.",
+        "Cố định seed, n mỗi ablation và phép kiểm định (McNemar chính xác ghép cặp) trước khi chạy.",
+        "Nêu cách hiệu chỉnh so sánh bội (Holm) và số phép kiểm định.",
+        "Đưa ra một kết quả khiến bạn nghi ngờ pipeline chứ không phải robot."
+      ],
+      "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    },
+    "q8": {
+      "prompt": "Bạn kỳ vọng tỉ lệ thành công gần 0.8. Cần khoảng bao nhiêu episode để nửa độ rộng khoảng 95 % là 0.05? (số nguyên)",
+      "explanation": "n = 1.96^2 * 0.8 * 0.2 / 0.05^2 = 246."
+    }
+  }
+}

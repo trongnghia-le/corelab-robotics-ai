@@ -1,0 +1,55 @@
+{
+  "questions": {
+    "q1": {
+      "prompt": "Một loop() kết thúc bằng delay(500) và cũng thăm dò một nút bấm. Các cú chạm ngắn vào nút thường bị bỏ qua. Cách sửa tốt nhất là gì?",
+      "options": [
+        "Hạ baud rate của Serial để việc in tốn ít thời gian hơn.",
+        "Tăng delay để vòng lặp chạy ít thường xuyên hơn.",
+        "Bỏ delay() và chỉ hành động khi now - last >= period.",
+        "Thay nút bằng một linh kiện công tắc nhanh hơn."
+      ],
+      "explanation": "Nút chỉ được đọc một lần mỗi chu kỳ delay, nên một cú chạm ngắn hơn delay thường bị bỏ lỡ. Lập lịch bằng millis() cho vòng lặp chạy hàng trăm lượt mỗi giây."
+    },
+    "q2": {
+      "prompt": "Một Uno chạy analogWrite(pin, 64). Đó là duty cycle bao nhiêu phần trăm? Độ chính xác 0.1.",
+      "explanation": "64/255 = 0,251."
+    },
+    "q3": {
+      "prompt": "ADC của Uno (tham chiếu 5 V, 10 bit) đọc 307. Điện áp vào là bao nhiêu volt? Độ chính xác 0.005.",
+      "explanation": "307 * 5 / 1024 = 1,499 V."
+    },
+    "q4": {
+      "prompt": "Phép thử nào an toàn khi millis() tràn 32 bit?",
+      "options": [
+        "now >= last + period",
+        "now - last >= period, tất cả là unsigned long",
+        "now > last && now - last >= period",
+        "(int)now >= (int)last + (int)period"
+      ],
+      "explanation": "Phép trừ không dấu theo modulo 2^32, nên now - last vẫn đúng sau khi now quay qua 0."
+    },
+    "q5": {
+      "prompt": "LEDC của ESP32 chạy từ xung nhịp 80 MHz. Độ phân giải duty tối đa tính bằng bit ở 10 kHz là bao nhiêu?",
+      "explanation": "floor(log2(80e6/10e3)) = floor(log2 8000) = 12."
+    },
+    "q6": {
+      "prompt": "Một cảm biến xuất logic 5 V. Nó nên nối vào chân vào ESP32 thế nào?",
+      "options": [
+        "Nối thẳng: chân ESP32 chịu được 5 V.",
+        "Nối thẳng: pull-up trong sẽ giới hạn dòng.",
+        "Qua một chân ADC2, vốn bảo vệ đầu vào.",
+        "Qua cầu phân áp hoặc mạch dịch mức xuống 3,3 V."
+      ],
+      "explanation": "Chân ESP32 là 3,3 V và không chịu được 5 V, nên cần cầu phân áp hoặc mạch dịch mức."
+    },
+    "q7": {
+      "prompt": "Một sketch nháy LED bằng delay(500) và kiểm tra nút một lần mỗi lượt vòng lặp. Mô tả cách cấu trúc lại để cả hai phản ứng kịp thời, và nêu một cạm bẫy cần tránh.",
+      "rubric": [
+        "Bỏ delay() và gọi cả hai việc ở mọi lượt của loop().",
+        "Giữ một biến thời điểm cuối cho mỗi việc và kiểm tra now - last >= period, rồi tiến last đúng một chu kỳ.",
+        "Nêu một cạm bẫy: tràn khi so sánh có dấu hay cộng trước, delay ẩn hoặc lệnh in dài, hay tràn int."
+      ],
+      "explanation": "Có rubric hướng dẫn: hãy so câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+    }
+  }
+}

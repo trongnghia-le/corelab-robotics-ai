@@ -104,7 +104,9 @@ export function Practice() {
                     {p.topicId}
                   </Link>
                   <span className="muted small">
-                    {lang === "vi" ? practiceVi[p.id].kind : p.kind}
+                    {lang === "vi"
+                      ? (practiceVi[p.id]?.kind ?? p.kind)
+                      : p.kind}
                   </span>
                 </div>
                 <span className={`status ${p.verified ? "verified" : ""}`}>
@@ -113,8 +115,12 @@ export function Practice() {
                     : tx("Practice · self-reported", "Luyện tập · tự báo cáo")}
                 </span>
               </div>
-              <h2>{lang === "vi" ? practiceVi[p.id].title : p.title}</h2>
-              <p>{lang === "vi" ? practiceVi[p.id].task : p.task}</p>
+              <h2>
+                {lang === "vi" ? (practiceVi[p.id]?.title ?? p.title) : p.title}
+              </h2>
+              <p>
+                {lang === "vi" ? (practiceVi[p.id]?.task ?? p.task) : p.task}
+              </p>
               <TopicChips ids={topicMap[p.topicId].prerequisites} />
               <CodeBlock code={p.command} language="bash" />
               <div className="topic-actions">
