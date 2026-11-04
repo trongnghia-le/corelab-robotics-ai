@@ -12,7 +12,7 @@ const domainTones = {
   "Computer Vision": "teal",
   CV: "teal",
   Robotics: "orange",
-  "Hardware & Embedded": "steel",
+  "Hardware & Embedded": "green",
   Control: "orange",
   Planning: "orange",
   "Reinforcement & Robot Learning": "rose",
