@@ -105,7 +105,10 @@ describe("desk storage and runner", () => {
         '#include <stdexcept>\nint main(){ throw std::logic_error("todo"); }\n',
       );
       const abort = await desk.runDeskFile("CPP01", "abort.cpp");
-      expect(abort.signal).toBe("SIGABRT");
+      // POSIX reports the abort as a signal; Windows has no signals and
+      // ends the process with a non-zero exit code instead.
+      if (process.platform === "win32") expect(abort.exitCode).not.toBe(0);
+      else expect(abort.signal).toBe("SIGABRT");
       const bad = await desk.runDeskFile("CPP01", "bad.cpp");
       expect(bad.exitCode).not.toBe(0);
       expect(bad.stderr).toMatch(/error/);

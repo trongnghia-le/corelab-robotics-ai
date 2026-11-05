@@ -5415,3 +5415,100 @@ html:has(.media-navigation) {
     display: none;
   }
 }
+
+/* Desk notes: layout switch, formula palette and split editor/preview. */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.segmented button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.segmented button.selected {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.math-toolbar {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-1);
+}
+.math-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.math-groups button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 10px;
+  font-size: 0.8125rem;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.math-groups button.selected {
+  color: var(--text);
+  border-bottom-color: var(--primary);
+}
+.math-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px;
+  max-height: 168px;
+  overflow-y: auto;
+}
+.math-item {
+  min-width: 40px;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+.math-item:hover,
+.math-item:focus-visible {
+  border-color: var(--primary);
+}
+.math-items.is-lesson .math-item {
+  flex: 1 1 100%;
+  text-align: left;
+  overflow-x: auto;
+}
+.desk-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.desk-split .desk-textarea,
+.desk-split .desk-preview {
+  min-height: 34vh;
+}
+@media (min-width: 1100px) {
+  .desk-split {
+    grid-template-columns: 1fr 1fr;
+  }
+  .desk-split .desk-textarea,
+  .desk-split .desk-preview {
+    min-height: 62vh;
+  }
+}
+.desk-preview .katex-error {
+  color: var(--danger);
+}

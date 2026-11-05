@@ -17,6 +17,9 @@ import {
   Square,
   Trash2,
   Download,
+  Sigma,
+  SquarePlus,
+  LayoutTemplate,
 } from "lucide-react";
 import { topics, topicMap } from "@/lib/curriculum";
 import { useI18n } from "@/lib/i18n";
@@ -26,6 +29,8 @@ import { useTopic } from "./topic";
 import { lastTopic, onTopic } from "@/lib/desk-channel";
 import { deskExercises, labFiles } from "@/lib/desk-parse";
 import { langFor } from "./code-editor";
+import { MathToolbar } from "./math-toolbar";
+import { insertSnippet, noteTemplates } from "@/lib/math-snippets";
 import type { TopicPayload } from "@/lib/types";
 
 const CodeEditor = dynamic(
@@ -244,7 +249,11 @@ function DeskTopic({
         </span>
       </div>
       {tab === "notes" && (
-        <NotesTab value={read(NOTES)} onChange={(v) => update(NOTES, v)} />
+        <NotesTab
+          value={read(NOTES)}
+          onChange={(v) => update(NOTES, v)}
+          lessonBody={lesson?.body}
+        />
       )}
       {tab === "exercises" &&
         (lesson ? (
@@ -289,46 +298,120 @@ function DeskTopic({
 function NotesTab({
   value,
   onChange,
+  lessonBody,
 }: {
   value: string;
   onChange: (v: string) => void;
+  lessonBody?: string;
 }) {
-  const { tx } = useI18n();
-  const [preview, setPreview] = useState(false);
+  const { tx, lang } = useI18n();
+  const [mode, setMode] = useState<"write" | "split" | "preview">("split");
+  const [math, setMath] = useState(true);
+  const area = useRef<HTMLTextAreaElement>(null);
+  // Insert at the cursor, wrapping in $…$ / $$…$$ when outside math.
+  const insert = (snippet: { tex: string; block?: boolean; raw?: boolean }) => {
+    const el = area.current;
+    const start = el?.selectionStart ?? value.length;
+    const end = el?.selectionEnd ?? value.length;
+    const next = insertSnippet(value, start, end, snippet);
+    onChange(next.text);
+    requestAnimationFrame(() => {
+      el?.focus();
+      el?.setSelectionRange(next.caret, next.caret);
+    });
+  };
+  const template = (kind: keyof typeof noteTemplates) =>
+    insert({
+      tex: noteTemplates[kind][lang === "vi" ? "vi" : "en"],
+      raw: true,
+    });
+  const editor = (
+    <textarea
+      ref={area}
+      className="desk-textarea"
+      aria-label={tx("Notes", "Ghi chú")}
+      value={value}
+      spellCheck={false}
+      placeholder={tx(
+        "Write what you understood. Formulas: $E = mc^2$ inline, or $$ … $$ on their own lines. Ctrl+M inserts inline math, Ctrl+Shift+M a display block.",
+        "Ghi lại điều bạn hiểu. Công thức: $E = mc^2$ trong dòng, hoặc $$ … $$ riêng một dòng. Ctrl+M chèn công thức trong dòng, Ctrl+Shift+M chèn khối công thức.",
+      )}
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={(e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "m") {
+          e.preventDefault();
+          insert(e.shiftKey ? { tex: "▮", block: true } : { tex: "▮" });
+        }
+      }}
+    />
+  );
+  const preview = (
+    <div className="desk-preview" aria-label={tx("Preview", "Xem trước")}>
+      <LessonMarkdown body={value || "_…_"} />
+    </div>
+  );
   return (
     <div className="desk-notes">
       <div className="desk-toolbar">
+        <div
+          className="segmented"
+          role="group"
+          aria-label={tx("Layout", "Bố cục")}
+        >
+          {(
+            [
+              ["write", tx("Write", "Viết")],
+              ["split", tx("Split", "Chia đôi")],
+              ["preview", tx("Preview", "Xem")],
+            ] as const
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              aria-pressed={mode === key}
+              className={mode === key ? "selected" : ""}
+              onClick={() => setMode(key)}
+            >
+              {key === "preview" && <Eye size={14} />} {label}
+            </button>
+          ))}
+        </div>
         <button
           type="button"
           className="button secondary"
-          aria-pressed={preview}
-          onClick={() => setPreview((p) => !p)}
+          aria-pressed={math}
+          onClick={() => setMath((m) => !m)}
         >
-          <Eye size={15} />{" "}
-          {preview ? tx("Edit", "Sửa") : tx("Preview", "Xem trước")}
+          <Sigma size={15} /> {tx("Formulas", "Công thức")}
         </button>
-        <span className="muted small">
-          {tx(
-            "Markdown and $math$ are supported.",
-            "Hỗ trợ Markdown và công thức $math$.",
-          )}
-        </span>
+        <button
+          type="button"
+          className="button secondary"
+          onClick={() => template("formula")}
+        >
+          <SquarePlus size={15} /> {tx("Formula card", "Thẻ công thức")}
+        </button>
+        {!value.trim() && (
+          <button
+            type="button"
+            className="button secondary"
+            onClick={() => template("lesson")}
+          >
+            <LayoutTemplate size={15} />{" "}
+            {tx("Lesson template", "Mẫu ghi chú bài")}
+          </button>
+        )}
       </div>
-      {preview ? (
-        <div className="desk-preview">
-          <LessonMarkdown body={value || "_…_"} />
+      {math && mode !== "preview" && (
+        <MathToolbar lessonBody={lessonBody} onInsert={insert} />
+      )}
+      {mode === "write" && editor}
+      {mode === "preview" && preview}
+      {mode === "split" && (
+        <div className="desk-split">
+          {editor}
+          {preview}
         </div>
-      ) : (
-        <textarea
-          className="desk-textarea"
-          aria-label={tx("Notes", "Ghi chú")}
-          value={value}
-          placeholder={tx(
-            "Write what you understood, questions, formulas…",
-            "Ghi lại điều bạn hiểu, câu hỏi, công thức…",
-          )}
-          onChange={(e) => onChange(e.target.value)}
-        />
       )}
     </div>
   );

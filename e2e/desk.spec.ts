@@ -22,6 +22,20 @@ test("study desk keeps notes, exercise answers and runs code", async ({
     "dot = |u||v| cos θ",
   );
 
+  // Formula palette inserts LaTeX at the cursor; the split view renders it.
+  const notes = page.getByLabel("Notes", { exact: true });
+  await notes.fill("Kalman: ");
+  await notes.press("End");
+  await page.getByRole("tab", { name: "Linear algebra" }).click();
+  await page.getByRole("button", { name: "transpose", exact: true }).click();
+  await expect(notes).toHaveValue("Kalman: $^{\\top}$");
+  await notes.press("End");
+  await page.getByRole("tab", { name: "From this lesson" }).click();
+  await page.locator(".math-items.is-lesson .math-item").first().click();
+  await expect(notes).toHaveValue(/^Kalman: \$\^\{\\top\}\$ \$.+=.+\$$/);
+  await expect(page.locator(".desk-preview .katex").first()).toBeVisible();
+  await expect(page.locator(".desk-preview .katex-error")).toHaveCount(0);
+
   // Exercises: answers are hidden until asked for, working is saved.
   await page.getByRole("tab", { name: "Exercises" }).click();
   await expect(page.locator(".desk-exercises li").first()).toBeVisible();
