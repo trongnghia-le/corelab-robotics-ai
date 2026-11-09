@@ -134,9 +134,29 @@ With no landmark in view, the pose is only predicted: position and heading error
 
 All numbers are **illustrative**, from a small stand-alone simulation (unicycle on a 60 s figure-eight, odometry with 1.5 % scale error and 2 % turn-rate scale error, gyro bias 0.01 rad/s, eight wall markers), not from a run of your repository.
 
-**One update by hand.** Prior $\hat{\mathbf x}=(1.0,\,0.5,\,0.3,\,0)$, $P=\operatorname{diag}(0.0025,\,0.0025,\,0.0009,\,0.0004)$ (std 5 cm, 5 cm, 1.7 degrees, 0.02 rad/s). Marker at $(1.9,\,1.0)$: $\Delta_x=0.9$, $\Delta_y=0.5$, $q=1.06$, $r=1.0296$ m, predicted bearing $\operatorname{atan2}(0.5,0.9)-0.3=0.2071$ rad. Jacobian rows: $[-0.874,\,-0.486,\,0,\,0]$ and $[0.472,\,-0.849,\,-1,\,0]$. With $R=\operatorname{diag}(0.03^2,0.012^2)$: $S\approx\operatorname{diag}(0.0034,\,0.0034)$. The detection says range 1.09 m, bearing 0.25 rad: $\nu=(0.0604,\,0.0429)$, $d^2=1.62<9.21$, so it is accepted (and 1.62 is a plausible draw from $\chi^2_2$, mean 2). The correction is $K\nu=(-0.024,\,-0.048,\,-0.011,\,0)$: the marker is farther than predicted, so the robot moves away from it. Posterior $\hat{\mathbf x}=(0.976,\,0.452,\,0.289,\,0)$; standard deviations fall from (5.0, 5.0 cm, 1.7 deg) to (2.6, 2.7 cm, 1.5 deg); the bias entry is unchanged because this prior had no correlation with it.
+### One EKF update, five audited runs, an outlier test and a calibration
 
-**Five 60 s trajectories** (seeds 1000 to 1004), after tuning ($q_v=0.08$, $q_w=0.02$, $q_b=2\times10^{-4}$ in the code of this lesson):
+**Problem.** The state is $\hat{\mathbf x}=(x,y,\theta,b)=(1.0,\,0.5,\,0.3,\,0)$ with $P=\operatorname{diag}(0.0025,\,0.0025,\,0.0009,\,0.0004)$ (std 5 cm, 5 cm, 1.7 degrees, 0.02 rad/s). A marker at $(1.9,\,1.0)$ is detected at range 1.09 m and bearing 0.25 rad, with $R=\operatorname{diag}(0.03^2,0.012^2)$ and a 99 % gate.
+
+- (a) Perform the update by hand: predicted measurement, Jacobian, $S$, innovation $\nu$, gate on $d^2$, gain, posterior mean and standard deviations.
+- (b) Show that the five audited 60 s runs below meet the accuracy limits (position RMSE 5 cm, heading RMSE 2 degrees, final error at least 3 times smaller than dead reckoning) and the consistency band, and explain why the first tuning ($q_v=0.05$, $q_w=0.01$) had to be rejected although its RMSE was similar.
+- (c) With 10 % of the detections of seed 1000 replaced by wrong-ID, wrong-pose ones (771 attempts, 61 gated, position RMSE 5.4 cm against 4.1 cm clean, limit +50 %), estimate how many outliers were caught and how many passed.
+- (d) Check a calibration: 24 views, RMS 0.31 px, $f_x=581.2$ px, for a 640 by 480 camera with fovy 45 degrees.
+
+**Solution.**
+
+1. *Predicted measurement.* $\Delta_x=1.9-1.0=0.9$, $\Delta_y=1.0-0.5=0.5$, $q=\Delta_x^2+\Delta_y^2=0.81+0.25=1.06$, $r=\sqrt{1.06}=1.0296$ m. Predicted bearing $\operatorname{atan2}(0.5,0.9)-\theta=0.5071-0.3=0.2071$ rad.
+2. *Jacobian.* Differentiating $r$ and the bearing with respect to $(x,y,\theta,b)$ gives rows $[-\Delta_x/r,\,-\Delta_y/r,\,0,\,0]=[-0.874,\,-0.486,\,0,\,0]$ and $[\Delta_y/q,\,-\Delta_x/q,\,-1,\,0]=[0.472,\,-0.849,\,-1,\,0]$.
+3. *Innovation covariance* $S=HPH^\top+R$. Range: $(0.874^2+0.486^2)\cdot0.0025+0.03^2=0.0025+0.0009=0.0034$. Bearing: $(0.472^2+0.849^2)\cdot0.0025+0.0009\cdot1+0.012^2=0.00236+0.0009+0.000144=0.0034$. The off-diagonal term is $(-0.874)(0.472)\cdot0.0025+(-0.486)(-0.849)\cdot0.0025=0$, so $S\approx\operatorname{diag}(0.0034,\,0.0034)$.
+4. *Innovation.* $\nu=(1.09-1.0296,\;0.25-0.2071)=(0.0604,\,0.0429)$.
+5. *Gate.* $d^2=\nu^\top S^{-1}\nu=0.0604^2/0.0034+0.0429^2/0.0034=1.07+0.54=1.62$. The 99 % threshold of $\chi^2_2$ is $-2\ln0.01=9.21$, and $1.62<9.21$, so the detection is accepted (1.62 is also a plausible draw from $\chi^2_2$, whose mean is 2).
+6. *Gain and correction.* $K=PH^\top S^{-1}$ has rows $(-0.643,\,0.347)$, $(-0.357,\,-0.624)$, $(0,\,-0.265)$, $(0,\,0)$. Then $K\nu=(-0.643\cdot0.0604+0.347\cdot0.0429,\;\dots)=(-0.024,\,-0.048,\,-0.011,\,0)$. The marker is farther than predicted (range innovation positive), so the robot moves away from it.
+7. *Posterior.* $\hat{\mathbf x}=(1.0-0.024,\;0.5-0.048,\;0.3-0.011,\;0)=(0.976,\,0.452,\,0.289,\,0)$. From $(I-KH)P$ the standard deviations are 2.6 cm, 2.7 cm and $1.47^\circ$ (from 5.0, 5.0 cm and $1.72^\circ$). The bias row of $K$ is zero because this prior has no correlation between $b$ and the other states, so $b$ and its variance are unchanged.
+8. *Audit of the five runs.* In the table below position RMSE is 2.7 to 4.7 cm (all $\le5$ cm) and heading RMSE 0.29 to 1.07 degrees (all $\le2$). The final-error ratio to dead reckoning is $30.6/1.0=30.6$, $24.0/0.2=120$, $27.8/0.4=69.5$, $29.0/0.2=145$ and $21.9/0.2=109.5$: all far above 3. Consistency: NEES is a $\chi^2_3$ variable (3 degrees of freedom, expected mean 3) and NIS a $\chi^2_2$ variable (expected mean 2). The mean NEES is 3.17 to 4.74 (below the 2x slack limit 6) and the mean NIS 1.78 to 1.86 (close to 2); the fraction of NEES samples inside the 95 % interval is 0.903 to 0.980.
+9. *Why the first tuning fails.* With $q_v=0.05$, $q_w=0.01$ the RMSE is similar, but the mean NEES is 5 to 10, up to more than three times its expectation of 3, and only 43 % to 87 % of the samples fall inside the interval (a consistent filter gives about 95 %): the filter is accurate but overconfident ($Q$ too small, so $P$ is too small), which is what the audit exists to catch. Raising to $q_v=0.08$, $q_w=0.02$, $q_b=2\times10^{-4}$ brings every run back into the band.
+10. *Gate rate.* On seed 1000, 8 of 771 attempts were gated: $8/771=1.04\ \%$, while a 99 % gate rejects $0.01\cdot771=7.7$ good detections on average. The match with the expectation is exact to within one count.
+11. *Outliers.* Injected: $0.10\cdot771\approx77$. Gated: 61, of which about 8 are good detections (the same 1 % rate), so caught outliers $\approx61-8=53$ and passing outliers $\approx77-53=24$. Those 24 look plausible enough to pass the gate, which is why the position RMSE rises at all: $5.4/4.1=1.32$, i.e. about $+31\ \%$ (the rounded values allow 29 % to 35 %), inside the +50 % limit.
+12. *Calibration.* $f=240/\tan22.5^\circ=579.4$ px for the true camera. The estimate 581.2 px differs by $1.8$ px, $1.8/579.4=0.3\ \%$. The RMS reprojection error of 0.31 px is well under 1 px, and the principal point is off by 0.6 px and 0.9 px.
 
 | seed | pos RMSE (cm) | heading RMSE (deg) | final error (cm) | dead-reckoning final error (cm) | NEES inside 95 % | mean NEES | mean NIS | gated |
 |---|---|---|---|---|---|---|---|---|
@@ -146,11 +166,11 @@ All numbers are **illustrative**, from a small stand-alone simulation (unicycle 
 | 1003 | 4.7 | 1.07 | 0.2 | 29.0 | 0.980 | 4.15 | 1.86 | 8 |
 | 1004 | 2.9 | 0.48 | 0.2 | 21.9 | 0.963 | 3.17 | 1.78 | 8 |
 
-All five pass the accuracy limits (5 cm, 2 degrees, final error at least 3 times smaller than dead reckoning) and the consistency band. The first tuning ($q_v=0.05$, $q_w=0.01$) had **similar RMSE but mean NEES 5 to 10 and only 43 % to 87 % of samples inside the interval**: accurate yet overconfident, exactly what the audit exists to catch. Of 771 detection attempts on seed 1000, 8 were gated (1 % of 771 is 7.7: right on expectation for a gate at 99 %).
+(Seeds 1000 to 1004, after tuning $q_v=0.08$, $q_w=0.02$, $q_b=2\times10^{-4}$ in the code of this lesson.)
 
-**Outliers.** Replacing 10 % of detections with wrong-ID, wrong-pose ones (seed 1000): 61 gated, position RMSE 5.4 cm against 4.1 cm clean (+31 %, limit +50 %). About 77 outliers were injected; about 8 of the 61 gated detections are good ones, so roughly 53 outliers were caught and about 24 looked plausible enough to pass the gate, which is why the error rises at all.
+**Check.** (a) Units: $\nu$ is in m and rad, $S$ in m$^2$ and rad$^2$, so $d^2$ is dimensionless. A second method, matrix products with $K=PH^\top S^{-1}$, $x^+=x+K\nu$ and $P^+=(I-KH)P$, gives $(0.9760,\,0.4517,\,0.2887,\,0)$ and standard deviations $(2.62\ \text{cm},\,2.72\ \text{cm},\,1.47^\circ,\,0.02\ \text{rad/s})$, as above. (b) The mean NEES and NIS of every row sit within the lesson's alarm (mean NEES below $2\cdot3=6$), and the same run-by-run numbers can be reproduced with `evalkit.nees_consistency` from CAP01. (c) The bookkeeping closes: $53$ caught $+\,24$ passed $=77$ injected, and $53+8=61$ gated. (d) $240/\tan22.5^\circ=579.41$ px reproduces the true focal length, so the $0.3\ \%$ error of the estimate is a real calibration residual, not a convention error.
 
-**Calibration** (illustrative): 24 views, RMS 0.31 px, $f_x=581.2$ against the true 579.4 (0.3 %), principal point off by 0.6 px and 0.9 px. For a 640 by 480 camera with fovy 45 degrees: $f=240/\tan22.5^\circ=579.4$ px.
+**Takeaway.** One EKF update is a chain of small, checkable products (Jacobian, $S$, $K$); accuracy alone is not enough, since the NEES/NIS audit exposes an overconfident filter that RMSE hides, and the gate trades a known 1 % of good detections for protection against the outliers.
 
 ## Exercises
 

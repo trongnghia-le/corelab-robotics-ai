@@ -70,9 +70,29 @@ Khi không có landmark nào trong tầm nhìn, tư thế chỉ được dự đ
 
 Mọi con số là **minh họa (illustrative)**, từ một mô phỏng độc lập nhỏ (xe một bánh lái vi sai trên quỹ đạo hình số tám 60 s, odometry sai tỉ lệ 1.5 % và sai tỉ lệ tốc độ quay 2 %, bias gyro 0.01 rad/s, tám marker trên tường), không phải từ một lần chạy repository của bạn.
 
-**Một lần cập nhật bằng tay.** Prior $\hat{\mathbf x}=(1.0,\,0.5,\,0.3,\,0)$, $P=\operatorname{diag}(0.0025,\,0.0025,\,0.0009,\,0.0004)$ (độ lệch chuẩn 5 cm, 5 cm, 1.7 độ, 0.02 rad/s). Marker ở $(1.9,\,1.0)$: $\Delta_x=0.9$, $\Delta_y=0.5$, $q=1.06$, $r=1.0296$ m, góc phương vị dự đoán $\operatorname{atan2}(0.5,0.9)-0.3=0.2071$ rad. Các hàng Jacobian: $[-0.874,\,-0.486,\,0,\,0]$ và $[0.472,\,-0.849,\,-1,\,0]$. Với $R=\operatorname{diag}(0.03^2,0.012^2)$: $S\approx\operatorname{diag}(0.0034,\,0.0034)$. Phát hiện cho khoảng cách 1.09 m, góc phương vị 0.25 rad: $\nu=(0.0604,\,0.0429)$, $d^2=1.62<9.21$, nên nó được chấp nhận (và 1.62 là một mẫu hợp lý từ $\chi^2_2$, trung bình 2). Hiệu chỉnh là $K\nu=(-0.024,\,-0.048,\,-0.011,\,0)$: marker xa hơn dự đoán, nên robot dịch ra xa nó. Hậu nghiệm $\hat{\mathbf x}=(0.976,\,0.452,\,0.289,\,0)$; độ lệch chuẩn giảm từ (5.0, 5.0 cm, 1.7 độ) xuống (2.6, 2.7 cm, 1.5 độ); phần tử bias không đổi vì prior này không có tương quan với nó.
+### Một lần cập nhật EKF, năm lần chạy được kiểm toán, phép thử outlier và một hiệu chuẩn
 
-**Năm quỹ đạo 60 s** (seed 1000 đến 1004), sau khi chỉnh ($q_v=0.08$, $q_w=0.02$, $q_b=2\times10^{-4}$ trong mã của bài này):
+**Đề bài.** Trạng thái $\hat{\mathbf x}=(x,y,\theta,b)=(1.0,\,0.5,\,0.3,\,0)$ với $P=\operatorname{diag}(0.0025,\,0.0025,\,0.0009,\,0.0004)$ (độ lệch chuẩn 5 cm, 5 cm, 1.7 độ, 0.02 rad/s). Một marker ở $(1.9,\,1.0)$ được phát hiện ở khoảng cách 1.09 m và góc phương vị 0.25 rad, với $R=\operatorname{diag}(0.03^2,0.012^2)$ và gate 99 %.
+
+- (a) Thực hiện cập nhật bằng tay: đo lường dự đoán, Jacobian, $S$, innovation $\nu$, gate trên $d^2$, gain, trung bình và độ lệch chuẩn hậu nghiệm.
+- (b) Chứng minh năm lần chạy 60 s được kiểm toán ở bảng dưới đạt các giới hạn độ chính xác (RMSE vị trí 5 cm, RMSE hướng 2 độ, sai số cuối nhỏ hơn dead reckoning ít nhất 3 lần) và dải nhất quán, và giải thích vì sao lần chỉnh đầu ($q_v=0.05$, $q_w=0.01$) bị loại dù RMSE tương tự.
+- (c) Khi 10 % phát hiện của seed 1000 bị thay bằng phát hiện sai ID, sai tư thế (771 lần thử, 61 bị gate, RMSE vị trí 5.4 cm so với 4.1 cm sạch, giới hạn +50 %), ước lượng có bao nhiêu outlier bị bắt và bao nhiêu lọt qua.
+- (d) Kiểm tra một hiệu chuẩn: 24 góc nhìn, RMS 0.31 px, $f_x=581.2$ px, với camera 640 nhân 480 và fovy 45 độ.
+
+**Lời giải.**
+
+1. *Đo lường dự đoán.* $\Delta_x=1.9-1.0=0.9$, $\Delta_y=1.0-0.5=0.5$, $q=\Delta_x^2+\Delta_y^2=0.81+0.25=1.06$, $r=\sqrt{1.06}=1.0296$ m. Góc phương vị dự đoán $\operatorname{atan2}(0.5,0.9)-\theta=0.5071-0.3=0.2071$ rad.
+2. *Jacobian.* Đạo hàm $r$ và góc phương vị theo $(x,y,\theta,b)$ cho các hàng $[-\Delta_x/r,\,-\Delta_y/r,\,0,\,0]=[-0.874,\,-0.486,\,0,\,0]$ và $[\Delta_y/q,\,-\Delta_x/q,\,-1,\,0]=[0.472,\,-0.849,\,-1,\,0]$.
+3. *Hiệp phương sai innovation* $S=HPH^\top+R$. Khoảng cách: $(0.874^2+0.486^2)\cdot0.0025+0.03^2=0.0025+0.0009=0.0034$. Góc phương vị: $(0.472^2+0.849^2)\cdot0.0025+0.0009\cdot1+0.012^2=0.00236+0.0009+0.000144=0.0034$. Số hạng chéo là $(-0.874)(0.472)\cdot0.0025+(-0.486)(-0.849)\cdot0.0025=0$, nên $S\approx\operatorname{diag}(0.0034,\,0.0034)$.
+4. *Innovation.* $\nu=(1.09-1.0296,\;0.25-0.2071)=(0.0604,\,0.0429)$.
+5. *Gate.* $d^2=\nu^\top S^{-1}\nu=0.0604^2/0.0034+0.0429^2/0.0034=1.07+0.54=1.62$. Ngưỡng 99 % của $\chi^2_2$ là $-2\ln0.01=9.21$ và $1.62<9.21$, nên phát hiện được chấp nhận (1.62 cũng là một mẫu hợp lý từ $\chi^2_2$, trung bình 2).
+6. *Gain và hiệu chỉnh.* $K=PH^\top S^{-1}$ có các hàng $(-0.643,\,0.347)$, $(-0.357,\,-0.624)$, $(0,\,-0.265)$, $(0,\,0)$. Khi đó $K\nu=(-0.643\cdot0.0604+0.347\cdot0.0429,\;\dots)=(-0.024,\,-0.048,\,-0.011,\,0)$. Marker xa hơn dự đoán (innovation khoảng cách dương), nên robot dịch ra xa nó.
+7. *Hậu nghiệm.* $\hat{\mathbf x}=(1.0-0.024,\;0.5-0.048,\;0.3-0.011,\;0)=(0.976,\,0.452,\,0.289,\,0)$. Từ $(I-KH)P$, độ lệch chuẩn là 2.6 cm, 2.7 cm và $1.47^\circ$ (từ 5.0, 5.0 cm và $1.72^\circ$). Hàng bias của $K$ bằng không vì prior này không có tương quan giữa $b$ và các trạng thái khác, nên $b$ và phương sai của nó không đổi.
+8. *Kiểm toán năm lần chạy.* Trong bảng dưới, RMSE vị trí từ 2.7 đến 4.7 cm (đều $\le5$ cm) và RMSE hướng từ 0.29 đến 1.07 độ (đều $\le2$). Tỉ số sai số cuối so với dead reckoning là $30.6/1.0=30.6$, $24.0/0.2=120$, $27.8/0.4=69.5$, $29.0/0.2=145$ và $21.9/0.2=109.5$: đều lớn hơn 3 rất nhiều. Nhất quán: NEES là biến $\chi^2_3$ (3 bậc tự do, trung bình kỳ vọng 3) và NIS là biến $\chi^2_2$ (trung bình kỳ vọng 2). NEES trung bình từ 3.17 đến 4.74 (dưới giới hạn nới gấp đôi là 6) và NIS trung bình từ 1.78 đến 1.86 (gần 2); tỉ lệ mẫu NEES nằm trong khoảng 95 % từ 0.903 đến 0.980.
+9. *Vì sao lần chỉnh đầu bị loại.* Với $q_v=0.05$, $q_w=0.01$ RMSE tương tự, nhưng NEES trung bình là 5 đến 10, tới hơn ba lần giá trị kỳ vọng 3, và chỉ 43 % đến 87 % mẫu nằm trong khoảng (bộ lọc nhất quán cho khoảng 95 %): bộ lọc chính xác nhưng quá tự tin ($Q$ quá nhỏ nên $P$ quá nhỏ), đúng điều cuộc kiểm toán sinh ra để bắt. Nâng lên $q_v=0.08$, $q_w=0.02$, $q_b=2\times10^{-4}$ đưa mọi lần chạy trở lại dải.
+10. *Tỉ lệ bị gate.* Ở seed 1000, 8 trong 771 lần thử bị gate: $8/771=1.04\ \%$, trong khi gate 99 % loại trung bình $0.01\cdot771=7.7$ phát hiện tốt. Khớp với kỳ vọng trong phạm vi một lần đếm.
+11. *Outlier.* Được chèn: $0.10\cdot771\approx77$. Bị gate: 61, trong đó khoảng 8 là phát hiện tốt (cùng tỉ lệ 1 %), nên outlier bị bắt $\approx61-8=53$ và outlier lọt qua $\approx77-53=24$. 24 cái này trông đủ hợp lý để qua cổng, và đó là lý do RMSE vị trí tăng: $5.4/4.1=1.32$, tức khoảng $+31\ \%$ (các giá trị đã làm tròn cho phép 29 % đến 35 %), nằm trong giới hạn +50 %.
+12. *Hiệu chuẩn.* $f=240/\tan22.5^\circ=579.4$ px cho camera thật. Ước lượng 581.2 px lệch $1.8$ px, $1.8/579.4=0.3\ \%$. Sai số tái chiếu RMS 0.31 px thấp hơn nhiều so với 1 px, và điểm chính lệch 0.6 px và 0.9 px.
 
 | seed | RMSE vị trí (cm) | RMSE hướng (độ) | sai số cuối (cm) | sai số cuối của dead reckoning (cm) | NEES trong 95 % | NEES trung bình | NIS trung bình | bị gate |
 |---|---|---|---|---|---|---|---|---|
@@ -82,11 +102,11 @@ Mọi con số là **minh họa (illustrative)**, từ một mô phỏng độc 
 | 1003 | 4.7 | 1.07 | 0.2 | 29.0 | 0.980 | 4.15 | 1.86 | 8 |
 | 1004 | 2.9 | 0.48 | 0.2 | 21.9 | 0.963 | 3.17 | 1.78 | 8 |
 
-Cả năm đều qua các giới hạn độ chính xác (5 cm, 2 độ, sai số cuối nhỏ hơn dead reckoning ít nhất 3 lần) và dải nhất quán. Lần chỉnh đầu tiên ($q_v=0.05$, $q_w=0.01$) có **RMSE tương tự nhưng NEES trung bình 5 đến 10 và chỉ 43 % đến 87 % mẫu nằm trong khoảng**: chính xác nhưng quá tự tin, đúng điều cuộc kiểm toán sinh ra để bắt. Trong 771 lần thử phát hiện ở seed 1000, 8 lần bị gate (1 % của 771 là 7.7: đúng kỳ vọng với một cổng ở mức 99 %).
+(Seed 1000 đến 1004, sau khi chỉnh $q_v=0.08$, $q_w=0.02$, $q_b=2\times10^{-4}$ trong mã của bài này.)
 
-**Outlier.** Thay 10 % phát hiện bằng các phát hiện sai ID, sai tư thế (seed 1000): 61 bị gate, RMSE vị trí 5.4 cm so với 4.1 cm sạch (+31 %, giới hạn +50 %). Khoảng 77 outlier được chèn; khoảng 8 trong 61 phát hiện bị gate là phát hiện tốt, nên khoảng 53 outlier bị bắt và khoảng 24 cái trông đủ hợp lý để lọt qua cổng, và đó là lý do sai số tăng.
+**Kiểm tra.** (a) Đơn vị: $\nu$ tính bằng m và rad, $S$ bằng m$^2$ và rad$^2$, nên $d^2$ không có thứ nguyên. Phương pháp thứ hai, tích ma trận với $K=PH^\top S^{-1}$, $x^+=x+K\nu$ và $P^+=(I-KH)P$, cho $(0.9760,\,0.4517,\,0.2887,\,0)$ và độ lệch chuẩn $(2.62\ \text{cm},\,2.72\ \text{cm},\,1.47^\circ,\,0.02\ \text{rad/s})$, trùng với trên. (b) NEES và NIS trung bình của mọi hàng nằm trong ngưỡng báo động của bài (NEES trung bình dưới $2\cdot3=6$), và các số này tính lại được từ log bằng `evalkit.nees_consistency` của CAP01. (c) Sổ sách khớp: $53$ bị bắt $+\,24$ lọt qua $=77$ được chèn, và $53+8=61$ bị gate. (d) $240/\tan22.5^\circ=579.41$ px tái tạo đúng tiêu cự thật, nên sai số $0.3\ \%$ của ước lượng là sai số hiệu chuẩn thật, không phải lỗi quy ước.
 
-**Hiệu chuẩn** (minh họa): 24 góc nhìn, RMS 0.31 px, $f_x=581.2$ so với giá trị thật 579.4 (0.3 %), điểm chính lệch 0.6 px và 0.9 px. Với camera 640 nhân 480 và fovy 45 độ: $f=240/\tan22.5^\circ=579.4$ px.
+**Rút ra.** Một lần cập nhật EKF là chuỗi các tích nhỏ có thể kiểm tra (Jacobian, $S$, $K$); độ chính xác một mình là chưa đủ, vì kiểm toán NEES/NIS lộ ra bộ lọc quá tự tin mà RMSE che giấu, và gate đổi 1 % phát hiện tốt (đã biết trước) lấy sự bảo vệ trước outlier.
 
 ## Bài tập
 

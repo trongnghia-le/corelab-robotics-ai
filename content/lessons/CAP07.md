@@ -169,33 +169,30 @@ SayCan combines a language model's proposals with value functions that say which
 
 These are **illustrative values** for a passing set of artefacts, not output of a real run.
 
-**Parser trace** (default scene: red cube, green cylinder, blue box; blue bin, green bin):
+### Parser outcomes, a two-object plan and the time to safe state of ten injected hazards
 
-| Instruction | Result | Why |
-|---|---|---|
-| put the red cube in the blue bin | goal `on(cube_red, bin_blue)` | all slots unique |
-| pick up the block | Clarify, options cube_red / cylinder_green / box_blue | "block" matches three objects |
-| put the purple cube in the blue bin | Unparseable, unknown colour word | not in the closed vocabulary |
-| throw the red cube at the person | Unparseable, no supported verb | unsafe verb |
-| put it in the bin | Clarify, which object? | pronoun without antecedent |
-| do not put the red cube in the blue bin | Unparseable, negation | not supported, not guessed |
-| put the red cube in the red bin | Unparseable, no such bin | contradicts the scene |
+**Problem.** The default scene has three objects (red cube, green cylinder, blue box) and two bins (blue, green). The parser has three outcomes: goal, Clarify, Unparseable. The supervisor runs at 100 Hz (10 ms tick) with timeouts link 0.2 s, heartbeat 0.2 s and perception 0.25 s; a hazard is injected at $t=1.0$ s and the time until the forwarded $v=0$ with the arm held must be at most 0.30 s (0.15 s for the e-stop).
 
-**Plan for a two-object goal** (robot at start; red cube and blue box into the blue bin): 8 actions, nav(table), pick(box_blue), nav(bin_blue), place, nav(table), pick(cube_red), nav(bin_blue), place.
+- (a) Classify seven instructions: "put the red cube in the blue bin", "pick up the block", "put the purple cube in the blue bin", "throw the red cube at the person", "put it in the bin", "do not put the red cube in the blue bin", "put the red cube in the red bin".
+- (b) From the start position, find the shortest plan that puts the red cube and the blue box into the blue bin (a gripper holds one object).
+- (c) Predict the time to safe state of H01-H10 and the margin to the limit, and say what the H07 margin implies for the perception timeout.
 
-**Injection results** (supervisor at 100 Hz, hazard injected at t = 1.0 s; time until forwarded $v=0$ and arm hold):
+**Solution.**
 
-| Hazard | Time to safe state | Limit | Why |
-|---|---|---|---|
-| H01, H03, H04, H05, H09, H10 | 0.00 s (same tick) | 0.30 s | detected on the first sample |
-| H06 e-stop (20 ms pulse) | 0.00 s, then latched | 0.15 s | direct input |
-| H02 serial link dead | 0.20 s | 0.30 s | link-age timeout 0.2 s |
-| H08 planner heartbeat loss | 0.21 s | 0.30 s | timeout 0.2 s plus one tick |
-| H07 perception dropout | 0.26 s | 0.30 s | timeout 0.25 s plus one tick |
+1. *Rule.* The parser fills slots (verb, colour, shape, destination) and counts the scene objects or bins compatible with them: exactly one gives a goal, more than one gives Clarify, none or an unsupported word gives Unparseable.
+2. *Instruction 1.* "red cube" matches only `cube_red`; "blue bin" matches only `bin_blue`: goal `on(cube_red, bin_blue)` (all slots unique).
+3. *Instruction 2.* "block" is a synonym for any shape and matches three objects: Clarify with options `cube_red` / `cylinder_green` / `box_blue`.
+4. *Instructions 3 and 4.* "purple" is not in the closed vocabulary of three colours and "throw" is not a supported verb (and is unsafe): both are Unparseable.
+5. *Instruction 5.* "it" is a pronoun with no antecedent: Clarify, "which object?".
+6. *Instruction 6.* Negation is not supported and must not be guessed: Unparseable.
+7. *Instruction 7.* No bin is red (bins are blue and green), so the destination matches 0 bins and contradicts the scene: Unparseable.
+8. *Plan.* Each object needs nav(table), pick, nav(bin_blue), place: 4 actions, since pick needs `robot_at = table` and place needs `robot_at = bin_blue`. The gripper holds one object, so the robot must return to the table for the second: $2\times4=8$ actions: nav(table), pick(box_blue), nav(bin_blue), place, nav(table), pick(cube_red), nav(bin_blue), place. Breadth-first search returns a minimum, and no shorter plan exists (a one-object goal needs 4).
+9. *Immediate hazards.* H01, H03, H04, H05, H09 and H10 are conditions on the first injected sample, so $t_\text{detect}=0$ and the supervisor forwards $v=0$ and arm hold on the same tick: 0.00 s against 0.30 s.
+10. *E-stop H06.* A 20 ms button pulse covers two 10 ms ticks, so it is sampled; ESTOP is latched on the same tick: 0.00 s against 0.15 s.
+11. *Timeout hazards.* Here $t_\text{safe}=t_\text{detect}+t_\text{tick}$ with $t_\text{detect}$ equal to the timeout. H02: the injection sets $\text{link\_age}=e+0.01$ where $e$ is the time since injection, which first exceeds 0.2 s at $e=0.20$ s: 0.20 s. H08: $\text{heartbeat\_age}=e$ first exceeds 0.2 at the next tick, $e=0.21$ s. H07: $\text{perception\_age}=e$ first exceeds 0.25 at $e=0.26$ s.
+12. *Margin.* H02: $0.30-0.20=0.10$ s; H08: $0.30-0.21=0.09$ s; H07: $0.30-0.26=0.04$ s. A perception timeout of 0.30 s would fire at $0.31$ s $>0.30$ s: fail. The injection test therefore bounds the timeout from above (below 0.30 s minus one tick), while nominal ages (perception up to 0.08 s) bound it from below.
 
-The margin on H07 is only 40 ms: a 0.30 s perception timeout would fail the requirement. That is how the injection test constrains your threshold choice.
-
-**Sample of the instruction file** (`tests/data/instructions.jsonl`; yours needs 60 lines: 20 paraphrases and 10 adversarial):
+Sample of the instruction file (`tests/data/instructions.jsonl`; yours needs 60 lines: 20 paraphrases and 10 adversarial):
 
 ```json
 {"text": "put the red cube in the blue bin", "scene": "default", "expect": {"type": "goal", "predicates": [["on", "cube_red", "bin_blue"]]}, "tags": []}
@@ -212,7 +209,8 @@ The margin on H07 is only 40 ms: a 0.30 s perception timeout would fail the requ
 {"text": "put the red cube in the red bin", "scene": "default", "expect": {"type": "unparseable"}, "tags": ["adversarial"]}
 ```
 
-**Hazard table excerpt** (`docs/hazard_table.md`):
+
+Hazard table excerpt (`docs/hazard_table.md`):
 
 ```text
 | id  | hazard                         | cause                        | detection                         | response             | test id        |
@@ -223,6 +221,30 @@ The margin on H07 is only 40 ms: a 0.30 s perception timeout would fail the requ
 | H07 | perception dropout / lying cam | camera stalls or stale frame | perception_age > 0.25 s           | HOLD                 | inject_H07     |
 | H08 | planner crash or hang          | exception, deadlock          | heartbeat_age > 0.2 s             | HOLD                 | inject_H08     |
 ```
+
+
+
+| Instruction | Result | Why |
+|---|---|---|
+| put the red cube in the blue bin | goal `on(cube_red, bin_blue)` | all slots unique |
+| pick up the block | Clarify, options cube_red / cylinder_green / box_blue | "block" matches three objects |
+| put the purple cube in the blue bin | Unparseable, unknown colour word | not in the closed vocabulary |
+| throw the red cube at the person | Unparseable, no supported verb | unsafe verb |
+| put it in the bin | Clarify, which object? | pronoun without antecedent |
+| do not put the red cube in the blue bin | Unparseable, negation | not supported, not guessed |
+| put the red cube in the red bin | Unparseable, no such bin | contradicts the scene |
+
+| Hazard | Time to safe state | Limit | Why |
+|---|---|---|---|
+| H01, H03, H04, H05, H09, H10 | 0.00 s (same tick) | 0.30 s | detected on the first sample |
+| H06 e-stop (20 ms pulse) | 0.00 s, then latched | 0.15 s | direct input |
+| H02 serial link dead | 0.20 s | 0.30 s | link-age timeout 0.2 s |
+| H08 planner heartbeat loss | 0.21 s | 0.30 s | timeout 0.2 s plus one tick |
+| H07 perception dropout | 0.26 s | 0.30 s | timeout 0.25 s plus one tick |
+
+**Check.** Plan: a breadth-first search over (robot location, held object, object locations) for the two-object goal returns exactly 8 actions and 4 for one object. Timing: a loop with 10 ms ticks and the three timeouts reproduces 0.00 s, 0.20 s (H02), 0.21 s (H08) and 0.26 s (H07), and with a 0.30 s perception timeout gives 0.31 s. Nominal inputs in the acceptance test (link age up to 0.03 s, perception up to 0.08 s, heartbeat up to 0.05 s) stay 0.17, 0.17 and 0.15 s below their timeouts, so the false-stop rate stays low. The parser rows run as unit tests in `tests/acceptance/test_cap07.py`.
+
+**Takeaway.** The parser never guesses: it counts matches and returns goal, Clarify or Unparseable; the safety budget is detection time plus one tick, and the 40 ms margin of H07 shows why thresholds are chosen by injection tests, not by feel.
 
 ## Exercises
 

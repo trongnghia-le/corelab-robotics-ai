@@ -171,9 +171,13 @@ You **graduate** when all of these hold: every gate of every milestone passes; e
 
 ## Worked example
 
-This is a reference trace of what a passing CAP01 looks like. All numbers are illustrative values chosen to be consistent with the formulas, not the output of a real run; yours will differ in the last digits and you should check yours against the thresholds, not against these digits.
+### Reference trace of a passing CAP01
 
-**1. A spec you can check.** Ten requirements, each tied to a test (SR8 to SR10 live in your unit tests):
+**Problem.** Show what a passing CAP01 looks like and how each gate is measured. Required: (a) a spec of ten requirements, each tied to a test; (b) forward kinematics (FK) by hand for an illustrative arm (pillar top 0.05 m above the base plane, link lengths 0.12, 0.14 and 0.10 m, angles in radians with the shoulder lift measured from vertical) at pan 0.4, lift 0.6, elbow 0.9, wrist -1.5, compared with a simulator reading of $(0.1911, 0.0807, 0.2590)$ m against the 1 mm threshold, plus the effect of a degree-for-radian slip; (c) determinism of `reset(seed=7)` plus 500 scripted steps at 1 ms; (d) reachability of two table placements against the annulus model (horizontal distance 0.12 to 0.33 m from the arm base) and the 95 % gate; (e) a traceability check on a spec with a vague row; (f) a metrics file judged against the thresholds; (g) the Wilson 95 % interval for 27 successes in 30 episodes against a lower bound of 0.75. All arm and reach numbers are illustrative values consistent with the formulas, not the output of a real run; compare yours with the thresholds, not with these digits.
+
+**Solution.**
+
+1. **A spec you can check.** Each row has an id, a metric, a threshold, a rationale and a test name. Ten requirements, SR1 to SR7 in the acceptance tests and SR8 to SR10 in the unit tests. The thresholds are decisions: 1 mm for FK is 20 % of the roughly 5 mm grasp tolerance, which leaves 4 mm for everything else; SR6 requires at least 8 traceable ids and 10 exist.
 
 ```markdown
 | id   | requirement                              | metric                          | threshold | rationale                                    | test |
@@ -190,7 +194,7 @@ This is a reference trace of what a passing CAP01 looks like. All numbers are il
 | SR10 | Units are SI and documented              | every field doc names its unit  | all       | CAP02 mixes counts, rad and m/s              | tests/unit/test_interfaces.py::test_units_documented |
 ```
 
-**2. Forward kinematics by hand.** An illustrative arm: pillar top 0.05 m above the base plane, link lengths 0.12, 0.14 and 0.10 m (stretched out, 0.36 m of horizontal reach, which is why the table must be low and close). Angles are in radians with the shoulder lift measured from vertical.
+2. **Forward kinematics by hand.** The cumulative angles are $a_1=0.6$, $a_2=0.6+0.9=1.5$, $a_3=1.5-1.5=0$ rad. Horizontal reach $r=L_1\sin a_1+L_2\sin a_2+L_3\sin a_3=0.12(0.5646)+0.14(0.9975)+0.10(0)=0.0678+0.1396+0=0.2074$ m. Height $z=Z_0+L_1\cos a_1+L_2\cos a_2+L_3\cos a_3=0.05+0.12(0.8253)+0.14(0.0707)+0.10(1)=0.05+0.0990+0.0099+0.1=0.2589$ m. Projecting on the pan angle: $x=r\cos0.4=0.2074(0.9211)=0.1910$ m, $y=r\sin0.4=0.2074(0.3894)=0.0808$ m. The code reproduces this:
 
 ```python
 import math
@@ -216,19 +220,17 @@ print("angles treated as degrees: error = %.1f mm" % (1000 * math.dist(p, bad)))
 print("max horizontal reach = %.2f m" % (L1 + L2 + L3))
 ```
 
-Output:
-
 ```text
 tool0 in arm_base: x=0.1910 y=0.0808 z=0.2589
 angles treated as degrees: error = 252.9 mm
 max horizontal reach = 0.36 m
 ```
 
-If the simulator then reads $(0.1911, 0.0807, 0.2590)$ for `tool0`, the error is $\sqrt{0.1^2+0.1^2+0.1^2}\ \text{mm}=0.17$ mm: a pass against the 1 mm threshold. Treating the same four numbers as degrees misplaces the tool by about 253 mm, which is exactly the failure the test is built to catch.
+   The simulator reads $(0.1911, 0.0807, 0.2590)$, so against the printed $(0.1910, 0.0808, 0.2589)$ the differences are $(0.1,-0.1,0.1)$ mm and the error is $\sqrt{0.1^2+0.1^2+0.1^2}\ \text{mm}=0.17$ mm, a pass against the 1 mm threshold. Reading the same four numbers as degrees misplaces the tool by 252.9 mm (the second printed line), which is the failure the test is built to catch. The reach limit is $L_1+L_2+L_3=0.12+0.14+0.10=0.36$ m, which is why the table must be low and close.
 
-**3. Determinism.** Two runs of `reset(seed=7)` plus 500 scripted steps (0.5 s of simulated time at 1 ms) give the same scene hash and a maximum $|q_1-q_2|$ of 0.0 (threshold $10^{-9}$).
+3. **Determinism.** Two runs of `reset(seed=7)` plus 500 scripted steps (500 $\times$ 1 ms $=0.5$ s of simulated time) give the same scene hash and a maximum $|q_1-q_2|$ of 0.0, below the threshold $10^{-9}$.
 
-**4. Reachability.** Sample table points uniformly and ask whether the tool can be placed there. With the illustrative annulus model (horizontal distance between 0.12 and 0.33 m from the arm base), a table spanning 0.18 to 0.32 m ahead and 0.24 m wide passes; pushing the same table 0.07 m further away fails badly:
+4. **Reachability.** Sample table points uniformly and ask whether the tool can be placed there, i.e. whether $0.12\le r\le0.33$ m. Table 1 spans 0.18 to 0.32 m ahead and is 0.24 m wide: its nearest point has $r=0.18\ge0.12$ and only the far corners exceed 0.33 m ($\sqrt{0.32^2+0.12^2}=0.342$ m), so almost everything is reachable. Table 2 is the same table pushed 0.07 m further away (0.25 to 0.45 m): along the centre line only $x\le0.33$ is reachable, i.e. at most $(0.33-0.25)/0.20=0.40$ of the depth, less at the sides. Sampling 100 000 points each gives:
 
 ```python
 import math
@@ -255,9 +257,9 @@ table 0.18..0.32 m ahead, +-0.12 m wide: 0.986
 table 0.25..0.45 m ahead, +-0.12 m wide: 0.363
 ```
 
-98.6 % is above the 95 % gate; 36.3 % says the model scale is wrong, not the code. This is the "sizing check" of the milestone: the SO-101 reaches only about 0.35 to 0.4 m, so you mount it on a short pillar and use a low table and bins.
+   98.6 % is above the 95 % gate; 36.3 % is a model-scale problem, not a code bug. This is the sizing check of the milestone: the SO-101 reaches only about 0.35 to 0.4 m, so it is mounted on a short pillar with a low table and bins.
 
-**5. Traceability.** A requirement with no test name cannot be traced; the parser finds it:
+5. **Traceability.** A requirement with no test name cannot be traced; a parser finds it by collecting every `::test_name` in each `SR` row:
 
 ```python
 import re
@@ -290,7 +292,9 @@ assert untraceable == ["SR3"]
 untraceable: ['SR3']
 ```
 
-**6. The metrics file** after a passing run (`runs/cap01/metrics.json`, illustrative):
+   SR1 and SR2 each cite a test, SR3 ("the robot is accurate", no metric, no threshold, no test) cites none, so exactly `['SR3']` is untraceable and the assertion holds.
+
+6. **The metrics file** after a passing run (`runs/cap01/metrics.json`, illustrative), judged against the thresholds: determinism $0.0<10^{-9}$; FK error $0.00012\ \text{m}=0.12\ \text{mm}<1$ mm; mass difference $0.004=0.4\,\%<2\,\%$; reachable fraction $0.97\ge0.95$; rest drift $0.02^\circ<0.5^\circ$ and $0.0003\ \text{m}=0.3\ \text{mm}<2$ mm; penetration $0.0005\ \text{m}=0.5\ \text{mm}<2$ mm; 10 requirements $\ge8$; 17 unit tests $\ge15$.
 
 ```json
 {
@@ -306,7 +310,11 @@ untraceable: ['SR3']
 }
 ```
 
-**7. A success rate, for later.** If a later test reports 27 successes in 30 episodes, the point estimate is 0.90 but the Wilson 95 % interval is (0.744, 0.965): a lower-bound requirement of 0.75 would just fail.
+7. **A success rate, for later.** For 27 successes in 30 episodes, $\hat p=0.90$ and $z=1.96$: $z^2/(2n)=0.0640$, $\hat p(1-\hat p)/n+z^2/(4n^2)=0.003+0.001067=0.004067$ whose root is $0.0638$, so $z\cdot0.0638=0.1250$; the denominator is $1+z^2/n=1.1281$. The interval is $\left(\frac{0.9640-0.1250}{1.1281},\ \frac{0.9640+0.1250}{1.1281}\right)=(0.744,\,0.965)$. A lower-bound requirement of 0.75 would just fail ($0.744<0.75$) although the point estimate is 0.90.
+
+**Check.** Every numeric step can be re-run: the FK script prints `x=0.1910 y=0.0808 z=0.2589` and 252.9 mm; the reachability script prints 0.986 and 0.363 (an independent grid integration of the annulus gives 0.986 and 0.363); the parser prints `untraceable: ['SR3']`; `evalkit.wilson_interval(27, 30)` gives (0.744, 0.965). In a real project the same checks are the acceptance tests of `tests/acceptance/test_cap01.py` and the unit tests. One remark on the FK comparison: the 0.17 mm uses the 4-decimal printed values; unrounded the error would be 0.11 mm, still far under 1 mm.
+
+**Takeaway.** Each gate is a number with a threshold and a test that can fail: 1 mm FK error, $10^{-9}$ determinism, 95 % reachability, and a Wilson lower bound rather than a point estimate.
 
 ## Exercises
 

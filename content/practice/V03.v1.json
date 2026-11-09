@@ -121,7 +121,7 @@
     },
     {
       "id": "b5",
-      "prompt": "With R = [[0,-1,0],[0,0,-1],[1,0,0]] and t = (0, 0.5, -0.1) the camera centre in the world is c = -R^T t. What is its world z coordinate in metres? (precision 0.01)",
+      "prompt": "With R = [[0.6,0,0.8],[0,1,0],[-0.8,0,0.6]] and t = (0.3, 0.2, 2.0) the camera centre in the world is c = -R^T t. What is its world z coordinate in metres? (precision 0.01)",
       "kind": "number",
       "dimension": "M",
       "critical": false,
@@ -144,9 +144,9 @@
       "equivalentTo": [
         "q2"
       ],
-      "answer": "0.5",
+      "answer": "-1.44",
       "tolerance": 0.01,
-      "explanation": "R^T t = (-0.1, 0, -0.5), so c = (0.1, 0, 0.5)."
+      "explanation": "R^T t = (0.6*0.3 - 0.8*2.0, 0.2, 0.8*0.3 + 0.6*2.0) = (-1.42, 0.2, 1.44), so c = -R^T t = (1.42, -0.2, -1.44); its z is -1.44."
     },
     {
       "id": "b6",
@@ -300,17 +300,17 @@
         "q7"
       ],
       "options": [
-        "Distant objects appear relatively larger than near ones, so depth cues are compressed",
-        "The perspective becomes stronger, since the focal length changes the viewpoint",
-        "Only the image brightness changes, because the sensor and position are the same",
-        "Objects appear twice as large, the field of view narrows, and near/far size ratios are unchanged"
+        "Distant objects appear relatively larger compared with near ones, so depth differences are compressed in the image",
+        "The perspective becomes stronger, because a longer focal length moves the effective viewpoint closer to the scene",
+        "Only the image brightness changes, because the sensor and the camera position are the same as before",
+        "Objects appear twice as large, the field of view narrows, and near/far ratios stay unchanged"
       ],
       "answer": "3",
       "explanation": "Perspective depends on camera position, zoom only magnifies."
     },
     {
       "id": "b11",
-      "prompt": "A robot must see a 0.1 m marker at 5 m with at least 20 pixels across it and keep a 90 degree horizontal field of view. Work out the minimum focal length in pixels and the minimum image width, and decide whether a 640-pixel camera works.",
+      "prompt": "A robot must see a 0.25 m marker at 10 m with at least 30 pixels across it and keep a 120 degree horizontal field of view. Work out the minimum focal length in pixels and the minimum image width, and say what that implies for a camera with a 1280-pixel-wide sensor.",
       "kind": "short",
       "dimension": "T",
       "critical": false,
@@ -335,9 +335,9 @@
         "q6"
       ],
       "rubric": [
-        "f >= 20*5/0.1 = 1000 px for the marker.",
-        "Field of view 90 degrees needs n >= 2f, so n >= 2000 px; 640 px is too small.",
-        "Concludes: use a wider sensor or accept lower marker resolution / two cameras."
+        "f >= 30*10/0.25 = 1200 px for the marker.",
+        "Field of view 120 degrees needs n >= 2 f tan(60 deg) = 2*1200*1.732 = 4157 px.",
+        "1280 px is far too small: use a wider sensor, accept fewer pixels on the marker (f = 1280/(2*1.732) = 370 px gives 9.25 px), or two cameras."
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     },
@@ -372,6 +372,89 @@
         "Z <= 0 is rejected (None or exception), not returned."
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "f = 640 px, c = (320, 240). Two parallel rails have direction d = (0.6, 0.15, 1.2) in the camera frame. Give the u coordinate of their vanishing point in pixels. (precision 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "vanishing-point"
+      ],
+      "skillLabel": "Vanishing points",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "explanation": "The vanishing point is K d: u = f dx/dz + cx = 640*0.6/1.2 + 320 = 640 (and v = 640*0.15/1.2 + 240 = 320).",
+      "answer": "640",
+      "tolerance": 0.1
+    },
+    {
+      "id": "c2",
+      "prompt": "Radial distortion with k1 = -0.15 (k2 = 0) is undone by the fixed-point iteration s <- r_d/(1 + k1 s^2). Up to which undistorted radius r does the iteration converge locally? (normalised units, precision 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "distortion-inverse"
+      ],
+      "skillLabel": "Lens distortion and undistortion",
+      "mistakeCategory": "mathematical",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#theory-and-derivation"
+        }
+      ],
+      "explanation": "The slope at the fixed point is g' = 2|k1|r^2/(1 - |k1|r^2); g' < 1 exactly when 3|k1|r^2 < 1, so r < 1/sqrt(3*0.15) = 1.491 (the radius where the lens map stops being monotone).",
+      "answer": "1.49",
+      "tolerance": 0.01
+    },
+    {
+      "id": "c3",
+      "prompt": "What is the minimum number of point correspondences needed to estimate a homography H (3x3, defined up to scale) between a plane and its image?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dlt-calibration"
+      ],
+      "skillLabel": "DLT calibration",
+      "mistakeCategory": "conceptual",
+      "relatedPrerequisites": [
+        "V01",
+        "M12"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V03#reference-implementation"
+        }
+      ],
+      "explanation": "H has 9 entries up to scale, so 8 degrees of freedom; each point gives 2 equations, so 4 points are needed (no three of them collinear). This is the planar case Z = 0 of the projection matrix P, which has 11 degrees of freedom.",
+      "options": [
+        "3 points",
+        "4 points",
+        "5 points",
+        "6 points"
+      ],
+      "answer": "1"
     }
   ]
 }

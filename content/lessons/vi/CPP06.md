@@ -40,7 +40,7 @@ constexpr T clamp_to(T x, T lo, T hi) { return x < lo ? lo : (x > hi ? hi : x); 
 - **Class template** hoạt động tương tự: `RunningStats<double>` và `RunningStats<float>` là hai kiểu không liên quan. Từ C++17, đối số constructor có thể suy ra đối số template (CTAD): `std::pair p{1, 2.5};`.
 - **Tham số non-type**: `template <std::size_t N>` nhận một giá trị; `std::array<int, N>` là ví dụ chuẩn.
 
-**Ví dụ.** Ba lời gọi của cùng một template in ra chữ ký mà compiler đã đóng dấu (`__PRETTY_FUNCTION__` của GCC): `twice(21)` suy ra `T = int`, `twice(1.25)` suy ra `T = double`, và `twice<float>(2)` chỉ định `T` tường minh, nên đối số 2 được chuyển thành `float`. Ba lời gọi tạo ba hàm độc lập, mỗi hàm được biên dịch cho kiểu riêng của nó (cppreference, *Templates*). Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Ba lời gọi của cùng một template `twice` được biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`: `twice(21)`, `twice(1.25)` và `twice<float>(2)`. Mỗi lời gọi in ra chữ ký mà compiler đã đóng dấu (`__PRETTY_FUNCTION__` của GCC). Mỗi lời gọi suy ra hay nhận `T` là gì, và có bao nhiêu hàm được tạo ra?
 
 ```cpp
 #include <iostream>
@@ -57,6 +57,8 @@ int main() {
   twice<float>(2);    // T given explicitly; the int argument converts to float
 }
 ```
+
+**Lời giải.** `twice(21)` suy ra `T = int` từ đối số, `twice(1.25)` suy ra `T = double`, và `twice<float>(2)` chỉ định `T` tường minh, nên đối số 2 được chuyển thành `float`. Ba lời gọi tạo ba hàm độc lập, mỗi hàm được biên dịch cho kiểu riêng của nó (cppreference, *Templates*). Chương trình in ra:
 
 ```text
 T twice(T) [with T = int]
@@ -82,7 +84,7 @@ template <class T> auto describe(T) {
 
 Hãy ghi tài liệu cả các giả định về *ngữ nghĩa* (ví dụ "lo <= hi", "NaN đi qua không đổi"), vì hệ thống kiểu không kiểm tra được chúng.
 
-**Ví dụ.** `half` chỉ dành cho kiểu dấu phẩy động. Với đối số `float` nó in 3.5. Biên dịch với `-DTRY_INT`, lời gọi `half(7)` dừng build bằng thông báo của chính tác giả thay vì thực hiện một phép chia nguyên cho ra 3. Với g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra` (khối đầu: chương trình và đầu ra khi không có `-DTRY_INT`; khối thứ hai: phản hồi của compiler khi có `-DTRY_INT`, một dòng nêu đúng vấn đề):
+**Ví dụ.** `half` chỉ dành cho kiểu dấu phẩy động và tự bảo vệ bằng `static_assert`. `half(7.0f)` in ra gì, và compiler làm gì khi chương trình được build với `-DTRY_INT`, tức thêm lời gọi `half(7)`? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -101,6 +103,8 @@ int main() {
 #endif
 }
 ```
+
+**Lời giải.** Khi không có `-DTRY_INT` chỉ `half(7.0f)` được instantiate với `T = float`: assertion đúng và in ra $7.0/2=3.5$ (khối đầu). Với `-DTRY_INT` lời gọi `half(7)` instantiate `T = int`, `std::is_floating_point_v<int>` là false, và build dừng bằng thông báo của chính tác giả thay vì thực hiện một phép chia nguyên cho ra 3 (khối thứ hai, một dòng nêu đúng vấn đề):
 
 ```text
 3.5
@@ -124,7 +128,7 @@ static_assert(sq[5] == 25);
 ```
 Hãy cẩn thận với tràn số trong biểu thức hằng: tràn số có dấu là lỗi biên dịch ở đó, và đây là một ưu điểm. Với bình phương `int`, chỉ số đầu tiên bị tràn là 46341, vì $46341^2=2{,}147{,}488{,}281>2^{31}-1$.
 
-**Ví dụ.** Một ADC 12 bit với điện áp tham chiếu 3.3 V đổi số đếm sang milivolt bằng $\text{mv}=\lfloor 3300\,c/4095\rfloor$. Hai `static_assert` và bảng ba phần tử do compiler tính (bảng nằm sẵn trong binary); `mv(argc + 1000)` có đối số lúc chạy, nên cùng hàm đó chỉ đơn giản chạy. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Một ADC 12 bit với điện áp tham chiếu 3.3 V đổi số đếm sang milivolt bằng $\text{mv}=\lfloor 3300\,c/4095\rfloor$. Chương trình kiểm tra $c=0$ và $c=4095$ bằng `static_assert`, dựng một bảng ba phần tử cho $c=1024,2048,3072$ và còn gọi `mv(argc + 1000)`. Compiler tự tính những phần nào, và chương trình in ra gì? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <array>
@@ -140,6 +144,8 @@ int main(int argc, char**) {
 }
 ```
 
+**Lời giải.** Hai `static_assert` và bảng ba phần tử là ngữ cảnh biểu thức hằng, nên compiler tự tính (bảng nằm sẵn trong binary). Các assertion đúng: $\text{mv}(0)=0$ và $\text{mv}(4095)=3300\cdot4095/4095=3300$. Bảng là $\lfloor 3300\cdot1024/4095\rfloor=825$, $\lfloor 3300\cdot2048/4095\rfloor=1650$ và $\lfloor 3300\cdot3072/4095\rfloor=2475$. `mv(argc + 1000)` có đối số lúc chạy ($\text{argc}=1$ nên $c=1001$), nên cùng hàm đó chỉ đơn giản chạy: $\lfloor 3300\cdot1001/4095\rfloor=806$. Vậy một hàm `constexpr` phục vụ cả lúc biên dịch lẫn lúc chạy. Chương trình in ra:
+
 ```text
 825 1650 2475 806
 ```
@@ -152,7 +158,7 @@ int main(int argc, char**) {
 - Range-for: `for (const auto& s : samples)`; biến vòng lặp là reference để tránh copy.
 - Ưu tiên thuật toán và kiểu chuẩn hơn vòng lặp thô và con trỏ, và khởi tạo đồng nhất bằng ngoặc nhọn (cũng cấm narrowing: `int i{2.5}` là lỗi).
 
-**Ví dụ.** Một log các mẫu (thời gian tính bằng s, dòng tính bằng A) được tìm mẫu đầu tiên vượt một giới hạn. `std::optional` thay cho một giá trị canh như $-1$, structured binding đặt tên `t` và `v`, và range-for dùng `const auto&` để không copy mẫu nào. Với giới hạn 9 A không có mẫu như vậy và chương trình nói thẳng điều đó, thay vì trả về một giá trị ma thuật. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Một log các mẫu (thời gian tính bằng s, dòng tính bằng A) $\{(0.1,2.0),(0.2,4.5),(0.3,6.0)\}$ được tìm mẫu đầu tiên vượt một giới hạn, một lần với 4 A và một lần với 9 A. `std::optional` thay cho một giá trị canh như $-1$, structured binding đặt tên `t` và `v`, và range-for dùng `const auto&` để không copy mẫu nào. Chương trình in ra gì cho mỗi giới hạn? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -183,6 +189,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Với giới hạn 4 A, mẫu đầu tiên có $v>4$ là $(0.2,4.5)$, vì $2.0$ không vượt $4$; `first_above` trả về nó và binding cho `t=0.2 v=4.5`. Với giới hạn 9 A không mẫu nào thỏa ($6.0\le 9$), nên hàm trả về `std::nullopt` và chương trình nói thẳng điều đó, thay vì trả về một giá trị ma thuật. Chương trình in ra:
+
 ```text
 limit 4: t=0.2 v=4.5
 limit 9: none
@@ -194,7 +202,7 @@ Với trung bình và phương sai dạng streaming, việc duy trì tổng bìn
 $$\bar x_n=\bar x_{n-1}+\frac{\delta}{n},\qquad M_n=M_{n-1}+\delta\,(x_n-\bar x_n),\qquad s^2=\frac{M_n}{n-1}.$$
 Công thức ngây thơ $(\sum x^2-n\bar x^2)/(n-1)$ trừ hai số rất lớn và gần bằng nhau (triệt tiêu thảm khốc, catastrophic cancellation).
 
-**Ví dụ.** Bốn số đo $10^{10}+\{1,4,4,7\}$ có phương sai mẫu thật $18/3=6$ (các độ lệch $-3,0,0,3$). Cả hai công thức chạy bằng `double` trên cùng dữ liệu: các tổng ngây thơ in ra một số âm, cập nhật Welford in ra 6. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Bốn số đo $10^{10}+\{1,4,4,7\}$ có phương sai mẫu thật $18/3=6$ (các độ lệch $-3,0,0,3$ so với trung bình $10^{10}+4$). Cả công thức tổng ngây thơ lẫn cập nhật Welford chạy bằng `double` trên cùng dữ liệu. Mỗi công thức in ra gì? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -216,6 +224,8 @@ int main() {
   std::cout << "naive " << naive << ", Welford " << m2 / (n - 1) << '\n';
 }
 ```
+
+**Lời giải.** Công thức ngây thơ tính $(q-n\bar x^2)/(n-1)$ từ $q=\sum x^2\approx4\cdot10^{20}$ và $n\bar x^2$, hai số cỡ đó mà hiệu chỉ là $18$. Các double gần $4\cdot10^{20}$ (giữa $2^{68}$ và $2^{69}$) cách nhau $2^{68-52}=65\,536$, nên hiệu bị mất trong làm tròn và ra $-65\,536/3=-21\,845.3$, một phương sai âm. Cập nhật Welford chỉ làm việc với các độ lệch nhỏ: $\delta=1\cdot10^{10}+1$ cho trung bình $10^{10}+1$ và $M=0$; rồi $\delta=3$, trung bình $10^{10}+2.5$, $M=4.5$; $\delta=1.5$, trung bình $10^{10}+3$, $M=6$; $\delta=4$, trung bình $10^{10}+4$, $M=18$, nên phương sai là $18/3=6$. Chương trình in ra:
 
 ```text
 naive -21845.3, Welford 6
@@ -351,7 +361,7 @@ Có một quy tắc phá vỡ khuôn mẫu đó. Nếu `P` là `T&&` với `T` l
 
 *Hình: bảng của mục này dưới dạng hình. Một lvalue làm `T` thành lvalue reference và collapsing giữ tham số là lvalue reference; một rvalue làm `T` thành kiểu thường và tham số `T&&` là rvalue reference. `std::forward<T>(x)` sau đó chuyển tiếp cùng category.*
 
-**Ví dụ.** `sink` báo cáo value category mà người gọi đã truyền, dùng `std::is_lvalue_reference_v<T>`. Chuỗi có tên là lvalue, nên `T` được suy ra là `std::string&`; giá trị tạm và kết quả của `std::move` là rvalue, nên `T` là `std::string`. Các kích thước in ra (3, 4, 3) cho thấy mỗi lời gọi nhận chuỗi riêng của nó. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** `sink` báo cáo value category mà người gọi đã truyền, dùng `std::is_lvalue_reference_v<T>` và kích thước chuỗi. Nó được gọi với một `std::string` có tên ("arm"), với giá trị tạm `std::string("hand")` và với `std::move(name)`. Mỗi lời gọi in ra gì, và `T` được suy ra thế nào? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -372,6 +382,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Chuỗi có tên là lvalue, nên `T` được suy ra là `std::string&` và lời gọi in `lvalue 3`. Giá trị tạm là rvalue, nên `T` là `std::string` và lời gọi in `rvalue 4`. `std::move(name)` ép lvalue về lại rvalue, nên `T` lại là `std::string` và lời gọi in `rvalue 3` (`sink` chỉ đọc kích thước nên `name` vẫn giữ "arm"). Các kích thước in ra (3, 4, 3) cho thấy mỗi lời gọi nhận chuỗi riêng của nó. Chương trình in ra:
+
 ```text
 lvalue 3
 rvalue 4
@@ -388,7 +400,7 @@ Chiều của fold quan trọng với dấu phẩy động vì `+` trên `double
 
 *Hình: thứ tự tính của hai fold trên pack $(1,10^{16},-10^{16})$. Trong fold trái số 1 được cộng vào $10^{16}$ trước và bị mất theo quy tắc làm tròn về số chẵn khi hòa; trong fold phải các số lớn triệt tiêu trước và số 1 còn lại (khoảng cách giữa các double theo cppreference, Fold expressions, và quy tắc làm tròn về số chẵn của IEEE 754 dùng trong bài).*
 
-**Ví dụ.** Phép trừ không có tính kết hợp, nên chiều của fold hiện rõ ngay cả với số nguyên. Với pack $(10,3,2)$ fold trái là $(10-3)-2=5$ và fold phải $10-(3-2)=9$; fold hai ngôi `(0.0 + ... + args)` của một pack rỗng là `0`, còn fold một ngôi sẽ là ill-formed với `+` (cppreference, *Fold expressions*). Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Phép trừ không có tính kết hợp, nên chiều của fold hiện rõ ngay cả với số nguyên. Với pack $(10,3,2)$ hãy tính fold trái `(... - args)` và fold phải `(args - ...)`, cùng fold hai ngôi `(0.0 + ... + args)` của một pack rỗng. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -402,6 +414,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Fold trái nhóm từ bên trái: $(10-3)-2=7-2=5$. Fold phải nhóm từ bên phải: $10-(3-2)=10-1=9$. Fold hai ngôi của một pack rỗng chỉ còn giá trị ban đầu `0.0`, in ra là `0`; fold một ngôi của pack rỗng sẽ là ill-formed với `+` (cppreference, *Fold expressions*), nên dạng hai ngôi là dạng an toàn. Chương trình in ra:
+
 ```text
 5 9 0
 ```
@@ -410,7 +424,7 @@ int main() {
 
 Một lời gọi chỉ được tính lúc biên dịch nếu mọi bước đều là *core constant expression*. Chia cho 0, đọc ngoài mảng, tràn số có dấu hoặc thực thi `throw` đều không phải, nên compiler từ chối bằng chẩn đoán trong `static_assert` hoặc trong initializer `constexpr`, trong khi lúc chạy cùng đoạn code đó là hành vi không xác định (hoặc ném exception). Ví dụ với GCC 11: `static_assert` gọi một hàm `constexpr` chia cho 0 báo `'(10 / 0)' is not a constant expression`. Hệ quả hữu ích là việc tính `constexpr` hoạt động như một bộ kiểm tra hành vi không xác định miễn phí cho các đầu vào bạn thử. Một hàm `constexpr` không phải template, không phải defaulted mà *không có* giá trị đối số nào cho ra biểu thức hằng là ill-formed, no diagnostic required (cppreference, *constexpr specifier*), nên đừng viết hàm như vậy rồi trông chờ compiler phát hiện.
 
-**Ví dụ.** $12!=479\,001\,600$ vừa trong một `int` 32 bit nhưng $13!=6\,227\,020\,800$ thì không. `static_assert` đầu biên dịch được; biên dịch chương trình với `-DTRY_13` thì dừng ở cái thứ hai, vì tràn số có dấu không phải biểu thức hằng, trong khi cùng lời gọi đó lúc chạy sẽ âm thầm là undefined behaviour:
+**Ví dụ.** Một hàm giai thừa `constexpr` `fact(n)` dùng `int` 32 bit. `static_assert(fact(12) == 479001600)` có biên dịch được không, và `static_assert(fact(13) > 0)` xảy ra chuyện gì khi biên dịch chương trình với `-DTRY_13`? ($12!=479\,001\,600$ và $13!=6\,227\,020\,800$, giá trị lớn nhất của `int` là $2^{31}-1=2\,147\,483\,647$.)
 
 ```cpp
 constexpr int fact(int n) { return n <= 1 ? 1 : n * fact(n - 1); }
@@ -423,13 +437,13 @@ static_assert(fact(13) > 0);            // 13! = 6227020800 does not
 int main() {}
 ```
 
+**Lời giải.** $12!=479\,001\,600<2\,147\,483\,647$, nên `static_assert` đầu biên dịch được. $13!=6\,227\,020\,800>2\,147\,483\,647$ làm tràn `int` 32 bit; tràn số có dấu không phải biểu thức hằng, nên với `-DTRY_13` compiler dừng ở `static_assert` thứ hai, trong khi cùng lời gọi đó lúc chạy sẽ âm thầm là undefined behaviour. Phản hồi của compiler với `g++ -std=c++20 -DTRY_13 -c fact.cpp` (g++ 11.4.0) là:
+
 ```text
 fact.cpp:5:24: error: non-constant condition for static assertion
 fact.cpp:5:19:   in ‘constexpr’ expansion of ‘fact(13)’
 fact.cpp:5:24: error: overflow in constant expression [-fpermissive]
 ```
-
-Khối bên dưới chương trình là phản hồi của compiler với `g++ -std=c++20 -DTRY_13 -c fact.cpp` (g++ 11.4.0).
 
 ### Overload resolution và SFINAE: loại ứng viên thay vì báo lỗi
 
@@ -443,7 +457,7 @@ So sánh hai công cụ. SFINAE chọn *giữa các overload*: ứng viên thấ
 
 *Hình: overload resolution với SFINAE cho hai overload của ví dụ bên dưới. Một ứng viên có kiểu trả về là biểu thức không hợp lệ thì bị loại, nên mỗi lời gọi trong ba lời gọi đầu có đúng một ứng viên còn sống; lời gọi thứ tư mất cả hai ứng viên và là lỗi tại nơi gọi.*
 
-**Ví dụ.** `to_text` có hai overload với kiểu trả về là `decltype(std::to_string(x))` và `decltype(x.name())`. Với `42` và `2.5` ứng viên thứ hai có kiểu trả về không hợp lệ và biến mất; với một `Joint` ứng viên đầu biến mất, nên mỗi lời gọi này có đúng một ứng viên khả dụng. Nếu `main` còn in `to_text("x")` thì cả hai ứng viên bị loại, và compiler sẽ báo dòng hiển thị sau đầu ra. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** `to_text` có hai overload với kiểu trả về là `decltype(std::to_string(x))` và `decltype(x.name())`. Ứng viên nào khả dụng cho `to_text(42)`, `to_text(2.5)` và `to_text(Joint{"elbow"})`, chương trình in ra gì, và compiler báo gì nếu `main` còn in `to_text("x")`? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -458,6 +472,8 @@ int main() {
   std::cout << to_text(42) << ' ' << to_text(2.5) << ' ' << to_text(Joint{"elbow"}) << '\n';
 }
 ```
+
+**Lời giải.** Với `42` và `2.5` ứng viên thứ hai có kiểu trả về không hợp lệ (`int` và `double` không có `.name()`), nên biến mất và ứng viên đầu trả về `std::to_string`: `42` và `2.500000`. Với một `Joint` ứng viên đầu biến mất (`std::to_string` không có overload cho nó) và ứng viên thứ hai trả về nhãn `elbow`; mỗi lời gọi này có đúng một ứng viên khả dụng. Với `to_text("x")` cả hai ứng viên bị loại, nên không hàm nào khả dụng và compiler báo khối thứ hai bên dưới, dòng hiển thị sau đầu ra. Chương trình in ra (khối đầu), còn lỗi đến từ lời gọi thêm (khối thứ hai):
 
 ```text
 42 2.500000 elbow

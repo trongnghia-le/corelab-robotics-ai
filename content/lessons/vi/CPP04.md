@@ -36,7 +36,7 @@ Bằng quy nạp theo số lời gọi, $I$ đúng với mọi trạng thái có
 
 Hãy chú ý chi tiết cài đặt quan trọng: viết phép kiểm tra là `!(lo <= q && q <= hi)` hoặc kiểm tra tính hữu hạn trước. Với `NaN`, mọi phép so sánh đều sai, nên `if (q < lo || q > hi) reject` sẽ chấp nhận nó.
 
-**Ví dụ.** Một driver động cơ chỉ nhận duty cycle trong $[0, 0.85]$. Lớp dưới đây thiết lập invariant đó ngay trong constructor, và một phép thử thứ hai viết là `!(d < 0 || d > 0.85)` được so sánh với nó trên ba đầu vào (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một driver động cơ chỉ nhận duty cycle trong $[0, 0.85]$. Lớp dưới đây thiết lập invariant đó ngay trong constructor, và một phép thử thứ hai viết là `!(d < 0 || d > 0.85)` được so sánh với nó trên các đầu vào 0.5, 0.9 và NaN (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Mỗi phép thử chấp nhận đầu vào nào?
 
 ```cpp
 #include <cstdio>
@@ -63,13 +63,14 @@ int main() {
 }
 ```
 
+**Lời giải.** Constructor dùng dạng *khẳng định* `0 <= d && d <= 0.85` rồi phủ định nó, nên NaN (mọi phép so sánh với nó đều sai) bị từ chối, và bước establish của chứng minh đúng với mọi đầu vào: 0.5 được chấp nhận, 0.9 và NaN bị từ chối. Phép thử dùng so sánh phủ định `!(d < 0 || d > 0.85)` đồng ý trên 0.5 và 0.9, nhưng với NaN cả hai phép so sánh đều sai nên nó chấp nhận: nó sẽ lưu một giá trị ngoài invariant, và bước preserve của mọi lời gọi sau đó sẽ được chứng minh cho một trạng thái chưa từng thỏa $I$. Chương trình in ra:
+
 ```text
 duty 0.5    constructor accepts: 1   naive range test accepts: 1
 duty 0.9    constructor accepts: 0   naive range test accepts: 0
 duty nan    constructor accepts: 0   naive range test accepts: 1
 ```
 
-Constructor dùng dạng *khẳng định* `0 <= d && d <= 0.85` rồi phủ định nó, nên NaN (mọi phép so sánh với nó đều sai) bị từ chối, và bước establish của chứng minh đúng với mọi đầu vào. Phép thử dùng so sánh phủ định chấp nhận NaN: nó sẽ lưu một giá trị ngoài invariant, và bước preserve của mọi lời gọi sau đó sẽ được chứng minh cho một trạng thái chưa từng thỏa $I$.
 ```explore
 {
   "title": "Which updates does the gate accept?",
@@ -116,7 +117,7 @@ Constructor dùng dạng *khẳng định* `0 <= d && d <= 0.85` rồi phủ đ�
 - Đánh dấu constructor một đối số là `explicit` (C.46) để ngăn các chuyển đổi ngầm như `JointState j = 0.5;`.
 - Mỗi hàm thành viên là `const` trừ khi nó thay đổi trạng thái.
 
-**Ví dụ.** `Pose2D` không có invariant (ba số bất kỳ đều là một pose), nên nó vẫn là `struct`; `JointAngle` có invariant $|a|\le\pi$, nên là một class với constructor `explicit` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** `Pose2D` không có invariant (ba số bất kỳ đều là một pose), nên nó vẫn là `struct`; `JointAngle` có invariant $|a|\le\pi$, nên là một class với constructor `explicit` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Chương trình in ra gì, và `report(0.75)` có được chấp nhận thay cho `report(JointAngle{0.75})` không?
 
 ```cpp
 #include <cstdio>
@@ -135,12 +136,12 @@ int main() {
 }
 ```
 
+**Lời giải.** Viết `report(0.75)` thay cho `report(JointAngle{0.75})` bị từ chối lúc biên dịch: `could not convert ‘7.5e-1’ from ‘double’ to ‘JointAngle’`. Nếu không có `explicit`, con số trần sẽ được chuyển đổi lặng lẽ, và một giá trị theo độ hay một `double` dành cho tham số khác sẽ chảy vào class mà không bị kiểm tra (C.46). Chương trình với lời gọi tường minh in ra:
+
 ```text
 pose = (1.0, 2.0, 0.5)
 angle = 0.75 rad
 ```
-
-Viết `report(0.75)` thay cho `report(JointAngle{0.75})` bị từ chối lúc biên dịch: `could not convert ‘7.5e-1’ from ‘double’ to ‘JointAngle’`. Nếu không có `explicit`, con số trần sẽ được chuyển đổi lặng lẽ, và một giá trị theo độ hay một `double` dành cho tham số khác sẽ chảy vào class mà không bị kiểm tra (C.46).
 
 ### Kiểm soát truy cập và `const`: compiler thực thi điều gì
 
@@ -148,7 +149,7 @@ Kiểm soát truy cập là một phép kiểm tra lúc biên dịch trên *tên
 
 Một hàm thành viên `const` hứa không đổi trạng thái quan sát được của đối tượng, và compiler thực thi điều đó với các data member không phải `mutable`: bên trong hàm, `this` có kiểu `const T*`, nên phép gán vào member là lỗi (cppreference: cv type qualifiers, `mutable` specifier). Điểm khác biệt quan trọng là giữa tính const *bitwise* và *logical*. Một cache, một mutex hay một bộ đếm số lần đọc không đổi giá trị mà bên gọi nhìn thấy, nên có thể khai báo `mutable` và được ghi từ hàm `const`; một member là một phần của giá trị trừu tượng thì không được như vậy. Overload theo `const` cho phép một tên phục vụ cả bên gọi chỉ đọc lẫn bên gọi ghi được (`T& at(i)` và `const T& at(i) const`), và tham chiếu `const` là cách rẻ nhất để trao quyền đọc (F.16, Con.2).
 
-**Ví dụ.** Một odometer đếm số lần đọc tổng của nó bằng một bộ đếm `mutable`, và được nhìn qua một tham chiếu `const` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một odometer đếm số lần đọc tổng của nó bằng một bộ đếm `mutable`, và được nhìn qua một tham chiếu `const` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Hai lần đọc qua tham chiếu `const` có biên dịch được không, tổng và số lần đọc là bao nhiêu, và chuyện gì xảy ra nếu gọi `add()` qua cùng tham chiếu đó?
 
 ```cpp
 #include <cstdio>
@@ -168,11 +169,11 @@ int main() {
 }
 ```
 
+**Lời giải.** Cả hai lời gọi biên dịch được vì `total()` là `const` và bộ đếm là `mutable`; tổng là $12{,}5+12{,}5=25{,}0$ và có 2 lần đọc được đếm. Gọi hàm thay đổi `add()` qua cùng tham chiếu đó bị từ chối: `passing ‘const Odometer’ as ‘this’ argument discards qualifiers [-fpermissive]`. Chương trình in ra:
+
 ```text
 sum of two reads = 25.0, reads counted = 2
 ```
-
-Cả hai lời gọi biên dịch được vì `total()` là `const` và bộ đếm là `mutable`; tổng là 25.0 và có 2 lần đọc được đếm. Gọi hàm thay đổi `add()` qua cùng tham chiếu đó bị từ chối: `passing ‘const Odometer’ as ‘this’ argument discards qualifiers [-fpermissive]`.
 
 ### Interface và virtual dispatch
 
@@ -190,7 +191,7 @@ struct Controller {
 - **Slicing**: truyền `Controller c` theo giá trị chỉ copy subobject base, ở đây còn không dựng được vì nó trừu tượng; với base cụ thể, nó lặng lẽ mất hành vi dẫn xuất. Truyền bằng reference hoặc con trỏ (C.145) và xóa các phép copy của các base đa hình (C.67).
 - **Chi phí**: một lời gọi ảo là một lời gọi gián tiếp qua vtable, thường vài nano giây và không inline được. Nó không đáng kể ở điều khiển 1 kHz và đáng kể trong một vòng lặp qua $10^8$ phần tử.
 
-**Ví dụ.** Một bộ điều khiển PID có ba hệ số bị xóa qua một con trỏ base. Trước hết là một base không có destructor virtual, dựng bằng g++ 11.4.0 và `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`:
+**Ví dụ.** Một bộ điều khiển PID có ba hệ số bị xóa qua một con trỏ base. Trước hết là một base không có destructor virtual, dựng bằng g++ 11.4.0 và `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`. Compiler và AddressSanitizer báo gì, và điều gì đổi khi có `virtual ~Controller()`?
 
 ```cpp
 #include <cstdio>
@@ -198,6 +199,8 @@ struct Controller { virtual double compute(double e) const = 0; ~Controller() {}
 struct PID : Controller { double gains[3] = {1, 0.1, 0.01}; double compute(double e) const override { return gains[0] * e; } };
 int main() { Controller* c = new PID; std::printf("%g\n", c->compute(2.0)); delete c; }
 ```
+
+**Lời giải.** Compiler cảnh báo lúc biên dịch và AddressSanitizer báo lúc chạy rằng một đối tượng 32 byte bị giải phóng như một đối tượng 8 byte: `~PID` và phần dẫn xuất không bao giờ được xử lý. Bản build và lần chạy cho ra (báo cáo được rút gọn):
 
 ```text
 warning: deleting object of abstract class type ‘Controller’ which has non-virtual destructor will cause undefined behavior [-Wdelete-non-virtual-dtor]
@@ -208,7 +211,7 @@ size of the deallocated type: 8 bytes.
 SUMMARY: AddressSanitizer: new-delete-type-mismatch ../../../../src/libsanitizer/asan/asan_new_delete.cpp:172 in operator delete(void*, unsigned long)
 ```
 
-Compiler cảnh báo lúc biên dịch và AddressSanitizer báo lúc chạy rằng một đối tượng 32 byte bị giải phóng như một đối tượng 8 byte: `~PID` và phần dẫn xuất không bao giờ được xử lý. Với `virtual ~Controller()` (C.35), cùng phép xóa qua một `std::unique_ptr<Controller>` chạy cả hai destructor, như chương trình thứ hai cho thấy (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Với `virtual ~Controller()` (C.35), cùng phép xóa đi qua một `std::unique_ptr<Controller>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Những destructor nào chạy, và theo thứ tự nào?
 
 ```cpp
 #include <cstdio>
@@ -217,6 +220,8 @@ struct Controller { virtual ~Controller() { std::puts("~Controller"); } virtual 
 struct PID : Controller { double gains[3] = {1, 0.1, 0.01}; ~PID() override { std::puts("~PID"); } double compute(double e) const override { return gains[0] * e; } };
 int main() { std::unique_ptr<Controller> c = std::make_unique<PID>(); std::printf("%g\n", c->compute(2.0)); }
 ```
+
+**Lời giải.** Destructor virtual làm phép xóa được phân phối theo kiểu động, nên destructor của lớp dẫn xuất sâu nhất chạy trước rồi đến destructor của base, theo thứ tự ngược với thứ tự xây, và đối tượng được giải phóng với kích thước thật của nó. Chương trình in ra kết quả của `compute(2.0)` ($1\cdot2=2$) rồi:
 
 ```text
 2
@@ -228,7 +233,7 @@ int main() { std::unique_ptr<Controller> c = std::make_unique<PID>(); std::print
 
 Nếu code hoạt động với `Base&`, nó cũng phải hoạt động với bất kỳ `Derived` nào. Một `FixedJoint : Joint` có `set_position` throw sẽ phá điều này (nguyên lý thay thế Liskov): phía gọi không thể biết từ kiểu rằng lời gọi có hợp lệ hay không. Chỉ kế thừa khi class dẫn xuất *là một* loại thay thế được của base, nếu không hãy dùng composition (một member) hoặc các interface tách riêng (`Positionable` chỉ được cài đặt bởi các khớp di chuyển được).
 
-**Ví dụ.** Một planner gửi `set_position` tới mọi khớp của một cánh tay hỗn hợp; khớp thứ hai là một `FixedJoint` dẫn xuất từ `Joint` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một planner gửi `set_position` tới mọi khớp của một cánh tay hỗn hợp; khớp thứ hai là một `FixedJoint` dẫn xuất từ `Joint` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Code có biên dịch sạch không, planner thấy gì ở mỗi khớp, và `FixedJoint` có thỏa hợp đồng của `Joint` không?
 
 ```cpp
 #include <cstdio>
@@ -247,13 +252,13 @@ int main() {
 }
 ```
 
+**Lời giải.** Code biên dịch không cảnh báo và planner, viết theo `Joint&`, không thể biết qua kiểu rằng khớp 1 sẽ từ chối: nó phải bắt `std::logic_error` hoặc kiểm tra kiểu động, và mọi bên gọi mới đều phải nhớ làm như vậy. Một kiểu có thao tác đôi khi bất hợp lệ không thỏa hợp đồng của base (Core Guidelines C.120, và nguyên lý thay thế Liskov), nên `FixedJoint` không nên dẫn xuất từ một `Joint` hứa hẹn có chuyển động. Chương trình in ra:
+
 ```text
 moved to 0.25
 joint 1: fixed joint cannot move
 moved to 0.75
 ```
-
-Code biên dịch không cảnh báo và planner, viết theo `Joint&`, không thể biết qua kiểu rằng khớp 1 sẽ từ chối: nó phải bắt `std::logic_error` hoặc kiểm tra kiểu động, và mọi bên gọi mới đều phải nhớ làm như vậy. Một kiểu có thao tác đôi khi bất hợp lệ không thỏa hợp đồng của base (Core Guidelines C.120, và nguyên lý thay thế Liskov), nên `FixedJoint` không nên dẫn xuất từ một `Joint` hứa hẹn có chuyển động.
 
 ### Lời gọi virtual trong lúc construction và destruction
 
@@ -275,7 +280,7 @@ struct Lidar : Sensor {
 
 Xây và hủy một `Lidar` in ra `Sensor() sees generic`, `Lidar() sees lidar`, `~Lidar() sees lidar`, `~Sensor() sees generic`. Nếu `name()` là pure virtual trong `Sensor` và không được cài đặt thì lời gọi từ `Sensor()` là undefined behavior (C.82). Thay vào đó nên: truyền dữ liệu cần thiết cho constructor cơ sở làm đối số (`Sensor(std::string n)`), dùng một factory có tên xây đối tượng hoàn chỉnh rồi gọi `init()` (đối tượng hợp lệ ngay khi factory trả về nên invariant không bị làm yếu), hoặc dùng hàm helper non-virtual trong lớp cơ sở. Đây là phiên bản dynamic-dispatch của mẫu chứng minh invariant: một lời gọi virtual trong constructor xảy ra *trước khi* bước establish hoàn tất, nên không được giả định bước preserve.
 
-**Ví dụ.** Một driver cảm biến tính chu kỳ lấy mẫu ngay trong constructor của base từ một `rate()` virtual; driver dẫn xuất override `rate()` thành 100 Hz. Thiết kế thứ hai truyền tần số xuống (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một driver cảm biến tính chu kỳ lấy mẫu ngay trong constructor của base từ một `rate()` virtual; driver dẫn xuất override `rate()` thành 100 Hz. Thiết kế thứ hai truyền tần số xuống (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Mỗi thiết kế tính ra chu kỳ bao nhiêu?
 
 ```cpp
 #include <cstdio>
@@ -299,12 +304,12 @@ int main() {
 }
 ```
 
+**Lời giải.** Trong `Driver()` kiểu động là `Driver`, nên `rate()` được phân giải thành giá trị của base là 10 Hz ([class.cdtor]) và chu kỳ là $1/10=0{,}10$ s dù đối tượng được định chạy ở 100 Hz: lỗi âm thầm và invariant "chu kỳ = 1 / rate" sai ngay từ khoảnh khắc đầu tiên. Truyền tần số làm đối số constructor cho chu kỳ $1/100=0{,}01$ s và không cần lời gọi virtual nào trước khi đối tượng hoàn chỉnh (C.82). Chương trình in ra:
+
 ```text
 virtual call in constructor: period = 0.10 s
 rate passed to base       : period = 0.01 s
 ```
-
-Trong `Driver()` kiểu động là `Driver`, nên `rate()` được phân giải thành giá trị của base là 10 Hz ([class.cdtor]) và chu kỳ là 0,10 s dù đối tượng được định chạy ở 100 Hz: lỗi âm thầm và invariant "chu kỳ = 1 / rate" sai ngay từ khoảnh khắc đầu tiên. Truyền tần số làm đối số constructor cho chu kỳ 0,01 s và không cần lời gọi virtual nào trước khi đối tượng hoàn chỉnh (C.82).
 
 ![Bốn cột cho việc xây và hủy một Lidar: Sensor() thấy generic, Lidar() thấy lidar, ~Lidar() thấy lidar, ~Sensor() thấy generic; member label chỉ sống ở giữa](/lesson-figures/CPP04-2.svg)
 
@@ -320,7 +325,7 @@ $$\text{pre}_{\text{Base}}(x) \Rightarrow \text{pre}_{\text{Derived}}(x), \qquad
 
 *Cơ giới hóa: non-virtual interface.* Để hợp đồng tự động đúng với mọi override, đặt cổng kiểm tra trong một hàm public non-virtual của lớp cơ sở: nó kiểm tra precondition của lớp cơ sở, gọi một hàm private virtual `do_set(q, dt)`, và kiểm tra invariant của lớp cơ sở khi ra; lớp dẫn xuất chỉ tùy biến bước private. Khi đó ngay cả một override cẩu thả cũng không thể công bố một trạng thái vi phạm $I_{\text{Base}}$. Điều này cũng giải thích vì sao guideline không khuyến khích dữ liệu `protected` (C.133): lớp dẫn xuất ghi được vào member của lớp cơ sở sẽ vượt qua cổng, nên lớp cơ sở không còn chứng minh được invariant chỉ bằng cách nhìn các member function của chính nó.
 
-**Ví dụ.** Joint cơ sở chấp nhận một chuyển động khi $|\Delta q|/dt\le2$ rad/s; `SlowJoint` override phép thử bằng 1,25 rad/s. Bốn lời gọi từ $q=0$ được phát lại trên cả hai (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Joint cơ sở chấp nhận một chuyển động khi $|\Delta q|/dt\le2$ rad/s; `SlowJoint` override phép thử bằng 1,25 rad/s. Bốn lời gọi từ $q=0$ được phát lại trên cả hai (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Mỗi lớp chấp nhận những lời gọi nào, và override có thay thế được cho base không?
 
 ```cpp
 #include <cmath>
@@ -341,6 +346,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Tốc độ của mỗi lời gọi là $|\Delta q|/dt$: $0{,}3/0{,}2=1{,}50$, $0{,}5/0{,}5=1{,}00$, $0{,}6/0{,}4=1{,}50$ và $0{,}8/0{,}5=1{,}60$ rad/s. Cả bốn đều thỏa precondition của base (không quá 2), nhưng `SlowJoint` từ chối ba lời gọi (1,50, 1,50 và 1,60 rad/s đều lớn hơn 1,25): precondition của nó chặt hơn, nên $\text{pre}_{\text{Base}}\Rightarrow\text{pre}_{\text{Derived}}$ không đúng, và một bên gọi đã truyền các đối số hợp lệ nay bị từ chối. Hình vẽ dưới đây thể hiện cùng tình huống đó dưới dạng các vùng trong mặt phẳng của vị trí đích và bước thời gian. Chương trình in ra:
+
 ```text
 dq    dt    speed  base  slow
 0.3   0.2   1.50   1     0
@@ -348,8 +355,6 @@ dq    dt    speed  base  slow
 0.6   0.4   1.50   1     0
 0.8   0.5   1.60   1     0
 ```
-
-Cả bốn lời gọi đều thỏa precondition của base, nhưng `SlowJoint` từ chối ba lời gọi (1,50, 1,50 và 1,60 rad/s đều lớn hơn 1,25): precondition của nó chặt hơn, nên $\text{pre}_{\text{Base}}\Rightarrow\text{pre}_{\text{Derived}}$ không đúng, và một bên gọi đã truyền các đối số hợp lệ nay bị từ chối. Hình vẽ cùng tình huống đó dưới dạng các vùng trong mặt phẳng của vị trí đích và bước thời gian.
 
 ![Các vùng được chấp nhận phía trên đường dt = |q'|/vmax với vmax 2,75, 2 và 1,25 và giới hạn cộng trừ 1,5, cùng hai lời gọi A và B được đánh dấu](/lesson-figures/CPP04-3.svg)
 
@@ -367,7 +372,7 @@ struct Ring   : Circle { double r2 = 2; };   // forgot to override clone()
 
 Kiểu lỗi này âm thầm: `Ring` thừa kế `Circle::clone`, nên `Shape* p = new Ring; p->clone()` tạo ra một `Circle`, một bản bị slice mà compiler không báo gì. Kiểu trả về covariant không thể là smart pointer, nên dạng an toàn lại là một NVI: `std::unique_ptr<Shape> clone() const` public non-virtual bọc một `do_clone()` pure virtual private và so sánh `typeid(*result)` với `typeid(*this)`; một override bị quên sẽ bị bắt ở lần clone đầu tiên trong bản debug thay vì sinh ra đối tượng sai về sau. Làm `do_clone` thuần ảo cũng buộc mọi lớp cụ thể phải cung cấp nó, dù không thể buộc các lớp con của một lớp trung gian làm vậy, nên kiểm tra lúc chạy vẫn hữu ích.
 
-**Ví dụ.** Một chuỗi bộ lọc clone các node của nó qua một `clone()` public không virtual bọc một `do_clone()` pure virtual private và so sánh kiểu động. `Gain` override nó; `AutoGain` dẫn xuất từ `Gain` và quên (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một chuỗi bộ lọc clone các node của nó qua một `clone()` public không virtual bọc một `do_clone()` pure virtual private và so sánh kiểu động. `Gain` override nó; `AutoGain` dẫn xuất từ `Gain` và quên (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Chuyện gì xảy ra khi clone từng node?
 
 ```cpp
 #include <cstdio>
@@ -398,14 +403,15 @@ int main() {
 }
 ```
 
+**Lời giải.** `Gain` clone đúng. Với `AutoGain`, `Gain::do_clone` được thừa kế sẽ dựng một `Gain` (một slice: trường `target` bị mất), nhưng phép so sánh `typeid` trong `clone()` thấy `Gain` khác `AutoGain` và biến sự mất mát âm thầm đó thành một exception ngay lần clone đầu tiên, trong lần chạy test thay vì ngoài hiện trường (C.130, C.67). Phép kiểm tra tốn một phép so sánh RTTI cho mỗi lần clone. Chương trình in ra:
+
 ```text
 Gain: clone ok
 AutoGain: do_clone() not overridden
 ```
 
-`Gain` clone đúng. Với `AutoGain`, `Gain::do_clone` được thừa kế sẽ dựng một `Gain` (một slice: trường `target` bị mất), nhưng phép so sánh `typeid` trong `clone()` biến sự mất mát âm thầm đó thành một exception ngay lần clone đầu tiên, trong lần chạy test thay vì ngoài hiện trường (C.130, C.67). Phép kiểm tra tốn một phép so sánh RTTI cho mỗi lần clone.
-
 ## Ví dụ có lời giải
+
 
 
 ### Ca 1: chấp nhận và từ chối các cập nhật khớp
@@ -885,3 +891,4 @@ Cùng mẫu này xuất hiện trong `hardware_interface` của ROS 2 (một abs
 - [MIT 6.031 Reading 7: Designing Specifications](https://web.mit.edu/6.031/www/sp22/classes/07-designing-specs/) và [Reading 11: Abstraction Functions and Rep Invariants](https://web.mit.edu/6.031/www/sp22/classes/11-abstraction-functions-rep-invariants/) - specification mạnh so với yếu, và cách thiết lập và bảo toàn representation invariant.
 
 **Thực hành thêm:** các quiz ở [LearnCpp: introduction to classes](https://www.learncpp.com/cpp-tutorial/introduction-to-classes/), [pure virtual functions and interface classes](https://www.learncpp.com/cpp-tutorial/pure-virtual-functions-abstract-base-classes-and-interface-classes/), [virtual destructors and override](https://www.learncpp.com/cpp-tutorial/virtual-destructors-virtual-assignment-and-overriding-virtualization/) và [object slicing](https://www.learncpp.com/cpp-tutorial/object-slicing/) (đáp án hiện trên mỗi trang), và phần [classes and class hierarchies](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c-classes-and-class-hierarchies) của Core Guidelines làm checklist ôn tập cho `JointState` của riêng bạn.
+

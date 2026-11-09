@@ -82,7 +82,7 @@ Not data races: concurrent reads of data nobody writes; writes to different obje
 
 Lost update, step by step: counter $=0$. Thread A loads 0; thread B loads 0; A stores 1; B stores 1. Two increments, final value 1. In an experiment with two threads each doing $10^6$ plain increments, the observed total was 1,988,346 instead of 2,000,000, losing $11{,}654$ updates ($0.58\%$) in one run. A mutex-protected or atomic counter always gives 2,000,000.
 
-**Example.** Two threads each add 1 to a shared counter 400,000 times, first on a plain `int` and then on a `std::atomic<int>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O0 -pthread`; `-O0` keeps the load, add and store visible as three steps):
+**Example.** Two threads each add 1 to a shared counter 400,000 times, first on a plain `int` and then on a `std::atomic<int>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O0 -pthread`; `-O0` keeps the load, add and store visible as three steps). What does each counter end at, and does ThreadSanitizer report the plain loop?
 
 ```cpp
 #include <atomic>
@@ -108,14 +108,14 @@ int main() {
 }
 ```
 
+**Solution.** With no lost update each run must reach $2\times400{,}000=800{,}000$. The plain `++plain` is three steps (load, add, store), so two threads can load the same value and both store it plus 1, which loses one increment; the unsynchronized access is also a data race, which makes the program's result undefined. `fetch_add` is one indivisible read-modify-write, so no increment is lost. The plain counter ends at 421,010, 481,171 and 481,774, never 800,000 and different on every run, while the atomic counter is always exactly 800,000. The loss here (40 to 47 %) is far larger than the 0.58 % quoted above for another build on another machine: its size depends on timing, which is the point, because the program has no defined result (the counts are measurements and change from machine to machine and run to run). Built with ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel), the same plain loop is reported as a data race (excerpt in the second block). The program prints:
+
 ```text
 run 1: plain int  = 421010 (expected 800000, lost 378990)
 run 2: plain int  = 481171 (expected 800000, lost 318829)
 run 3: plain int  = 481774 (expected 800000, lost 318226)
 atomic counter = 800000
 ```
-
-The plain counter ends at 421,010, 481,171 and 481,774, never 800,000 and different on every run, while the atomic counter is always exactly 800,000. The loss here (40 to 47 %) is far larger than the 0.58 % quoted above for another build on another machine: its size depends on timing, which is the point, because the program has no defined result. Built with ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel), the same plain loop is reported (excerpt):
 
 ```text
 WARNING: ThreadSanitizer: data race
@@ -138,7 +138,7 @@ Protect shared state with a mutex and lock it with RAII (CP.20): `std::lock_guar
 
 **Deadlock** needs a cycle: thread 1 holds $A$ and waits for $B$, thread 2 holds $B$ and waits for $A$. Avoid it by lock ordering or by acquiring several mutexes at once with `std::scoped_lock lk(a.m, b.m);` (CP.21), which uses a deadlock-avoidance algorithm.
 
-**Example.** A critical section throws an exception (a failed sensor read). After the exception is caught, a second thread tries to take the same mutex with `try_lock`; one version locks with `lock_guard`, the other with `m.lock()` and `m.unlock()` by hand (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+**Example.** A critical section throws an exception (a failed sensor read). After the exception is caught, a second thread tries to take the same mutex with `try_lock`; one version locks with `lock_guard`, the other with `m.lock()` and `m.unlock()` by hand (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`). Can another thread take the mutex afterwards in each version?
 
 ```cpp
 #include <cstdio>
@@ -164,14 +164,14 @@ int main() {
 }
 ```
 
+**Solution.** With `lock_guard` the destructor runs while the exception unwinds the stack and releases the mutex, so `try_lock` succeeds (`1`). The hand-written version never reaches `m.unlock()`, so the mutex stays locked for good and `try_lock` fails (`0`): every other thread that asked for it would block forever. The final `m.unlock()` in `main` only cleans up the demonstration. The program prints:
+
 ```text
 caught: sensor read failed
 lock_guard : other thread can lock afterwards = 1
 caught: sensor read failed
 m.lock()   : other thread can lock afterwards = 0
 ```
-
-The guard's destructor runs while the exception unwinds the stack, so the mutex is free afterwards (`1`). The hand-written version never reaches `m.unlock()`, so the mutex stays locked for good (`0`): every other thread that asked for it would block forever. The final `m.unlock()` in `main` only cleans up the demonstration.
 
 ### Condition variables
 
@@ -181,7 +181,7 @@ cv.wait(lk, [&]{ return !q.empty() || closed; });   // predicate form
 ```
 `wait` atomically releases the lock and sleeps; on wake-up it re-acquires the lock. The predicate is checked *with the lock held*, in a loop (the overload with a predicate does this for you), because of **spurious wake-ups** and because another consumer may have taken the item first. Notify after changing the state, either with the lock held or just after releasing it. A lost wake-up happens when a thread checks a condition without the lock, and the state changes between the check and the sleep.
 
-**Example.** A notifier sets `ready` and calls `notify_one` *before* the waiter starts to wait. The waiter first uses `wait_for` without a predicate and then the predicate overload, each with a 200 ms timeout so that a lost wake-up shows as a timeout instead of a hang (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+**Example.** A notifier sets `ready` and calls `notify_one` *before* the waiter starts to wait. The waiter first uses `wait_for` without a predicate and then the predicate overload, each with a 200 ms timeout so that a lost wake-up shows as a timeout instead of a hang (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`). Which of the two waits returns early, and how long does each take?
 
 ```cpp
 #include <chrono>
@@ -212,12 +212,12 @@ int main() {
 }
 ```
 
+**Solution.** The state was already true when the waiter started, but the bare `wait_for` sleeps through the whole 200 ms, because the one notification came earlier and is gone: a condition variable remembers nothing. The predicate overload tests `ready` under the lock before sleeping and returns at once (0 ms). The rule is to wait for a *state*, never for a signal. The program prints:
+
 ```text
 no predicate  : timed out after 200 ms, ready = 1
 with predicate: returned true after 0 ms
 ```
-
-The state was already true, but the bare `wait_for` sleeps through the whole 200 ms because the one notification came earlier and is gone: a condition variable remembers nothing. The predicate overload tests `ready` under the lock before sleeping and returns at once (0 ms). The rule is to wait for a *state*, never for a signal.
 
 ### The bounded queue and its contract
 
@@ -231,7 +231,7 @@ A bounded queue with capacity $K$ separates producer and consumer rates: if the 
 
 *Sizing example.* A sensor bursts 50 items in 50 ms (1000 items/s); the consumer handles 200 items/s. During the burst the consumer removes $200\times0.05=10$ items, so the backlog is $50-10=40$ items and drains in $40/200=0.2$ s. Capacity $\ge40$ avoids blocking the producer; with capacity 8 the producer is slowed to the consumer's pace.
 
-**Example.** The sizing rule of the contract is tested on a running queue. A burst of 60 items arrives, one every 0.5 ms (2000 items/s), and the consumer needs 2.5 ms per item (400 items/s). The burst lasts $60\times0.5=30$ ms, in which the consumer removes about $400\times0.030=12$ items, so the predicted backlog is $60-12=48$ items. The program runs capacities $K=64$ and $K=8$ and counts the pushes that had to wait (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+**Example.** The sizing rule of the contract is tested on a running queue. A burst of 60 items arrives, one every 0.5 ms (2000 items/s), and the consumer needs 2.5 ms per item (400 items/s). The burst lasts $60\times0.5=30$ ms, in which the consumer removes about $400\times0.030=12$ items, so the predicted backlog is $60-12=48$ items. The program runs capacities $K=64$ and $K=8$ and counts the pushes that had to wait (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`). What peak backlog, how many blocked pushes and what producer time result for each capacity?
 
 ```cpp
 #include <chrono>
@@ -279,12 +279,12 @@ int main() {
 }
 ```
 
+**Solution.** For $K=64$ the whole predicted backlog of 48 items fits, so no push should block and the producer should finish at about the burst length of 30 ms. For $K=8$ the queue is full after 8 items, so the producer is slowed to the consumer's pace and should finish after about $(60-8)\times2.5=130$ ms. The measured peak backlog with $K=64$ is 47 (prediction 48; the first item is taken at once and the sleeps are not exact), no push blocks and the producer is done after 33.9 ms. With $K=8$ the queue fills, 48 pushes wait and the producer finishes after 137.1 ms, close to the 130 ms predicted (the times are measurements and vary by machine and run). The program prints:
+
 ```text
 K = 64: peak backlog = 47, pushes that blocked =  0, producer done after  33.9 ms
 K =  8: peak backlog =  8, pushes that blocked = 48, producer done after 137.1 ms
 ```
-
-With $K=64$ the measured peak backlog is 47 (prediction 48; the first item is taken at once and the sleeps are not exact), no push blocks and the producer is done after 33.9 ms. With $K=8$ the queue is full after 8 items, 48 pushes wait and the producer is slowed to the consumer's pace: it finishes after 137.1 ms, close to $(60-8)\times2.5=130$ ms.
 
 ```explore
 {
@@ -336,7 +336,7 @@ int data; std::atomic<bool> ready{false};
 ```
 With `memory_order_relaxed` for both, the write to `data` is not ordered with the flag, and the read of `data` would be a data race. Use atomics for flags and counters; use mutexes for anything with an invariant across several variables.
 
-**Example.** The publication pattern of this section is run 2000 times, each round with a fresh pair of threads: the producer writes `data = 42` and sets `ready` with release; the consumer spins with acquire and then reads `data` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; the same source compiled with `-DRELAXED` uses relaxed ordering on both operations):
+**Example.** The publication pattern of this section is run 2000 times, each round with a fresh pair of threads: the producer writes `data = 42` and sets `ready` with release; the consumer spins with acquire and then reads `data` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; the same source compiled with `-DRELAXED` uses relaxed ordering on both operations). In how many rounds does the consumer read 42, and what does ThreadSanitizer say about the relaxed variant?
 
 ```cpp
 #include <atomic>
@@ -362,11 +362,11 @@ int main() {
 }
 ```
 
+**Solution.** The release store of `ready` and the acquire load that sees `true` form a synchronizes-with edge, so the write `data = 42` happens-before the read, and every round must see 42. All 2000 rounds see 42, and ThreadSanitizer is silent on this version. On x86-64 the relaxed build also prints 2000 of 2000, because the hardware keeps stores in order, so a passing test proves nothing about the relaxed version; ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel) does report it as a data race (excerpt in the second block). The program prints:
+
 ```text
 rounds where the consumer read 42: 2000 of 2000
 ```
-
-All 2000 rounds see 42, and ThreadSanitizer is silent on this version. On x86-64 the relaxed build also prints 2000 of 2000, because the hardware keeps stores in order, so a passing test proves nothing about the relaxed version; ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel) does report it (excerpt):
 
 ```text
 WARNING: ThreadSanitizer: data race
@@ -389,7 +389,7 @@ The data-race definition above rests on three relations from the C++ memory mode
 
 *Figure: the proof of this section drawn as a graph. The orange synchronizes-with edge exists only for release/acquire; remove it (relaxed) and $W$ and $R$ are unordered conflicting accesses, a data race.*
 
-**Example.** Thread creation and `join` are synchronization points, so a value can be handed to a thread and back without any atomic. The thread reads `input` (written before it was created) and writes `output`; the parent reads `output` after `join` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; with `-DEARLY` the parent reads before `join`):
+**Example.** Thread creation and `join` are synchronization points, so a value can be handed to a thread and back without any atomic. The thread reads `input` (written before it was created) and writes `output`; the parent reads `output` after `join` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; with `-DEARLY` the parent reads before `join`). Is there a data race, and what value does the parent read?
 
 ```cpp
 #include <cstdio>
@@ -409,11 +409,11 @@ int main() {
 }
 ```
 
+**Solution.** Writing `input` happens-before the start of the thread, and the end of the thread happens-before the return of `join`, so every access is ordered: no race, and the parent reads $7\times6=42$. Under ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel) the `-DEARLY` variant, which reads `output` while the thread may still write it, is reported as a data race (excerpt in the second block). The program prints:
+
 ```text
 output read after join  = 42
 ```
-
-Writing `input` happens-before the start of the thread, and the end of the thread happens-before the return of `join`, so every access is ordered: no race, and the result is 42. Under ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel) the `-DEARLY` variant, which reads `output` while the thread may still write it, is reported (excerpt):
 
 ```text
 WARNING: ThreadSanitizer: data race
@@ -432,7 +432,7 @@ Consider two atomics `x`, `y` initially 0; thread 1 runs `x.store(1); r1 = y.loa
 
 *Figure: why $(r1,r2)=(0,0)$ is possible without a single total order. The loads run between the stores being issued and becoming visible; the counts at the bottom are the measurements of the example below.*
 
-**Example.** The store-buffering test is run 200,000 times with a `std::barrier` releasing both threads together each time, once with relaxed and once with `seq_cst` operations (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`, one machine with an x86-64 CPU):
+**Example.** The store-buffering test is run 200,000 times with a `std::barrier` releasing both threads together each time, once with relaxed and once with `seq_cst` operations (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`, one machine with an x86-64 CPU). In how many of the 200,000 runs does the outcome $(r1,r2)=(0,0)$ appear for each ordering?
 
 ```cpp
 #include <atomic>
@@ -462,18 +462,18 @@ int main() {
 }
 ```
 
+**Solution.** By the proof above, $(0,0)$ is impossible with `seq_cst`, while relaxed operations allow it. With relaxed operations the outcome that sequential consistency forbids, $(r1,r2)=(0,0)$, appeared in 2 runs; with `seq_cst` it never appeared in 200,000. The count is small and varies from run to run (it is a measurement; another run on the same machine gave 21) because the window is a few nanoseconds wide, so a stress test can show the outcome but never exclude it; the proof above does. The program prints:
+
 ```text
 relaxed: (0,0) seen in 2 of 200000 runs
 seq_cst: (0,0) seen in 0 of 200000 runs
 ```
 
-With relaxed operations the outcome that sequential consistency forbids $(r1,r2)=(0,0)$ appeared in 2 runs; with `seq_cst` it never appeared in 200,000. The count is small and varies from run to run because the window is a few nanoseconds wide, so a stress test can show the outcome but never exclude it; the proof above does.
-
 ### Deadlock freedom by lock ordering: a proof and its limits
 
 A deadlock requires a cycle in the wait-for graph (the lesson's definition). **Theorem.** If every thread acquires locks only in increasing order of a fixed rank, no deadlock is possible. *Proof.* Suppose threads $T_1,\dots,T_k$ form a cycle: $T_i$ holds lock $a_i$ and waits for $a_{i+1}$ (indices mod $k$). A thread waiting for $a_{i+1}$ while holding $a_i$ acquired $a_i$ first, so $\text{rank}(a_i)<\text{rank}(a_{i+1})$. Going round the cycle gives $\text{rank}(a_1)<\text{rank}(a_2)<\dots<\text{rank}(a_1)$, impossible. $\square$ The proof needs *every* acquisition path to obey the order, including those inside callbacks: this is why CP.22 forbids calling unknown code while holding a lock (C++ Core Guidelines, CP.21 and CP.22). `std::scoped_lock` removes the need for a global rank by using a deadlock-avoidance algorithm, but it needs all the locks in one statement; locks acquired in different functions still need a convention. Two traps: locking the *same* `std::mutex` twice in one thread (for example `transfer(a, a)`) is undefined behavior for a non-recursive mutex, with or without `scoped_lock`; and ordering by address (`std::less<>{}(&a.m, &b.m)`) is a valid rank for mutexes of unrelated objects.
 
-**Example.** Two accounts, $0$ and $1$, and two transfers in opposite directions. The naive version locks the source first; a barrier makes both threads hold their first lock, and a 200 ms limit on the second lock turns the permanent wait into a visible failure. The ordered version always locks the lower index first, and runs 200,000 transfers (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; also clean under ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel)):
+**Example.** Two accounts, $0$ and $1$, and two transfers in opposite directions. The naive version locks the source first; a barrier makes both threads hold their first lock, and a 200 ms limit on the second lock turns the permanent wait into a visible failure. The ordered version always locks the lower index first, and runs 200,000 transfers (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; also clean under ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel)). Does each version finish, and what do the balances add up to?
 
 ```cpp
 #include <barrier>
@@ -526,12 +526,12 @@ int main() {
 }
 ```
 
+**Solution.** In the naive version both threads hold their first lock and each waits for the other's, a cycle, so one transfer gives up after 200 ms (without the limit both would wait forever; which of the two gives up varies), and the other then proceeds. In the ordered version both threads acquire in increasing rank, so by the theorem no cycle can form and all $2\times100{,}000=200{,}000$ transfers complete. Each loop moves $100{,}000\times3=300{,}000$ from account 0 to account 1 and $100{,}000\times2=200{,}000$ back, and the naive transfer that completed (1 to 0, amount 20) had already left $500{,}020$ and $499{,}980$, so account 0 ends at $500{,}020-300{,}000+200{,}000=400{,}020$ and account 1 at $499{,}980+300{,}000-200{,}000=599{,}980$. The balances still sum to $400{,}020+599{,}980=1{,}000{,}000$, the starting total, as the conservation check requires. The program prints:
+
 ```text
 naive  : transfer 0->1 completed = 0, transfer 1->0 completed = 1
 ordered: 200000 transfers done, balances = 400020 + 599980 = 1000000
 ```
-
-In the naive run one transfer gave up after 200 ms (without the limit both would wait forever; which of the two gives up varies), and the other then proceeded. The ordered version completed all 200,000 transfers, and the balances still sum to $400{,}020+599{,}980=1{,}000{,}000$, the starting total, as the conservation check requires. The proof applies: both threads acquire in increasing rank, so no cycle can form.
 
 ### Condition variables: the invariant and the missed-notification argument
 
@@ -539,7 +539,7 @@ A condition variable is not a flag; it is a *queue of sleeping threads* attached
 
 Part (3) is where `notify_one` is dangerous. With one condition variable shared by "not full" and "not empty" waiters, `notify_one` may wake a waiter whose predicate is still false, the wake-up is consumed, and a waiter who could have proceeded sleeps on (Exercise 15). The two safe designs are `notify_all` with predicates (correct, but $O(\text{waiters})$ wake-ups per operation) and one condition variable per predicate with `notify_one`. A useful invariant to state in the queue's contract is: *whenever the lock is free, if the queue is non-empty then no consumer that is asleep has a true predicate, and if it is not full then no producer asleep has a true predicate.* Each operation must restore this invariant before unlocking, which is exactly the notification rule. Notifying after unlocking is allowed and can save one context switch, but notifying *before* the state change is a bug.
 
-**Example.** Four consumers wait on *one* condition variable while a producer publishes 6 items, 20 ms apart. Each consumer re-tests its predicate in a loop, so both `notify_one` and `notify_all` are correct; the program counts how often `wait` returned (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+**Example.** Four consumers wait on *one* condition variable while a producer publishes 6 items, 20 ms apart. Each consumer re-tests its predicate in a loop, so both `notify_one` and `notify_all` are correct; the program counts how often `wait` returned (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`). How many items are taken and how many wake-ups occur with each notification call?
 
 ```cpp
 #include <chrono>
@@ -583,12 +583,12 @@ int main() {
 }
 ```
 
+**Solution.** Both runs deliver all 6 items. `notify_one` costs $6+4=10$ wake-ups (one per item, plus the four consumers woken by the final `notify_all` that ends the run); `notify_all` costs $6\cdot4+4=28$, because each item wakes all four consumers and three of them find nothing and go back to sleep. This is the cost side of the safe design; one condition variable per predicate lets `notify_one` be both correct and cheap. The program prints:
+
 ```text
 notify_one: items taken = 6, wake-ups = 10
 notify_all: items taken = 6, wake-ups = 28
 ```
-
-Both runs deliver all 6 items. `notify_one` costs $6+4=10$ wake-ups (one per item, plus the four consumers woken by the final `notify_all` that ends the run); `notify_all` costs $6\cdot4+4=28$, because each item wakes all four consumers and three of them find nothing and go back to sleep. This is the cost side of the safe design; one condition variable per predicate lets `notify_one` be both correct and cheap.
 
 ## Worked example
 

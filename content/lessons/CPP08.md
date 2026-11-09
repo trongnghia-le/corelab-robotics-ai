@@ -107,7 +107,9 @@ Everyday robot example: a velocity filter occasionally outputs a spike once an h
 
 Compile with `-g` (debug info) and `-fno-omit-frame-pointer` (clean stack traces), at `-O0` or `-O1`. Optimization can make a variable "optimized out" in the debugger.
 
-**Example.** Three one-file programs of a robot controller, each with one silent bug, run under the tool that the table assigns to it (g++ 11.4, Valgrind 3.18):
+**Example.** Three one-file programs of a robot controller, each with one silent bug, run under the tool that the table assigns to it (g++ 11.4, Valgrind 3.18): `ovf.cpp` adds `2000000000` twice to an `int` encoder counter, `uaf.cpp` deletes a gain and then prints `*gain`, and `uninit.cpp` tests an uninitialised `double offset` with `if (offset > 0.1)`. Which tool (AddressSanitizer, UndefinedBehaviorSanitizer or Valgrind) reports each bug?
+
+**Solution.** The encoder counter wraps without any ASan report, because no memory is touched wrongly; UBSan names the line. The use-after-free is the reverse: UBSan sees nothing wrong with an integer or a pointer read, while ASan reports the freed address (and the printed value `1.17263e-313` shows the stale memory was already reused; this garbage value varies from run to run). The uninitialised `double` is found by Valgrind, not by either sanitizer. Matching the symptom to the tool is a table lookup, not a guess. The sessions are:
 
 ```
 $ g++ -std=c++20 -g -fsanitize=address ovf.cpp -o ovf_a && ./ovf_a    # ticks += 2000000000 twice on an int
@@ -123,8 +125,6 @@ $ g++ -std=c++20 -g -O0 uninit.cpp -o uninit && valgrind -q ./uninit  # double o
 ==316884== Conditional jump or move depends on uninitialised value(s)
 ==316884==    at 0x1091A2: main (uninit.cpp:4)
 ```
-
-The encoder counter wraps without any ASan report, because no memory is touched wrongly; UBSan names the line. The use-after-free is the reverse: UBSan sees nothing wrong with an integer or a pointer read, while ASan reports the freed address (and the printed value `1.17263e-313` shows the stale memory was already reused). The uninitialised `double` is found by Valgrind, not by either sanitizer. Matching the symptom to the tool is a table lookup, not a guess.
 
 ### Reading an AddressSanitizer report
 
@@ -146,7 +146,9 @@ allocated by thread T0 here: ...
 
 Always read the *first* error; later ones can be consequences.
 
-**Example.** A lidar driver clips 90 range readings (`std::vector<float> ranges(90, 12.0f)`) with a loop `for (i = 0; i <= ranges.size(); ++i)`. The first lines of the real report (addresses shortened):
+**Example.** A lidar driver clips 90 range readings (`std::vector<float> ranges(90, 12.0f)`) with a loop `for (i = 0; i <= ranges.size(); ++i)`. Read the first lines of the real AddressSanitizer report (addresses shortened) and give the class of the error, what was accessed, where, which object, and the fix.
+
+**Solution.** Class: heap-buffer-overflow. What: a READ of size 4, one `float`. Where: `clip`, line 4, called from `main` line 8. Which object: 0 bytes to the right of a 360-byte region, that is $360/4=90$ floats, so index 90 was read, the first one past the end. The loop bound `<=` should be `<`. The report is:
 
 ```
 ==...==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x5130000001a8 ...
@@ -156,13 +158,11 @@ READ of size 4 at 0x5130000001a8 thread T0
 0x5130000001a8 is located 0 bytes to the right of 360-byte region [0x513000000040,0x5130000001a8)
 ```
 
-Class: heap-buffer-overflow. What: a READ of size 4, one `float`. Where: `clip`, line 4, called from `main` line 8. Which object: 0 bytes to the right of a 360-byte region, that is $360/4=90$ floats, so index 90 was read, the first one past the end. The loop bound `<=` should be `<`.
-
 ### Debugger essentials
 
 `gdb ./prog`, then `run`, `bt` (backtrace), `frame N`, `info locals`, `print expr`, `break file:line`, `watch var`, `continue`, `next`, `step`. Batch mode: `gdb -batch -ex run -ex bt ./prog`. For a crash inside a library, `bt` still shows your calling frame. A moved-from `std::unique_ptr` prints as `get() = 0x0` in GDB, which immediately explains a segmentation fault at that dereference.
 
-**Example.** A lookup returns `nullptr` for an unknown sensor id and the caller dereferences it. Batch GDB on the `-g -O0` build:
+**Example.** A lookup returns `nullptr` for an unknown sensor id and the caller dereferences it (`sensors = {{1, 100.0}, {2, 50.0}}`, `find(sensors, 3)`). Using batch GDB on the `-g -O0` build with `run`, `bt` and `info locals`, which line crashes, what is the value of `s`, and where does the fix belong?
 
 ```cpp
 struct Sensor { int id; double rate_hz; };
@@ -173,6 +173,8 @@ const Sensor* find(const std::vector<Sensor>& v, int id) {
 // main: sensors = {{1, 100.0}, {2, 50.0}};  const Sensor* s = find(sensors, 3);  std::cout << s->rate_hz;
 ```
 
+**Solution.** `bt` gives the crash line (`nul.cpp:11`), `info locals` shows `s = 0x0`: `find(sensors, 3)` found no sensor 3, because only ids 1 and 2 exist. The fix belongs at the call site (check the pointer, or return `std::optional`), not at the dereference. The batch session prints:
+
 ```
 $ g++ -std=c++20 -g -O0 nul.cpp -o nul && gdb -batch -ex run -ex bt -ex 'info locals' ./nul
 Program received signal SIGSEGV, Segmentation fault.
@@ -182,8 +184,6 @@ Program received signal SIGSEGV, Segmentation fault.
 sensors = std::vector of length 2, capacity 2 = {{id = 1, rate_hz = 100}, {id = 2, rate_hz = 50}}
 s = 0x0
 ```
-
-`bt` gives the crash line (`nul.cpp:11`), `info locals` shows `s = 0x0`: `find(sensors, 3)` found no sensor 3, because only ids 1 and 2 exist. The fix belongs at the call site (check the pointer, or return `std::optional`), not at the dereference.
 
 ### Test harnesses and regression tests
 
@@ -198,7 +198,7 @@ A **regression test** captures a bug that was found: it fails on the broken code
 
 For floating-point comparisons use a tolerance: `|a - b| <= tol` is false when either value is NaN, which is the safe way round; `!(|a-b| > tol)` would accept NaN.
 
-**Example.** A motor-command limiter `saturate(v, lo, hi)` returns `lo` instead of `hi` above the upper limit. Four hand-computed expectations in a 10-line macro harness, which prints expected and actual values and returns a non-zero exit code:
+**Example.** A motor-command limiter `saturate(v, lo, hi)` returns `lo` instead of `hi` above the upper limit. Four hand-computed expectations are written in a 10-line macro harness, which prints expected and actual values and returns a non-zero exit code. Which expectation fails, what is the exit code, and what does the run after the one-line fix print?
 
 ```cpp
 #include <cmath>
@@ -226,6 +226,8 @@ int main() {
 }
 ```
 
+**Solution.** The expectations are inside (0.4 stays 0.4), below ($-3.0\to-1.0$), above ($2.5\to1.0$) and exactly on the limit ($1.0\to1.0$). With the bug only the third one fails: `saturate(2.5, -1.0, 1.0)` returns `lo = -1` instead of `1`, the harness counts one failure, prints `FAILED` and exits with 1. The failing run names the case (`2.5` should saturate to `1.0`), and after changing `return lo` to `return hi` in the upper branch all four pass and the exit code is 0. The test would fail without any sanitizer and in a Release build, because it asserts on values. The session is:
+
 ```
 $ g++ -std=c++20 -Wall -Wextra sat.cpp -o sat && ./sat; echo "exit $?"
 FAIL line 19: saturate(2.5, -1.0, 1.0) = -1, expected 1
@@ -237,13 +239,13 @@ all passed
 exit 0
 ```
 
-The failing run names the case (`2.5` should saturate to `1.0`), and the fixed version passes. The test would fail without any sanitizer and in a Release build, because it asserts on values.
-
 ### Reduction and bisection
 
 If a failure needs $N$ items and a single culprit, halving the input finds it in $\lceil\log_2 N\rceil$ runs. When the failure needs several items, delta debugging removes chunks and keeps any removal that still fails. For history, `git bisect` binary-searches commits: 1000 commits need at most $\lceil\log_2 1000\rceil=10$ builds. For rare failures, the number of repetitions needed to see a failure of probability $p$ with confidence $1-\alpha$ is $n\ge\ln\alpha/\ln(1-p)$.
 
-**Example.** A configuration regression is somewhere in 48 commits: `cfg` holds `gain=1` until commit 31 changes it. `git bisect run` with a script that tests the file finds it in 6 test runs, $\lceil\log_2 48\rceil=6$:
+**Example.** A configuration regression is somewhere in 48 commits: `cfg` holds `gain=1` until commit 31 changes it. `git bisect run` uses a script that tests the file (`grep -q 'gain=1' cfg`). How many test runs does it need, which commit does it report, and how does the number of revisions left evolve?
+
+**Solution.** Each run halves the range, so $\lceil\log_2 48\rceil=6$ runs are enough: 23, 11, 5, 2, 0 and 0 revisions are left after the successive runs, and 48 commits cost 6 builds instead of up to 47. The last run leaves one commit, the first bad one, c31. The "roughly N steps" line is git's own estimate and counts the remaining ones. The session is:
 
 ```
 $ git bisect start HEAD <first-commit>      # 48 commits; cfg holds "gain=1" until the bug lands
@@ -262,8 +264,6 @@ Bisecting: 0 revisions left to test after this (roughly 0 steps)
 running  './test.sh'
 <hash> is the first bad commit              # commit c31
 ```
-
-Each run halves the range (23, 11, 5, 2, 0 revisions left), so 48 commits cost 6 builds instead of up to 47. The "roughly N steps" line is git's own estimate and counts the remaining ones.
 
 How many repeats expose a rare failure? The curve $1-(1-p)^n$ shows it (move the slider of $p$):
 
@@ -317,7 +317,7 @@ The wiki's slow-path function is exactly this test, and it assumes the access st
 
 *Figure: the theory case drawn; the same test $\ell\ge v$ that passes the read at offset 9 fails the one at offset 10, because byte 13 is poisoned.*
 
-**Example.** A 10-byte block gives $10=8+2$, so the shadow bytes are $0$ and $2$. Reads of 2 bytes at offsets 8 and 9, run for real:
+**Example.** A 10-byte heap block is allocated with `malloc(10)` and read with a 2-byte access at offset 8 or at offset 9 (run for real under `-fsanitize=address`). Using the shadow-memory rule, for which offset is a report expected, and what do the shadow bytes of the block look like?
 
 ```cpp
 #include <cstdlib>
@@ -332,6 +332,8 @@ int main(int argc, char** argv) {
 }
 ```
 
+**Solution.** $10=8+2$, so the shadow bytes are $0$ (the first 8 bytes fully addressable) and $2$ (only the first 2 bytes of the next group). An access of size $s$ at position $a$ in a group is allowed if $a+s-1<$ shadow value $\ell$. Offset 8: $\ell=(0)+2-1=1<2$, silent. Offset 9: $\ell=1+2-1=2\ge2$, reported with "0 bytes to the right of 10-byte region". The printed row `00[02]` is exactly the pair of shadow values; with the block at $0\mathrm{x}502000000010$ the shadow address is $(\texttt{0x502000000010}\gg3)+\texttt{0x7fff8000}=\texttt{0xa047fff8002}$, which is the `00`, and the next byte is the `02`. The runs print:
+
 ```
 $ g++ -std=c++20 -g -fsanitize=address shadow.cpp -o shadow && ./shadow 8
 no report
@@ -341,8 +343,6 @@ READ of size 2 at 0x502000000019 thread T0
 0x50200000001a is located 0 bytes to the right of 10-byte region [0x502000000010,0x50200000001a)
 =>0x0a047fff8000: fa fa 00[02]fa fa fa fa fa fa fa fa fa fa fa fa
 ```
-
-Offset 8: $\ell=(0)+2-1=1<2$, silent. Offset 9: $\ell=1+2-1=2\ge2$, reported with "0 bytes to the right of 10-byte region". The printed row `00[02]` is exactly the pair of shadow values; with the block at $0\mathrm{x}502000000010$ the shadow address is $(\texttt{0x502000000010}\gg3)+\texttt{0x7fff8000}=\texttt{0xa047fff8002}$, which is the `00`, and the next byte is the `02`.
 
 ### What AddressSanitizer cannot see, and which tool covers the gap
 
@@ -358,7 +358,7 @@ The general lesson: a sanitizer is a *dynamic* check of specific bug classes alo
 
 *Figure: ASan checks the byte it is about to touch. `p[32]` lands in poison; `p[48]` lands in valid memory of another object; `buf[4]` lands in a valid member of the same object.*
 
-**Example.** A `std::vector<int>` grown by five `push_back` calls holds 5 elements in a buffer for 8 (capacity 8, 32 bytes). Reading `v[6]` is past the end of the vector but inside the allocation, so ASan stays silent and the program prints the allocator's fill pattern; `v[8]` is past the allocation and is reported. Compiling with `-D_GLIBCXX_ASSERTIONS` (library bounds checks) catches the first one as well:
+**Example.** A `std::vector<int>` grown by five `push_back` calls holds 5 elements in a buffer for 8 (capacity 8, 32 bytes). The program reads `v[6]` and then `v[8]` under `-fsanitize=address`, and once more under `-D_GLIBCXX_ASSERTIONS` (library bounds checks). Which reads does ASan report, what does the silent one print, and what does the assertion build do?
 
 ```cpp
 std::vector<int> v;
@@ -367,6 +367,8 @@ std::cout << "size " << v.size() << ", capacity " << v.capacity() << std::endl;
 std::cout << "v[6] = " << v[6] << std::endl;                   // past the end, inside the allocation
 std::cout << "v[8] = " << v[8] << std::endl;                   // past the allocation
 ```
+
+**Solution.** Reading `v[6]` is past the end of the vector but inside the allocation (index 6 of 8 slots, $6\cdot4=24<32$ bytes), so ASan stays silent and the program prints the allocator's fill pattern; `v[8]` starts at byte $8\cdot4=32$, past the allocation, and is reported ("0 bytes to the right of 32-byte region"). Compiling with `-D_GLIBCXX_ASSERTIONS` catches the first one as well: the program aborts (exit status 134) before printing `v[6]`. The garbage `-1094795586` is `0xBEBEBEBE`, ASan's fill value for fresh heap memory. The lesson is the same as above: the sanitizer knows the allocation, not the container's `size()`, so a checked `at()` or the assertion mode of the standard library must complement it. The two sessions are:
 
 ```
 $ g++ -std=c++20 -g -fsanitize=address cap.cpp -o cap && ./cap
@@ -380,15 +382,13 @@ size 5, capacity 8
 exit 134
 ```
 
-The garbage `-1094795586` is `0xBEBEBEBE`, ASan's fill value for fresh heap memory. The lesson of the example is the same as above: the sanitizer knows the allocation, not the container's `size()`, so a checked `at()` or the assertion mode of the standard library must complement it.
-
 ### Watchpoints: finding who wrote a value
 
 When a variable has the wrong value and you do not know which line wrote it, a **watchpoint** asks the debugger to stop when it changes. `watch expr` stops when the expression is written and its value changes; `rwatch` stops on reads and `awatch` on either (GDB manual, *Setting Watchpoints*). Two details matter in practice. Ordinarily a watchpoint respects variable scope, so for a global or a heap object reached through a pointer use `watch -location expr` (`-l`), which takes the address once and watches that memory. And there are two implementations: with hardware support, watchpoints "do not slow down the running of your program"; otherwise GDB single-steps and tests the value each time, which the manual describes as "hundreds of times slower than normal execution". Hardware watchpoints are the first thing to try, software ones the last resort for a bug whose culprit you cannot guess.
 
 A worked case, run with GDB: a struct has `int buf[4]; int limit = 100;` and a loop `for (i = 0; i <= n; ++i) buf[i] = i + 1;` with `n = 4`. With `watch -l s.limit` GDB stops with `Old value = 100`, `New value = 5`, in the loop line of `fill (n=4)`, and `bt` shows the call from `main`. The value 5 is the last value written ($i+1$ with $i=4$), which immediately identifies the off-by-one in the loop bound, even though no sanitizer needed to be involved.
 
-**Example.** A global `g_mode` should stay 1 (run) after `arm()`, but the program ends with the wrong mode. A conditional watchpoint stops at the first write that makes it greater than 1, without knowing which function writes it:
+**Example.** A global `g_mode` should stay 1 (run) after `arm()`, but the program ends with the wrong mode. Which GDB command stops at the first write that makes it greater than 1, without knowing which function writes it, and what do the old value, the new value and the frame show?
 
 ```cpp
 int g_mode = 0;                          // 0 = idle, 1 = run
@@ -396,6 +396,8 @@ void arm()           { g_mode = 1; }
 void set_gain(int k) { g_mode = k * 2; } // BUG: clobbers the mode
 int main() { arm(); set_gain(3); std::cout << "mode " << g_mode << "\n"; }
 ```
+
+**Solution.** The conditional watchpoint `watch g_mode if g_mode > 1` stops at the first write that satisfies the condition. `Old value = 1`, `New value = 6` and the frame `set_gain (k=3)` identify the writer: $6=3\cdot2$ is `k * 2`, so the bug is the formula in `set_gain`, which was written for another variable. A global needs no `-l`; the condition keeps the stop to the interesting write. The batch session prints:
 
 ```
 $ g++ -std=c++20 -g -O0 glob.cpp -o glob && gdb -batch -ex 'watch g_mode if g_mode > 1' -ex run -ex bt ./glob
@@ -408,13 +410,13 @@ set_gain (k=3) at glob.cpp:4
 #1  0x00005555555551ee in main () at glob.cpp:7
 ```
 
-`Old value = 1`, `New value = 6` and the frame `set_gain (k=3)` identify the writer: $6=3\cdot2$ is `k * 2`, so the bug is the formula in `set_gain`, which was written for another variable. A global needs no `-l`; the condition keeps the stop to the interesting write.
-
 ### Bisecting when the failure is probabilistic
 
 Bisection assumes a deterministic test: if the test says "good" at commit $c$ then the bug is later, otherwise earlier. For $N$ commits this takes $\lceil\log_2N\rceil$ steps (the `git bisect` documentation shows an example saying "roughly 10 steps" for a few hundred to a thousand revisions). If the failure appears only with probability $p$ per run on a bad commit, a single "pass" is not evidence of a good commit. Run each tested commit $r$ times and call it good only if all $r$ runs pass. A good commit never fails, so errors can happen only on bad commits, each with probability $(1-p)^r$ of being misjudged as good. If at most $k=\lceil\log_2N\rceil$ steps test a bad commit, the probability of an entirely correct search is at least $\bigl(1-(1-p)^r\bigr)^k$. To reach confidence $1-\alpha$ it suffices that $(1-p)^r\le1-(1-\alpha)^{1/k}$, i.e. $r\ge\ln\!\bigl(1-(1-\alpha)^{1/k}\bigr)/\ln(1-p)$. The worst-case cost is $k\,r$ runs, because good commits need all $r$ runs but bad ones stop at the first failure. The bound is conservative (it unions the per-step errors) but it shows the shape of the trade-off: a rarer failure multiplies the cost of every one of the $k$ steps, so first raise $p$ by stressing the test (more threads, fixed seeds, sanitizer builds) before bisecting.
 
-**Example.** Search 64 commits for a bug that shows with probability $p=0.5$ per run, with $1-\alpha=0.95$. Here $k=\lceil\log_2 64\rceil=6$ and $r\ge\ln(1-0.95^{1/6})/\ln0.5=6.88$, so $r=7$ and the worst case is $kr=42$ runs. A simulation of 20000 searches (each tested commit repeated up to $r$ times, a bad commit stopping at its first failure):
+**Example.** Search 64 commits for a bug that shows with probability $p=0.5$ per run, with confidence $1-\alpha=0.95$. What number of repeats $r$ per commit is needed, what is the worst-case number of runs, and what does a simulation of 20000 searches (each tested commit repeated up to $r$ times, a bad commit stopping at its first failure) give for $r=1$ and $r=7$?
+
+**Solution.** Here $k=\lceil\log_2 64\rceil=6$ and $r\ge\ln(1-0.95^{1/6})/\ln0.5=6.88$, so $r=7$ and the worst case is $kr=42$ runs. With $r=1$ the bound is $0.5^6=0.0156$ and the simulation succeeds in 18 % of the searches; with $r=7$ the bound $\bigl(1-0.5^7\bigr)^6=0.954$ holds (97.7 % observed, since the bound adds up errors that rarely coincide) at a mean of 26.9 runs. The simulation is random, so the figures below are as measured and a rerun differs in the last digit. The script prints:
 
 ```
 $ python3 prob.py        # N = 64 commits, p = 0.5, 1 - alpha = 0.95; 20000 simulated searches per row
@@ -423,7 +425,7 @@ r=7: bound=0.9540  simulated success=0.9765  mean runs=26.9
 k = 6  r = 7  worst-case runs k*r = 42
 ```
 
-With $r=1$ the bound is $0.5^6=0.0156$ and the simulation succeeds in 18 % of the searches; with $r=7$ the bound $0.954$ holds (97.7 % observed, since the bound adds up errors that rarely coincide) at a mean of 26.9 runs. Move the sliders to see the repeats needed for other sizes:
+Move the sliders to see the repeats needed for other sizes:
 
 ```explore
 {

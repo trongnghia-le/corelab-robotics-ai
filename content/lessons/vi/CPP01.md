@@ -50,7 +50,7 @@ Một *đối tượng* (object) là một vùng lưu trữ có kiểu; khai bá
 
 Quy tắc làm việc là khởi tạo mọi đối tượng bằng ngoặc nhọn (C++ Core Guidelines ES.20 và ES.23) và viết `static_cast` ở bất cứ chỗ nào chủ ý thu hẹp (ES.46), để bước mất mát hiện ra với người đọc và với trình biên dịch. Ngoặc nhọn còn loại bỏ một cái bẫy kinh điển: với `int count{3.0 * 2}` trình biên dịch từ chối bộ khởi tạo thay vì âm thầm đổi một `double` rồi lưu 6.
 
-**Ví dụ.** Biên dịch bằng g++ 11.4.0, `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Biên dịch bằng g++ 11.4.0, `-std=c++20 -Wall -Wextra`, chương trình dưới đây in ra gì, và trình biên dịch nói gì nếu thay phép khởi tạo cuối bằng `int d{9.99};`, hoặc nếu thêm `-Wconversion` vào chương trình đầu?
 
 ```cpp
 #include <iostream>
@@ -63,7 +63,7 @@ int main() {
 }
 ```
 
-Đầu ra là `0 0 9`: `{}` khởi tạo giá trị cả hai về không, và `int c = 9.99;` chỉ giữ phần nguyên, không có chẩn đoán nào. Thay phép khởi tạo cuối bằng `int d{9.99};` thì quá trình build dừng với `error: narrowing conversion of '9.9900000000000002e+0' from 'double' to 'int' [-Wnarrowing]`. Thêm `-Wconversion` vào chương trình đầu cho `warning: conversion from 'double' to 'int' changes value from '9.9900000000000002e+0' to '9'`. Các chữ số phía sau là giá trị nhị phân thực sự được lưu của 9.99.
+**Lời giải.** `{}` khởi tạo giá trị `a` và `b` về không, và `int c = 9.99;` chỉ giữ phần nguyên, 9, không có chẩn đoán nào, nên đầu ra là `0 0 9`. Thay phép khởi tạo cuối bằng `int d{9.99};` thì thành một phép chuyển đổi thu hẹp (narrowing) trong ngoặc nhọn, và quá trình build dừng với `error: narrowing conversion of '9.9900000000000002e+0' from 'double' to 'int' [-Wnarrowing]`. Thêm `-Wconversion` vào chương trình đầu cho `warning: conversion from 'double' to 'int' changes value from '9.9900000000000002e+0' to '9'`. Các chữ số phía sau là giá trị nhị phân thực sự được lưu của 9.99.
 
 ### Tham chiếu, `const` và cách truyền đối số
 
@@ -71,7 +71,7 @@ Tham chiếu (reference) là một tên khác của một đối tượng đã c
 
 Cái giá của tham chiếu là vòng đời. Nó không sở hữu đối tượng mà nó gọi tên; nếu đối tượng đó kết thúc trước, tham chiếu bị *treo* (dangle) và dùng nó là hành vi không xác định (cppreference, "Reference declaration", mục "Dangling references"; Core Guidelines F.43 cấm trả về tham chiếu tới đối tượng cục bộ). Trong một lời gọi, đối số luôn sống lâu hơn tham số, nên tham số `const&` là an toàn; nguy hiểm bắt đầu khi tham chiếu được lưu lại hoặc trả về.
 
-**Ví dụ.** Một đám mây điểm gồm 250 000 giá trị `double` được một hàm đọc năm lần, một lần theo giá trị và một lần theo `const&` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Kiểu này tự đếm số lần sao chép:
+**Ví dụ.** Một đám mây điểm gồm 250 000 giá trị `double` được một hàm đọc năm lần, một lần theo giá trị và một lần theo `const&` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Kiểu này tự đếm số lần sao chép. Mỗi trường hợp xảy ra bao nhiêu lần sao chép, một lần gọi theo giá trị chuyển bao nhiêu byte, và đó là lưu lượng bao nhiêu ở 60 Hz?
 
 ```cpp
 #include <iostream>
@@ -98,7 +98,7 @@ int main() {
 }
 ```
 
-Đầu ra: `after 5 by-value calls: copies = 5`, `after 5 by-reference calls: copies = 0`, `bytes per by-value call: 2000000`. Mỗi lần gọi theo giá trị cấp phát và điền 2 MB ($250\,000\times8$ B); với tần số 60 Hz đó là $2\times10^6\times60=120$ MB/s lưu lượng mà phiên bản `const&` không tạo ra.
+**Lời giải.** Tham số theo giá trị được khởi tạo sao chép ở mỗi lần gọi, nên 5 lần gọi cho `copies = 5`; tham số `const&` gắn vào đối tượng có sẵn và `copies = 0`. Đầu ra là `after 5 by-value calls: copies = 5`, `after 5 by-reference calls: copies = 0`, `bytes per by-value call: 2000000`. Mỗi lần gọi theo giá trị cấp phát và điền $250\,000\times8\text{ B}=2\,000\,000$ B $=2$ MB; với tần số 60 Hz đó là $2\times10^6\times60=1.2\times10^{8}$ B/s $=120$ MB/s lưu lượng mà phiên bản `const&` không tạo ra.
 
 ### Phạm vi và vòng đời của đối tượng tự động
 
@@ -106,7 +106,7 @@ int main() {
 
 Với biến cục bộ, phạm vi và vòng đời trùng nhau, nhưng đó là hai ý niệm khác nhau: tham chiếu hay con trỏ mở rộng *quyền truy cập* tới một đối tượng, không bao giờ mở rộng *vòng đời* của nó. Dùng lại một tên trong phạm vi lồng nhau sẽ che tên ngoài và không được khuyến khích (Core Guidelines ES.12). Hệ quả thứ hai là một hàm không được đưa ra địa chỉ của biến cục bộ của chính nó, vì biến đó đã mất khi hàm trả về.
 
-**Ví dụ.** Một kiểu in ra khi được tạo và khi bị hủy làm cho thứ tự hiện rõ (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Một kiểu in ra khi được tạo và khi bị hủy làm cho thứ tự hiện rõ (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Chương trình dưới đây tạo và hủy `a`, `b`, `c`, `d` theo thứ tự nào?
 
 ```cpp
 #include <iostream>
@@ -129,7 +129,7 @@ int main() {
 }
 ```
 
-Đầu ra theo thứ tự: `make a`, `make b`, `make c`, `inner block ends`, `drop c`, `drop b`, `make d`, `main ends`, `drop d`, `drop a`. `c` được tạo sau cùng trong khối trong và bị hủy đầu tiên; `a` được tạo đầu tiên và bị hủy cuối cùng.
+**Lời giải.** Đối tượng được dựng tại chỗ khai báo được chạy tới và bị hủy theo thứ tự ngược lại ở cuối phạm vi của chúng. Đầu ra theo thứ tự là `make a`, `make b`, `make c`, `inner block ends`, `drop c`, `drop b`, `make d`, `main ends`, `drop d`, `drop a`. `c` được tạo sau cùng trong khối trong và bị hủy đầu tiên; `a` được tạo đầu tiên và bị hủy cuối cùng.
 
 ### `std::vector`, `size()` và giới hạn chỉ số
 
@@ -137,7 +137,7 @@ Một `std::vector<T>` sở hữu một mảng liên tục gồm `size()` phần
 
 Hành vi không xác định nghĩa là tiêu chuẩn không đặt yêu cầu nào lên chương trình, không phải là nó sẽ crash. Đọc qua cuối mảng một phần tử có thể trả về dữ liệu cũ, dữ liệu của ô lân cận, crash muộn hơn hoặc dường như chạy đúng, và một cờ biên dịch khác có thể đổi kết quả. AddressSanitizer (`-fsanitize=address`) gắn công cụ vào các truy cập heap và stack và dừng ngay ở truy cập ngoài biên đầu tiên bằng một báo cáo nêu rõ dòng sai và kích thước khối nhớ; UndefinedBehaviorSanitizer (`-fsanitize=undefined`) báo cáo các vi phạm khác như tràn số có dấu. Cả hai chỉ xét những đường thực sự được chạy, nên một lần chạy sạch là bằng chứng cho những đầu vào đó chứ không phải chứng minh.
 
-**Ví dụ.** Một vector ba giá trị `int` được đọc ở chỉ số 3 (g++ 11.4.0, `-std=c++20 -Wall -Wextra -g -fsanitize=address,undefined`):
+**Ví dụ.** Một vector ba giá trị `int` được đọc ở chỉ số 3 (g++ 11.4.0, `-std=c++20 -Wall -Wextra -g -fsanitize=address,undefined`). Trình biên dịch và lần chạy báo gì, và truy cập nằm chính xác ở đâu?
 
 ```cpp
 #include <iostream>
@@ -150,7 +150,7 @@ int main() {
 }
 ```
 
-Chương trình biên dịch không cảnh báo, và lúc chạy bị dừng với `AddressSanitizer: heap-buffer-overflow ... READ of size 4 ... t4.cpp:7` cùng `located 0 bytes to the right of 12-byte region`. Các con số khớp với bố cục: cấp phát $3\times4=12$ byte, và chỉ số 3 bắt đầu ở độ lệch byte 12, byte đầu tiên sau khối. Nếu không có sanitizer, chính chương trình đó sẽ chỉ in ra bất cứ thứ gì nằm sau mảng.
+**Lời giải.** Chương trình biên dịch không cảnh báo, và lúc chạy bị dừng với `AddressSanitizer: heap-buffer-overflow ... READ of size 4 ... t4.cpp:7` cùng `located 0 bytes to the right of 12-byte region`. Các con số khớp với bố cục: cấp phát $3\times4=12$ byte, và chỉ số 3 bắt đầu ở độ lệch byte $3\times4=12$, byte đầu tiên sau khối, nên lần đọc 4 byte bắt đầu cách vùng 0 byte về bên phải. Nếu không có sanitizer, chính chương trình đó sẽ chỉ in ra bất cứ thứ gì nằm sau mảng.
 
 ### Chuyển đổi số nguyên, số học modulo và tràn số không xác định
 
@@ -200,7 +200,7 @@ $$x-y \equiv (2^{32}-3)-7 = 2^{32}-10 = 4294967286 \pmod{2^{32}},$$
 
 *Thanh trượt dùng ít bit để quy luật dễ thấy; với `unsigned` 32 bit của bài, modulo là 4294967296 và hình răng cưa có cùng dạng.* Đáp án của câu dự đoán: $-50\bmod 64=14$, và dãy bit 14 có bit cao nhất bằng 0 nên cũng đọc ra $+14$ khi dùng kiểu có dấu; kéo $d$ về $-20$ cho $44$, được đọc là $-20$ vì $44\ge32$.
 
-**Ví dụ.** Trên máy Linux 64 bit với g++ 11.4.0 (`int` 32 bit), một giá trị có dấu $-20$ gặp một giá trị không dấu 30:
+**Ví dụ.** Trên máy Linux 64 bit với g++ 11.4.0 (`int` 32 bit), một giá trị có dấu $-20$ gặp một giá trị không dấu 30 trong chương trình dưới đây. `a - b`, `a < b`, `c < b` (với `long long c = -20`) và phép ép `a - b` trở lại `int` in ra gì, và lời gọi liên quan `square(50000)` của `int square(int x) { return x * x; }` làm gì?
 
 ```cpp
 #include <iostream>
@@ -216,7 +216,7 @@ int main() {
 }
 ```
 
-Đầu ra: `4294967246`, `0`, `1`, `-50`. `int` và `unsigned int` có cùng hạng (rank), nên $a$ thành $2^{32}-20=4294967276$ và hiệu là $4294967276-30=4294967246=2^{32}-50$. Phép so sánh `a < b` do đó là $4294967276<30$, sai, và `-Wall -Wextra` báo điều này (`-Wsign-compare`). Với `long long c`, kiểu chung là `long long`, chứa được mọi `unsigned int`, nên phép so sánh là $-20<30$ và đúng. Ép kết quả không dấu trở lại `int` cho $-50$, vì phép chuyển đổi trả về giá trị đồng dư modulo $2^{32}$ ([conv.integral], đoạn 3). Một chương trình liên quan, `int square(int x) { return x * x; }` gọi với `square(50000)`, là hành vi không xác định vì $2\,500\,000\,000>2^{31}-1$: GCC với `-fsanitize=undefined` báo `signed integer overflow: 50000 * 50000 cannot be represented in type 'int'`, còn không có nó thì in giá trị đã quay vòng $-1794967296=2\,500\,000\,000-2^{32}$, chỉ là một trong các kết quả được phép.
+**Lời giải.** `int` và `unsigned int` có cùng hạng (rank), nên $a$ thành $2^{32}-20=4294967276$ và hiệu là $4294967276-30=4294967246=2^{32}-50$. Phép so sánh `a < b` do đó là $4294967276<30$, sai (`0`), và `-Wall -Wextra` báo điều này (`-Wsign-compare`). Với `long long c`, kiểu chung là `long long`, chứa được mọi `unsigned int`, nên phép so sánh là $-20<30$ và đúng (`1`). Ép kết quả không dấu trở lại `int` cho $-50$, vì phép chuyển đổi trả về giá trị đồng dư modulo $2^{32}$ ([conv.integral], đoạn 3). Đầu ra là `4294967246`, `0`, `1`, `-50`. Lời gọi `square(50000)` là hành vi không xác định vì $2\,500\,000\,000>2^{31}-1$: GCC với `-fsanitize=undefined` báo `signed integer overflow: 50000 * 50000 cannot be represented in type 'int'`, còn không có nó thì in giá trị đã quay vòng $-1794967296=2\,500\,000\,000-2^{32}$, chỉ là một trong các kết quả được phép.
 
 ### Mô hình sai số dấu phẩy động và giá của một phép cộng dồn
 
@@ -232,7 +232,7 @@ Trường hợp xấu nhất tăng như $n^2u$, còn các sai số làm tròn ng
 
 *Hình: khoảng cách giữa hai số liền kề ($\mathrm{ulp}$) tăng gấp đôi mỗi khi độ lớn tăng gấp đôi. Một double gần $10^8$ phân giải được $1.5\times10^{-8}$, gần $10^{14}$ chỉ còn $1.6\times10^{-2}$; một `float` gần $1.7\times10^{7}$ đã nhảy từng bước 2.*
 
-**Ví dụ.** Mô hình làm tròn dự đoán ba điều có thể thấy trong 8 dòng (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Mô hình làm tròn dự đoán ba điều có thể thấy trong 8 dòng (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Chương trình dưới đây in ra gì cho `f + 1.0f == f` và `d + 1.0 == d` ở $2^{24}$ và $10^{16}$, cho `0.1 + 0.2` và phép so sánh nó với `0.3`, và cho khoảng cách giữa các số dấu phẩy động ở hai độ lớn đó?
 
 ```cpp
 #include <cmath>
@@ -249,7 +249,7 @@ int main() {
 }
 ```
 
-Đầu ra: `1 1`, `0.30000000000000004 0`, `2 2`. Trên $2^{24}=16\,777\,216$ một `float` không còn biểu diễn được mọi số nguyên, nên cộng 1 không đổi gì (tổng đúng nằm đúng giữa hai số float và làm tròn về lân cận chẵn); một `double` cho kết quả tương tự ở $10^{16}$, nơi khoảng cách là 2. `0.1 + 0.2` khác `0.3` vì mỗi hằng số trong ba hằng số thập phân được lưu với sai số tương đối tới $u=2^{-53}$, đó là lý do đẳng thức của các double đã tính phải được kiểm tra bằng một dung sai chọn theo thang của dữ liệu.
+**Lời giải.** Đầu ra là `1 1`, `0.30000000000000004 0`, `2 2`. Trên $2^{24}=16\,777\,216$ một `float` không còn biểu diễn được mọi số nguyên, nên cộng 1 không đổi gì (tổng đúng nằm đúng giữa hai số float và làm tròn về lân cận chẵn); một `double` cho kết quả tương tự ở $10^{16}$, nơi khoảng cách là 2, điều mà dòng cuối xác nhận bằng `nextafter`. `0.1 + 0.2` khác `0.3` vì mỗi hằng số trong ba hằng số thập phân được lưu với sai số tương đối tới $u=2^{-53}$, đó là lý do đẳng thức của các double đã tính phải được kiểm tra bằng một dung sai chọn theo thang của dữ liệu.
 
 ### Ba cách tính trung bình trượt và nguồn gốc sai số của chúng
 
@@ -261,7 +261,7 @@ Bài học đưa ra trung bình cửa sổ trực tiếp, cập nhật streaming
 
 Biện pháp gần như không tốn kém là trừ trước một giá trị tham chiếu, ví dụ $x_0$ hoặc một ước lượng trung bình chạy, cộng dồn $x_i-x_0$, rồi cộng lại ở cuối: khi đó các tổng có độ lớn của *phần biến thiên*, không phải của *độ lệch nền* (offset). Bài tập 14 đo hiệu ứng này.
 
-**Ví dụ.** Một tín hiệu nhỏ nằm trên một độ lệch (offset) rất lớn làm lộ ra ba biến thể (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Với $x=\{10^{16},1,1,1,1\}$ và $w=2$ các trung bình cửa sổ đúng là $5\times10^{15}+0.5$, rồi 1, 1, 1:
+**Ví dụ.** Một tín hiệu nhỏ nằm trên một độ lệch (offset) rất lớn làm lộ ra ba biến thể của trung bình trượt (g++ 11.4.0, `-std=c++20 -Wall -Wextra`): trung bình trực tiếp, tổng cửa sổ streaming và tổng tiền tố. Với $x=\{10^{16},1,1,1,1\}$ và $w=2$ các trung bình cửa sổ đúng là $5\times10^{15}+0.5$, rồi 1, 1, 1. Mỗi biến thể in ra gì, và vì sao?
 
 ```cpp
 #include <iostream>
@@ -284,7 +284,7 @@ int main() {
 }
 ```
 
-Đầu ra có bốn dòng: `k=0 direct=5e+15 streaming=5e+15 prefix=5e+15`, rồi với $k=1,2,3$ cùng một bộ ba `direct=1 streaming=0.5 prefix=0`. Trung bình trực tiếp đúng cho ba cửa sổ nhỏ. Tổng streaming bắt đầu bằng $10^{16}+1$, bị làm tròn về $10^{16}$ (khoảng cách ở đó là 2), nên sau khi trừ $x_0=10^{16}$ nó chứa 0 thay vì 1 và sai 1 mãi mãi, cho 0.5. Tổng tiền tố (prefix sums) không bao giờ "thấy" các số 1, vì mỗi phép cộng vào $P\approx10^{16}$ làm tròn về lại $P$, nên $P_{k+w}-P_k=0$. Cách chữa trong bài, trừ $x_0$ trước, đưa dữ liệu về $\{0,1,1,1,1\}$, với dữ liệu đó cả ba biến thể đều chính xác.
+**Lời giải.** Đầu ra có bốn dòng: `k=0 direct=5e+15 streaming=5e+15 prefix=5e+15`, rồi với $k=1,2,3$ cùng một bộ ba `direct=1 streaming=0.5 prefix=0`. Trung bình trực tiếp đúng cho ba cửa sổ nhỏ ($(1+1)/2=1$). Tổng streaming bắt đầu bằng $10^{16}+1$, bị làm tròn về $10^{16}$ (khoảng cách ở đó là 2), nên sau khi trừ $x_0=10^{16}$ nó chứa 0 thay vì 1 và sai 1 mãi mãi, cho $s/2=0.5$. Tổng tiền tố (prefix sums) không bao giờ "thấy" các số 1, vì mỗi phép cộng vào $P\approx10^{16}$ làm tròn về lại $P$, nên $P_{k+w}-P_k=0$. Cách chữa trong bài, trừ $x_0$ trước, đưa dữ liệu về $\{0,1,1,1,1\}$, với dữ liệu đó cả ba biến thể đều chính xác.
 
 ## Ví dụ có lời giải
 

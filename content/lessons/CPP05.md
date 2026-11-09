@@ -126,7 +126,7 @@ The common wrong intuition is that the complexity table decides everything: "bot
 
 Choose from the *operations*: do you look up by exact key, by nearest key, by range? Insert at the end only, or in the middle? Need order? A hash map cannot answer "the sample just before time $t$"; a sorted vector or a `map` can.
 
-**Example.** A robot keeps the latest 4 range readings (in m) and a table from frame id to a label. The window is a `std::deque`: `push_back` and `pop_front` are constant time (cppreference, `std::deque`, Complexity). The question "which stored frame is the first at or after id 140?" is `std::map::lower_bound`, logarithmic in the size (cppreference, `std::map::lower_bound`), and a hash map cannot answer it. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** A robot keeps the latest 4 range readings (in m) and a table from frame id to a label. The readings $2.4, 2.5, 2.7, 2.6, 2.8, 3.1$ arrive one by one, and the frames are $\{100\to\text{a}, 130\to\text{b}, 160\to\text{c}\}$. Which container suits the window, which one answers "which stored frame is the first at or after id 140?", and what do the window and that frame look like at the end? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <deque>
@@ -148,6 +148,8 @@ int main() {
 }
 ```
 
+**Solution.** The window is a `std::deque`: `push_back` and `pop_front` are constant time (cppreference, `std::deque`, Complexity), so dropping the oldest reading once the size exceeds 4 is cheap, and after six readings it holds the last four, $2.7, 2.6, 2.8, 3.1$. The question "which stored frame is the first at or after id 140?" is `std::map::lower_bound(140)`, logarithmic in the size (cppreference, `std::map::lower_bound`): the first key not less than 140 is 160, with label `c`. A hash map cannot answer it, because it has no order. The program prints:
+
 ```text
 2.7 2.6 2.8 3.1
 160 c
@@ -159,7 +161,7 @@ Categories, from weakest to strongest: input, forward, bidirectional, random acc
 
 **Invalidation rules** (the most common source of undefined behavior): `vector::push_back` may reallocate, invalidating all iterators, pointers and references; `vector::erase(it)` invalidates `it` and everything after it; `map`/`list` erase invalidates only the erased element; `unordered_map` rehash invalidates iterators but not references.
 
-**Example.** The vector `{10, 20, 30}` has size 3 and capacity 3, so the next `push_back` allocates a new block and frees the old one: when the new size exceeds the old capacity a reallocation takes place, and then all iterators and all references to the elements are invalidated (cppreference, `std::vector::push_back`). The iterator taken before it dangles. Compiled with `g++ -std=c++20 -g -fsanitize=address,undefined` (g++ 11.4.0), the report starts as follows (addresses and the rest of the report omitted):
+**Example.** The vector `{10, 20, 30}` has size 3 and capacity 3. An iterator to its first element is taken, then `push_back(40)` is called, and the iterator is dereferenced. Is the iterator still valid, and what does AddressSanitizer report? Compiled with `g++ -std=c++20 -g -fsanitize=address,undefined` (g++ 11.4.0):
 
 ```cpp
 #include <iostream>
@@ -172,6 +174,8 @@ int main() {
   std::cout << *it << '\n';
 }
 ```
+
+**Solution.** The vector is full, so the next `push_back` allocates a new block and frees the old one: when the new size exceeds the old capacity a reallocation takes place, and then all iterators and all references to the elements are invalidated (cppreference, `std::vector::push_back`). The iterator taken before it dangles, and reading `*it` is a heap-use-after-free; the report names the freed block and the `_M_realloc_insert` call that freed it. The report starts as follows (addresses and the rest of the report omitted):
 
 ```text
 ERROR: AddressSanitizer: heap-use-after-free on address 0x502000000010 at pc ...
@@ -189,7 +193,7 @@ For a sorted range, `lower_bound(first, last, x)` returns the first element not 
 Linear interpolation between neighbours $(t_a,v_a)$ and $(t_b,v_b)$ with $t_a\le t\le t_b$:
 $$v(t)=v_a+(v_b-v_a)\frac{t-t_a}{t_b-t_a}.$$
 
-**Example.** On the sorted vector $\{1,2,2,2,5,8\}$, `lower_bound(2)` is the first element not less than 2 (index 1) and `upper_bound(2)` the first element greater than 2 (index 4), so the three copies of 2 occupy $[1,4)$ and the count is the difference of the two iterators. A value that is absent gives the insertion point, and a value above everything gives `end()`. Each call makes a logarithmic number of comparisons (cppreference, `std::lower_bound`, Complexity). Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** On the sorted vector $\{1,2,2,2,5,8\}$, what are `lower_bound(2)` and `upper_bound(2)` as indices, how many copies of 2 are there, and what do `lower_bound(3)` and `lower_bound(9)` give? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <algorithm>
@@ -206,6 +210,8 @@ int main() {
 }
 ```
 
+**Solution.** `lower_bound(2)` is the first element not less than 2 (index 1) and `upper_bound(2)` the first element greater than 2 (index 4), so the three copies of 2 occupy $[1,4)$ and the count is the difference of the two iterators, $4-1=3$. A value that is absent gives the insertion point: `lower_bound(3)` is index 4 (the element 5). A value above everything gives `end()`: `lower_bound(9) == end()` is true (printed as 1). Each call makes a logarithmic number of comparisons (cppreference, `std::lower_bound`, Complexity). The program prints:
+
 ```text
 1 4 3
 4 1
@@ -215,7 +221,7 @@ int main() {
 
 `std::remove_if(first, last, pred)` moves the kept elements to the front and returns the new logical end; the tail holds unspecified values. Follow it with `container.erase(new_end, container.end())`. `std::accumulate(first, last, init)` folds with `+` (the type of `init` decides the arithmetic: `0` accumulates in `int`, `0.0` in `double`). `std::nth_element(first, nth, last)` places the element that would be at position `nth` in sorted order there, in expected $O(n)$, which suffices for a median (sorting costs $O(n\log n)$).
 
-**Example.** Six temperature readings (in degrees Celsius) contain two sensor glitches above 60. `remove_if` makes exactly one pass and applies the predicate once per element (cppreference, `std::remove`, Complexity); it returns the new logical end, but the size stays 6 until `erase`. The sum with an `int` initial value truncates every partial sum; with `0.0` it is the true sum of the kept values. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** Six temperature readings (in degrees Celsius), $21.5, 22.0, 85.5, 23.5, 90.0, 22.5$, contain two sensor glitches above 60. After `remove_if` with the predicate $t>60$, what are the logical and physical sizes, and after `erase`, what is the sum of the kept values when `accumulate` starts from `0` and from `0.0`? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <algorithm>
@@ -232,6 +238,8 @@ int main() {
             << ", with 0.0: " << std::accumulate(temp.begin(), temp.end(), 0.0) << '\n';
 }
 ```
+
+**Solution.** `remove_if` makes exactly one pass and applies the predicate once per element (cppreference, `std::remove`, Complexity); it keeps $21.5, 22.0, 23.5, 22.5$ and returns the new logical end, so the logical size is 4, but the physical size stays 6 until `erase`. The sum with an `int` initial value truncates every partial sum: $21.5\to21$, $21+22.0=43$, $43+23.5=66.5\to66$, $66+22.5=88.5\to88$. With `0.0` it is the true sum of the kept values, $21.5+22.0+23.5+22.5=89.5$. The program prints:
 
 ```text
 logical size 4, physical size 6
@@ -355,7 +363,7 @@ If a vector doubles its capacity when full, pushing $n$ elements copies at most 
 }
 ```
 
-**Example.** 100 `push_back`s into an empty `vector<int>` change the capacity 8 times (libstdc++ doubles it): 7 reallocations after the first allocation relocate $1+2+4+\dots+64=127$ elements, below the bound $\frac{g}{g-1}n=2\cdot100=200$ for $g=2$. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** 100 `push_back`s are made into an empty `vector<int>` (libstdc++, which doubles the capacity). How many times does the capacity change, which values does it take, how many elements are relocated in total, and how does that compare with the bound $\frac{g}{g-1}n$ for $g=2$? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -377,6 +385,8 @@ int main() {
   std::cout << "\nreallocations after the first: " << caps.size() - 1 << ", elements relocated: " << moved << '\n';
 }
 ```
+
+**Solution.** The capacity takes the values $1,2,4,\dots,128$, that is 8 values, so it changes 8 times (once at the first allocation and 7 reallocations after it). The reallocations at sizes $1,2,4,\dots,64$ relocate $1+2+4+\dots+64=127$ elements, below the bound $\frac{g}{g-1}n=2\cdot100=200$ for $g=2$. The program prints:
 
 ```text
 1 2 4 8 16 32 64 128
@@ -501,7 +511,7 @@ Measured with libstdc++ (g++ 11.4): inserting the keys $0,\dots,999$ into an emp
 }
 ```
 
-**Example.** Fifty more elements are appended to a `vector`, a `deque`, a `list` and, with keys 100 to 149, to an `unordered_map` that held one element. Comparing the address of the first element before and after shows what each layout does with its memory: only the contiguous block of the `vector` moves. (Comparing addresses is shown here for observation only; the standard allows the library to behave differently, see exercise 14.) Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** Fifty more elements are appended to a `vector`, a `deque`, a `list` and, with keys 100 to 149, to an `unordered_map` that held one element. Comparing the address of the first element before and after shows what each layout does with its memory. Which of the four moves its first element, and how many buckets does the map have at the end? (Comparing addresses is shown here for observation only; the standard allows the library to behave differently, see exercise 14.) Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <cstdint>
@@ -526,6 +536,8 @@ int main() {
   std::cout << "unordered_map: value moved? " << (before != reinterpret_cast<std::uintptr_t>(&m[7]) ? "yes" : "no") << ", buckets " << m.bucket_count() << '\n';
 }
 ```
+
+**Solution.** Only the contiguous block of the `vector` moves, because growing past capacity relocates it to a new block. The `deque` and the `list` keep their elements in place (chunks and nodes are not relocated), and the `unordered_map` keeps its nodes in place even though it rehashes, so the value at key 7 does not move. The last line also prints the number of buckets (59 for 51 elements here). The program prints:
 
 ```text
 vector: first element moved? yes
@@ -558,7 +570,7 @@ return first;
 
 *Figure: left, the worst case grows by one comparison each time $n$ doubles, so a million samples cost 20 and a linear scan would cost up to a million. Right, the loop of this section on $n=45$: the window $45\to22\to11\to5\to2\to1$ for target 0 (never less than an element, 6 comparisons, the worst case) and $45\to22\to10\to4\to1$ for target 44 (always less, 5 comparisons).*
 
-**Example.** A comparator that counts its calls gives the exact cost. On the sorted vector $0,1,\dots,44$ ($n=45$), searching every possible target costs at least 5 and at most 6 comparisons, and $\lfloor\log_2 45\rfloor+1=6$ is the worst case derived above (the traces in the figure). Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** A comparator that counts its calls gives the exact cost of binary search. On the sorted vector $0,1,\dots,44$ ($n=45$), what are the fewest and the most comparisons over every possible target, and how does the maximum compare with $\lfloor\log_2 45\rfloor+1$ derived above (the traces in the figure)? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <algorithm>
@@ -581,6 +593,8 @@ int main() {
 }
 ```
 
+**Solution.** Searching every possible target costs at least 5 and at most 6 comparisons. The worst case is $\lfloor\log_2 45\rfloor+1=5+1=6$, as derived above: the window shrinks $45\to22\to11\to5\to2\to1$ for target 0, which is never less than an element (6 comparisons), and $45\to22\to10\to4\to1$ for target 44 (5 comparisons), the traces in the figure. The program prints:
+
 ```text
 n=45 best=5 worst=6
 ```
@@ -589,7 +603,7 @@ n=45 best=5 worst=6
 
 Ordered containers and `std::sort` require the comparator `comp` to be a **strict weak ordering**: irreflexive ($\text{comp}(a,a)$ false), asymmetric, transitive, and with transitive *equivalence* where $a\sim b$ means $\neg\text{comp}(a,b)\wedge\neg\text{comp}(b,a)$ (cppreference: Compare requirements). The built-in `<` on `double` satisfies all of this except when a NaN appears. Take $a=1$, $b=\text{NaN}$, $c=2$: every comparison with NaN is false, so $a\sim b$ and $b\sim c$, but $a<c$ means $a\not\sim c$. Equivalence is not transitive, so `<` is not a strict weak ordering on a set that contains NaN, and the behavior of `std::sort` and `std::set` is undefined. In practice (libstdc++) inserting $1,2,\text{NaN},3$ into a `std::set<double>` leaves 3 elements, while inserting $\text{NaN},1,2,3$ leaves only 1 element: the outcome depends on insertion order, a symptom of undefined behavior. `std::is_sorted` returns `true` on $\{1,2,3,\text{NaN},5,6,7\}$ and `lower_bound` returns index 3 for the targets $4$, $5$ and $6.5$: for $4$ and $5$ that is the correct answer *by the definition* "first element not less than $x$" (the NaN is "not less than" anything), while for $6.5$ the predicate $e<6.5$ is true, false, true after the NaN, so the range is not partitioned and the precondition is violated. The fix is either to reject NaN at the boundary (the lesson's validation habit) or to use a comparator that is a genuine strict weak ordering, such as "NaN sorts after every number": `comp(a,b) = !isnan(a) && (isnan(b) || a < b)`, which is the lexicographic order on the pairs $(\text{isnan}(x),x)$.
 
-**Example.** With $a=4$, $b=\text{NaN}$, $c=5$ the equivalences $a\sim b$ and $b\sim c$ both hold while $a\not\sim c$, so equivalence is not transitive and `<` is not a strict weak ordering on a set containing NaN. The comparator "NaN last" repairs this: it sorts $\{9.5,\text{NaN},7.25,8\}$ into $7.25,\;8,\;9.5,\;\text{NaN}$. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** With $a=4$, $b=\text{NaN}$, $c=5$, are the equivalences $a\sim b$, $b\sim c$ and $a\sim c$ true, is `<` then a strict weak ordering on a set containing NaN, and what does sorting $\{9.5,\text{NaN},7.25,8\}$ with the comparator "NaN last" give? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <algorithm>
@@ -606,6 +620,8 @@ int main() {
   std::cout << '\n';
 }
 ```
+
+**Solution.** Every comparison with NaN is false, so both $a\sim b$ and $b\sim c$ hold, while $4<5$ gives $a\not\sim c$. Equivalence is not transitive, so `<` is not a strict weak ordering on a set containing NaN. The comparator "NaN last", `comp(a,b) = !isnan(a) && (isnan(b) || a < b)`, repairs this: it sorts $\{9.5,\text{NaN},7.25,8\}$ into $7.25,\;8,\;9.5,\;\text{NaN}$. The program prints (1 stands for true):
 
 ```text
 4~NaN 1, NaN~5 1, 4~5 0

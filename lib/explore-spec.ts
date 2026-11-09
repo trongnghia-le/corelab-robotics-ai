@@ -440,3 +440,26 @@ export function scopeFor(
   for (const l of compiled.lets) scope[l.name] = l.f(scope);
   return scope;
 }
+
+/** Size of the 3D view box, in SVG units. */
+export const VIEW3 = { W: 560, H: 400 } as const;
+/**
+ * The perspective projection of a scene3d view: world z is up; turn about z
+ * by the azimuth, then tilt by the elevation (degrees). Shared by the
+ * renderer and the tests that check a scene fits its box.
+ */
+export function projector(range: number, azimuth: number, elevation: number) {
+  const { W, H } = VIEW3;
+  const a = (azimuth * Math.PI) / 180,
+    e = (elevation * Math.PI) / 180;
+  const k = (Math.min(W, H) / 2 - 18) / (range * 1.12),
+    dist = range * 6;
+  return (p: V3) => {
+    const x1 = p[0] * Math.cos(a) - p[1] * Math.sin(a);
+    const y1 = p[0] * Math.sin(a) + p[1] * Math.cos(a);
+    const up = p[2] * Math.cos(e) - y1 * Math.sin(e);
+    const depth = y1 * Math.cos(e) + p[2] * Math.sin(e);
+    const f = dist / (dist + depth);
+    return { x: W / 2 + x1 * k * f, y: H / 2 - up * k * f, d: depth };
+  };
+}

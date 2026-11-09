@@ -64,11 +64,31 @@ Với mỗi lớp, $\text{IoU}=\frac{TP}{TP+FP+FN}$ và mIoU là trung bình tr�
 
 Vết tham chiếu của một lần chạy đạt. **Giá trị minh họa**, tính bằng script thư viện chuẩn trong phần Kiểm chứng (dùng các link minh họa $L_1=0.116$, $L_2=0.135$, $L_3=0.10$ m; hãy đọc giá trị của bạn từ MJCF), không lấy từ lần chạy thật.
 
-**Từ pixel đến đế.** Ảnh 640 x 480, fovy 60 độ: $f_y=240/\tan30^\circ=415.7$ px. Pixel $(352,236)$ ở độ sâu 0.42 m cho $p_\text{cam}=(0.0323,\,-0.0040,\,0.420)$ m. Camera đặt ở $(0.10,0,0.35)$ m trong `base_link`, chúc xuống 50 độ, nên $p_\text{base}=(0.3731,\,-0.0323,\,0.0309)$ m. Trụ cánh tay nằm trước `base_link` 0.17 m, nên trong `arm_base`: $(0.2031,\,-0.0323,\,0.0309)$ m, bán kính $r=0.2056$ m.
+### Từ pixel đến góc khớp, một quỹ đạo khớp và bảng nghiệm thu
 
-**IK.** Pan $=\operatorname{atan2}(-0.0323,0.2031)=-9.0^\circ$. Bài toán phẳng với công cụ chúc xuống có hai nhánh: (vai $-9.3^\circ$, khuỷu $+56.8^\circ$) cần cổ tay $-137.5^\circ$, ngoài giới hạn minh họa $\pm110^\circ$; (vai $52.2^\circ$, khuỷu $-56.8^\circ$) cần $-85.4^\circ$ và được chấp nhận. FK của nghiệm được chọn trả về đích với sai số $10^{-9}$ m.
+**Đề bài.** Ảnh camera 640 x 480 với fovy 60 độ. Tâm một khối được phát hiện tại pixel $(352,236)$ với độ sâu 0.42 m. Camera đặt ở $(0.10,0,0.35)$ m trong `base_link`, chúc xuống 50 độ; trụ cánh tay nằm trước `base_link` 0.17 m.
 
-**Quỹ đạo.** Một chuyển động khớp 0.8 rad trong 1.2 s: tốc độ đỉnh $1.875\cdot0.8/1.2=1.25$ rad/s, gia tốc đỉnh $5.7735\cdot0.8/1.44=3.21$ rad/s$^2$.
+- (a) Tìm điểm trong frame camera, trong `base_link` và trong `arm_base`, cùng bán kính $r$.
+- (b) Giải động học ngược (IK) cho pan, vai, khuỷu và cổ tay với công cụ chúc thẳng xuống, các link $L_1=0.116$, $L_2=0.135$, $L_3=0.10$ m và giới hạn cổ tay $\pm110^\circ$; chọn nhánh hợp lệ.
+- (c) Với một chuyển động khớp 0.8 rad trong 1.2 s theo thang thời gian bậc năm (quintic), tìm tốc độ đỉnh và gia tốc đỉnh.
+- (d) Quyết định bảng nghiệm thu dưới đây, gồm vì sao 43 trên 50 lượt gắp (86 %) đạt cổng còn 40 trên 50 (80 %) thì không.
+
+**Lời giải.**
+
+Các giả định lấy từ script ở phần Kiểm chứng (không nêu trong văn bản gốc): điểm chính là tâm ảnh $(c_x,c_y)=(320,240)$ với pixel vuông; frame camera có $x$ sang phải, $y$ xuống, $z$ về phía trước; `arm_base` cùng độ cao với `base_link`; trục vai ở độ cao $Z_S=0.05$ m trên `arm_base`.
+
+1. *Tiêu cự.* $f_y=(480/2)/\tan(60^\circ/2)=240/\tan30^\circ=415.7$ px.
+2. *Chiếu ngược (deprojection).* $x=(352-320)\cdot0.42/415.7=0.0323$ m, $y=(236-240)\cdot0.42/415.7=-0.0040$ m, $z=0.420$ m: $p_\text{cam}=(0.0323,\,-0.0040,\,0.420)$ m.
+3. *Các trục camera trong `base_link`.* Với góc chúc $50^\circ$: forward $=(\cos50^\circ,0,-\sin50^\circ)=(0.6428,\,0,\,-0.7660)$, right $=(0,-1,0)$, down $=(-\sin50^\circ,0,-\cos50^\circ)=(-0.7660,\,0,\,-0.6428)$.
+4. *Biến đổi.* $p_\text{base}=t+x\cdot\text{right}+y\cdot\text{down}+z\cdot\text{forward}$ với $t=(0.10,0,0.35)$. $X=0.10+(-0.0040)(-0.7660)+0.42\cdot0.6428=0.10+0.0031+0.2700=0.3731$; $Y=-0.0323$; $Z=0.35+(-0.0040)(-0.6428)+0.42\cdot(-0.7660)=0.35+0.0026-0.3217=0.0309$. Vậy $p_\text{base}=(0.3731,\,-0.0323,\,0.0309)$ m.
+5. *Sang `arm_base`.* Trừ độ lệch trụ 0.17 m theo $x$: $(0.2031,\,-0.0323,\,0.0309)$ m, bán kính $r=\sqrt{0.2031^2+0.0323^2}=0.2056$ m.
+6. *Pan.* $\operatorname{atan2}(-0.0323,\,0.2031)=-9.0^\circ$.
+7. *Điểm cổ tay.* Khi công cụ chúc xuống, cổ tay cao hơn đầu công cụ $L_3$, trong mặt phẳng vai: $w_r=0.2056$, $w_z=0.0309+0.10-0.05=0.0809$ m, ở khoảng cách $D=\sqrt{0.2056^2+0.0809^2}=0.2209$ m.
+8. *Khuỷu.* Định lý cos: $\cos q_3=(D^2-L_1^2-L_2^2)/(2L_1L_2)=(0.04882-0.01346-0.01823)/0.03132=0.5471$, nên $q_3=\pm56.8^\circ$.
+9. *Vai cho từng nhánh.* $q_2=\operatorname{atan2}(w_z,w_r)-\operatorname{atan2}(L_2\sin q_3,\,L_1+L_2\cos q_3)$ với $\operatorname{atan2}(0.0809,0.2056)=21.5^\circ$ và $\operatorname{atan2}(\pm0.1130,\,0.1899)=\pm30.8^\circ$. Nhánh $q_3=+56.8^\circ$: $q_2=21.5-30.8=-9.3^\circ$. Nhánh $q_3=-56.8^\circ$: $q_2=21.5+30.8=52.2^\circ$.
+10. *Cổ tay cho từng nhánh.* Để công cụ thẳng đứng, cổ tay $=-90^\circ-(q_2+q_3)$. Nhánh +: $-90-47.5=-137.5^\circ$, ngoài $\pm110^\circ$, bị loại. Nhánh $-$: $-90-(-4.6)=-85.4^\circ$, trong giới hạn, được chấp nhận. Chọn: pan $-9.0^\circ$, vai $52.2^\circ$, khuỷu $-56.8^\circ$, cổ tay $-85.4^\circ$.
+11. *Quỹ đạo quintic.* Với $s(\tau)=10\tau^3-15\tau^4+6\tau^5$, đỉnh của $\dot s$ là $1.875$ (tại $\tau=0.5$) và đỉnh của $\ddot s$ là $10/\sqrt3=5.7735$. Với $\Delta q=0.8$ rad và $T=1.2$ s: $\dot q_\max=1.875\cdot0.8/1.2=1.25$ rad/s và $\ddot q_\max=5.7735\cdot0.8/1.2^2=5.7735\cdot0.8/1.44=3.21$ rad/s$^2$.
+12. *Cổng gắp.* $43/50=86\ \%$ có cận dưới Wilson 95 % là 73.8 %, không nhỏ hơn 68 %, và ước lượng điểm không nhỏ hơn 80 %: đạt. Với $40/50=80\ \%$ cận dưới là 67.0 %, dưới 68 %: trượt một phần trăm. Taxonomy lỗi phải cộng bằng số lỗi: lỗi gắp $50-43=7$ (slip 4, knocked 3) cộng lỗi đặt $43-40=3$ (place_miss 3) $=10=50-40$.
 
 | Kiểm tra (test) | Ngưỡng | Kết quả minh họa |
 |---|---|---|
@@ -82,7 +102,9 @@ Vết tham chiếu của một lần chạy đạt. **Giá trị minh họa**, t
 | Thời gian chu kỳ trung bình | < 25 s | 19.7 s |
 | Taxonomy lỗi | tổng = số lỗi (10) | slip 4, knocked 3, place_miss 3 |
 
-Lưu ý 40 trên 50 lượt gắp (80 %) đạt ước lượng điểm nhưng cận dưới là 67.0 % và trượt cổng một phần trăm.
+**Kiểm tra.** Động học thuận của nghiệm được chọn: $r=L_1\cos q_2+L_2\cos(q_2+q_3)=0.2056$ m và $z=Z_S+L_1\sin q_2+L_2\sin(q_2+q_3)-L_3=0.0309$ m, trùng với đích (đến $10^{-9}$ m trong script với góc không làm tròn). Nhánh bị loại không phải ngẫu nhiên số học: cổ tay của nó cần $-137.5^\circ$, vượt giới hạn $27.5^\circ$. Các đỉnh quintic khớp với đạo hàm số của $s(\tau)$. Một pixel ở 0.42 m là $0.42/415.7=1.01$ mm, nên sai số pixel-sang-đế dưới pixel nhỏ hơn nhiều so với giới hạn hand-eye 5 mm.
+
+**Rút ra.** Một lần gắp là chuỗi các frame và hai phép giải dạng đóng (chiếu ngược, IK phẳng); nhánh IK thứ hai tồn tại nhưng phải được kiểm tra với giới hạn khớp, và cổng đặt trên cận dưới tin cậy biến 80 % của 50 thành trượt.
 
 ## Bài tập
 

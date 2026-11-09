@@ -5,8 +5,10 @@ import { compile, parse } from "../lib/expr";
 import {
   compileSpec,
   exploreSpec,
+  projector,
   scene3dPrimitives,
   scopeFor,
+  VIEW3,
 } from "../lib/explore-spec";
 
 describe("safe expressions", () => {
@@ -67,6 +69,14 @@ describe("lesson explore blocks", () => {
       const cases = [base];
       for (const p of spec.params)
         cases.push({ ...base, [p.name]: p.min }, { ...base, [p.name]: p.max });
+      // Slider ends combine: also try every corner of the parameter box
+      // (at most 2^6 = 64 cases).
+      for (let mask = 0; mask < 1 << spec.params.length; mask++)
+        cases.push(
+          Object.fromEntries(
+            spec.params.map((p, i) => [p.name, mask & (1 << i) ? p.max : p.min]),
+          ),
+        );
       for (const values of cases) {
         const scope = scopeFor(spec, compiled, values);
         // Every 3D primitive must land on finite coordinates.
@@ -86,18 +96,32 @@ describe("lesson explore blocks", () => {
           ).toBe(true);
       }
       const scope = scopeFor(spec, compiled, base);
-      // At the defaults a 3D scene must fit its view box ("range" is the
-      // half-size of the view), or the learner opens it already cut off.
+      // A 3D scene must fit its view box as first shown, at the defaults
+      // and at every slider end, or the learner sees it cut off.
       if (spec.scene3d) {
-        const R = spec.scene3d.range * 1.25;
-        for (const q of scene3dPrimitives(compiled, scope)) {
-          const pts =
-            q.kind === "poly" ? q.pts : q.kind === "line" ? [q.a, q.b] : [q.a];
-          for (const v of pts)
-            expect(
-              Math.max(...v.map(Math.abs)),
-              `${f}: a 3D point at the defaults lies outside range ${spec.scene3d.range}`,
-            ).toBeLessThanOrEqual(R);
+        const s3 = spec.scene3d;
+        const project = projector(
+          s3.range,
+          s3.view?.azimuth ?? -50,
+          s3.view?.elevation ?? 25,
+        );
+        for (const values of cases) {
+          const at = scopeFor(spec, compiled, values);
+          for (const q of scene3dPrimitives(compiled, at)) {
+            const pts =
+              q.kind === "poly"
+                ? q.pts
+                : q.kind === "line"
+                  ? [q.a, q.b]
+                  : [q.a];
+            for (const v of pts) {
+              const p = project(v);
+              expect(
+                p.x >= -2 && p.x <= VIEW3.W + 2 && p.y >= -2 && p.y <= VIEW3.H + 2,
+                `${f}: a 3D point projects outside the view at ${JSON.stringify(values)} (${p.x.toFixed(0)}, ${p.y.toFixed(0)})`,
+              ).toBe(true);
+            }
+          }
         }
       }
       for (const s of compiled.series)

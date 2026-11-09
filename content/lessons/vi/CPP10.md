@@ -33,7 +33,7 @@ Không phải data race: đọc đồng thời dữ liệu không ai ghi; ghi v�
 
 Mất cập nhật, từng bước: counter $=0$. Thread A nạp 0; thread B nạp 0; A lưu 1; B lưu 1. Hai lần tăng, giá trị cuối là 1. Trong một thí nghiệm với hai thread mỗi thread làm $10^6$ phép tăng thường, tổng quan sát được là 1,988,346 thay vì 2,000,000, mất $11{,}654$ cập nhật ($0.58\%$) trong một lần chạy. Một counter được mutex bảo vệ hoặc atomic luôn cho 2,000,000.
 
-**Ví dụ.** Hai thread, mỗi thread cộng 1 vào một bộ đếm dùng chung 400,000 lần, trước hết trên `int` thường rồi trên `std::atomic<int>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O0 -pthread`; `-O0` giữ cho nạp, cộng và lưu hiện ra thành ba bước):
+**Ví dụ.** Hai thread, mỗi thread cộng 1 vào một bộ đếm dùng chung 400,000 lần, trước hết trên `int` thường rồi trên `std::atomic<int>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O0 -pthread`; `-O0` giữ cho nạp, cộng và lưu hiện ra thành ba bước). Mỗi bộ đếm kết thúc ở giá trị nào, và ThreadSanitizer có báo vòng lặp thường không?
 
 ```cpp
 #include <atomic>
@@ -59,14 +59,14 @@ int main() {
 }
 ```
 
+**Lời giải.** Nếu không mất lần cập nhật nào thì mỗi lần chạy phải đạt $2\times400{,}000=800{,}000$. Lệnh `++plain` thường gồm ba bước (nạp, cộng, lưu), nên hai thread có thể nạp cùng một giá trị rồi cùng lưu giá trị đó cộng 1, làm mất một lần tăng; truy cập không đồng bộ này cũng là một data race, khiến kết quả chương trình không xác định. `fetch_add` là một phép đọc-sửa-ghi không chia cắt được, nên không mất lần tăng nào. Bộ đếm thường kết thúc ở 421,010, 481,171 và 481,774, không bao giờ là 800,000 và khác nhau ở mỗi lần chạy, còn bộ đếm atomic luôn đúng 800,000. Mức mất ở đây (40 đến 47 %) lớn hơn nhiều so với 0.58 % nêu ở trên cho một bản build khác trên máy khác: độ lớn của nó phụ thuộc vào thời điểm, và đó chính là điều cần thấy, vì chương trình không có kết quả xác định (các số đếm là số đo, đổi theo máy và theo lần chạy). Biên dịch với ThreadSanitizer (`-fsanitize=thread`, chạy bằng `setarch -R ./a.out` trên kernel này), vòng lặp thường đó bị báo cáo là data race (trích đoạn ở khối thứ hai). Chương trình in ra:
+
 ```text
 run 1: plain int  = 421010 (expected 800000, lost 378990)
 run 2: plain int  = 481171 (expected 800000, lost 318829)
 run 3: plain int  = 481774 (expected 800000, lost 318226)
 atomic counter = 800000
 ```
-
-Bộ đếm thường kết thúc ở 421,010, 481,171 và 481,774, không bao giờ là 800,000 và khác nhau ở mỗi lần chạy, còn bộ đếm atomic luôn đúng 800,000. Mức mất ở đây (40 đến 47 %) lớn hơn nhiều so với 0.58 % nêu ở trên cho một bản build khác trên máy khác: độ lớn của nó phụ thuộc vào thời điểm, và đó chính là điều cần thấy, vì chương trình không có kết quả xác định. Biên dịch với ThreadSanitizer (`-fsanitize=thread`, chạy bằng `setarch -R ./a.out` trên kernel này), vòng lặp thường đó bị báo cáo (trích đoạn):
 
 ```text
 WARNING: ThreadSanitizer: data race
@@ -89,7 +89,7 @@ Bảo vệ trạng thái dùng chung bằng mutex và khóa nó bằng RAII (CP.
 
 **Deadlock** cần một chu trình: thread 1 giữ $A$ và chờ $B$, thread 2 giữ $B$ và chờ $A$. Tránh nó bằng thứ tự khóa hoặc bằng cách lấy nhiều mutex cùng lúc với `std::scoped_lock lk(a.m, b.m);` (CP.21), dùng một thuật toán tránh deadlock.
 
-**Ví dụ.** Một critical section ném exception (đọc cảm biến thất bại). Sau khi exception bị bắt, một thread thứ hai thử lấy cùng mutex bằng `try_lock`; một phiên bản khóa bằng `lock_guard`, phiên bản kia bằng `m.lock()` và `m.unlock()` viết tay (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+**Ví dụ.** Một critical section ném exception (đọc cảm biến thất bại). Sau khi exception bị bắt, một thread thứ hai thử lấy cùng mutex bằng `try_lock`; một phiên bản khóa bằng `lock_guard`, phiên bản kia bằng `m.lock()` và `m.unlock()` viết tay (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`). Ở mỗi phiên bản, thread khác có lấy được mutex sau đó không?
 
 ```cpp
 #include <cstdio>
@@ -115,14 +115,14 @@ int main() {
 }
 ```
 
+**Lời giải.** Với `lock_guard`, destructor chạy trong lúc exception tháo ngăn xếp và giải phóng mutex, nên `try_lock` thành công (`1`). Phiên bản viết tay không bao giờ tới `m.unlock()`, nên mutex bị khóa mãi và `try_lock` thất bại (`0`): mọi thread khác xin nó sẽ chặn vĩnh viễn. Lệnh `m.unlock()` cuối trong `main` chỉ để dọn phần minh họa. Chương trình in ra:
+
 ```text
 caught: sensor read failed
 lock_guard : other thread can lock afterwards = 1
 caught: sensor read failed
 m.lock()   : other thread can lock afterwards = 0
 ```
-
-Destructor của guard chạy trong lúc exception tháo ngăn xếp, nên mutex được giải phóng (`1`). Phiên bản viết tay không bao giờ tới `m.unlock()`, nên mutex bị khóa mãi (`0`): mọi thread khác xin nó sẽ chặn vĩnh viễn. Lệnh `m.unlock()` cuối trong `main` chỉ để dọn phần minh họa.
 
 ### Condition variable
 
@@ -132,7 +132,7 @@ cv.wait(lk, [&]{ return !q.empty() || closed; });   // predicate form
 ```
 `wait` nhả lock một cách nguyên tử và ngủ; khi thức dậy nó lấy lại lock. Predicate được kiểm tra *khi đang giữ lock*, trong một vòng lặp (overload có predicate làm việc này cho bạn), vì có **spurious wake-up** (thức dậy giả) và vì consumer khác có thể đã lấy mất phần tử trước. Gọi notify sau khi đổi trạng thái, hoặc khi đang giữ lock hoặc ngay sau khi nhả nó. Mất wake-up xảy ra khi một thread kiểm tra điều kiện mà không có lock, và trạng thái thay đổi giữa lúc kiểm tra và lúc ngủ.
 
-**Ví dụ.** Một notifier đặt `ready` và gọi `notify_one` *trước khi* waiter bắt đầu chờ. Waiter dùng `wait_for` không có predicate trước, rồi dùng overload có predicate, mỗi lần với timeout 200 ms để một lần mất wake-up hiện ra như timeout thay vì treo (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+**Ví dụ.** Một notifier đặt `ready` và gọi `notify_one` *trước khi* waiter bắt đầu chờ. Waiter dùng `wait_for` không có predicate trước, rồi dùng overload có predicate, mỗi lần với timeout 200 ms để một lần mất wake-up hiện ra như timeout thay vì treo (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`). Lần chờ nào trả về sớm, và mỗi lần mất bao lâu?
 
 ```cpp
 #include <chrono>
@@ -163,12 +163,12 @@ int main() {
 }
 ```
 
+**Lời giải.** Trạng thái đã đúng từ trước khi waiter bắt đầu, nhưng `wait_for` trần ngủ hết 200 ms vì thông báo duy nhất đến sớm hơn và đã mất: condition variable không nhớ gì. Overload có predicate kiểm `ready` dưới lock trước khi ngủ và trả về ngay (0 ms). Quy tắc là chờ một *trạng thái*, không bao giờ chờ một tín hiệu. Chương trình in ra:
+
 ```text
 no predicate  : timed out after 200 ms, ready = 1
 with predicate: returned true after 0 ms
 ```
-
-Trạng thái đã đúng từ trước, nhưng `wait_for` trần ngủ hết 200 ms vì thông báo duy nhất đến sớm hơn và đã mất: condition variable không nhớ gì. Overload có predicate kiểm `ready` dưới lock trước khi ngủ và trả về ngay (0 ms). Quy tắc là chờ một *trạng thái*, không bao giờ chờ một tín hiệu.
 
 ### Hàng đợi có giới hạn và hợp đồng của nó
 
@@ -182,7 +182,7 @@ Một hàng đợi có giới hạn dung lượng $K$ tách tốc độ của pr
 
 *Ví dụ về kích thước.* Một cảm biến phát một đợt 50 phần tử trong 50 ms (1000 phần tử/s); consumer xử lý 200 phần tử/s. Trong đợt phát, consumer lấy đi $200\times0.05=10$ phần tử, nên tồn đọng là $50-10=40$ phần tử và được xả hết trong $40/200=0.2$ s. Dung lượng $\ge40$ tránh chặn producer; với dung lượng 8, producer bị làm chậm bằng nhịp của consumer.
 
-**Ví dụ.** Quy tắc định cỡ của hợp đồng được thử trên một hàng đợi đang chạy. Một đợt 60 phần tử đến, cứ 0.5 ms một phần tử (2000 phần tử/s), và consumer cần 2.5 ms mỗi phần tử (400 phần tử/s). Đợt kéo dài $60\times0.5=30$ ms, trong đó consumer lấy đi khoảng $400\times0.030=12$ phần tử, nên backlog dự đoán là $60-12=48$ phần tử. Chương trình chạy dung lượng $K=64$ và $K=8$ và đếm số lần push phải chờ (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+**Ví dụ.** Quy tắc định cỡ của hợp đồng được thử trên một hàng đợi đang chạy. Một đợt 60 phần tử đến, cứ 0.5 ms một phần tử (2000 phần tử/s), và consumer cần 2.5 ms mỗi phần tử (400 phần tử/s). Đợt kéo dài $60\times0.5=30$ ms, trong đó consumer lấy đi khoảng $400\times0.030=12$ phần tử, nên backlog dự đoán là $60-12=48$ phần tử. Chương trình chạy dung lượng $K=64$ và $K=8$ và đếm số lần push phải chờ (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`). Với mỗi dung lượng, backlog đỉnh, số lần push bị chặn và thời gian của producer là bao nhiêu?
 
 ```cpp
 #include <chrono>
@@ -230,12 +230,12 @@ int main() {
 }
 ```
 
+**Lời giải.** Với $K=64$, toàn bộ backlog dự đoán 48 phần tử vừa trong hàng đợi, nên không push nào bị chặn và producer xong vào khoảng độ dài đợt, 30 ms. Với $K=8$ hàng đợi đầy sau 8 phần tử, nên producer bị kéo xuống nhịp của consumer và xong sau khoảng $(60-8)\times2.5=130$ ms. Backlog đỉnh đo được với $K=64$ là 47 (dự đoán 48; phần tử đầu được lấy ngay và các lần sleep không chính xác tuyệt đối), không push nào bị chặn và producer xong sau 33.9 ms. Với $K=8$ hàng đợi đầy, 48 lần push phải chờ và producer xong sau 137.1 ms, gần với 130 ms dự đoán (các thời gian là số đo, đổi theo máy và theo lần chạy). Chương trình in ra:
+
 ```text
 K = 64: peak backlog = 47, pushes that blocked =  0, producer done after  33.9 ms
 K =  8: peak backlog =  8, pushes that blocked = 48, producer done after 137.1 ms
 ```
-
-Với $K=64$, backlog đỉnh đo được là 47 (dự đoán 48; phần tử đầu được lấy ngay và các lần sleep không chính xác tuyệt đối), không push nào bị chặn và producer xong sau 33.9 ms. Với $K=8$ hàng đợi đầy sau 8 phần tử, 48 lần push phải chờ và producer bị kéo xuống nhịp của consumer: nó xong sau 137.1 ms, gần với $(60-8)\times2.5=130$ ms.
 
 ```explore
 {
@@ -287,7 +287,7 @@ int data; std::atomic<bool> ready{false};
 ```
 Với `memory_order_relaxed` cho cả hai, việc ghi `data` không được sắp thứ tự với cờ, và việc đọc `data` sẽ là một data race. Dùng atomic cho cờ và counter; dùng mutex cho bất cứ thứ gì có bất biến xuyên nhiều biến.
 
-**Ví dụ.** Mẫu công bố của mục này được chạy 2000 lần, mỗi vòng dùng một cặp thread mới: producer ghi `data = 42` và đặt `ready` với release; consumer quay vòng với acquire rồi đọc `data` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; cùng mã nguồn biên dịch với `-DRELAXED` dùng relaxed ở cả hai thao tác):
+**Ví dụ.** Mẫu công bố của mục này được chạy 2000 lần, mỗi vòng dùng một cặp thread mới: producer ghi `data = 42` và đặt `ready` với release; consumer quay vòng với acquire rồi đọc `data` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; cùng mã nguồn biên dịch với `-DRELAXED` dùng relaxed ở cả hai thao tác). Consumer đọc được 42 trong bao nhiêu vòng, và ThreadSanitizer nói gì về bản relaxed?
 
 ```cpp
 #include <atomic>
@@ -313,11 +313,11 @@ int main() {
 }
 ```
 
+**Lời giải.** Store release của `ready` và load acquire thấy `true` tạo một cạnh synchronizes-with, nên việc ghi `data = 42` happens-before việc đọc, và mọi vòng đều phải thấy 42. Cả 2000 vòng đều thấy 42, và ThreadSanitizer im lặng với phiên bản này. Trên x86-64, bản relaxed cũng in 2000 trên 2000, vì phần cứng giữ các store theo thứ tự, nên một bài test chạy qua không chứng minh gì cho phiên bản relaxed; ThreadSanitizer (`-fsanitize=thread`, chạy bằng `setarch -R ./a.out` trên kernel này) thì báo cáo nó là data race (trích đoạn ở khối thứ hai). Chương trình in ra:
+
 ```text
 rounds where the consumer read 42: 2000 of 2000
 ```
-
-Cả 2000 vòng đều thấy 42, và ThreadSanitizer im lặng với phiên bản này. Trên x86-64, bản relaxed cũng in 2000 trên 2000, vì phần cứng giữ các store theo thứ tự, nên một bài test chạy qua không chứng minh gì cho phiên bản relaxed; ThreadSanitizer (`-fsanitize=thread`, chạy bằng `setarch -R ./a.out` trên kernel này) thì báo cáo nó (trích đoạn):
 
 ```text
 WARNING: ThreadSanitizer: data race
@@ -340,7 +340,7 @@ SUMMARY: ThreadSanitizer: data race e10_5.cpp:18 in operator()
 
 *Hình: chứng minh của mục này vẽ thành đồ thị. Cạnh synchronizes-with màu cam chỉ có với release/acquire; bỏ nó đi (relaxed) thì $W$ và $R$ là hai truy cập xung đột không có thứ tự, tức data race.*
 
-**Ví dụ.** Việc tạo thread và `join` là các điểm đồng bộ, nên một giá trị có thể được chuyển vào thread rồi chuyển ra mà không cần atomic nào. Thread đọc `input` (được ghi trước khi nó được tạo) và ghi `output`; thread cha đọc `output` sau `join` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; với `-DEARLY` thread cha đọc trước `join`):
+**Ví dụ.** Việc tạo thread và `join` là các điểm đồng bộ, nên một giá trị có thể được chuyển vào thread rồi chuyển ra mà không cần atomic nào. Thread đọc `input` (được ghi trước khi nó được tạo) và ghi `output`; thread cha đọc `output` sau `join` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; với `-DEARLY` thread cha đọc trước `join`). Có data race không, và thread cha đọc được giá trị nào?
 
 ```cpp
 #include <cstdio>
@@ -360,11 +360,11 @@ int main() {
 }
 ```
 
+**Lời giải.** Việc ghi `input` happens-before lúc thread bắt đầu, và lúc thread kết thúc happens-before lúc `join` trả về, nên mọi truy cập đều có thứ tự: không có race, và thread cha đọc được $7\times6=42$. Dưới ThreadSanitizer (`-fsanitize=thread`, chạy bằng `setarch -R ./a.out` trên kernel này) biến thể `-DEARLY`, đọc `output` trong lúc thread có thể còn đang ghi, bị báo cáo là data race (trích đoạn ở khối thứ hai). Chương trình in ra:
+
 ```text
 output read after join  = 42
 ```
-
-Việc ghi `input` happens-before lúc thread bắt đầu, và lúc thread kết thúc happens-before lúc `join` trả về, nên mọi truy cập đều có thứ tự: không có race, và kết quả là 42. Dưới ThreadSanitizer (`-fsanitize=thread`, chạy bằng `setarch -R ./a.out` trên kernel này) biến thể `-DEARLY`, đọc `output` trong lúc thread có thể còn đang ghi, bị báo cáo (trích đoạn):
 
 ```text
 WARNING: ThreadSanitizer: data race
@@ -383,7 +383,7 @@ Xét hai atomic `x`, `y` ban đầu bằng 0; thread 1 chạy `x.store(1); r1 = 
 
 *Hình: vì sao $(r1,r2)=(0,0)$ có thể xảy ra khi không có một thứ tự toàn phần duy nhất. Các load chạy giữa lúc store được phát ra và lúc nó trở nên thấy được; các số đếm ở dưới là kết quả đo của ví dụ bên dưới.*
 
-**Ví dụ.** Phép thử store buffering được chạy 200,000 lần, với một `std::barrier` thả cả hai thread cùng lúc mỗi lần, một lần với các thao tác relaxed và một lần với `seq_cst` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`, một máy có CPU x86-64):
+**Ví dụ.** Phép thử store buffering được chạy 200,000 lần, với một `std::barrier` thả cả hai thread cùng lúc mỗi lần, một lần với các thao tác relaxed và một lần với `seq_cst` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`, một máy có CPU x86-64). Kết quả $(r1,r2)=(0,0)$ xuất hiện trong bao nhiêu trong 200,000 lần chạy với mỗi thứ tự bộ nhớ?
 
 ```cpp
 #include <atomic>
@@ -413,18 +413,18 @@ int main() {
 }
 ```
 
+**Lời giải.** Theo chứng minh ở trên, $(0,0)$ là không thể với `seq_cst`, còn các thao tác relaxed cho phép nó. Với các thao tác relaxed, kết quả mà sequential consistency cấm là $(r1,r2)=(0,0)$ xuất hiện trong 2 lần chạy; với `seq_cst` nó không xuất hiện lần nào trong 200,000. Số đếm nhỏ và thay đổi giữa các lần chạy (đây là số đo; một lần chạy khác trên cùng máy cho 21) vì cửa sổ chỉ rộng vài nano giây, nên một bài stress test có thể cho thấy kết quả đó nhưng không bao giờ loại trừ nó; chứng minh ở trên thì có. Chương trình in ra:
+
 ```text
 relaxed: (0,0) seen in 2 of 200000 runs
 seq_cst: (0,0) seen in 0 of 200000 runs
 ```
 
-Với các thao tác relaxed, kết quả mà sequential consistency cấm là $(r1,r2)=(0,0)$ xuất hiện trong 2 lần chạy; với `seq_cst` nó không xuất hiện lần nào trong 200,000. Số đếm nhỏ và thay đổi giữa các lần chạy vì cửa sổ chỉ rộng vài nano giây, nên một bài stress test có thể cho thấy kết quả đó nhưng không bao giờ loại trừ nó; chứng minh ở trên thì có.
-
 ### Tránh deadlock bằng thứ tự khóa: chứng minh và giới hạn
 
 Deadlock cần một chu trình trong đồ thị chờ (wait-for graph) (định nghĩa của bài). **Định lý.** Nếu mọi thread chỉ lấy khóa theo thứ tự tăng dần của một rank cố định, deadlock không thể xảy ra. *Chứng minh.* Giả sử các thread $T_1,\dots,T_k$ tạo thành chu trình: $T_i$ giữ khóa $a_i$ và chờ $a_{i+1}$ (chỉ số theo mod $k$). Một thread chờ $a_{i+1}$ khi đang giữ $a_i$ đã lấy $a_i$ trước, nên $\text{rank}(a_i)<\text{rank}(a_{i+1})$. Đi hết vòng ta được $\text{rank}(a_1)<\text{rank}(a_2)<\dots<\text{rank}(a_1)$, không thể. $\square$ Chứng minh cần *mọi* đường lấy khóa đều theo thứ tự, kể cả trong callback: vì vậy CP.22 cấm gọi code không biết khi đang giữ khóa (C++ Core Guidelines, CP.21 và CP.22). `std::scoped_lock` bỏ nhu cầu rank toàn cục bằng một thuật toán tránh deadlock, nhưng cần mọi khóa trong cùng một câu lệnh; các khóa lấy ở những hàm khác nhau vẫn cần một quy ước. Hai cái bẫy: khóa *cùng một* `std::mutex` hai lần trong một thread (ví dụ `transfer(a, a)`) là undefined behavior với mutex không đệ quy, dù có hay không `scoped_lock`; và sắp thứ tự theo địa chỉ (`std::less<>{}(&a.m, &b.m)`) là một rank hợp lệ cho mutex của các đối tượng không liên quan.
 
-**Ví dụ.** Hai tài khoản, $0$ và $1$, và hai lần chuyển tiền theo hai chiều ngược nhau. Phiên bản ngây thơ khóa nguồn trước; một barrier khiến cả hai thread đều giữ khóa đầu, và giới hạn 200 ms cho khóa thứ hai biến việc chờ vĩnh viễn thành một thất bại nhìn thấy được. Phiên bản có thứ tự luôn khóa chỉ số thấp trước, và chạy 200,000 lần chuyển (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; cũng sạch dưới ThreadSanitizer (`-fsanitize=thread`, chạy bằng `setarch -R ./a.out` trên kernel này)):
+**Ví dụ.** Hai tài khoản, $0$ và $1$, và hai lần chuyển tiền theo hai chiều ngược nhau. Phiên bản ngây thơ khóa nguồn trước; một barrier khiến cả hai thread đều giữ khóa đầu, và giới hạn 200 ms cho khóa thứ hai biến việc chờ vĩnh viễn thành một thất bại nhìn thấy được. Phiên bản có thứ tự luôn khóa chỉ số thấp trước, và chạy 200,000 lần chuyển (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; cũng sạch dưới ThreadSanitizer (`-fsanitize=thread`, chạy bằng `setarch -R ./a.out` trên kernel này)). Mỗi phiên bản có hoàn tất không, và số dư cộng lại bằng bao nhiêu?
 
 ```cpp
 #include <barrier>
@@ -477,12 +477,12 @@ int main() {
 }
 ```
 
+**Lời giải.** Ở phiên bản ngây thơ, cả hai thread giữ khóa đầu và mỗi thread chờ khóa của thread kia, tạo thành một chu trình, nên một lần chuyển bỏ cuộc sau 200 ms (không có giới hạn thì cả hai chờ mãi; bên nào bỏ cuộc thay đổi theo lần chạy), rồi lần còn lại tiếp tục. Ở phiên bản có thứ tự, cả hai thread khóa theo hạng tăng dần, nên theo định lý không chu trình nào hình thành và cả $2\times100{,}000=200{,}000$ lần chuyển hoàn tất. Mỗi vòng lặp chuyển $100{,}000\times3=300{,}000$ từ tài khoản 0 sang 1 và $100{,}000\times2=200{,}000$ ngược lại, và lần chuyển ngây thơ đã hoàn tất (1 sang 0, số tiền 20) đã để lại $500{,}020$ và $499{,}980$, nên tài khoản 0 kết thúc ở $500{,}020-300{,}000+200{,}000=400{,}020$ và tài khoản 1 ở $499{,}980+300{,}000-200{,}000=599{,}980$. Tổng số dư vẫn là $400{,}020+599{,}980=1{,}000{,}000$, đúng tổng ban đầu như kiểm tra bảo toàn yêu cầu. Chương trình in ra:
+
 ```text
 naive  : transfer 0->1 completed = 0, transfer 1->0 completed = 1
 ordered: 200000 transfers done, balances = 400020 + 599980 = 1000000
 ```
-
-Ở lần chạy ngây thơ, một lần chuyển bỏ cuộc sau 200 ms (không có giới hạn thì cả hai chờ mãi; bên nào bỏ cuộc thay đổi theo lần chạy), rồi lần còn lại tiếp tục. Phiên bản có thứ tự hoàn tất cả 200,000 lần chuyển, và tổng số dư vẫn là $400{,}020+599{,}980=1{,}000{,}000$, đúng tổng ban đầu như kiểm tra bảo toàn yêu cầu. Chứng minh áp dụng được: cả hai thread khóa theo hạng tăng dần, nên không chu trình nào hình thành.
 
 ### Condition variable: bất biến và lập luận mất thông báo (missed notification)
 
@@ -490,7 +490,7 @@ Condition variable không phải một flag; nó là một *hàng đợi các th
 
 Phần (3) là chỗ `notify_one` nguy hiểm. Với một condition variable dùng chung cho waiter "không đầy" và "không rỗng", `notify_one` có thể đánh thức một waiter mà predicate vẫn sai, lần thức bị tiêu tốn, và một waiter lẽ ra tiến được lại tiếp tục ngủ (Bài tập 15). Hai thiết kế an toàn là `notify_all` kèm predicate (đúng, nhưng $O(\text{waiters})$ lần thức mỗi thao tác) và một condition variable cho mỗi predicate với `notify_one`. Một bất biến hữu ích để nêu trong hợp đồng của hàng đợi là: *mỗi khi khóa rảnh, nếu hàng đợi không rỗng thì không có consumer nào đang ngủ có predicate đúng, và nếu không đầy thì không có producer nào đang ngủ có predicate đúng.* Mỗi thao tác phải khôi phục bất biến này trước khi mở khóa, đúng là quy tắc thông báo. Thông báo sau khi mở khóa là được và có thể tiết kiệm một lần chuyển ngữ cảnh, nhưng thông báo *trước* khi đổi trạng thái là lỗi.
 
-**Ví dụ.** Bốn consumer chờ trên *một* condition variable trong khi producer công bố 6 phần tử, cách nhau 20 ms. Mỗi consumer kiểm lại predicate trong vòng lặp, nên cả `notify_one` và `notify_all` đều đúng; chương trình đếm số lần `wait` trả về (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+**Ví dụ.** Bốn consumer chờ trên *một* condition variable trong khi producer công bố 6 phần tử, cách nhau 20 ms. Mỗi consumer kiểm lại predicate trong vòng lặp, nên cả `notify_one` và `notify_all` đều đúng; chương trình đếm số lần `wait` trả về (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`). Có bao nhiêu phần tử được lấy và bao nhiêu lần thức dậy với mỗi lệnh thông báo?
 
 ```cpp
 #include <chrono>
@@ -534,12 +534,12 @@ int main() {
 }
 ```
 
+**Lời giải.** Cả hai lần chạy đều giao đủ 6 phần tử. `notify_one` tốn $6+4=10$ lần thức dậy (một lần mỗi phần tử, cộng bốn consumer bị đánh thức bởi `notify_all` cuối cùng kết thúc lần chạy); `notify_all` tốn $6\cdot4+4=28$, vì mỗi phần tử đánh thức cả bốn consumer và ba trong số đó không thấy gì rồi ngủ lại. Đây là phần chi phí của thiết kế an toàn; một condition variable cho mỗi predicate cho phép `notify_one` vừa đúng vừa rẻ. Chương trình in ra:
+
 ```text
 notify_one: items taken = 6, wake-ups = 10
 notify_all: items taken = 6, wake-ups = 28
 ```
-
-Cả hai lần chạy đều giao đủ 6 phần tử. `notify_one` tốn $6+4=10$ lần thức dậy (một lần mỗi phần tử, cộng bốn consumer bị đánh thức bởi `notify_all` cuối cùng kết thúc lần chạy); `notify_all` tốn $6\cdot4+4=28$, vì mỗi phần tử đánh thức cả bốn consumer và ba trong số đó không thấy gì rồi ngủ lại. Đây là phần chi phí của thiết kế an toàn; một condition variable cho mỗi predicate cho phép `notify_one` vừa đúng vừa rẻ.
 
 ## Ví dụ có lời giải
 

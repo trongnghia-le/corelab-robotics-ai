@@ -4616,14 +4616,15 @@ button.danger,
   margin: 0.8rem 0;
 }
 .video-stage {
+  /* Always 16:9: as wide as the column, narrower only when the window is too
+     short to show the whole frame. */
   aspect-ratio: 16/9;
-  width: 100%;
-  max-height: 440px;
+  width: min(100%, calc((100vh - 150px) * 16 / 9));
   border: 1px solid #2e3134;
   border-radius: 8px;
   overflow: hidden;
   background: #0f1113;
-  margin: 1rem 0;
+  margin: 1rem auto;
 }
 :where(:root[data-theme="light"]) .video-stage {
   border: 1px solid #e0e2e3;
@@ -5379,10 +5380,21 @@ html:has(.media-navigation) {
 }
 /* A paragraph holding an over-long inline formula scrolls sideways on its own
    instead of widening the page on a phone. */
-.prose p,
-.prose li {
+.prose p {
   overflow-x: auto;
   overflow-y: hidden;
+}
+/* An overflow clip on a list item would also clip its outside number, so
+   list items scroll only on phones, with the number moved inside. */
+@media (max-width: 640px) {
+  .prose li {
+    overflow-x: auto;
+    overflow-y: hidden;
+    list-style-position: inside;
+  }
+  .prose li > p:first-child {
+    display: inline;
+  }
 }
 .prose .katex-display {
   background: #1b1f24;
@@ -6712,6 +6724,56 @@ body.is-resizing {
 }
 .desk-preview .katex-error {
   color: var(--danger);
+}
+
+/* Folded solutions (components/lesson-sections.ts, rehypeSolutions). */
+.solutions-toggle {
+  margin: 0 0 0.9rem;
+  font-size: 0.9rem;
+}
+.lesson-solution {
+  margin: 0.6rem 0 1rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: 8px;
+  background: var(--surface-1);
+}
+.lesson-solution > summary {
+  cursor: pointer;
+  padding: 0.55rem 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+}
+.lesson-solution > summary::-webkit-details-marker {
+  display: none;
+}
+.lesson-solution > summary::before {
+  content: "▸";
+  transition: transform 0.15s ease;
+}
+.lesson-solution[open] > summary::before {
+  transform: rotate(90deg);
+}
+.lesson-solution > summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.lesson-solution > :not(summary) {
+  margin-left: 0.9rem;
+  margin-right: 0.9rem;
+}
+.lesson-solution > :last-child {
+  margin-bottom: 0.8rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lesson-solution > summary::before {
+    transition: none;
+  }
 }
 
 /* Lesson figures and concept drawings are drawn on dark backgrounds:

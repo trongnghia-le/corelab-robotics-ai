@@ -138,7 +138,7 @@ The standard distinguishes four storage durations: static, thread, automatic and
 
 A standard container is a small automatic object that owns a dynamic block. A `std::vector<int>` object is three pointers (24 bytes on this 64-bit platform) living wherever the vector variable lives, and its elements live in a separate heap block. Moving or destroying the vector object acts on the 24 bytes; the block is released by the vector's destructor. This split between a *handle* and a *payload* explains most of the lesson: a pointer to the handle stays valid as long as the vector variable does, and a pointer to the payload does not.
 
-**Example.** The global `operator new` can be replaced (cppreference, "operator new", section "Global replacements"), here only to count calls. Compiled with g++ 11.4.0 (`-std=c++20 -Wall -Wextra`):
+**Example.** The global `operator new` can be replaced (cppreference, "operator new", section "Global replacements"), here only to count calls. The program below, compiled with g++ 11.4.0 (`-std=c++20 -Wall -Wextra`), counts the allocations and bytes of three objects. How many allocations and bytes does each of `int local[1000]`, `std::vector<int> v(1000)` and `std::make_unique<int>(5)` cost, and what are `sizeof(v)` and `sizeof(p)`?
 
 ```cpp
 #include <cstdlib>
@@ -178,7 +178,15 @@ int main() {
 }
 ```
 
-Output: `int local[1000]: 0 allocation(s), 0 bytes`; `sizeof(v) = 24`; `std::vector<int> v(1000): 1 allocation(s), 4000 bytes`; `sizeof(p) = 8`; `std::make_unique<int>(5): 1 allocation(s), 4 bytes`. The 4000 bytes are $1000\times4$; the 24-byte handle `v` itself is automatic and was not counted.
+**Solution.** A local array has automatic storage, so no call to `operator new` happens: 0 allocations, 0 bytes. The vector object `v` is a handle of three pointers (`sizeof(v) = 24`) that lives in the frame; only its payload of 1000 `int`s is allocated, once, with $1000\times4=4000$ bytes, and the 24-byte handle is automatic and therefore not counted. `make_unique<int>(5)` allocates one `int` (4 bytes) while its handle `p` is a single pointer (`sizeof(p) = 8`). The program prints:
+
+```text
+int local[1000]: 0 allocation(s), 0 bytes
+sizeof(v) = 24
+std::vector<int> v(1000): 1 allocation(s), 4000 bytes
+sizeof(p) = 8
+std::make_unique<int>(5): 1 allocation(s), 4 bytes
+```
 
 ![Three storage areas side by side: static, the stack with frames, and the heap with the 4000-byte and 4-byte blocks, each handle on the stack pointing to its block, and the time at which each object ends.](/lesson-figures/CPP02-2.svg)
 
@@ -190,7 +198,7 @@ Every object type has an *alignment requirement*, a power of two that says at wh
 
 Layout matters for three reasons in robotics code: memory traffic (a padded struct in an array of $10^6$ points wastes cache and bandwidth), binary interfaces (a struct sent over a wire or a file must have a fixed, documented layout, not "whatever the compiler did"), and `memcpy`-style code that assumes there are no gaps. `offsetof` gives the offset of a member of a standard-layout class (cppreference, "offsetof").
 
-**Example.** Three members of sizes 1, 4 and 1 bytes (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** Three members of sizes 1, 4 and 1 bytes are declared in two orders, `char a; int b; char c;` (`T1`) and `int b; char a; char c;` (`T2`) (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). What are `sizeof`, `alignof` and the member offsets of each struct?
 
 ```cpp
 #include <cstddef>
@@ -207,7 +215,12 @@ int main() {
 }
 ```
 
-Output: `T1 size 12 align 4 offsets 0 4 8` and `T2 size 8 align 4 offsets 0 4 5`. By the formula: `T1` has $o_a=0$, $o_b=\lceil1/4\rceil\cdot4=4$, $o_c=8$ and $\lceil9/4\rceil\cdot4=12$, so 6 of its 12 bytes are padding; `T2` has $o_b=0$, $o_a=4$, $o_c=5$ and $\lceil6/4\rceil\cdot4=8$, with 2 padding bytes.
+**Solution.** The offset formula of this section gives the layout, with $a_{\texttt{char}}=1$ and $a_{\texttt{int}}=4$, so $A=4$. For `T1`: $o_a=0$, $o_b=\lceil1/4\rceil\cdot4=4$, $o_c=\lceil(4+4)/1\rceil\cdot1=8$ and $\mathrm{sizeof}=\lceil9/4\rceil\cdot4=12$, so 6 of its 12 bytes are padding. For `T2`: $o_b=0$, $o_a=4$, $o_c=5$ and $\mathrm{sizeof}=\lceil6/4\rceil\cdot4=8$, with 2 padding bytes. Declaring the `int` first saves 4 bytes. The program prints:
+
+```text
+T1 size 12 align 4 offsets 0 4 8
+T2 size 8 align 4 offsets 0 4 5
+```
 
 ![Byte maps of the structs T1 and T2 with 4-byte alignment marks, padding drawn hatched, sizes 12 and 8.](/lesson-figures/CPP02-3.svg)
 
@@ -261,7 +274,7 @@ A *value* of a class or built-in type is copied by copy-initialization: the copy
 
 The lesson's key observation is that none of these three says anything about lifetime. A pointer or reference is valid exactly when the object it names is within its lifetime and, for pointers into a container, the element has not been moved; the Core Guidelines state the first half as "don't dereference an invalid pointer" (ES.65) and "never return a pointer or reference to a local object" (F.43). Choosing among them is a design decision: pass by value when copying is cheap or the callee needs its own copy; by `const&` to read without copying (F.16); by pointer when "no object" is a legitimate state (R.2 reserves raw pointers for individual objects that are *not* owned); and never use a raw `T*` to express ownership (R.3).
 
-**Example.** Two copies of a vector and two copies of a pointer (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** A vector `a` is copied into `b`, and a pointer `p` to `a[0]` is copied into `q`; then `9` is written to `b[0]` and `5` through `q` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). What are `a[0]` and `b[0]` at the end, and are `p` and `q`, and `&a[0]` and `&b[0]`, equal?
 
 ```cpp
 #include <iostream>
@@ -279,7 +292,12 @@ int main() {
 }
 ```
 
-Output: `a[0]=5 b[0]=9`, then `p == q: 1, &a[0] == &b[0]: 0`. Copying the vector `a` into `b` copied the three elements into a new heap block, so writing `9` to `b[0]` left `a` alone; copying the pointer `p` into `q` copied only an address, so writing `5` through `q` changed `a[0]`.
+**Solution.** Copying the vector `a` into `b` copies the three elements into a new heap block, so `&a[0] != &b[0]` and writing `9` to `b[0]` leaves `a` alone. Copying the pointer `p` into `q` copies only an address, so `p == q` and writing `5` through `q` changes `a[0]`. Hence `a[0]=5`, `b[0]=9`. The program prints:
+
+```text
+a[0]=5 b[0]=9
+p == q: 1, &a[0] == &b[0]: 0
+```
 
 ### Ownership, RAII and moves
 
@@ -287,7 +305,7 @@ Output: `a[0]=5 b[0]=9`, then `p == q: 1, &a[0] == &b[0]: 0`. Copying the vector
 
 The Core Guidelines turn this into rules: do not call `new` and `delete` explicitly (R.11), represent ownership with `unique_ptr` or `shared_ptr` (R.20), prefer `unique_ptr` unless ownership is really shared (R.21), and create them with `make_unique` and `make_shared` (R.22, R.23). A function that takes a `unique_ptr` by value is a *sink*: it advertises that it takes ownership; a function that merely uses the object takes `T&` or `T*` (R.30).
 
-**Example.** Moves between owners, with a type that prints its construction and destruction (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** Ownership of `Probe` objects is moved between `unique_ptr`s, with a type that prints its construction and destruction (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). In what order are the objects made and destroyed, and who owns what after `b = std::move(c)`?
 
 ```cpp
 #include <iostream>
@@ -312,7 +330,16 @@ int main() {
 }
 ```
 
-The output is `make 1`, `make 2`, `a empty: 1, c->id = 1`, `drop 2`, `after b = move(c): b->id = 1`, `drop 1`. Passing `a` through `pass_on` moved ownership twice without creating or destroying a `Probe`. The assignment `b = std::move(c)` had to release what `b` owned before taking over, so object 2 was destroyed at that line; object 1 is destroyed once, when `b` goes out of scope at the end of `main`.
+**Solution.** `make_unique` creates objects 1 and 2 (`make 1`, `make 2`). Passing `a` through `pass_on` moves ownership twice (into the parameter, then into the return value, which initialises `c`) without creating or destroying a `Probe`; `a` is left empty and `c->id` is 1. The assignment `b = std::move(c)` has to release what `b` owns before taking over, so object 2 is destroyed at that line (`drop 2`) and `b` now owns object 1. Object 1 is destroyed once, when `b` goes out of scope at the end of `main`. The program prints:
+
+```text
+make 1
+make 2
+a empty: 1, c->id = 1
+drop 2
+after b = move(c): b->id = 1
+drop 1
+```
 
 ### Vector growth, invalidation and the cost of moving elements
 
@@ -324,7 +351,7 @@ For $g=2$ that is below $2n$ moves in total, i.e. amortised $O(1)$ per push; for
 
 Whether those moves are *moves* or *copies* depends on the element type. `push_back` has the strong exception guarantee (cppreference, `std::vector::push_back`): if allocation or an element operation throws, the vector must be unchanged. To keep that promise while relocating, the implementation uses `std::move_if_noexcept`, which yields an rvalue only if the move constructor is `noexcept` or the type cannot be copied (cppreference, `std::move_if_noexcept`). A type whose move constructor can throw but which is copyable is therefore *copied* on every reallocation. This is the performance reason behind "Make move operations `noexcept`" (C++ Core Guidelines, C.66).
 
-**Example.** A vector is given capacity for 4 elements, a pointer to its first element is stored, and five elements are pushed (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** A vector is given capacity for 4 elements with `reserve(4)`, a pointer to its first element is stored, and five elements are pushed (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). After which push does the pointer stop naming the vector's data, and what are the capacities?
 
 ```cpp
 #include <iostream>
@@ -342,7 +369,15 @@ int main() {
 }
 ```
 
-The first four lines show capacity 4 and `p still data(): 1`; the fifth shows `size 5 capacity 8 p still data(): 0`. The first four pushes keep $\mathrm{size}\le\mathrm{capacity}$, so nothing moves and `p` stays valid; the fifth push needs a block of 8, the four elements are relocated, and `p` names a block that has been freed. The test `p == v.data()` is only a diagnostic here: after a reallocation the two can compare equal by accident when the allocator reuses an address (Case 2 below shows exactly that), and `p` is invalid anyway.
+**Solution.** The first four pushes keep $\mathrm{size}\le\mathrm{capacity}=4$, so nothing is relocated, the capacity stays 4 and `p` stays valid. The fifth push finds $\mathrm{size}=\mathrm{capacity}$, so the vector needs a block of 8, relocates the four elements and frees the old block: `size 5 capacity 8`, and `p` names a block that has been freed. The test `p == v.data()` is only a diagnostic here: after a reallocation the two can compare equal by accident when the allocator reuses an address (Case 2 below shows exactly that), and `p` is invalid anyway. The program prints:
+
+```text
+size 1 capacity 4 p still data(): 1
+size 2 capacity 4 p still data(): 1
+size 3 capacity 4 p still data(): 1
+size 4 capacity 4 p still data(): 1
+size 5 capacity 8 p still data(): 0
+```
 
 ### Temporaries and lifetime extension
 
@@ -355,7 +390,7 @@ A reference is only as good as the object it names. For temporaries, the languag
 
 Range-based `for` is the classic trap: `for (auto x : f().items())` binds the range to the *result of* `items()`, a reference into a temporary that is destroyed before the loop starts if `items()` returns a reference. A view type such as `std::string_view` has the same property as a reference: `std::string_view sv = make();` leaves `sv` pointing into a destroyed string. In all these cases the compiler accepts the code, and only a sanitizer run that executes the line reports it.
 
-**Example.** A type that announces its destruction shows when a temporary dies (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** A type that announces its construction and destruction shows when a temporary dies (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). In the program below, which of the two temporaries is kept alive by its reference, and when is the other destroyed?
 
 ```cpp
 #include <iostream>
@@ -378,7 +413,16 @@ int main() {
 }
 ```
 
-Output: `make A`, `after A`, `make B`, `drop B`, `after B, s refers to a dead object`, `drop A`. `A` is bound directly to `r`, so it lives until `main` ends; `B` is bound to the parameter of `id`, so it is destroyed at the semicolon of that statement, before the next line runs, and `s` already dangles at that line. The compiler issued no warning, and any use of `s` would be undefined behaviour.
+**Solution.** `const Noisy& r = make("A");` binds the temporary directly to `r`, so lifetime extension applies and `A` lives until `main` ends (`drop A` is last). `id(make("B"))` binds `B` to the reference parameter of `id`, so `B` lives only until the end of that full expression: it is destroyed at the semicolon (`drop B`), before the next line runs, and `s` already dangles at that line. The compiler issued no warning, and any use of `s` would be undefined behaviour. The program prints:
+
+```text
+make A
+after A
+make B
+drop B
+after B, s refers to a dead object
+drop A
+```
 
 ### Reference counts, `weak_ptr`, and who may call what
 
@@ -386,7 +430,7 @@ A `shared_ptr` points to a *control block* that holds, among other things, the n
 
 Counts say who keeps the object alive; they say nothing about whether a *raw reference you already hold* is safe. The Core Guidelines isolate this in R.37: do not pass a pointer or reference obtained from an aliased smart pointer, because anything downstream may reset that pointer and destroy the object while you still use it. The fix is to take a local copy ("pin") at the top of the call tree: `auto pin = g_p; f(*pin);`. The parameter rules R.32 to R.36 then say what a signature promises: `unique_ptr<T>` by value takes ownership, `unique_ptr<T>&` may reseat, `shared_ptr<T>` by value shares ownership, `const shared_ptr<T>&` may retain a count, and a function that only uses the object should take `T&` or `T*` (R.30).
 
-**Example.** The strong and weak counts of one shared integer (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** The strong and weak counts of one shared integer are observed (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). What are `use_count()` and `expired()` after copying the `shared_ptr`, after resetting one owner, and after resetting the last one, and what does `lock()` return then?
 
 ```cpp
 #include <iostream>
@@ -405,7 +449,13 @@ int main() {
 }
 ```
 
-Output: `use_count 2, expired 0`, then `use_count 1, expired 0`, then `use_count 0, expired 1, lock empty 1`. Two `shared_ptr`s own the integer (count 2); resetting one leaves count 1 and the object alive; resetting the last drops the count to 0, destroys the integer, and the `weak_ptr` observes the expiry and returns an empty `shared_ptr` from `lock()` instead of a dangling pointer.
+**Solution.** After `auto b = a;` two `shared_ptr`s own the integer, so `use_count` is 2 and the `weak_ptr` `w` has not expired. Resetting `a` leaves count 1 and the object alive. Resetting `b`, the last owner, drops the count to 0 and destroys the integer; `w` now observes the expiry (`expired 1`) and `lock()` returns an empty `shared_ptr` instead of a dangling pointer. The program prints:
+
+```text
+use_count 2, expired 0
+use_count 1, expired 0
+use_count 0, expired 1, lock empty 1
+```
 
 ## Worked example
 

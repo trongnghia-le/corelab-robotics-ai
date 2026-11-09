@@ -41,7 +41,9 @@ Một ví dụ phần mềm robot: thư viện `planner` dùng `Vec2` của `cor
 
 Khai báo có thể lặp lại; một định nghĩa phải tồn tại đúng một lần trong chương trình (one-definition rule, ODR). Các hàm định nghĩa trong header phải là `inline` (hoặc là template, hoặc `constexpr`).
 
-**Ví dụ.** Một driver cho flight controller được tách thành `imu/filter.hpp` (khai báo `double lowpass(double prev, double sample, double alpha);`) và vài chương trình nhỏ, mỗi chương trình làm hỏng đúng một giai đoạn. Output thật của `g++ 11.4`:
+**Ví dụ.** Một driver cho flight controller được tách thành `imu/filter.hpp` (khai báo `double lowpass(double prev, double sample, double alpha);`) và vài chương trình nhỏ, mỗi chương trình làm hỏng đúng một giai đoạn: `a_pre.cpp` include `imu/filtr.hpp` (gõ sai tên file), `b_comp.cpp` gọi `lowpas(0.0, 1.0, 0.5)`, `c_link.cpp` gọi `lowpass(...)` với header đúng nhưng không link định nghĩa nào, và `d1.cpp` cùng `d2.cpp` đều include `gain.hpp`, trong đó định nghĩa `gain()`. Giai đoạn nào (preprocess, compile, link) báo từng lỗi, và mỗi thông báo trông thế nào?
+
+**Lời giải.** Chương trình đầu dừng ở preprocessor (`No such file or directory`), chương trình thứ hai ở compiler (`not declared in this scope`, kèm gợi ý `lowpass`), chương trình thứ ba và thứ tư ở linker. Chương trình thứ ba biên dịch sạch: khai báo trong header là đủ cho compiler. Chỉ linker mới hỏi "thân hàm đâu?" và trả lời `undefined reference`. Chương trình thứ tư hỏng theo chiều ngược lại: hai object cùng mang một bản `gain()`, nên có `multiple definition`. Đọc giai đoạn trước (preprocess, compile, link) là đã gọi tên nguyên nhân trước khi mở bất kỳ file nào. Output thật của `g++ 11.4` (số cột phụ thuộc cách trình bày file thử):
 
 ```
 $ g++ -std=c++20 -Wall -Wextra -I. -c a_pre.cpp      # #include "imu/filtr.hpp"  (typo in the file name)
@@ -55,13 +57,13 @@ $ g++ d1.o d2.o -o d                                 # gain.hpp defines gain(); 
 d2.cpp:(.text+0x0): multiple definition of `gain()'; d1.o:d1.cpp:(.text+0x0): first defined here
 ```
 
-Chương trình thứ ba biên dịch sạch: khai báo trong header là đủ cho compiler. Chỉ linker mới hỏi "thân hàm đâu?". Chương trình thứ tư hỏng theo chiều ngược lại: hai object cùng mang một bản `gain()`. Đọc giai đoạn trước (preprocess, compile, link) là đã gọi tên nguyên nhân trước khi mở bất kỳ file nào.
-
 ### Quy tắc build lại kiểu Make
 
 Một rule có dạng `target: prerequisites` và một recipe. Target được build lại khi bất kỳ prerequisite nào mới hơn (hoặc thiếu). Compiler có thể ghi ra các phụ thuộc header thật sự (`-MMD`), mà các bản build do CMake sinh ra dùng tự động. Hệ quả: đổi một `.cpp` biên dịch lại một object và link lại; đổi một header được include rộng rãi biên dịch lại mọi object include nó. Nếu $k$ trong $N$ object include một header, chi phí của việc động vào nó là $k$ lần compile cộng các lần link; chi phí động vào một `.cpp` là 1 lần compile cộng các lần link. Đó là lý do header nên include càng ít càng tốt.
 
-**Ví dụ.** Một dự án bộ điều khiển có $N=6$ source; ba trong số đó (`pid_a.cpp`, `pid_b.cpp`, `pid_c.cpp`) include `pid.hpp`. Một Makefile viết tay với `-MMD` (để compiler ghi lại phụ thuộc header) cho kết quả:
+**Ví dụ.** Một dự án bộ điều khiển có $N=6$ source; ba trong số đó (`pid_a.cpp`, `pid_b.cpp`, `pid_c.cpp`) include `pid.hpp`. Một Makefile viết tay với `-MMD` (để compiler ghi lại phụ thuộc header) được chạy sau `touch pid_b.cpp`, rồi sau `touch pid.hpp`, rồi thêm một lần nữa. Mỗi bước tốn bao nhiêu compile, và `make` cuối cùng làm gì? Với 2 s mỗi compile, hai lần build lại đầu mất bao lâu, chưa tính bước link?
+
+**Lời giải.** Chạm một `.cpp` tốn 1 compile cộng bước link; chạm header tốn $k=3$ compile (mọi file include nó) cộng bước link, và lần `make` thứ hai không làm gì vì mọi timestamp đều mới. Với 2 s mỗi compile, đó là $1\cdot2=2$ s so với $k\cdot2=6$ s, cộng thêm bước link mỗi lần. Phiên làm việc là:
 
 ```
 $ make                       # 6 sources; pid_a.cpp, pid_b.cpp, pid_c.cpp include pid.hpp
@@ -76,8 +78,6 @@ g++ main.o pid_a.o pid_b.o pid_c.o log_a.o log_b.o -o app
 $ make
 make: 'app' is up to date.
 ```
-
-Chạm một `.cpp` tốn 1 compile cộng bước link; chạm header tốn $k=3$ compile cộng bước link, và lần `make` thứ hai không làm gì. Với 2 s mỗi compile, đó là 2 s so với 6 s, cộng thêm bước link mỗi lần.
 
 Thử thay đổi $N$, $k$, thời gian compile và số job song song để thấy chi phí của header tăng nhanh thế nào (thời gian thực của $k$ lần compile lại xếp vào $j$ job là $\lceil k/j\rceil\,t$, thời gian CPU là $k\,t$):
 
@@ -135,7 +135,7 @@ target_link_libraries(demo PRIVATE robotmath)            # links AND inherits PU
 - `enable_testing()` và `add_test(NAME x COMMAND exe)` đăng ký test; `ctest` chạy chúng và báo phần trăm pass/fail.
 - Liệt kê source tường minh trong `add_library`/`add_executable` an toàn hơn `file(GLOB ...)`, thứ chỉ được đánh giá lúc configure (một file mới không được thấy cho đến khi bạn chạy lại `cmake`; `CONFIGURE_DEPENDS` giảm nhẹ điều này).
 
-**Ví dụ.** Một module odometry bánh xe: `odom` đổi số tick encoder thành quãng đường, $d = 2\pi r\,\text{ticks}/\text{ticks\_per\_rev}$. Mô tả CMake chỉ cần các dòng của phần này, còn tên target mang phần còn lại:
+**Ví dụ.** Một module odometry bánh xe: `odom` đổi số tick encoder thành quãng đường, $d = 2\pi r\,\text{ticks}/\text{ticks\_per\_rev}$. `drive` in quãng đường cho 1440 tick với 360 tick mỗi vòng trên bánh bán kính 0,05 m, và `test_wheel` được đăng ký là một test. Cần những dòng CMake nào (chỉ các dòng của phần này), build in ra gì, và vì sao `main.cpp` không cần dòng include riêng nào cho `odom`?
 
 ```cmake
 add_library(odom src/wheel.cpp)
@@ -147,6 +147,8 @@ add_executable(test_wheel tests/test_wheel.cpp)
 target_link_libraries(test_wheel PRIVATE odom)
 add_test(NAME wheel COMMAND test_wheel)
 ```
+
+**Lời giải.** Mô tả CMake chỉ cần các dòng của khối trên, còn tên target mang phần còn lại: `odom` là một thư viện với thư mục include public, `drive` và `test_wheel` link nó. 1440 tick với 360 tick mỗi vòng là 4 vòng của bánh bán kính 0,05 m, nên $4\cdot 2\pi\cdot 0.05 = 1.2566$ m, đúng như in ra. `main.cpp` include `odom/wheel.hpp` mà không có dòng include riêng nào: `PUBLIC include` của `odom` đã tới `drive` và `test_wheel` qua `target_link_libraries`. Các bước configure, build, test và chạy in ra:
 
 ```
 $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build
@@ -163,13 +165,13 @@ $ ./build/drive
 1.25664 m
 ```
 
-Kiểm tra: 1440 tick với 360 tick mỗi vòng là 4 vòng của bánh bán kính 0,05 m, nên $4\cdot 2\pi\cdot 0.05 = 1.2566$ m, đúng như in ra. `main.cpp` include `odom/wheel.hpp` mà không có dòng include riêng nào: `PUBLIC include` của `odom` đã tới `drive` và `test_wheel` qua `target_link_libraries`.
-
 ### Thứ tự link và static library
 
 Linker GNU xử lý archive từ trái sang phải và chỉ trích xuất các member cần để thỏa các symbol đang *chưa được định nghĩa tại thời điểm đó*. Nếu `main.o` cần `a_fn` từ `libA.a` và `a_fn` cần `b_fn` từ `libB.a`, thì `g++ main.o -lA -lB` chạy được, nhưng `g++ main.o -lB -lA` thất bại với `undefined reference to b_fn()`: khi `libB.a` được quét thì chưa có gì cần nó. Với CMake bạn không bao giờ viết tay chuyện này: `target_link_libraries` ghi lại dependency và sắp xếp dòng link.
 
-**Ví dụ.** Một thư viện planner `libplan.a` (`plan()` gọi `costmap_at()`) và một thư viện bản đồ `libmap.a` (định nghĩa `costmap_at()`); `main.o` gọi `plan()`. Chạy thật với gcc 11.4:
+**Ví dụ.** Một thư viện planner `libplan.a` (`plan()` gọi `costmap_at()`) và một thư viện bản đồ `libmap.a` (định nghĩa `costmap_at()`); `main.o` gọi `plan()`. Link có thành công với `-lmap -lplan` không, và với `-lplan -lmap`? Chạy thật với gcc 11.4:
+
+**Lời giải.** Khi `-lmap` đứng trước, `libmap.a` được quét lúc chưa có gì cần `costmap_at` nên bị bỏ qua; sau đó `libplan.a` mới tạo ra nhu cầu và không còn archive nào, nên link thất bại. Với `-lplan -lmap`, `libplan.a` cấp `plan` và tạo nhu cầu `costmap_at`, rồi `libmap.a` thỏa nhu cầu đó, nên link thành công và chương trình thoát với 0. Thông báo nêu `plan.c`, object cần symbol, chứ không nêu thư viện đang thiếu trên dòng lệnh. Phiên làm việc là:
 
 ```
 $ gcc -c main.c plan.c map.c && ar rcs libplan.a plan.o && ar rcs libmap.a map.o
@@ -180,13 +182,11 @@ $ gcc main.o -L. -lplan -lmap -o t2 && ./t2; echo "exit $?"
 exit 0
 ```
 
-Khi `-lmap` đứng trước, `libmap.a` được quét lúc chưa có gì cần `costmap_at` nên bị bỏ qua; sau đó `libplan.a` mới tạo ra nhu cầu và không còn archive nào. Thông báo nêu `plan.c`, object cần symbol, chứ không nêu thư viện đang thiếu trên dòng lệnh.
-
 ### Đồ thị phụ thuộc
 
 Cho đồ thị build là một đồ thị có hướng không chu trình (DAG). Một thứ tự build hợp lệ là một thứ tự topo (topological order): mỗi node đứng sau tất cả prerequisite của nó. Tập cần build lại sau khi đổi node $c$ là $c$ cùng mọi node đến được từ $c$ theo các cạnh "được dùng bởi". Một chu trình (library A link B, B link A) không có thứ tự topo và CMake/Make sẽ báo nó.
 
-**Ví dụ.** Một node SLAM: `scan.o` và `icp.o` đều include `scan.hpp`, `libslam.a` archive chúng, `slam_node` link thư viện và `viz.o`. Thứ tự topo và tập cần build lại chỉ là vài dòng Python:
+**Ví dụ.** Một node SLAM: `scan.o` và `icp.o` đều include `scan.hpp`, `libslam.a` archive chúng, `slam_node` link thư viện và `viz.o`. Dùng vài dòng Python dưới đây để tính thứ tự topo và tập cần build lại, những nút nào được build lại khi `scan.hpp` đổi, và những nút nào khi `viz.cpp` đổi?
 
 ```python
 from graphlib import TopologicalSorter
@@ -202,12 +202,12 @@ def rebuild(changed):
 print(rebuild("scan.hpp")); print(rebuild("viz.cpp"))
 ```
 
+**Lời giải.** `rebuild(changed)` bắt đầu từ file đã đổi và lặp lại việc thêm mọi nút có liệt kê một nút đã nằm trong tập làm điều kiện tiên quyết, cho đến khi không thêm được nữa; kết quả được liệt kê theo thứ tự topo. Chạm `scan.hpp` chạm tới 4 nút phía sau (hai object, archive và executable); chạm `viz.cpp` chỉ tới `viz.o` và executable. Dòng đầu của `order` là một thứ tự hợp lệ bất kỳ: `graphlib` chỉ đảm bảo điều kiện tiên quyết đứng trước. Chương trình in ra:
+
 ```
 ['scan.hpp', 'scan.o', 'icp.o', 'libslam.a', 'slam_node']
 ['viz.cpp', 'viz.o', 'slam_node']
 ```
-
-Chạm `scan.hpp` chạm tới 4 nút phía sau (hai object, archive và executable); chạm `viz.cpp` chỉ tới `viz.o` và executable. `order` là một thứ tự hợp lệ bất kỳ: `graphlib` chỉ đảm bảo điều kiện tiên quyết đứng trước.
 
 ### Phân giải archive như một điểm bất động
 
@@ -224,7 +224,9 @@ Một trường hợp cụ thể với hai archive tham chiếu chéo. `libA.a` 
 
 Tính dừng của một nhóm: mỗi lượt thêm mà chưa dừng đều trích ra ít nhất một member mới, và một member được trích nhiều nhất một lần, nên một nhóm archive có tổng $M$ member cần nhiều nhất $M+1$ lượt quét. ld manual cảnh báo rằng cách này "có chi phí hiệu năng đáng kể" và chỉ nên dùng khi có tham chiếu vòng không tránh được. CMake làm tương tự cho các static library phụ thuộc lẫn nhau: nó lặp lại toàn bộ thành phần liên thông mạnh, nên `A <-> B` được link từ `main` cho ra `A B A B` (CMake docs, `target_link_libraries`, "Cyclic Dependencies of Static Libraries"). Lời khuyên của nó: nếu hai archive phụ thuộc nhau đến mức đó, hãy gộp chúng (ví dụ thành một object library).
 
-**Ví dụ.** Ba archive: `libX.a` = {`x1.o`: định nghĩa `f1`, cần `g1`; `x2.o`: định nghĩa `f2`}, `libY.a` = {`y1.o`: định nghĩa `g1`, cần `h1`}, `libZ.a` = {`z1.o`: định nghĩa `h1`, cần `f2`}; `main.o` cần `f1`. Áp dụng quy tắc của phần này cho `-lX -lY -lZ`: $U=\{f1\}$; `libX` trích `x1.o`, $U=\{g1\}$; `libY` trích `y1.o`, $U=\{h1\}$; `libZ` trích `z1.o`, $U=\{f2\}$; không còn archive nào nên `f2` vẫn chưa định nghĩa. Với thứ tự `-lZ -lY -lX` không gì khớp cho đến `libX`, cho $U=\{g1\}$ rồi dừng. Lượt quét thứ tư `libX` kết thúc với $U=\emptyset$. Linker đồng ý (gcc 11.4):
+**Ví dụ.** Ba archive: `libX.a` = {`x1.o`: định nghĩa `f1`, cần `g1`; `x2.o`: định nghĩa `f2`}, `libY.a` = {`y1.o`: định nghĩa `g1`, cần `h1`}, `libZ.a` = {`z1.o`: định nghĩa `h1`, cần `f2`}; `main.o` cần `f1`. Áp dụng quy tắc phân giải archive của phần này, cái gì còn chưa định nghĩa với `-lX -lY -lZ`, với `-lZ -lY -lX`, và với `-lX -lY -lZ -lX`? Linker nói gì (gcc 11.4)?
+
+**Lời giải.** Giữ tập $U$ các symbol chưa định nghĩa, ban đầu $U=\{f1\}$ từ `main.o`; mỗi archive được quét một lần, từ trái sang phải, và trích các member định nghĩa một symbol của $U$. Với `-lX -lY -lZ`: `libX` trích `x1.o`, $U=\{g1\}$; `libY` trích `y1.o`, $U=\{h1\}$; `libZ` trích `z1.o`, $U=\{f2\}$; không còn archive nào nên `f2` vẫn chưa định nghĩa. Với thứ tự `-lZ -lY -lX` không gì khớp cho đến `libX`, nó trích `x1.o` cho $U=\{g1\}$ rồi dừng, nên `g1` vẫn chưa định nghĩa. Lượt quét thứ tư `libX` (`-lX -lY -lZ -lX`) trích `x2.o` cho `f2` và kết thúc với $U=\emptyset$. Chuỗi $f1\to g1\to h1\to f2$ chạy "ngược" qua các archive, nên dòng duy nhất chạy được lặp lại `libX` ở cuối. Linker đồng ý:
 
 ```
 $ gcc main.o -L. -lX -lY -lZ -o t
@@ -247,7 +249,7 @@ Static library cần một ngoại lệ. Nếu `A` là static và link `B` ở d
 
 *Hình: scope viết trong `target_link_libraries(A <scope> B)` quyết định ai thấy thư mục include của B; với A tĩnh, B được link vào `main` trong cả ba trường hợp.*
 
-**Ví dụ.** Một thư viện sensor-fusion `fusion` (static) chỉ dùng thư viện ma trận `matlib` bên trong `fusion.c`, và `slam` link `fusion`. CMake 3.22 báo hai property và các dòng lệnh được sinh ra:
+**Ví dụ.** Một thư viện sensor-fusion `fusion` (static) chỉ dùng thư viện ma trận `matlib` bên trong `fusion.c`, và `slam` link `fusion` (các dòng CMake bên dưới). `LINK_LIBRARIES` và `INTERFACE_LINK_LIBRARIES` của `fusion` là gì, và dòng compile của `slam.c` có chứa `-Imatinc` không? Dòng link của `slam` chứa gì? CMake 3.22:
 
 ```cmake
 add_library(matlib STATIC mat.c)
@@ -259,6 +261,8 @@ add_executable(slam slam.c)
 target_link_libraries(slam PRIVATE fusion)
 ```
 
+**Lời giải.** `fusion` giữ `matlib` trong `LINK_LIBRARIES` của chính nó, và chỉ công bố cho consumer dưới dạng `$<LINK_ONLY:matlib>`. Vì vậy `libmatlib.a` có trên dòng link của `slam` trong khi `-Imatinc` vắng mặt trên dòng compile (chỉ có `-Ifusioninc`): dependency private được link nhưng không được compile cùng. CMake báo hai property và các dòng lệnh được sinh ra:
+
 ```
 -- fusion LINK_LIBRARIES           = matlib
 -- fusion INTERFACE_LINK_LIBRARIES = $<LINK_ONLY:matlib>
@@ -266,13 +270,13 @@ compile line of slam.c:  cc -Ifusioninc -o CMakeFiles/slam.dir/slam.c.o -c slam.
 link line of slam:       cc CMakeFiles/slam.dir/slam.c.o -o slam  libfusion.a libmatlib.a
 ```
 
-`fusion` giữ `matlib` trong `LINK_LIBRARIES` của chính nó, và chỉ công bố cho consumer dưới dạng `$<LINK_ONLY:matlib>`. Vì vậy `libmatlib.a` có trên dòng link của `slam` trong khi `-Imatinc` vắng mặt trên dòng compile: dependency private được link nhưng không được compile cùng.
-
 ### Xuất một target: BUILD_INTERFACE và INSTALL_INTERFACE
 
 Một usage requirement như `target_include_directories(core PUBLIC /abs/path/include)` hợp lệ khi build trong cùng cây thư mục, nhưng nếu `core` được cài đặt và export thì đường dẫn sẽ bị đóng cứng vào một file dùng trên máy khác. Vì vậy CMake từ chối đường dẫn tuyệt đối nằm trong thư mục source hoặc build trong `INTERFACE_INCLUDE_DIRECTORIES` của một target được export. Cách sửa tách hai thế giới: `$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>` dùng khi consume từ cùng build system, và `$<INSTALL_INTERFACE:include>` (đường dẫn tương đối so với install prefix) dùng sau khi cài đặt (CMake docs, cmake-buildsystem(7), "Include Directories and Usage Requirements" và "Build Specification and Usage Requirements").
 
-**Ví dụ.** Một thư viện transform `tf` được export bằng `install(TARGETS tf EXPORT tfTargets ...)` và `install(EXPORT tfTargets ...)`. Với đường dẫn nguồn tuyệt đối trong usage requirement, CMake 3.22 dừng ở bước generate; với hai generator expression thì qua:
+**Ví dụ.** Một thư viện transform `tf` được export bằng `install(TARGETS tf EXPORT tfTargets ...)` và `install(EXPORT tfTargets ...)`. CMake 3.22 làm gì khi thư mục include được cho là `${CMAKE_CURRENT_SOURCE_DIR}/include`, và làm gì với `$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>` cộng `$<INSTALL_INTERFACE:include>`?
+
+**Lời giải.** Với đường dẫn nguồn tuyệt đối trong usage requirement, CMake dừng ở bước generate; với hai generator expression thì qua. Đường dẫn bị từ chối sẽ bị đóng cứng vào file export và sai trên mọi máy khác, trong khi `include` sau `INSTALL_INTERFACE` được hiểu tương đối với install prefix. Hai lần chạy in ra:
 
 ```
 $ cmake -S . -B build        # target_include_directories(tf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -285,8 +289,6 @@ $ cmake -S . -B build        # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc
 -- Generating done
 ```
 
-Đường dẫn bị từ chối sẽ bị đóng cứng vào file export và sai trên mọi máy khác, trong khi `include` sau `INSTALL_INTERFACE` được hiểu tương đối với install prefix.
-
 ### Các loại thư viện và mô hình chi phí: static, shared, object, interface
 
 `add_library` tạo một trong nhiều loại target, và loại đó quyết định build tạo ra gì và code của nó được biên dịch khi nào (CMake docs, cmake-buildsystem(7), "Binary Targets", "Object Libraries" và "Interface Libraries"). Thư viện **static** là một archive các object file; lần link cuối sao chép các member cần thiết vào mọi file thực thi dùng nó. Thư viện **shared** được link một lần và phân giải lại lúc chương trình nạp, nên file thực thi chứa một tham chiếu chứ không phải code. Thư viện **object** là tập các object file "được tạo bằng cách biên dịch source mà không archive hay link"; các target khác tái dùng các object đó qua `$<TARGET_OBJECTS:name>` hoặc bằng cách link object library. Thư viện **interface** không biên dịch gì và không sinh file: nó chỉ mang usage requirement, nên là loại đúng cho code chỉ có header.
@@ -295,7 +297,9 @@ Hệ quả thực tế là một mô hình chi phí. Một file source nằm tro
 
 Một module nên chọn loại nào? Một quy tắc ngón tay cái suy ra từ các định nghĩa: dùng static library làm mặc định cho code do dự án sở hữu (triển khai đơn giản, dòng link tất định); dùng shared library khi nhiều file thực thi phải chia sẻ một bản code hoặc khi code phải được thay mà không link lại ứng dụng; dùng object library để biên dịch một lần rồi archive hoặc link cùng các object vào nhiều target khác nhau; dùng interface library cho code chỉ có header và cho các gói cờ mà nhiều target nên thừa hưởng. Hai giới hạn cần nhớ: object library không thể là `TARGET` của `add_custom_command(TARGET)`, và interface library chỉ nhận dạng `INTERFACE` của `target_include_directories`, `target_compile_definitions` và các lệnh tương tự.
 
-**Ví dụ.** Hai executable `m1` và `m2` cần cùng `f.c`. Đếm các dòng `Building C object` (CMake 3.22, generator Makefile):
+**Ví dụ.** Hai executable `m1` và `m2` cần cùng `f.c`. CMake 3.22 (generator Makefile) in bao nhiêu dòng `Building C object` khi `f.c` được liệt kê trong cả hai executable, và khi nó được build một lần như object library dùng qua `$<TARGET_OBJECTS:fobj>`?
+
+**Lời giải.** Liệt kê `f.c` trong cả hai executable thì nó được compile hai lần (2 file `main` cộng 2 bản `f.c` = 4); object library compile nó một lần (2 file `main` cộng 1 bản = 3). Ở đây tiết kiệm một lần compile; với một translation unit 5 phút dùng chung cho mười công cụ thì là chín lần. Hai lần build cho:
 
 ```
 $ cmake -S . -B b -DMODE=listed      # add_executable(m1 m1.c f.c) and add_executable(m2 m2.c f.c)
@@ -305,8 +309,6 @@ $ cmake -S . -B b -DMODE=object      # add_library(fobj OBJECT f.c); m1, m2 use 
 $ cmake --build b | grep -c 'Building C object'
 3
 ```
-
-Liệt kê `f.c` trong cả hai executable thì nó được compile hai lần (2 file `main` cộng 2 bản `f.c` = 4); object library compile nó một lần (3). Ở đây tiết kiệm một lần compile; với một translation unit 5 phút dùng chung cho mười công cụ thì là chín lần.
 
 ## Ví dụ có lời giải
 

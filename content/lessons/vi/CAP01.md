@@ -97,9 +97,13 @@ Bạn **tốt nghiệp** khi tất cả điều sau đúng: mọi gate của m�
 
 ## Ví dụ có lời giải
 
-Đây là một vết tham chiếu cho thấy một CAP01 đạt trông như thế nào. Mọi con số đều là giá trị minh họa (illustrative values) được chọn cho nhất quán với các công thức, không phải đầu ra của một lần chạy thật; của bạn sẽ khác ở các chữ số cuối và bạn nên đối chiếu với ngưỡng, không phải với các chữ số này.
+### Vết tham chiếu của một CAP01 đạt
 
-**1. Một spec kiểm tra được.** Mười yêu cầu, mỗi yêu cầu gắn với một test (SR8 đến SR10 nằm trong unit test của bạn):
+**Đề bài.** Chỉ ra một CAP01 đạt trông như thế nào và mỗi gate được đo ra sao. Cần có: (a) một spec gồm mười yêu cầu, mỗi yêu cầu gắn với một test; (b) động học thuận (FK) tính tay cho một cánh tay minh họa (đỉnh trụ cao 0.05 m so với mặt phẳng đế, chiều dài khâu 0.12, 0.14 và 0.10 m, góc tính bằng radian với lift đo từ phương thẳng đứng) tại pan 0.4, lift 0.6, elbow 0.9, wrist -1.5, so với số đọc của trình mô phỏng $(0.1911, 0.0807, 0.2590)$ m theo ngưỡng 1 mm, kèm ảnh hưởng của việc nhầm độ với radian; (c) tính xác định của `reset(seed=7)` cộng 500 bước kịch bản ở 1 ms; (d) khả năng với tới của hai vị trí bàn theo mô hình vành khuyên (khoảng cách ngang 0.12 đến 0.33 m từ đế tay) và gate 95 %; (e) kiểm tra truy vết trên một spec có một dòng mơ hồ; (f) một file metrics được đánh giá theo các ngưỡng; (g) khoảng Wilson 95 % cho 27 thành công trên 30 episode so với cận dưới 0.75. Mọi số về tay và tầm với là giá trị minh họa nhất quán với công thức, không phải đầu ra của một lần chạy thật; hãy so số của mình với các ngưỡng, không so với các chữ số này.
+
+**Lời giải.**
+
+1. **Một spec có thể kiểm tra.** Mỗi dòng có id, metric, ngưỡng, lý do và tên test. Mười yêu cầu, SR1 đến SR7 trong các acceptance test và SR8 đến SR10 trong các unit test. Ngưỡng là các quyết định: 1 mm cho FK là 20 % của dung sai gắp khoảng 5 mm, còn lại 4 mm cho mọi thứ khác; SR6 yêu cầu ít nhất 8 id truy vết được và có 10.
 
 ```markdown
 | id   | requirement                              | metric                          | threshold | rationale                                    | test |
@@ -116,7 +120,7 @@ Bạn **tốt nghiệp** khi tất cả điều sau đúng: mọi gate của m�
 | SR10 | Units are SI and documented              | every field doc names its unit  | all       | CAP02 mixes counts, rad and m/s              | tests/unit/test_interfaces.py::test_units_documented |
 ```
 
-**2. Forward kinematics bằng tay.** Một tay minh họa: đỉnh trụ cao 0.05 m so với mặt phẳng base, độ dài link 0.12, 0.14 và 0.10 m (duỗi thẳng, với tầm với ngang 0.36 m, đó là lý do bàn phải thấp và gần). Góc tính bằng radian, góc nâng vai đo từ phương thẳng đứng.
+2. **Động học thuận tính tay.** Các góc tích lũy là $a_1=0.6$, $a_2=0.6+0.9=1.5$, $a_3=1.5-1.5=0$ rad. Tầm với ngang $r=L_1\sin a_1+L_2\sin a_2+L_3\sin a_3=0.12(0.5646)+0.14(0.9975)+0.10(0)=0.0678+0.1396+0=0.2074$ m. Chiều cao $z=Z_0+L_1\cos a_1+L_2\cos a_2+L_3\cos a_3=0.05+0.12(0.8253)+0.14(0.0707)+0.10(1)=0.05+0.0990+0.0099+0.1=0.2589$ m. Chiếu theo góc pan: $x=r\cos0.4=0.2074(0.9211)=0.1910$ m, $y=r\sin0.4=0.2074(0.3894)=0.0808$ m. Đoạn code tái tạo kết quả này:
 
 ```python
 import math
@@ -142,19 +146,17 @@ print("angles treated as degrees: error = %.1f mm" % (1000 * math.dist(p, bad)))
 print("max horizontal reach = %.2f m" % (L1 + L2 + L3))
 ```
 
-Đầu ra:
-
 ```text
 tool0 in arm_base: x=0.1910 y=0.0808 z=0.2589
 angles treated as degrees: error = 252.9 mm
 max horizontal reach = 0.36 m
 ```
 
-Nếu sau đó trình mô phỏng đọc được $(0.1911, 0.0807, 0.2590)$ cho `tool0` thì sai số là $\sqrt{0.1^2+0.1^2+0.1^2}\ \text{mm}=0.17$ mm: đạt so với ngưỡng 1 mm. Coi cùng bốn số đó là độ làm tool lệch khoảng 253 mm, đúng là lỗi mà test được tạo ra để bắt.
+Trình mô phỏng đọc $(0.1911, 0.0807, 0.2590)$, nên so với giá trị in ra $(0.1910, 0.0808, 0.2589)$ các chênh lệch là $(0.1,-0.1,0.1)$ mm và sai số là $\sqrt{0.1^2+0.1^2+0.1^2}\ \text{mm}=0.17$ mm, đạt so với ngưỡng 1 mm. Đọc cùng bốn số đó như độ thì làm lệch dụng cụ 252.9 mm (dòng in thứ hai), đúng là lỗi mà test được dựng để bắt. Giới hạn tầm với là $L_1+L_2+L_3=0.12+0.14+0.10=0.36$ m, vì vậy bàn phải thấp và gần.
 
-**3. Tính tất định.** Hai lần chạy `reset(seed=7)` cộng 500 bước theo kịch bản (0.5 s thời gian mô phỏng với 1 ms) cho cùng scene hash và $|q_1-q_2|$ lớn nhất bằng 0.0 (ngưỡng $10^{-9}$).
+3. **Tính xác định.** Hai lần chạy `reset(seed=7)` cộng 500 bước kịch bản (500 $\times$ 1 ms $=0.5$ s thời gian mô phỏng) cho cùng scene hash và $|q_1-q_2|$ lớn nhất bằng 0.0, dưới ngưỡng $10^{-9}$.
 
-**4. Khả năng với tới.** Lấy mẫu đều các điểm trên bàn và hỏi tool có đặt được ở đó không. Với mô hình hình vành khăn minh họa (khoảng cách ngang từ 0.12 đến 0.33 m tính từ đế tay), một bàn trải từ 0.18 đến 0.32 m phía trước và rộng 0.24 m là đạt; đẩy cùng bàn đó ra xa thêm 0.07 m thì thất bại nặng:
+4. **Khả năng với tới.** Lấy mẫu đều các điểm trên bàn và hỏi dụng cụ có đặt được ở đó không, tức $0.12\le r\le0.33$ m. Bàn 1 trải từ 0.18 đến 0.32 m phía trước và rộng 0.24 m: điểm gần nhất có $r=0.18\ge0.12$ và chỉ các góc xa vượt 0.33 m ($\sqrt{0.32^2+0.12^2}=0.342$ m), nên hầu như mọi điểm đều với tới được. Bàn 2 là cùng cái bàn đẩy xa thêm 0.07 m (0.25 đến 0.45 m): dọc đường tâm chỉ $x\le0.33$ với tới được, tức nhiều nhất $(0.33-0.25)/0.20=0.40$ chiều sâu, ít hơn ở hai bên. Lấy mẫu 100 000 điểm mỗi bàn cho:
 
 ```python
 import math
@@ -181,9 +183,9 @@ table 0.18..0.32 m ahead, +-0.12 m wide: 0.986
 table 0.25..0.45 m ahead, +-0.12 m wide: 0.363
 ```
 
-98.6 % vượt gate 95 %; 36.3 % cho biết tỉ lệ mô hình sai, không phải code. Đây là "kiểm tra kích thước" của milestone: SO-101 chỉ với tới khoảng 0.35 đến 0.4 m, nên bạn gắn nó trên một trụ ngắn và dùng bàn và thùng thấp.
+98.6 % cao hơn gate 95 %; 36.3 % là vấn đề tỉ lệ của mô hình, không phải lỗi code. Đây là phép kiểm tra kích thước của milestone: SO-101 chỉ với tới khoảng 0.35 đến 0.4 m, nên gắn nó trên một trụ thấp với bàn và thùng thấp.
 
-**5. Truy vết.** Một yêu cầu không có tên test thì không truy vết được; bộ phân tích tìm ra nó:
+5. **Truy vết.** Một yêu cầu không có tên test thì không truy vết được; một bộ parser tìm ra nó bằng cách thu mọi `::test_name` trong mỗi dòng `SR`:
 
 ```python
 import re
@@ -216,7 +218,9 @@ assert untraceable == ["SR3"]
 untraceable: ['SR3']
 ```
 
-**6. Tệp metrics** sau một lần chạy đạt (`runs/cap01/metrics.json`, giá trị minh họa):
+SR1 và SR2 mỗi dòng trích một test, SR3 ("the robot is accurate", không metric, không ngưỡng, không test) không trích test nào, nên đúng `['SR3']` là không truy vết được và assertion thỏa.
+
+6. **File metrics** sau một lần chạy đạt (`runs/cap01/metrics.json`, minh họa), được đánh giá theo các ngưỡng: tính xác định $0.0<10^{-9}$; sai số FK $0.00012\ \text{m}=0.12\ \text{mm}<1$ mm; chênh lệch khối lượng $0.004=0.4\,\%<2\,\%$; tỉ lệ với tới $0.97\ge0.95$; trôi khi nghỉ $0.02^\circ<0.5^\circ$ và $0.0003\ \text{m}=0.3\ \text{mm}<2$ mm; xuyên thấu $0.0005\ \text{m}=0.5\ \text{mm}<2$ mm; 10 yêu cầu $\ge8$; 17 unit test $\ge15$.
 
 ```json
 {
@@ -232,7 +236,11 @@ untraceable: ['SR3']
 }
 ```
 
-**7. Một tỉ lệ thành công, cho sau này.** Nếu một test sau này báo 27 thành công trong 30 episode, ước lượng điểm là 0.90 nhưng khoảng Wilson 95 % là (0.744, 0.965): một yêu cầu cận dưới 0.75 sẽ vừa đủ thất bại.
+7. **Một tỉ lệ thành công, để dùng sau.** Với 27 thành công trên 30 episode, $\hat p=0.90$ và $z=1.96$: $z^2/(2n)=0.0640$, $\hat p(1-\hat p)/n+z^2/(4n^2)=0.003+0.001067=0.004067$ có căn là $0.0638$, nên $z\cdot0.0638=0.1250$; mẫu số là $1+z^2/n=1.1281$. Khoảng là $\left(\frac{0.9640-0.1250}{1.1281},\ \frac{0.9640+0.1250}{1.1281}\right)=(0.744,\,0.965)$. Một yêu cầu cận dưới 0.75 sẽ vừa đủ trượt ($0.744<0.75$) dù ước lượng điểm là 0.90.
+
+**Kiểm tra.** Mọi bước số đều chạy lại được: script FK in `x=0.1910 y=0.0808 z=0.2589` và 252.9 mm; script tầm với in 0.986 và 0.363 (tích phân lưới độc lập trên vành khuyên cũng cho 0.986 và 0.363); parser in `untraceable: ['SR3']`; `evalkit.wilson_interval(27, 30)` cho (0.744, 0.965). Trong dự án thật, các phép kiểm tra này chính là acceptance test của `tests/acceptance/test_cap01.py` và các unit test. Một lưu ý về so sánh FK: 0.17 mm dùng giá trị in 4 chữ số thập phân; chưa làm tròn thì sai số là 0.11 mm, vẫn thấp hơn nhiều so với 1 mm.
+
+**Rút ra.** Mỗi gate là một con số kèm ngưỡng và một test có thể thất bại: sai số FK 1 mm, tính xác định $10^{-9}$, tầm với 95 %, và cận dưới Wilson thay vì ước lượng điểm.
 
 ## Bài tập
 

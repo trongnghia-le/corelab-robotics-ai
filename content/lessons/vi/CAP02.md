@@ -59,11 +59,16 @@ với bán kính bánh $r$ và khoảng cách hai bánh (track width) $b$. Hiệ
 
 ## Ví dụ có lời giải
 
-Mọi giá trị dưới đây là **minh họa (illustrative)** (sinh ra từ một mô phỏng độc lập nhỏ của plant và bộ điều khiển trên, không phải từ một lần chạy repository của bạn); số của bạn sẽ khác, và không sao miễn là các bài kiểm thử qua.
+### Vết nghiệm thu của vòng lặp firmware đế di chuyển
 
-Plant: $K_u=20$ rad/s, $\tau=80$ ms, $N=1496$, PI ở 100 Hz với $K_p=0.12$, $K_i=1.5$, bộ đếm bắt đầu ở 65000 để việc quay vòng 16 bit xảy ra trong log.
+**Đề bài.** Động cơ N20 mô phỏng có $K_u=20$ rad/s trên mỗi đơn vị duty, $\tau=80$ ms, $\text{PPR}=11$, tỉ số truyền 34 với giải mã $\times4$, nên $N=1496$ count mỗi vòng bánh. Vòng PI chạy ở 100 Hz với $K_p=0.12$, $K_i=1.5$, mục tiêu 6 rad/s, và bộ đếm bắt đầu ở 65000 để lần tràn 16-bit xảy ra trong log. Mọi giá trị dưới đây đều **minh họa** (từ một mô phỏng độc lập nhỏ của plant và bộ điều khiển, không phải từ một lần chạy của repository). Chỉ ra rằng: (a) cột tốc độ trong log suy ra được từ các count; (b) đáp ứng bước thỏa settle $<0.35$ s, overshoot $<10$ %, sai số xác lập $<2$ %; (c) tích phân có điều kiện giữ overshoot sau một lần kẹt 1 s dưới 15 %, còn bộ tích phân luôn bật thì không; (d) watchdog đưa PWM về 0 trong vòng 100 ms và đỉnh khi khởi động lại dưới $1.2\times6$ rad/s; (e) khung trạng thái 12 byte cho seq 7, count 65530 và 4 đúng định dạng và sống sót qua 50 byte rác; (f) hiệu chuẩn odometry đưa đường thẳng 10 m và hình vuông 2 m về sai số nhỏ (bán kính bánh thật 0.0335 m, danh định 0.0330 m; bề rộng vết bánh thật 0.163 m, danh định 0.160 m).
 
-| t (s) | omega (rad/s, cửa sổ 50 ms) | counts (uint16) |
+**Lời giải.**
+
+1. **Count và lượng tử tốc độ.** $N=4\cdot11\cdot34=1496$ count mỗi vòng. Ở 6 rad/s bánh quay $6/(2\pi)=0.955$ vòng/s, tức $0.955\cdot1496/100=14.3$ count mỗi 10 ms, nên các count nguyên tăng 14 hoặc 15 mỗi dòng. Một count là $2\pi/1496=4.20\times10^{-3}$ rad, nên với cửa sổ 50 ms lượng tử tốc độ là $\Delta\omega=2\pi/(1496\cdot0.05)=0.084$ rad/s (1.4 % của 6), so với $0.42$ rad/s trên 10 ms (7 %). Vì vậy cột trong log dùng 50 ms.
+2. **Tốc độ trong log từ các count.** Với $\omega=\Delta\text{count}\cdot(2\pi/N)/0.05$ s: $t=0.051$, $44$ count (65000 đến 65044) cho $3.70$ rad/s; $t=0.101$, $69$ count cho $5.80$; $t=0.151$, $70$ count cho $5.88$; $t=0.201$, $71$ count cho $5.96$; $t=0.301$, khoảng $72$ count trong 50 ms cuối cho $6.05$. Bảng do đó khớp với các count, và 6.05 cao hơn mục tiêu 6 rad/s là $0.8$ %, chính là overshoot trong log. Bộ đếm tràn vì tại $t=0.301$ còn $65536-65397=139$ count, tức khoảng 0.1 s sau ở 14.3 count mỗi 10 ms.
+
+| t (s) | omega (rad/s, 50 ms window) | counts (uint16) |
 |---|---|---|
 | 0.001 | 0.00 | 65000 |
 | 0.051 | 3.70 | 65044 |
@@ -72,17 +77,15 @@ Plant: $K_u=20$ rad/s, $\tau=80$ ms, $N=1496$, PI ở 100 Hz với $K_p=0.12$, $
 | 0.201 | 5.96 | 65254 |
 | 0.301 | 6.05 | 65397 |
 
-`step_metrics(t, y, target=6.0)` cho thời gian xác lập 0.19 s, vọt lố 0.8 %, sai số xác lập 0.01 %: tất cả trong giới hạn (0.35 s, 10 %, 2 %). Số đếm mỗi 10 ms ở 6 rad/s: $6/(2\pi)\cdot1496/100=14.3$, nên số đếm nguyên trong CSV tăng 14 hoặc 15 mỗi dòng.
+3. **Chỉ số đáp ứng bước.** `step_metrics(t, y, target=6.0)` cho settling 0.19 s, overshoot 0.8 %, sai số xác lập 0.01 %: đều trong giới hạn (0.35 s, 10 %, 2 %). Vì sao hợp lý: $T_i=K_p/K_i=0.12/1.5=0.08$ s bằng $\tau$, nên zero của PI triệt tiêu cực của plant và độ lợi vòng là $K_uK_i=30$ s$^{-1}$, hằng số thời gian vòng kín $1/30=33$ ms và settling 2 % khoảng $4/30=0.13$ s, so với $4\tau=0.32$ s ở vòng hở. Mô phỏng lại với phản hồi tốc độ lý tưởng (plant 1 ms, PI 10 ms) cho settling 0.10 s và overshoot 0.4 %; 0.19 s và 0.8 % trong log lớn hơn vì cửa sổ 50 ms và lượng tử hóa count thêm trễ và gợn. Giữ các giá trị của lần chạy tham chiếu; cả hai đều xa dưới giới hạn.
+4. **Test windup** (bánh bị chặn 1 s rồi thả). Khi bị chặn, sai số giữ $e=6$ rad/s. Với tích phân có điều kiện, $I$ chỉ tăng khi $K_pe+I\le1$, tức đến $I\approx1-0.12\cdot6=0.28$ (cộng một bước tăng $K_ieT_s=1.5\cdot6\cdot0.01=0.09$). Sau khi thả, đỉnh là 6.79 rad/s, overshoot $(6.79-6)/6=13.2$ % (giới hạn 15 %). Với bộ tích phân luôn bật, $I=K_i\,e\,t=1.5\cdot6\cdot1=9.0$ lúc thả, gấp chín lần toàn thang, nên duty bão hòa ở 1 và tốc độ hướng tới $K_u\cdot1=20$ rad/s: đỉnh 19.9 rad/s, overshoot $(19.9-6)/6=232$ %. Mô phỏng lại tái tạo 6.79, 13.2 %, 9.0, 19.9 và 232 %.
+5. **Test watchdog.** Host gửi ở 100 Hz đến $t=500$ ms và im lặng đến 620 ms. Với timeout 80 ms, watchdog hết hạn tại $500+80=580$ ms (so $\text{now}-\text{last}\ge80$), nên PWM, 0.31 đến 579 ms (giá trị lý tưởng là $6/20=0.30$; 0.01 thêm là gợn của vòng), bằng 0 từ 581 ms: khoảng 80 ms sau lệnh cuối, còn dư 20 ms so với giới hạn 100 ms. Trong thời gian đó robot đi $0.5\ \text{m/s}\times0.08\ \text{s}=4$ cm. Khi PWM bằng 0, bánh giảm tốc như $e^{-t/\tau}$: sau 40 ms từ 580 đến 620 ms, tốc độ lý tưởng là $6e^{-0.5}=3.64$ rad/s; log cho khoảng 3.9 rad/s (chênh 0.26 rad/s, nhỏ hơn một lượng tử 10 ms là 0.42). Tại 620 ms lệnh được tiếp tục và bộ tích phân bắt đầu lại từ 0 (nó đã được reset khi watchdog kích hoạt), nên đầu ra đầu tiên là $K_pe=0.12\,(6-3.9)=0.25$ thay vì một giá trị cũ gần 0.3 cộng thêm số hạng đó. Tốc độ leo trở lại 6 rad/s với đỉnh 6.07 rad/s, dưới giới hạn $1.2\times6=7.2$.
+6. **Giao thức.** Khung trạng thái dùng `<BBHHBHBB`: type `01`, seq `07`, left $65530=\texttt{0xFFFA}$ little-endian `fa ff`, right `04 00`, status `00`, tick $1234=\texttt{0x04D2}$ thành `d2 04`, pin 76 dV `4c`, reserved `00`: 11 byte thân. CRC-8 (poly `0x07`, init 0) trên chúng là `d6`, thành 12 byte logic. Không byte nào bằng `0x7E` hay `0x7D`, nên không cần escape; dạng trên dây thêm một delimiter ở mỗi đầu: `7e 01 07 fa ff 04 00 00 d2 04 4c 00 d6 7e`, 14 byte, tải đường truyền $14\cdot10\cdot100/115200=12.2$ % ở 100 Hz. Thêm 50 byte rác ngẫu nhiên ở đầu không ngăn việc phân tích được, vì `0x7E` đứng đầu xả mọi thứ đã thu, và phần rác (sai độ dài hoặc CRC) bị bỏ và được đếm. Bản thân bộ CRC được kiểm chứng bằng giá trị chuẩn `crc8(b"123456789") == 0xF4`.
+7. **Odometry.** Đường thẳng 10 m: robot báo $10\cdot0.0330/0.0335=9.85$ m, trôi 1.5 %, nên $r=0.0330\cdot10/9.85=0.0335$ m. Hình vuông 2 m chạy mỗi cạnh đến khi khoảng cách báo là 2 m (thật $2\cdot0.0335/0.0330=2.030$ m) và mỗi lần quay đến khi góc báo là 90 độ (thật $90^\circ\cdot(0.0335/0.0330)(0.160/0.163)=89.68^\circ$), nên hướng cuối lệch $4\cdot(-0.32^\circ)=-1.3^\circ$ và vị trí cách điểm xuất phát 3.1 cm (mô hình không nhiễu cho 3.2 cm). Với hằng số đã hiệu chuẩn $(0.03345, 0.1625)$, sai số mỗi cạnh giảm còn 0.15 % và điểm cuối cách 1.4 cm. Bề rộng vết bánh suy ra từ phép quay tại chỗ: $b=0.160\cdot3667.5/3600=0.163$ m.
 
-Kiểm thử windup (bánh bị chặn 1 s rồi thả): với tích phân có điều kiện, đỉnh sau khi thả là 6.79 rad/s, vọt lố 13.2 % (giới hạn 15 %); với bộ tích phân luôn bật, tích phân là 9.0 lúc thả và bánh đạt 19.9 rad/s, vọt lố 232 %.
+**Kiểm tra.** Tính lại độc lập bằng Python tái tạo lượng tử (0.084 và 0.42 rad/s), 14.3 count mỗi 10 ms, các tốc độ log 3.70, 5.80, 5.88, 5.96 từ các count, các byte khung và CRC `d6` (với `0xF4` cho chuỗi kiểm tra), việc phân tích khung sau 50 byte rác, cả 96 lần lật một bit đều bị từ chối, các số windup (6.79 rad/s, 13.2 %, 9.0, 19.9 rad/s, 232 %), các số odometry (9.85 m, 0.0335 m, $-1.3^\circ$, 1.4 cm) và tải đường truyền. Các giá trị lệch nhẹ so với lần chạy tham chiếu, như 3.64 so với 3.9 rad/s khi trôi tự do và các chỉ số đáp ứng bước, lệch dưới một lượng tử count hoặc nằm rất sâu trong spec.
 
-Kiểm thử watchdog: host gửi ở 100 Hz tới $t=500$ ms và im lặng tới 620 ms. PWM ghi log là 0.31 tới 579 ms và 0 từ 581 ms, nên nó về 0 khoảng 80 ms sau lệnh cuối (giới hạn 100 ms). Bánh trôi xuống khoảng 3.9 rad/s, lệnh tiếp tục lúc 620 ms, và bộ tích phân bắt đầu lại từ 0: tốc độ leo về 6 rad/s với đỉnh 6.07 rad/s (giới hạn $1.2\times6=7.2$).
-
-Giao thức: frame cho seq 7, số đếm 65530 và 4 là `7e 01 07 fa ff 04 00 00 d2 04 4c 00 d6 7e` (14 byte, không byte nào cần escape). Chèn thêm 50 byte rác ngẫu nhiên phía trước không ngăn nó được phân tích, vì `0x7E` đứng đầu xả hết những gì đã gom.
-
-Odometry (bán kính bánh thật 0.0335 m, danh định 0.0330 m; track width thật 0.163 m, danh định 0.160 m): đường thẳng 10 m đọc ra 9.85 m, trôi 1.5 %, nên $r=0.0330\cdot10/9.85=0.0335$. Hình vuông 2 m với hằng số danh định kết thúc cách sự thật 3.1 cm và 1.3 độ; với hằng số đã hiệu chuẩn $(0.03345, 0.1625)$ nó kết thúc cách 1.4 cm.
-
-Một `runs/cap02/metrics.json` mẫu được cho ở phần Kết quả mong đợi.
+**Rút ra.** Mỗi khẳng định về firmware quy về một con số kèm giới hạn: lượng tử so với tốc độ, tích phân so với bão hòa, timeout so với quãng đường, CRC so với lật bit, hiệu chuẩn so với độ trôi đo được; việc reset bộ tích phân và thứ tự bán kính trước bề rộng vết bánh là thứ giữ các số này trong spec.
 
 ## Bài tập
 

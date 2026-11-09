@@ -119,7 +119,35 @@ A milestone score is $100\,(0.6\,a+0.4\,r/(4m))$ where $a$ is the weighted fract
 
 Illustrative values, not from a real run.
 
-A learner's final scores (automated fraction $a$ and rubric points out of 16, four criteria) give these milestone scores and the weighted total:
+### Graduation arithmetic, a smoke run and a rendered report sentence
+
+**Problem.** A learner's final results for the nine milestones are given as the weighted fraction $a$ of automated checks passed and the rubric points $r$ out of 16 (four criteria scored 0 to 4):
+
+| Milestone | Weight | $a$ | Rubric /16 |
+|---|---|---|---|
+| CAP01 | 8 | 1.00 | 14 |
+| CAP02 | 12 | 0.90 | 13 |
+| CAP03 | 12 | 0.85 | 12 |
+| CAP04 | 11 | 0.90 | 12 |
+| CAP05 | 13 | 0.80 | 11 |
+| CAP06 | 12 | 0.75 | 10 |
+| CAP07 | 10 | 0.90 | 12 |
+| CAP08 | 14 | 0.90 | 13 |
+| CAP09 | 8 | 1.00 | 13 |
+
+The rules are: milestone score $s=100\,(0.6\,a+0.4\,r/16)$; total $=\sum_i w_i s_i/100$; graduated needs all gates passed, every milestone at least 60, total at least 70 and, from the CAP08 data, zero safety violations; Pass at 70, Merit at 80, Distinction at 90 plus a stretch. All gates passed, CAP08 has zero safety violations and a Nav2 comparison stretch was done.
+
+- (a) Compute the nine milestone scores, the weighted total and the grade.
+- (b) A smoke run reruns six seeds (1000 to 1005) with stored outcomes `[ok, ok, GRASP_SLIP, ok, ok, GRASP_SLIP]` in a container in 734 s with identical outcomes; the limit is 1200 s. Decide the smoke gate.
+- (c) With the CAP08 metrics (94 successes of 120 nominal episodes, and so on), render the first sentence of the report template excerpt below.
+
+**Solution.**
+
+1. *Milestone score.* Since $100\cdot0.6=60$ and $100\cdot0.4/16=2.5$, each score is $s=60\,a+2.5\,r$. CAP01: $60\cdot1.00+2.5\cdot14=60+35=95.0$. CAP02: $54+32.5=86.5$. CAP03: $51+30=81.0$. CAP04: $54+30=84.0$. CAP05: $48+27.5=75.5$. CAP06: $45+25=70.0$. CAP07: $54+30=84.0$. CAP08: $54+32.5=86.5$. CAP09: $60+32.5=92.5$.
+2. *Weighted contributions* $w_is_i/100$: $7.600+10.380+9.720+9.240+9.815+8.400+8.400+12.110+7.400=83.065$, and the weights sum to $8+12+12+11+13+12+10+14+8=100$, so the total is $83.065\approx83.1$.
+3. *Grade.* Every milestone is at least 60 (the lowest is CAP06 with 70.0), the total is at least 70, all gates passed and the safety and smoke conditions hold, so the learner graduates. $83.1\ge80$ gives Merit. Distinction needs $\ge90$: the Nav2 stretch does not lift the grade because the total, not the stretch, is the limit.
+4. *Smoke gate.* The six stored outcomes equal the six fresh ones exactly (four `ok`, two `GRASP_SLIP`), and $734\ \text{s}\le1200\ \text{s}$ (20 minutes): pass, with $1200-734=466$ s to spare.
+5. *Rendering.* Each placeholder `{{metric:key|fmt}}` is replaced by the formatted value from `metrics.json`: `nominal.n|int` is 120; `nominal.rate|pct1` is $94/120=0.7833\to78.3\ \%$; the Wilson bounds $0.7015$ and $0.8476$ with `pct1` give $70.1\ \%$ and $84.8\ \%$. The sentence reads "On 120 held-out nominal episodes the system completed the task in 78.3 % of cases (Wilson 95 % interval 70.1 % to 84.8 %)". Other placeholders resolve the same way: twin rate $46/80\to57.5\ \%$, gap `f3` $0.208$ with interval $0.077$ to $0.335$, and the landmark effect $43.33$ points with $p=0.002$.
 
 | Milestone | Weight | $a$ | Rubric /16 | Score |
 |---|---|---|---|---|
@@ -133,7 +161,7 @@ A learner's final scores (automated fraction $a$ and rubric points out of 16, fo
 | CAP08 | 14 | 0.90 | 13 | 86.5 |
 | CAP09 | 8 | 1.00 | 13 | 92.5 |
 
-The weighted total is 83.1: Merit, provided all gates passed, no milestone is below 60 (the lowest is 70.0), CAP08 has zero safety violations and the smoke test passed on a clean checkout. A Nav2 comparison stretch does not lift the grade to Distinction because 83.1 is below 90. The same arithmetic in code:
+The same arithmetic in code:
 
 ```python
 # Standalone: the graduation arithmetic of plan section 7 with illustrative inputs (standard library only).
@@ -151,7 +179,8 @@ print(f"weighted total {total:.1f}  ->", "Merit" if total >= 80 else "Pass" if t
 print("Distinction needs total >= 90 AND a stretch; here the total is the limit, not the stretch.")
 ```
 
-A smoke run, illustrative: six seeds 1000 to 1005, expected outcomes `[ok, ok, GRASP_SLIP, ok, ok, GRASP_SLIP]`, rerun in 734 s inside the container, identical outcomes: pass (the limit is 1200 s). A report template excerpt and how the placeholders resolve:
+
+A report template excerpt and how the placeholders resolve:
 
 ```markdown
 ### Results (excerpt of report.md.tmpl)
@@ -164,7 +193,12 @@ Removing landmark updates lowered success by {{metric:ablations.no_landmarks.eff
 (exact paired p = {{metric:ablations.no_landmarks.mcnemar_p|f3}}).
 ```
 
-With the illustrative metrics of CAP08 this renders as "On 120 held-out nominal episodes the system completed the task in 78.3 % of cases (Wilson 95 % interval 70.1 % to 84.8 %)". Change the benchmark, rerun `make report`, and the sentence changes with it.
+
+With the illustrative metrics of CAP08 the sentence resolves as in step 5. Change the benchmark, rerun `make report`, and the sentence changes with it.
+
+**Check.** The code above prints the same nine scores and `weighted total 83.1 -> Merit`. Bounds: the total must lie between the lowest and highest milestone scores (70.0 and 95.0), and it does; because the weights sum to 100 the total is a weighted mean, and 83.065 is close to the plain mean of the scores, $(95+86.5+81+84+75.5+70+84+86.5+92.5)/9=83.9$. The rendered numbers are the CAP08 values ($94/120$, Wilson $[0.701,\,0.848]$), so changing the benchmark changes the sentence.
+
+**Takeaway.** The graduation verdict is plain arithmetic on a few numbers, so it can be computed and audited by a script; every number in the report is generated from the logs, and a reproducible smoke run proves that the headline numbers can be rebuilt.
 
 ## Exercises
 

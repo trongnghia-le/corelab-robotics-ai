@@ -92,7 +92,7 @@
     },
     {
       "id": "b4",
-      "prompt": "N = 5 ground truths and ranked flags [1, 0, 1, 1, 0, 0]. What is the recall after all six detections? (precision 0.01)",
+      "prompt": "N = 4 ground truths and ranked flags [1, 1, 0, 0, 1, 0]. What is the recall after all six detections? (precision 0.01)",
       "kind": "number",
       "dimension": "M",
       "critical": false,
@@ -115,9 +115,9 @@
       "equivalentTo": [
         "q4"
       ],
-      "answer": "0.6",
+      "answer": "0.75",
       "tolerance": 0.01,
-      "explanation": "3 TP / 5 ground truths."
+      "explanation": "3 TP / 4 ground truths = 0.75."
     },
     {
       "id": "b5",
@@ -371,6 +371,89 @@
         "Coordinate-format check, e.g. (x,y,w,h) conversion."
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Boxes (x1,y1,x2,y2): A = (3,2,15,10) and B = (9,6,21,16). Compute the generalised IoU, GIoU = IoU - (|C| - |A u B|)/|C| with C the smallest enclosing box (precision 0.005).",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "iou-computation"
+      ],
+      "skillLabel": "Computing IoU",
+      "mistakeCategory": "mathematical",
+      "answer": "-0.113",
+      "tolerance": 0.005,
+      "explanation": "Intersection (15-9)x(10-6) = 24; areas 96 and 120; union 192; IoU = 0.125. C = (3,2,21,16) = 18x14 = 252, so (252-192)/252 = 0.238. GIoU = 0.125 - 0.238 = -0.113 (negative although the boxes overlap).",
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "N = 5 ground truths and ranked flags [1, 0, 1, 1, 0, 0, 0, 1, 0, 0]. Compute the VOC 2007 11-point AP (mean of the interpolated precision at recall 0, 0.1, ..., 1, compared exactly; precision 0.002).",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "average-precision"
+      ],
+      "skillLabel": "Average precision",
+      "mistakeCategory": "mathematical",
+      "answer": "0.636",
+      "tolerance": 0.002,
+      "explanation": "Precision [1,0.5,0.667,0.75,0.6,0.5,0.429,0.5,0.444,0.4], recall [0.2,0.2,0.4,0.6,0.6,0.6,0.6,0.8,0.8,0.8], envelope [1,0.75,0.75,0.75,0.6,0.5,0.5,0.5,0.444,0.4]. Levels 0,0.1,0.2 -> 1 (rank 1); 0.3,0.4 -> 0.75 (rank 3); 0.5,0.6 -> 0.75 (rank 4); 0.7,0.8 -> 0.5 (rank 8); 0.9,1 -> 0. Sum = 3 + 1.5 + 1.5 + 1 = 7 -> /11 = 0.636. (Code that builds the levels with np.arange(0, 1.1, 0.1) gets 0.6000000000000001 for the level 0.6, skips recall 0.6 and returns 0.614; the all-point AP is 0.600.)",
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Which statement about GIoU = IoU - (|C| - |A u B|)/|C| is correct?",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "iou-computation"
+      ],
+      "skillLabel": "Computing IoU",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "GIoU is never smaller than IoU, because the enclosing box adds information",
+        "GIoU lies in [0, 1] like IoU, with 0 for disjoint boxes",
+        "If A lies completely inside B then GIoU equals IoU, since the enclosing box equals the union",
+        "For disjoint boxes 1 - GIoU is constant, like 1 - IoU"
+      ],
+      "answer": "2",
+      "explanation": "GIoU = IoU + |A u B|/|C| - 1. It is never larger than IoU (|C| >= |A u B|), lies in (-1, 1], equals IoU exactly when C = A u B (nested boxes are such a case) and varies with the positions of disjoint boxes through |C|, so 1 - GIoU still has a gradient where 1 - IoU is flat.",
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "V07",
+        "ML07"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/V08#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

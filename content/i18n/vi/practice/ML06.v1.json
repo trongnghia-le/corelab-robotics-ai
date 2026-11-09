@@ -83,8 +83,26 @@
    ]
   },
   "b13": {
-   "prompt": "Một hàm bậc hai có các độ cong 1 và 10. Với learning rate hằng số tốt nhất 2/(λ_min+λ_max), hệ số co lại của sai số mỗi bước là bao nhiêu (số thập phân, sai số cho phép 0.001)?",
-   "explanation": "(κ−1)/(κ+1)=9/11=0.8182."
+   "prompt": "Một hàm bậc hai có các độ cong 2 và 14. Với learning rate hằng số tốt nhất 2/(λ_min+λ_max), hệ số co lại của sai số mỗi bước là bao nhiêu (số thập phân, sai số cho phép 0.001)?",
+   "explanation": "κ=14/2=7, nên (κ−1)/(κ+1)=6/8=0.75; tương đương η=2/16=0.125 cho |1−0.125·2|=0.75 và |1−0.125·14|=0.75."
+  },
+  "c1": {
+   "prompt": "Một hàm bậc hai có các độ cong nằm giữa μ và L với số điều kiện κ=L/μ=64. Với các tham số heavy-ball (momentum) tối ưu, hệ số co tiệm cận mỗi bước là bao nhiêu (số thập phân, sai số cho phép 0.001)?",
+   "explanation": "Tốc độ heavy-ball tối ưu là √β*=(√κ−1)/(√κ+1)=(8−1)/(8+1)=7/9≈0.7778. Gradient descent thuần cho (κ−1)/(κ+1)=63/65≈0.969, tức cần khoảng κ thay vì √κ bước cho cùng một độ chính xác."
+  },
+  "c2": {
+   "prompt": "Trên f(θ)=½λθ² với λ=1.5, SGD dùng η=0.4 và gradient minibatch có phương sai nhiễu σ²/B=36/9=4 (σ=6, B=9), độc lập giữa các bước. Loss kỳ vọng ở trạng thái dừng E[f(θ)] bằng bao nhiêu (số thập phân, sai số cho phép 0.001)?",
+   "explanation": "Với a=1−ηλ=0.4, V=a²V+η²·4 cho V=0.64/0.84=0.7619. Loss kỳ vọng là ½λV=0.5714, bằng ησ²/(2B(2−ηλ))=0.4·36/(2·9·1.4). Phép lặp ổn định (|a|<1) nhưng loss dừng ở sàn nhiễu này."
+  },
+  "c3": {
+   "prompt": "Một nhóm huấn luyện bằng minibatch SGD thuần với learning rate nhỏ (ηλ ≪ 1 dọc mọi hướng) và tăng batch size từ 32 lên 128, giữ nguyên learning rate và mọi thứ khác. Bạn kỳ vọng gì ở loss huấn luyện ở trạng thái dừng (sàn nhiễu)?",
+   "options": [
+    "Gần như không đổi, vì gradient kỳ vọng không phụ thuộc B.",
+    "Khoảng một phần tư giá trị cũ: sàn tỉ lệ với η/B.",
+    "Khoảng một nửa giá trị cũ, vì độ lệch chuẩn nhiễu giảm như 1/√B.",
+    "Cao hơn, vì mỗi epoch có ít lần cập nhật hơn."
+   ],
+   "explanation": "Loss dừng là ησ²/(2B(2−ηλ)) ≈ ησ²/(4B) khi ηλ nhỏ, nên tỉ lệ nghịch với B: nhân bốn batch chia sàn cho khoảng 4. Độ lệch chuẩn nhiễu đúng là giảm một nửa (1/√B), nhưng sàn loss tỉ lệ với phương sai, vì vậy phương án \"một nửa\" sai. Gradient kỳ vọng không đổi nhưng điều đó không làm sàn không đổi. Ít lần cập nhật hơn mỗi epoch thay đổi tốc độ đạt sàn, không phải độ cao của nó."
   }
  }
 }

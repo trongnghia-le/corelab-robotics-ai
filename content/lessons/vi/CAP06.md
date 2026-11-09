@@ -70,19 +70,26 @@ Một policy học được có thể xuất bất cứ thứ gì. Hãy bọc n�
 
 Đây là **giá trị minh họa** cho hình dạng của một bộ artefact đạt yêu cầu, không phải đầu ra của một lần chạy thật. Số của bạn sẽ khác; *hình dạng* của bằng chứng mới là điều quan trọng.
 
-**Ngân sách chạy.** 4 môi trường vector hóa, khoảng 366 bước môi trường mỗi giây trên CPU laptop với một luồng torch. 1.5 M bước mất 4100 s (1.14 h): nằm trong giới hạn 2 M bước và 2 h.
+### Ngân sách, đánh giá danh định và có nhiễu loạn, behaviour cloning và so sánh ghép cặp
 
-**Đánh giá danh định.** Năm seed PPO, mỗi seed 100 episode đánh giá trên seed 1000-1499:
+**Đề bài.** Một nghiên cứu PPO dùng 4 môi trường vector hóa ở khoảng 366 bước môi trường mỗi giây (CPU laptop, một luồng torch), với giới hạn 2 M bước và 2 h. Năm seed PPO, mỗi seed được đánh giá trên 100 episode (seed 1000-1499) với 93, 95, 92, 96 và 94 thành công. Một policy có domain randomisation (DR) và một policy chỉ huấn luyện danh định được so sánh trên 100 episode có nhiễu loạn (khối lượng 0.7-1.3, ma sát 0.6-1.4, trễ +40 ms, seed 1500-1599): 81 và 58 thành công. Một policy behaviour cloning (BC) có MSE giữ riêng 0.011 so với 0.093 của baseline trung bình hằng (tỉ lệ giới hạn 0.2) và 71/100 thành công vòng kín; phép quét số demo cho MSE 0.041, 0.026, 0.017, 0.011 với 50, 100, 200, 500 demonstration. Kỹ năng viết tay CAP05 đạt 97/100 trên cùng 100 seed.
 
-| Seed huấn luyện | Thành công / 100 |
-|---|---|
-| 0 | 93 |
-| 1 | 95 |
-| 2 | 92 |
-| 3 | 96 |
-| 4 | 94 |
+- (a) Một lần chạy 1.5 M bước mất 4100 s có nằm trong ngân sách không?
+- (b) Tóm tắt đánh giá danh định (trung bình, nhỏ nhất, tỉ lệ gộp và khoảng Wilson 95 % của nó).
+- (c) Tính khoảng Wilson của 81/100 và 58/100 và $z$ hai tỉ lệ cho hiệu; có thể tuyên bố gì?
+- (d) Kiểm tra tỉ lệ BC và phép quét số demo, và cho khoảng Wilson của 71/100.
+- (e) So sánh ghép cặp với kỹ năng viết tay (97/100) cần gì, và đã có thể nói gì?
 
-Trung bình 94 %, nhỏ nhất 92 %. Gộp lại 470/500. Chạy hàm trợ giúp Wilson:
+**Lời giải.**
+
+1. *Thông lượng.* $1.5\times10^6/4100=365.9\approx366$ bước/s, khớp với tốc độ đã nêu. $4100\ \text{s}/3600=1.14$ h. Cả $1.5\,\text{M}\le2\,\text{M}$ bước lẫn $1.14\,\text{h}\le2$ h đều thỏa; cùng tốc độ này, 2 M bước cần $2\times10^6/366=5465$ s $=1.52$ h.
+2. *Đánh giá danh định.* Trung bình $=(93+95+92+96+94)/5=94\ \%$, nhỏ nhất 92 %, gộp $470/500=0.940$.
+3. *Khoảng Wilson.* Với $k/n$ và $z=1.96$: $\tilde p=(\hat p+z^2/2n)/(1+z^2/n)$, nửa độ rộng $z\sqrt{\hat p(1-\hat p)/n+z^2/4n^2}/(1+z^2/n)$. Với $470/500$ ra $[0.916,\,0.958]$. Để so sánh, $27/30$ cho $[0.744,\,0.965]$: ít episode hơn khoảng 17 lần, khoảng rộng hơn khoảng năm lần (0.221 so với 0.042).
+4. *Khoảng có nhiễu loạn.* $81/100\to[0.722,\,0.875]$ và $58/100\to[0.482,\,0.672]$. Hai khoảng không chồng nhau ($0.722>0.672$).
+5. *Kiểm định $z$ hai tỉ lệ.* Gộp $\bar p=(81+58)/200=0.695$; $\text{SE}=\sqrt{\bar p(1-\bar p)\cdot2/100}=\sqrt{0.695\cdot0.305\cdot0.02}=0.0651$; $z=(0.81-0.58)/0.0651=3.53\approx3.5$. Điều đó ủng hộ "DR giúp ích trên tập nhiễu loạn này", với **một** seed huấn luyện cho mỗi nhánh; một báo cáo cẩn thận nói rõ điều này và thêm seed nếu tuyên bố quan trọng.
+6. *Tỉ lệ BC.* $0.011/0.093=0.118\approx0.12\le0.2$: đạt. Phép quét 0.041, 0.026, 0.017, 0.011 giảm ở mọi bước, nên đơn điệu như mong đợi.
+7. *BC vòng kín.* $71/100$ có khoảng Wilson $[0.615,\,0.790]$: thấp hơn PPO (gộp 0.940) và thấp hơn kỹ năng viết tay (0.97). Đây là kết quả bình thường của bắt chước không có hiệu chỉnh, và đúng điều mà phép so sánh nên cho thấy.
+8. *So sánh ghép cặp.* Hai tỉ lệ riêng rẽ bỏ qua việc cả hai kỹ năng đối mặt cùng seed. Gọi $b$ là số episode chỉ kỹ năng viết tay thành công và $c$ là số episode chỉ PPO thành công; phép kiểm định chính xác (`evalkit.paired_mcnemar`) chỉ dùng $b$ và $c$. Giả định thêm ở đây (bản gốc không cho số cặp): nhánh PPO là seed huấn luyện 0 (93/100) trên cùng 100 seed. Khi đó $b-c=97-93=4$. $b+c$ nhỏ nhất có thể là 4 ($b=4$, $c=0$), cho $p=2\cdot(1/2)^4=0.125>0.05$; mọi $b+c$ lớn hơn với cùng hiệu cho $p$ lớn hơn (ví dụ $b=6$, $c=2$: $p=0.289$). Vậy khoảng cách 4 điểm trên 100 seed ghép cặp không bao giờ có ý nghĩa thống kê, và báo cáo nên nói hai kỹ năng không được tách ra.
 
 ```python
 from corebot.evalkit import wilson_interval        # CAP01: python3 evalkit.py also runs a self-test
@@ -91,6 +98,7 @@ for k, n in [(27, 30), (470, 500), (81, 100), (58, 100)]:
     lo, hi = wilson_interval(k, n)
     print(f"{k}/{n}: point {k / n:.3f}, 95% Wilson [{lo:.3f}, {hi:.3f}]")
 ```
+
 
 Đầu ra (minh họa, tính từ công thức trên):
 
@@ -101,18 +109,23 @@ for k, n in [(27, 30), (470, 500), (81, 100), (58, 100)]:
 58/100: point 0.580, 95% Wilson [0.482, 0.672]
 ```
 
-**Đánh giá có nhiễu loạn** (khối lượng 0.7-1.3, ma sát 0.6-1.4, trễ +40 ms, seed 1500-1599):
+
+| Seed huấn luyện | Thành công / 100 |
+|---|---|
+| 0 | 93 |
+| 1 | 95 |
+| 2 | 92 |
+| 3 | 96 |
+| 4 | 94 |
 
 | Policy | Thành công / 100 | Wilson 95 % |
 |---|---|---|
 | PPO có domain randomisation | 81 | [0.722, 0.875] |
 | PPO không có (chỉ huấn luyện danh định) | 58 | [0.482, 0.672] |
 
-Hai khoảng không chồng nhau, và kiểm định z hai tỉ lệ cho 81 so với 58 ra $z\approx3.5$ (pooled variance). Điều đó ủng hộ "DR giúp ích trên tập nhiễu loạn này", với **một** seed huấn luyện cho mỗi nhánh. Một báo cáo cẩn thận nói rõ điều này, và thêm seed nếu tuyên bố quan trọng.
+**Kiểm tra.** Bốn dòng Wilson trong đầu ra của mã khớp công thức tay ở bước 3 (script dùng cùng công thức, và các giá trị trên đã được tính lại độc lập đến ba chữ số thập phân). Kiểm định $z$ nhất quán với kiểm định khoảng: đầu dưới 0.722 của khoảng DR vượt đầu trên 0.672 của khoảng kia 0.050, và $z=3.5$ tương ứng $p$ hai phía $\approx0.0004$. Cận kiểm tra cho (e): phép kiểm định ghép cặp chính xác không thể cho $p<0.05$ trừ khi $b+c\ge6$ với $c=0$ (ví dụ $b=6$, $c=0$ cho $p=0.031$), điều này cần khoảng cách ít nhất 6 điểm.
 
-**Behaviour cloning.** MSE giữ riêng 0.011 so với 0.093 của baseline trung bình hằng (tỉ lệ 0.12, đạt giới hạn 0.2). Thành công vòng kín 71/100, Wilson [0.615, 0.790]: thấp hơn PPO và thấp hơn kỹ năng viết tay, đây là kết quả bình thường và đúng điều mà phép so sánh nên cho thấy. Phép quét số demo cho MSE 0.041, 0.026, 0.017, 0.011 với 50, 100, 200, 500 demonstration: đơn điệu như mong đợi.
-
-**So với kỹ năng viết tay của CAP05** (cùng 100 seed): viết tay 97/100. Phép so sánh ghép cặp trên cùng seed cho nhiều thông tin hơn hai tỉ lệ riêng rẽ: trong 100 episode, đếm những episode mà chỉ một trong hai kỹ năng thành công (`evalkit.paired_mcnemar`).
+**Rút ra.** Báo cáo mọi tỉ lệ kèm khoảng Wilson và so sánh policy trên cùng seed; một khoảng, một phép kiểm định và số seed huấn luyện được đếm trung thực nói được điều mà ước lượng điểm không nói được.
 
 ## Bài tập
 

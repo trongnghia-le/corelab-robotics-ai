@@ -9,6 +9,8 @@ import { useMemo, useRef, useState } from "react";
 import {
   compileSpec,
   exploreSpec,
+  projector,
+  VIEW3,
   scopeFor,
   scene3dPrimitives,
   type Fn,
@@ -353,22 +355,9 @@ function Scene3DView({
   };
   const [view, setView] = useState(start);
   const drag = useRef<{ x: number; y: number } | null>(null);
-  const W = 560,
-    H = 400,
+  const { W, H } = VIEW3,
     R = spec.range;
-  const a = (view.az * Math.PI) / 180,
-    e = (view.el * Math.PI) / 180;
-  const k = (Math.min(W, H) / 2 - 18) / (R * 1.12),
-    dist = R * 6;
-  // World z is up. Turn about z by the azimuth, then tilt by the elevation.
-  const project = (p: V3) => {
-    const x1 = p[0] * Math.cos(a) - p[1] * Math.sin(a);
-    const y1 = p[0] * Math.sin(a) + p[1] * Math.cos(a);
-    const up = p[2] * Math.cos(e) - y1 * Math.sin(e);
-    const depth = y1 * Math.cos(e) + p[2] * Math.sin(e);
-    const f = dist / (dist + depth);
-    return { x: W / 2 + x1 * k * f, y: H / 2 - up * k * f, d: depth };
-  };
+  const project = projector(R, view.az, view.el);
   const extra: Prim3[] = [];
   if (spec.floor !== false) {
     const ticks = nice(-R, R);

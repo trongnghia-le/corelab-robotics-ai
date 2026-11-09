@@ -142,19 +142,26 @@ A learned policy can output anything. Wrap it: clip the action to $[-1,1]$, conv
 
 These are **illustrative values** for what a passing set of artefacts could look like, not output of a real run. Your own numbers will differ; the *shape* of the evidence is what matters.
 
-**Run budget.** 4 vectorised environments, about 366 environment steps per second on a laptop CPU with one torch thread. 1.5 M steps took 4100 s (1.14 h): inside the limits of 2 M steps and 2 h.
+### Budget, nominal and perturbed evaluation, behaviour cloning and a paired comparison
 
-**Nominal evaluation.** Five PPO seeds, 100 evaluation episodes each, on seeds 1000-1499:
+**Problem.** A PPO study uses 4 vectorised environments at about 366 environment steps per second (laptop CPU, one torch thread), with limits of 2 M steps and 2 h. Five PPO seeds are each evaluated on 100 episodes (seeds 1000-1499) with 93, 95, 92, 96 and 94 successes. A domain-randomised (DR) policy and a nominal-only policy are compared on 100 perturbed episodes (mass 0.7-1.3, friction 0.6-1.4, +40 ms delay, seeds 1500-1599): 81 and 58 successes. A behaviour-cloning (BC) policy has held-out MSE 0.011 against 0.093 for a constant-mean baseline (limit ratio 0.2) and 71/100 closed-loop successes; the demo sweep gives MSE 0.041, 0.026, 0.017, 0.011 for 50, 100, 200, 500 demonstrations. The scripted CAP05 skill scores 97/100 on the same 100 seeds.
 
-| Training seed | Successes / 100 |
-|---|---|
-| 0 | 93 |
-| 1 | 95 |
-| 2 | 92 |
-| 3 | 96 |
-| 4 | 94 |
+- (a) Does a 1.5 M-step run of 4100 s fit the budget?
+- (b) Summarise the nominal evaluation (mean, minimum, pooled rate and its 95 % Wilson interval).
+- (c) Compute the Wilson intervals of 81/100 and 58/100 and a two-proportion $z$ for the difference; what may be claimed?
+- (d) Check the BC ratio and the demo sweep, and give the Wilson interval of 71/100.
+- (e) What does a paired comparison with the scripted skill (97/100) need, and what can already be said?
 
-Mean 94 %, minimum 92 %. Pooled 470/500. Run the Wilson helper:
+**Solution.**
+
+1. *Throughput.* $1.5\times10^6/4100=365.9\approx366$ steps/s, consistent with the stated rate. $4100\ \text{s}/3600=1.14$ h. Both $1.5\,\text{M}\le2\,\text{M}$ steps and $1.14\,\text{h}\le2$ h hold; the same rate would need $2\times10^6/366=5465$ s $=1.52$ h for 2 M steps.
+2. *Nominal evaluation.* Mean $=(93+95+92+96+94)/5=94\ \%$, minimum 92 %, pooled $470/500=0.940$.
+3. *Wilson interval.* For $k/n$ with $z=1.96$: $\tilde p=(\hat p+z^2/2n)/(1+z^2/n)$, half-width $z\sqrt{\hat p(1-\hat p)/n+z^2/4n^2}/(1+z^2/n)$. For $470/500$ this gives $[0.916,\,0.958]$. For comparison $27/30$ gives $[0.744,\,0.965]$: about 17 times fewer episodes, an interval about five times wider (0.221 against 0.042).
+4. *Perturbed intervals.* $81/100\to[0.722,\,0.875]$ and $58/100\to[0.482,\,0.672]$. The intervals do not overlap ($0.722>0.672$).
+5. *Two-proportion $z$.* Pooled $\bar p=(81+58)/200=0.695$; $\text{SE}=\sqrt{\bar p(1-\bar p)\cdot2/100}=\sqrt{0.695\cdot0.305\cdot0.02}=0.0651$; $z=(0.81-0.58)/0.0651=3.53\approx3.5$. This supports "DR helped on this perturbation set", for **one** training seed per arm; a careful report says so and adds seeds if the claim matters.
+6. *BC ratio.* $0.011/0.093=0.118\approx0.12\le0.2$: passes. The sweep 0.041, 0.026, 0.017, 0.011 decreases at every step, so it is monotone as expected.
+7. *BC closed loop.* $71/100$ has Wilson interval $[0.615,\,0.790]$: lower than PPO (pooled 0.940) and lower than the scripted skill (0.97). This is a normal outcome of imitation without correction, and exactly what the comparison should show.
+8. *Paired comparison.* Two separate rates ignore that both skills face the same seeds. Count $b$ = episodes where only the scripted skill succeeded and $c$ = episodes where only PPO succeeded; the exact test (`evalkit.paired_mcnemar`) uses only $b$ and $c$. Assumption added here (the original gives no pair counts): the PPO arm is training seed 0 (93/100) on the same 100 seeds. Then $b-c=97-93=4$. The smallest possible $b+c$ is 4 ($b=4$, $c=0$), giving $p=2\cdot(1/2)^4=0.125>0.05$; any larger $b+c$ with the same difference gives a larger $p$ (for example $b=6$, $c=2$: $p=0.289$). So a 4-point gap on 100 paired seeds can never be significant, and the report should say the two skills are not separated.
 
 ```python
 from corebot.evalkit import wilson_interval        # CAP01: python3 evalkit.py also runs a self-test
@@ -163,6 +170,7 @@ for k, n in [(27, 30), (470, 500), (81, 100), (58, 100)]:
     lo, hi = wilson_interval(k, n)
     print(f"{k}/{n}: point {k / n:.3f}, 95% Wilson [{lo:.3f}, {hi:.3f}]")
 ```
+
 
 Output (illustrative, computed from the formula above):
 
@@ -173,18 +181,23 @@ Output (illustrative, computed from the formula above):
 58/100: point 0.580, 95% Wilson [0.482, 0.672]
 ```
 
-**Perturbed evaluation** (mass 0.7-1.3, friction 0.6-1.4, +40 ms delay, seeds 1500-1599):
+
+| Training seed | Successes / 100 |
+|---|---|
+| 0 | 93 |
+| 1 | 95 |
+| 2 | 92 |
+| 3 | 96 |
+| 4 | 94 |
 
 | Policy | Successes / 100 | Wilson 95 % |
 |---|---|---|
 | PPO with domain randomisation | 81 | [0.722, 0.875] |
 | PPO without (nominal-only training) | 58 | [0.482, 0.672] |
 
-The intervals do not overlap, and a two-proportion z-test on 81 vs 58 gives $z\approx3.5$ (pooled variance). That supports "DR helped on this perturbation set", for **one** training seed per arm. A careful report says so, and adds more seeds if the claim matters.
+**Check.** The four Wilson lines in the code output match the hand formula of step 3 (the script uses the same formula, and the values above were recomputed independently to three decimals). The $z$ test agrees with the interval test: the lower end 0.722 of the DR interval exceeds the upper end 0.672 of the other by 0.050, and $z=3.5$ corresponds to a two-sided $p\approx0.0004$. Sanity bound for (e): the exact paired test cannot return $p<0.05$ unless $b+c\ge6$ with $c=0$ (for example $b=6$, $c=0$ gives $p=0.031$), which needs a gap of at least 6 points.
 
-**Behaviour cloning.** Held-out MSE 0.011 against 0.093 for the constant-mean baseline (ratio 0.12, passes the 0.2 limit). Closed-loop success 71/100, Wilson [0.615, 0.790]: lower than PPO and lower than the scripted skill, which is a normal outcome and exactly what the comparison should show. The demo-count sweep shows MSE 0.041, 0.026, 0.017, 0.011 for 50, 100, 200, 500 demonstrations: monotone, as expected.
-
-**Comparison with the scripted CAP05 skill** (same 100 seeds): scripted 97/100. A paired comparison on the same seeds is more informative than two separate rates: of the 100 episodes, count those where only one of the two skills succeeded (`evalkit.paired_mcnemar`).
+**Takeaway.** Report every rate with its Wilson interval and compare policies on the same seeds; an interval, a test and an honest count of training seeds say what a point estimate cannot.
 
 ## Exercises
 

@@ -52,11 +52,39 @@ Các mục bắt buộc: Abstract, Introduction, Related work (ít nhất 8 tài
 
 ## Ví dụ có lời giải
 
-Giá trị minh họa, không đến từ một lần chạy thật.
+Giá trị minh họa, không từ một lần chạy thật.
 
-Điểm cuối của một học viên (phần tự động $a$ và điểm rubric trên 16, bốn tiêu chí) cho các điểm cột mốc và tổng có trọng số sau:
+### Số học tốt nghiệp, một lần chạy smoke và một câu báo cáo được render
 
-| Cột mốc | Trọng số | $a$ | Rubric /16 | Điểm |
+**Đề bài.** Kết quả cuối của một học viên cho chín milestone được cho bằng phần trăm có trọng số $a$ của các kiểm tra tự động đã đạt và điểm rubric $r$ trên 16 (bốn tiêu chí chấm 0 đến 4):
+
+| Milestone | Trọng số | $a$ | Rubric /16 |
+|---|---|---|---|
+| CAP01 | 8 | 1.00 | 14 |
+| CAP02 | 12 | 0.90 | 13 |
+| CAP03 | 12 | 0.85 | 12 |
+| CAP04 | 11 | 0.90 | 12 |
+| CAP05 | 13 | 0.80 | 11 |
+| CAP06 | 12 | 0.75 | 10 |
+| CAP07 | 10 | 0.90 | 12 |
+| CAP08 | 14 | 0.90 | 13 |
+| CAP09 | 8 | 1.00 | 13 |
+
+Quy tắc: điểm milestone $s=100\,(0.6\,a+0.4\,r/16)$; tổng $=\sum_i w_i s_i/100$; tốt nghiệp cần mọi gate đạt, mọi milestone ít nhất 60, tổng ít nhất 70 và, theo dữ liệu CAP08, không có vi phạm an toàn; Pass ở 70, Merit ở 80, Distinction ở 90 cộng một stretch. Mọi gate đã đạt, CAP08 không có vi phạm an toàn và một stretch so sánh Nav2 đã được làm.
+
+- (a) Tính chín điểm milestone, tổng có trọng số và hạng.
+- (b) Một lần chạy smoke chạy lại sáu seed (1000 đến 1005) với kết quả lưu `[ok, ok, GRASP_SLIP, ok, ok, GRASP_SLIP]` trong container hết 734 s với kết quả giống hệt; giới hạn là 1200 s. Quyết định gate smoke.
+- (c) Với các metric của CAP08 (94 thành công trên 120 episode nominal, v.v.), render câu đầu của đoạn trích mẫu báo cáo dưới đây.
+
+**Lời giải.**
+
+1. *Điểm milestone.* Vì $100\cdot0.6=60$ và $100\cdot0.4/16=2.5$, mỗi điểm là $s=60\,a+2.5\,r$. CAP01: $60\cdot1.00+2.5\cdot14=60+35=95.0$. CAP02: $54+32.5=86.5$. CAP03: $51+30=81.0$. CAP04: $54+30=84.0$. CAP05: $48+27.5=75.5$. CAP06: $45+25=70.0$. CAP07: $54+30=84.0$. CAP08: $54+32.5=86.5$. CAP09: $60+32.5=92.5$.
+2. *Đóng góp có trọng số* $w_is_i/100$: $7.600+10.380+9.720+9.240+9.815+8.400+8.400+12.110+7.400=83.065$, và các trọng số cộng $8+12+12+11+13+12+10+14+8=100$, nên tổng là $83.065\approx83.1$.
+3. *Hạng.* Mọi milestone ít nhất 60 (thấp nhất là CAP06 với 70.0), tổng ít nhất 70, mọi gate đạt và các điều kiện an toàn và smoke đều thỏa, nên học viên tốt nghiệp. $83.1\ge80$ cho Merit. Distinction cần $\ge90$: stretch Nav2 không nâng hạng vì giới hạn là tổng điểm, không phải stretch.
+4. *Gate smoke.* Sáu kết quả lưu bằng đúng sáu kết quả chạy mới (bốn `ok`, hai `GRASP_SLIP`), và $734\ \text{s}\le1200\ \text{s}$ (20 phút): đạt, còn dư $1200-734=466$ s.
+5. *Render.* Mỗi placeholder `{{metric:key|fmt}}` được thay bằng giá trị đã định dạng từ `metrics.json`: `nominal.n|int` là 120; `nominal.rate|pct1` là $94/120=0.7833\to78.3\ \%$; các cận Wilson $0.7015$ và $0.8476$ với `pct1` cho $70.1\ \%$ và $84.8\ \%$. Câu đọc là "On 120 held-out nominal episodes the system completed the task in 78.3 % of cases (Wilson 95 % interval 70.1 % to 84.8 %)". Các placeholder khác phân giải tương tự: tỉ lệ twin $46/80\to57.5\ \%$, khoảng cách `f3` $0.208$ với khoảng $0.077$ đến $0.335$, và hiệu ứng landmark $43.33$ điểm với $p=0.002$.
+
+| Milestone | Trọng số | $a$ | Rubric /16 | Điểm |
 |---|---|---|---|---|
 | CAP01 | 8 | 1.00 | 14 | 95.0 |
 | CAP02 | 12 | 0.90 | 13 | 86.5 |
@@ -68,7 +96,7 @@ Giá trị minh họa, không đến từ một lần chạy thật.
 | CAP08 | 14 | 0.90 | 13 | 86.5 |
 | CAP09 | 8 | 1.00 | 13 | 92.5 |
 
-Tổng có trọng số là 83.1: Merit, với điều kiện mọi gate đạt, không cột mốc nào dưới 60 (thấp nhất là 70.0), CAP08 không có vi phạm an toàn và test smoke đạt trên bản checkout sạch. Một stretch so sánh Nav2 không nâng hạng lên Distinction vì 83.1 dưới 90. Cùng phép tính bằng code:
+Cùng phép tính đó bằng mã:
 
 ```python
 # Standalone: the graduation arithmetic of plan section 7 with illustrative inputs (standard library only).
@@ -86,7 +114,8 @@ print(f"weighted total {total:.1f}  ->", "Merit" if total >= 80 else "Pass" if t
 print("Distinction needs total >= 90 AND a stretch; here the total is the limit, not the stretch.")
 ```
 
-Một lần chạy smoke minh họa: sáu seed 1000 đến 1005, kết quả mong đợi `[ok, ok, GRASP_SLIP, ok, ok, GRASP_SLIP]`, chạy lại trong 734 s bên trong container, kết quả giống hệt: đạt (giới hạn là 1200 s). Một đoạn trích template báo cáo và cách các placeholder được điền:
+
+Một đoạn trích mẫu báo cáo và cách các placeholder được phân giải:
 
 ```markdown
 ### Results (excerpt of report.md.tmpl)
@@ -99,7 +128,12 @@ Removing landmark updates lowered success by {{metric:ablations.no_landmarks.eff
 (exact paired p = {{metric:ablations.no_landmarks.mcnemar_p|f3}}).
 ```
 
-Với các metric minh họa của CAP08, nó hiển thị thành "On 120 held-out nominal episodes the system completed the task in 78.3 % of cases (Wilson 95 % interval 70.1 % to 84.8 %)". Đổi benchmark, chạy lại `make report`, và câu đó đổi theo.
+
+Với các metric minh họa của CAP08, câu được phân giải như ở bước 5. Đổi benchmark, chạy lại `make report`, và câu thay đổi theo.
+
+**Kiểm tra.** Mã trên in cùng chín điểm và `weighted total 83.1 -> Merit`. Cận hợp lý: tổng phải nằm giữa điểm milestone thấp nhất và cao nhất (70.0 và 95.0), và đúng vậy; vì các trọng số cộng 100 nên tổng là trung bình có trọng số, và 83.065 gần với trung bình đơn giản của các điểm, $(95+86.5+81+84+75.5+70+84+86.5+92.5)/9=83.9$. Các số được render là giá trị CAP08 ($94/120$, Wilson $[0.701,\,0.848]$), nên đổi benchmark thì câu đổi theo.
+
+**Rút ra.** Phán quyết tốt nghiệp là số học thuần túy trên vài con số, nên có thể được tính và kiểm toán bằng script; mọi con số trong báo cáo được sinh từ log, và một lần chạy smoke tái lập được chứng minh rằng các số chính có thể dựng lại.
 
 ## Bài tập
 

@@ -202,7 +202,7 @@ Indices are zero-based and `A(i, j)` is row $i$, column $j$. `Eigen::Map<VectorX
 1. `auto` captures the expression, not the result. `auto s = M.colPivHouseholderQr().solve(b);` keeps a reference to the temporary decomposition, which is destroyed at the end of the statement: reading `s` later is a use-after-scope (AddressSanitizer reports `stack-use-after-scope`). Write `Eigen::VectorXd s = ...;`.
 2. **Aliasing.** `A = A.transpose();` reads and writes the same memory while evaluating. In a debug build Eigen asserts "aliasing detected during transposition"; with `-O2 -DNDEBUG` it silently produces a wrong matrix (for $\begin{pmatrix}1&2\\3&4\end{pmatrix}$ it printed $\begin{pmatrix}1&2\\2&4\end{pmatrix}$ instead of $\begin{pmatrix}1&3\\2&4\end{pmatrix}$). Use `A.transposeInPlace()` or `A = A.transpose().eval();`.
 
-**Example.** The matrix $M=\begin{pmatrix}1&2\\3&4\end{pmatrix}$ is transposed three ways in a build with assertions off. The aliased assignment `A = A.transpose();` writes entry $(1,0)$ from $(0,1)$ and then reads the already overwritten entry for $(0,1)$, so the 3 is lost and the printed matrix is symmetric by accident; `transposeInPlace()` and `.eval()` give the correct $\begin{pmatrix}1&3\\2&4\end{pmatrix}$. No message is printed for the wrong one. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -O2 -DNDEBUG -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** The matrix $M=\begin{pmatrix}1&2\\3&4\end{pmatrix}$ is transposed three ways in a build with assertions off: the aliased assignment `A = A.transpose();`, `transposeInPlace()` and `.eval()`. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -O2 -DNDEBUG -Wall -Wextra -I/usr/include/eigen3`. Which results are correct, and is any message printed for a wrong one?
 
 ```cpp
 #include <Eigen/Dense>
@@ -223,6 +223,8 @@ int main() {
             << "\neval() C:\n" << C << '\n';
 }
 ```
+
+**Solution.** The correct transpose is $\begin{pmatrix}1&3\\2&4\end{pmatrix}$. The aliased assignment writes entry $(1,0)$ from $(0,1)$ and then reads the already overwritten entry for $(0,1)$, so the 3 is lost and the printed matrix $\begin{pmatrix}1&2\\2&4\end{pmatrix}$ is symmetric by accident; `transposeInPlace()` and `.eval()` (an explicit temporary) give the correct $\begin{pmatrix}1&3\\2&4\end{pmatrix}$. No message is printed for the wrong one, because the assertion that would catch it is compiled out by `-DNDEBUG`. The program prints:
 
 ```text
 aliased A:
@@ -249,7 +251,7 @@ Never form an explicit inverse to solve $Ax=b$; factorize and solve. Choose by s
 
 At $n=1000$, Cholesky is $\approx3.3\times10^{8}$ flops, about 33 ms at 10 GFLOP/s; at $n=6$ it is about 72 flops, negligible.
 
-**Example.** Three masses joined by springs give a symmetric positive definite stiffness matrix $K$ (N/m) with eigenvalues 54.6, 268.0 and 427.4, so $\kappa(K)=7.8$. For forces $f=(2,0,5)$ N the displacements $x$ (m) come out identical from Cholesky (`llt()`, $\tfrac13n^3=9$ flops), from LU (`partialPivLu()`, $\tfrac23n^3=18$ flops) and from the explicit inverse, with residuals near $10^{-15}$ N. At $n=3$ and $\kappa=7.8$ nothing separates the methods; the table above gives the reasons to prefer factorizations (half the flops for Cholesky, no inverse to form) once $n$ or $\kappa$ grows. `info() == Success` confirms that the Cholesky factorization found the matrix positive definite. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** Three masses joined by springs give a symmetric positive definite stiffness matrix $K$ (N/m) with eigenvalues 54.6, 268.0 and 427.4. For forces $f=(2,0,5)$ N the displacements $x$ (m) are computed by Cholesky (`llt()`), by LU (`partialPivLu()`) and by the explicit inverse. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`. What is $\kappa(K)$, what are the displacements and residuals, and what separates the three methods?
 
 ```cpp
 #include <Eigen/Dense>
@@ -276,6 +278,8 @@ int main() {
 }
 ```
 
+**Solution.** The condition number is the ratio of the extreme eigenvalues, $\kappa(K)=427.4/54.6=7.8$. Cholesky costs $\tfrac13n^3=9$ flops and LU $\tfrac23n^3=18$ flops for $n=3$. The displacements $x$ (m) come out identical from all three methods, with residuals near $10^{-15}$ N. At $n=3$ and $\kappa=7.8$ nothing separates the methods; the table above gives the reasons to prefer factorizations (half the flops for Cholesky, no inverse to form) once $n$ or $\kappa$ grows. `info() == Success` confirms that the Cholesky factorization found the matrix positive definite. The program prints:
+
 ```text
 llt  x = 0.0208 0.0424 0.0568  residual 1.98603e-15
 lu   x = 0.0208 0.0424 0.0568  residual 1.77636e-15
@@ -291,7 +295,7 @@ Given $A\in\mathbb R^{m\times n}$, $m\ge n$, find $\hat x=\arg\min\|Ax-b\|_2$. S
 
 **Digits.** Digits lost $\approx\log_{10}\kappa$. For $\kappa=3.6\times10^{6}$: QR keeps about $16-6.6\approx9$ digits; the normal equations keep about $16-13.1\approx3$.
 
-**Example.** A wheel encoder reports its position $p$ (m) at $t=0,\dots,4$ s: $0.20,\,1.10,\,1.90,\,3.20,\,3.90$. Fitting $p=p_0+vt$ gives start position $p_0=0.16$ m and speed $v=0.95$ m/s by QR and by the normal equations alike. By hand: $A^\top A=\begin{pmatrix}5&10\\10&30\end{pmatrix}$, $A^\top p=(10.3,\,30.1)^\top$, $\det=50$, so $p_0=(30\cdot10.3-10\cdot30.1)/50=0.16$ and $v=(5\cdot30.1-10\cdot10.3)/50=0.95$. The residual vector is orthogonal to both columns ($\|A^\top r\|\approx10^{-14}$), which is the defining property of the minimizer. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** A wheel encoder reports its position $p$ (m) at $t=0,\dots,4$ s: $0.20,\,1.10,\,1.90,\,3.20,\,3.90$. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`. Fit $p=p_0+vt$ by QR and by the normal equations: find the start position $p_0$ and the speed $v$, check them by hand and check that the residual is orthogonal to the columns.
 
 ```cpp
 #include <Eigen/Dense>
@@ -320,6 +324,8 @@ int main() {
 }
 ```
 
+**Solution.** By hand: $A^\top A=\begin{pmatrix}5&10\\10&30\end{pmatrix}$, $A^\top p=(10.3,\,30.1)^\top$, $\det=5\cdot30-10\cdot10=50$, so $p_0=(30\cdot10.3-10\cdot30.1)/50=0.16$ m and $v=(5\cdot30.1-10\cdot10.3)/50=0.95$ m/s. QR and the normal equations give $p_0=0.16$ m and $v=0.95$ m/s alike. The residual vector is orthogonal to both columns ($\|A^\top r\|\approx10^{-14}$), which is the defining property of the minimizer. The program prints:
+
 ```text
 QR      p0, v = 0.1600 0.9500
 normal  p0, v = 0.1600 0.9500
@@ -341,7 +347,7 @@ The Vandermonde matrix with columns $1,t,t^2,\dots,t^d$ on $[0,1]$ becomes nearl
 
 (errors are $\|\hat c-c_{\text{true}}\|$ for noise-free data $y=Ac_{\text{true}}$ with $c_{\text{true},j}=(-1)^j(1+0.1j)$, the same coefficients as the lab test; other coefficients give errors of the same order, and the last digits depend on the platform.) Centering and scaling $t$ to $[-1,1]$ reduces the degree-12 condition number to $1.6\times10^{4}$; orthogonal polynomial bases (Chebyshev) are better still. Remedies for near-singular problems: scale the columns, use SVD with truncation, or add Tikhonov (ridge) regularization $(A^\top A+\lambda I)x=A^\top b$.
 
-**Example.** A degree-$d$ Vandermonde matrix is built on 21 equally spaced sample times, once on $[0,1]$ and once after mapping $t\mapsto2t-1$ onto $[-1,1]$. The condition number on $[0,1]$ grows by about a factor 1000 for each added 4 degrees (593, $6.17\times10^{5}$, $1.49\times10^{8}$), and the same data on $[-1,1]$ stay five orders of magnitude better at degree 11 ($8.52\times10^{3}$). Centering is free and removes most of the problem. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** A degree-$d$ Vandermonde matrix is built on 21 equally spaced sample times, once on $[0,1]$ and once after mapping $t\mapsto2t-1$ onto $[-1,1]$. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`. How does the condition number grow with the degree in each case?
 
 ```cpp
 #include <Eigen/Dense>
@@ -373,6 +379,8 @@ int main() {
 }
 ```
 
+**Solution.** The program computes $\kappa=\sigma_{\max}/\sigma_{\min}$ from the singular values. The condition number on $[0,1]$ grows by about a factor 1000 for 4 added degrees (593 at degree 4, $6.17\times10^{5}$ at degree 8, $1.49\times10^{8}$ at degree 11), and the same data on $[-1,1]$ stay more than four orders of magnitude better at degree 11 ($8.52\times10^{3}$, a factor $1.49\times10^{8}/8.52\times10^{3}\approx1.7\times10^{4}$). Centering is free and removes most of the problem. The program prints:
+
 ```text
 degree 4: cond on [0,1] = 593   cond on [-1,1] = 17.2
 degree 8: cond on [0,1] = 6.17e+05   cond on [-1,1] = 529
@@ -383,7 +391,7 @@ degree 11: cond on [0,1] = 1.49e+08   cond on [-1,1] = 8.52e+03
 
 An independent implementation catches wiring mistakes (wrong index, transposed matrix). Compare *residual norms* and *fitted values*, not only coefficients, when the problem is ill-conditioned, since coefficients can differ in the last digits while the fit is identical. Choose tolerances from $\kappa\,\epsilon_{\text{mach}}$, not arbitrary $10^{-6}$.
 
-**Example.** Eight calibration readings (ADC counts against a reference voltage in V) are fitted by the C++ QR solver and by the NumPy oracle `lstsq`. The coefficients agree to 11 digits, not 16: they differ by about $10^{-12}$ in the last printed digits, while the residual norm agrees to all 12 printed digits. With $\kappa(A)=6.28$ and $\|b\|\approx5.5\times10^{3}$ the tolerance $10\,\kappa\,\epsilon_{\text{mach}}\|b\|=8.3\times10^{-11}$ from this section is met with a wide margin. The residual norm 9.72 is large because the converter is not linear; that is a property of the data, and the oracle shows the same value. C++ (compiled as above) and then Python:
+**Example.** Eight calibration readings (ADC counts against a reference voltage in V) are fitted by the C++ QR solver and by the NumPy oracle `lstsq`. The C++ program is compiled as in the previous examples, then the Python program is run. Do the two solvers agree, to how many digits, and is the tolerance $10\,\kappa\,\epsilon_{\text{mach}}\|b\|$ of this section met?
 
 ```cpp
 #include <Eigen/Dense>
@@ -402,11 +410,6 @@ int main() {
 }
 ```
 
-```text
-x = [-2.642857142857, 831.619047619048]
-residual norm = 9.719886340703
-```
-
 ```python
 import numpy as np
 v = np.arange(0.5, 4.01, 0.5)
@@ -416,6 +419,13 @@ x = np.linalg.lstsq(A, c, rcond=None)[0]
 print("x = [%.12f, %.12f]" % tuple(x))
 print("residual norm = %.12f" % np.linalg.norm(A @ x - c))
 print("cond(A) = %.4f, tolerance 10*cond*eps*||b|| = %.2e" % (np.linalg.cond(A), 10*np.linalg.cond(A)*np.finfo(float).eps*np.linalg.norm(c)))
+```
+
+**Solution.** The first block is the C++ program and the second the Python oracle. The coefficients agree to 11 digits, not 16: they differ by about $10^{-12}$ in the last printed digits, while the residual norm agrees to all 12 printed digits. With $\kappa(A)=6.28$ and $\|b\|\approx5.9\times10^{3}$ the tolerance is $10\,\kappa\,\epsilon_{\text{mach}}\|b\|=10\cdot6.28\cdot2.2\times10^{-16}\cdot5.9\times10^{3}=8.3\times10^{-11}$, met with a wide margin by the difference of about $10^{-12}$. The residual norm 9.72 is large because the converter is not linear; that is a property of the data, and the oracle shows the same value. The C++ program prints the first output block and the Python program the second:
+
+```text
+x = [-2.642857142857, 831.619047619048]
+residual norm = 9.719886340703
 ```
 
 ```text
@@ -430,7 +440,7 @@ The least-squares solution $\hat x$ is characterized by $A^\top(A\hat x-b)=0$: t
 $$\|r\|^2=\|b\|^2-\|Q^\top b\|^2 .$$
 This identity is exact, but numerically dangerous. Both terms are computed with absolute error about $\epsilon_{\text{mach}}\|b\|^2$, so when the fit is good ($\|r\|\ll\|b\|$) the *difference* has relative error about $\epsilon_{\text{mach}}\|b\|^2/\|r\|^2$: all significant digits are lost once $\|r\|/\|b\|\lesssim\sqrt{\epsilon_{\text{mach}}}\approx10^{-8}$. Compute the residual vector $b-A\hat x$ and take its norm instead (Exercise 12). The same pattern, "subtract two big nearly equal numbers", is what makes the normal equations fragile.
 
-**Example.** Fit a constant to the three readings $b=(2\cdot10^{8}+2,\ 2\cdot10^{8},\ 2\cdot10^{8}-2)$. The exact residual is $r=(2,0,-2)$, so $\|r\|^2=8$. The Pythagorean formula $\|b\|^2-\|Q^\top b\|^2$ subtracts two numbers near $1.2\cdot10^{17}$, where doubles are spaced 16 apart, and returns 0.0; forming the residual vector first returns 8.0. The predicted relative error $\epsilon\|b\|^2/\|r\|^2=1.1\cdot10^{-16}\cdot1.2\cdot10^{17}/8\approx1.6$ already exceeds 100%. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** Fit a constant to the three readings $b=(2\cdot10^{8}+2,\ 2\cdot10^{8},\ 2\cdot10^{8}-2)$. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`. What is the squared residual $\|r\|^2$ computed by the Pythagorean formula $\|b\|^2-\|Q^\top b\|^2$, and what by forming the residual vector first?
 
 ```cpp
 #include <cmath>
@@ -449,6 +459,8 @@ int main() {
 }
 ```
 
+**Solution.** The exact residual is $r=(2,0,-2)$, so $\|r\|^2=8$. The Pythagorean formula subtracts two numbers near $1.2\cdot10^{17}$, where doubles are spaced 16 apart, and returns 0.0; forming the residual vector first returns 8.0. The predicted relative error $\epsilon\|b\|^2/\|r\|^2=1.1\cdot10^{-16}\cdot1.2\cdot10^{17}/8\approx1.6$ already exceeds 100%, which matches the lost answer. The program prints:
+
 ```text
 ||b||^2 - ||Q^T b||^2 = 0.0
 ||b - A xhat||^2      = 8.0
@@ -462,7 +474,7 @@ Forming $G=A^\top A$ exploiting symmetry costs about $mn^2$ flops and a Cholesky
 
 *Figure: Left: QR costs at most twice the flops of the Gram method (ratio 1 for square, 1.99 at m = 2000, n = 8). Right: that factor 2 buys about 5 more correct digits at kappa = 6.16e5.*
 
-**Example.** A degree-8 fit to 40 points of $[0,1]$ with known coefficients $c_j=(-1)^j(2+0.5j)$ ($\|c\|=12.6$) has $\kappa(A)=6.16\times10^{5}$. QR returns the coefficients to $1.3\times10^{-10}$ (about $10^{-11}$ relative), the Gram method to $1.2\times10^{-5}$ (about $10^{-6}$ relative): the measured errors follow $\kappa\epsilon=6.8\times10^{-11}$ and $\kappa^2\epsilon=4.2\times10^{-5}$ to within a factor of 2 to 4. The price of QR in flops for a $2000\times8$ problem is a factor 1.99, which is irrelevant at this size. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** A degree-8 fit to 40 points of $[0,1]$ has known coefficients $c_j=(-1)^j(2+0.5j)$ ($\|c\|=12.6$) and noise-free data. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`. How accurately do QR and the Gram (normal equations) method return the coefficients, how does that compare with $\kappa\epsilon$ and $\kappa^2\epsilon$, and what does QR cost in flops for a $2000\times8$ problem?
 
 ```cpp
 #include <Eigen/Dense>
@@ -494,6 +506,8 @@ int main() {
 }
 ```
 
+**Solution.** The matrix has $\kappa(A)=6.16\times10^{5}$, so $\kappa\epsilon=6.16\times10^{5}\cdot1.1\times10^{-16}=6.8\times10^{-11}$ and $\kappa^2\epsilon=4.2\times10^{-5}$. QR returns the coefficients to $1.3\times10^{-10}$ (about $10^{-11}$ relative), the Gram method to $1.2\times10^{-5}$ (about $10^{-6}$ relative): the measured errors follow $\kappa\epsilon$ and $\kappa^2\epsilon$ to within a factor of 2 to 4. The price of QR in flops for a $2000\times8$ problem is a factor 1.99, which is irrelevant at this size. The program prints:
+
 ```text
 cond(A) = 6.16e+05, kappa*eps = 6.8e-11, kappa^2*eps = 4.2e-05
 QR error   1.3e-10
@@ -511,7 +525,7 @@ The square of the condition number appears again, now as an iteration count: red
 
 *Figure: Doubling kappa multiplies the iteration count by about 4: 49, 215 and 491 steps reach 1e-6.*
 
-**Example.** A $40\times4$ matrix is built with singular values $1,\ 0.75,\ 0.5,\ 1/6$, so $\kappa=6$ and $\mu=1/\sigma_{\max}^2=1$. The bound gives $k\ge\ln(10^{-6})/\ln(1-1/36)=490.4$ steps to reduce the error by $10^{-6}$ (the shortcut $\kappa^2\ln10^6=497.4$); the loop stops after 488, just inside the bound, because the random initial error has little component along the slowest singular direction. Each step costs two matrix-vector products, $2\cdot2\cdot40\cdot4=320$ flops, so the whole run takes about $1.6\times10^{5}$ flops. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** A $40\times4$ matrix is built with singular values $1,\ 0.75,\ 0.5,\ 1/6$, and gradient descent with step $\mu=1/\sigma_{\max}^2=1$ runs until the error has fallen by $10^{-6}$. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`. How many steps does the bound predict, how many does the loop take, and how many flops does the run cost?
 
 ```cpp
 #include <Eigen/Dense>
@@ -540,12 +554,6 @@ int main() {
   std::printf("bound ln(1e-6)/ln(1-1/kappa^2) = %.1f\n", std::log(1e-6) / std::log(1 - 1 / (kappa * kappa)));
   std::printf("kappa^2 ln(1e6) = %.1f\n", kappa * kappa * std::log(1e6));
 }
-```
-
-```text
-iterations to reach 1e-6: 488
-bound ln(1e-6)/ln(1-1/kappa^2) = 490.4
-kappa^2 ln(1e6) = 497.4
 ```
 
 ```explore
@@ -641,13 +649,21 @@ kappa^2 ln(1e6) = 497.4
 }
 ```
 
+**Solution.** The condition number is $\kappa=1/(1/6)=6$. The bound gives $k\ge\ln(10^{-6})/\ln(1-1/36)=490.4$ steps (the shortcut $\kappa^2\ln10^6=497.4$); the loop stops after 488, just inside the bound, because the random initial error has little component along the slowest singular direction. Each step costs two matrix-vector products, $2\cdot2\cdot40\cdot4=640$ flops, so the whole run takes about $488\cdot640\approx3.1\times10^{5}$ flops. The program prints:
+
+```text
+iterations to reach 1e-6: 488
+bound ln(1e-6)/ln(1-1/kappa^2) = 490.4
+kappa^2 ln(1e6) = 497.4
+```
+
 ### Conditioning versus stability: what a condition number bounds
 
 Two ideas are often confused. The **conditioning** of a problem measures how much the exact answer changes when the input changes slightly; it belongs to the problem. The **stability** of an algorithm measures whether the computed answer is the exact answer to a slightly perturbed input; it belongs to the method. For $Ax=b$ with invertible $A$, suppose the right-hand side is perturbed to $b+\delta b$ and $A(x+\delta x)=b+\delta b$. Then $\delta x=A^{-1}\delta b$, so $\|\delta x\|\le\|A^{-1}\|\,\|\delta b\|$; and $\|b\|=\|Ax\|\le\|A\|\,\|x\|$ gives $1/\|x\|\le\|A\|/\|b\|$. Multiplying,
 $$\frac{\|\delta x\|}{\|x\|}\le\kappa(A)\,\frac{\|\delta b\|}{\|b\|},\qquad\kappa(A)=\|A\|\,\|A^{-1}\|.$$
 In the 2-norm $\kappa=\sigma_{\max}/\sigma_{\min}$. The bound is *attained*: take $b$ along the left singular vector $u_{\max}$ (so $\|x\|=\|b\|/\sigma_{\max}$ is as small as possible) and $\delta b$ along $u_{\min}$ (so $\|\delta x\|=\|\delta b\|/\sigma_{\min}$ is as large as possible); the sensitivity of a single entry is the question of VMLS Exercise 11.26. A **backward-stable** algorithm returns $\hat x$ that solves $(A+E)\hat x=b$ with $\|E\|\approx\epsilon_{\text{mach}}\|A\|$. Combining the two, a backward-stable solver has forward error at most about $\kappa(A)\,\epsilon_{\text{mach}}$: the digits lost are the unavoidable $\log_{10}\kappa$, and no algorithm can do better on that input, because rounding the data to double precision is already a perturbation of that size. Normal equations are *not* backward stable for the least-squares problem: forming $A^\top A$ already perturbs the data at relative size $\epsilon_{\text{mach}}$ in a matrix whose condition number is $\kappa^2$.
 
-**Example.** For $A=\mathrm{diag}(1,\,10^{-3})$ ($\kappa=1000$) and $b=(1,0)$, the same absolute perturbation $|\delta b|=10^{-6}$ is applied along the two singular directions. Along $u_{\max}$ the relative error of $x$ equals the relative error of $b$ (ratio 1.0). Along $u_{\min}$ it is 1000 times larger: $10^{-6}$ becomes $10^{-3}$, which is the bound $\kappa\,\|\delta b\|/\|b\|$ reached exactly. The same matrix and the same algorithm give both results; only the direction of the error differs. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** For $A=\mathrm{diag}(1,\,10^{-3})$ ($\kappa=1000$) and $b=(1,0)$, the same absolute perturbation $|\delta b|=10^{-6}$ is applied along the two singular directions. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`. How large is the relative error of $x$ in each case?
 
 ```cpp
 #include <Eigen/Dense>
@@ -668,6 +684,8 @@ int main() {
 }
 ```
 
+**Solution.** Along $u_{\max}$ the relative error of $x$ equals the relative error of $b$ (ratio 1.0). Along $u_{\min}$ it is 1000 times larger: $10^{-6}$ becomes $10^{-3}$, which is the bound $\kappa\,\|\delta b\|/\|b\|=1000\cdot10^{-6}$ reached exactly. The same matrix and the same algorithm give both results; only the direction of the error differs. The program prints:
+
 ```text
 db along u_max: |db|/|b| = 1.0e-06, |dx|/|x| = 1.0e-06, ratio = 1.0
 db along u_min: |db|/|b| = 1.0e-06, |dx|/|x| = 1.0e-03, ratio = 1000.0
@@ -681,7 +699,7 @@ Take $A=\begin{pmatrix}1&1\\\delta&0\\0&\delta\end{pmatrix}$. Then $A^\top A=\be
 
 *Figure: QR stays at rounding level while the normal equations lose accuracy like 1/delta squared and fail for delta of 1e-8 or less.*
 
-**Example.** Take $\delta=10^{-7}$ and $b=(1,1,0)^\top$. The exact solution follows from $x_1-x_2=1/\delta$ and $x_1+x_2=(2+\delta)/(2+\delta^2)$ (subtract and add the two normal equations): $(5000000.5,\,-4999999.5)$. $\kappa(A)=1.41\times10^{7}$, so QR is accurate to about 9 digits (it reaches $10^{-16}$ here); $\kappa(A^\top A)=2\times10^{14}$, and the computed Gram entry $G_{00}-1=9.99\times10^{-15}$ carries a 0.08% error in $\delta^2$, which becomes a relative error $8\times10^{-4}$ in $x$ (4000 in absolute terms). One more decade of $\delta$ makes the Gram matrix exactly singular, as the figure shows. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** Take $\delta=10^{-7}$ and $b=(1,1,0)^\top$. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`. What is the exact least-squares solution, and how accurate are QR and the normal equations?
 
 ```cpp
 #include <Eigen/Dense>
@@ -705,6 +723,8 @@ int main() {
 }
 ```
 
+**Solution.** The exact solution follows from $x_1-x_2=1/\delta$ and $x_1+x_2=(2+\delta)/(2+\delta^2)$ (subtract and add the two normal equations): $(5000000.5,\,-4999999.5)$. $\kappa(A)=1.41\times10^{7}$, so QR is accurate to about 9 digits (it reaches $10^{-16}$ here); $\kappa(A^\top A)=2\times10^{14}$, and the computed Gram entry $G_{00}-1=9.99\times10^{-15}$ carries a 0.08% error in $\delta^2$, which becomes a relative error $8\times10^{-4}$ in $x$ (4000 in absolute terms). One more decade of $\delta$ makes the Gram matrix exactly singular, as the figure shows. The program prints:
+
 ```text
 kappa(A) = 1.41e+07, kappa(G) = 2.00e+14
 exact  x = 5000000.5000 -4999999.5000
@@ -716,7 +736,7 @@ normal x = 5004000.0889 -5003999.0889   relative error 8.0e-04
 
 If the columns of $A$ are dependent (or nearly so), the least-squares minimizer is not unique. With $A=U\Sigma V^\top$ and $r$ the number of singular values kept, the *minimum-norm* least-squares solution is $\hat x=\sum_{i\le r}\frac{u_i^\top b}{\sigma_i}v_i=A^\dagger b$, $A^\dagger=V\Sigma^{+}U^\top$, where $\Sigma^{+}$ inverts the nonzero singular values and sets the others to zero (the pseudo-inverse of VMLS §11.5 generalized beyond independent columns). Each term scales the data component $u_i^\top b$ by $1/\sigma_i$, so noise in a direction with tiny $\sigma_i$ is amplified enormously; *truncation* drops those terms and trades a small bias for a large variance reduction, in the same spirit as the ridge parameter of Exercise 9. Eigen's `BDCSVD`/`JacobiSVD` expose this through a threshold on singular values relative to the largest, and `completeOrthogonalDecomposition` gives the same minimum-norm solution more cheaply (Eigen, *Catalogue of dense decompositions*). The threshold is a modelling decision: choose it from the noise level of the data, not from $\epsilon_{\text{mach}}$ alone.
 
-**Example.** The third column of a $6\times3$ matrix equals column 1 plus column 2 up to a $10^{-9}$ wobble, so the singular values are 15.13, 2.243 and $1.7\times10^{-9}$. Keeping all three terms divides the data component along $v_3$ by $1.7\times10^{-9}$: the coefficients reach $2.5\times10^{8}$ (norm $4.3\times10^{8}$) for a residual of 3.4425. Truncating at $10^{-6}\sigma_{\max}$ (rank 2) gives coefficients of norm 1.28 and a residual of 3.5183, only 2.2% higher: a small bias bought for a gigantic reduction in variance. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+**Example.** The third column of a $6\times3$ matrix equals column 1 plus column 2 up to a $10^{-9}$ wobble. Compiled with g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`. What are the singular values, and how do the coefficients and the residual differ between the untruncated solution and one truncated at $10^{-6}\sigma_{\max}$?
 
 ```cpp
 #include <Eigen/Dense>
@@ -740,6 +760,8 @@ int main() {
   std::printf("truncated   x = %.4f %.4f %.4f   |x| = %.4f   |r| = %.4f\n", x_trunc(0), x_trunc(1), x_trunc(2), x_trunc.norm(), (A * x_trunc - b).norm());
 }
 ```
+
+**Solution.** The singular values are 15.13, 2.243 and $1.7\times10^{-9}$. Keeping all three terms divides the data component along $v_3$ by $1.7\times10^{-9}$: the coefficients reach $2.5\times10^{8}$ (norm $4.3\times10^{8}$) for a residual of 3.4425. Truncating at $10^{-6}\sigma_{\max}$ (rank 2) gives coefficients of norm 1.28 and a residual of 3.5183, only $3.5183/3.4425-1=2.2\%$ higher: a small bias bought for a gigantic reduction in variance. The program prints:
 
 ```text
 singular values: 1.513e+01 2.243e+00 1.704e-09

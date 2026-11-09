@@ -42,7 +42,9 @@ Ví dụ robot đời thường: một bộ lọc vận tốc thỉnh thoảng c
 
 Biên dịch với `-g` (thông tin debug) và `-fno-omit-frame-pointer` (stack trace sạch), ở `-O0` hoặc `-O1`. Tối ưu hóa có thể khiến một biến bị "optimized out" trong debugger.
 
-**Ví dụ.** Ba chương trình một file của một bộ điều khiển robot, mỗi chương trình có một lỗi im lặng, chạy dưới công cụ mà bảng gán cho nó (g++ 11.4, Valgrind 3.18):
+**Ví dụ.** Ba chương trình một file của một bộ điều khiển robot, mỗi chương trình có một lỗi im lặng, chạy dưới công cụ mà bảng gán cho nó (g++ 11.4, Valgrind 3.18): `ovf.cpp` cộng `2000000000` hai lần vào bộ đếm encoder kiểu `int`, `uaf.cpp` delete một gain rồi in `*gain`, và `uninit.cpp` kiểm tra một `double offset` chưa khởi tạo bằng `if (offset > 0.1)`. Công cụ nào (AddressSanitizer, UndefinedBehaviorSanitizer hay Valgrind) báo từng lỗi?
+
+**Lời giải.** Bộ đếm encoder tràn mà ASan không báo gì, vì không có vùng nhớ nào bị chạm sai; UBSan nêu đúng dòng. Use-after-free thì ngược lại: UBSan không thấy gì sai với một lần đọc số nguyên hay con trỏ, còn ASan báo địa chỉ đã giải phóng (và giá trị in ra `1.17263e-313` cho thấy vùng nhớ cũ đã được dùng lại; giá trị rác này thay đổi giữa các lần chạy). `double` chưa khởi tạo được Valgrind tìm ra, không sanitizer nào thấy. Ghép triệu chứng với công cụ là tra bảng, không phải đoán mò. Các phiên làm việc là:
 
 ```
 $ g++ -std=c++20 -g -fsanitize=address ovf.cpp -o ovf_a && ./ovf_a    # ticks += 2000000000 twice on an int
@@ -58,8 +60,6 @@ $ g++ -std=c++20 -g -O0 uninit.cpp -o uninit && valgrind -q ./uninit  # double o
 ==316884== Conditional jump or move depends on uninitialised value(s)
 ==316884==    at 0x1091A2: main (uninit.cpp:4)
 ```
-
-Bộ đếm encoder tràn mà ASan không báo gì, vì không có vùng nhớ nào bị chạm sai; UBSan nêu đúng dòng. Use-after-free thì ngược lại: UBSan không thấy gì sai với một lần đọc số nguyên hay con trỏ, còn ASan báo địa chỉ đã giải phóng (và giá trị in ra `1.17263e-313` cho thấy vùng nhớ cũ đã được dùng lại). `double` chưa khởi tạo được Valgrind tìm ra, không sanitizer nào thấy. Ghép triệu chứng với công cụ là tra bảng, không phải đoán mò.
 
 ### Đọc báo cáo AddressSanitizer
 
@@ -81,7 +81,9 @@ allocated by thread T0 here: ...
 
 Luôn đọc lỗi *đầu tiên*; các lỗi sau có thể là hệ quả.
 
-**Ví dụ.** Một driver lidar cắt 90 giá trị khoảng cách (`std::vector<float> ranges(90, 12.0f)`) bằng vòng lặp `for (i = 0; i <= ranges.size(); ++i)`. Những dòng đầu của báo cáo thật (địa chỉ được rút gọn):
+**Ví dụ.** Một driver lidar cắt 90 giá trị khoảng cách (`std::vector<float> ranges(90, 12.0f)`) bằng vòng lặp `for (i = 0; i <= ranges.size(); ++i)`. Đọc những dòng đầu của báo cáo AddressSanitizer thật (địa chỉ được rút gọn) và nêu loại lỗi, cái gì bị truy cập, ở đâu, đối tượng nào, và cách sửa.
+
+**Lời giải.** Loại lỗi: heap-buffer-overflow. Cái gì: một lần READ cỡ 4, một `float`. Ở đâu: `clip`, dòng 4, được gọi từ `main` dòng 8. Đối tượng nào: cách 0 byte về bên phải một vùng 360 byte, tức $360/4=90$ float, nên chỉ số 90 đã được đọc, phần tử đầu tiên sau cuối. Cận vòng lặp `<=` phải là `<`. Báo cáo là:
 
 ```
 ==...==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x5130000001a8 ...
@@ -91,13 +93,11 @@ READ of size 4 at 0x5130000001a8 thread T0
 0x5130000001a8 is located 0 bytes to the right of 360-byte region [0x513000000040,0x5130000001a8)
 ```
 
-Loại lỗi: heap-buffer-overflow. Cái gì: một lần READ cỡ 4, một `float`. Ở đâu: `clip`, dòng 4, được gọi từ `main` dòng 8. Đối tượng nào: cách 0 byte về bên phải một vùng 360 byte, tức $360/4=90$ float, nên chỉ số 90 đã được đọc, phần tử đầu tiên sau cuối. Cận vòng lặp `<=` phải là `<`.
-
 ### Những điều cốt yếu của debugger
 
 `gdb ./prog`, rồi `run`, `bt` (backtrace), `frame N`, `info locals`, `print expr`, `break file:line`, `watch var`, `continue`, `next`, `step`. Chế độ batch: `gdb -batch -ex run -ex bt ./prog`. Với crash bên trong một library, `bt` vẫn cho thấy frame gọi của bạn. Một `std::unique_ptr` đã bị move hiện ra là `get() = 0x0` trong GDB, giải thích ngay một segmentation fault tại phép dereference đó.
 
-**Ví dụ.** Một hàm tra cứu trả `nullptr` cho một sensor id không biết và nơi gọi dereference nó. GDB chế độ batch trên bản build `-g -O0`:
+**Ví dụ.** Một hàm tra cứu trả `nullptr` cho một sensor id không biết và nơi gọi dereference nó (`sensors = {{1, 100.0}, {2, 50.0}}`, `find(sensors, 3)`). Dùng GDB chế độ batch trên bản build `-g -O0` với `run`, `bt` và `info locals`, dòng nào crash, giá trị của `s` là gì, và chỗ sửa nằm ở đâu?
 
 ```cpp
 struct Sensor { int id; double rate_hz; };
@@ -108,6 +108,8 @@ const Sensor* find(const std::vector<Sensor>& v, int id) {
 // main: sensors = {{1, 100.0}, {2, 50.0}};  const Sensor* s = find(sensors, 3);  std::cout << s->rate_hz;
 ```
 
+**Lời giải.** `bt` cho dòng crash (`nul.cpp:11`), `info locals` cho thấy `s = 0x0`: `find(sensors, 3)` không tìm thấy sensor 3, vì chỉ có id 1 và 2. Chỗ sửa nằm ở nơi gọi (kiểm tra con trỏ, hoặc trả `std::optional`), không phải ở chỗ dereference. Phiên batch in ra:
+
 ```
 $ g++ -std=c++20 -g -O0 nul.cpp -o nul && gdb -batch -ex run -ex bt -ex 'info locals' ./nul
 Program received signal SIGSEGV, Segmentation fault.
@@ -117,8 +119,6 @@ Program received signal SIGSEGV, Segmentation fault.
 sensors = std::vector of length 2, capacity 2 = {{id = 1, rate_hz = 100}, {id = 2, rate_hz = 50}}
 s = 0x0
 ```
-
-`bt` cho dòng crash (`nul.cpp:11`), `info locals` cho thấy `s = 0x0`: `find(sensors, 3)` không tìm thấy sensor 3, vì chỉ có id 1 và 2. Chỗ sửa nằm ở nơi gọi (kiểm tra con trỏ, hoặc trả `std::optional`), không phải ở chỗ dereference.
 
 ### Test harness và regression test
 
@@ -133,7 +133,7 @@ Một **regression test** ghi lại một bug đã tìm ra: nó fail trên code 
 
 Với so sánh số thực dùng dung sai: `|a - b| <= tol` là sai khi một trong hai giá trị là NaN, đó là cách an toàn; `!(|a-b| > tol)` sẽ chấp nhận NaN.
 
-**Ví dụ.** Một bộ giới hạn lệnh động cơ `saturate(v, lo, hi)` trả `lo` thay vì `hi` khi vượt giới hạn trên. Bốn kỳ vọng tính tay trong một harness macro 10 dòng, in giá trị mong đợi và giá trị thực rồi trả mã thoát khác 0:
+**Ví dụ.** Một bộ giới hạn lệnh động cơ `saturate(v, lo, hi)` trả `lo` thay vì `hi` khi vượt giới hạn trên. Bốn kỳ vọng tính tay được viết trong một harness macro 10 dòng, in giá trị mong đợi và giá trị thực rồi trả mã thoát khác 0. Kỳ vọng nào lỗi, mã thoát là bao nhiêu, và lần chạy sau khi sửa một dòng in ra gì?
 
 ```cpp
 #include <cmath>
@@ -161,6 +161,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Bốn kỳ vọng là bên trong (0.4 giữ nguyên 0.4), bên dưới ($-3.0\to-1.0$), bên trên ($2.5\to1.0$) và đúng trên giới hạn ($1.0\to1.0$). Với lỗi, chỉ kỳ vọng thứ ba hỏng: `saturate(2.5, -1.0, 1.0)` trả `lo = -1` thay vì `1`, harness đếm một lỗi, in `FAILED` và thoát với 1. Lần chạy lỗi nêu đúng ca (`2.5` phải bị chặn về `1.0`), và sau khi đổi `return lo` thành `return hi` ở nhánh trên thì cả bốn qua và mã thoát là 0. Test này sẽ lỗi mà không cần sanitizer nào và cả trong build Release, vì nó kiểm tra giá trị. Phiên làm việc là:
+
 ```
 $ g++ -std=c++20 -Wall -Wextra sat.cpp -o sat && ./sat; echo "exit $?"
 FAIL line 19: saturate(2.5, -1.0, 1.0) = -1, expected 1
@@ -172,13 +174,13 @@ all passed
 exit 0
 ```
 
-Lần chạy lỗi nêu đúng ca (`2.5` phải bị chặn về `1.0`), và bản đã sửa thì qua. Test này sẽ lỗi mà không cần sanitizer nào và cả trong build Release, vì nó kiểm tra giá trị.
-
 ### Rút gọn và chia đôi
 
 Nếu một thất bại cần $N$ phần tử và một thủ phạm duy nhất, việc chia đôi đầu vào tìm ra nó trong $\lceil\log_2 N\rceil$ lần chạy. Khi thất bại cần nhiều phần tử, delta debugging loại bỏ từng khối và giữ lại mọi lần loại bỏ mà vẫn còn thất bại. Với lịch sử, `git bisect` tìm kiếm nhị phân trên các commit: 1000 commit cần tối đa $\lceil\log_2 1000\rceil=10$ lần build. Với thất bại hiếm, số lần lặp cần để thấy một thất bại có xác suất $p$ với độ tin cậy $1-\alpha$ là $n\ge\ln\alpha/\ln(1-p)$.
 
-**Ví dụ.** Một regression cấu hình nằm đâu đó trong 48 commit: `cfg` giữ `gain=1` cho đến commit 31 thì đổi. `git bisect run` với một script kiểm tra file tìm ra nó sau 6 lần chạy test, $\lceil\log_2 48\rceil=6$:
+**Ví dụ.** Một regression cấu hình nằm đâu đó trong 48 commit: `cfg` giữ `gain=1` cho đến commit 31 thì đổi. `git bisect run` dùng một script kiểm tra file (`grep -q 'gain=1' cfg`). Cần bao nhiêu lần chạy test, nó báo commit nào, và số revision còn lại diễn tiến ra sao?
+
+**Lời giải.** Mỗi lần chạy giảm đôi khoảng tìm, nên $\lceil\log_2 48\rceil=6$ lần chạy là đủ: sau các lần chạy liên tiếp còn 23, 11, 5, 2, 0 và 0 revision, và 48 commit tốn 6 lần build thay vì tới 47. Lần chạy cuối để lại một commit, commit xấu đầu tiên, c31. Dòng "roughly N steps" là ước lượng của chính git và đếm số bước còn lại. Phiên làm việc là:
 
 ```
 $ git bisect start HEAD <first-commit>      # 48 commits; cfg holds "gain=1" until the bug lands
@@ -197,8 +199,6 @@ Bisecting: 0 revisions left to test after this (roughly 0 steps)
 running  './test.sh'
 <hash> is the first bad commit              # commit c31
 ```
-
-Mỗi lần chạy giảm đôi khoảng tìm (còn 23, 11, 5, 2, 0 revision), nên 48 commit tốn 6 lần build thay vì tới 47. Dòng "roughly N steps" là ước lượng của chính git và đếm số bước còn lại.
 
 Cần lặp bao nhiêu lần để lộ một lỗi hiếm? Đường cong $1-(1-p)^n$ cho thấy (kéo thanh trượt của $p$):
 
@@ -252,7 +252,7 @@ Hàm đường chậm của wiki chính là phép kiểm tra này, và nó giả
 
 *Hình: ca của phần lý thuyết được vẽ ra; cùng phép thử $\ell\ge v$ cho qua lần đọc ở offset 9 nhưng chặn lần đọc ở offset 10, vì byte 13 bị poison.*
 
-**Ví dụ.** Một khối 10 byte cho $10=8+2$, nên các shadow byte là $0$ và $2$. Đọc 2 byte tại offset 8 và 9, chạy thật:
+**Ví dụ.** Một khối heap 10 byte được cấp phát bằng `malloc(10)` và đọc bằng một truy cập 2 byte tại offset 8 hoặc offset 9 (chạy thật dưới `-fsanitize=address`). Theo quy tắc shadow memory, với offset nào thì có báo cáo, và các shadow byte của khối trông thế nào?
 
 ```cpp
 #include <cstdlib>
@@ -267,6 +267,8 @@ int main(int argc, char** argv) {
 }
 ```
 
+**Lời giải.** $10=8+2$, nên các shadow byte là $0$ (8 byte đầu hoàn toàn truy cập được) và $2$ (chỉ 2 byte đầu của nhóm kế tiếp). Một truy cập cỡ $s$ tại vị trí $a$ trong một nhóm được phép nếu $a+s-1<$ giá trị shadow $\ell$. Offset 8: $\ell=(0)+2-1=1<2$, im lặng. Offset 9: $\ell=1+2-1=2\ge2$, bị báo với "0 bytes to the right of 10-byte region". Dòng `00[02]` in ra chính là cặp giá trị shadow; với khối ở $0\mathrm{x}502000000010$ thì địa chỉ shadow là $(\texttt{0x502000000010}\gg3)+\texttt{0x7fff8000}=\texttt{0xa047fff8002}$, đó là byte `00`, và byte kế tiếp là `02`. Các lần chạy in ra:
+
 ```
 $ g++ -std=c++20 -g -fsanitize=address shadow.cpp -o shadow && ./shadow 8
 no report
@@ -276,8 +278,6 @@ READ of size 2 at 0x502000000019 thread T0
 0x50200000001a is located 0 bytes to the right of 10-byte region [0x502000000010,0x50200000001a)
 =>0x0a047fff8000: fa fa 00[02]fa fa fa fa fa fa fa fa fa fa fa fa
 ```
-
-Offset 8: $\ell=(0)+2-1=1<2$, im lặng. Offset 9: $\ell=1+2-1=2\ge2$, bị báo với "0 bytes to the right of 10-byte region". Dòng `00[02]` in ra chính là cặp giá trị shadow; với khối ở $0\mathrm{x}502000000010$ thì địa chỉ shadow là $(\texttt{0x502000000010}\gg3)+\texttt{0x7fff8000}=\texttt{0xa047fff8002}$, đó là byte `00`, và byte kế tiếp là `02`.
 
 ### AddressSanitizer không thấy gì, và công cụ nào lấp khoảng trống
 
@@ -293,7 +293,7 @@ Bài học tổng quát: sanitizer là phép kiểm tra *động* các lớp l�
 
 *Hình: ASan kiểm tra byte nó sắp chạm. `p[32]` rơi vào vùng poison; `p[48]` rơi vào vùng nhớ hợp lệ của đối tượng khác; `buf[4]` rơi vào một thành viên hợp lệ của cùng đối tượng.*
 
-**Ví dụ.** Một `std::vector<int>` lớn lên bằng năm lần `push_back` chứa 5 phần tử trong buffer cho 8 (capacity 8, 32 byte). Đọc `v[6]` là quá cuối vector nhưng vẫn trong vùng cấp phát, nên ASan im lặng và chương trình in ra mẫu fill của allocator; `v[8]` quá vùng cấp phát và bị báo. Biên dịch với `-D_GLIBCXX_ASSERTIONS` (kiểm tra biên của thư viện) bắt được cả trường hợp đầu:
+**Ví dụ.** Một `std::vector<int>` lớn lên bằng năm lần `push_back` chứa 5 phần tử trong buffer cho 8 (capacity 8, 32 byte). Chương trình đọc `v[6]` rồi `v[8]` dưới `-fsanitize=address`, và thêm một lần dưới `-D_GLIBCXX_ASSERTIONS` (kiểm tra biên của thư viện). ASan báo lần đọc nào, lần im lặng in ra gì, và bản assertion làm gì?
 
 ```cpp
 std::vector<int> v;
@@ -302,6 +302,8 @@ std::cout << "size " << v.size() << ", capacity " << v.capacity() << std::endl;
 std::cout << "v[6] = " << v[6] << std::endl;                   // past the end, inside the allocation
 std::cout << "v[8] = " << v[8] << std::endl;                   // past the allocation
 ```
+
+**Lời giải.** Đọc `v[6]` là quá cuối vector nhưng vẫn trong vùng cấp phát (chỉ số 6 trong 8 ô, $6\cdot4=24<32$ byte), nên ASan im lặng và chương trình in ra mẫu fill của allocator; `v[8]` bắt đầu ở byte $8\cdot4=32$, quá vùng cấp phát, và bị báo ("0 bytes to the right of 32-byte region"). Biên dịch với `-D_GLIBCXX_ASSERTIONS` bắt được cả trường hợp đầu: chương trình abort (exit status 134) trước khi in `v[6]`. Giá trị rác `-1094795586` là `0xBEBEBEBE`, giá trị fill của ASan cho bộ nhớ heap mới. Bài học giống như trên: sanitizer biết vùng cấp phát, không biết `size()` của container, nên cần `at()` có kiểm tra hoặc chế độ assertion của thư viện chuẩn bổ sung. Hai phiên làm việc là:
 
 ```
 $ g++ -std=c++20 -g -fsanitize=address cap.cpp -o cap && ./cap
@@ -315,15 +317,13 @@ size 5, capacity 8
 exit 134
 ```
 
-Giá trị rác `-1094795586` là `0xBEBEBEBE`, giá trị fill của ASan cho bộ nhớ heap mới. Bài học giống như trên: sanitizer biết vùng cấp phát, không biết `size()` của container, nên cần `at()` có kiểm tra hoặc chế độ assertion của thư viện chuẩn bổ sung.
-
 ### Watchpoint: tìm ai đã ghi một giá trị
 
 Khi một biến có giá trị sai và bạn không biết dòng nào ghi nó, một **watchpoint** yêu cầu debugger dừng khi nó thay đổi. `watch expr` dừng khi biểu thức được ghi và giá trị đổi; `rwatch` dừng khi đọc và `awatch` khi đọc hoặc ghi (GDB manual, *Setting Watchpoints*). Hai chi tiết quan trọng trong thực tế. Thông thường một watchpoint tôn trọng phạm vi biến, nên với biến toàn cục hay đối tượng heap truy cập qua con trỏ hãy dùng `watch -location expr` (`-l`), lấy địa chỉ một lần và theo dõi vùng nhớ đó. Và có hai cách cài đặt: có hỗ trợ phần cứng, watchpoint "không làm chậm việc chạy chương trình"; nếu không GDB đi từng lệnh và kiểm tra giá trị mỗi lần, mà manual mô tả là "chậm hơn chạy bình thường hàng trăm lần". Watchpoint phần cứng là thứ đầu tiên nên thử, loại phần mềm là phương án cuối cho lỗi mà bạn không đoán ra thủ phạm.
 
 Một trường hợp có lời giải, chạy với GDB: một struct có `int buf[4]; int limit = 100;` và vòng lặp `for (i = 0; i <= n; ++i) buf[i] = i + 1;` với `n = 4`. Với `watch -l s.limit`, GDB dừng với `Old value = 100`, `New value = 5`, ở dòng vòng lặp của `fill (n=4)`, và `bt` cho thấy lời gọi từ `main`. Giá trị 5 là giá trị cuối cùng được ghi ($i+1$ với $i=4$), nhận ra ngay lỗi lệch một ở cận vòng lặp, dù không cần sanitizer nào.
 
-**Ví dụ.** Biến toàn cục `g_mode` phải giữ nguyên 1 (run) sau `arm()`, nhưng chương trình kết thúc với mode sai. Một watchpoint có điều kiện dừng ở lần ghi đầu tiên làm nó lớn hơn 1, mà không cần biết hàm nào ghi:
+**Ví dụ.** Biến toàn cục `g_mode` phải giữ nguyên 1 (run) sau `arm()`, nhưng chương trình kết thúc với mode sai. Lệnh GDB nào dừng ở lần ghi đầu tiên làm nó lớn hơn 1, mà không cần biết hàm nào ghi, và giá trị cũ, giá trị mới cùng frame cho thấy gì?
 
 ```cpp
 int g_mode = 0;                          // 0 = idle, 1 = run
@@ -331,6 +331,8 @@ void arm()           { g_mode = 1; }
 void set_gain(int k) { g_mode = k * 2; } // BUG: clobbers the mode
 int main() { arm(); set_gain(3); std::cout << "mode " << g_mode << "\n"; }
 ```
+
+**Lời giải.** Watchpoint có điều kiện `watch g_mode if g_mode > 1` dừng ở lần ghi đầu tiên thỏa điều kiện. `Old value = 1`, `New value = 6` và frame `set_gain (k=3)` chỉ ra thủ phạm: $6=3\cdot2$ là `k * 2`, nên lỗi là công thức trong `set_gain`, vốn được viết cho một biến khác. Biến toàn cục không cần `-l`; điều kiện giữ cho lần dừng chỉ ở lần ghi đáng quan tâm. Phiên batch in ra:
 
 ```
 $ g++ -std=c++20 -g -O0 glob.cpp -o glob && gdb -batch -ex 'watch g_mode if g_mode > 1' -ex run -ex bt ./glob
@@ -343,13 +345,13 @@ set_gain (k=3) at glob.cpp:4
 #1  0x00005555555551ee in main () at glob.cpp:7
 ```
 
-`Old value = 1`, `New value = 6` và frame `set_gain (k=3)` chỉ ra thủ phạm: $6=3\cdot2$ là `k * 2`, nên lỗi là công thức trong `set_gain`, vốn được viết cho một biến khác. Biến toàn cục không cần `-l`; điều kiện giữ cho lần dừng chỉ ở lần ghi đáng quan tâm.
-
 ### Bisect khi lỗi có tính xác suất
 
 Bisect giả định một test tất định: nếu test báo "tốt" ở commit $c$ thì lỗi nằm sau, nếu không thì nằm trước. Với $N$ commit cần $\lceil\log_2N\rceil$ bước (tài liệu `git bisect` có ví dụ nói "roughly 10 steps" cho vài trăm đến một nghìn revision). Nếu lỗi chỉ xuất hiện với xác suất $p$ mỗi lần chạy trên một commit xấu, một lần "pass" không phải bằng chứng về commit tốt. Chạy mỗi commit được thử $r$ lần và chỉ gọi nó là tốt nếu cả $r$ lần đều pass. Commit tốt không bao giờ lỗi, nên sai sót chỉ xảy ra ở commit xấu, mỗi lần với xác suất $(1-p)^r$ bị đánh giá nhầm là tốt. Nếu nhiều nhất $k=\lceil\log_2N\rceil$ bước thử một commit xấu, xác suất cả lượt tìm đúng hoàn toàn ít nhất là $\bigl(1-(1-p)^r\bigr)^k$. Để đạt độ tin cậy $1-\alpha$ chỉ cần $(1-p)^r\le1-(1-\alpha)^{1/k}$, tức $r\ge\ln\!\bigl(1-(1-\alpha)^{1/k}\bigr)/\ln(1-p)$. Chi phí xấu nhất là $k\,r$ lần chạy, vì commit tốt cần đủ $r$ lần còn commit xấu dừng ở lần lỗi đầu tiên. Cận này thận trọng (nó hợp các sai số từng bước) nhưng cho thấy hình dạng của sự đánh đổi: lỗi càng hiếm càng nhân chi phí của cả $k$ bước, nên trước hết hãy tăng $p$ bằng cách gây áp lực cho test (nhiều thread hơn, seed cố định, build có sanitizer) trước khi bisect.
 
-**Ví dụ.** Tìm trong 64 commit một lỗi hiện ra với xác suất $p=0.5$ mỗi lần chạy, với $1-\alpha=0.95$. Ở đây $k=\lceil\log_2 64\rceil=6$ và $r\ge\ln(1-0.95^{1/6})/\ln0.5=6.88$, nên $r=7$ và trường hợp xấu nhất là $kr=42$ lần chạy. Mô phỏng 20000 lần tìm (mỗi commit được thử lặp tối đa $r$ lần, một commit xấu dừng ở lần lỗi đầu tiên):
+**Ví dụ.** Tìm trong 64 commit một lỗi hiện ra với xác suất $p=0.5$ mỗi lần chạy, với độ tin cậy $1-\alpha=0.95$. Cần số lần lặp $r$ mỗi commit là bao nhiêu, trường hợp xấu nhất bao nhiêu lần chạy, và mô phỏng 20000 lần tìm (mỗi commit được thử lặp tối đa $r$ lần, một commit xấu dừng ở lần lỗi đầu tiên) cho kết quả gì với $r=1$ và $r=7$?
+
+**Lời giải.** Ở đây $k=\lceil\log_2 64\rceil=6$ và $r\ge\ln(1-0.95^{1/6})/\ln0.5=6.88$, nên $r=7$ và trường hợp xấu nhất là $kr=42$ lần chạy. Với $r=1$ cận là $0.5^6=0.0156$ và mô phỏng thành công 18 % số lần tìm; với $r=7$ cận $\bigl(1-0.5^7\bigr)^6=0.954$ đúng (quan sát được 97.7 %, vì cận cộng các sai số hiếm khi trùng nhau) với trung bình 26.9 lần chạy. Mô phỏng là ngẫu nhiên, nên các số dưới đây giữ nguyên như đã đo và chạy lại sẽ lệch ở chữ số cuối. Script in ra:
 
 ```
 $ python3 prob.py        # N = 64 commits, p = 0.5, 1 - alpha = 0.95; 20000 simulated searches per row
@@ -358,7 +360,7 @@ r=7: bound=0.9540  simulated success=0.9765  mean runs=26.9
 k = 6  r = 7  worst-case runs k*r = 42
 ```
 
-Với $r=1$ cận là $0.5^6=0.0156$ và mô phỏng thành công 18 % số lần tìm; với $r=7$ cận $0.954$ đúng (quan sát được 97.7 %, vì cận cộng các sai số hiếm khi trùng nhau) với trung bình 26.9 lần chạy. Kéo các thanh trượt để xem số lần lặp cần cho các cỡ khác:
+Kéo các thanh trượt để xem số lần lặp cần cho các cỡ khác:
 
 ```explore
 {

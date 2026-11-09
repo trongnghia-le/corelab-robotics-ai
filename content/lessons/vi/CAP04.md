@@ -66,15 +66,29 @@ Biên inflation và giới hạn tốc độ phải giữ $d_\text{stop}$ nhỏ 
 
 Đây là vết tham chiếu của một lần chạy đạt. **Giá trị minh họa**: chúng cho thấy con số khỏe mạnh trông thế nào, được tính tay và bằng script nhỏ ở phần Kiểm chứng, không lấy từ lần chạy thật trên robot của bạn.
 
-**Cập nhật bản đồ.** Một ô bị ba tia đánh trúng có $l=3\cdot0.847=2.54$, nên $p=0.927$. Một ô bị năm tia trống đi qua có $l=-2.03$, $p=0.116$. Một ô bị đánh trúng hai lần và đi qua một lần: $l=1.289$, $p=0.784$, vẫn trên ngưỡng xuất 0.65.
+### Lập bản đồ, inflation, heuristic, tracker, quãng dừng và bảng nghiệm thu
 
-**Inflation.** Bán kính ngoại tiếp $r_c=0.20$ m, biên $m=0.05$ m, độ lệch chuẩn vị trí EKF $\sigma=0.03$ m: $r_\text{inflate}=0.20+0.05+0.06=0.31$ m, tức $\lceil 0.31/0.05\rceil=7$ ô; bán kính lethal là 4 ô.
+**Đề bài.** Lưới chiếm dụng dùng $p_\text{occ}=0.7$ và $p_\text{free}=0.4$ cho mỗi tia, ngưỡng xuất 0.65 và kích thước ô 0.05 m. Trả lời các câu sau với đủ các bước.
 
-**Heuristic.** Độ lệch xuất phát đến đích $dx=30$, $dy=12$ ô: octile $h=42-0.586\cdot12=34.97$ ô $=1.749$ m, trong khi đường thẳng là 32.31 ô. Đường thật không thể ngắn hơn 34.97 ô trong không gian trống, nên heuristic rất sát.
+- (a) Log-odds và xác suất của một ô bị ba tia đánh trúng, của một ô bị năm tia trống đi qua, và của một ô bị đánh trúng hai lần và đi qua một lần; ô cuối có được xuất là bị chiếm không?
+- (b) Inflation: bán kính ngoại tiếp $r_c=0.20$ m, biên $m=0.05$ m, độ lệch chuẩn vị trí EKF $\sigma=0.03$ m. Tìm $r_\text{inflate}$, số ô inflation $n$ và bán kính lethal tính bằng ô.
+- (c) Heuristic A* cho độ lệch xuất phát đến đích $dx=30$, $dy=12$ ô: giá trị octile bằng ô và mét, so với đường thẳng, và có sát (tight) không.
+- (d) Pure pursuit với điểm lookahead tại $(0.42,\,0.16)$ m trong frame robot và $v=0.4$ m/s: độ cong và tốc độ góc so với giới hạn 1.5 rad/s.
+- (e) Quãng dừng ở $v=0.5$ m/s, $a=1$ m/s$^2$ và tổng trễ 150 ms.
+- (f) Quyết định bảng nghiệm thu dưới đây, gồm vì sao 27 trên 30 lần thành công trượt cổng còn 28 trên 30 thì đạt.
 
-**Tracker.** Điểm lookahead tại $(0.42,\,0.16)$ m trong frame robot: $L=0.449$ m, $\kappa=2\cdot0.16/0.202=1.584$ m$^{-1}$; ở $v=0.4$ m/s, $\omega=0.634$ rad/s, nằm trong giới hạn 1.5 rad/s.
+**Lời giải.**
 
-**Dừng.** Ở $v=0.5$ m/s, $a=1$ m/s$^2$ và tổng trễ 150 ms: $d_\text{stop}=0.125+0.075=0.20$ m.
+1. *Gia số log-odds.* $l_\text{occ}=\ln(0.7/0.3)=0.847$ và $l_\text{free}=\ln(0.4/0.6)=-0.405$; cập nhật là phép cộng thuần túy và ngưỡng chặn $[-4,4]$ không bị chạm trong các ví dụ dưới.
+2. *Ba lần trúng.* $l=3\cdot0.847=2.54$, $p=1/(1+e^{-2.54})=0.927$.
+3. *Năm lần đi qua ô trống.* $l=5\cdot(-0.405)=-2.03$, $p=1/(1+e^{2.03})=0.116$.
+4. *Hai lần trúng và một lần đi qua.* $l=2\cdot0.847-0.405=1.289$, $p=1/(1+e^{-1.289})=0.784>0.65$, nên ô vẫn được xuất là bị chiếm.
+5. *Bán kính inflation.* $r_\text{inflate}=r_c+m+2\sigma=0.20+0.05+2\cdot0.03=0.31$ m. Tính bằng ô $n=\lceil0.31/0.05\rceil=\lceil6.2\rceil=7$. Bán kính lethal là $r_c/\Delta=0.20/0.05=4$ ô.
+6. *Heuristic octile.* Với bước 8 hướng chi phí 1 và $\sqrt2$, đường rẻ nhất đi $\min(dx,dy)=12$ bước chéo và $dx-12=18$ bước thẳng: $h=(dx+dy)+(\sqrt2-2)\min(dx,dy)=42-0.586\cdot12=34.97$ ô, tức $34.97\cdot0.05=1.749$ m. Đường thẳng là $\sqrt{30^2+12^2}=32.31$ ô, không đạt được trên lưới này. Không có đường thật nào trong không gian trống ngắn hơn 34.97 ô, nên heuristic không bao giờ đánh giá quá cao và, bằng chi phí thật trong không gian trống, nó sát (tight).
+7. *Độ cong của tracker.* $L^2=0.42^2+0.16^2=0.1764+0.0256=0.202$, $L=0.449$ m. Pure pursuit cho $\kappa=2y/L^2=2\cdot0.16/0.202=1.584\ \text{m}^{-1}$.
+8. *Tốc độ góc.* $\omega=v\kappa=0.4\cdot1.584=0.634$ rad/s, nằm trong giới hạn 1.5 rad/s (không cần giảm tốc).
+9. *Quãng dừng.* $d_\text{stop}=v\,t_r+v^2/(2a)=0.5\cdot0.15+0.5^2/(2\cdot1)=0.075+0.125=0.20$ m.
+10. *Quy tắc nghiệm thu.* IoU $=\text{TP}/(\text{TP}+\text{FP}+\text{FN})=1900/(1900+120+160)=1900/2180=0.872\ge0.85$. Thành công $28/30=93.3\ \%$ có cận dưới Wilson 95 % là 78.7 %, không nhỏ hơn 75 %, nên cổng đạt. Với $27/30=90.0\ \%$ ước lượng điểm đạt quy tắc 90 % nhưng cận dưới là 74.4 %, dưới 75 %: cổng đòi bằng chứng, không đòi may mắn. Các hàng còn lại so một giá trị đo với một ngưỡng, như trong bảng.
 
 | Kiểm tra (test) | Ngưỡng | Kết quả minh họa |
 |---|---|---|
@@ -87,7 +101,9 @@ Biên inflation và giới hạn tốc độ phải giữ $d_\text{stop}$ nhỏ 
 | Hiệu quả đường đi trung vị | <= 1.3 | 1.12 |
 | Vật cản động, khoảng hở nhỏ nhất | >= 0.15 m | 0.21 m (1 trong 10 lượt `blocked`) |
 
-Lưu ý 27 trên 30 (90.0 %) có cận dưới 74.4 % và trượt cổng dù đạt 90 %: cổng đòi bằng chứng, không đòi may mắn.
+**Kiểm tra.** Heuristic: tìm kiếm Dijkstra trên lưới trống 8 hướng từ $(0,0)$ đến $(30,12)$ trả về 34.97 ô, bằng $12\sqrt2+18$ và bằng $h$, đồng thời xác nhận đường thẳng 32.31 không đạt được. Tracker: đường tròn đi qua gốc và $(0.42,\,0.16)$, tiếp xúc với hướng robot, có bán kính $L^2/(2y)=0.631$ m, nghịch đảo là 1.584 m$^{-1}$. Quãng dừng: cả hai số hạng đều bằng mét ($0.5\ \text{m/s}\cdot0.15\ \text{s}$ và $\text{m}^2/\text{s}^2$ chia cho $\text{m/s}^2$) và cộng lại 0.20 m, thoải mái dưới bán kính inflation 0.31 m. Các giá trị bản đồ tính lại được bằng cách cộng các gia số trong một vòng lặp và bằng script ở phần Kiểm chứng.
+
+**Rút ra.** Mọi con số trong vết nghiệm thu đến từ một công thức ngắn (tổng log-odds, $r_c+m+2\sigma$, chi phí octile, $2y/L^2$, $vt_r+v^2/2a$); cổng thành công dùng một cận tin cậy, nên ước lượng điểm vừa chạm 90 % là chưa đủ.
 
 ## Bài tập
 

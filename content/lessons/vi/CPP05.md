@@ -38,7 +38,7 @@ Trực giác sai phổ biến là bảng độ phức tạp quyết định tấ
 
 Hãy chọn từ các *thao tác*: bạn tra cứu theo key chính xác, theo key gần nhất, hay theo khoảng? Chỉ chèn ở cuối, hay ở giữa? Có cần thứ tự không? Một hash map không thể trả lời "mẫu ngay trước thời điểm $t$"; một vector đã sắp xếp hoặc một `map` thì có thể.
 
-**Ví dụ.** Một robot giữ 4 số đo khoảng cách mới nhất (đơn vị m) và một bảng từ id khung hình đến nhãn. Cửa sổ là một `std::deque`: `push_back` và `pop_front` có thời gian hằng số (cppreference, `std::deque`, Complexity). Câu hỏi "khung đã lưu đầu tiên có id từ 140 trở lên là khung nào?" là `std::map::lower_bound`, logarit theo kích thước (cppreference, `std::map::lower_bound`), và một hash map không trả lời được. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Một robot giữ 4 số đo khoảng cách mới nhất (đơn vị m) và một bảng từ id khung hình đến nhãn. Các số đo $2.4, 2.5, 2.7, 2.6, 2.8, 3.1$ đến lần lượt, và các khung là $\{100\to\text{a}, 130\to\text{b}, 160\to\text{c}\}$. Container nào hợp với cửa sổ, container nào trả lời "khung đã lưu đầu tiên có id từ 140 trở lên là khung nào?", và cuối cùng cửa sổ cùng khung đó như thế nào? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <deque>
@@ -60,6 +60,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Cửa sổ là một `std::deque`: `push_back` và `pop_front` có thời gian hằng số (cppreference, `std::deque`, Complexity), nên bỏ số đo cũ nhất khi size vượt 4 là rẻ, và sau sáu số đo nó giữ bốn số cuối, $2.7, 2.6, 2.8, 3.1$. Câu hỏi "khung đã lưu đầu tiên có id từ 140 trở lên là khung nào?" là `std::map::lower_bound(140)`, logarit theo kích thước (cppreference, `std::map::lower_bound`): key đầu tiên không nhỏ hơn 140 là 160, với nhãn `c`. Một hash map không trả lời được vì nó không có thứ tự. Chương trình in ra:
+
 ```text
 2.7 2.6 2.8 3.1
 160 c
@@ -71,7 +73,7 @@ Các category, từ yếu nhất đến mạnh nhất: input, forward, bidirecti
 
 **Quy tắc vô hiệu hóa** (nguồn gốc phổ biến nhất của undefined behavior): `vector::push_back` có thể cấp phát lại, vô hiệu hóa mọi iterator, con trỏ và reference; `vector::erase(it)` vô hiệu hóa `it` và mọi thứ sau nó; erase của `map`/`list` chỉ vô hiệu hóa phần tử bị xóa; rehash của `unordered_map` vô hiệu hóa iterator nhưng không vô hiệu hóa reference.
 
-**Ví dụ.** Vector `{10, 20, 30}` có size 3 và capacity 3, nên lần `push_back` kế tiếp cấp phát một khối mới và giải phóng khối cũ: khi size mới vượt capacity cũ thì xảy ra cấp phát lại, và khi đó mọi iterator cùng mọi reference tới phần tử đều bị vô hiệu hóa (cppreference, `std::vector::push_back`). Iterator lấy trước đó bị treo. Biên dịch bằng `g++ -std=c++20 -g -fsanitize=address,undefined` (g++ 11.4.0), báo cáo bắt đầu như sau (địa chỉ và phần còn lại của báo cáo được lược bỏ):
+**Ví dụ.** Vector `{10, 20, 30}` có size 3 và capacity 3. Một iterator tới phần tử đầu được lấy, rồi gọi `push_back(40)`, rồi iterator được dereference. Iterator còn hợp lệ không, và AddressSanitizer báo gì? Biên dịch bằng `g++ -std=c++20 -g -fsanitize=address,undefined` (g++ 11.4.0):
 
 ```cpp
 #include <iostream>
@@ -84,6 +86,8 @@ int main() {
   std::cout << *it << '\n';
 }
 ```
+
+**Lời giải.** Vector đã đầy, nên lần `push_back` kế tiếp cấp phát một khối mới và giải phóng khối cũ: khi size mới vượt capacity cũ thì xảy ra cấp phát lại, và khi đó mọi iterator cùng mọi reference tới phần tử đều bị vô hiệu hóa (cppreference, `std::vector::push_back`). Iterator lấy trước đó bị treo, và đọc `*it` là heap-use-after-free; báo cáo chỉ ra khối đã bị giải phóng và lời gọi `_M_realloc_insert` đã giải phóng nó. Báo cáo bắt đầu như sau (địa chỉ và phần còn lại của báo cáo được lược bỏ):
 
 ```text
 ERROR: AddressSanitizer: heap-use-after-free on address 0x502000000010 at pc ...
@@ -101,7 +105,7 @@ Với một range đã sắp xếp, `lower_bound(first, last, x)` trả về ph�
 Nội suy tuyến tính giữa các lân cận $(t_a,v_a)$ và $(t_b,v_b)$ với $t_a\le t\le t_b$:
 $$v(t)=v_a+(v_b-v_a)\frac{t-t_a}{t_b-t_a}.$$
 
-**Ví dụ.** Trên vector đã sắp xếp $\{1,2,2,2,5,8\}$, `lower_bound(2)` là phần tử đầu tiên không nhỏ hơn 2 (chỉ số 1) và `upper_bound(2)` là phần tử đầu tiên lớn hơn 2 (chỉ số 4), nên ba bản sao của số 2 nằm trong $[1,4)$ và số lượng là hiệu của hai iterator. Một giá trị không có mặt cho ra điểm chèn, còn giá trị lớn hơn mọi phần tử cho ra `end()`. Mỗi lời gọi tốn số phép so sánh logarit (cppreference, `std::lower_bound`, Complexity). Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Trên vector đã sắp xếp $\{1,2,2,2,5,8\}$, `lower_bound(2)` và `upper_bound(2)` là các chỉ số nào, có bao nhiêu bản sao của số 2, và `lower_bound(3)` cùng `lower_bound(9)` cho ra gì? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <algorithm>
@@ -118,6 +122,8 @@ int main() {
 }
 ```
 
+**Lời giải.** `lower_bound(2)` là phần tử đầu tiên không nhỏ hơn 2 (chỉ số 1) và `upper_bound(2)` là phần tử đầu tiên lớn hơn 2 (chỉ số 4), nên ba bản sao của số 2 nằm trong $[1,4)$ và số lượng là hiệu của hai iterator, $4-1=3$. Một giá trị không có mặt cho ra điểm chèn: `lower_bound(3)` là chỉ số 4 (phần tử 5). Giá trị lớn hơn mọi phần tử cho ra `end()`: `lower_bound(9) == end()` là đúng (in ra 1). Mỗi lời gọi tốn số phép so sánh logarit (cppreference, `std::lower_bound`, Complexity). Chương trình in ra:
+
 ```text
 1 4 3
 4 1
@@ -127,7 +133,7 @@ int main() {
 
 `std::remove_if(first, last, pred)` dồn các phần tử được giữ lên đầu và trả về điểm cuối logic mới; phần đuôi chứa các giá trị không xác định. Theo sau nó bằng `container.erase(new_end, container.end())`. `std::accumulate(first, last, init)` gộp bằng `+` (kiểu của `init` quyết định phép tính: `0` tích lũy bằng `int`, `0.0` bằng `double`). `std::nth_element(first, nth, last)` đặt vào vị trí `nth` phần tử sẽ nằm ở đó nếu sắp xếp, trong kỳ vọng $O(n)$, đủ cho trung vị (median) (sắp xếp tốn $O(n\log n)$).
 
-**Ví dụ.** Sáu số đo nhiệt độ (độ C) có hai lần cảm biến nhiễu trên 60. `remove_if` chỉ duyệt một lượt và áp dụng predicate đúng một lần cho mỗi phần tử (cppreference, `std::remove`, Complexity); nó trả về điểm cuối logic mới, nhưng size vẫn là 6 cho đến khi `erase`. Tổng với giá trị đầu là `int` làm cắt cụt mọi tổng riêng; với `0.0` đó là tổng thật của các giá trị được giữ. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Sáu số đo nhiệt độ (độ C), $21.5, 22.0, 85.5, 23.5, 90.0, 22.5$, có hai lần cảm biến nhiễu trên 60. Sau `remove_if` với predicate $t>60$, size logic và size vật lý là bao nhiêu, và sau `erase`, tổng các giá trị được giữ là bao nhiêu khi `accumulate` bắt đầu từ `0` và từ `0.0`? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <algorithm>
@@ -144,6 +150,8 @@ int main() {
             << ", with 0.0: " << std::accumulate(temp.begin(), temp.end(), 0.0) << '\n';
 }
 ```
+
+**Lời giải.** `remove_if` chỉ duyệt một lượt và áp dụng predicate đúng một lần cho mỗi phần tử (cppreference, `std::remove`, Complexity); nó giữ $21.5, 22.0, 23.5, 22.5$ và trả về điểm cuối logic mới, nên size logic là 4, nhưng size vật lý vẫn là 6 cho đến khi `erase`. Tổng với giá trị đầu là `int` làm cắt cụt mọi tổng riêng: $21.5\to21$, $21+22.0=43$, $43+23.5=66.5\to66$, $66+22.5=88.5\to88$. Với `0.0` đó là tổng thật của các giá trị được giữ, $21.5+22.0+23.5+22.5=89.5$. Chương trình in ra:
 
 ```text
 logical size 4, physical size 6
@@ -267,7 +275,7 @@ Nếu một vector nhân đôi dung lượng khi đầy, việc push $n$ phần 
 }
 ```
 
-**Ví dụ.** 100 lần `push_back` vào một `vector<int>` rỗng làm capacity đổi 8 lần (libstdc++ nhân đôi): 7 lần cấp phát lại sau lần cấp phát đầu relocate $1+2+4+\dots+64=127$ phần tử, thấp hơn cận $\frac{g}{g-1}n=2\cdot100=200$ với $g=2$. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** 100 lần `push_back` được thực hiện vào một `vector<int>` rỗng (libstdc++, nhân đôi capacity). Capacity đổi bao nhiêu lần, nhận những giá trị nào, tổng cộng relocate bao nhiêu phần tử, và so với cận $\frac{g}{g-1}n$ với $g=2$ thì thế nào? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -289,6 +297,8 @@ int main() {
   std::cout << "\nreallocations after the first: " << caps.size() - 1 << ", elements relocated: " << moved << '\n';
 }
 ```
+
+**Lời giải.** Capacity nhận các giá trị $1,2,4,\dots,128$, tức 8 giá trị, nên nó đổi 8 lần (một lần ở lần cấp phát đầu và 7 lần cấp phát lại sau đó). Các lần cấp phát lại ở size $1,2,4,\dots,64$ relocate $1+2+4+\dots+64=127$ phần tử, thấp hơn cận $\frac{g}{g-1}n=2\cdot100=200$ với $g=2$. Chương trình in ra:
 
 ```text
 1 2 4 8 16 32 64 128
@@ -413,7 +423,7 @@ Mỗi quy tắc vô hiệu hóa là hệ quả của việc container làm gì v
 }
 ```
 
-**Ví dụ.** Thêm 50 phần tử vào một `vector`, một `deque`, một `list` và, với key 100 đến 149, vào một `unordered_map` đang có một phần tử. So sánh địa chỉ của phần tử đầu trước và sau cho thấy mỗi bố cục làm gì với bộ nhớ của nó: chỉ khối liên tục của `vector` di chuyển. Dòng cuối còn in số bucket (59 cho 51 phần tử ở đây). (So sánh địa chỉ ở đây chỉ để quan sát; tiêu chuẩn cho phép thư viện hành xử khác, xem bài tập 14.) Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Thêm 50 phần tử vào một `vector`, một `deque`, một `list` và, với key 100 đến 149, vào một `unordered_map` đang có một phần tử. So sánh địa chỉ của phần tử đầu trước và sau cho thấy mỗi bố cục làm gì với bộ nhớ của nó. Trong bốn container, cái nào di chuyển phần tử đầu, và map có bao nhiêu bucket ở cuối? (So sánh địa chỉ ở đây chỉ để quan sát; tiêu chuẩn cho phép thư viện hành xử khác, xem bài tập 14.) Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <cstdint>
@@ -438,6 +448,8 @@ int main() {
   std::cout << "unordered_map: value moved? " << (before != reinterpret_cast<std::uintptr_t>(&m[7]) ? "yes" : "no") << ", buckets " << m.bucket_count() << '\n';
 }
 ```
+
+**Lời giải.** Chỉ khối liên tục của `vector` di chuyển, vì tăng vượt capacity relocate nó sang một khối mới. `deque` và `list` giữ phần tử tại chỗ (các chunk và node không bị relocate), và `unordered_map` giữ các node tại chỗ dù rehash, nên giá trị ở key 7 không di chuyển. Dòng cuối còn in số bucket (59 cho 51 phần tử ở đây). Chương trình in ra:
 
 ```text
 vector: first element moved? yes
@@ -470,7 +482,7 @@ return first;
 
 *Hình: bên trái, trường hợp xấu nhất tăng thêm một phép so sánh mỗi khi $n$ gấp đôi, nên một triệu mẫu tốn 20 còn quét tuyến tính tốn tới một triệu. Bên phải, vòng lặp của mục này với $n=45$: cửa sổ $45\to22\to11\to5\to2\to1$ cho đích 0 (không bao giờ nhỏ hơn phần tử, 6 phép so sánh, trường hợp xấu nhất) và $45\to22\to10\to4\to1$ cho đích 44 (luôn nhỏ hơn, 5 phép so sánh).*
 
-**Ví dụ.** Một comparator đếm số lần được gọi cho ra chi phí chính xác. Trên vector đã sắp xếp $0,1,\dots,44$ ($n=45$), tìm mọi đích có thể tốn ít nhất 5 và nhiều nhất 6 phép so sánh, và $\lfloor\log_2 45\rfloor+1=6$ là trường hợp xấu nhất suy ra ở trên (các vết trong hình). Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Một comparator đếm số lần được gọi cho ra chi phí chính xác của tìm kiếm nhị phân. Trên vector đã sắp xếp $0,1,\dots,44$ ($n=45$), số phép so sánh ít nhất và nhiều nhất trên mọi đích có thể là bao nhiêu, và giá trị lớn nhất so với $\lfloor\log_2 45\rfloor+1$ suy ra ở trên thế nào (các vết trong hình)? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <algorithm>
@@ -493,6 +505,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Tìm mọi đích có thể tốn ít nhất 5 và nhiều nhất 6 phép so sánh. Trường hợp xấu nhất là $\lfloor\log_2 45\rfloor+1=5+1=6$, như suy ra ở trên: cửa sổ co $45\to22\to11\to5\to2\to1$ với đích 0, luôn không nhỏ hơn phần tử nào (6 phép so sánh), và $45\to22\to10\to4\to1$ với đích 44 (5 phép so sánh), đó là các vết trong hình. Chương trình in ra:
+
 ```text
 n=45 best=5 worst=6
 ```
@@ -501,7 +515,7 @@ n=45 best=5 worst=6
 
 Container có thứ tự và `std::sort` yêu cầu comparator `comp` là một **strict weak ordering**: irreflexive ($\text{comp}(a,a)$ sai), asymmetric, transitive, và với *equivalence* bắc cầu, trong đó $a\sim b$ nghĩa là $\neg\text{comp}(a,b)\wedge\neg\text{comp}(b,a)$ (cppreference: yêu cầu Compare). Phép `<` có sẵn trên `double` thỏa tất cả trừ khi có NaN. Lấy $a=1$, $b=\text{NaN}$, $c=2$: mọi phép so sánh với NaN đều sai, nên $a\sim b$ và $b\sim c$, nhưng $a<c$ nghĩa là $a\not\sim c$. Equivalence không bắc cầu, nên `<` không phải strict weak ordering trên tập chứa NaN, và hành vi của `std::sort` và `std::set` là undefined. Trong thực tế (libstdc++) chèn $1,2,\text{NaN},3$ vào `std::set<double>` còn lại 3 phần tử, còn chèn $\text{NaN},1,2,3$ chỉ còn 1 phần tử: kết quả phụ thuộc thứ tự chèn, một triệu chứng của undefined behavior. `std::is_sorted` trả `true` trên $\{1,2,3,\text{NaN},5,6,7\}$ và `lower_bound` trả chỉ số 3 cho các mục tiêu $4$, $5$ và $6.5$: với $4$ và $5$ đó là đáp án đúng *theo định nghĩa* "phần tử đầu tiên không nhỏ hơn $x$" (NaN "không nhỏ hơn" bất cứ gì), còn với $6.5$ vị từ $e<6.5$ là đúng, sai, đúng sau NaN, nên dãy không được partition và điều kiện tiên quyết bị vi phạm. Cách sửa là từ chối NaN ở biên (thói quen validate của bài) hoặc dùng comparator thực sự là strict weak ordering, chẳng hạn "NaN xếp sau mọi số": `comp(a,b) = !isnan(a) && (isnan(b) || a < b)`, tức thứ tự từ điển trên các cặp $(\text{isnan}(x),x)$.
 
-**Ví dụ.** Với $a=4$, $b=\text{NaN}$, $c=5$ cả hai tương đương $a\sim b$ và $b\sim c$ đều đúng trong khi $a\not\sim c$, nên tương đương không bắc cầu và `<` không phải strict weak ordering trên tập có NaN. Comparator "NaN đứng cuối" sửa điều đó: nó sắp $\{9.5,\text{NaN},7.25,8\}$ thành $7.25,\;8,\;9.5,\;\text{NaN}$. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Ví dụ.** Với $a=4$, $b=\text{NaN}$, $c=5$, các tương đương $a\sim b$, $b\sim c$ và $a\sim c$ có đúng không, khi đó `<` có phải strict weak ordering trên tập có NaN không, và sắp $\{9.5,\text{NaN},7.25,8\}$ bằng comparator "NaN đứng cuối" cho ra gì? Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <algorithm>
@@ -518,6 +532,8 @@ int main() {
   std::cout << '\n';
 }
 ```
+
+**Lời giải.** Mọi phép so sánh với NaN đều sai, nên cả $a\sim b$ và $b\sim c$ đều đúng, trong khi $4<5$ cho $a\not\sim c$. Tương đương không bắc cầu, nên `<` không phải strict weak ordering trên tập có NaN. Comparator "NaN đứng cuối", `comp(a,b) = !isnan(a) && (isnan(b) || a < b)`, sửa điều đó: nó sắp $\{9.5,\text{NaN},7.25,8\}$ thành $7.25,\;8,\;9.5,\;\text{NaN}$. Chương trình in ra (1 nghĩa là đúng):
 
 ```text
 4~NaN 1, NaN~5 1, 4~5 0
@@ -943,3 +959,4 @@ Cùng các ý tưởng này xuất hiện trong NumPy (`np.searchsorted` là `lo
 - Các trang cppreference dùng cho các phát biểu về độ phức tạp và vô hiệu hóa trong các ví dụ: [`std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back), [`std::vector::insert`](https://en.cppreference.com/w/cpp/container/vector/insert), [`std::remove`](https://en.cppreference.com/w/cpp/algorithm/remove), [`std::deque`](https://en.cppreference.com/w/cpp/container/deque), [`std::unordered_map`](https://en.cppreference.com/w/cpp/container/unordered_map) và [`std::map::lower_bound`](https://en.cppreference.com/w/cpp/container/map/lower_bound).
 
 **Thực hành thêm:** các quiz ở [LearnCpp: STL containers overview](https://www.learncpp.com/cpp-tutorial/stl-containers-overview/), [iterators overview](https://www.learncpp.com/cpp-tutorial/stl-iterators-overview/) và [algorithms overview](https://www.learncpp.com/cpp-tutorial/stl-algorithms-overview/) (đáp án hiện trên mỗi trang), và các ví dụ chạy được trên cppreference cho [`std::lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) và [`std::remove`/`remove_if`](https://en.cppreference.com/w/cpp/algorithm/remove) (sửa chúng để dự đoán output), cùng [bảng vô hiệu hóa iterator](https://en.cppreference.com/w/cpp/container#Iterator_invalidation).
+

@@ -84,7 +84,7 @@ $f(n)=O(g(n))$ means $f(n)\le c\,g(n)$ for some constant $c$ and all large $n$. 
 $$p=\frac{\sum_i(\ln n_i-\overline{\ln n})(\ln t_i-\overline{\ln t})}{\sum_i(\ln n_i-\overline{\ln n})^2}.$$
 Doubling $n$ multiplies the time by $2^p$: about $2$ for linear, $4$ for quadratic. Use at least four sizes spanning a factor of 8 or more, and remember that cache effects bend the line when the data crosses a cache size.
 
-**Example.** A brute-force closest-pair search over $n$ 2D lidar returns compares every pair, $n(n-1)/2$ distance evaluations. The program times it for four sizes, each double the previous, and fits the exponent with the least-squares formula above (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`; the times belong to that machine):
+**Example.** A brute-force closest-pair search over $n$ 2D lidar returns compares every pair, $n(n-1)/2$ distance evaluations. The program times it for $n=3000,6000,12000,24000$ (best of 5) and fits the exponent $p$ of $t\propto n^p$ with the least-squares formula above (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`; the times belong to that machine). What growth does the fit show, and what time does it predict at $n=48{,}000$?
 
 ```cpp
 #include <chrono>
@@ -129,6 +129,8 @@ int main() {
 }
 ```
 
+**Solution.** The times grow by $21.34/5.11=4.18$, $87.54/21.34=4.10$ and $349.94/87.54=4.00$ per doubling, close to $2^2$, and the least-squares slope of $\ln t$ against $\ln n$ is $p=2.033$: quadratic, as the nested loop says. At $n=48{,}000$ the fit predicts about $4\times350\approx1400$ ms. The shortest run (5 ms) is the least precise, which is why the first ratio is a little above 4. The times are machine dependent and kept as measured; a rerun on another machine changes them and the exponent in the last digit, not the quadratic shape. The program prints:
+
 ```text
 n =  3000  best of 5 =     5.11 ms  (min d^2 = 1.45e-06)
 n =  6000  best of 5 =    21.34 ms  (min d^2 = 1.84e-06)
@@ -136,8 +138,6 @@ n = 12000  best of 5 =    87.54 ms  (min d^2 = 5.76e-08)
 n = 24000  best of 5 =   349.94 ms  (min d^2 = 1.22e-07)
 fitted exponent p = 2.033
 ```
-
-The times grow by $21.34/5.11=4.18$, $4.10$ and $4.00$ per doubling, close to $2^2$, and the fitted exponent is $p=2.033$: quadratic, as the nested loop says. At $n=48{,}000$ the fit predicts about $4\times350\approx1400$ ms. The shortest run (5 ms) is the least precise, which is why the first ratio is a little above 4.
 
 ### The memory hierarchy cost model
 
@@ -149,7 +149,7 @@ Rough orders of magnitude (they vary by CPU): L1 hit about 1 ns (4 cycles), L2 a
 
 **Two-dimensional traversal.** A row-major $N\times N$ matrix of doubles is traversed row by row with one miss per 8 elements; column by column each access is a new line (stride $8N$ bytes).
 
-**Example.** One random cycle of 8-byte indices is chased through arrays of 16 KiB, 256 KiB, 4 MiB and 64 MiB. Each hop depends on the previous load, so the time per hop is the latency of the level that holds the array (same build and machine as above: 48 KiB L1d and 1.25 MiB L2 per core, 18 MiB shared L3):
+**Example.** One random cycle of 8-byte indices is chased through arrays of 16 KiB, 256 KiB, 4 MiB and 64 MiB. Each hop depends on the previous load, so the time per hop is the latency of the level that holds the array (same build and machine as above: 48 KiB L1d and 1.25 MiB L2 per core, 18 MiB shared L3). Which level does each size land in, what latency does each give, and how large is the ratio between the first and last row?
 
 ```cpp
 #include <algorithm>
@@ -178,6 +178,8 @@ int main() {
 }
 ```
 
+**Solution.** The four sizes land in four levels: 16 KiB fits L1d (about 1.1 ns per hop), 256 KiB exceeds L1d but fits L2 (3.0 ns), 4 MiB exceeds L2 but fits L3 (11.9 ns) and 64 MiB exceeds L3, so every hop goes to DRAM (about 110 ns). The ratio between the first and last row is $109.71/1.13=97$, for the same instruction sequence. The 110 ns is close to the 140 ns per node of the shuffled list in the lesson's table; the remaining difference is not isolated here. The timings are machine dependent and kept as measured. The program prints:
+
 ```text
      bytes   ns per hop
      16 KiB         1.13
@@ -185,8 +187,6 @@ int main() {
    4096 KiB        11.91
   65536 KiB       109.71
 ```
-
-The four sizes land in four levels: L1 at about 1.1 ns, L2 at 3.0 ns, L3 at 11.9 ns and DRAM at about 110 ns, a factor of 97 between the first and last row for the same instruction sequence. The 110 ns is close to the 140 ns per node of the shuffled list in the lesson's table; the remaining difference is not isolated here.
 
 ### Measuring honestly
 
@@ -198,7 +198,7 @@ The four sizes land in four levels: L1 at about 1.1 ns, L2 at 3.0 ns, L3 at 11.9
 6. Vary $n$ across cache sizes (a few KB, hundreds of KB, tens of MB) and report ns per element, not total time.
 7. Check correctness of the result (sum equals the reference) so you are not timing a bug.
 
-**Example.** Rule 2 in action: the same summing loop (an array of $10^6$ doubles, 100 repetitions) is timed once with its result thrown away and once with the result stored into a `volatile` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`):
+**Example.** Rule 2 in action: the same summing loop (an array of $10^6$ doubles, 100 repetitions) is timed once with its result thrown away and once with the result stored into a `volatile` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`). What time per element does each variant report, and which one is trustworthy?
 
 ```cpp
 #include <chrono>
@@ -223,12 +223,12 @@ int main() {
 }
 ```
 
+**Solution.** The first variant claims 0.000 ns per element: the compiler saw that `work` has no side effects and deleted the calls. A result below one clock cycle per element (about 0.25 ns at 4 GHz) is the signal to suspect dead-code elimination. The second variant, 0.469 ns per element, streams 8 B per element at $8/0.469\approx17$ GB/s, a plausible rate for an 8 MB array, so it is the trustworthy one. The 0.469 ns is machine dependent and kept as measured. The program prints:
+
 ```text
 result discarded :     0.000 ns per element
 result stored    :     0.469 ns per element
 ```
-
-The first line claims 0.000 ns per element: the compiler saw that `work` has no side effects and deleted the calls. A result below one clock cycle per element (about 0.25 ns at 4 GHz) is the signal to suspect dead-code elimination. The second line, 0.469 ns per element, streams 8 B per element at about 17 GB/s, a plausible rate for an 8 MB array.
 
 ### Profiling and Amdahl's law
 
@@ -240,7 +240,7 @@ With $f=0.3$ and $s=10$: $S=1/(0.7+0.03)=1.37$. Even $s\to\infty$ gives $1/0.7=1
 
 *Figure: Amdahl's law. Each curve is $S=1/((1-f)+f/s)$ and flattens at $1/(1-f)$; the two dots are the lesson's $f=0.3,\ s=10$ and the measured stage with $f=0.749,\ s=8$.*
 
-**Example.** A frame has two stages. Stage A (a square root per element) and stage B (a multiply-add per element) are timed separately, Amdahl's law predicts the gain from making A eight times faster, and then A really does one eighth of the work (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`; best of 9 runs):
+**Example.** A frame has two stages. Stage A (a square root per element) and stage B (a multiply-add per element) are timed separately, Amdahl's law predicts the gain from making A eight times faster, and then A really does one eighth of the work (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`; best of 9 runs). What fraction $f$ of the frame is A, what speedup does the formula predict for $s=8$, what is measured, and which stage does the profile point to afterwards?
 
 ```cpp
 #include <chrono>
@@ -275,13 +275,15 @@ int main() {
 }
 ```
 
+**Solution.** Stage A is $f=20.98/28.02=0.749$ of the time. With $s=8$ the formula $S=1/\bigl((1-f)+f/s\bigr)$ gives $S=1/(0.251+0.749/8)=2.90$ and the measurement gives $28.02/9.60=2.92$, within 1 %. After the change stage B is $7.01/9.60=73\%$ of the frame, and even an infinitely fast A could not beat $1/(1-0.749)=3.98$: the profile now points at B. The times are machine dependent and kept as measured. The program prints:
+
 ```text
 before: A = 20.98 ms, B = 7.04 ms, total = 28.02 ms, f(A) = 0.749
 Amdahl prediction for s = 8 : 2.900
 after : A = 2.59 ms, B = 7.01 ms, total = 9.60 ms, measured speedup = 2.919
 ```
 
-Stage A is $f=20.98/28.02=0.749$ of the time. With $s=8$ the formula gives $S=1/(0.251+0.749/8)=2.90$ and the measurement gives $2.92$, within 1 %. After the change stage B is $7.01/9.60=73\%$ of the frame, and even an infinitely fast A could not beat $1/(1-0.749)=3.98$: the profile now points at B.
+The sliders below show the same law for other values of $f$ and $s$:
 
 ```explore
 {
@@ -327,7 +329,7 @@ A cache of $C$ bytes with line size $L$ and associativity $W$ ("$W$-way") has $S
 
 *Figure: the same 32 KiB, 8-way cache seen from a column walk. The step $d=(N/8)\bmod64$ decides whether the column uses 1, 16 or all 64 sets, and with it how many lines can stay resident (after Drepper, §3.3.1).*
 
-**Example.** Sixteen cache lines are linked into one cycle, each holding the offset of the next, and the cycle is walked $10^8$ times. In the first layout the lines are 4096 bytes apart, in the second 4160 bytes. The L1d of this core is 48 KiB, 12-way, so $S=49152/(12\cdot64)=64$ sets, and 4096 bytes is exactly 64 lines (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`):
+**Example.** Sixteen cache lines are linked into one cycle, each holding the offset of the next, and the cycle is walked $10^8$ times. In the first layout the lines are 4096 bytes apart, in the second 4160 bytes. The L1d of this core is 48 KiB, 12-way, so $S=49152/(12\cdot64)=64$ sets, and 4096 bytes is exactly 64 lines (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`). In which layout do the lines compete for the same set, and what time per hop does each layout give?
 
 ```cpp
 #include <chrono>
@@ -353,18 +355,18 @@ int main() {
 }
 ```
 
+**Solution.** With 4096 B spacing all 16 lines map to one set (the set index advances by $64 \bmod 64=0$ per line), and that set has only 12 ways, so under LRU every hop misses L1 and is served by L2 at 3.16 ns (the L2 latency of the previous example was 2.99 ns). With 4160 B $=65$ lines the set index advances by $65\bmod64=1$ per line, so the lines fall in 16 different sets and every hop hits L1: 1.12 ns. The 16 lines occupy only 1 KiB, so capacity is irrelevant; the ratio is $3.16/1.12=2.8$. The timings are machine dependent and kept as measured. The program prints:
+
 ```text
 stride  4096 B: 3.16 ns per hop
 stride  4160 B: 1.12 ns per hop
 ```
 
-With 4096 B spacing all 16 lines map to one set that has only 12 ways, so under LRU every hop misses L1 and is served by L2 at 3.16 ns (the L2 latency of the previous example was 2.99 ns). With 4160 B $=65$ lines the lines fall in 16 different sets and every hop hits L1: 1.12 ns. The 16 lines occupy only 1 KiB, so capacity is irrelevant; the ratio is $3.16/1.12=2.8$.
-
 ### False sharing and the coherence protocol
 
 The cache line is also the unit of *coherence*. For a core to write a line it must hold it exclusively; if another core's L1d holds a copy, the write sends a request-for-ownership (RFO) that invalidates the other copy, and the line moves between caches. Two threads that increment *different* `int`s which happen to share one 64-byte line are race-free but pay this transfer for almost every write: **false sharing**. Drepper (§3.3.4 and §6.4.1, Figure 6.10) measured a workload in which each thread only increments its own memory location and the run time still grows with the number of threads. Remedies: give each thread its own line (`alignas(64)`, or `std::hardware_destructive_interference_size`), accumulate into a thread-local variable and combine at the end, or use per-thread structures. The price of padding $T$ counters is $64T$ bytes instead of $4T$. Padding must be checked against the alignment of the *base address*: a misaligned array can still let neighbours share a line (Exercise 13).
 
-**Example.** Two threads each increment their own `std::atomic<long>` counter $5\times10^7$ times. In `Shared` the two counters are neighbours in one 16-byte object (one line); in `Padded` each is aligned to 64 bytes. Atomics are used so that neither version has a data race (same build, the two threads pinned to two performance cores with `taskset -c 2,4`; the same program under ThreadSanitizer reports nothing):
+**Example.** Two threads each increment their own `std::atomic<long>` counter $5\times10^7$ times. In `Shared` the two counters are neighbours in one 16-byte object (one line); in `Padded` each is aligned to 64 bytes. Atomics are used so that neither version has a data race (same build, the two threads pinned to two performance cores with `taskset -c 2,4`; the same program under ThreadSanitizer reports nothing). How much slower is the shared version, and what does the fix cost?
 
 ```cpp
 #include <atomic>
@@ -392,13 +394,13 @@ int main() {
 }
 ```
 
+**Solution.** The only difference is the line: $1105.6/204.1=5.4$ times slower when the counters share it, because every increment has to take the line away from the other core. The price of the fix is memory, $128$ bytes instead of $16$ (`sizeof(Padded) = 128`). The times are machine dependent and kept as measured. The program prints:
+
 ```text
 sizeof(Shared) = 16, sizeof(Padded) = 128
 same line   :  1105.6 ms
 own lines   :   204.1 ms
 ```
-
-The only difference is the line: $1105.6/204.1=5.4$ times slower when the counters share it, because every increment has to take the line away from the other core. The price of the fix is memory, $128$ bytes instead of $16$.
 
 ### Latency-bound and bandwidth-bound loops: a throughput model
 
@@ -410,7 +412,7 @@ A pointer-chasing loop has $k=1$ because the next address is the content of the 
 
 *Figure: the throughput model with $L=140$ ns, $\beta=16$ B/ns and $M=12$ slots (illustrative). The pointer chase sits at $k=1$ on the sloping latency line; the slot limit stops the fall at 11.7 ns, three times above the 4 ns floor that would need $k^\*=35$.*
 
-**Example.** Each of $k$ shuffled cycles of 128 MiB is advanced one node per round, in lock-step; the $k$ loads of a round do not depend on each other, so up to $k$ misses can overlap (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`):
+**Example.** Each of $k$ shuffled cycles of 128 MiB is advanced one node per round, in lock-step; the $k$ loads of a round do not depend on each other, so up to $k$ misses can overlap (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`). With $L=126$ ns per node at $k=1$, what does the model $L/k$ predict for $k=2,3,6$, and how do the measured times compare?
 
 ```cpp
 #include <algorithm>
@@ -445,6 +447,8 @@ int main() {
 }
 ```
 
+**Solution.** At $k=1$ the loop pays the whole latency, 126 ns per node. The model predicts $L/k=126.2/2=63.1,\ 126.2/3=42.1,\ 126.2/6=21.0$ ns for $k=2,3,6$; the measured $47.3,\ 32.8,\ 17.6$ ns are 16-25 % lower (for example $1-47.3/63.1=25\%$ and $1-17.6/21.0=16\%$), so the shape (a hyperbola in $k$) is right and the constant is not: the model ignores effects such as address translation that are also overlapped, and their share was not isolated here. At $k=6$ the loop is $126.2/17.6=7.2$ times faster than at $k=1$ with the same total work. The times are machine dependent and kept as measured. The program prints:
+
 ```text
  k    ns per node
  1          126.2
@@ -453,7 +457,7 @@ int main() {
  6           17.6
 ```
 
-At $k=1$ the loop pays the whole latency, 126 ns per node. The model predicts $L/k=63.1,\ 42.1,\ 21.0$ ns for $k=2,3,6$; the measured $47.3,\ 32.8,\ 17.6$ ns are 16-25 % lower, so the shape (a hyperbola in $k$) is right and the constant is not: the model ignores effects such as address translation that are also overlapped, and their share was not isolated here. At $k=6$ the loop is 7.2 times faster than at $k=1$ with the same total work.
+The plot below shows the time per cache line against the number of overlapped fetches:
 
 ```explore
 {
@@ -499,7 +503,7 @@ The claim "amortized $O(1)$" has a short proof. Let a `vector` double its capaci
 
 Asymptotics compare *shapes*, not *values*. Suppose algorithm A costs $a\,n^2$ ns and algorithm B costs $b\,n\log_2n$ ns. They cross at $n^\*$ with $a\,n^\*=b\log_2n^\*$; if B has a large constant, say $b/a=40$, the crossover is where $n=40\log_2n$, near $n\approx 340$, so for 100 points the "worse" algorithm A wins and for 10,000 points B wins by a factor of $10^{8}/(40\cdot10^4\cdot13.3)\approx19$. The memory model adds a second reason: $a$ and $b$ are not constants but step functions of the working set (the 0.8, 1.6, 3.0, 9.0 ns steps of Exercise 15), so the crossover moves when one of the algorithms leaves a cache level first. The practical rule that follows from these sections: choose by asymptotics when $n$ will be large and unknown; choose by a benchmark at the real size when $n$ is known and moderate (a few thousand elements) and the structures differ in locality. Connections: the same reasoning decides $k$-d tree versus brute-force nearest neighbours in perception code (CPP05 containers, M-track geometry), and why `std::sort` falls back to insertion sort on tiny ranges.
 
-**Example.** The program prints every capacity change while 1000 integers are pushed, counts the elements copied by reallocations, and repeats the loop after `reserve(1000)` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`):
+**Example.** The program prints every capacity change while 1000 integers are pushed, counts the elements copied by reallocations, and repeats the loop after `reserve(1000)` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, one performance core of an Intel Core i5-12500H pinned with `taskset`). How many reallocations and element copies occur, what is the cost per push against the bound of 3, and what changes with `reserve`?
 
 ```cpp
 #include <cstdio>
@@ -522,13 +526,13 @@ int main() {
 }
 ```
 
+**Solution.** The capacities double, $1,2,4,\dots,1024$, in 11 reallocations that copy $1+2+\dots+512=1023=2^{10}-1$ elements, in agreement with the sum $2^{j+1}-1$ for $j=9$. Adding the 1000 plain writes gives $(1023+1000)/1000=2.02$ operations per push, below the bound of 3. With `reserve` there are no reallocations and no latency spike inside the loop. The output is deterministic. The program prints:
+
 ```text
 capacity changes: 1 2 4 8 16 32 64 128 256 512 1024
 push_back x1000: 11 reallocations, 1023 element copies (2.02 operations per push, bound 3)
 with reserve(1000): 0 reallocations
 ```
-
-The capacities double, $1,2,4,\dots,1024$, in 11 reallocations that copy $1+2+\dots+512=1023=2^{10}-1$ elements, in agreement with the sum $2^{j+1}-1$ for $j=9$. Adding the 1000 plain writes gives $(1023+1000)/1000=2.02$ operations per push, below the bound of 3. With `reserve` there are no reallocations and no latency spike inside the loop.
 
 ## Worked example
 

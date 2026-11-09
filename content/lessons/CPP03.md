@@ -93,7 +93,7 @@ Answer to the prediction: the port closes first, while the exception is still tr
 
 A local object is destroyed when its scope ends, in reverse order of construction. The destructor runs during **stack unwinding** if an exception propagates. Therefore a resource owned by a local object is released on every exit path with no `finally`. Members are destroyed in reverse declaration order, after the destructor body. A destructor must not throw (it is implicitly `noexcept`).
 
-**Example.** A telemetry routine opens an IMU port, then a GPS port, then meets a corrupt packet and throws (compiled and run with g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A telemetry routine opens an IMU port, then a GPS port, then meets a corrupt packet and throws (compiled and run with g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). In what order are the ports closed, and before or after the handler prints?
 
 ```cpp
 #include <cstdio>
@@ -110,6 +110,8 @@ int main() {
 }
 ```
 
+**Solution.** A local object is destroyed when its scope ends, in reverse order of construction, also during stack unwinding. The ports are therefore closed in the order `gps1`, `imu0`, the reverse of opening, and both closes happen before the handler prints; `run` contains no cleanup statement. This is [except.ctor] ¶2 of the C++ standard: each automatic object that has been constructed is destroyed, in reverse order of the completion of its construction, as control passes to the handler (see also Core Guidelines E.6). The program prints:
+
 ```text
 open  imu0
 open  gps1
@@ -117,8 +119,6 @@ close gps1
 close imu0
 caught: bad checksum
 ```
-
-The ports close in the order `gps1`, `imu0`, the reverse of opening, and both closes happen before the handler prints; `run` contains no cleanup statement. This is [except.ctor] ¶2 of the C++ standard: each automatic object that has been constructed is destroyed, in reverse order of the completion of its construction, as control passes to the handler (see also Core Guidelines E.6).
 
 ![Timeline of run(): imu0 and gps1 open, an exception is thrown, gps1 then imu0 close during stack unwinding, main catches](/lesson-figures/CPP03-2.svg)
 
@@ -129,7 +129,7 @@ The ports close in the order `gps1`, `imu0`, the reverse of opening, and both cl
 - **Rule of zero**: if your class owns resources only through members that already manage them (`std::vector`, `std::string`, `std::unique_ptr`), write *no* special member functions. The compiler-generated ones are correct. Prefer this.
 - **Rule of three/five**: if you must manage a raw resource, define or delete all of: destructor, copy constructor, copy assignment, move constructor, move assignment. A class with a destructor that frees memory but a default copy has two objects owning the same pointer: a double free.
 
-**Example.** `RawLog` owns 5 doubles through a raw pointer and defines no copy operations; `Log` holds a `std::vector` and a `std::string` and defines no special member at all. Each is copied once (the diagnostics go to `stderr`; g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** `RawLog` owns 5 doubles through a raw pointer and defines no copy operations; `Log` holds a `std::vector` and a `std::string` and defines no special member at all. Each is copied once (the diagnostics go to `stderr`; g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Does each copy share storage with the original, and what happens when both objects are destroyed?
 
 ```cpp
 #include <cstdio>
@@ -153,13 +153,13 @@ int main() {
 }
 ```
 
+**Solution.** The copy of `Log` has storage of its own, because the members know how to copy themselves: the rule of zero (Core Guidelines C.20) costs nothing. The copy of `RawLog` is made by the implicit copy constructor, which copies the pointer, so it shares the 40-byte block with the original; when both go out of scope AddressSanitizer reports the second `delete[]` of the same address as a double free, which is what C.21 (define or delete all five together) prevents. The program prints (the sanitizer report is shortened):
+
 ```text
 Log copy shares storage:    0
 RawLog copy shares storage: 1
 ==PID==ERROR: AddressSanitizer: attempting double-free on 0x... in thread T0:   (shortened)
 ```
-
-The copy of `Log` has storage of its own, because the members know how to copy themselves: the rule of zero (Core Guidelines C.20) costs nothing. The copy of `RawLog` shares the 40-byte block with the original, and when both go out of scope AddressSanitizer reports the second `delete[]` of the same address as a double free, which is what C.21 (define or delete all five together) prevents.
 
 ### Value categories and moves
 
@@ -173,7 +173,7 @@ Cost: a copy of $n$ doubles is $O(n)$ time and $8n$ bytes; a move is $O(1)$ (two
 
 Why `noexcept` matters: when `std::vector` must grow, it relocates its elements. To keep its strong exception guarantee it uses `std::move_if_noexcept`: if the move constructor can throw and the type is also copyable, it *copies* instead. A forgotten `noexcept` silently turns $O(1)$ relocations into $O(n)$ copies.
 
-**Example.** A logger holds 6000 samples (48,000 bytes) in a `std::vector<double>` and hands the whole record to an uploader. `std::move` is only a cast; the vector's move constructor does the work (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A logger holds 6000 samples (48,000 bytes) in a `std::vector<double>` and hands the whole record to an uploader. `std::move` is only a cast; the vector's move constructor does the work (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Does the new vector reuse the old block, what are the sizes afterwards, and can the moved-from vector still be used?
 
 ```cpp
 #include <cstdio>
@@ -190,19 +190,19 @@ int main() {
 }
 ```
 
+**Solution.** The move constructor steals the data pointer and nulls the source (two pointer-sized writes, $O(1)$), so `w` has the very same block (the data pointers compare equal) and no copy of 48,000 bytes happens. `v` is empty with this library (`v.size() = 0`, `w.size() = 6000`) and still accepts `push_back`: the standard guarantees only a valid but unspecified state for the moved-from object, so portable code should assign or destroy it, not read from it. The program prints:
+
 ```text
 w.data() == old v.data(): 1
 v.size() = 0, w.size() = 6000
 after push_back: v.size() = 1
 ```
 
-`w` has the very same block (the data pointers compare equal), so the move cost two pointer-sized writes and no copy of 48,000 bytes. `v` is empty with this library and still accepts `push_back`: the standard guarantees only a valid but unspecified state for the moved-from object, so portable code should assign or destroy it, not read from it.
-
 ### Return values and `std::move`
 
 `return local;` already treats `local` as an rvalue and allows copy elision (NRVO). Writing `return std::move(local);` defeats NRVO and forces a move, and compilers warn (`-Wpessimizing-move`). Use `std::move` only when passing an lvalue you will not use again.
 
-**Example.** A small pose type counts its copies and moves. Three functions return a local in different ways (g++ 11.4.0, `-std=c++20 -Wall -Wextra`, no optimisation):
+**Example.** A small pose type counts its copies and moves. Three functions return a local in different ways: one of two named locals chosen by `if`, a conditional expression `f ? a : b`, and `std::move(a)` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`, no optimisation). How many copies and moves does each return cost?
 
 ```cpp
 #include <utility>
@@ -222,14 +222,14 @@ int main() {
 }
 ```
 
+**Solution.** Two named returns still cost one move: when a function returns different locals, no single object can be built in the caller's storage, so the compiler falls back to the implicit move of [class.copy.elision] ¶3 (the returned name is first treated as an rvalue). The conditional expression `f ? a : b` is not a plain name, so that rule does not apply and the type is *copied*. `return std::move(a)` costs a move and draws the warning shown. The rule of thumb stays: return the local by name. The build emits the warning shown first, and the program prints:
+
 ```text
 warning: moving a local object in a return statement prevents copy elision [-Wpessimizing-move]
 two named returns : copies=0 moves=1
 conditional expr  : copies=1 moves=0
 return std::move  : copies=0 moves=1
 ```
-
-Two named returns still cost one move: when a function returns different locals, no single object can be built in the caller's storage, so the compiler falls back to the implicit move of [class.copy.elision] ¶3 (the returned name is first treated as an rvalue). The conditional expression `f ? a : b` is not a plain name, so that rule does not apply and the type is *copied*. `return std::move(a)` costs a move and draws the warning shown. The rule of thumb stays: return the local by name.
 
 ### Ownership in signatures
 
@@ -243,7 +243,7 @@ Two named returns still cost one move: when a function returns different locals,
 
 Use `std::make_unique<T>(args...)`; it is exception safe and avoids a naked `new`. For C APIs, give `unique_ptr` a custom deleter: `std::unique_ptr<FILE, int(*)(FILE*)> f(fopen(p, "r"), &fclose);`.
 
-**Example.** A pipeline keeps its video source for its whole life, while `show` only looks at it (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A pipeline keeps its video source for its whole life, while `show` only looks at it (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). After `show(*s)` and after `set_source(std::move(s))`, who owns the source, and does `set_source(s)` compile?
 
 ```cpp
 #include <cstdio>
@@ -264,12 +264,12 @@ int main() {
 }
 ```
 
+**Solution.** `show(const Source&)` borrows, so the caller keeps `s`; `set_source(std::unique_ptr<Source>)` takes ownership, and the call site must say `std::move(s)`, so the hand-over is visible and afterwards `s` is null (guaranteed for `unique_ptr`) while the pipeline holds id 42. Writing `set_source(s)` does not compile: g++ reports `use of deleted function 'std::unique_ptr<...>::unique_ptr(const std::unique_ptr<...>&)'`. These are the rules F.7, R.32 and R.33 of the Core Guidelines made executable. The program prints:
+
 ```text
 show(42)
 caller's pointer is null: 1, pipeline holds id 42
 ```
-
-`show(const Source&)` borrows, so the caller keeps `s`; `set_source(std::unique_ptr<Source>)` takes ownership, and the call site must say `std::move(s)`, so the hand-over is visible and afterwards `s` is null (guaranteed for `unique_ptr`). Writing `set_source(s)` does not compile: g++ reports `use of deleted function 'std::unique_ptr<...>::unique_ptr(const std::unique_ptr<...>&)'`. These are the rules F.7, R.32 and R.33 of the Core Guidelines made executable.
 
 ### RAII wrappers for C handles: custom deleters and a scope guard
 
@@ -277,7 +277,7 @@ Not every resource is memory. A C library hands out a `FILE*`, a file descriptor
 
 The commit/rollback pattern is the important use: arm the guard first, do the work that may throw, call `dismiss()` last. Two cautions apply. The callable runs inside a destructor, so it must not throw (E.16, C.36). And a lambda that captures by reference must not outlive what it refers to, so the guard is declared after the objects its lambda touches. Prefer a real class with a destructor (E.6) whenever the resource deserves a name.
 
-**Example.** A calibration step must roll back its partial result when a sensor times out, and a `FILE*` needs a deleter (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A calibration step must roll back its partial result when a sensor times out, and a `FILE*` needs a deleter (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). What do stages 1 and 2 print with the scope guard, and how large is a `unique_ptr<FILE>` with a function-pointer deleter, with an empty deleter class, and `unique_ptr<int>`?
 
 ```cpp
 #include <cstdio>
@@ -305,6 +305,8 @@ int main() {
 }
 ```
 
+**Solution.** Stage 1 reaches `g.on = false`, so only the commit message appears. In stage 2 the throw skips that line and the destructor of the guard prints the rollback before the handler runs. The size lines show the cost of the deleter choice: the function-pointer deleter is stored and makes the smart pointer 16 bytes, while the empty `FileCloser` class keeps it at 8, the same as a plain pointer. The program prints:
+
 ```text
 commit 1
 rollback 2
@@ -313,8 +315,6 @@ unique_ptr<FILE, int(*)(FILE*)>: 16 bytes
 unique_ptr<FILE, FileCloser>:    8 bytes
 unique_ptr<int>:                 8 bytes
 ```
-
-Stage 1 reaches `g.on = false`, so only the commit message appears. In stage 2 the throw skips that line and the destructor of the guard prints the rollback before the handler runs. The size lines show the cost of the deleter choice: the function-pointer deleter makes the smart pointer 16 bytes, the empty `FileCloser` class keeps it at 8, the same as a plain pointer.
 
 ### Exception safety levels, copy-and-swap, and why vectors check `noexcept`
 
@@ -339,7 +339,7 @@ Buffer& operator=(Buffer o) noexcept { swap(*this, o); return *this; }   // o is
 
 Costs and limits: an assignment `a = b` always allocates, even if `a` already has enough capacity, whereas `std::vector::operator=` reuses its storage; the unified operator is also *ambiguous* if you additionally declare `operator=(const Buffer&)`, because `a = b` matches both equally well. Use copy-and-swap when clarity and the strong guarantee matter more than the last allocation.
 
-**Example.** A calibration table of 7 doubles is overwritten by a table of 4 doubles while an injected fault makes the copy constructor throw once (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A calibration table of 7 doubles is overwritten by a table of 4 doubles while an injected fault makes the copy constructor throw once (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). What are the size and first value of `a` after the failed assignment, and after the successful one?
 
 ```cpp
 #include <cstdio>
@@ -371,13 +371,14 @@ int main() {
 }
 ```
 
+**Solution.** The first assignment fails inside the construction of the by-value parameter, before `swap` runs, so `a` keeps its 7 elements and its first value 1.5: the strong guarantee, observed. The second assignment succeeds and the table is the new one (4 elements, first value 9.0), all at once. The program prints:
+
 ```text
 threw: copy failed
 a after failed a = b: size=7 a[0]=1.5
 a after a = b       : size=4 a[0]=9.0
 ```
 
-The first assignment fails inside the construction of the by-value parameter, before `swap` runs, so `a` keeps its 7 elements and its first value: the strong guarantee, observed. The second assignment succeeds and the table is the new one, all at once.
 *Why `std::vector` asks about `noexcept`.* To grow, a vector must relocate $n$ elements into new storage and promise that, if anything throws, the old vector is still intact. Suppose it moves and the $k$-th move throws: elements $1,\dots,k-1$ have already been pillaged, and putting them back needs $k-1$ more moves, which may throw too, so no rollback exists. Copying leaves the sources untouched, so after a throw at the $k$-th copy the vector only destroys the $k-1$ new copies and frees the new block. Hence `std::move_if_noexcept` returns an rvalue only if the move cannot throw *or* the type cannot be copied at all; in the latter case the guarantee is waived (cppreference: `std::move_if_noexcept`; `std::vector::emplace_back`, "Exceptions").
 
 ```explore
@@ -427,7 +428,7 @@ struct Raw { double* a; double* b;
 
 both arrays leak ($100\cdot8+200\cdot8=2400$ bytes): the members are plain pointers, whose "destruction" does nothing, and `~Raw` is skipped. If the initialiser of `b` itself throws, `a` has been allocated and leaks ($800$ bytes). The principle behind "one resource, one owner" (E.6, R.13) is exactly this: when every resource is held by its own member object (`std::unique_ptr<double[]> a, b;`), the language's own cleanup of completed members releases whatever was acquired so far, in every exit path, with no code of yours. Never put two raw acquisitions in one constructor or one expression statement.
 
-**Example.** Two members with visible constructors and destructors, and a constructor body that throws (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** Two members with visible constructors and destructors are held by a class whose constructor body throws (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Which destructors run, and in what order?
 
 ```cpp
 #include <cstdio>
@@ -442,11 +443,13 @@ struct Holder {
 int main() { try { Holder h; } catch (...) { std::printf("caught\n"); } }
 ```
 
+**Solution.** Both members were completely constructed, so they are destroyed in reverse order (`-b -a`), and `~Holder` never runs, as [except.ctor] ¶3 specifies. The program prints:
+
 ```text
 +a +b [body] -b -a caught
 ```
 
-Both members were completely constructed, so they are destroyed in reverse order (`-b -a`), and `~Holder` never runs, as [except.ctor] ¶3 specifies. The cost of raw owners is measured with a counting `operator new[]`; the first class acquires 5 and 7 doubles with `new`, the second holds them in `unique_ptr<double[]>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** The cost of raw owners is measured with a counting `operator new[]`; the first class acquires 5 and 7 doubles with `new` and throws, the second holds them in `unique_ptr<double[]>` and throws (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). How many bytes are still allocated after each failed construction?
 
 ```cpp
 #include <cstdio>
@@ -476,29 +479,12 @@ int main() {
 }
 ```
 
+**Solution.** In `Raw` the members are plain pointers, so destroying them does nothing and `~Raw` is skipped: the two arrays leak $5\cdot8+7\cdot8=40+56=96$ bytes per failed construction. In `Safe` each array has its own owner member, and the language destroys the completed members itself, so nothing is left: 0 bytes. The program prints:
+
 ```text
-
-=================================================================
-==301332==ERROR: LeakSanitizer: detected memory leaks
-
-Direct leak of 72 byte(s) in 1 object(s) allocated from:
-    #0 0x707eb18b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
-    #1 0x6264c3bc4420 in operator new[](unsigned long) (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4420)
-    #2 0x6264c3bc4867 in Raw::Raw() (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4867)
-    #3 0x6264c3bc4634 in main (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4634)
-    #4 0x707eb0829d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
-
-Direct leak of 56 byte(s) in 1 object(s) allocated from:
-    #0 0x707eb18b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
-    #1 0x6264c3bc4420 in operator new[](unsigned long) (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4420)
-    #2 0x6264c3bc480a in Raw::Raw() (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x480a)
-    #3 0x6264c3bc4634 in main (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4634)
-    #4 0x707eb0829d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
-
-SUMMARY: AddressSanitizer: 128 byte(s) leaked in 2 allocation(s).
+Raw : 96 bytes still allocated
+Safe: 0 bytes still allocated
 ```
-
-The raw version loses $5\cdot8+7\cdot8=96$ bytes per failed construction, the `unique_ptr` version loses none.
 
 ![Left: sequence for Holder, b then a destroyed and ~Holder skipped. Right: bytes still allocated, 96 B for raw pointers (40 B + 56 B), 0 B for unique_ptr members](/lesson-figures/CPP03-3.svg)
 
@@ -512,7 +498,7 @@ A `std::shared_ptr` is two pointers: one to the object and one to a **control bl
 - *Cycles.* If `A` owns `B` through a `shared_ptr` and `B` owns `A`, then each object has strong count 2 while two locals refer to them; when the locals die the counts drop to 1, never to 0, and both objects leak with their destructors never run. A non-owning back-link must be a `std::weak_ptr` (R.24), turned into a temporary owner with `lock()` only while it is used.
 - *Aliasing.* The aliasing constructor `shared_ptr<int>(p, &p->y)` shares `p`'s control block but points at a member: the member stays alive as long as any alias exists, even after `p` itself is reset.
 
-**Example.** One pose estimate is shared by three consumers and watched by a diagnostics node that must not keep it alive (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** One pose estimate is shared by three consumers and watched by a diagnostics node that must not keep it alive (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). What are the use counts at each stage, what do `expired()` and `lock()` report at the end, and how large is a `shared_ptr`?
 
 ```cpp
 #include <cstdio>
@@ -532,6 +518,8 @@ int main() {
 }
 ```
 
+**Solution.** Two copies raise the strong count from 1 to 3; the `weak_ptr` is not counted. After two resets it is back to 1. While a `lock()` result is held the count is 2 (the owner plus the temporary), and after the last owner resets, `expired()` is true and `lock()` returns null, so the observer learns that the object is gone instead of dangling. The 16 bytes are the two pointers (object and control block) described above. The program prints:
+
 ```text
 use_count = 3
 after two resets: 1
@@ -540,9 +528,8 @@ expired = 1, lock() null = 1
 sizeof(shared_ptr<Pose>) = 16
 ```
 
-Two copies raise the strong count from 1 to 3; the `weak_ptr` is not counted. While a `lock()` result is held the count is 2 (the owner plus the temporary), and after the last owner resets, `expired()` is true and `lock()` returns null, so the observer learns that the object is gone instead of dangling. The 16 bytes are the two pointers (object and control block) described above.
-
 ## Worked example
+
 
 
 ### Case 1: tracing a move and a heap `Buffer`

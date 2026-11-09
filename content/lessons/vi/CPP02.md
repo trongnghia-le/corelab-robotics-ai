@@ -55,7 +55,7 @@ Tiêu chuẩn phân biệt bốn thời gian lưu trữ (storage duration): tĩn
 
 Một container chuẩn là một đối tượng tự động nhỏ sở hữu một khối động. Một đối tượng `std::vector<int>` là ba con trỏ (24 byte trên nền tảng 64 bit này) nằm ở nơi biến vector nằm, còn các phần tử của nó nằm trong một khối heap riêng. Di chuyển hay hủy đối tượng vector tác động lên 24 byte đó; khối được giải phóng bởi destructor của vector. Sự tách đôi giữa *handle* và *payload* này giải thích phần lớn bài học: con trỏ tới handle còn hiệu lực chừng nào biến vector còn, còn con trỏ tới payload thì không.
 
-**Ví dụ.** `operator new` toàn cục có thể được thay thế (cppreference, "operator new", mục "Global replacements"), ở đây chỉ để đếm số lần gọi. Biên dịch bằng g++ 11.4.0 (`-std=c++20 -Wall -Wextra`):
+**Ví dụ.** `operator new` toàn cục có thể được thay thế (cppreference, "operator new", mục "Global replacements"), ở đây chỉ để đếm số lần gọi. Chương trình dưới đây, biên dịch bằng g++ 11.4.0 (`-std=c++20 -Wall -Wextra`), đếm số lần cấp phát và số byte của ba đối tượng. Mỗi đối tượng `int local[1000]`, `std::vector<int> v(1000)` và `std::make_unique<int>(5)` tốn bao nhiêu lần cấp phát và bao nhiêu byte, và `sizeof(v)`, `sizeof(p)` bằng bao nhiêu?
 
 ```cpp
 #include <cstdlib>
@@ -95,7 +95,15 @@ int main() {
 }
 ```
 
-Đầu ra: `int local[1000]: 0 allocation(s), 0 bytes`; `sizeof(v) = 24`; `std::vector<int> v(1000): 1 allocation(s), 4000 bytes`; `sizeof(p) = 8`; `std::make_unique<int>(5): 1 allocation(s), 4 bytes`. 4000 byte là $1000\times4$; bản thân handle `v` 24 byte là tự động và không được đếm.
+**Lời giải.** Mảng cục bộ có automatic storage nên không có lần gọi `operator new` nào: 0 lần cấp phát, 0 byte. Đối tượng vector `v` là một handle gồm ba con trỏ (`sizeof(v) = 24`) nằm trong frame; chỉ payload gồm 1000 `int` được cấp phát, đúng một lần, với $1000\times4=4000$ byte, còn handle 24 byte là tự động nên không được đếm. `make_unique<int>(5)` cấp phát một `int` (4 byte) trong khi handle `p` của nó là một con trỏ duy nhất (`sizeof(p) = 8`). Chương trình in ra:
+
+```text
+int local[1000]: 0 allocation(s), 0 bytes
+sizeof(v) = 24
+std::vector<int> v(1000): 1 allocation(s), 4000 bytes
+sizeof(p) = 8
+std::make_unique<int>(5): 1 allocation(s), 4 bytes
+```
 
 ![Ba vùng lưu trữ cạnh nhau: tĩnh, stack với các frame, và heap với khối 4000 byte và 4 byte, mỗi handle trên stack trỏ tới khối của nó, cùng thời điểm kết thúc của từng đối tượng.](/lesson-figures/CPP02-2.svg)
 
@@ -107,7 +115,7 @@ Mỗi kiểu đối tượng có một *yêu cầu căn chỉnh* (alignment requ
 
 Bố cục quan trọng vì ba lý do trong mã robot: lưu lượng bộ nhớ (một struct có padding trong mảng $10^6$ điểm làm lãng phí cache và băng thông), giao diện nhị phân (một struct gửi qua dây hay lưu vào file phải có bố cục cố định, được ghi tài liệu, không phải "cái mà trình biên dịch làm ra"), và mã kiểu `memcpy` giả định không có khoảng trống. `offsetof` cho độ lệch của một thành viên của class standard-layout (cppreference, "offsetof").
 
-**Ví dụ.** Ba thành viên có kích thước 1, 4 và 1 byte (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Ba thành viên có kích thước 1, 4 và 1 byte được khai báo theo hai thứ tự, `char a; int b; char c;` (`T1`) và `int b; char a; char c;` (`T2`) (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). `sizeof`, `alignof` và offset của các thành viên trong mỗi struct bằng bao nhiêu?
 
 ```cpp
 #include <cstddef>
@@ -124,7 +132,12 @@ int main() {
 }
 ```
 
-Đầu ra: `T1 size 12 align 4 offsets 0 4 8` và `T2 size 8 align 4 offsets 0 4 5`. Theo công thức: `T1` có $o_a=0$, $o_b=\lceil1/4\rceil\cdot4=4$, $o_c=8$ và $\lceil9/4\rceil\cdot4=12$, nên 6 trong 12 byte là padding; `T2` có $o_b=0$, $o_a=4$, $o_c=5$ và $\lceil6/4\rceil\cdot4=8$, với 2 byte padding.
+**Lời giải.** Công thức offset của mục này cho ra layout, với $a_{\texttt{char}}=1$ và $a_{\texttt{int}}=4$, nên $A=4$. Với `T1`: $o_a=0$, $o_b=\lceil1/4\rceil\cdot4=4$, $o_c=\lceil(4+4)/1\rceil\cdot1=8$ và $\mathrm{sizeof}=\lceil9/4\rceil\cdot4=12$, nên 6 trong 12 byte là padding. Với `T2`: $o_b=0$, $o_a=4$, $o_c=5$ và $\mathrm{sizeof}=\lceil6/4\rceil\cdot4=8$, với 2 byte padding. Khai báo `int` trước tiết kiệm được 4 byte. Chương trình in ra:
+
+```text
+T1 size 12 align 4 offsets 0 4 8
+T2 size 8 align 4 offsets 0 4 5
+```
 
 ![Bản đồ byte của các struct T1 và T2 với vạch căn chỉnh 4 byte, padding được gạch chéo, kích thước 12 và 8.](/lesson-figures/CPP02-3.svg)
 
@@ -178,7 +191,7 @@ Một *giá trị* của kiểu class hay kiểu dựng sẵn được sao chép
 
 Quan sát then chốt của bài là không cái nào trong ba cái này nói gì về vòng đời. Một con trỏ hay tham chiếu hợp lệ đúng khi đối tượng mà nó gọi tên còn trong vòng đời và, với con trỏ vào container, phần tử chưa bị di chuyển; Core Guidelines phát biểu nửa đầu là "đừng dereference một con trỏ không hợp lệ" (ES.65) và "đừng bao giờ trả về con trỏ hay tham chiếu tới đối tượng cục bộ" (F.43). Chọn giữa chúng là một quyết định thiết kế: truyền theo giá trị khi sao chép rẻ hoặc hàm được gọi cần bản sao riêng; theo `const&` để đọc mà không sao chép (F.16); theo con trỏ khi "không có đối tượng" là một trạng thái hợp lệ (R.2 dành con trỏ thô cho các đối tượng đơn lẻ *không* được sở hữu); và không bao giờ dùng `T*` thô để diễn đạt quyền sở hữu (R.3).
 
-**Ví dụ.** Hai bản sao của một vector và hai bản sao của một con trỏ (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Một vector `a` được chép vào `b`, và một con trỏ `p` tới `a[0]` được chép vào `q`; sau đó ghi `9` vào `b[0]` và ghi `5` qua `q` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Cuối cùng `a[0]` và `b[0]` bằng bao nhiêu, và `p` với `q`, `&a[0]` với `&b[0]` có bằng nhau không?
 
 ```cpp
 #include <iostream>
@@ -196,7 +209,12 @@ int main() {
 }
 ```
 
-Đầu ra: `a[0]=5 b[0]=9`, rồi `p == q: 1, &a[0] == &b[0]: 0`. Sao chép vector `a` vào `b` đã chép ba phần tử vào một khối heap mới, nên ghi `9` vào `b[0]` không đụng tới `a`; sao chép con trỏ `p` vào `q` chỉ chép một địa chỉ, nên ghi `5` qua `q` làm đổi `a[0]`.
+**Lời giải.** Sao chép vector `a` vào `b` chép ba phần tử vào một khối heap mới, nên `&a[0] != &b[0]` và ghi `9` vào `b[0]` không đụng tới `a`. Sao chép con trỏ `p` vào `q` chỉ chép một địa chỉ, nên `p == q` và ghi `5` qua `q` làm đổi `a[0]`. Vậy `a[0]=5`, `b[0]=9`. Chương trình in ra:
+
+```text
+a[0]=5 b[0]=9
+p == q: 1, &a[0] == &b[0]: 0
+```
 
 ### Quyền sở hữu, RAII và phép di chuyển
 
@@ -204,7 +222,7 @@ int main() {
 
 Core Guidelines biến điều này thành các quy tắc: không gọi `new` và `delete` tường minh (R.11), diễn đạt quyền sở hữu bằng `unique_ptr` hoặc `shared_ptr` (R.20), ưu tiên `unique_ptr` trừ khi quyền sở hữu thực sự được chia sẻ (R.21), và tạo chúng bằng `make_unique` và `make_shared` (R.22, R.23). Một hàm nhận `unique_ptr` theo giá trị là một *sink*: nó tuyên bố rằng nó nhận quyền sở hữu; một hàm chỉ dùng đối tượng thì nhận `T&` hoặc `T*` (R.30).
 
-**Ví dụ.** Di chuyển giữa các chủ sở hữu, với một kiểu in ra khi được tạo và hủy (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Quyền sở hữu các đối tượng `Probe` được chuyển giữa các `unique_ptr`, với một kiểu in ra khi được tạo và hủy (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Các đối tượng được tạo và hủy theo thứ tự nào, và sau `b = std::move(c)` ai sở hữu đối tượng nào?
 
 ```cpp
 #include <iostream>
@@ -229,7 +247,16 @@ int main() {
 }
 ```
 
-Đầu ra là `make 1`, `make 2`, `a empty: 1, c->id = 1`, `drop 2`, `after b = move(c): b->id = 1`, `drop 1`. Truyền `a` qua `pass_on` đã chuyển quyền sở hữu hai lần mà không tạo hay hủy `Probe` nào. Phép gán `b = std::move(c)` phải giải phóng thứ `b` đang sở hữu trước khi tiếp quản, nên đối tượng 2 bị hủy tại dòng đó; đối tượng 1 bị hủy đúng một lần, khi `b` ra khỏi phạm vi ở cuối `main`.
+**Lời giải.** `make_unique` tạo đối tượng 1 và 2 (`make 1`, `make 2`). Truyền `a` qua `pass_on` chuyển quyền sở hữu hai lần (vào tham số, rồi vào giá trị trả về khởi tạo `c`) mà không tạo hay hủy `Probe` nào; `a` trở nên rỗng và `c->id` bằng 1. Phép gán `b = std::move(c)` phải giải phóng thứ `b` đang sở hữu trước khi tiếp quản, nên đối tượng 2 bị hủy tại dòng đó (`drop 2`) và `b` giờ sở hữu đối tượng 1. Đối tượng 1 bị hủy đúng một lần, khi `b` ra khỏi scope ở cuối `main`. Chương trình in ra:
+
+```text
+make 1
+make 2
+a empty: 1, c->id = 1
+drop 2
+after b = move(c): b->id = 1
+drop 1
+```
 
 ### Vector tăng trưởng, vô hiệu hóa (invalidation) và chi phí di chuyển phần tử
 
@@ -241,7 +268,7 @@ Với $g=2$ đó là dưới $2n$ lần di chuyển tổng cộng, tức amortis
 
 Các lần di chuyển đó là *move* hay *copy* phụ thuộc vào kiểu phần tử. `push_back` có đảm bảo ngoại lệ mạnh (strong exception guarantee; cppreference, `std::vector::push_back`): nếu cấp phát hoặc một thao tác trên phần tử ném exception, vector phải không đổi. Để giữ lời hứa này khi chuyển phần tử, cài đặt dùng `std::move_if_noexcept`, chỉ trả về rvalue nếu move constructor là `noexcept` hoặc kiểu không thể copy (cppreference, `std::move_if_noexcept`). Vì vậy một kiểu có move constructor có thể ném nhưng copy được sẽ bị *copy* ở mỗi lần cấp phát lại. Đó là lý do hiệu năng đằng sau "Make move operations `noexcept`" (C++ Core Guidelines, C.66).
 
-**Ví dụ.** Một vector được cấp dung lượng cho 4 phần tử, một con trỏ tới phần tử đầu được lưu lại, và năm phần tử được đẩy vào (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Một vector được cấp dung lượng cho 4 phần tử bằng `reserve(4)`, một con trỏ tới phần tử đầu được lưu lại, và năm phần tử được đẩy vào (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Sau lần đẩy thứ mấy thì con trỏ không còn trỏ tới dữ liệu của vector, và capacity là bao nhiêu?
 
 ```cpp
 #include <iostream>
@@ -259,7 +286,15 @@ int main() {
 }
 ```
 
-Bốn dòng đầu cho capacity 4 và `p still data(): 1`; dòng thứ năm cho `size 5 capacity 8 p still data(): 0`. Bốn lần push đầu giữ $\mathrm{size}\le\mathrm{capacity}$ nên không gì di chuyển và `p` còn hợp lệ; lần push thứ năm cần một khối 8, bốn phần tử được chuyển chỗ, và `p` gọi tên một khối đã được giải phóng. Phép thử `p == v.data()` ở đây chỉ là chẩn đoán: sau khi cấp phát lại hai giá trị có thể bằng nhau do tình cờ khi allocator dùng lại một địa chỉ (Trường hợp 2 dưới đây cho thấy đúng điều đó), và `p` vẫn không hợp lệ.
+**Lời giải.** Bốn lần đẩy đầu giữ $\mathrm{size}\le\mathrm{capacity}=4$ nên không có gì bị relocate, capacity vẫn là 4 và `p` vẫn hợp lệ. Lần đẩy thứ năm gặp $\mathrm{size}=\mathrm{capacity}$ nên vector cần một khối 8, relocate bốn phần tử và giải phóng khối cũ: `size 5 capacity 8`, và `p` trỏ vào một khối đã bị giải phóng. Phép thử `p == v.data()` ở đây chỉ là chẩn đoán: sau một lần cấp phát lại, hai giá trị có thể bằng nhau do trùng hợp khi allocator dùng lại một địa chỉ (Case 2 bên dưới cho thấy đúng điều đó), và `p` vẫn không hợp lệ. Chương trình in ra:
+
+```text
+size 1 capacity 4 p still data(): 1
+size 2 capacity 4 p still data(): 1
+size 3 capacity 4 p still data(): 1
+size 4 capacity 4 p still data(): 1
+size 5 capacity 8 p still data(): 0
+```
 
 ### Temporary và kéo dài thời gian sống (lifetime extension)
 
@@ -272,7 +307,7 @@ Một reference chỉ tốt khi đối tượng nó chỉ tới còn sống. V�
 
 Range-based `for` là cái bẫy kinh điển: `for (auto x : f().items())` bind range vào *kết quả của* `items()`, một reference vào temporary bị hủy trước khi vòng lặp bắt đầu nếu `items()` trả về reference. Một kiểu view như `std::string_view` có cùng tính chất với reference: `std::string_view sv = make();` để `sv` trỏ vào một string đã bị hủy. Trong mọi trường hợp này trình biên dịch chấp nhận code, và chỉ một lần chạy sanitizer thực thi dòng đó mới báo lỗi.
 
-**Ví dụ.** Một kiểu thông báo khi bị hủy cho thấy khi nào một đối tượng tạm chết (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Một kiểu thông báo khi được tạo và khi bị hủy cho thấy khi nào một đối tượng tạm chết (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Trong chương trình dưới đây, đối tượng tạm nào được reference giữ sống, và đối tượng còn lại bị hủy khi nào?
 
 ```cpp
 #include <iostream>
@@ -295,7 +330,16 @@ int main() {
 }
 ```
 
-Đầu ra: `make A`, `after A`, `make B`, `drop B`, `after B, s refers to a dead object`, `drop A`. `A` được gắn trực tiếp vào `r` nên sống đến hết `main`; `B` được gắn vào tham số của `id` nên bị hủy tại dấu chấm phẩy của câu lệnh đó, trước khi dòng kế tiếp chạy, và `s` đã treo tại dòng ấy. Trình biên dịch không đưa ra cảnh báo nào, và mọi lần dùng `s` đều là hành vi không xác định.
+**Lời giải.** `const Noisy& r = make("A");` gắn đối tượng tạm trực tiếp vào `r`, nên lifetime extension áp dụng và `A` sống đến hết `main` (`drop A` là dòng cuối). `id(make("B"))` gắn `B` vào tham số tham chiếu của `id`, nên `B` chỉ sống đến hết full expression đó: nó bị hủy tại dấu chấm phẩy (`drop B`), trước khi dòng kế tiếp chạy, và `s` đã treo tại dòng ấy. Trình biên dịch không đưa ra cảnh báo nào, và mọi việc dùng `s` đều là hành vi không xác định. Chương trình in ra:
+
+```text
+make A
+after A
+make B
+drop B
+after B, s refers to a dead object
+drop A
+```
 
 ### Reference count, `weak_ptr` và ai được gọi gì
 
@@ -303,7 +347,7 @@ Một `shared_ptr` trỏ tới một *control block* chứa, trong số những 
 
 Count cho biết ai giữ đối tượng sống; chúng không nói gì về việc một *raw reference bạn đã giữ* có an toàn không. Core Guidelines tách riêng điều này trong R.37: không truyền pointer hay reference lấy từ một smart pointer có alias, vì bất cứ thứ gì ở dưới đều có thể reset pointer đó và hủy đối tượng trong khi bạn vẫn đang dùng. Cách sửa là lấy một bản sao cục bộ ("pin") ở đỉnh cây gọi: `auto pin = g_p; f(*pin);`. Các quy tắc tham số R.32 đến R.36 sau đó cho biết một chữ ký hứa điều gì: `unique_ptr<T>` theo giá trị nhận quyền sở hữu, `unique_ptr<T>&` có thể reseat, `shared_ptr<T>` theo giá trị chia sẻ quyền sở hữu, `const shared_ptr<T>&` có thể giữ lại một count, và hàm chỉ dùng đối tượng nên nhận `T&` hoặc `T*` (R.30).
 
-**Ví dụ.** Số đếm mạnh và yếu của một số nguyên được chia sẻ (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Số đếm mạnh và yếu của một số nguyên được chia sẻ được quan sát (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). `use_count()` và `expired()` bằng bao nhiêu sau khi chép `shared_ptr`, sau khi reset một chủ sở hữu, và sau khi reset chủ cuối cùng, và khi đó `lock()` trả về gì?
 
 ```cpp
 #include <iostream>
@@ -322,7 +366,13 @@ int main() {
 }
 ```
 
-Đầu ra: `use_count 2, expired 0`, rồi `use_count 1, expired 0`, rồi `use_count 0, expired 1, lock empty 1`. Hai `shared_ptr` sở hữu số nguyên (đếm 2); reset một cái còn đếm 1 và đối tượng vẫn sống; reset cái cuối cùng đưa số đếm về 0, hủy số nguyên, và `weak_ptr` quan sát được sự hết hạn và trả về một `shared_ptr` rỗng từ `lock()` thay vì một con trỏ treo.
+**Lời giải.** Sau `auto b = a;` có hai `shared_ptr` sở hữu số nguyên nên `use_count` bằng 2 và `weak_ptr` `w` chưa hết hạn. Reset `a` còn lại số đếm 1 và đối tượng vẫn sống. Reset `b`, chủ cuối cùng, đưa số đếm về 0 và hủy số nguyên; `w` quan sát được sự hết hạn (`expired 1`) và `lock()` trả về một `shared_ptr` rỗng thay vì con trỏ treo. Chương trình in ra:
+
+```text
+use_count 2, expired 0
+use_count 1, expired 0
+use_count 0, expired 1, lock empty 1
+```
 
 ## Ví dụ có lời giải
 

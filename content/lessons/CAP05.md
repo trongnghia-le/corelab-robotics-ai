@@ -129,11 +129,31 @@ For each class, $\text{IoU}=\frac{TP}{TP+FP+FN}$ and mIoU is the mean over class
 
 Reference trace of a passing run. **Illustrative values**, computed with the standard-library script in Verification (using the illustrative links $L_1=0.116$, $L_2=0.135$, $L_3=0.10$ m; read yours from your MJCF), not taken from a real run.
 
-**Pixel to base.** Image 640 x 480, fovy 60 degrees: $f_y=240/\tan30^\circ=415.7$ px. Pixel $(352,236)$ at depth 0.42 m gives $p_\text{cam}=(0.0323,\,-0.0040,\,0.420)$ m. The camera sits at $(0.10,0,0.35)$ m in `base_link`, pitched down 50 degrees, so $p_\text{base}=(0.3731,\,-0.0323,\,0.0309)$ m. The arm pillar is 0.17 m ahead of `base_link`, so in `arm_base`: $(0.2031,\,-0.0323,\,0.0309)$ m, radius $r=0.2056$ m.
+### From a pixel to joint angles, a joint trajectory and the acceptance table
 
-**IK.** Pan $=\operatorname{atan2}(-0.0323,0.2031)=-9.0^\circ$. The planar problem with the tool pointing down has two branches: (shoulder $-9.3^\circ$, elbow $+56.8^\circ$) needs a wrist of $-137.5^\circ$, outside an illustrative $\pm110^\circ$ limit; (shoulder $52.2^\circ$, elbow $-56.8^\circ$) needs $-85.4^\circ$ and is accepted. FK of the accepted solution returns the target to $10^{-9}$ m.
+**Problem.** The camera image is 640 x 480 with fovy 60 degrees. A block centroid is detected at pixel $(352,236)$ with depth 0.42 m. The camera sits at $(0.10,0,0.35)$ m in `base_link`, pitched down 50 degrees; the arm pillar is 0.17 m ahead of `base_link`.
 
-**Trajectory.** A 0.8 rad joint move in 1.2 s: peak speed $1.875\cdot0.8/1.2=1.25$ rad/s, peak acceleration $5.7735\cdot0.8/1.44=3.21$ rad/s$^2$.
+- (a) Find the point in the camera frame, in `base_link` and in `arm_base`, and its radius $r$.
+- (b) Solve the inverse kinematics (IK) for pan, shoulder, elbow and wrist with the tool pointing straight down, with links $L_1=0.116$, $L_2=0.135$, $L_3=0.10$ m and a wrist limit of $\pm110^\circ$; pick the admissible branch.
+- (c) For a 0.8 rad joint move in 1.2 s with a quintic time scaling, find the peak speed and peak acceleration.
+- (d) Decide the acceptance table below, including why 43 of 50 picks (86 %) passes the gate and 40 of 50 (80 %) would not.
+
+**Solution.**
+
+Assumptions taken from the Verification script (not stated in the original text): the principal point is the image centre $(c_x,c_y)=(320,240)$ with square pixels; the camera frame has $x$ to the right, $y$ down, $z$ forward; `arm_base` has the same height as `base_link`; the shoulder axis is at height $Z_S=0.05$ m above `arm_base`.
+
+1. *Focal length.* $f_y=(480/2)/\tan(60^\circ/2)=240/\tan30^\circ=415.7$ px.
+2. *Deprojection.* $x=(352-320)\cdot0.42/415.7=0.0323$ m, $y=(236-240)\cdot0.42/415.7=-0.0040$ m, $z=0.420$ m: $p_\text{cam}=(0.0323,\,-0.0040,\,0.420)$ m.
+3. *Camera axes in `base_link`.* With pitch $50^\circ$: forward $=(\cos50^\circ,0,-\sin50^\circ)=(0.6428,\,0,\,-0.7660)$, right $=(0,-1,0)$, down $=(-\sin50^\circ,0,-\cos50^\circ)=(-0.7660,\,0,\,-0.6428)$.
+4. *Transform.* $p_\text{base}=t+x\cdot\text{right}+y\cdot\text{down}+z\cdot\text{forward}$ with $t=(0.10,0,0.35)$. $X=0.10+(-0.0040)(-0.7660)+0.42\cdot0.6428=0.10+0.0031+0.2700=0.3731$; $Y=-0.0323$; $Z=0.35+(-0.0040)(-0.6428)+0.42\cdot(-0.7660)=0.35+0.0026-0.3217=0.0309$. So $p_\text{base}=(0.3731,\,-0.0323,\,0.0309)$ m.
+5. *To `arm_base`.* Subtract the 0.17 m pillar offset along $x$: $(0.2031,\,-0.0323,\,0.0309)$ m, radius $r=\sqrt{0.2031^2+0.0323^2}=0.2056$ m.
+6. *Pan.* $\operatorname{atan2}(-0.0323,\,0.2031)=-9.0^\circ$.
+7. *Wrist point.* With the tool pointing down the wrist is $L_3$ above the tip, in the shoulder plane: $w_r=0.2056$, $w_z=0.0309+0.10-0.05=0.0809$ m, at distance $D=\sqrt{0.2056^2+0.0809^2}=0.2209$ m.
+8. *Elbow.* Law of cosines: $\cos q_3=(D^2-L_1^2-L_2^2)/(2L_1L_2)=(0.04882-0.01346-0.01823)/0.03132=0.5471$, so $q_3=\pm56.8^\circ$.
+9. *Shoulder for each branch.* $q_2=\operatorname{atan2}(w_z,w_r)-\operatorname{atan2}(L_2\sin q_3,\,L_1+L_2\cos q_3)$ with $\operatorname{atan2}(0.0809,0.2056)=21.5^\circ$ and $\operatorname{atan2}(\pm0.1130,\,0.1899)=\pm30.8^\circ$. Branch $q_3=+56.8^\circ$: $q_2=21.5-30.8=-9.3^\circ$. Branch $q_3=-56.8^\circ$: $q_2=21.5+30.8=52.2^\circ$.
+10. *Wrist for each branch.* To keep the tool vertical, wrist $=-90^\circ-(q_2+q_3)$. Branch +: $-90-47.5=-137.5^\circ$, outside $\pm110^\circ$, rejected. Branch $-$: $-90-(-4.6)=-85.4^\circ$, inside, accepted. Chosen: pan $-9.0^\circ$, shoulder $52.2^\circ$, elbow $-56.8^\circ$, wrist $-85.4^\circ$.
+11. *Quintic trajectory.* With $s(\tau)=10\tau^3-15\tau^4+6\tau^5$, the peak of $\dot s$ is $1.875$ (at $\tau=0.5$) and the peak of $\ddot s$ is $10/\sqrt3=5.7735$. For $\Delta q=0.8$ rad and $T=1.2$ s: $\dot q_\max=1.875\cdot0.8/1.2=1.25$ rad/s and $\ddot q_\max=5.7735\cdot0.8/1.2^2=5.7735\cdot0.8/1.44=3.21$ rad/s$^2$.
+12. *Pick gate.* $43/50=86\ \%$ has Wilson 95 % lower bound 73.8 %, at least 68 %, and the point estimate is at least 80 %: pass. For $40/50=80\ \%$ the lower bound is 67.0 %, below 68 %: fail by one percentage point. The failure taxonomy must sum to the failures: pick failures $50-43=7$ (slip 4, knocked 3) plus placement failures $43-40=3$ (place_miss 3) $=10=50-40$.
 
 | Check (test) | Threshold | Illustrative result |
 |---|---|---|
@@ -147,7 +167,9 @@ Reference trace of a passing run. **Illustrative values**, computed with the sta
 | Mean cycle time | < 25 s | 19.7 s |
 | Failure taxonomy | sum = failures (10) | slip 4, knocked 3, place_miss 3 |
 
-Note that 40 of 50 picks (80 %) would meet the point estimate but have a lower bound of 67.0 % and fail the gate by one percentage point.
+**Check.** Forward kinematics of the accepted solution: $r=L_1\cos q_2+L_2\cos(q_2+q_3)=0.2056$ m and $z=Z_S+L_1\sin q_2+L_2\sin(q_2+q_3)-L_3=0.0309$ m, matching the target (to $10^{-9}$ m in the script with unrounded angles). The rejected branch is not a numerical accident: its wrist needs $-137.5^\circ$, $27.5^\circ$ beyond the limit. The quintic peaks agree with a numerical derivative of $s(\tau)$. One pixel at 0.42 m is $0.42/415.7=1.01$ mm, so the sub-pixel pixel-to-base error is far below the 5 mm hand-eye limit.
+
+**Takeaway.** A pick is a chain of frames and two closed-form solves (deprojection, planar IK); the second IK branch exists but must be tested against the joint limits, and a gate on the lower confidence bound turns 80 % of 50 into a fail.
 
 ## Exercises
 

@@ -105,7 +105,7 @@ By induction on the number of calls, $I$ holds for every reachable state. For `J
 
 Notice the implementation detail that matters: write the check as `!(lo <= q && q <= hi)` or test finiteness first. With `NaN`, every comparison is false, so `if (q < lo || q > hi) reject` would accept it.
 
-**Example.** A motor driver accepts a duty cycle only in $[0, 0.85]$. The class below establishes that invariant in its constructor, and a second test written as `!(d < 0 || d > 0.85)` is compared with it on three inputs (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A motor driver accepts a duty cycle only in $[0, 0.85]$. The class below establishes that invariant in its constructor, and a second test written as `!(d < 0 || d > 0.85)` is compared with it on the inputs 0.5, 0.9 and NaN (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Which of the two tests accepts which input?
 
 ```cpp
 #include <cstdio>
@@ -132,13 +132,14 @@ int main() {
 }
 ```
 
+**Solution.** The constructor uses the *positive* form `0 <= d && d <= 0.85` and negates it, so NaN (for which every comparison is false) is rejected, and the establish step of the proof holds for all inputs: 0.5 is accepted, 0.9 and NaN are rejected. The negated-comparison test `!(d < 0 || d > 0.85)` agrees on 0.5 and 0.9, but for NaN both comparisons are false, so it accepts: it would store a value outside the invariant, and the preserve step of every later call would be proved for a state that never satisfied $I$. The program prints:
+
 ```text
 duty 0.5    constructor accepts: 1   naive range test accepts: 1
 duty 0.9    constructor accepts: 0   naive range test accepts: 0
 duty nan    constructor accepts: 0   naive range test accepts: 1
 ```
 
-The constructor uses the *positive* form `0 <= d && d <= 0.85` and negates it, so NaN (for which every comparison is false) is rejected, and the establish step of the proof holds for all inputs. The negated-comparison test accepts NaN: it would store a value outside the invariant, and the preserve step of every later call would be proved for a state that never satisfied $I$.
 ```explore
 {
   "title": "Which updates does the gate accept?",
@@ -185,7 +186,7 @@ The constructor uses the *positive* form `0 <= d && d <= 0.85` and negates it, s
 - Mark single-argument constructors `explicit` (C.46) to prevent silent conversions like `JointState j = 0.5;`.
 - Each member function is `const` unless it changes the state.
 
-**Example.** `Pose2D` has no invariant (any three numbers are a pose), so it stays a `struct`; `JointAngle` has the invariant $|a|\le\pi$, so it is a class with an `explicit` constructor (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** `Pose2D` has no invariant (any three numbers are a pose), so it stays a `struct`; `JointAngle` has the invariant $|a|\le\pi$, so it is a class with an `explicit` constructor (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). What does the program print, and is `report(0.75)` accepted in place of `report(JointAngle{0.75})`?
 
 ```cpp
 #include <cstdio>
@@ -204,12 +205,12 @@ int main() {
 }
 ```
 
+**Solution.** Writing `report(0.75)` instead of `report(JointAngle{0.75})` is rejected at build time: `could not convert ‘7.5e-1’ from ‘double’ to ‘JointAngle’`. Without `explicit` the bare number would convert silently, and a value in degrees or a plain `double` meant for another parameter would flow into the class unchecked (C.46). The program with the explicit call prints:
+
 ```text
 pose = (1.0, 2.0, 0.5)
 angle = 0.75 rad
 ```
-
-Writing `report(0.75)` instead of `report(JointAngle{0.75})` is rejected at build time: `could not convert ‘7.5e-1’ from ‘double’ to ‘JointAngle’`. Without `explicit` the bare number would convert silently, and a value in degrees or a plain `double` meant for another parameter would flow into the class unchecked (C.46).
 
 ### Access control and `const`: what the compiler enforces
 
@@ -217,7 +218,7 @@ Access control is a compile-time check on *names*. A private member can be named
 
 A `const` member function promises not to change the observable state of the object, and the compiler enforces it for data members that are not `mutable`: inside the function `this` has type `const T*`, so assignments to members are errors (cppreference: cv type qualifiers, `mutable` specifier). The distinction that matters is between *bitwise* and *logical* constness. A cache, a mutex or a read counter does not change the value that callers see, so it may be declared `mutable` and written from a `const` function; a member that is part of the abstract value must not be. Overloads on `const` let one name serve both read-only and writable callers (`T& at(i)` and `const T& at(i) const`), and `const` references are the cheapest way to hand out read access (F.16, Con.2).
 
-**Example.** An odometer counts how often its total is read, through a `mutable` counter, and is viewed through a `const` reference (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** An odometer counts how often its total is read, through a `mutable` counter, and is viewed through a `const` reference (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Do the two reads through the `const` reference compile, what are the sum and the read count, and what happens if `add()` is called through the same reference?
 
 ```cpp
 #include <cstdio>
@@ -237,11 +238,11 @@ int main() {
 }
 ```
 
+**Solution.** Both calls compile because `total()` is `const` and the counter is `mutable`; the sum is $12.5+12.5=25.0$ and 2 reads are counted. Calling the mutating `add()` through the same reference is rejected: `passing ‘const Odometer’ as ‘this’ argument discards qualifiers [-fpermissive]`. The program prints:
+
 ```text
 sum of two reads = 25.0, reads counted = 2
 ```
-
-Both calls compile because `total()` is `const` and the counter is `mutable`; the sum is 25.0 and 2 reads are counted. Calling the mutating `add()` through the same reference is rejected: `passing ‘const Odometer’ as ‘this’ argument discards qualifiers [-fpermissive]`.
 
 ### Interfaces and virtual dispatch
 
@@ -259,7 +260,7 @@ struct Controller {
 - **Slicing**: passing `Controller c` by value copies only the base subobject, which here is not even constructible because it is abstract; for a concrete base it silently loses the derived behavior. Pass by reference or pointer (C.145) and delete the copy operations of polymorphic bases (C.67).
 - **Cost**: a virtual call is an indirect call through the vtable, typically a few nanoseconds and not inlinable. It is irrelevant at 1 kHz control and relevant inside a loop over $10^8$ elements.
 
-**Example.** A PID controller with three gains is deleted through a base pointer. First a base without a virtual destructor, built with g++ 11.4.0 and `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`:
+**Example.** A PID controller with three gains is deleted through a base pointer. First a base without a virtual destructor, built with g++ 11.4.0 and `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`. What do the compiler and AddressSanitizer report, and what changes with `virtual ~Controller()`?
 
 ```cpp
 #include <cstdio>
@@ -267,6 +268,8 @@ struct Controller { virtual double compute(double e) const = 0; ~Controller() {}
 struct PID : Controller { double gains[3] = {1, 0.1, 0.01}; double compute(double e) const override { return gains[0] * e; } };
 int main() { Controller* c = new PID; std::printf("%g\n", c->compute(2.0)); delete c; }
 ```
+
+**Solution.** The compiler warns at build time and AddressSanitizer reports at run time that an object of 32 bytes was released as one of 8 bytes: `~PID` and the derived part were never handled. The build and the run give (the report is shortened):
 
 ```text
 warning: deleting object of abstract class type ‘Controller’ which has non-virtual destructor will cause undefined behavior [-Wdelete-non-virtual-dtor]
@@ -277,7 +280,7 @@ size of the deallocated type: 8 bytes.
 SUMMARY: AddressSanitizer: new-delete-type-mismatch ../../../../src/libsanitizer/asan/asan_new_delete.cpp:172 in operator delete(void*, unsigned long)
 ```
 
-The compiler warns at build time and AddressSanitizer reports at run time that an object of 32 bytes was released as one of 8 bytes: `~PID` and the derived part were never handled. With `virtual ~Controller()` (C.35) the same deletion through a `std::unique_ptr<Controller>` runs both destructors, as the second program shows (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** With `virtual ~Controller()` (C.35) the same deletion goes through a `std::unique_ptr<Controller>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Which destructors run, and in what order?
 
 ```cpp
 #include <cstdio>
@@ -286,6 +289,8 @@ struct Controller { virtual ~Controller() { std::puts("~Controller"); } virtual 
 struct PID : Controller { double gains[3] = {1, 0.1, 0.01}; ~PID() override { std::puts("~PID"); } double compute(double e) const override { return gains[0] * e; } };
 int main() { std::unique_ptr<Controller> c = std::make_unique<PID>(); std::printf("%g\n", c->compute(2.0)); }
 ```
+
+**Solution.** A virtual destructor makes the deletion dispatch on the dynamic type, so the most-derived destructor runs first and then the base destructor, in reverse order of construction, and the object is released with its true size. The program prints the result of `compute(2.0)` ($1\cdot2=2$) and then:
 
 ```text
 2
@@ -297,7 +302,7 @@ int main() { std::unique_ptr<Controller> c = std::make_unique<PID>(); std::print
 
 If code works with a `Base&`, it must also work with any `Derived`. A `FixedJoint : Joint` whose `set_position` throws breaks this (the Liskov substitution principle): callers cannot tell from the type whether the call is legal. Derive only when the derived class *is a* substitutable kind of the base, otherwise use composition (a member) or separate interfaces (`Positionable` is implemented only by movable joints).
 
-**Example.** A planner sends `set_position` to every joint of a mixed arm; the second joint is a `FixedJoint` derived from `Joint` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A planner sends `set_position` to every joint of a mixed arm; the second joint is a `FixedJoint` derived from `Joint` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Does the code compile cleanly, what does the planner see for each joint, and does `FixedJoint` satisfy the contract of `Joint`?
 
 ```cpp
 #include <cstdio>
@@ -316,13 +321,13 @@ int main() {
 }
 ```
 
+**Solution.** The code compiles without a warning and the planner, written against `Joint&`, cannot tell from the types that joint 1 will refuse: it must catch `std::logic_error` or test the dynamic type, and every new caller has to remember to do the same. A type whose operation is sometimes illegal does not satisfy the contract of its base (Core Guidelines C.120, and the Liskov substitution principle), so `FixedJoint` should not derive from a `Joint` that promises movement. The program prints:
+
 ```text
 moved to 0.25
 joint 1: fixed joint cannot move
 moved to 0.75
 ```
-
-The code compiles without a warning and the planner, written against `Joint&`, cannot tell from the types that joint 1 will refuse: it must catch `std::logic_error` or test the dynamic type, and every new caller has to remember to do the same. A type whose operation is sometimes illegal does not satisfy the contract of its base (Core Guidelines C.120, and the Liskov substitution principle), so `FixedJoint` should not derive from a `Joint` that promises movement.
 
 ### Virtual calls during construction and destruction
 
@@ -344,7 +349,7 @@ struct Lidar : Sensor {
 
 Constructing and destroying a `Lidar` prints `Sensor() sees generic`, `Lidar() sees lidar`, `~Lidar() sees lidar`, `~Sensor() sees generic`. If `name()` were pure virtual in `Sensor` and not implemented, the call from `Sensor()` has undefined behavior (C.82). What to do instead: pass the needed data to the base constructor as an argument (`Sensor(std::string n)`), use a named factory that constructs the object completely and then calls `init()` (the object is valid from the moment the factory returns it, so the invariant is not weakened), or use a non-virtual helper in the base. This is the dynamic-dispatch version of the invariant proof pattern: a virtual call inside a constructor happens *before* the establish step is finished, so the preserve step may not be assumed.
 
-**Example.** A sensor driver computes its sampling period in the base constructor from a virtual `rate()`; the derived driver overrides `rate()` to 100 Hz. The second design passes the rate down (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A sensor driver computes its sampling period in the base constructor from a virtual `rate()`; the derived driver overrides `rate()` to 100 Hz. The second design passes the rate down (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). What period does each design compute?
 
 ```cpp
 #include <cstdio>
@@ -368,12 +373,12 @@ int main() {
 }
 ```
 
+**Solution.** In `Driver()` the dynamic type is `Driver`, so `rate()` resolves to the base value 10 Hz ([class.cdtor]) and the period is $1/10=0.10$ s although the object is meant to run at 100 Hz: the fault is silent and the invariant "period = 1 / rate" is false from the first instant. Passing the rate as a constructor argument makes the period $1/100=0.01$ s and needs no virtual call before the object is complete (C.82). The program prints:
+
 ```text
 virtual call in constructor: period = 0.10 s
 rate passed to base       : period = 0.01 s
 ```
-
-In `Driver()` the dynamic type is `Driver`, so `rate()` resolves to the base value 10 Hz ([class.cdtor]) and the period is 0.10 s although the object is meant to run at 100 Hz: the fault is silent and the invariant "period = 1 / rate" is false from the first instant. Passing the rate as a constructor argument makes the period 0.01 s and needs no virtual call before the object is complete (C.82).
 
 ![Four columns for constructing and destroying a Lidar: Sensor() sees generic, Lidar() sees lidar, ~Lidar() sees lidar, ~Sensor() sees generic; the member label is alive only in the middle](/lesson-figures/CPP04-2.svg)
 
@@ -389,7 +394,7 @@ $$\text{pre}_{\text{Base}}(x) \Rightarrow \text{pre}_{\text{Derived}}(x), \qquad
 
 *Mechanising it: the non-virtual interface.* To make the contract hold for every override automatically, put the gate in a public non-virtual function of the base that checks the base precondition, calls a private virtual `do_set(q, dt)`, and checks the base invariant on the way out; derived classes customise only the private step. Then even a careless override cannot publish a state that violates $I_{\text{Base}}$. This also explains why the guidelines discourage `protected` data (C.133): a derived class that can write base members bypasses the gate, so the base can no longer prove its invariant by looking at its own member functions alone.
 
-**Example.** Base joints accept a move when $|\Delta q|/dt\le2$ rad/s; `SlowJoint` overrides the test with 1.25 rad/s. Four calls from $q=0$ are replayed against both (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** Base joints accept a move when $|\Delta q|/dt\le2$ rad/s; `SlowJoint` overrides the test with 1.25 rad/s. Four calls from $q=0$ are replayed against both (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Which calls does each accept, and is the override substitutable for the base?
 
 ```cpp
 #include <cmath>
@@ -410,6 +415,8 @@ int main() {
 }
 ```
 
+**Solution.** The speed of each call is $|\Delta q|/dt$: $0.3/0.2=1.50$, $0.5/0.5=1.00$, $0.6/0.4=1.50$ and $0.8/0.5=1.60$ rad/s. All four satisfy the base precondition (at most 2), but `SlowJoint` rejects three of them (1.50, 1.50 and 1.60 rad/s are above 1.25): its precondition is stricter, so $\text{pre}_{\text{Base}}\Rightarrow\text{pre}_{\text{Derived}}$ fails, and a client that legally passed those arguments now gets a refusal. The figure below draws the same situation as regions in the plane of target and time step. The program prints:
+
 ```text
 dq    dt    speed  base  slow
 0.3   0.2   1.50   1     0
@@ -417,8 +424,6 @@ dq    dt    speed  base  slow
 0.6   0.4   1.50   1     0
 0.8   0.5   1.60   1     0
 ```
-
-All four calls satisfy the base precondition, but `SlowJoint` rejects three of them (1.50, 1.50 and 1.60 rad/s are above 1.25): its precondition is stricter, so $\text{pre}_{\text{Base}}\Rightarrow\text{pre}_{\text{Derived}}$ fails, and a client that legally passed those arguments now gets a refusal. The figure draws the same situation as regions in the plane of target and time step.
 
 ![Accepted regions above the lines dt = |q'|/vmax for vmax 2.75, 2 and 1.25 with limits plus or minus 1.5, and two marked calls A and B](/lesson-figures/CPP04-3.svg)
 
@@ -436,7 +441,7 @@ struct Ring   : Circle { double r2 = 2; };   // forgot to override clone()
 
 The failure mode is silent: `Ring` inherits `Circle::clone`, so `Shape* p = new Ring; p->clone()` produces a `Circle`, a slice with no compiler diagnostic. Covariant return types cannot be smart pointers, so the safe form is again an NVI: a public non-virtual `std::unique_ptr<Shape> clone() const` that wraps a private pure virtual `do_clone()` and compares `typeid(*result)` with `typeid(*this)`; a forgotten override is then caught at the first clone in a debug build instead of producing a wrong object later. Making `do_clone` pure also forces every concrete class to supply it, though it cannot force an intermediate class's subclasses to do so, which is why the runtime check remains useful.
 
-**Example.** A filter chain clones its nodes through a public non-virtual `clone()` that wraps a private pure virtual `do_clone()` and compares dynamic types. `Gain` overrides it; `AutoGain` derives from `Gain` and forgets (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Example.** A filter chain clones its nodes through a public non-virtual `clone()` that wraps a private pure virtual `do_clone()` and compares dynamic types. `Gain` overrides it; `AutoGain` derives from `Gain` and forgets (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). What happens when each node is cloned?
 
 ```cpp
 #include <cstdio>
@@ -467,14 +472,15 @@ int main() {
 }
 ```
 
+**Solution.** `Gain` clones correctly. For `AutoGain`, the inherited `Gain::do_clone` would build a `Gain` (a slice: the field `target` is lost), but the `typeid` comparison in `clone()` finds `Gain` different from `AutoGain` and turns that silent loss into an exception at the first clone, in the test run rather than in the field (C.130, C.67). The check costs one RTTI comparison per clone. The program prints:
+
 ```text
 Gain: clone ok
 AutoGain: do_clone() not overridden
 ```
 
-`Gain` clones correctly. For `AutoGain`, the inherited `Gain::do_clone` would build a `Gain` (a slice: the field `target` is lost), but the `typeid` comparison in `clone()` turns that silent loss into an exception at the first clone, in the test run rather than in the field (C.130, C.67). The check costs one RTTI comparison per clone.
-
 ## Worked example
+
 
 
 ### Case 1: accepting and rejecting joint updates

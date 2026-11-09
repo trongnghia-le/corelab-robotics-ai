@@ -97,33 +97,30 @@ SayCan kết hợp đề xuất của mô hình ngôn ngữ với các hàm giá
 
 Đây là **giá trị minh họa** cho một bộ artefact đạt yêu cầu, không phải đầu ra của một lần chạy thật.
 
-**Vết parser** (cảnh mặc định: khối lập phương đỏ, trụ xanh lá, hộp xanh dương; thùng xanh dương, thùng xanh lá):
+### Kết quả parser, một kế hoạch hai vật và thời gian đến trạng thái an toàn của mười hazard được tiêm
 
-| Câu lệnh | Kết quả | Vì sao |
-|---|---|---|
-| put the red cube in the blue bin | mục tiêu `on(cube_red, bin_blue)` | mọi slot duy nhất |
-| pick up the block | Clarify, lựa chọn cube_red / cylinder_green / box_blue | "block" khớp ba vật |
-| put the purple cube in the blue bin | Unparseable, từ chỉ màu lạ | ngoài từ vựng đóng |
-| throw the red cube at the person | Unparseable, không có động từ được hỗ trợ | động từ không an toàn |
-| put it in the bin | Clarify, vật nào? | đại từ không có tiền ngữ |
-| do not put the red cube in the blue bin | Unparseable, phủ định | không hỗ trợ, không đoán |
-| put the red cube in the red bin | Unparseable, không có thùng như vậy | mâu thuẫn với cảnh |
+**Đề bài.** Cảnh mặc định có ba vật (khối lập phương đỏ, trụ xanh lá, hộp xanh dương) và hai thùng (xanh dương, xanh lá). Parser có ba kết quả: goal, Clarify, Unparseable. Supervisor chạy ở 100 Hz (tick 10 ms) với timeout liên kết 0.2 s, heartbeat 0.2 s và perception 0.25 s; hazard được tiêm tại $t=1.0$ s và thời gian đến khi $v$ chuyển tiếp bằng 0 với cánh tay giữ phải nhiều nhất 0.30 s (0.15 s cho e-stop).
 
-**Kế hoạch cho mục tiêu hai vật** (robot ở start; khối đỏ và hộp xanh dương vào thùng xanh dương): 8 hành động, nav(table), pick(box_blue), nav(bin), place, nav(table), pick(cube_red), nav(bin_blue), place.
+- (a) Phân loại bảy câu lệnh: "put the red cube in the blue bin", "pick up the block", "put the purple cube in the blue bin", "throw the red cube at the person", "put it in the bin", "do not put the red cube in the blue bin", "put the red cube in the red bin".
+- (b) Từ vị trí start, tìm kế hoạch ngắn nhất đưa khối đỏ và hộp xanh dương vào thùng xanh dương (một gripper chỉ giữ một vật).
+- (c) Dự đoán thời gian đến trạng thái an toàn của H01-H10 và biên so với giới hạn, và nói biên của H07 hàm ý gì cho timeout perception.
 
-**Kết quả tiêm** (supervisor ở 100 Hz, hazard được tiêm tại t = 1.0 s; thời gian đến khi $v$ chuyển tiếp bằng 0 và cánh tay giữ):
+**Lời giải.**
 
-| Hazard | Thời gian đến trạng thái an toàn | Giới hạn | Vì sao |
-|---|---|---|---|
-| H01, H03, H04, H05, H09, H10 | 0.00 s (cùng tick) | 0.30 s | phát hiện ở mẫu đầu tiên |
-| H06 e-stop (xung 20 ms) | 0.00 s, rồi chốt | 0.15 s | đầu vào trực tiếp |
-| H02 liên kết nối tiếp chết | 0.20 s | 0.30 s | timeout tuổi liên kết 0.2 s |
-| H08 mất heartbeat của planner | 0.21 s | 0.30 s | timeout 0.2 s cộng một tick |
-| H07 mất perception | 0.26 s | 0.30 s | timeout 0.25 s cộng một tick |
+1. *Quy tắc.* Parser điền các slot (động từ, màu, hình dạng, đích) và đếm số vật hoặc thùng trong cảnh tương thích: đúng một cho ra goal, nhiều hơn một cho ra Clarify, không có hoặc từ không được hỗ trợ cho ra Unparseable.
+2. *Câu 1.* "red cube" chỉ khớp `cube_red`; "blue bin" chỉ khớp `bin_blue`: goal `on(cube_red, bin_blue)` (mọi slot duy nhất).
+3. *Câu 2.* "block" là từ đồng nghĩa của mọi hình dạng và khớp ba vật: Clarify với lựa chọn `cube_red` / `cylinder_green` / `box_blue`.
+4. *Câu 3 và 4.* "purple" không nằm trong từ vựng đóng ba màu và "throw" không phải động từ được hỗ trợ (và không an toàn): cả hai là Unparseable.
+5. *Câu 5.* "it" là đại từ không có tiền ngữ: Clarify, "vật nào?".
+6. *Câu 6.* Phủ định không được hỗ trợ và không được đoán: Unparseable.
+7. *Câu 7.* Không có thùng nào màu đỏ (thùng là xanh dương và xanh lá), nên đích khớp 0 thùng và mâu thuẫn với cảnh: Unparseable.
+8. *Kế hoạch.* Mỗi vật cần nav(table), pick, nav(bin_blue), place: 4 hành động, vì pick cần `robot_at = table` và place cần `robot_at = bin_blue`. Gripper chỉ giữ một vật, nên robot phải quay lại bàn cho vật thứ hai: $2\times4=8$ hành động: nav(table), pick(box_blue), nav(bin_blue), place, nav(table), pick(cube_red), nav(bin_blue), place. Tìm kiếm theo chiều rộng trả về giá trị nhỏ nhất, và không có kế hoạch nào ngắn hơn (mục tiêu một vật cần 4).
+9. *Hazard tức thời.* H01, H03, H04, H05, H09 và H10 là điều kiện trên mẫu được tiêm đầu tiên, nên $t_\text{detect}=0$ và supervisor chuyển tiếp $v=0$ cùng cánh tay giữ ngay trong tick đó: 0.00 s so với 0.30 s.
+10. *E-stop H06.* Một xung nút 20 ms phủ hai tick 10 ms, nên được lấy mẫu; ESTOP được chốt ngay trong tick đó: 0.00 s so với 0.15 s.
+11. *Hazard kiểu timeout.* Ở đây $t_\text{safe}=t_\text{detect}+t_\text{tick}$ với $t_\text{detect}$ bằng timeout. H02: phép tiêm đặt $\text{link\_age}=e+0.01$ với $e$ là thời gian từ lúc tiêm, giá trị này vượt 0.2 s lần đầu tại $e=0.20$ s: 0.20 s. H08: $\text{heartbeat\_age}=e$ vượt 0.2 lần đầu ở tick kế tiếp, $e=0.21$ s. H07: $\text{perception\_age}=e$ vượt 0.25 lần đầu tại $e=0.26$ s.
+12. *Biên.* H02: $0.30-0.20=0.10$ s; H08: $0.30-0.21=0.09$ s; H07: $0.30-0.26=0.04$ s. Timeout perception 0.30 s sẽ kích hoạt ở $0.31$ s $>0.30$ s: trượt. Vì vậy test tiêm chặn timeout từ phía trên (dưới 0.30 s trừ một tick), còn tuổi dữ liệu danh định (perception tới 0.08 s) chặn từ phía dưới.
 
-Biên độ của H07 chỉ 40 ms: timeout perception 0.30 s sẽ không đạt yêu cầu. Đó là cách test tiêm ràng buộc việc chọn ngưỡng của bạn.
-
-**Mẫu file câu lệnh** (`tests/data/instructions.jsonl`; file của bạn cần 60 dòng: 20 diễn đạt lại và 10 đối kháng):
+Mẫu file câu lệnh (`tests/data/instructions.jsonl`; file của bạn cần 60 dòng: 20 diễn đạt lại và 10 đối kháng):
 
 ```json
 {"text": "put the red cube in the blue bin", "scene": "default", "expect": {"type": "goal", "predicates": [["on", "cube_red", "bin_blue"]]}, "tags": []}
@@ -140,7 +137,8 @@ Biên độ của H07 chỉ 40 ms: timeout perception 0.30 s sẽ không đạt 
 {"text": "put the red cube in the red bin", "scene": "default", "expect": {"type": "unparseable"}, "tags": ["adversarial"]}
 ```
 
-**Trích bảng hazard** (`docs/hazard_table.md`):
+
+Trích bảng hazard (`docs/hazard_table.md`):
 
 ```text
 | id  | hazard                         | cause                        | detection                         | response             | test id        |
@@ -151,6 +149,30 @@ Biên độ của H07 chỉ 40 ms: timeout perception 0.30 s sẽ không đạt 
 | H07 | perception dropout / lying cam | camera stalls or stale frame | perception_age > 0.25 s           | HOLD                 | inject_H07     |
 | H08 | planner crash or hang          | exception, deadlock          | heartbeat_age > 0.2 s             | HOLD                 | inject_H08     |
 ```
+
+
+
+| Câu lệnh | Kết quả | Vì sao |
+|---|---|---|
+| put the red cube in the blue bin | mục tiêu `on(cube_red, bin_blue)` | mọi slot duy nhất |
+| pick up the block | Clarify, lựa chọn cube_red / cylinder_green / box_blue | "block" khớp ba vật |
+| put the purple cube in the blue bin | Unparseable, từ chỉ màu lạ | ngoài từ vựng đóng |
+| throw the red cube at the person | Unparseable, không có động từ được hỗ trợ | động từ không an toàn |
+| put it in the bin | Clarify, vật nào? | đại từ không có tiền ngữ |
+| do not put the red cube in the blue bin | Unparseable, phủ định | không hỗ trợ, không đoán |
+| put the red cube in the red bin | Unparseable, không có thùng như vậy | mâu thuẫn với cảnh |
+
+| Hazard | Thời gian đến trạng thái an toàn | Giới hạn | Vì sao |
+|---|---|---|---|
+| H01, H03, H04, H05, H09, H10 | 0.00 s (cùng tick) | 0.30 s | phát hiện ở mẫu đầu tiên |
+| H06 e-stop (xung 20 ms) | 0.00 s, rồi chốt | 0.15 s | đầu vào trực tiếp |
+| H02 liên kết nối tiếp chết | 0.20 s | 0.30 s | timeout tuổi liên kết 0.2 s |
+| H08 mất heartbeat của planner | 0.21 s | 0.30 s | timeout 0.2 s cộng một tick |
+| H07 mất perception | 0.26 s | 0.30 s | timeout 0.25 s cộng một tick |
+
+**Kiểm tra.** Kế hoạch: tìm kiếm theo chiều rộng trên (vị trí robot, vật đang giữ, vị trí các vật) cho mục tiêu hai vật trả về đúng 8 hành động và 4 cho một vật. Thời gian: một vòng lặp tick 10 ms với ba timeout tái tạo 0.00 s, 0.20 s (H02), 0.21 s (H08) và 0.26 s (H07), và với timeout perception 0.30 s cho 0.31 s. Đầu vào danh định trong test nghiệm thu (tuổi liên kết tới 0.03 s, perception tới 0.08 s, heartbeat tới 0.05 s) cách timeout tương ứng 0.17, 0.17 và 0.15 s, nên tỉ lệ dừng nhầm thấp. Các hàng parser chạy như unit test trong `tests/acceptance/test_cap07.py`.
+
+**Rút ra.** Parser không bao giờ đoán: nó đếm số khớp và trả về goal, Clarify hoặc Unparseable; ngân sách an toàn là thời gian phát hiện cộng một tick, và biên 40 ms của H07 cho thấy ngưỡng được chọn bằng test tiêm, không bằng cảm tính.
 
 ## Bài tập
 

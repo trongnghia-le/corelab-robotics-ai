@@ -62,14 +62,32 @@ Với số lỗi $F_j$ theo từng nguyên nhân gốc và $N$ episode, sửa ho
 
 Mọi giá trị dưới đây là minh họa, không đến từ một lần chạy thật.
 
-Một lần chạy tham chiếu tạo ra 120 episode nominal (seed 1000 đến 1119), 80 episode twin (seed 1120 đến 1199) và bốn ablation 30 seed ghép cặp (seed 1000 đến 1029). Việc chỉnh chỉ dùng seed 0 đến 99.
+### Gate, khoảng cách sim-twin, bốn ablation ghép cặp với Holm, ngân sách lỗi và hiệu chuẩn lại
+
+**Đề bài.** Một lần chạy tham chiếu tạo ra 120 episode nominal (seed 1000 đến 1119, 94 thành công), 80 episode twin (seed 1120 đến 1199, 46 thành công trước hiệu chuẩn lại) và bốn ablation 30 seed ghép cặp (seed 1000 đến 1029); việc chỉnh chỉ dùng seed 0 đến 99. Các ablation thành công 12, 18, 22 và 20 trên 30 episode (tỉ lệ 0.40, 0.60, 0.73, 0.67) cho "không cập nhật landmark", "không có chính sách DR", "gắp bằng script thay vì học" và "tắt bộ giám sát an toàn". Quy tắc nghiệm thu: tỉ lệ nominal ít nhất 0.70 với cận dưới Wilson ít nhất 0.60, tỉ lệ twin ít nhất 0.50, độ trễ trung vị perception-đến-lệnh nhiều nhất 100 ms, và hiệu chuẩn lại cải thiện tương đối ít nhất 25 %.
+
+- (a) Tính khoảng Wilson của kết quả nominal và twin và quyết định gate nominal.
+- (b) Tính khoảng cách $\Delta$ giữa nominal và twin và khoảng Newcombe của nó.
+- (c) Tìm các số đếm ghép cặp $b$ và $c$, p-value McNemar chính xác và hiệu ứng của các ablation, rồi áp dụng Holm ở mức 0.05 trên bốn phép kiểm định; viết câu trung thực.
+- (d) Kiểm tra các số lỗi (`GRASP_SLIP` 36, `DETECTION` 22, `PLACE_MISS` 14, `LOCALISATION` 13, `NAV_TIMEOUT` 9, `PARSE` 5, `OTHER` 5, `SAFETY_STOP` 3, `FIRMWARE_LINK` 1) khớp với các episode thất bại, và đánh giá việc hiệu chuẩn lại (cross-track RMSE 0.112 m xuống 0.071 m) và độ trễ (trung vị 71 ms).
+
+**Lời giải.**
+
+1. *Nominal.* $\hat p=94/120=0.783$; khoảng Wilson 95 % là $[0.701,\,0.848]$. Tỉ lệ ít nhất 0.70 và cận dưới 0.701 ít nhất 0.60: gate đạt.
+2. *Twin.* $\hat p=46/80=0.575$ với Wilson $[0.466,\,0.677]$; đạt sàn twin 0.50.
+3. *Khoảng cách.* $\Delta=0.783-0.575=0.208$. Newcombe: cận dưới $=\Delta-\sqrt{(\hat p_1-\ell_1)^2+(u_2-\hat p_2)^2}=0.208-\sqrt{0.0818^2+0.1024^2}=0.208-0.131=0.077$; cận trên $=\Delta+\sqrt{(u_1-\hat p_1)^2+(\hat p_2-\ell_2)^2}=0.208+\sqrt{0.0643^2+0.1093^2}=0.208+0.127=0.335$. Khoảng cách có thật (khoảng nằm trên 0) nhưng độ lớn còn bất định vì mẫu twin nhỏ.
+4. *Số đếm ghép cặp.* Tỉ lệ của mỗi ablation cộng hiệu ứng cho cùng một baseline trên 30 seed ghép cặp: $0.40+0.433=0.60+0.233=0.733+0.10=0.833$, tức 25 thành công baseline trên 30. Với ablation có $k$ thành công, $b-c=25-k$: 13, 7, 3 và 5. Với các số đếm của bảng, $15-2=13$, $11-4=7$, $7-4=3$ và $8-3=5$ khớp, và hiệu ứng là $(b-c)/30$: $+43.3$, $+23.3$, $+10.0$, $+16.7$ điểm.
+5. *McNemar chính xác.* $p=2\,P(X\le\min(b,c))$ với $X\sim\text{Bin}(b+c,\tfrac12)$. Với $b=15$, $c=2$: $2\,(1+17+136)/2^{17}=308/131072=0.00235$. Cùng công thức cho 0.118 với (11, 4), 0.549 với (7, 4) và 0.227 với (8, 3).
+6. *Holm.* Bốn phép kiểm định ở mức 0.05 có khả năng có ít nhất một báo động giả là $1-0.95^4=0.185$ (khoảng 0.19), nên so các $p$ đã sắp xếp với $0.05/4=0.0125$, $0.05/3=0.0167$, $0.05/2=0.025$, $0.05/1=0.05$. Giá trị nhỏ nhất, $0.0023<0.0125$, sống sót (điều chỉnh $4\times0.0023=0.0094$). Giá trị kế, $0.118>0.0167$, trượt, và Holm dừng: ba cái còn lại không có ý nghĩa.
+7. *Câu văn.* "Bỏ cập nhật landmark làm giảm thành công khoảng 43 điểm (p chính xác ghép cặp = 0.0023, Holm 0.009); chúng tôi không tìm thấy bằng chứng đáng tin cho ba hiệu ứng còn lại ở n = 30."
+8. *Ngân sách lỗi.* Số episode thất bại: nominal $120-94=26$, twin $80-46=34$, ablation $120-(12+18+22+20)=48$: tổng 108. Các nguyên nhân cộng $36+22+14+13+9+5+5+3+1=108$, nên mọi lỗi đều có nguyên nhân. Cột lớn nhất, `GRASP_SLIP` với 36 trên 108 (33 %), là thứ cần sửa đầu tiên.
+9. *Hiệu chuẩn lại.* Cải thiện tương đối $=(0.112-0.071)/0.112=0.366\approx37\ \%\ge25\ \%$: đạt.
+10. *Quy tắc khác.* Độ trễ trung vị $71\ \text{ms}\le100$ ms. Seed chỉnh 0-99 không giao với seed đánh giá 1000-1199.
 
 | Split | n | Thành công | Tỉ lệ | Wilson 95 % |
 |---|---|---|---|---|
 | nominal | 120 | 94 | 0.783 | [0.701, 0.848] |
-| twin (trước hiệu chỉnh lại) | 80 | 46 | 0.575 | [0.466, 0.677] |
-
-Gate nominal đạt: tỉ lệ ít nhất 0.70 và cận dưới 0.701 ít nhất 0.60. Khoảng cách là $\Delta=0.208$ với khoảng Newcombe $[0.077,0.335]$: có thật, nhưng độ lớn còn bất định (mẫu twin nhỏ).
+| twin (trước hiệu chuẩn lại) | 80 | 46 | 0.575 | [0.466, 0.677] |
 
 | Ablation (30 seed ghép cặp) | Tỉ lệ | $b$ | $c$ | p chính xác | hiệu ứng (pp) |
 |---|---|---|---|---|---|
@@ -78,11 +96,7 @@ Gate nominal đạt: tỉ lệ ít nhất 0.70 và cận dưới 0.701 ít nhấ
 | gắp bằng script thay vì học | 0.73 | 7 | 4 | 0.549 | +10.0 |
 | tắt bộ giám sát an toàn | 0.67 | 8 | 3 | 0.227 | +16.7 |
 
-Với Holm trên bốn phép kiểm định, p-value nhỏ nhất phải thắng $0.05/4=0.0125$: chỉ "không landmark" thắng ($4\times0.0023=0.0094$ sau hiệu chỉnh). Câu trung thực cho báo cáo là: "Bỏ cập nhật landmark làm giảm thành công khoảng 43 điểm (p chính xác ghép cặp = 0.0023, Holm 0.009); chúng tôi không tìm thấy bằng chứng đáng tin cho ba hiệu ứng còn lại ở n = 30."
-
-Các lần thất bại trong 108 episode thất bại của mọi lần chạy (26 nominal + 34 twin + 48 trong bốn ablation): `GRASP_SLIP` 36, `DETECTION` 22, `PLACE_MISS` 14, `LOCALISATION` 13, `NAV_TIMEOUT` 9, `PARSE` 5, `OTHER` 5, `SAFETY_STOP` 3, `FIRMWARE_LINK` 1. Tổng đếm bằng 108 và mọi lần thất bại đều có nguyên nhân. Hiệu chỉnh lại bán kính bánh và track width trên twin giảm RMSE cross-track từ 0.112 m xuống 0.071 m, cải thiện tương đối 37 %, đạt tiêu chí 25 %. Độ trễ trung vị từ nhận thức đến lệnh: 71 ms.
-
-Có thể tính lại các số trên bằng script này (chạy với thư viện chuẩn cộng `evalkit.py`):
+Các số trên tính lại được bằng script này (chạy với thư viện chuẩn cộng `evalkit.py`):
 
 ```python
 # Stdlib only. Needs evalkit.py from CAP01 on the path (src/corebot/evalkit.py in your repo).
@@ -101,6 +115,12 @@ ps = sorted([paired_mcnemar(15, 2), 0.118, 0.227, 0.549])
 adj = [min(1.0, (len(ps) - i) * p) for i, p in enumerate(ps)]
 print("Holm step-down thresholds 0.05/4, 0.05/3, 0.05/2, 0.05/1; first adjusted p =", round(adj[0], 4))
 ```
+
+
+
+**Kiểm tra.** Script in các dòng Wilson, $p$ chính xác cho (15, 2) và (8, 3), và $p$ đã điều chỉnh Holm đầu tiên (0.0094); một phép tính độc lập các tổng nhị thức chính xác và công thức Newcombe cho cùng giá trị đến ba chữ số thập phân. Cận hợp lý: mọi $p$ nằm trong $[0,1]$ và tăng khi hiệu ứng $(b-c)/30$ giảm (0.0023, 0.118, 0.227, 0.549 cho hiệu ứng 43.3, 23.3, 16.7, 10.0 điểm), và số lỗi ablation $18+12+8+10=48$ khớp với ngân sách lỗi ở bước 8.
+
+**Rút ra.** Với bốn ablation trên 30 seed ghép cặp, chỉ hiệu ứng lớn mới sống sót sau hiệu chỉnh; báo cáo hiệu ứng, p ghép cặp chính xác, giá trị đã điều chỉnh Holm và điều chưa chứng minh được, và để các số lỗi, cộng bằng số episode thất bại, chỉ hướng cho việc sửa tiếp theo.
 
 ## Bài tập
 

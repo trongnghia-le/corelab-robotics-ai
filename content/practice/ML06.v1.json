@@ -333,13 +333,13 @@
     },
     {
       "id": "b13",
-      "prompt": "A quadratic has curvatures 1 and 10. With the best constant learning rate 2/(λ_min+λ_max), what is the per-step contraction factor of the error (decimal, tolerance 0.001)?",
+      "prompt": "A quadratic has curvatures 2 and 14. With the best constant learning rate 2/(λ_min+λ_max), what is the per-step contraction factor of the error (decimal, tolerance 0.001)?",
       "kind": "number",
       "dimension": "M",
       "critical": false,
-      "answer": "0.818182",
+      "answer": "0.75",
       "tolerance": 0.001,
-      "explanation": "(κ−1)/(κ+1)=9/11=0.8182.",
+      "explanation": "κ=14/2=7, so (κ−1)/(κ+1)=6/8=0.75; equivalently η=2/16=0.125 gives |1−0.125·2|=0.75 and |1−0.125·14|=0.75.",
       "knowledgeType": "procedure",
       "skillTags": [
         "learning-rate-stability"
@@ -355,6 +355,78 @@
       "equivalentTo": [
         "q1",
         "q2"
+      ]
+    },
+    {
+      "id": "c1",
+      "prompt": "A quadratic has curvatures between μ and L with condition number κ=L/μ=64. With the optimal heavy-ball (momentum) parameters, what is the asymptotic per-step contraction factor (decimal, tolerance 0.001)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.7778",
+      "tolerance": 0.001,
+      "explanation": "The optimal heavy-ball rate is √β*=(√κ−1)/(√κ+1)=(8−1)/(8+1)=7/9≈0.7778. Plain gradient descent would give (κ−1)/(κ+1)=63/65≈0.969, i.e. roughly κ instead of √κ steps for a fixed accuracy.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "momentum-rate"
+      ],
+      "skillLabel": "Optimal momentum rate",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "On f(θ)=½λθ² with λ=1.5, SGD uses η=0.4 and a minibatch gradient with noise variance σ²/B=36/9=4 (σ=6, B=9), independent across steps. What is the stationary expected loss E[f(θ)] (decimal, tolerance 0.001)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.5714",
+      "tolerance": 0.001,
+      "explanation": "With a=1−ηλ=0.4, V=a²V+η²·4 gives V=0.64/0.84=0.7619. The expected loss is ½λV=0.5714, which equals ησ²/(2B(2−ηλ))=0.4·36/(2·9·1.4). The iteration is stable (|a|<1) but the loss stays at this noise floor.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sgd-noise-floor"
+      ],
+      "skillLabel": "Noise floor of constant-step SGD",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A team trains with plain minibatch SGD at a small learning rate (ηλ ≪ 1 along every direction) and raises the batch size from 32 to 128, keeping the learning rate and everything else. What do you expect from the stationary training loss (the noise floor)?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Roughly unchanged, because the expected gradient does not depend on B.",
+        "Roughly one quarter of its old value: the floor is proportional to η/B.",
+        "Roughly one half of its old value, because the noise std falls like 1/√B.",
+        "Higher, because fewer updates are made per epoch."
+      ],
+      "answer": "1",
+      "explanation": "The stationary loss is ησ²/(2B(2−ηλ)) ≈ ησ²/(4B) for small ηλ, so it is inversely proportional to B: quadrupling the batch divides the floor by about 4. The noise standard deviation does halve (1/√B), but the loss floor scales with the variance, which is why the \"one half\" option is wrong. The expected gradient is unchanged but that does not make the floor unchanged. Fewer updates per epoch changes the speed of reaching the floor, not its height.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "minibatch-noise",
+        "sgd-noise-floor"
+      ],
+      "skillLabel": "Batch size and the SGD noise floor",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML06#theory-and-derivation"
+        }
       ]
     }
   ]

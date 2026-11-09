@@ -129,15 +129,29 @@ Your inflation margin and your speed limit must keep $d_\text{stop}$ smaller tha
 
 This is a reference trace of a passing run. **Illustrative values**: they show what healthy numbers look like and were computed by hand and with the small script in Verification, not taken from a real run of your robot.
 
-**Map update.** A cell hit by three beams has $l=3\cdot0.847=2.54$, so $p=0.927$. A cell crossed by five free beams has $l=-2.03$, $p=0.116$. A cell hit twice and crossed once: $l=1.289$, $p=0.784$, still above the 0.65 export threshold.
+### Mapping, inflation, heuristic, tracker, stopping distance and the acceptance table
 
-**Inflation.** Circumscribed radius $r_c=0.20$ m, margin $m=0.05$ m, EKF position standard deviation $\sigma=0.03$ m: $r_\text{inflate}=0.20+0.05+0.06=0.31$ m, which is $\lceil 0.31/0.05\rceil=7$ cells; the lethal radius is 4 cells.
+**Problem.** The occupancy grid uses $p_\text{occ}=0.7$ and $p_\text{free}=0.4$ per beam, a 0.65 export threshold and a cell size of 0.05 m. Answer the following with all steps.
 
-**Heuristic.** Start-to-goal offset $dx=30$, $dy=12$ cells: octile $h=42-0.586\cdot12=34.97$ cells $=1.749$ m, while the straight line is 32.31 cells. A real path cannot be shorter than 34.97 cells in free space, so the heuristic is tight.
+- (a) Log-odds and probability of a cell hit by three beams, of a cell crossed by five free beams, and of a cell hit twice and crossed once; is the last one exported as occupied?
+- (b) Inflation: circumscribed radius $r_c=0.20$ m, margin $m=0.05$ m, EKF position standard deviation $\sigma=0.03$ m. Find $r_\text{inflate}$, the number of inflated cells $n$ and the lethal radius in cells.
+- (c) A* heuristic for a start-to-goal offset $dx=30$, $dy=12$ cells: the octile value in cells and metres, compared with the straight line, and whether it is tight.
+- (d) Pure pursuit with the lookahead point at $(0.42,\,0.16)$ m in the robot frame and $v=0.4$ m/s: curvature and angular speed against the 1.5 rad/s limit.
+- (e) Stopping distance at $v=0.5$ m/s, $a=1$ m/s$^2$ and 150 ms total latency.
+- (f) Decide the acceptance table below, including why 27 of 30 successes would fail the gate while 28 of 30 passes.
 
-**Tracker.** Lookahead point at $(0.42,\,0.16)$ m in the robot frame: $L=0.449$ m, $\kappa=2\cdot0.16/0.202=1.584$ m$^{-1}$; at $v=0.4$ m/s, $\omega=0.634$ rad/s, inside the 1.5 rad/s limit.
+**Solution.**
 
-**Stopping.** At $v=0.5$ m/s, $a=1$ m/s$^2$ and 150 ms total latency: $d_\text{stop}=0.125+0.075=0.20$ m.
+1. *Log-odds increments.* $l_\text{occ}=\ln(0.7/0.3)=0.847$ and $l_\text{free}=\ln(0.4/0.6)=-0.405$; updates are plain additions and the clamp $[-4,4]$ is not reached below.
+2. *Three hits.* $l=3\cdot0.847=2.54$, $p=1/(1+e^{-2.54})=0.927$.
+3. *Five free crossings.* $l=5\cdot(-0.405)=-2.03$, $p=1/(1+e^{2.03})=0.116$.
+4. *Two hits and one crossing.* $l=2\cdot0.847-0.405=1.289$, $p=1/(1+e^{-1.289})=0.784>0.65$, so the cell is still exported as occupied.
+5. *Inflation radius.* $r_\text{inflate}=r_c+m+2\sigma=0.20+0.05+2\cdot0.03=0.31$ m. In cells $n=\lceil0.31/0.05\rceil=\lceil6.2\rceil=7$. The lethal radius is $r_c/\Delta=0.20/0.05=4$ cells.
+6. *Octile heuristic.* With 8-connected moves of cost 1 and $\sqrt2$, the cheapest path takes $\min(dx,dy)=12$ diagonal steps and $dx-12=18$ straight steps: $h=(dx+dy)+(\sqrt2-2)\min(dx,dy)=42-0.586\cdot12=34.97$ cells, i.e. $34.97\cdot0.05=1.749$ m. The straight line is $\sqrt{30^2+12^2}=32.31$ cells, which is not reachable on this grid. No real path in free space is shorter than 34.97 cells, so the heuristic never overestimates and, being equal to the true free-space cost, is tight.
+7. *Tracker curvature.* $L^2=0.42^2+0.16^2=0.1764+0.0256=0.202$, $L=0.449$ m. Pure pursuit gives $\kappa=2y/L^2=2\cdot0.16/0.202=1.584\ \text{m}^{-1}$.
+8. *Angular speed.* $\omega=v\kappa=0.4\cdot1.584=0.634$ rad/s, which is inside the 1.5 rad/s limit (no slow-down needed).
+9. *Stopping distance.* $d_\text{stop}=v\,t_r+v^2/(2a)=0.5\cdot0.15+0.5^2/(2\cdot1)=0.075+0.125=0.20$ m.
+10. *Acceptance rules.* IoU $=\text{TP}/(\text{TP}+\text{FP}+\text{FN})=1900/(1900+120+160)=1900/2180=0.872\ge0.85$. Success $28/30=93.3\ \%$ has Wilson 95 % lower bound 78.7 %, which is at least 75 %, so the gate passes. For $27/30=90.0\ \%$ the point estimate meets the 90 % rule but the lower bound is 74.4 %, below 75 %: the gate asks for evidence, not luck. The remaining rows compare a measured value with a threshold, as listed in the table.
 
 | Check (test) | Threshold | Illustrative result |
 |---|---|---|
@@ -150,7 +164,9 @@ This is a reference trace of a passing run. **Illustrative values**: they show w
 | Median path efficiency | <= 1.3 | 1.12 |
 | Dynamic obstacle, min clearance | >= 0.15 m | 0.21 m (1 of 10 trials `blocked`) |
 
-Notice that 27 of 30 (90.0 %) would have a lower bound of 74.4 % and fail the gate even though it meets 90 %: the gate asks for evidence, not luck.
+**Check.** Heuristic: a Dijkstra search on an empty 8-connected grid from $(0,0)$ to $(30,12)$ returns 34.97 cells, equal to $12\sqrt2+18$ and to $h$, which also confirms that the straight-line 32.31 is not achievable. Tracker: the circle through the origin and $(0.42,\,0.16)$, tangent to the robot's heading, has radius $L^2/(2y)=0.631$ m, whose inverse is 1.584 m$^{-1}$. Stopping: both terms are in metres ($0.5\ \text{m/s}\cdot0.15\ \text{s}$ and $\text{m}^2/\text{s}^2$ divided by $\text{m/s}^2$) and sum to 0.20 m, comfortably below the 0.31 m inflation radius. The map values can be reproduced by summing the increments in a loop and with the script of the Verification section.
+
+**Takeaway.** Every number in the acceptance trace comes from one short formula (log-odds sum, $r_c+m+2\sigma$, octile cost, $2y/L^2$, $vt_r+v^2/2a$); the success gate uses a confidence bound, so a point estimate that merely reaches 90 % is not enough.
 
 ## Exercises
 

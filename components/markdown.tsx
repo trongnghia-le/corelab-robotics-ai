@@ -7,8 +7,10 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { isValidElement, type ReactNode } from "react";
+import { isValidElement, useState, type ReactNode } from "react";
 import {
+  Eye,
+  EyeOff,
   BookOpen,
   Lightbulb,
   Sigma,
@@ -27,6 +29,7 @@ import {
   headingId,
   sectionKind,
   rehypeLessonSections,
+  rehypeSolutions,
 } from "./lesson-sections";
 export { headingId } from "./lesson-sections";
 const sectionIcons = {
@@ -53,6 +56,31 @@ function textFromChildren(children: ReactNode): string {
     );
   return "";
 }
+/** Opens every folded solution of the section, or closes them all. */
+function SolutionsToggle() {
+  const { tx } = useI18n();
+  const [open, setOpen] = useState(false);
+  return (
+    <button
+      type="button"
+      className="button solutions-toggle"
+      aria-pressed={open}
+      onClick={(e) => {
+        const section = e.currentTarget.closest("section");
+        const next = !open;
+        section
+          ?.querySelectorAll<HTMLDetailsElement>("details.lesson-solution")
+          .forEach((d) => (d.open = next));
+        setOpen(next);
+      }}
+    >
+      {open ? <EyeOff size={15} /> : <Eye size={15} />}
+      {open
+        ? tx("Hide all solutions", "Ẩn tất cả lời giải")
+        : tx("Show all solutions", "Mở tất cả lời giải")}
+    </button>
+  );
+}
 export function LessonMarkdown({
   body,
   illustrations = [],
@@ -74,9 +102,14 @@ export function LessonMarkdown({
         rehypePlugins={[
           [rehypeKatex, { strict: "warn", trust: false }],
           [rehypeLessonSections, { ids: headingIds, numbers }],
+          [rehypeSolutions, { summary: tx("Solution", "Lời giải") }],
         ]}
         skipHtml
         components={{
+          // Under each heading whose section has folded solutions.
+          ...({
+            "solutions-toggle": () => <SolutionsToggle />,
+          } as object),
           h2: ({ children, node }) => {
             const title = textFromChildren(children);
             const id = String(

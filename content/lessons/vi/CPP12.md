@@ -98,7 +98,7 @@ Với một class có virtual function, primary vtable bắt đầu bằng *offs
 
 ### Trường hợp cơ bản
 
-Kiểm toán header SDK camera giả định này, rồi bọc nó.
+**Đề bài.** Kiểm toán header SDK camera giả định này, rồi thiết kế một wrapper C++ an toàn. Với mỗi khai báo, nêu ai sở hữu bộ nhớ, thread nào có thể chạy code và điều gì có thể hỏng.
 
 ```c
 typedef struct cam cam;
@@ -108,22 +108,33 @@ const char* cam_error(void);
 unsigned char* cam_grab(cam* c, int* size);
 void cam_on_frame(cam* c, void (*cb)(unsigned char*, int, void*), void* user);
 ```
+
+**Lời giải.**
+
 1. `cam_open` trả về một con trỏ: **do bên gọi sở hữu**, được giải phóng bằng `cam_close` (theo quy ước đặt tên; header không nói). `NULL` khi thất bại; lý do nằm trong `cam_error()`, một biến toàn cục, nên nó **không thread-safe**.
 2. `cam_error()` trả về `const char*`: chủ sở hữu không rõ; có lẽ là một buffer tĩnh bị lời gọi tiếp theo ghi đè, nên phải copy ngay lập tức.
 3. `cam_grab` trả về `unsigned char*` và kích thước qua một tham số out: **ai giải phóng buffer?** Hoặc camera tái sử dụng một buffer nội bộ (hợp lệ đến lần grab tiếp theo) hoặc bên gọi phải free. Header im lặng: một *rủi ro*. Wrapper an toàn phải copy vào một `std::vector<unsigned char>` ngay lập tức.
 4. `cam_on_frame` đăng ký một callback với `void* user`: callback chạy trên một **thread không rõ** (có lẽ là thread của driver); `user` phải sống lâu hơn thời gian đăng ký; con trỏ buffer chỉ hợp lệ trong lúc callback. Một exception ném trong callback sẽ xuyên qua các frame C.
-5. Thiết kế wrapper: `class Camera` giữ `unique_ptr<cam, decltype(&cam_close)>`, throw `Error` từ constructor khi `cam_open` trả null (với thông báo được copy từ `cam_error()`), `grab()` trả `std::vector<unsigned char>`, trampoline của callback là một hàm static bắt mọi exception và lưu chúng lại, và `~Camera` hủy đăng ký callback rồi đóng camera (theo đúng thứ tự đó, để callback không thể chạy trên một `Camera` đã bị hủy).
+5. Thiết kế wrapper, mỗi quy tắc đối ứng một rủi ro ở trên: `class Camera` giữ `unique_ptr<cam, decltype(&cam_close)>` (trả lời bước 1: destructor đóng camera), throw `Error` từ constructor khi `cam_open` trả null, với thông báo được copy ngay từ `cam_error()` (bước 2), `grab()` trả `std::vector<unsigned char>` (bước 3), trampoline của callback là một hàm static bắt mọi exception và lưu chúng lại (bước 4), và `~Camera` hủy đăng ký callback rồi đóng camera, theo đúng thứ tự đó, để callback không thể chạy trên một `Camera` đã bị hủy.
 
-Kết quả là một interface trong đó quyền sở hữu nằm trong kiểu: người dùng không bao giờ thấy một con trỏ thô hay một thread do thư viện tạo.
+**Kiểm tra.** Đối chiếu các sự kiện về con trỏ thô trong header với wrapper: có 4 câu hỏi về quyền sở hữu hoặc thread (bước 1 đến 4) và mỗi câu có đúng một cơ chế trong wrapper ở bước 5, nên interface public không còn con trỏ thô hay truy cập từ thread lạ. Thứ tự hủy kiểm tra được bằng cách đọc destructor: hủy đăng ký trước, đóng sau; thứ tự ngược lại để hở một khoảng thread của driver gọi vào thiết bị đã đóng.
+
+**Rút ra.** Kết quả là một interface trong đó quyền sở hữu nằm trong kiểu: người dùng không bao giờ thấy một con trỏ thô hay một thread do thư viện tạo.
 
 ### Trường hợp khó hơn: tiến hóa một struct public mà không phá binary cũ
 
-Một thư viện chuyển động export `get_pose(Pose*)` và muốn thêm tọa độ `z` mà không phá các binary build với phiên bản 1. Struct bố cục cố định của thí nghiệm trước không làm được, nên dùng mẫu *struct có tiền tố kích thước*. Header phiên bản 1: `struct Pose { uint32_t size; double x, y; };` và caller đặt `p.size = sizeof(Pose)` trước khi gọi. Phiên bản 2 thêm `z` ở cuối: `struct Pose { uint32_t size; double x, y, z; };`, và thư viện chỉ sao chép `min(caller_size, sizeof(Pose))` byte.
+**Đề bài.** Một thư viện chuyển động export `get_pose(Pose*)` và muốn thêm tọa độ `z` mà không phá các binary build với phiên bản 1. Struct bố cục cố định của thí nghiệm trước không làm được, nên dùng mẫu *struct có tiền tố kích thước*. Header phiên bản 1: `struct Pose { uint32_t size; double x, y; };` và caller đặt `p.size = sizeof(Pose)` trước khi gọi. Phiên bản 2 thêm `z` ở cuối: `struct Pose { uint32_t size; double x, y, z; };`, và thư viện chỉ sao chép `min(caller_size, sizeof(Pose))` byte. Tính bố cục trên x86-64, chỉ ra điều xảy ra với caller cũ gọi thư viện mới và caller mới gọi thư viện cũ, và nêu cái giá của mẫu này.
 
-1. *Bố cục.* Trên x86-64, `size` chiếm byte 0-3, rồi 4 byte padding, `x` ở offset 8, `y` ở offset 16, nên `sizeof(Pose1)=24`; phiên bản 2 thêm `z` ở offset 24 và `sizeof(Pose2)=32`.
-2. *Caller cũ, thư viện mới.* Caller truyền một object 24 byte với `size=24`. Thư viện dựng kết quả 32 byte bên trong nhưng chỉ sao chép 24 byte, nên `x=1`, `y=2` đúng, `size=24` được báo lại, và các byte canh gác đặt sau object của caller không bị đụng tới. Tôi đã biên dịch điều này trong hai translation unit và chương trình in `sizeof Pose1=24 Pose2=32 x=1 y=2 size=24 canary=127` (127 là byte canh gác không đổi).
+**Lời giải.**
+
+1. *Bố cục.* Trên x86-64, `size` chiếm byte 0-3. `double` cần alignment 8, nên theo sau là 4 byte padding, `x` ở offset 8, `y` ở offset 16; thành viên cuối kết thúc tại 16 + 8 = 24, là bội của 8, vậy `sizeof(Pose1)=24`. Phiên bản 2 thêm `z` ở offset 24, kết thúc ở 32, nên `sizeof(Pose2)=32`.
+2. *Caller cũ, thư viện mới.* Caller truyền một object 24 byte với `size=24`. Thư viện dựng kết quả 32 byte bên trong và sao chép `min(24, 32) = 24` byte, nên `x=1`, `y=2` đúng, `size=24` được báo lại, và các byte canh gác đặt sau object của caller không bị đụng tới. Biên dịch trong hai translation unit, chương trình in `sizeof Pose1=24 Pose2=32 x=1 y=2 size=24 canary=127` (127 là byte canh gác không đổi).
 3. *Caller mới, thư viện cũ.* Caller đặt `size=32`. Thư viện cũ chỉ biết 24 byte và phải báo đã ghi bao nhiêu bằng cách đặt `size=24`, để caller mới biết `z` không được cung cấp và không được đọc. Nếu thiếu quy tắc này caller sẽ đọc bộ nhớ chưa khởi tạo.
-4. *Mẫu này tốn gì và không làm được gì.* Trường mới chỉ được thêm vào cuối, thư viện không bao giờ được đọc vượt quá `caller_size`, và ý nghĩa của mỗi trường phải cố định mãi mãi. Nó không giúp được với trường ở giữa, với kiểu của trường hiện có bị đổi, hay với class có virtual function. Với các trường hợp đó, lựa chọn thay thế là opaque handle với hàm accessor (`pose_get_z`) hoặc một hàm mới với struct mới (`get_pose_v2`). Đánh đổi quyết định: struct có tiền tố kích thước giữ một C struct phẳng, copy được, rẻ và đơn giản để dùng từ Python `ctypes`, còn opaque handle tốn một lời gọi hàm cho mỗi trường nhưng cho phép thư viện đổi mọi thứ.
+4. *Mẫu này tốn gì và không làm được gì.* Trường mới chỉ được thêm vào cuối, thư viện không bao giờ được đọc vượt quá `caller_size`, và ý nghĩa của mỗi trường phải cố định mãi mãi. Nó không giúp được với trường ở giữa, với kiểu của trường hiện có bị đổi, hay với class có virtual function. Với các trường hợp đó, lựa chọn thay thế là opaque handle với hàm accessor (`pose_get_z`) hoặc một hàm mới với struct mới (`get_pose_v2`).
+
+**Kiểm tra.** Biên dịch bằng `g++ -std=c++20` trong hai translation unit (thư viện dùng struct 32 byte, caller dùng struct 24 byte): `offsetof` cho x=8, y=16, z=24, kích thước 24 và 32, và byte canh gác vẫn là 127, nên không có lần ghi nào vượt quá 24 byte. Quy tắc `min` là toàn bộ sự đảm bảo: với `size=24` nó không bao giờ ghi byte 24 trở đi.
+
+**Rút ra.** Đánh đổi quyết định: struct có tiền tố kích thước giữ một C struct phẳng, copy được, rẻ và đơn giản để dùng từ Python `ctypes`, còn opaque handle tốn một lời gọi hàm cho mỗi trường nhưng cho phép thư viện đổi mọi thứ.
 
 ## Bài tập
 

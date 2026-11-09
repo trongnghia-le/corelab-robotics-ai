@@ -1,28 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" font-family="Inter, Arial, sans-serif" font-size="14">
-<rect width="760" height="340" fill="#191b1f" rx="12"/>
-<text x="20" y="28" fill="#e5e7eb" font-size="16" font-weight="bold">IoU = intersection / union</text>
-<text x="420" y="28" fill="#e5e7eb" font-size="16" font-weight="bold">Precision-recall (ranked detections)</text>
-<rect x="40" y="60" width="150" height="120" fill="#53b2dd" fill-opacity="0.2" stroke="#53b2dd" stroke-width="2"/>
-<rect x="120" y="110" width="150" height="120" fill="#d97936" fill-opacity="0.2" stroke="#d97936" stroke-width="2"/>
-<rect x="120" y="110" width="70" height="70" fill="#9ccd4e" fill-opacity="0.5" stroke="#9ccd4e" stroke-width="2"/>
-<text x="46" y="80" fill="#53b2dd">ground truth A</text>
-<text x="150" y="250" fill="#d97936">detection B</text>
-<text x="124" y="150" fill="#e5e7eb">A and B</text>
-<text x="20" y="285" fill="#e5e7eb">IoU = |A and B| / (|A| + |B| - |A and B|)</text>
-<text x="20" y="310" fill="#9ccd4e">IoU 1 = identical, 0 = disjoint, no units</text>
-<line x1="440" y1="270" x2="740" y2="270" stroke="#e5e7eb"/>
-<line x1="440" y1="270" x2="440" y2="60" stroke="#e5e7eb"/>
-<text x="560" y="300" fill="#e5e7eb">recall</text>
-<text x="408" y="170" fill="#e5e7eb" transform="rotate(-90 408 170)">precision</text>
-<text x="436" y="288" fill="#e5e7eb" text-anchor="end">0</text>
-<text x="740" y="288" fill="#e5e7eb" text-anchor="end">1</text>
-<text x="430" y="272" fill="#e5e7eb" text-anchor="end">0</text>
-<text x="430" y="68" fill="#e5e7eb" text-anchor="end">1</text>
-<polygon fill="#9ccd4e" fill-opacity="0.25" stroke="#9ccd4e" stroke-width="2" stroke-dasharray="5 4" points="440,270 440,60 590,60 590,112 665,112 665,270"/>
-<polyline fill="none" stroke="#53b2dd" stroke-width="2.5" points="515,60 590,60 590,130 665,112 665,144"/>
-<circle cx="515" cy="60" r="4" fill="#53b2dd"/><circle cx="590" cy="60" r="4" fill="#53b2dd"/><circle cx="590" cy="130" r="4" fill="#53b2dd"/><circle cx="665" cy="112" r="4" fill="#53b2dd"/><circle cx="665" cy="144" r="4" fill="#53b2dd"/>
-<text x="460" y="200" fill="#9ccd4e">AP = 0.6875 (area)</text>
-<text x="680" y="130" fill="#53b2dd">raw</text>
-<text x="680" y="100" fill="#9ccd4e">envelope</text>
-<text x="450" y="228" fill="#e5e7eb" font-size="13">flags 1,1,0,1,0 with N = 4</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="Inter, sans-serif">
+<title>IoU of two boxes, and the AP of a ranked list</title>
+<desc>Left: boxes A=(20,20,80,100) and B=(50,40,110,120) with intersection 1800 and union 7800, IoU 0.231. Right: precision-recall points of the ranked flags [1,1,0,1,0] with N=4, the interpolated staircase and AP 0.6875.</desc>
+<rect width="900" height="520" rx="14" fill="#17181b"/>
+<defs><marker id="v08f1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" font-weight="bold" text-anchor="start">IoU of two boxes, and the AP of a ranked list</text>
+<rect x="32" y="72" width="416" height="408" rx="10" fill="#22252a"/>
+<text x="48" y="102" font-size="17" fill="#e9e7e3" font-weight="bold" text-anchor="start">IoU = intersection / union</text>
+<rect x="476" y="72" width="392" height="408" rx="10" fill="#22252a"/>
+<text x="492" y="102" font-size="17" fill="#e9e7e3" font-weight="bold" text-anchor="start">AP = area under the staircase</text>
+<rect x="169.0" y="184.0" width="105.0" height="210.0" rx="0" fill="#6fc693" fill-opacity="0.3"/>
+<rect x="64.0" y="114.0" width="210.0" height="280.0" rx="0" fill="none" stroke="#86abe2" stroke-width="2.5"/>
+<rect x="169.0" y="184.0" width="210.0" height="280.0" rx="0" fill="none" stroke="#e0904f" stroke-width="2.5"/>
+<text x="74.0" y="136.0" font-size="17" fill="#86abe2" font-weight="bold" text-anchor="start">A</text>
+<text x="367.0" y="454.0" font-size="17" fill="#e0904f" font-weight="bold" text-anchor="end">B</text>
+<text x="221.5" y="294.0" font-size="15" fill="#6fc693" font-weight="600" text-anchor="middle">A ∩ B</text>
+<line x1="524" y1="340" x2="836" y2="340" stroke="#2c3036" stroke-width="1"/>
+<text x="516" y="345" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="end">0</text>
+<line x1="524" y1="237.0" x2="836" y2="237.0" stroke="#2c3036" stroke-width="1"/>
+<text x="516" y="242.0" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="end">0.5</text>
+<line x1="524" y1="134" x2="836" y2="134" stroke="#2c3036" stroke-width="1"/>
+<text x="516" y="139" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="end">1</text>
+<line x1="524" y1="340" x2="524" y2="134" stroke="#2c3036" stroke-width="1"/>
+<text x="524" y="362" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">0</text>
+<line x1="602.0" y1="340" x2="602.0" y2="134" stroke="#2c3036" stroke-width="1"/>
+<text x="602.0" y="362" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">0.25</text>
+<line x1="680.0" y1="340" x2="680.0" y2="134" stroke="#2c3036" stroke-width="1"/>
+<text x="680.0" y="362" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">0.5</text>
+<line x1="758.0" y1="340" x2="758.0" y2="134" stroke="#2c3036" stroke-width="1"/>
+<text x="758.0" y="362" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">0.75</text>
+<line x1="836" y1="340" x2="836" y2="134" stroke="#2c3036" stroke-width="1"/>
+<text x="836" y="362" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">1</text>
+<line x1="524" y1="340" x2="836" y2="340" stroke="#a7adb5" stroke-width="1.5"/>
+<line x1="524" y1="340" x2="524" y2="134" stroke="#a7adb5" stroke-width="1.5"/>
+<text x="516" y="120" font-size="15" fill="#a7adb5" font-weight="normal" text-anchor="start">precision</text>
+<text x="680" y="386" font-size="15" fill="#a7adb5" font-weight="normal" text-anchor="middle">recall</text>
+<polygon points="524.0,340.0 524.0,134.0 680.0,134.0 680.0,185.5 758.0,185.5 758.0,340.0" fill="#86abe2" stroke="#86abe2" stroke-width="2.5" stroke-linejoin="round" fill-opacity="0.28"/>
+<circle cx="602.0" cy="134.0" r="5" fill="#22252a" stroke="#e0c169" stroke-width="2"/>
+<circle cx="680.0" cy="134.0" r="5" fill="#22252a" stroke="#e0c169" stroke-width="2"/>
+<circle cx="680.0" cy="202.7" r="5" fill="#22252a" stroke="#e0c169" stroke-width="2"/>
+<circle cx="758.0" cy="185.5" r="5" fill="#22252a" stroke="#e0c169" stroke-width="2"/>
+<circle cx="758.0" cy="216.4" r="5" fill="#22252a" stroke="#e0c169" stroke-width="2"/>
+<circle cx="500.0" cy="413.0" r="5" fill="#22252a" stroke="#e0c169" stroke-width="2"/>
+<text x="514" y="418" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="start">measured precision at each rank</text>
+<rect x="493" y="425" width="14" height="14" rx="0" fill="#86abe2" fill-opacity="0.28" stroke="#86abe2" stroke-width="1"/>
+<text x="514" y="437" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="start">interpolated envelope, area = AP</text>
+<text x="492" y="460" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="start">AP = 0.25·1 + 0.25·1 + 0.25·0.75 = 0.6875</text>
 </svg>

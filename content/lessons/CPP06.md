@@ -97,7 +97,7 @@ constexpr T clamp_to(T x, T lo, T hi) { return x < lo ? lo : (x > hi ? hi : x); 
 - **Class templates** work the same way: `RunningStats<double>` and `RunningStats<float>` are unrelated types. Since C++17, constructor arguments can deduce the template arguments (CTAD): `std::pair p{1, 2.5};`.
 - **Non-type parameters**: `template <std::size_t N>` takes a value; `std::array<int, N>` is the standard example.
 
-**Example.** Three calls of one template print the signature that the compiler stamped out (GCC's `__PRETTY_FUNCTION__`): `twice(21)` deduces `T = int`, `twice(1.25)` deduces `T = double`, and `twice<float>(2)` names `T` explicitly, so the argument 2 converts to `float`. Three calls make three independent functions, each compiled for its own type (cppreference, *Templates*). Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** Three calls of one template `twice` are compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`: `twice(21)`, `twice(1.25)` and `twice<float>(2)`. Each prints the signature that the compiler stamped out (GCC's `__PRETTY_FUNCTION__`). What does each call deduce or take as `T`, and how many functions result?
 
 ```cpp
 #include <iostream>
@@ -114,6 +114,8 @@ int main() {
   twice<float>(2);    // T given explicitly; the int argument converts to float
 }
 ```
+
+**Solution.** `twice(21)` deduces `T = int` from the argument, `twice(1.25)` deduces `T = double`, and `twice<float>(2)` names `T` explicitly, so the argument 2 converts to `float`. Three calls make three independent functions, each compiled for its own type (cppreference, *Templates*). The program prints:
 
 ```text
 T twice(T) [with T = int]
@@ -139,7 +141,7 @@ template <class T> auto describe(T) {
 
 Document the *semantic* assumptions too (e.g., "lo <= hi", "NaN passes through unchanged"), because the type system cannot check them.
 
-**Example.** `half` is meant for floating-point types only. For a `float` argument it prints 3.5. Compiled with `-DTRY_INT`, the call `half(7)` stops the build with the author's own message instead of performing an integer division that would give 3. With g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra` (first block: the program and its output without `-DTRY_INT`; second block: the compiler's answer with `-DTRY_INT`, one line that names the problem):
+**Example.** `half` is meant for floating-point types only and guards itself with `static_assert`. What does `half(7.0f)` print, and what does the compiler do when the program is built with `-DTRY_INT`, which adds the call `half(7)`? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -158,6 +160,8 @@ int main() {
 #endif
 }
 ```
+
+**Solution.** Without `-DTRY_INT` only `half(7.0f)` is instantiated with `T = float`: the assertion holds and $7.0/2=3.5$ is printed (first block). With `-DTRY_INT` the call `half(7)` instantiates `T = int`, `std::is_floating_point_v<int>` is false, and the build stops with the author's own message instead of performing an integer division that would give 3 (second block, one line that names the problem):
 
 ```text
 3.5
@@ -181,7 +185,7 @@ static_assert(sq[5] == 25);
 ```
 Beware of overflow in constant expressions: signed overflow is a compile error there, which is a feature. For `int` squares the first overflowing index is 46341, since $46341^2=2{,}147{,}488{,}281>2^{31}-1$.
 
-**Example.** A 12-bit ADC with a 3.3 V reference converts counts to millivolts with $\text{mv}=\lfloor 3300\,c/4095\rfloor$. The two `static_assert`s and the three-entry table are evaluated by the compiler (the table sits in the binary); `mv(argc + 1000)` has a run-time argument, so the same function simply runs. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** A 12-bit ADC with a 3.3 V reference converts counts to millivolts with $\text{mv}=\lfloor 3300\,c/4095\rfloor$. The program checks $c=0$ and $c=4095$ with `static_assert`, builds a three-entry table for $c=1024,2048,3072$ and also calls `mv(argc + 1000)`. Which parts does the compiler evaluate, and what does the program print? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <array>
@@ -197,6 +201,8 @@ int main(int argc, char**) {
 }
 ```
 
+**Solution.** The two `static_assert`s and the three-entry table are constant-expression contexts, so the compiler evaluates them (the table sits in the binary). The assertions hold: $\text{mv}(0)=0$ and $\text{mv}(4095)=3300\cdot4095/4095=3300$. The table is $\lfloor 3300\cdot1024/4095\rfloor=825$, $\lfloor 3300\cdot2048/4095\rfloor=1650$ and $\lfloor 3300\cdot3072/4095\rfloor=2475$. `mv(argc + 1000)` has a run-time argument ($\text{argc}=1$, so $c=1001$), so the same function simply runs: $\lfloor 3300\cdot1001/4095\rfloor=806$. One `constexpr` function thus serves both compile time and run time. The program prints:
+
 ```text
 825 1650 2475 806
 ```
@@ -209,7 +215,7 @@ int main(int argc, char**) {
 - Range-for: `for (const auto& s : samples)`; the loop variable is a reference to avoid copies.
 - Prefer algorithms and standard types over raw loops and pointers, and uniform initialization with braces (which also forbids narrowing: `int i{2.5}` is an error).
 
-**Example.** A log of (time in s, current in A) samples is searched for the first sample above a limit. `std::optional` replaces a sentinel such as $-1$, the structured binding names `t` and `v`, and the range-for takes `const auto&` so that no sample is copied. For the limit 9 A there is no such sample and the program says so, instead of returning a magic value. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** A log of (time in s, current in A) samples $\{(0.1,2.0),(0.2,4.5),(0.3,6.0)\}$ is searched for the first sample above a limit, once for 4 A and once for 9 A. `std::optional` replaces a sentinel such as $-1$, the structured binding names `t` and `v`, and the range-for takes `const auto&` so that no sample is copied. What does the program print for each limit? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -240,6 +246,8 @@ int main() {
 }
 ```
 
+**Solution.** For the limit 4 A the first sample with $v>4$ is $(0.2,4.5)$, since $2.0$ is not above $4$; `first_above` returns it and the binding gives `t=0.2 v=4.5`. For the limit 9 A no sample qualifies ($6.0\le 9$), so the function returns `std::nullopt` and the program says so, instead of returning a magic value. The program prints:
+
 ```text
 limit 4: t=0.2 v=4.5
 limit 9: none
@@ -251,7 +259,7 @@ For streaming mean and variance, maintaining sums of squares loses precision. We
 $$\bar x_n=\bar x_{n-1}+\frac{\delta}{n},\qquad M_n=M_{n-1}+\delta\,(x_n-\bar x_n),\qquad s^2=\frac{M_n}{n-1}.$$
 The naive formula $(\sum x^2-n\bar x^2)/(n-1)$ subtracts two huge, nearly equal numbers (catastrophic cancellation).
 
-**Example.** Four readings $10^{10}+\{1,4,4,7\}$ have true sample variance $18/3=6$ (deviations $-3,0,0,3$). Both formulas run in `double` on the same data: the naive sums print a negative number, the Welford update prints 6. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** Four readings $10^{10}+\{1,4,4,7\}$ have true sample variance $18/3=6$ (deviations $-3,0,0,3$ from the mean $10^{10}+4$). Both the naive running-sums formula and the Welford update run in `double` on the same data. What does each print? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -273,6 +281,8 @@ int main() {
   std::cout << "naive " << naive << ", Welford " << m2 / (n - 1) << '\n';
 }
 ```
+
+**Solution.** The naive formula computes $(q-n\bar x^2)/(n-1)$ from $q=\sum x^2\approx4\cdot10^{20}$ and $n\bar x^2$, two numbers of that size whose difference is only $18$. Doubles near $4\cdot10^{20}$ (between $2^{68}$ and $2^{69}$) are spaced by $2^{68-52}=65\,536$, so the difference is lost in rounding and comes out as $-65\,536/3=-21\,845.3$, a negative variance. The Welford update only works with small deviations: $\delta=1\cdot10^{10}+1$ gives mean $10^{10}+1$ and $M=0$; then $\delta=3$, mean $10^{10}+2.5$, $M=4.5$; $\delta=1.5$, mean $10^{10}+3$, $M=6$; $\delta=4$, mean $10^{10}+4$, $M=18$, so the variance is $18/3=6$. The program prints:
 
 ```text
 naive -21845.3, Welford 6
@@ -408,7 +418,7 @@ One rule breaks the pattern. If `P` is `T&&` with `T` a bare, cv-unqualified tem
 
 *Figure: the table of this section as a picture. An lvalue makes `T` an lvalue reference and collapsing keeps the parameter an lvalue reference; an rvalue makes `T` a plain type and the parameter `T&&` an rvalue reference. `std::forward<T>(x)` then hands on the same category.*
 
-**Example.** `sink` reports the value category its caller passed, using `std::is_lvalue_reference_v<T>`. The named string is an lvalue, so `T` is deduced as `std::string&`; the temporary and the result of `std::move` are rvalues, so `T` is `std::string`. The printed sizes (3, 4, 3) show that each call received its own string. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** `sink` reports the value category its caller passed, using `std::is_lvalue_reference_v<T>` and the size of the string. It is called with a named `std::string` ("arm"), with a temporary `std::string("hand")` and with `std::move(name)`. What does each call print, and how is `T` deduced? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -429,6 +439,8 @@ int main() {
 }
 ```
 
+**Solution.** The named string is an lvalue, so `T` is deduced as `std::string&` and the call prints `lvalue 3`. The temporary is an rvalue, so `T` is `std::string` and the call prints `rvalue 4`. `std::move(name)` casts the lvalue back to an rvalue, so `T` is `std::string` again and the call prints `rvalue 3` (`sink` only reads the size, so `name` still holds "arm"). The printed sizes (3, 4, 3) show that each call received its own string. The program prints:
+
 ```text
 lvalue 3
 rvalue 4
@@ -445,7 +457,7 @@ The direction matters for floating point because `+` on `double` is not associat
 
 *Figure: the evaluation order of the two folds on the pack $(1,10^{16},-10^{16})$. In the left fold the 1 is added to $10^{16}$ first and is lost to the tie-to-even rule; in the right fold the large terms cancel first and the 1 survives (spacing of doubles after cppreference, Fold expressions, and the IEEE 754 round-to-even rule used in the text).*
 
-**Example.** Subtraction is not associative, so the direction of a fold is visible even with integers. For the pack $(10,3,2)$ the left fold is $(10-3)-2=5$ and the right fold $10-(3-2)=9$; the binary fold `(0.0 + ... + args)` of an empty pack is `0`, where the unary fold would be ill-formed for `+` (cppreference, *Fold expressions*). Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** Subtraction is not associative, so the direction of a fold is visible even with integers. For the pack $(10,3,2)$ compute the left fold `(... - args)` and the right fold `(args - ...)`, and the binary fold `(0.0 + ... + args)` of an empty pack. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -459,6 +471,8 @@ int main() {
 }
 ```
 
+**Solution.** The left fold groups from the left: $(10-3)-2=7-2=5$. The right fold groups from the right: $10-(3-2)=10-1=9$. The binary fold of an empty pack leaves only the initial value, `0.0`, printed as `0`; a unary fold of an empty pack would be ill-formed for `+` (cppreference, *Fold expressions*), so the binary form is the safe one. The program prints:
+
 ```text
 5 9 0
 ```
@@ -467,7 +481,7 @@ int main() {
 
 A call is evaluated at compile time only if every step is a *core constant expression*. Division by zero, reading outside an array, signed overflow, or evaluating a `throw` are not, so the compiler rejects them with a diagnostic in a `static_assert` or `constexpr` initializer, whereas at run time the same code has undefined behaviour (or throws). For example with GCC 11: `static_assert(10 / 0 == 0)` via a `constexpr` function reports `'(10 / 0)' is not a constant expression`. A useful consequence is that `constexpr` evaluation behaves like a free undefined-behaviour checker for the inputs you test. A `constexpr` function that is neither a template nor defaulted and for which *no* argument values give a constant expression is ill-formed, no diagnostic required (cppreference, *constexpr specifier*), so never write such a function and rely on the compiler to notice.
 
-**Example.** $12!=479\,001\,600$ fits in a 32-bit `int` but $13!=6\,227\,020\,800$ does not. The first `static_assert` compiles; compiling the program with `-DTRY_13` stops at the second, because signed overflow is not a constant expression, whereas the same call at run time would silently be undefined behaviour:
+**Example.** A `constexpr` factorial `fact(n)` uses a 32-bit `int`. Does `static_assert(fact(12) == 479001600)` compile, and what happens to `static_assert(fact(13) > 0)` when the program is compiled with `-DTRY_13`? ($12!=479\,001\,600$ and $13!=6\,227\,020\,800$, the `int` maximum being $2^{31}-1=2\,147\,483\,647$.)
 
 ```cpp
 constexpr int fact(int n) { return n <= 1 ? 1 : n * fact(n - 1); }
@@ -480,13 +494,13 @@ static_assert(fact(13) > 0);            // 13! = 6227020800 does not
 int main() {}
 ```
 
+**Solution.** $12!=479\,001\,600<2\,147\,483\,647$, so the first `static_assert` compiles. $13!=6\,227\,020\,800>2\,147\,483\,647$ overflows a 32-bit `int`; signed overflow is not a constant expression, so with `-DTRY_13` the compiler stops at the second `static_assert`, whereas the same call at run time would silently be undefined behaviour. The compiler's answer to `g++ -std=c++20 -DTRY_13 -c fact.cpp` (g++ 11.4.0) is:
+
 ```text
 fact.cpp:5:24: error: non-constant condition for static assertion
 fact.cpp:5:19:   in ‘constexpr’ expansion of ‘fact(13)’
 fact.cpp:5:24: error: overflow in constant expression [-fpermissive]
 ```
-
-The block below the program is the compiler's answer to `g++ -std=c++20 -DTRY_13 -c fact.cpp` (g++ 11.4.0).
 
 ### Overload resolution and SFINAE: removing candidates instead of failing
 
@@ -500,7 +514,7 @@ Compare the two tools. SFINAE chooses *between overloads*: the failing candidate
 
 *Figure: overload resolution with SFINAE for the two overloads of the example below. A candidate whose return type is an invalid expression is removed, so each of the first three calls has exactly one survivor; the fourth call loses both candidates and is an error at the call site.*
 
-**Example.** `to_text` has two overloads whose return types are `decltype(std::to_string(x))` and `decltype(x.name())`. For `42` and `2.5` the second candidate has an invalid return type and disappears; for a `Joint` the first disappears, so each of these calls has exactly one viable candidate. If `main` also printed `to_text("x")` both candidates would be removed, and the compiler would report the line shown after the output. Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+**Example.** `to_text` has two overloads whose return types are `decltype(std::to_string(x))` and `decltype(x.name())`. Which candidates are viable for `to_text(42)`, `to_text(2.5)` and `to_text(Joint{"elbow"})`, what does the program print, and what does the compiler report if `main` also prints `to_text("x")`? Compiled with g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
 
 ```cpp
 #include <iostream>
@@ -515,6 +529,8 @@ int main() {
   std::cout << to_text(42) << ' ' << to_text(2.5) << ' ' << to_text(Joint{"elbow"}) << '\n';
 }
 ```
+
+**Solution.** For `42` and `2.5` the second candidate has an invalid return type (`int` and `double` have no `.name()`), so it disappears and the first returns `std::to_string`: `42` and `2.500000`. For a `Joint` the first candidate disappears (`std::to_string` has no overload for it) and the second returns the label `elbow`; each of these calls has exactly one viable candidate. For `to_text("x")` both candidates are removed, so no function is viable and the compiler reports the second block below, the line shown after the output. The program prints (first block), and the error comes from the extra call (second block):
 
 ```text
 42 2.500000 elbow

@@ -131,14 +131,32 @@ With failure counts $F_j$ per root cause and $N$ episodes, fixing cause $j$ comp
 
 All values below are illustrative, not from a real run.
 
-A reference run produced 120 nominal episodes (seeds 1000 to 1119), 80 twin episodes (seeds 1120 to 1199) and four ablations of 30 paired seeds (seeds 1000 to 1029). Tuning used seeds 0 to 99 only.
+### Gates, sim-to-twin gap, four paired ablations with Holm, failure budget and recalibration
+
+**Problem.** A reference run produced 120 nominal episodes (seeds 1000 to 1119, 94 successes), 80 twin episodes (seeds 1120 to 1199, 46 successes before recalibration) and four ablations of 30 paired seeds (seeds 1000 to 1029); tuning used seeds 0 to 99 only. The ablations succeeded in 12, 18, 22 and 20 of 30 episodes (rates 0.40, 0.60, 0.73, 0.67) for "no landmark updates", "no DR policy", "scripted grasp instead of learned" and "safety supervisor off". The acceptance rules are: nominal rate at least 0.70 with Wilson lower bound at least 0.60, twin rate at least 0.50, median perception-to-command latency at most 100 ms, and recalibration with at least 25 % relative improvement.
+
+- (a) Compute the Wilson intervals of the nominal and twin results and decide the nominal gate.
+- (b) Compute the gap $\Delta$ between nominal and twin and its Newcombe interval.
+- (c) Find the paired counts $b$ and $c$, the exact McNemar $p$-values and effects of the ablations, and apply Holm at 0.05 over the four tests; write the honest sentence.
+- (d) Check that the failure counts (`GRASP_SLIP` 36, `DETECTION` 22, `PLACE_MISS` 14, `LOCALISATION` 13, `NAV_TIMEOUT` 9, `PARSE` 5, `OTHER` 5, `SAFETY_STOP` 3, `FIRMWARE_LINK` 1) match the failed episodes, and evaluate the recalibration (cross-track RMSE 0.112 m to 0.071 m) and the latency (median 71 ms).
+
+**Solution.**
+
+1. *Nominal.* $\hat p=94/120=0.783$; the Wilson 95 % interval is $[0.701,\,0.848]$. The rate is at least 0.70 and the lower bound 0.701 is at least 0.60: the gate passes.
+2. *Twin.* $\hat p=46/80=0.575$ with Wilson $[0.466,\,0.677]$; it meets the twin floor of 0.50.
+3. *Gap.* $\Delta=0.783-0.575=0.208$. Newcombe: lower $=\Delta-\sqrt{(\hat p_1-\ell_1)^2+(u_2-\hat p_2)^2}=0.208-\sqrt{0.0818^2+0.1024^2}=0.208-0.131=0.077$; upper $=\Delta+\sqrt{(u_1-\hat p_1)^2+(\hat p_2-\ell_2)^2}=0.208+\sqrt{0.0643^2+0.1093^2}=0.208+0.127=0.335$. The gap is real (interval above 0) but its size is uncertain because the twin sample is small.
+4. *Paired counts.* Each ablation rate plus its effect gives the same baseline on the 30 paired seeds: $0.40+0.433=0.60+0.233=0.733+0.10=0.833$, that is 25 baseline successes in 30. For an ablation with $k$ successes, $b-c=25-k$: 13, 7, 3 and 5. With the counts of the table, $15-2=13$, $11-4=7$, $7-4=3$ and $8-3=5$ agree, and the effect is $(b-c)/30$: $+43.3$, $+23.3$, $+10.0$, $+16.7$ points.
+5. *Exact McNemar.* $p=2\,P(X\le\min(b,c))$ for $X\sim\text{Bin}(b+c,\tfrac12)$. For $b=15$, $c=2$: $2\,(1+17+136)/2^{17}=308/131072=0.00235$. The same formula gives 0.118 for (11, 4), 0.549 for (7, 4) and 0.227 for (8, 3).
+6. *Holm.* Four tests at 0.05 have a chance of at least one false alarm of $1-0.95^4=0.185$ (about 0.19), so compare sorted $p$ with $0.05/4=0.0125$, $0.05/3=0.0167$, $0.05/2=0.025$, $0.05/1=0.05$. The smallest, $0.0023<0.0125$, survives (adjusted $4\times0.0023=0.0094$). The next, $0.118>0.0167$, fails, and Holm stops: the other three are not significant.
+7. *Sentence.* "Removing landmark updates reduced success by about 43 points (paired exact p = 0.0023, Holm-adjusted 0.009); we found no reliable evidence for the other three effects at n = 30."
+8. *Failure budget.* Failed episodes: nominal $120-94=26$, twin $80-46=34$, ablations $120-(12+18+22+20)=48$: total 108. The causes sum to $36+22+14+13+9+5+5+3+1=108$, so every failure carries a cause. The largest bar, `GRASP_SLIP` at 36 of 108 (33 %), is the first thing to fix.
+9. *Recalibration.* Relative improvement $=(0.112-0.071)/0.112=0.366\approx37\ \%\ge25\ \%$: passes.
+10. *Other rules.* Median latency $71\ \text{ms}\le100$ ms. Tuning seeds 0-99 do not overlap the evaluation seeds 1000-1199.
 
 | Split | n | Successes | Rate | Wilson 95 % |
 |---|---|---|---|---|
 | nominal | 120 | 94 | 0.783 | [0.701, 0.848] |
 | twin (before recalibration) | 80 | 46 | 0.575 | [0.466, 0.677] |
-
-The nominal gate passes: the rate is at least 0.70 and the lower bound 0.701 is at least 0.60. The gap is $\Delta=0.208$ with Newcombe interval $[0.077,0.335]$: real, but its size is uncertain (the twin sample is small).
 
 | Ablation (30 paired seeds) | Rate | $b$ | $c$ | exact p | effect (pp) |
 |---|---|---|---|---|---|
@@ -146,10 +164,6 @@ The nominal gate passes: the rate is at least 0.70 and the lower bound 0.701 is 
 | no DR policy | 0.60 | 11 | 4 | 0.118 | +23.3 |
 | scripted grasp instead of learned | 0.73 | 7 | 4 | 0.549 | +10.0 |
 | safety supervisor off | 0.67 | 8 | 3 | 0.227 | +16.7 |
-
-With Holm over four tests the smallest p-value must beat $0.05/4=0.0125$: only "no landmarks" does ($4\times0.0023=0.0094$ adjusted). The honest sentence for the report is: "Removing landmark updates reduced success by about 43 points (paired exact p = 0.0023, Holm-adjusted 0.009); we found no reliable evidence for the other three effects at n = 30."
-
-Failures over the 108 failed episodes of all runs (26 nominal + 34 twin + 48 in the four ablations): `GRASP_SLIP` 36, `DETECTION` 22, `PLACE_MISS` 14, `LOCALISATION` 13, `NAV_TIMEOUT` 9, `PARSE` 5, `OTHER` 5, `SAFETY_STOP` 3, `FIRMWARE_LINK` 1. The counts sum to 108 and every failure carries a cause. Recalibrating wheel radius and track width on the twin reduced the cross-track RMSE from 0.112 m to 0.071 m, a relative improvement of 37 %, which passes the 25 % criterion. Perception-to-command median latency: 71 ms.
 
 The numbers above can be recomputed with this script (it runs with the standard library plus `evalkit.py`):
 
@@ -170,6 +184,12 @@ ps = sorted([paired_mcnemar(15, 2), 0.118, 0.227, 0.549])
 adj = [min(1.0, (len(ps) - i) * p) for i, p in enumerate(ps)]
 print("Holm step-down thresholds 0.05/4, 0.05/3, 0.05/2, 0.05/1; first adjusted p =", round(adj[0], 4))
 ```
+
+
+
+**Check.** The script prints the Wilson lines, the exact $p$ for (15, 2) and (8, 3), and the first Holm-adjusted $p$ (0.0094); an independent computation of the exact binomial sums and of the Newcombe formula gave the same values to three decimals. Sanity bounds: every $p$ is in $[0,1]$ and grows as the effect $(b-c)/30$ shrinks (0.0023, 0.118, 0.227, 0.549 for effects 43.3, 23.3, 16.7, 10.0 points), and the ablation failures $18+12+8+10=48$ match the failure budget of step 8.
+
+**Takeaway.** With four ablations on 30 paired seeds only a large effect survives correction; report the effect, the exact paired $p$, the Holm-adjusted value and what could not be shown, and let the failure counts, summing to the number of failed episodes, direct the next fix.
 
 ## Exercises
 

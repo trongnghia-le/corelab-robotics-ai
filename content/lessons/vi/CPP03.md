@@ -29,7 +29,7 @@ Có hai trực giác sai đáng gọi tên. Thứ nhất là cho rằng `std::mo
 
 Một đối tượng cục bộ bị hủy khi scope của nó kết thúc, theo thứ tự ngược với thứ tự khởi tạo. Destructor chạy trong quá trình **stack unwinding** (tháo ngăn xếp) nếu có exception lan truyền. Vì vậy tài nguyên do một đối tượng cục bộ sở hữu được giải phóng trên mọi đường thoát mà không cần `finally`. Các member bị hủy theo thứ tự ngược với thứ tự khai báo, sau phần thân destructor. Destructor không được throw (nó mặc định là `noexcept`).
 
-**Ví dụ.** Một routine telemetry mở cổng IMU, rồi cổng GPS, rồi gặp một gói dữ liệu hỏng và throw (biên dịch và chạy với g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một routine telemetry mở cổng IMU, rồi cổng GPS, rồi gặp một gói dữ liệu hỏng và throw (biên dịch và chạy với g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Các cổng được đóng theo thứ tự nào, và trước hay sau khi handler in ra?
 
 ```cpp
 #include <cstdio>
@@ -46,6 +46,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Một đối tượng cục bộ bị hủy khi scope của nó kết thúc, theo thứ tự ngược với thứ tự xây, kể cả trong lúc stack unwinding. Vì vậy các cổng đóng theo thứ tự `gps1`, `imu0`, ngược với thứ tự mở, và cả hai lần đóng diễn ra trước khi handler in ra; `run` không chứa câu lệnh dọn dẹp nào. Đây là [except.ctor] ¶2 của chuẩn C++: mỗi đối tượng automatic đã được xây xong bị hủy, theo thứ tự ngược với thứ tự hoàn tất việc xây, khi quyền điều khiển chuyển tới handler (xem thêm Core Guidelines E.6). Chương trình in ra:
+
 ```text
 open  imu0
 open  gps1
@@ -53,8 +55,6 @@ close gps1
 close imu0
 caught: bad checksum
 ```
-
-Các cổng đóng theo thứ tự `gps1`, `imu0`, ngược với thứ tự mở, và cả hai lần đóng diễn ra trước khi handler in ra; `run` không chứa câu lệnh dọn dẹp nào. Đây là [except.ctor] ¶2 của chuẩn C++: mỗi đối tượng automatic đã được xây xong bị hủy, theo thứ tự ngược với thứ tự hoàn tất việc xây, khi quyền điều khiển chuyển tới handler (xem thêm Core Guidelines E.6).
 
 ![Dòng thời gian của run(): imu0 và gps1 mở, một exception bị throw, gps1 rồi imu0 đóng trong lúc stack unwinding, main bắt lỗi](/lesson-figures/CPP03-2.svg)
 
@@ -65,7 +65,7 @@ Các cổng đóng theo thứ tự `gps1`, `imu0`, ngược với thứ tự m�
 - **Rule of zero**: nếu class của bạn chỉ sở hữu tài nguyên thông qua các member vốn đã tự quản lý chúng (`std::vector`, `std::string`, `std::unique_ptr`), hãy viết *không* hàm thành viên đặc biệt nào. Những hàm do compiler sinh ra là đúng. Hãy ưu tiên cách này.
 - **Rule of three/five**: nếu bạn buộc phải quản lý một tài nguyên thô, hãy định nghĩa hoặc xóa (delete) tất cả: destructor, copy constructor, copy assignment, move constructor, move assignment. Một class có destructor giải phóng bộ nhớ nhưng copy mặc định sẽ có hai đối tượng cùng sở hữu một con trỏ: double free.
 
-**Ví dụ.** `RawLog` sở hữu 5 double qua một con trỏ thô và không định nghĩa phép copy nào; `Log` chứa một `std::vector` và một `std::string` và không định nghĩa special member nào cả. Mỗi loại được copy một lần (thông báo chẩn đoán đi vào `stderr`; g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** `RawLog` sở hữu 5 double qua một con trỏ thô và không định nghĩa phép copy nào; `Log` chứa một `std::vector` và một `std::string` và không định nghĩa special member nào cả. Mỗi loại được copy một lần (thông báo chẩn đoán đi vào `stderr`; g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Mỗi bản copy có dùng chung vùng nhớ với bản gốc không, và chuyện gì xảy ra khi cả hai đối tượng bị hủy?
 
 ```cpp
 #include <cstdio>
@@ -89,13 +89,13 @@ int main() {
 }
 ```
 
+**Lời giải.** Bản copy của `Log` có vùng nhớ riêng, vì các member biết tự copy: rule of zero (Core Guidelines C.20) không tốn gì. Bản copy của `RawLog` do copy constructor ngầm định tạo ra, nó chỉ chép con trỏ, nên dùng chung khối 40 byte với bản gốc; khi cả hai ra khỏi scope, AddressSanitizer báo lần `delete[]` thứ hai trên cùng địa chỉ là double free, đúng điều mà C.21 (định nghĩa hoặc xóa cả năm hàm cùng nhau) ngăn chặn. Chương trình in ra (báo cáo của sanitizer được rút gọn):
+
 ```text
 Log copy shares storage:    0
 RawLog copy shares storage: 1
 ==PID==ERROR: AddressSanitizer: attempting double-free on 0x... in thread T0:   (shortened)
 ```
-
-Bản copy của `Log` có vùng nhớ riêng, vì các member biết tự copy: rule of zero (Core Guidelines C.20) không tốn gì. Bản copy của `RawLog` dùng chung khối 40 byte với bản gốc, và khi cả hai ra khỏi scope, AddressSanitizer báo lần `delete[]` thứ hai trên cùng địa chỉ là double free, đúng điều mà C.21 (định nghĩa hoặc xóa cả năm hàm cùng nhau) ngăn chặn.
 
 ### Value category và move
 
@@ -109,7 +109,7 @@ Chi phí: copy $n$ double tốn $O(n)$ thời gian và $8n$ byte; một move là
 
 Vì sao `noexcept` quan trọng: khi `std::vector` phải tăng dung lượng, nó di dời (relocate) các phần tử. Để giữ strong exception guarantee, nó dùng `std::move_if_noexcept`: nếu move constructor có thể throw và kiểu đó cũng copy được, nó sẽ *copy* thay vì move. Quên `noexcept` lặng lẽ biến các phép di dời $O(1)$ thành các phép copy $O(n)$.
 
-**Ví dụ.** Một logger giữ 6000 mẫu (48.000 byte) trong một `std::vector<double>` và giao toàn bộ bản ghi cho một uploader. `std::move` chỉ là phép ép kiểu; constructor move của vector mới làm việc (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một logger giữ 6000 mẫu (48.000 byte) trong một `std::vector<double>` và giao toàn bộ bản ghi cho một uploader. `std::move` chỉ là phép ép kiểu; constructor move của vector mới làm việc (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Vector mới có dùng lại khối cũ không, các kích thước sau đó là bao nhiêu, và vector đã bị move có dùng tiếp được không?
 
 ```cpp
 #include <cstdio>
@@ -126,19 +126,19 @@ int main() {
 }
 ```
 
+**Lời giải.** Constructor move lấy cắp con trỏ data và đặt nguồn về null (hai phép ghi cỡ con trỏ, $O(1)$), nên `w` có đúng khối nhớ đó (hai con trỏ data so sánh bằng nhau) và không có việc copy 48.000 byte nào. `v` rỗng với thư viện này (`v.size() = 0`, `w.size() = 6000`) và vẫn nhận `push_back`: chuẩn chỉ bảo đảm trạng thái hợp lệ nhưng không xác định cho đối tượng moved-from, nên code portable chỉ nên gán lại hoặc hủy nó, không đọc từ nó. Chương trình in ra:
+
 ```text
 w.data() == old v.data(): 1
 v.size() = 0, w.size() = 6000
 after push_back: v.size() = 1
 ```
 
-`w` có đúng khối nhớ đó (hai con trỏ data so sánh bằng nhau), nên phép move tốn hai phép ghi cỡ con trỏ và không copy 48.000 byte nào. `v` rỗng với thư viện này và vẫn nhận `push_back`: chuẩn chỉ bảo đảm trạng thái hợp lệ nhưng không xác định cho đối tượng moved-from, nên code portable chỉ nên gán lại hoặc hủy nó, không đọc từ nó.
-
 ### Giá trị trả về và `std::move`
 
 `return local;` đã coi `local` là rvalue và cho phép copy elision (NRVO). Viết `return std::move(local);` phá NRVO và ép một phép move, và compiler sẽ cảnh báo (`-Wpessimizing-move`). Chỉ dùng `std::move` khi truyền một lvalue mà bạn sẽ không dùng lại.
 
-**Ví dụ.** Một kiểu pose nhỏ đếm số lần copy và move. Ba hàm trả về một biến cục bộ theo các cách khác nhau (g++ 11.4.0, `-std=c++20 -Wall -Wextra`, không tối ưu hóa):
+**Ví dụ.** Một kiểu pose nhỏ đếm số lần copy và move. Ba hàm trả về một biến cục bộ theo các cách khác nhau: một trong hai biến có tên chọn bằng `if`, biểu thức điều kiện `f ? a : b`, và `std::move(a)` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`, không tối ưu hóa). Mỗi cách return tốn bao nhiêu lần copy và move?
 
 ```cpp
 #include <utility>
@@ -158,14 +158,14 @@ int main() {
 }
 ```
 
+**Lời giải.** Hai return có tên vẫn tốn một phép move: khi hàm trả về các biến cục bộ khác nhau, không có đối tượng duy nhất nào được dựng thẳng vào vùng nhớ của bên gọi, nên compiler quay về phép implicit move của [class.copy.elision] ¶3 (tên được trả về trước hết được xử lý như một rvalue). Biểu thức điều kiện `f ? a : b` không phải một tên đơn thuần, nên quy tắc đó không áp dụng và kiểu bị *copy*. `return std::move(a)` tốn một phép move và gây ra cảnh báo ở dưới. Nguyên tắc vẫn là: trả về biến cục bộ bằng tên của nó. Bản build phát ra cảnh báo ghi ở dòng đầu, và chương trình in ra:
+
 ```text
 warning: moving a local object in a return statement prevents copy elision [-Wpessimizing-move]
 two named returns : copies=0 moves=1
 conditional expr  : copies=1 moves=0
 return std::move  : copies=0 moves=1
 ```
-
-Hai return có tên vẫn tốn một phép move: khi hàm trả về các biến cục bộ khác nhau, không có đối tượng duy nhất nào được dựng thẳng vào vùng nhớ của bên gọi, nên compiler quay về phép implicit move của [class.copy.elision] ¶3 (tên được trả về trước hết được xử lý như một rvalue). Biểu thức điều kiện `f ? a : b` không phải một tên đơn thuần, nên quy tắc đó không áp dụng và kiểu bị *copy*. `return std::move(a)` tốn một phép move và gây ra cảnh báo ở trên. Nguyên tắc vẫn là: trả về biến cục bộ bằng tên của nó.
 
 ### Quyền sở hữu trong chữ ký hàm
 
@@ -179,7 +179,7 @@ Hai return có tên vẫn tốn một phép move: khi hàm trả về các biế
 
 Dùng `std::make_unique<T>(args...)`; nó an toàn với exception và tránh `new` trần. Với các API của C, hãy cho `unique_ptr` một custom deleter: `std::unique_ptr<FILE, int(*)(FILE*)> f(fopen(p, "r"), &fclose);`.
 
-**Ví dụ.** Một pipeline giữ nguồn video trong suốt đời của nó, còn `show` chỉ nhìn nó (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một pipeline giữ nguồn video trong suốt đời của nó, còn `show` chỉ nhìn nó (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Sau `show(*s)` và sau `set_source(std::move(s))`, ai sở hữu nguồn, và `set_source(s)` có biên dịch được không?
 
 ```cpp
 #include <cstdio>
@@ -200,12 +200,12 @@ int main() {
 }
 ```
 
+**Lời giải.** `show(const Source&)` chỉ mượn, nên bên gọi vẫn giữ `s`; `set_source(std::unique_ptr<Source>)` nhận quyền sở hữu, và chỗ gọi phải viết `std::move(s)`, nên việc bàn giao hiện rõ và sau đó `s` là null (được bảo đảm với `unique_ptr`) còn pipeline giữ id 42. Viết `set_source(s)` thì không biên dịch được: g++ báo `use of deleted function 'std::unique_ptr<...>::unique_ptr(const std::unique_ptr<...>&)'`. Đó là các quy tắc F.7, R.32 và R.33 của Core Guidelines được thực thi bởi compiler. Chương trình in ra:
+
 ```text
 show(42)
 caller's pointer is null: 1, pipeline holds id 42
 ```
-
-`show(const Source&)` chỉ mượn, nên bên gọi vẫn giữ `s`; `set_source(std::unique_ptr<Source>)` nhận quyền sở hữu, và chỗ gọi phải viết `std::move(s)`, nên việc bàn giao hiện rõ và sau đó `s` là null (được bảo đảm với `unique_ptr`). Viết `set_source(s)` thì không biên dịch được: g++ báo `use of deleted function 'std::unique_ptr<...>::unique_ptr(const std::unique_ptr<...>&)'`. Đó là các quy tắc F.7, R.32 và R.33 của Core Guidelines được thực thi bởi compiler.
 
 ### Wrapper RAII cho handle của C: custom deleter và scope guard
 
@@ -213,7 +213,7 @@ Không phải tài nguyên nào cũng là bộ nhớ. Một thư viện C đưa 
 
 Mẫu commit/rollback là cách dùng quan trọng: kích hoạt guard trước, làm phần việc có thể throw, gọi `dismiss()` cuối cùng. Cần hai lưu ý. Callable chạy bên trong destructor nên không được throw (E.16, C.36). Và lambda capture theo tham chiếu không được sống lâu hơn thứ nó tham chiếu, nên guard được khai báo sau các đối tượng mà lambda của nó dùng. Hãy ưu tiên một lớp thật có destructor (E.6) mỗi khi tài nguyên xứng đáng có tên riêng.
 
-**Ví dụ.** Một bước hiệu chuẩn phải rollback kết quả dở dang khi cảm biến quá thời gian, và một `FILE*` cần một deleter (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một bước hiệu chuẩn phải rollback kết quả dở dang khi cảm biến quá thời gian, và một `FILE*` cần một deleter (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Giai đoạn 1 và 2 in ra gì với scope guard, và một `unique_ptr<FILE>` với deleter dạng con trỏ hàm, với lớp deleter rỗng, và `unique_ptr<int>` lớn bao nhiêu byte?
 
 ```cpp
 #include <cstdio>
@@ -241,6 +241,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Giai đoạn 1 chạy tới `g.on = false`, nên chỉ có thông báo commit. Ở giai đoạn 2, lệnh throw bỏ qua dòng đó và destructor của guard in ra rollback trước khi handler chạy. Các dòng kích thước cho thấy giá của lựa chọn deleter: deleter dạng con trỏ hàm được lưu trong đối tượng và làm smart pointer thành 16 byte, còn lớp rỗng `FileCloser` giữ nó ở 8 byte, bằng một con trỏ thường. Chương trình in ra:
+
 ```text
 commit 1
 rollback 2
@@ -249,8 +251,6 @@ unique_ptr<FILE, int(*)(FILE*)>: 16 bytes
 unique_ptr<FILE, FileCloser>:    8 bytes
 unique_ptr<int>:                 8 bytes
 ```
-
-Giai đoạn 1 chạy tới `g.on = false`, nên chỉ có thông báo commit. Ở giai đoạn 2, lệnh throw bỏ qua dòng đó và destructor của guard in ra rollback trước khi handler chạy. Các dòng kích thước cho thấy giá của lựa chọn deleter: deleter dạng con trỏ hàm làm smart pointer thành 16 byte, lớp rỗng `FileCloser` giữ nó ở 8 byte, bằng một con trỏ thường.
 
 ### Các mức exception safety, copy-and-swap, và vì sao vector kiểm tra `noexcept`
 
@@ -275,7 +275,7 @@ Buffer& operator=(Buffer o) noexcept { swap(*this, o); return *this; }   // o is
 
 Chi phí và giới hạn: `a = b` luôn cấp phát, kể cả khi `a` đã đủ dung lượng, trong khi `std::vector::operator=` tái sử dụng vùng nhớ; toán tử hợp nhất cũng bị *mơ hồ* (ambiguous) nếu bạn khai báo thêm `operator=(const Buffer&)`, vì `a = b` khớp cả hai như nhau. Dùng copy-and-swap khi sự rõ ràng và strong guarantee quan trọng hơn lần cấp phát cuối cùng.
 
-**Ví dụ.** Một bảng hiệu chuẩn 7 double bị ghi đè bằng một bảng 4 double trong khi một lỗi được chèn vào làm copy constructor throw một lần (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một bảng hiệu chuẩn 7 double bị ghi đè bằng một bảng 4 double trong khi một lỗi được chèn vào làm copy constructor throw một lần (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Kích thước và giá trị đầu của `a` là bao nhiêu sau phép gán thất bại, và sau phép gán thành công?
 
 ```cpp
 #include <cstdio>
@@ -307,13 +307,14 @@ int main() {
 }
 ```
 
+**Lời giải.** Phép gán đầu thất bại ngay trong lúc dựng tham số truyền theo giá trị, trước khi `swap` chạy, nên `a` giữ nguyên 7 phần tử và giá trị đầu 1.5 của nó: strong guarantee, được quan sát trực tiếp. Phép gán thứ hai thành công và bảng trở thành bảng mới (4 phần tử, giá trị đầu 9.0), trong một lần duy nhất. Chương trình in ra:
+
 ```text
 threw: copy failed
 a after failed a = b: size=7 a[0]=1.5
 a after a = b       : size=4 a[0]=9.0
 ```
 
-Phép gán đầu thất bại ngay trong lúc dựng tham số truyền theo giá trị, trước khi `swap` chạy, nên `a` giữ nguyên 7 phần tử và giá trị đầu của nó: strong guarantee, được quan sát trực tiếp. Phép gán thứ hai thành công và bảng trở thành bảng mới, trong một lần duy nhất.
 *Vì sao `std::vector` hỏi về `noexcept`.* Để tăng dung lượng, vector phải relocate $n$ phần tử sang vùng nhớ mới và hứa rằng nếu có gì throw thì vector cũ vẫn nguyên vẹn. Giả sử nó move và lần move thứ $k$ throw: các phần tử $1,\dots,k-1$ đã bị "cướp" nội dung, và đặt chúng về chỗ cũ cần thêm $k-1$ phép move, mà chúng cũng có thể throw, nên không tồn tại rollback. Copy để nguồn nguyên vẹn, nên khi lần copy thứ $k$ throw, vector chỉ hủy $k-1$ bản sao mới và giải phóng khối mới. Do đó `std::move_if_noexcept` chỉ trả về rvalue nếu move không thể throw *hoặc* kiểu không copy được; trường hợp sau thì đảm bảo bị bỏ (cppreference: `std::move_if_noexcept`; `std::vector::emplace_back`, mục "Exceptions").
 
 ```explore
@@ -363,7 +364,7 @@ struct Raw { double* a; double* b;
 
 cả hai mảng đều rò rỉ ($100\cdot8+200\cdot8=2400$ byte): member là con trỏ thô, "hủy" chúng không làm gì cả, còn `~Raw` bị bỏ qua. Nếu chính initializer của `b` throw thì `a` đã được cấp phát và rò rỉ ($800$ byte). Nguyên tắc "một tài nguyên, một chủ sở hữu" (E.6, R.13) chính là điều này: khi mỗi tài nguyên do một member object riêng giữ (`std::unique_ptr<double[]> a, b;`), việc dọn dẹp các member đã hoàn tất của ngôn ngữ sẽ giải phóng mọi thứ đã chiếm được, trên mọi đường thoát, mà bạn không phải viết code nào. Đừng bao giờ đặt hai lần chiếm tài nguyên thô trong một constructor hay một câu lệnh biểu thức.
 
-**Ví dụ.** Hai member có constructor và destructor nhìn thấy được, và một thân constructor throw (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Hai member có constructor và destructor nhìn thấy được nằm trong một lớp có thân constructor throw (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Những destructor nào chạy, và theo thứ tự nào?
 
 ```cpp
 #include <cstdio>
@@ -378,11 +379,13 @@ struct Holder {
 int main() { try { Holder h; } catch (...) { std::printf("caught\n"); } }
 ```
 
+**Lời giải.** Cả hai member đã được xây xong hoàn toàn, nên chúng bị hủy theo thứ tự ngược (`-b -a`), còn `~Holder` không bao giờ chạy, đúng như [except.ctor] ¶3 quy định. Chương trình in ra:
+
 ```text
 +a +b [body] -b -a caught
 ```
 
-Cả hai member đã được xây xong hoàn toàn, nên chúng bị hủy theo thứ tự ngược (`-b -a`), còn `~Holder` không bao giờ chạy, đúng như [except.ctor] ¶3 quy định. Chi phí của owner thô được đo bằng một `operator new[]` có đếm; lớp thứ nhất lấy 5 và 7 double bằng `new`, lớp thứ hai giữ chúng trong `unique_ptr<double[]>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Ví dụ.** Chi phí của owner thô được đo bằng một `operator new[]` có đếm; lớp thứ nhất lấy 5 và 7 double bằng `new` rồi throw, lớp thứ hai giữ chúng trong `unique_ptr<double[]>` rồi throw (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). Sau mỗi lần xây thất bại còn bao nhiêu byte vẫn đang được cấp phát?
 
 ```cpp
 #include <cstdio>
@@ -412,29 +415,12 @@ int main() {
 }
 ```
 
+**Lời giải.** Trong `Raw` các member là con trỏ thường nên việc hủy chúng không làm gì và `~Raw` bị bỏ qua: hai mảng bị rò rỉ $5\cdot8+7\cdot8=40+56=96$ byte mỗi lần xây thất bại. Trong `Safe` mỗi mảng có một member owner riêng, và chính ngôn ngữ hủy các member đã xây xong, nên không còn gì: 0 byte. Chương trình in ra:
+
 ```text
-
-=================================================================
-==301332==ERROR: LeakSanitizer: detected memory leaks
-
-Direct leak of 72 byte(s) in 1 object(s) allocated from:
-    #0 0x707eb18b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
-    #1 0x6264c3bc4420 in operator new[](unsigned long) (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4420)
-    #2 0x6264c3bc4867 in Raw::Raw() (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4867)
-    #3 0x6264c3bc4634 in main (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4634)
-    #4 0x707eb0829d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
-
-Direct leak of 56 byte(s) in 1 object(s) allocated from:
-    #0 0x707eb18b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
-    #1 0x6264c3bc4420 in operator new[](unsigned long) (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4420)
-    #2 0x6264c3bc480a in Raw::Raw() (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x480a)
-    #3 0x6264c3bc4634 in main (/tmp/claude-1000/-home-tronghia-corelab/59927611-c392-43c8-9f6b-6c609caf863b/scratchpad/pass/cpp0304/ex03/e7b.bin+0x4634)
-    #4 0x707eb0829d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
-
-SUMMARY: AddressSanitizer: 128 byte(s) leaked in 2 allocation(s).
+Raw : 96 bytes still allocated
+Safe: 0 bytes still allocated
 ```
-
-Phiên bản thô mất $5\cdot8+7\cdot8=96$ byte mỗi lần xây dựng thất bại, phiên bản `unique_ptr` không mất byte nào.
 
 ![Trái: trình tự với Holder, b rồi a bị hủy và ~Holder bị bỏ qua. Phải: số byte còn cấp phát, 96 B với con trỏ thô (40 B + 56 B), 0 B với member unique_ptr](/lesson-figures/CPP03-3.svg)
 
@@ -448,7 +434,7 @@ Một `std::shared_ptr` gồm hai con trỏ: một tới đối tượng và m�
 - *Chu trình.* Nếu `A` sở hữu `B` qua `shared_ptr` và `B` sở hữu `A`, thì mỗi đối tượng có strong count 2 khi hai biến cục bộ còn tham chiếu; khi biến cục bộ chết, count giảm xuống 1, không bao giờ về 0, và cả hai rò rỉ mà destructor không bao giờ chạy. Liên kết ngược không sở hữu phải là `std::weak_ptr` (R.24), chỉ đổi thành chủ sở hữu tạm bằng `lock()` khi đang dùng.
 - *Aliasing.* Aliasing constructor `shared_ptr<int>(p, &p->y)` dùng chung control block của `p` nhưng trỏ vào một member: member sống chừng nào còn alias, kể cả sau khi chính `p` bị reset.
 
-**Ví dụ.** Một ước lượng pose được chia sẻ cho ba bên dùng và được một node chẩn đoán theo dõi mà không được giữ nó sống (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`):
+**Ví dụ.** Một ước lượng pose được chia sẻ cho ba bên dùng và được một node chẩn đoán theo dõi mà không được giữ nó sống (g++ 11.4.0, `-std=c++20 -Wall -Wextra -fsanitize=address,undefined`). Số đếm dùng ở mỗi giai đoạn là bao nhiêu, `expired()` và `lock()` báo gì ở cuối, và một `shared_ptr` lớn bao nhiêu byte?
 
 ```cpp
 #include <cstdio>
@@ -468,6 +454,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Hai bản copy nâng strong count từ 1 lên 3; `weak_ptr` không được tính. Sau hai lần reset nó về 1. Trong khi kết quả `lock()` còn được giữ, count là 2 (chủ sở hữu cộng bản tạm), và sau khi chủ sở hữu cuối cùng reset, `expired()` là true và `lock()` trả về null, nên bên quan sát biết đối tượng đã mất thay vì giữ con trỏ treo. 16 byte là hai con trỏ (tới đối tượng và tới control block) đã mô tả ở trên. Chương trình in ra:
+
 ```text
 use_count = 3
 after two resets: 1
@@ -476,9 +464,8 @@ expired = 1, lock() null = 1
 sizeof(shared_ptr<Pose>) = 16
 ```
 
-Hai bản copy nâng strong count từ 1 lên 3; `weak_ptr` không được tính. Trong khi kết quả `lock()` còn được giữ, count là 2 (chủ sở hữu cộng bản tạm), và sau khi chủ sở hữu cuối cùng reset, `expired()` là true và `lock()` trả về null, nên bên quan sát biết đối tượng đã mất thay vì giữ con trỏ treo. 16 byte là hai con trỏ (tới đối tượng và tới control block) đã mô tả ở trên.
-
 ## Ví dụ có lời giải
+
 
 
 ### Ca 1: lần theo một phép move và một `Buffer` trên heap
@@ -955,3 +942,4 @@ Cùng nguyên tắc này là `with` trong Python, `defer` trong Go và `Drop` tr
 - [cppreference: std::move_if_noexcept](https://en.cppreference.com/w/cpp/utility/move_if_noexcept) và [`std::vector::emplace_back`](https://en.cppreference.com/w/cpp/container/vector/emplace_back) - phát biểu chính xác về exception safety dùng trong lập luận relocation.
 
 **Thực hành thêm:** các bài quiz ở [LearnCpp: intro to smart pointers and move semantics](https://www.learncpp.com/cpp-tutorial/introduction-to-smart-pointers-move-semantics/) và [LearnCpp: std::unique_ptr](https://www.learncpp.com/cpp-tutorial/stdunique_ptr/) (đáp án hiện trên trang), [LearnCpp: std::move](https://www.learncpp.com/cpp-tutorial/stdmove/), và [phần quản lý tài nguyên (R) của Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#r-resource-management) làm checklist ôn tập cho `Buffer` của riêng bạn.
+

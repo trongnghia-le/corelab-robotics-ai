@@ -151,7 +151,7 @@ For a class with virtual functions the primary vtable begins with *offset-to-top
 
 ### Basic case
 
-Audit this hypothetical camera SDK header, then wrap it.
+**Problem.** Audit this hypothetical camera SDK header, then design a safe C++ wrapper. For each declaration state who owns the memory, which thread may run the code and what can go wrong.
 
 ```c
 typedef struct cam cam;
@@ -161,22 +161,33 @@ const char* cam_error(void);
 unsigned char* cam_grab(cam* c, int* size);
 void cam_on_frame(cam* c, void (*cb)(unsigned char*, int, void*), void* user);
 ```
+
+**Solution.**
+
 1. `cam_open` returns a pointer: **owned by the caller**, released with `cam_close` (by naming convention; the header does not say). `NULL` on failure; the reason is in `cam_error()`, a global, so it is **not thread-safe**.
 2. `cam_error()` returns `const char*`: owner unclear; probably a static buffer overwritten by the next call, so it must be copied immediately.
 3. `cam_grab` returns `unsigned char*` and the size through an out parameter: **who frees the buffer?** Either the camera reuses an internal buffer (valid until the next grab) or the caller must free it. The header is silent: a *risk*. The safe wrapper must copy into a `std::vector<unsigned char>` immediately.
 4. `cam_on_frame` registers a callback with `void* user`: the callback runs on an **unknown thread** (probably a driver thread); `user` must outlive the registration; the buffer pointer is valid only during the callback. An exception thrown in the callback would cross C frames.
-5. Wrapper design: `class Camera` holds `unique_ptr<cam, decltype(&cam_close)>`, throws `Error` from the constructor when `cam_open` returns null (with the message copied from `cam_error()`), `grab()` returns `std::vector<unsigned char>`, the callback trampoline is a static function that catches all exceptions and stores them, and `~Camera` unregisters the callback and closes the camera (in that order, so the callback cannot run on a destroyed `Camera`).
+5. Wrapper design, one rule per risk found above: `class Camera` holds `unique_ptr<cam, decltype(&cam_close)>` (answers step 1: the destructor closes), throws `Error` from the constructor when `cam_open` returns null, with the message copied from `cam_error()` at once (step 2), `grab()` returns `std::vector<unsigned char>` (step 3), the callback trampoline is a static function that catches all exceptions and stores them (step 4), and `~Camera` unregisters the callback and closes the camera, in that order, so the callback cannot run on a destroyed `Camera`.
 
-The result is an interface where ownership is in the types: the user never sees a raw pointer or a thread the library created.
+**Check.** Count the raw-pointer facts in the header against the wrapper: 4 ownership or thread questions (steps 1 to 4) and each has exactly one wrapper mechanism in step 5, so no raw pointer or foreign-thread access remains in the public interface. The destruction order can be checked by reading the destructor: unregister first, close second; the reverse order leaves a window where the driver thread calls into a closed device.
+
+**Takeaway.** The result is an interface where ownership is in the types: the user never sees a raw pointer or a thread the library created.
 
 ### Harder case: evolving a public struct without breaking old binaries
 
-A motion library exposes `get_pose(Pose*)` and wants to add a `z` coordinate without breaking binaries built against version 1. The fixed-layout struct of the earlier experiment cannot do it, so use the *size-prefixed struct* pattern. Version 1 header: `struct Pose { uint32_t size; double x, y; };` and the caller sets `p.size = sizeof(Pose)` before the call. Version 2 appends `z` at the end: `struct Pose { uint32_t size; double x, y, z; };`, and the library copies only `min(caller_size, sizeof(Pose))` bytes.
+**Problem.** A motion library exposes `get_pose(Pose*)` and wants to add a `z` coordinate without breaking binaries built against version 1. The fixed-layout struct of the earlier experiment cannot do it, so use the *size-prefixed struct* pattern. Version 1 header: `struct Pose { uint32_t size; double x, y; };` and the caller sets `p.size = sizeof(Pose)` before the call. Version 2 appends `z` at the end: `struct Pose { uint32_t size; double x, y, z; };`, and the library copies only `min(caller_size, sizeof(Pose))` bytes. Compute the layouts on x86-64, show what happens for an old caller with a new library and for a new caller with an old library, and state the cost of the pattern.
 
-1. *Layout.* On x86-64, `size` occupies bytes 0-3, then 4 bytes of padding, `x` at offset 8, `y` at offset 16, so `sizeof(Pose1)=24`; version 2 adds `z` at offset 24 and `sizeof(Pose2)=32`.
-2. *Old caller, new library.* The caller passes a 24-byte object with `size=24`. The library builds the 32-byte result internally but copies only 24 bytes, so `x=1`, `y=2` are right, `size=24` is reported back, and the guard bytes placed after the caller's object are untouched. I compiled this in two translation units and the program printed `sizeof Pose1=24 Pose2=32 x=1 y=2 size=24 canary=127` (127 is the unchanged guard byte).
+**Solution.**
+
+1. *Layout.* On x86-64, `size` occupies bytes 0-3. `double` needs alignment 8, so 4 bytes of padding follow and `x` sits at offset 8, `y` at offset 16; the last member ends at 16 + 8 = 24, which is a multiple of 8, hence `sizeof(Pose1)=24`. Version 2 adds `z` at offset 24, ends at 32, so `sizeof(Pose2)=32`.
+2. *Old caller, new library.* The caller passes a 24-byte object with `size=24`. The library builds the 32-byte result internally and copies `min(24, 32) = 24` bytes, so `x=1`, `y=2` are right, `size=24` is reported back, and the guard bytes placed after the caller's object are untouched. Compiled in two translation units, the program printed `sizeof Pose1=24 Pose2=32 x=1 y=2 size=24 canary=127` (127 is the unchanged guard byte).
 3. *New caller, old library.* The caller sets `size=32`. The old library knows only 24 bytes and must report how much it wrote by setting `size=24`, so the new caller can tell that `z` was not provided and must not read it. Without that rule the caller would read uninitialised memory.
-4. *What the pattern costs and what it cannot do.* New fields can only be appended, the library must never read beyond `caller_size`, and each field's meaning must be fixed forever. It does not help with fields in the middle, with a changed type of an existing field, or with classes that carry virtual functions. For those the alternatives are an opaque handle with accessor functions (`pose_get_z`) or a new function with a new struct (`get_pose_v2`). The decisive trade-off: size-prefixed structs keep a flat, copyable C struct that is cheap and simple to use from Python `ctypes`, whereas an opaque handle costs one function call per field but lets the library change everything.
+4. *What the pattern costs and what it cannot do.* New fields can only be appended, the library must never read beyond `caller_size`, and each field's meaning must be fixed forever. It does not help with fields in the middle, with a changed type of an existing field, or with classes that carry virtual functions. For those the alternatives are an opaque handle with accessor functions (`pose_get_z`) or a new function with a new struct (`get_pose_v2`).
+
+**Check.** Compiled with `g++ -std=c++20` in two translation units (library built with the 32-byte struct, caller with the 24-byte one): `offsetof` gave x=8, y=16, z=24, sizes 24 and 32, and the canary byte stayed 127, so no write went past 24 bytes. The `min` rule is the whole guarantee: with `size=24` it can never write byte 24 or later.
+
+**Takeaway.** Size-prefixed structs keep a flat, copyable C struct that is cheap and simple to use from Python `ctypes`, whereas an opaque handle costs one function call per field but lets the library change everything.
 
 ## Exercises
 

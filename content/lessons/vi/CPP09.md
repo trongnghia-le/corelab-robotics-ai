@@ -31,7 +31,7 @@ $f(n)=O(g(n))$ nghĩa là $f(n)\le c\,g(n)$ với một hằng số $c$ nào đ�
 $$p=\frac{\sum_i(\ln n_i-\overline{\ln n})(\ln t_i-\overline{\ln t})}{\sum_i(\ln n_i-\overline{\ln n})^2}.$$
 Nhân đôi $n$ nhân thời gian với $2^p$: khoảng $2$ cho tuyến tính, $4$ cho bậc hai. Dùng ít nhất bốn kích thước trải rộng hệ số 8 trở lên, và nhớ rằng hiệu ứng cache làm cong đường thẳng khi dữ liệu vượt qua một kích thước cache.
 
-**Ví dụ.** Tìm cặp điểm gần nhất bằng brute force trên $n$ điểm lidar 2D so sánh mọi cặp, tức $n(n-1)/2$ phép tính khoảng cách. Chương trình đo thời gian cho bốn kích thước, mỗi kích thước gấp đôi kích thước trước, rồi khớp số mũ bằng công thức bình phương tối thiểu ở trên (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`; thời gian thuộc về máy đó):
+**Ví dụ.** Tìm cặp điểm gần nhất bằng brute force trên $n$ điểm lidar 2D so sánh mọi cặp, tức $n(n-1)/2$ phép tính khoảng cách. Chương trình đo thời gian cho $n=3000,6000,12000,24000$ (tốt nhất trong 5 lần) rồi khớp số mũ $p$ của $t\propto n^p$ bằng công thức bình phương tối thiểu ở trên (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`; thời gian thuộc về máy đó). Phép khớp cho thấy tốc độ tăng nào, và dự đoán thời gian bao nhiêu ở $n=48{,}000$?
 
 ```cpp
 #include <chrono>
@@ -76,6 +76,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Thời gian tăng $21.34/5.11=4.18$, $87.54/21.34=4.10$ và $349.94/87.54=4.00$ lần mỗi lần gấp đôi, gần $2^2$, và độ dốc bình phương tối thiểu của $\ln t$ theo $\ln n$ là $p=2.033$: bậc hai, đúng như vòng lặp lồng nhau cho biết. Ở $n=48{,}000$ phép khớp dự đoán khoảng $4\times350\approx1400$ ms. Lần chạy ngắn nhất (5 ms) kém chính xác nhất, nên tỉ số đầu hơi lớn hơn 4. Thời gian phụ thuộc máy và giữ nguyên như đã đo; chạy lại trên máy khác sẽ đổi chúng và đổi số mũ ở chữ số cuối, không đổi dạng bậc hai. Chương trình in ra:
+
 ```text
 n =  3000  best of 5 =     5.11 ms  (min d^2 = 1.45e-06)
 n =  6000  best of 5 =    21.34 ms  (min d^2 = 1.84e-06)
@@ -83,8 +85,6 @@ n = 12000  best of 5 =    87.54 ms  (min d^2 = 5.76e-08)
 n = 24000  best of 5 =   349.94 ms  (min d^2 = 1.22e-07)
 fitted exponent p = 2.033
 ```
-
-Thời gian tăng $21.34/5.11=4.18$, $4.10$ và $4.00$ lần mỗi lần gấp đôi, gần $2^2$, và số mũ khớp được là $p=2.033$: bậc hai, đúng như vòng lặp lồng nhau cho biết. Ở $n=48{,}000$ phép khớp dự đoán khoảng $4\times350\approx1400$ ms. Lần chạy ngắn nhất (5 ms) kém chính xác nhất, nên tỉ số đầu hơi lớn hơn 4.
 
 ### Mô hình chi phí của hệ phân cấp bộ nhớ
 
@@ -96,7 +96,7 @@ Bậc độ lớn sơ bộ (thay đổi theo CPU): L1 hit khoảng 1 ns (4 chu k
 
 **Duyệt hai chiều.** Một ma trận $N\times N$ double theo hàng (row-major) được duyệt từng hàng với một miss mỗi 8 phần tử; duyệt từng cột thì mỗi truy cập là một line mới (stride $8N$ byte).
 
-**Ví dụ.** Một chu trình ngẫu nhiên gồm các chỉ số 8 byte được đuổi theo trong các mảng 16 KiB, 256 KiB, 4 MiB và 64 MiB. Mỗi bước nhảy phụ thuộc vào lần nạp trước, nên thời gian mỗi bước là độ trễ của tầng đang chứa mảng (cùng bản build và máy như trên: L1d 48 KiB và L2 1.25 MiB mỗi lõi, L3 18 MiB dùng chung):
+**Ví dụ.** Một chu trình ngẫu nhiên gồm các chỉ số 8 byte được đuổi theo trong các mảng 16 KiB, 256 KiB, 4 MiB và 64 MiB. Mỗi bước nhảy phụ thuộc vào lần nạp trước, nên thời gian mỗi bước là độ trễ của tầng đang chứa mảng (cùng bản build và máy như trên: L1d 48 KiB và L2 1.25 MiB mỗi lõi, L3 18 MiB dùng chung). Mỗi kích thước rơi vào tầng nào, mỗi tầng cho độ trễ bao nhiêu, và tỉ số giữa dòng đầu và dòng cuối là bao nhiêu?
 
 ```cpp
 #include <algorithm>
@@ -125,6 +125,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Bốn kích thước rơi vào bốn tầng: 16 KiB vừa L1d (khoảng 1.1 ns mỗi bước), 256 KiB vượt L1d nhưng vừa L2 (3.0 ns), 4 MiB vượt L2 nhưng vừa L3 (11.9 ns) và 64 MiB vượt L3 nên mỗi bước đi tới DRAM (khoảng 110 ns). Tỉ số giữa dòng đầu và dòng cuối là $109.71/1.13=97$, với cùng một chuỗi lệnh. 110 ns gần với 140 ns mỗi node của danh sách xáo trộn trong bảng của bài; phần chênh còn lại chưa được tách riêng ở đây. Các thời gian phụ thuộc máy và giữ nguyên như đã đo. Chương trình in ra:
+
 ```text
      bytes   ns per hop
      16 KiB         1.13
@@ -132,8 +134,6 @@ int main() {
    4096 KiB        11.91
   65536 KiB       109.71
 ```
-
-Bốn kích thước rơi vào bốn tầng: L1 khoảng 1.1 ns, L2 3.0 ns, L3 11.9 ns và DRAM khoảng 110 ns, chênh nhau 97 lần giữa dòng đầu và dòng cuối với cùng một chuỗi lệnh. 110 ns gần với 140 ns mỗi node của danh sách xáo trộn trong bảng của bài; phần chênh còn lại chưa được tách riêng ở đây.
 
 ### Đo đạc trung thực
 
@@ -145,7 +145,7 @@ Bốn kích thước rơi vào bốn tầng: L1 khoảng 1.1 ns, L2 3.0 ns, L3 1
 6. Thay đổi $n$ qua các kích thước cache (vài KB, hàng trăm KB, hàng chục MB) và báo cáo ns mỗi phần tử, không phải tổng thời gian.
 7. Kiểm tra tính đúng của kết quả (tổng bằng tham chiếu) để bạn không đo một bug.
 
-**Ví dụ.** Quy tắc 2 trong thực tế: cùng một vòng lặp cộng (mảng $10^6$ double, lặp 100 lần) được đo một lần với kết quả bị bỏ đi và một lần với kết quả lưu vào `volatile` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`):
+**Ví dụ.** Quy tắc 2 trong thực tế: cùng một vòng lặp cộng (mảng $10^6$ double, lặp 100 lần) được đo một lần với kết quả bị bỏ đi và một lần với kết quả lưu vào `volatile` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`). Mỗi biến thể báo thời gian mỗi phần tử bao nhiêu, và biến thể nào đáng tin?
 
 ```cpp
 #include <chrono>
@@ -170,12 +170,12 @@ int main() {
 }
 ```
 
+**Lời giải.** Biến thể đầu báo 0.000 ns mỗi phần tử: compiler thấy `work` không có tác dụng phụ và xóa các lời gọi. Một kết quả dưới một chu kỳ clock mỗi phần tử (khoảng 0.25 ns ở 4 GHz) là dấu hiệu nên nghi ngờ dead-code elimination. Biến thể thứ hai, 0.469 ns mỗi phần tử, truyền 8 B mỗi phần tử với $8/0.469\approx17$ GB/s, một tốc độ hợp lý cho mảng 8 MB, nên đó là biến thể đáng tin. Giá trị 0.469 ns phụ thuộc máy và giữ nguyên như đã đo. Chương trình in ra:
+
 ```text
 result discarded :     0.000 ns per element
 result stored    :     0.469 ns per element
 ```
-
-Dòng đầu báo 0.000 ns mỗi phần tử: compiler thấy `work` không có tác dụng phụ và xóa các lời gọi. Một kết quả dưới một chu kỳ clock mỗi phần tử (khoảng 0.25 ns ở 4 GHz) là dấu hiệu nên nghi ngờ dead-code elimination. Dòng thứ hai, 0.469 ns mỗi phần tử, truyền 8 B mỗi phần tử với khoảng 17 GB/s, một tốc độ hợp lý cho mảng 8 MB.
 
 ### Profiling và định luật Amdahl
 
@@ -187,7 +187,7 @@ Với $f=0.3$ và $s=10$: $S=1/(0.7+0.03)=1.37$. Ngay cả $s\to\infty$ cũng ch
 
 *Hình: định luật Amdahl. Mỗi đường là $S=1/((1-f)+f/s)$ và phẳng dần về $1/(1-f)$; hai chấm là $f=0.3,\ s=10$ của bài và công đoạn đo được với $f=0.749,\ s=8$.*
 
-**Ví dụ.** Một frame có hai công đoạn. Công đoạn A (một căn bậc hai mỗi phần tử) và công đoạn B (một phép nhân cộng mỗi phần tử) được đo riêng, định luật Amdahl dự đoán mức lợi khi làm A nhanh hơn tám lần, rồi A thật sự làm một phần tám khối lượng (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`; tốt nhất trong 9 lần chạy):
+**Ví dụ.** Một frame có hai công đoạn. Công đoạn A (một căn bậc hai mỗi phần tử) và công đoạn B (một phép nhân cộng mỗi phần tử) được đo riêng, định luật Amdahl dự đoán mức lợi khi làm A nhanh hơn tám lần, rồi A thật sự làm một phần tám khối lượng (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`; tốt nhất trong 9 lần chạy). Phân số $f$ của frame thuộc A là bao nhiêu, công thức dự đoán mức tăng tốc nào cho $s=8$, đo được bao nhiêu, và sau đó profile chỉ vào công đoạn nào?
 
 ```cpp
 #include <chrono>
@@ -222,13 +222,15 @@ int main() {
 }
 ```
 
+**Lời giải.** Công đoạn A chiếm $f=20.98/28.02=0.749$ thời gian. Với $s=8$, công thức $S=1/\bigl((1-f)+f/s\bigr)$ cho $S=1/(0.251+0.749/8)=2.90$ và phép đo cho $28.02/9.60=2.92$, lệch dưới 1 %. Sau thay đổi, B chiếm $7.01/9.60=73\%$ frame, và dù A nhanh vô hạn cũng không vượt $1/(1-0.749)=3.98$: profile giờ chỉ vào B. Các thời gian phụ thuộc máy và giữ nguyên như đã đo. Chương trình in ra:
+
 ```text
 before: A = 20.98 ms, B = 7.04 ms, total = 28.02 ms, f(A) = 0.749
 Amdahl prediction for s = 8 : 2.900
 after : A = 2.59 ms, B = 7.01 ms, total = 9.60 ms, measured speedup = 2.919
 ```
 
-Công đoạn A chiếm $f=20.98/28.02=0.749$ thời gian. Với $s=8$, công thức cho $S=1/(0.251+0.749/8)=2.90$ và phép đo cho $2.92$, lệch dưới 1 %. Sau thay đổi, B chiếm $7.01/9.60=73\%$ frame, và dù A nhanh vô hạn cũng không vượt $1/(1-0.749)=3.98$: profile giờ chỉ vào B.
+Các thanh trượt dưới đây cho thấy cùng định luật với các giá trị $f$ và $s$ khác:
 
 ```explore
 {
@@ -274,7 +276,7 @@ Một cache có $C$ byte, kích thước line $L$ và độ kết hợp $W$ ("$W
 
 *Hình: cùng một cache 32 KiB, 8-way nhìn từ một lượt đi xuống cột. Bước $d=(N/8)\bmod64$ quyết định cột dùng 1, 16 hay cả 64 tập, và do đó bao nhiêu line có thể ở lại (theo Drepper, §3.3.1).*
 
-**Ví dụ.** Mười sáu cache line được nối thành một chu trình, mỗi line giữ offset của line kế, và chu trình được đi $10^8$ bước. Ở bố cục đầu các line cách nhau 4096 byte, ở bố cục sau cách nhau 4160 byte. L1d của lõi này là 48 KiB, 12-way, nên $S=49152/(12\cdot64)=64$ tập, và 4096 byte đúng bằng 64 line (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`):
+**Ví dụ.** Mười sáu cache line được nối thành một chu trình, mỗi line giữ offset của line kế, và chu trình được đi $10^8$ bước. Ở bố cục đầu các line cách nhau 4096 byte, ở bố cục sau cách nhau 4160 byte. L1d của lõi này là 48 KiB, 12-way, nên $S=49152/(12\cdot64)=64$ tập, và 4096 byte đúng bằng 64 line (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`). Ở bố cục nào các line tranh nhau cùng một tập, và mỗi bố cục cho thời gian mỗi bước bao nhiêu?
 
 ```cpp
 #include <chrono>
@@ -300,18 +302,18 @@ int main() {
 }
 ```
 
+**Lời giải.** Với khoảng cách 4096 B, cả 16 line ánh xạ vào một tập (chỉ số tập tăng $64 \bmod 64=0$ mỗi line), và tập đó chỉ có 12 way, nên theo LRU mỗi bước đều miss L1 và được L2 phục vụ ở 3.16 ns (độ trễ L2 trong ví dụ trước là 2.99 ns). Với 4160 B $=65$ line, chỉ số tập tăng $65\bmod64=1$ mỗi line, nên các line rơi vào 16 tập khác nhau và mỗi bước hit L1: 1.12 ns. 16 line chỉ chiếm 1 KiB nên dung lượng không phải vấn đề; tỉ số là $3.16/1.12=2.8$. Các thời gian phụ thuộc máy và giữ nguyên như đã đo. Chương trình in ra:
+
 ```text
 stride  4096 B: 3.16 ns per hop
 stride  4160 B: 1.12 ns per hop
 ```
 
-Với khoảng cách 4096 B, cả 16 line ánh xạ vào một tập chỉ có 12 way, nên theo LRU mỗi bước đều miss L1 và được L2 phục vụ ở 3.16 ns (độ trễ L2 trong ví dụ trước là 2.99 ns). Với 4160 B $=65$ line, các line rơi vào 16 tập khác nhau và mỗi bước hit L1: 1.12 ns. 16 line chỉ chiếm 1 KiB nên dung lượng không phải vấn đề; tỉ số là $3.16/1.12=2.8$.
-
 ### False sharing và giao thức coherence
 
 Cache line cũng là đơn vị của *coherence* (nhất quán bộ nhớ đệm). Để ghi vào một line, core phải giữ nó ở trạng thái độc quyền; nếu L1d của core khác đang giữ bản sao, lệnh ghi gửi một request-for-ownership (RFO) làm vô hiệu bản sao kia, và line di chuyển giữa các cache. Hai thread tăng hai `int` *khác nhau* nhưng cùng nằm trong một line 64 byte thì không có race, vậy mà gần như mỗi lần ghi đều trả giá chuyển line này: **false sharing**. Drepper (§3.3.4 và §6.4.1, Hình 6.10) đo một tải mà mỗi thread chỉ tăng vị trí nhớ riêng của nó, vậy mà thời gian chạy vẫn tăng theo số thread. Cách khắc phục: cho mỗi thread một line riêng (`alignas(64)`, hoặc `std::hardware_destructive_interference_size`), cộng dồn vào biến cục bộ của thread rồi gộp ở cuối, hoặc dùng cấu trúc riêng cho từng thread. Giá của padding là $64T$ byte cho $T$ bộ đếm thay vì $4T$. Phải kiểm tra padding theo độ căn chỉnh của *địa chỉ cơ sở*: một mảng bị lệch vẫn có thể để các thread lân cận dùng chung line (Bài tập 13).
 
-**Ví dụ.** Hai thread, mỗi thread tăng `std::atomic<long>` của riêng mình $5\times10^7$ lần. Ở `Shared` hai bộ đếm nằm cạnh nhau trong một đối tượng 16 byte (một line); ở `Padded` mỗi bộ đếm được căn 64 byte. Dùng atomic để không bản nào có data race (cùng bản build, hai thread được ghim vào hai lõi hiệu năng bằng `taskset -c 2,4`; cùng chương trình dưới ThreadSanitizer không báo gì):
+**Ví dụ.** Hai thread, mỗi thread tăng `std::atomic<long>` của riêng mình $5\times10^7$ lần. Ở `Shared` hai bộ đếm nằm cạnh nhau trong một đối tượng 16 byte (một line); ở `Padded` mỗi bộ đếm được căn 64 byte. Dùng atomic để không bản nào có data race (cùng bản build, hai thread được ghim vào hai lõi hiệu năng bằng `taskset -c 2,4`; cùng chương trình dưới ThreadSanitizer không báo gì). Bản dùng chung chậm hơn bao nhiêu, và cách sửa tốn gì?
 
 ```cpp
 #include <atomic>
@@ -339,13 +341,13 @@ int main() {
 }
 ```
 
+**Lời giải.** Khác biệt duy nhất là line: chậm $1105.6/204.1=5.4$ lần khi hai bộ đếm dùng chung line, vì mỗi lần tăng phải giành line khỏi lõi kia. Cái giá của cách sửa là bộ nhớ, $128$ byte thay vì $16$ (`sizeof(Padded) = 128`). Các thời gian phụ thuộc máy và giữ nguyên như đã đo. Chương trình in ra:
+
 ```text
 sizeof(Shared) = 16, sizeof(Padded) = 128
 same line   :  1105.6 ms
 own lines   :   204.1 ms
 ```
-
-Khác biệt duy nhất là line: chậm $1105.6/204.1=5.4$ lần khi hai bộ đếm dùng chung line, vì mỗi lần tăng phải giành line khỏi lõi kia. Cái giá của cách sửa là bộ nhớ, $128$ byte thay vì $16$.
 
 ### Vòng lặp bị chặn bởi latency và bởi bandwidth: mô hình thông lượng
 
@@ -357,7 +359,7 @@ Vòng lặp đuổi theo con trỏ có $k=1$ vì địa chỉ kế tiếp là n�
 
 *Hình: mô hình thông lượng với $L=140$ ns, $\beta=16$ B/ns và $M=12$ ô (giá trị minh họa). Phép đuổi con trỏ nằm ở $k=1$ trên đường dốc latency; giới hạn số ô chặn mức giảm ở 11.7 ns, gấp ba lần sàn 4 ns vốn cần $k^\*=35$.*
 
-**Ví dụ.** Mỗi chu trình trong $k$ chu trình xáo trộn 128 MiB được tiến một node mỗi vòng, đồng bộ từng bước; $k$ lần nạp của một vòng không phụ thuộc nhau, nên tối đa $k$ lần miss có thể chồng nhau (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`):
+**Ví dụ.** Mỗi chu trình trong $k$ chu trình xáo trộn 128 MiB được tiến một node mỗi vòng, đồng bộ từng bước; $k$ lần nạp của một vòng không phụ thuộc nhau, nên tối đa $k$ lần miss có thể chồng nhau (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`). Với $L=126$ ns mỗi node ở $k=1$, mô hình $L/k$ dự đoán gì cho $k=2,3,6$, và các thời gian đo so sánh thế nào?
 
 ```cpp
 #include <algorithm>
@@ -392,6 +394,8 @@ int main() {
 }
 ```
 
+**Lời giải.** Ở $k=1$ vòng lặp trả trọn độ trễ, 126 ns mỗi node. Mô hình dự đoán $L/k=126.2/2=63.1,\ 126.2/3=42.1,\ 126.2/6=21.0$ ns cho $k=2,3,6$; các giá trị đo $47.3,\ 32.8,\ 17.6$ ns thấp hơn 16-25 % (ví dụ $1-47.3/63.1=25\%$ và $1-17.6/21.0=16\%$), nên hình dạng (hyperbol theo $k$) đúng còn hằng số thì không: mô hình bỏ qua những hiệu ứng như dịch địa chỉ cũng được chồng lên nhau, và phần của chúng chưa được tách riêng ở đây. Ở $k=6$ vòng lặp nhanh gấp $126.2/17.6=7.2$ lần so với $k=1$ với cùng tổng khối lượng việc. Các thời gian phụ thuộc máy và giữ nguyên như đã đo. Chương trình in ra:
+
 ```text
  k    ns per node
  1          126.2
@@ -400,7 +404,7 @@ int main() {
  6           17.6
 ```
 
-Ở $k=1$ vòng lặp trả trọn độ trễ, 126 ns mỗi node. Mô hình dự đoán $L/k=63.1,\ 42.1,\ 21.0$ ns cho $k=2,3,6$; các giá trị đo $47.3,\ 32.8,\ 17.6$ ns thấp hơn 16-25 %, nên hình dạng (hyperbol theo $k$) đúng còn hằng số thì không: mô hình bỏ qua những hiệu ứng như dịch địa chỉ cũng được chồng lên nhau, và phần của chúng chưa được tách riêng ở đây. Ở $k=6$ vòng lặp nhanh gấp 7.2 lần so với $k=1$ với cùng tổng khối lượng việc.
+Đồ thị dưới đây cho thấy thời gian mỗi cache line theo số lần nạp chồng nhau:
 
 ```explore
 {
@@ -446,7 +450,7 @@ Khẳng định "amortized $O(1)$" có một chứng minh ngắn. Cho `vector` n
 
 Tiệm cận so sánh *hình dạng*, không so sánh *giá trị*. Giả sử thuật toán A tốn $a\,n^2$ ns và thuật toán B tốn $b\,n\log_2n$ ns. Chúng cắt nhau tại $n^\*$ với $a\,n^\*=b\log_2n^\*$; nếu B có hằng số lớn, chẳng hạn $b/a=40$, điểm cắt nằm ở chỗ $n=40\log_2n$, gần $n\approx 340$, nên với 100 điểm thuật toán A "tệ hơn" lại thắng, còn với 10.000 điểm B thắng khoảng $10^{8}/(40\cdot10^4\cdot13{,}3)\approx19$ lần. Mô hình bộ nhớ thêm một lý do thứ hai: $a$ và $b$ không phải hằng số mà là hàm bậc thang của working set (các bậc 0,8, 1,6, 3,0, 9,0 ns của Bài tập 15), nên điểm cắt dịch chuyển khi một trong hai thuật toán rời một tầng cache trước. Quy tắc thực hành rút ra: chọn theo tiệm cận khi $n$ sẽ lớn và chưa biết; chọn theo benchmark ở kích thước thật khi $n$ đã biết và vừa phải (vài nghìn phần tử) và các cấu trúc khác nhau về locality. Liên hệ: cùng lập luận này quyết định k-d tree hay nearest neighbour vét cạn trong code perception (container ở CPP05, hình học ở nhánh M), và vì sao `std::sort` chuyển sang insertion sort trên đoạn rất nhỏ.
 
-**Ví dụ.** Chương trình in mỗi lần đổi capacity khi đẩy 1000 số nguyên, đếm số phần tử bị sao chép bởi các lần cấp phát lại, rồi lặp lại vòng lặp sau `reserve(1000)` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`):
+**Ví dụ.** Chương trình in mỗi lần đổi capacity khi đẩy 1000 số nguyên, đếm số phần tử bị sao chép bởi các lần cấp phát lại, rồi lặp lại vòng lặp sau `reserve(1000)` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2`, một lõi hiệu năng của Intel Core i5-12500H, ghim bằng `taskset`). Có bao nhiêu lần cấp phát lại và sao chép phần tử, chi phí mỗi push là bao nhiêu so với cận 3, và `reserve` thay đổi gì?
 
 ```cpp
 #include <cstdio>
@@ -469,13 +473,13 @@ int main() {
 }
 ```
 
+**Lời giải.** Capacity nhân đôi, $1,2,4,\dots,1024$, qua 11 lần cấp phát lại sao chép $1+2+\dots+512=1023=2^{10}-1$ phần tử, khớp với tổng $2^{j+1}-1$ với $j=9$. Cộng 1000 lần ghi thường được $(1023+1000)/1000=2.02$ phép toán mỗi push, dưới cận 3. Với `reserve` không có lần cấp phát lại nào và không có đỉnh latency trong vòng lặp. Đầu ra mang tính tất định. Chương trình in ra:
+
 ```text
 capacity changes: 1 2 4 8 16 32 64 128 256 512 1024
 push_back x1000: 11 reallocations, 1023 element copies (2.02 operations per push, bound 3)
 with reserve(1000): 0 reallocations
 ```
-
-Capacity nhân đôi, $1,2,4,\dots,1024$, qua 11 lần cấp phát lại sao chép $1+2+\dots+512=1023=2^{10}-1$ phần tử, khớp với tổng $2^{j+1}-1$ với $j=9$. Cộng 1000 lần ghi thường được $(1023+1000)/1000=2.02$ phép toán mỗi push, dưới cận 3. Với `reserve` không có lần cấp phát lại nào và không có đỉnh latency trong vòng lặp.
 
 ## Ví dụ có lời giải
 

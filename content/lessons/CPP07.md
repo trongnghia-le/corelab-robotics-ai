@@ -106,7 +106,9 @@ A robot-software example: the `planner` library uses `Vec2` from `core` in its p
 
 Declarations may repeat; a definition must exist exactly once in the program (the one-definition rule, ODR). Header functions that are defined in the header must be `inline` (or templates, or `constexpr`).
 
-**Example.** A flight-controller driver is split into `imu/filter.hpp` (declares `double lowpass(double prev, double sample, double alpha);`) and small test programs that each break exactly one stage. Real output of `g++ 11.4`:
+**Example.** A flight-controller driver is split into `imu/filter.hpp` (declares `double lowpass(double prev, double sample, double alpha);`) and small test programs that each break exactly one stage: `a_pre.cpp` includes `imu/filtr.hpp` (typo in the file name), `b_comp.cpp` calls `lowpas(0.0, 1.0, 0.5)`, `c_link.cpp` calls `lowpass(...)` with the header correct but no definition linked, and `d1.cpp` and `d2.cpp` both include `gain.hpp`, which defines `gain()`. Which stage (preprocess, compile, link) reports each failure, and what does each message look like?
+
+**Solution.** The first program stops in the preprocessor (`No such file or directory`), the second in the compiler (`not declared in this scope`, with a hint at `lowpass`), the third and fourth in the linker. The third program compiles cleanly: the declaration in the header is all the compiler needs. Only the linker asks "where is the body?" and answers `undefined reference`. The fourth fails the other way round: two objects each carry a copy of `gain()`, hence `multiple definition`. Reading the stage first (preprocess, compile, link) names the cause before any file is opened. Real output of `g++ 11.4` (the column numbers depend on how the test file is laid out):
 
 ```
 $ g++ -std=c++20 -Wall -Wextra -I. -c a_pre.cpp      # #include "imu/filtr.hpp"  (typo in the file name)
@@ -120,13 +122,13 @@ $ g++ d1.o d2.o -o d                                 # gain.hpp defines gain(); 
 d2.cpp:(.text+0x0): multiple definition of `gain()'; d1.o:d1.cpp:(.text+0x0): first defined here
 ```
 
-The third program compiles cleanly: the declaration in the header is all the compiler needs. Only the linker asks "where is the body?". The fourth fails the other way round: two objects each carry a copy of `gain()`. Reading the stage first (preprocess, compile, link) names the cause before any file is opened.
-
 ### Make-style rebuild rules
 
 A rule has the form `target: prerequisites` and a recipe. The target is rebuilt when any prerequisite is newer (or missing). Compilers can write the true header dependencies (`-MMD`), which CMake's generated builds use automatically. Consequence: changing one `.cpp` recompiles one object and relinks; changing a widely included header recompiles every object that includes it. If $k$ of $N$ objects include a header, the cost of touching it is $k$ compiles plus the links; the cost of touching a `.cpp` is 1 compile plus the links. This is why headers should include as little as possible.
 
-**Example.** A controller project has $N=6$ sources; three of them (`pid_a.cpp`, `pid_b.cpp`, `pid_c.cpp`) include `pid.hpp`. A hand-written Makefile with `-MMD` (so the compiler records the header dependencies) gives:
+**Example.** A controller project has $N=6$ sources; three of them (`pid_a.cpp`, `pid_b.cpp`, `pid_c.cpp`) include `pid.hpp`. A hand-written Makefile with `-MMD` (so the compiler records the header dependencies) is run after `touch pid_b.cpp`, then after `touch pid.hpp`, then once more. How many compiles does each step cost, and what does the last `make` do? At 2 s per compile, how long are the first two rebuilds, link excluded?
+
+**Solution.** Touching one `.cpp` costs 1 compile plus the link; touching the header costs $k=3$ compiles (every file that includes it) plus the link, and a second `make` does nothing because every timestamp is up to date. At 2 s per compile that is $1\cdot2=2$ s against $k\cdot2=6$ s, plus the link each time. The session is:
 
 ```
 $ make                       # 6 sources; pid_a.cpp, pid_b.cpp, pid_c.cpp include pid.hpp
@@ -141,8 +143,6 @@ g++ main.o pid_a.o pid_b.o pid_c.o log_a.o log_b.o -o app
 $ make
 make: 'app' is up to date.
 ```
-
-Touching one `.cpp` costs 1 compile plus the link; touching the header costs $k=3$ compiles plus the link, and a second `make` does nothing. At 2 s per compile that is 2 s against 6 s, plus the link each time.
 
 Playing with $N$, $k$, the compile time and the number of parallel jobs shows how fast the header cost grows (wall-clock time of the $k$ recompiles packed onto $j$ jobs is $\lceil k/j\rceil\,t$, the CPU time is $k\,t$):
 
@@ -200,7 +200,7 @@ target_link_libraries(demo PRIVATE robotmath)            # links AND inherits PU
 - `enable_testing()` and `add_test(NAME x COMMAND exe)` register tests; `ctest` runs them and reports a pass/fail percentage.
 - Sources listed explicitly in `add_library`/`add_executable` are safer than `file(GLOB ...)`, which is evaluated only at configure time (a new file is not seen until you re-run `cmake`; `CONFIGURE_DEPENDS` mitigates this).
 
-**Example.** A wheel-odometry module: `odom` converts encoder ticks to distance, $d = 2\pi r\,\text{ticks}/\text{ticks\_per\_rev}$. The CMake description needs only the lines of this section, and the target names carry everything else:
+**Example.** A wheel-odometry module: `odom` converts encoder ticks to distance, $d = 2\pi r\,\text{ticks}/\text{ticks\_per\_rev}$. `drive` prints the distance for 1440 ticks at 360 ticks per revolution on a wheel of radius 0.05 m, and `test_wheel` is registered as a test. What are the CMake lines needed (only those of this section), what does the build print, and why does `main.cpp` need no include line of its own for `odom`?
 
 ```cmake
 add_library(odom src/wheel.cpp)
@@ -212,6 +212,8 @@ add_executable(test_wheel tests/test_wheel.cpp)
 target_link_libraries(test_wheel PRIVATE odom)
 add_test(NAME wheel COMMAND test_wheel)
 ```
+
+**Solution.** The CMake description needs only the lines of the block above, and the target names carry everything else: `odom` is a library with a public include directory, `drive` and `test_wheel` link it. 1440 ticks at 360 ticks per revolution is 4 revolutions of a wheel of radius 0.05 m, so $4\cdot 2\pi\cdot 0.05 = 1.2566$ m, as printed. `main.cpp` includes `odom/wheel.hpp` without any include line of its own: the `PUBLIC include` of `odom` reached `drive` and `test_wheel` through `target_link_libraries`. The configure, build, test and run steps print:
 
 ```
 $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build
@@ -228,13 +230,13 @@ $ ./build/drive
 1.25664 m
 ```
 
-Check: 1440 ticks at 360 ticks per revolution is 4 revolutions of a wheel of radius 0.05 m, so $4\cdot 2\pi\cdot 0.05 = 1.2566$ m, as printed. `main.cpp` includes `odom/wheel.hpp` without any include line of its own: the `PUBLIC include` of `odom` reached `drive` and `test_wheel` through `target_link_libraries`.
-
 ### Linking order and static libraries
 
 A GNU linker processes archives left to right and extracts only the members needed to satisfy symbols that are *currently* undefined. If `main.o` needs `a_fn` from `libA.a` and `a_fn` needs `b_fn` from `libB.a`, then `g++ main.o -lA -lB` works, but `g++ main.o -lB -lA` fails with `undefined reference to b_fn()`: when `libB.a` was scanned nothing needed it yet. With CMake you never write this by hand: `target_link_libraries` records dependencies and orders the link line.
 
-**Example.** A planner library `libplan.a` (`plan()` calls `costmap_at()`) and a map library `libmap.a` (defines `costmap_at()`); `main.o` calls `plan()`. Real run with gcc 11.4:
+**Example.** A planner library `libplan.a` (`plan()` calls `costmap_at()`) and a map library `libmap.a` (defines `costmap_at()`); `main.o` calls `plan()`. Does the link succeed with `-lmap -lplan`, and with `-lplan -lmap`? Real run with gcc 11.4:
+
+**Solution.** With `-lmap` first, `libmap.a` is scanned when nothing needs `costmap_at` yet and is dropped; `libplan.a` then creates the need and no archive is left, so the link fails. With `-lplan -lmap`, `libplan.a` supplies `plan` and creates the need for `costmap_at`, which `libmap.a` then satisfies, so the link succeeds and the program exits with 0. The message names `plan.c`, the object that needed the symbol, not the library that is missing from the line. The session is:
 
 ```
 $ gcc -c main.c plan.c map.c && ar rcs libplan.a plan.o && ar rcs libmap.a map.o
@@ -245,13 +247,11 @@ $ gcc main.o -L. -lplan -lmap -o t2 && ./t2; echo "exit $?"
 exit 0
 ```
 
-With `-lmap` first, `libmap.a` is scanned when nothing needs `costmap_at` yet and is dropped; `libplan.a` then creates the need and no archive is left. The message names `plan.c`, the object that needed the symbol, not the library that is missing from the line.
-
 ### The dependency graph
 
 Let the build graph be a directed acyclic graph (DAG). A valid build order is a topological order: every node after all of its prerequisites. The set to rebuild after changing node $c$ is $c$ together with all nodes reachable from $c$ along "is-used-by" edges. A cycle (library A links B, B links A) has no topological order and CMake/Make report it.
 
-**Example.** A SLAM node: `scan.o` and `icp.o` both include `scan.hpp`, `libslam.a` archives them, `slam_node` links the library and `viz.o`. The topological order and the rebuild set are a few lines of Python:
+**Example.** A SLAM node: `scan.o` and `icp.o` both include `scan.hpp`, `libslam.a` archives them, `slam_node` links the library and `viz.o`. Using the few lines of Python below to compute the topological order and the rebuild set, which nodes are rebuilt when `scan.hpp` changes, and which when `viz.cpp` changes?
 
 ```python
 from graphlib import TopologicalSorter
@@ -267,12 +267,12 @@ def rebuild(changed):
 print(rebuild("scan.hpp")); print(rebuild("viz.cpp"))
 ```
 
+**Solution.** `rebuild(changed)` starts from the changed file and repeatedly adds every node that lists a node already in the set as a prerequisite, until nothing is added; the result is listed in topological order. Touching `scan.hpp` reaches 4 downstream nodes (two objects, the archive and the executable); touching `viz.cpp` reaches only `viz.o` and the executable. The first line of `order` is any valid order: `graphlib` guarantees only that prerequisites come first. The program prints:
+
 ```
 ['scan.hpp', 'scan.o', 'icp.o', 'libslam.a', 'slam_node']
 ['viz.cpp', 'viz.o', 'slam_node']
 ```
-
-Touching `scan.hpp` reaches 4 downstream nodes (two objects, the archive and the executable); touching `viz.cpp` reaches only `viz.o` and the executable. The first line of `order` is any valid order: `graphlib` guarantees only that prerequisites come first.
 
 ### Archive resolution as a fixed point
 
@@ -289,7 +289,9 @@ A concrete case with two cross-referencing archives. `libA.a` has members `a1.o`
 
 Termination of a group: every extra pass that does not stop the process extracts at least one new member, and a member is extracted at most once, so a group of archives with $M$ members in total needs at most $M+1$ passes. The ld manual warns that this "has a significant performance cost" and recommends it only for unavoidable circular references. CMake does the same for mutually dependent static libraries: it repeats the whole strongly connected component, so `A <-> B` linked from `main` produces `A B A B` (CMake docs, `target_link_libraries`, "Cyclic Dependencies of Static Libraries"). Its advice: if two archives are that interdependent, merge them (for example as an object library).
 
-**Example.** Three archives: `libX.a` = {`x1.o`: defines `f1`, needs `g1`; `x2.o`: defines `f2`}, `libY.a` = {`y1.o`: defines `g1`, needs `h1`}, `libZ.a` = {`z1.o`: defines `h1`, needs `f2`}; `main.o` needs `f1`. Applying the rule of this section to `-lX -lY -lZ`: $U=\{f1\}$; `libX` extracts `x1.o`, $U=\{g1\}$; `libY` extracts `y1.o`, $U=\{h1\}$; `libZ` extracts `z1.o`, $U=\{f2\}$; no archive left, so `f2` stays undefined. In the order `-lZ -lY -lX` nothing matches until `libX`, which gives $U=\{g1\}$ and stops. A fourth scan of `libX` ends with $U=\emptyset$. The linker agrees (gcc 11.4):
+**Example.** Three archives: `libX.a` = {`x1.o`: defines `f1`, needs `g1`; `x2.o`: defines `f2`}, `libY.a` = {`y1.o`: defines `g1`, needs `h1`}, `libZ.a` = {`z1.o`: defines `h1`, needs `f2`}; `main.o` needs `f1`. Applying the archive-resolution rule of this section, what is left undefined for `-lX -lY -lZ`, for `-lZ -lY -lX`, and for `-lX -lY -lZ -lX`? What does the linker say (gcc 11.4)?
+
+**Solution.** Keep the set $U$ of undefined symbols, initially $U=\{f1\}$ from `main.o`; each archive is scanned once, left to right, and extracts the members that define a symbol of $U$. For `-lX -lY -lZ`: `libX` extracts `x1.o`, $U=\{g1\}$; `libY` extracts `y1.o`, $U=\{h1\}$; `libZ` extracts `z1.o`, $U=\{f2\}$; no archive is left, so `f2` stays undefined. In the order `-lZ -lY -lX` nothing matches until `libX`, which extracts `x1.o` and gives $U=\{g1\}$ and stops, so `g1` stays undefined. A fourth scan of `libX` (`-lX -lY -lZ -lX`) extracts `x2.o` for `f2` and ends with $U=\emptyset$. The chain $f1\to g1\to h1\to f2$ runs "backwards" through the archives, so the one line that works repeats `libX` at the end. The linker agrees:
 
 ```
 $ gcc main.o -L. -lX -lY -lZ -o t
@@ -312,7 +314,7 @@ Static libraries need one exception. If `A` is static and links `B` `PRIVATE`, t
 
 *Figure: the scope written in `target_link_libraries(A <scope> B)` decides who sees B's include directory; for a static A, B is linked into `main` in all three cases.*
 
-**Example.** A sensor-fusion library `fusion` (static) uses a matrix library `matlib` only inside `fusion.c`, and `slam` links `fusion`. CMake 3.22 reports the two properties and the generated lines:
+**Example.** A sensor-fusion library `fusion` (static) uses a matrix library `matlib` only inside `fusion.c`, and `slam` links `fusion` (CMake lines below). What are the `LINK_LIBRARIES` and `INTERFACE_LINK_LIBRARIES` of `fusion`, and does the compile line of `slam.c` contain `-Imatinc`? What does the link line of `slam` contain? CMake 3.22:
 
 ```cmake
 add_library(matlib STATIC mat.c)
@@ -324,6 +326,8 @@ add_executable(slam slam.c)
 target_link_libraries(slam PRIVATE fusion)
 ```
 
+**Solution.** `fusion` keeps `matlib` in its own `LINK_LIBRARIES`, and publishes it to consumers only as `$<LINK_ONLY:matlib>`. Hence `libmatlib.a` is on the link line of `slam` while `-Imatinc` is absent from its compile line (only `-Ifusioninc` is there): the private dependency is linked but not compiled against. CMake reports the two properties and the generated lines:
+
 ```
 -- fusion LINK_LIBRARIES           = matlib
 -- fusion INTERFACE_LINK_LIBRARIES = $<LINK_ONLY:matlib>
@@ -331,13 +335,13 @@ compile line of slam.c:  cc -Ifusioninc -o CMakeFiles/slam.dir/slam.c.o -c slam.
 link line of slam:       cc CMakeFiles/slam.dir/slam.c.o -o slam  libfusion.a libmatlib.a
 ```
 
-`fusion` keeps `matlib` in its own `LINK_LIBRARIES`, and publishes it to consumers only as `$<LINK_ONLY:matlib>`. Hence `libmatlib.a` is on the link line of `slam` while `-Imatinc` is absent from its compile line: the private dependency is linked but not compiled against.
-
 ### Exporting a target: BUILD_INTERFACE and INSTALL_INTERFACE
 
 A usage requirement such as `target_include_directories(core PUBLIC /abs/path/include)` is valid while building inside the same tree, but if `core` is installed and exported the path would be baked into a file used on a different machine. CMake therefore rejects an absolute path inside the source or build directory in `INTERFACE_INCLUDE_DIRECTORIES` of an exported target. The fix separates the two worlds: `$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>` is used when consuming from the same build system, and `$<INSTALL_INTERFACE:include>` (a path relative to the install prefix) is used after installation (CMake docs, cmake-buildsystem(7), "Include Directories and Usage Requirements" and "Build Specification and Usage Requirements").
 
-**Example.** A transform library `tf` is exported with `install(TARGETS tf EXPORT tfTargets ...)` and `install(EXPORT tfTargets ...)`. With the absolute source path in the usage requirement CMake 3.22 stops at generate time; with the two generator expressions it passes:
+**Example.** A transform library `tf` is exported with `install(TARGETS tf EXPORT tfTargets ...)` and `install(EXPORT tfTargets ...)`. What does CMake 3.22 do when the include directory is given as `${CMAKE_CURRENT_SOURCE_DIR}/include`, and what with `$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>` plus `$<INSTALL_INTERFACE:include>`?
+
+**Solution.** With the absolute source path in the usage requirement CMake stops at generate time; with the two generator expressions it passes. The failed path would have been baked into the exported file and be wrong on any other machine, whereas `include` after `INSTALL_INTERFACE` is read relative to the install prefix. The two runs print:
 
 ```
 $ cmake -S . -B build        # target_include_directories(tf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -350,8 +354,6 @@ $ cmake -S . -B build        # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc
 -- Generating done
 ```
 
-The failed path would have been baked into the exported file and be wrong on any other machine, whereas `include` after `INSTALL_INTERFACE` is read relative to the install prefix.
-
 ### Library kinds and the cost model: static, shared, object, interface
 
 `add_library` creates one of several kinds of target, and the kind decides what the build produces and when its code is compiled (CMake docs, cmake-buildsystem(7), "Binary Targets", "Object Libraries" and "Interface Libraries"). A **static** library is an archive of object files; the final link copies the needed members into every executable that uses it. A **shared** library is linked once and resolved again when the program loads, so the executable contains a reference rather than the code. An **object** library is a collection of object files "created by compiling source files without any archiving or linking"; other targets reuse those objects through `$<TARGET_OBJECTS:name>` or by linking the object library. An **interface** library compiles nothing and produces no file: it only carries usage requirements, which makes it the right kind for header-only code.
@@ -360,7 +362,9 @@ The practical consequence is a cost model. A source file listed in $k$ different
 
 Which kind should a module choose? A rule of thumb that follows from the definitions: use a static library as the default for code owned by the project (simple deployment, the link line is deterministic); use a shared library when several executables must share one copy of the code or when the code must be replaced without relinking the application; use an object library to compile once and then archive or link the same objects into several different targets; use an interface library for header-only code and for bundles of flags that many targets should inherit. Two limits to remember: object libraries cannot be the `TARGET` of `add_custom_command(TARGET)`, and interface libraries accept only the `INTERFACE` form of `target_include_directories`, `target_compile_definitions` and friends.
 
-**Example.** Two executables `m1` and `m2` need the same `f.c`. Counting `Building C object` lines (CMake 3.22, Makefile generator):
+**Example.** Two executables `m1` and `m2` need the same `f.c`. How many `Building C object` lines does CMake 3.22 (Makefile generator) print when `f.c` is listed in both executables, and when it is built once as an object library used through `$<TARGET_OBJECTS:fobj>`?
+
+**Solution.** Listing `f.c` in both executables compiles it twice (2 `main` files plus 2 copies of `f.c` = 4); an object library compiles it once (2 `main` files plus 1 copy = 3). The saving is one compile here; for a 5-minute translation unit shared by ten tools it is nine compiles. The two builds give:
 
 ```
 $ cmake -S . -B b -DMODE=listed      # add_executable(m1 m1.c f.c) and add_executable(m2 m2.c f.c)
@@ -370,8 +374,6 @@ $ cmake -S . -B b -DMODE=object      # add_library(fobj OBJECT f.c); m1, m2 use 
 $ cmake --build b | grep -c 'Building C object'
 3
 ```
-
-Listing `f.c` in both executables compiles it twice (2 `main` files plus 2 copies of `f.c` = 4); an object library compiles it once (3). The saving is one compile here; for a 5-minute translation unit shared by ten tools it is nine compiles.
 
 ## Worked example
 

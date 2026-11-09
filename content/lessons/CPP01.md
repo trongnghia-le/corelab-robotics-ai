@@ -119,7 +119,7 @@ An *object* is a region of storage with a type; a declaration such as `T x{init}
 
 The working rule is to brace-initialize every object (C++ Core Guidelines ES.20 and ES.23) and to write `static_cast` wherever a narrowing is intended (ES.46), so that the lossy step is visible to the reader and to the compiler. Braces also remove one classic trap: in `int count{3.0 * 2}` the compiler rejects the initializer instead of storing 6 after silently converting a `double`.
 
-**Example.** Compiled with g++ 11.4.0, `-std=c++20 -Wall -Wextra`:
+**Example.** Compiled with g++ 11.4.0, `-std=c++20 -Wall -Wextra`, what does the program below print, and what does the compiler say if the last initialization is replaced by `int d{9.99};`, or if `-Wconversion` is added to the first program?
 
 ```cpp
 #include <iostream>
@@ -132,7 +132,7 @@ int main() {
 }
 ```
 
-The output is `0 0 9`: `{}` value-initializes both to zero, and `int c = 9.99;` keeps only the integer part, with no diagnostic. Replacing the last initialization by `int d{9.99};` stops the build with `error: narrowing conversion of '9.9900000000000002e+0' from 'double' to 'int' [-Wnarrowing]`. Adding `-Wconversion` to the first program produces `warning: conversion from 'double' to 'int' changes value from '9.9900000000000002e+0' to '9'`. The trailing digits are the stored binary value of 9.99.
+**Solution.** `{}` value-initializes `a` and `b` to zero, and `int c = 9.99;` keeps only the integer part, 9, with no diagnostic, so the output is `0 0 9`. Replacing the last initialization by `int d{9.99};` makes it a narrowing conversion inside braces, and the build stops with `error: narrowing conversion of '9.9900000000000002e+0' from 'double' to 'int' [-Wnarrowing]`. Adding `-Wconversion` to the first program produces `warning: conversion from 'double' to 'int' changes value from '9.9900000000000002e+0' to '9'`. The trailing digits are the stored binary value of 9.99.
 
 ### References, `const` and how arguments are passed
 
@@ -140,7 +140,7 @@ A reference is another name for an existing object. In `double mean(const std::v
 
 The price of a reference is lifetime. It does not own the object it names; if that object ends first, the reference *dangles* and using it is undefined behaviour (cppreference, "Reference declaration", section "Dangling references"; Core Guidelines F.43 forbids returning a reference to a local object). Inside a call the argument always outlives the parameter, so a `const&` parameter is safe; the danger begins when a reference is stored or returned.
 
-**Example.** A point cloud of 250 000 `double` values is read by a function five times, once by value and once by `const&` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). The type counts its copies:
+**Example.** A point cloud of 250 000 `double` values is read by a function five times, once by value and once by `const&` (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). The type counts its copies. How many copies happen in each case, how many bytes does one by-value call move, and what traffic is that at 60 Hz?
 
 ```cpp
 #include <iostream>
@@ -167,7 +167,7 @@ int main() {
 }
 ```
 
-Output: `after 5 by-value calls: copies = 5`, `after 5 by-reference calls: copies = 0`, `bytes per by-value call: 2000000`. Each by-value call allocates and fills 2 MB ($250\,000\times8$ B); at a rate of 60 Hz that is $2\times10^6\times60=120$ MB/s of traffic that the `const&` version does not generate.
+**Solution.** A by-value parameter is copy-constructed at each call, so the 5 calls make `copies = 5`; a `const&` parameter binds to the existing object and `copies = 0`. The output is `after 5 by-value calls: copies = 5`, `after 5 by-reference calls: copies = 0`, `bytes per by-value call: 2000000`. Each by-value call allocates and fills $250\,000\times8\text{ B}=2\,000\,000$ B $=2$ MB; at a rate of 60 Hz that is $2\times10^6\times60=1.2\times10^{8}$ B/s $=120$ MB/s of traffic that the `const&` version does not generate.
 
 ### Scope and the lifetime of automatic objects
 
@@ -175,7 +175,7 @@ The *scope* of a name is the part of the program where it can be used; for a var
 
 For locals, scope and lifetime coincide, but they are different ideas: a reference or pointer extends *access to* an object, never its *lifetime*. Reusing a name in a nested scope hides the outer one and is discouraged (Core Guidelines ES.12). A second consequence is that a function must not hand out the address of its own local variable, since the variable is gone when the function returns.
 
-**Example.** A type that prints when it is created and destroyed makes the order visible (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** A type that prints when it is created and destroyed makes the order visible (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). In which order are `a`, `b`, `c` and `d` made and dropped by the program below?
 
 ```cpp
 #include <iostream>
@@ -198,7 +198,7 @@ int main() {
 }
 ```
 
-Output, in order: `make a`, `make b`, `make c`, `inner block ends`, `drop c`, `drop b`, `make d`, `main ends`, `drop d`, `drop a`. `c` was created last in the inner block and is destroyed first; `a` is created first and destroyed last.
+**Solution.** Objects are constructed where the declaration is reached and destroyed in reverse order at the end of their scope. The output, in order, is `make a`, `make b`, `make c`, `inner block ends`, `drop c`, `drop b`, `make d`, `main ends`, `drop d`, `drop a`. `c` was created last in the inner block and is destroyed first; `a` is created first and destroyed last.
 
 ### `std::vector`, `size()` and bounds
 
@@ -206,7 +206,7 @@ A `std::vector<T>` owns a contiguous array of `size()` elements. `size()` return
 
 Undefined behaviour means that the standard places no requirement on the program, not that it crashes. A read one past the end may return stale data, return a neighbour's data, crash later or appear to work, and a different compiler flag can change which one happens. AddressSanitizer (`-fsanitize=address`) instruments heap and stack accesses and aborts at the first out-of-bounds access with a report that names the offending line and the size of the block; UndefinedBehaviorSanitizer (`-fsanitize=undefined`) reports other violations such as signed overflow. Both examine only the paths that actually run, so a clean run is evidence for those inputs and not a proof.
 
-**Example.** A vector of three `int` values is read at index 3 (g++ 11.4.0, `-std=c++20 -Wall -Wextra -g -fsanitize=address,undefined`):
+**Example.** A vector of three `int` values is read at index 3 (g++ 11.4.0, `-std=c++20 -Wall -Wextra -g -fsanitize=address,undefined`). What do the compiler and the run report, and where exactly is the access?
 
 ```cpp
 #include <iostream>
@@ -219,7 +219,7 @@ int main() {
 }
 ```
 
-The program compiles without a warning, and the run aborts with `AddressSanitizer: heap-buffer-overflow ... READ of size 4 ... t4.cpp:7` and `located 0 bytes to the right of 12-byte region`. The numbers agree with the layout: $3\times4=12$ bytes are allocated, and index 3 starts at byte offset 12, the first byte after the block. Without the sanitizer the same program would simply print whatever follows the array.
+**Solution.** The program compiles without a warning, and the run aborts with `AddressSanitizer: heap-buffer-overflow ... READ of size 4 ... t4.cpp:7` and `located 0 bytes to the right of 12-byte region`. The numbers agree with the layout: $3\times4=12$ bytes are allocated, and index 3 starts at byte offset $3\times4=12$, the first byte after the block, so the 4-byte read starts 0 bytes to the right of the region. Without the sanitizer the same program would simply print whatever follows the array.
 
 ### Integer conversions, modular arithmetic and undefined overflow
 
@@ -269,7 +269,7 @@ exactly the value in the C++ Core Guidelines example (ES.100). *Signed* overflow
 
 *The slider uses a few bits so that the pattern is visible; for the 32-bit `unsigned` of the text the modulus is 4294967296 and the sawtooth has the same shape.* Predict-first answer: $-50\bmod 64=14$, and the pattern 14 has a clear top bit of zero, so it reads as $+14$ in a signed type too; moving $d$ to $-20$ gives $44$, which reads as $-20$ because $44\ge32$.
 
-**Example.** On a 64-bit Linux machine with g++ 11.4.0 (`int` 32 bits), a signed value $-20$ meets an unsigned value 30:
+**Example.** On a 64-bit Linux machine with g++ 11.4.0 (`int` 32 bits), a signed value $-20$ meets an unsigned value 30 in the program below. What do `a - b`, `a < b`, `c < b` (with `long long c = -20`) and the cast of `a - b` back to `int` print, and what does the related call `square(50000)` of `int square(int x) { return x * x; }` do?
 
 ```cpp
 #include <iostream>
@@ -285,7 +285,7 @@ int main() {
 }
 ```
 
-Output: `4294967246`, `0`, `1`, `-50`. `int` and `unsigned int` have equal rank, so $a$ becomes $2^{32}-20=4294967276$ and the difference is $4294967276-30=4294967246=2^{32}-50$. The comparison `a < b` is therefore $4294967276<30$, false, and `-Wall -Wextra` reports it (`-Wsign-compare`). With `long long c` the common type is `long long`, which holds every `unsigned int`, so the comparison is $-20<30$ and is true. Casting the unsigned result back to `int` returns $-50$, because the conversion yields the value congruent modulo $2^{32}$ ([conv.integral], paragraph 3). A related program, `int square(int x) { return x * x; }` called with `square(50000)`, is undefined behaviour because $2\,500\,000\,000>2^{31}-1$: GCC with `-fsanitize=undefined` reports `signed integer overflow: 50000 * 50000 cannot be represented in type 'int'`, and without it prints the wrapped value $-1794967296=2\,500\,000\,000-2^{32}$, which is only one of the permitted outcomes.
+**Solution.** `int` and `unsigned int` have equal rank, so $a$ becomes $2^{32}-20=4294967276$ and the difference is $4294967276-30=4294967246=2^{32}-50$. The comparison `a < b` is therefore $4294967276<30$, false (`0`), and `-Wall -Wextra` reports it (`-Wsign-compare`). With `long long c` the common type is `long long`, which holds every `unsigned int`, so the comparison is $-20<30$ and is true (`1`). Casting the unsigned result back to `int` returns $-50$, because the conversion yields the value congruent modulo $2^{32}$ ([conv.integral], paragraph 3). The output is `4294967246`, `0`, `1`, `-50`. The call `square(50000)` is undefined behaviour because $2\,500\,000\,000>2^{31}-1$: GCC with `-fsanitize=undefined` reports `signed integer overflow: 50000 * 50000 cannot be represented in type 'int'`, and without it prints the wrapped value $-1794967296=2\,500\,000\,000-2^{32}$, which is only one of the permitted outcomes.
 
 ### A floating-point error model and the price of a sum
 
@@ -301,7 +301,7 @@ The worst case grows like $n^2u$, and typical random rounding errors grow more l
 
 *Figure: the gap between adjacent numbers ($\mathrm{ulp}$) doubles each time the magnitude doubles. A double near $10^8$ resolves $1.5\times10^{-8}$, a double near $10^{14}$ only $1.6\times10^{-2}$; a `float` near $1.7\times10^{7}$ already steps by 2.*
 
-**Example.** The rounding model predicts three things that can be seen in 8 lines (g++ 11.4.0, `-std=c++20 -Wall -Wextra`):
+**Example.** The rounding model predicts three things that can be seen in 8 lines (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). What does the program below print for `f + 1.0f == f` and `d + 1.0 == d` at $2^{24}$ and $10^{16}$, for `0.1 + 0.2` and its comparison with `0.3`, and for the spacing of floating-point numbers at those two magnitudes?
 
 ```cpp
 #include <cmath>
@@ -318,7 +318,7 @@ int main() {
 }
 ```
 
-Output: `1 1`, `0.30000000000000004 0`, `2 2`. Above $2^{24}=16\,777\,216$ a `float` can no longer represent every integer, so adding 1 changes nothing (the exact sum lies halfway between two floats and rounds back to the even neighbour); a `double` shows the same at $10^{16}$, where the spacing is 2. `0.1 + 0.2` is not `0.3` because each of the three decimal constants is stored with a relative error of up to $u=2^{-53}$, which is why equality of computed doubles must be tested with a tolerance chosen from the scale of the data.
+**Solution.** The output is `1 1`, `0.30000000000000004 0`, `2 2`. Above $2^{24}=16\,777\,216$ a `float` can no longer represent every integer, so adding 1 changes nothing (the exact sum lies halfway between two floats and rounds back to the even neighbour); a `double` shows the same at $10^{16}$, where the spacing is 2, which the last line confirms with `nextafter`. `0.1 + 0.2` is not `0.3` because each of the three decimal constants is stored with a relative error of up to $u=2^{-53}$, which is why equality of computed doubles must be tested with a tolerance chosen from the scale of the data.
 
 ### Three moving averages and where their errors come from
 
@@ -330,7 +330,7 @@ The lesson gives the direct window mean, the streaming update $S_{k+1}=S_k-x_k+x
 
 The remedy that costs almost nothing is to subtract a reference value first, for example $x_0$ or a running mean estimate, accumulate $x_i-x_0$, and add it back at the end: the sums are then of the size of the *variation*, not of the *offset*. Exercise 14 measures this effect.
 
-**Example.** A tiny signal that rides on a very large offset exposes the three variants (g++ 11.4.0, `-std=c++20 -Wall -Wextra`). With $x=\{10^{16},1,1,1,1\}$ and $w=2$ the exact window means are $5\times10^{15}+0.5$, then 1, 1, 1:
+**Example.** A tiny signal that rides on a very large offset exposes three variants of a moving average (g++ 11.4.0, `-std=c++20 -Wall -Wextra`): the direct mean, a streaming window sum and prefix sums. With $x=\{10^{16},1,1,1,1\}$ and $w=2$ the exact window means are $5\times10^{15}+0.5$, then 1, 1, 1. What does each variant print, and why?
 
 ```cpp
 #include <iostream>
@@ -353,7 +353,7 @@ int main() {
 }
 ```
 
-The output has four lines: `k=0 direct=5e+15 streaming=5e+15 prefix=5e+15`, then for $k=1,2,3$ the same triple `direct=1 streaming=0.5 prefix=0`. The direct mean is exact for the three small windows. The streaming sum started as $10^{16}+1$, which rounds to $10^{16}$ (the spacing there is 2), so after subtracting $x_0=10^{16}$ it holds 0 instead of 1 and stays wrong by 1 forever, giving 0.5. The prefix sums never see the 1's at all because each addition to $P\approx10^{16}$ rounds back to $P$, so $P_{k+w}-P_k=0$. The remedy of the text, subtracting $x_0$ first, makes the data $\{0,1,1,1,1\}$, for which all three variants are exact.
+**Solution.** The output has four lines: `k=0 direct=5e+15 streaming=5e+15 prefix=5e+15`, then for $k=1,2,3$ the same triple `direct=1 streaming=0.5 prefix=0`. The direct mean is exact for the three small windows ($(1+1)/2=1$). The streaming sum started as $10^{16}+1$, which rounds to $10^{16}$ (the spacing there is 2), so after subtracting $x_0=10^{16}$ it holds 0 instead of 1 and stays wrong by 1 forever, giving $s/2=0.5$. The prefix sums never see the 1's at all because each addition to $P\approx10^{16}$ rounds back to $P$, so $P_{k+w}-P_k=0$. The remedy of the text, subtracting $x_0$ first, makes the data $\{0,1,1,1,1\}$, for which all three variants are exact.
 
 ## Worked example
 
