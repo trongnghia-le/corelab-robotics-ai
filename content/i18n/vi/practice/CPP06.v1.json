@@ -82,6 +82,29 @@
     "static_assert(factorial(5) == 120);",
     "13! làm tràn int 32-bit; trong biểu thức hằng, tràn số có dấu là lỗi biên dịch."
    ]
+  },
+  "c1": {
+   "prompt": "template <class T> void f(T&&); const long total = 4; f(total); T được suy ra là gì và kiểu tham số là gì?",
+   "options": [
+    "T = const long, tham số const long&&",
+    "T = const long&, tham số const long&",
+    "T = long&, tham số long&",
+    "T = const long, tham số const long&"
+   ],
+   "explanation": "T&& với T trần là forwarding reference. Với đối số lvalue kiểu const long, việc suy ra dùng const long&, nên T = const long&. Kiểu tham số là const long& && và được rút gọn (reference collapsing) thành const long&. T = const long chỉ được suy ra cho đối số rvalue, khi đó tham số là const long&&."
+  },
+  "c2": {
+   "prompt": "template <class... A> auto r(A... a) { return (a - ...); } r(20, 8, 5, 2) trả về giá trị nào? Cho một số nguyên.",
+   "explanation": "Một right fold một ngôi (E op ...) khai triển thành E1 op (E2 op (E3 op E4)). Vậy 20 - (8 - (5 - 2)) = 20 - (8 - 3) = 20 - 5 = 15. Left fold sẽ cho ((20 - 8) - 5) - 2 = 5, đây là lỗi thường gặp."
+  },
+  "c3": {
+   "prompt": "Với template <class T> struct id { using type = T; }; và template <class T> constexpr T clamp_to(T x, typename id<T>::type lo, typename id<T>::type hi), clamp_to(9, 0.0, 6.5) trả về gì và vì sao đó là vấn đề thiết kế? Đề xuất cách sửa vẫn cho phép đối số khác kiểu nhưng từ chối lời gọi sai ngay lúc biên dịch.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "T chỉ được suy ra từ x (các cận nằm trong non-deduced context), nên T = int và các cận bị chuyển kiểu: hi thành 6, kết quả là 6 chứ không phải 6.5.",
+    "Việc chuyển kiểu diễn ra âm thầm, nên kết quả sai được trả về mà không có chẩn đoán nào.",
+    "Cách sửa: dùng ba tham số template độc lập và static_assert(std::is_same_v<std::common_type_t<T, L, H>, T>, \"bounds would be narrowed\") (hoặc kiểm tra bằng braces/chuyển kiểu); người gọi muốn thăng kiểu thì viết clamp_to<double>(9, 0, 6.5)."
+   ]
   }
  }
 }

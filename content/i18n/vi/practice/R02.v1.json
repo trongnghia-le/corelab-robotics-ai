@@ -81,6 +81,24 @@
     "Giải thích độ nghiêng gắn với gia tốc ngang, nên phương tiện có thể tới mọi vị trí và yaw theo thời gian (đầu ra phẳng) nhưng roll và pitch không thể chọn độc lập; khả năng tới được phụ thuộc vào động lực học, không chỉ số dof"
    ],
    "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "c1": {
+   "prompt": "Một tay máy phẳng 3R hở không giới hạn khớp có độ dài khâu 4, 1 và 1. Diện tích tập điểm mà đầu mút có thể tới là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "Các bán kính tới được lấp đầy [r_min, r_max] với r_max = tổng độ dài = 6 và r_min = max(0, 2*l_max - tổng) = 8 - 6 = 2. Không gian làm việc là hình vành khăn diện tích pi(6^2 - 2^2) = 32 pi = 100.53. Thứ tự các khâu không quan trọng, và lỗ bán kính 2 tồn tại vì khâu dài nhất vượt tổng các khâu còn lại."
+  },
+  "c2": {
+   "prompt": "Bốn tay S-R-S giống nhau (khớp cầu, khớp quay, khớp cầu; mỗi tay hai khâu) cùng nắm cứng một vật chung, và đế các tay gắn với đất. Dùng công thức Grubler không gian, độ linh động của cả hệ là bao nhiêu? Cho một số nguyên.",
+   "explanation": "Khâu: đất + vật + 4*2 khâu tay = 10. Khớp: 4*3 = 12, với tổng f_i = 4*(3+1+3) = 28. dof = 6(10 - 1 - 12) + 28 = -18 + 28 = 10. Bằng 6 (tư thế vật) + 4 (một bậc xoay khuỷu nội bộ cho mỗi tay), dạng tổng quát n + 6."
+  },
+  "c3": {
+   "prompt": "Một robot truyền động vi sai có cấu hình (phi, x, y, theta_L, theta_R) và hai điều khiển tốc độ bánh. Phát biểu nào về các ràng buộc Pfaffian A(q) qdot = 0 của nó là đúng?",
+   "options": [
+    "Hai ràng buộc, cả hai holonomic, nên tập đạt tới được ba chiều",
+    "Ba ràng buộc: một holonomic và hai nonholonomic, nên tập đạt tới được bốn chiều",
+    "Ba ràng buộc, tất cả nonholonomic, nên mọi cấu hình của không gian năm chiều đều đạt tới được",
+    "Không có ràng buộc, vì các điều khiển độc lập"
+   ],
+   "explanation": "Năm tọa độ và tập vận tốc hai chiều cho 5 - 2 = 3 ràng buộc Pfaffian. Vì phi-dot = (r/2d)(u_R - u_L) và theta_R-dot - theta_L-dot = u_R - u_L, tổ hợp phi - (r/2d)(theta_R - theta_L) là hằng: một ràng buộc holonomic. Các trường vectơ g_L, g_R, [g_L, g_R] và [g_L,[g_L,g_R]] chỉ trải bốn chiều, nên hai ràng buộc còn lại là nonholonomic và tập đạt tới được bốn chiều."
   }
  }
 }

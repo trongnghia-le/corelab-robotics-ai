@@ -41,6 +41,30 @@
     "Đưa ra một kết quả tham chiếu, các kiểm thử biên và một đột biến (mutation) mà các kiểm thử của bạn bác bỏ.",
     "Ghi lại phiên bản nguồn và các lệnh chính xác; nhập báo cáo được hỗ trợ một cách riêng."
    ]
+  },
+  "c1": {
+   "prompt": "Dùng cận bậc nhất |s_hat - s| <= (n-1) u sum|x_i| với u = 2^-53, cận cho việc cộng n = 1000 số hạng, mỗi số bằng 0.1, bằng vòng lặp thường từ trái sang phải là bao nhiêu? Trả lời theo đơn vị 1e-11 (ba chữ số có nghĩa).",
+   "explanation": "sum|x_i| = 1000 * 0.1 = 100 và n - 1 = 999, nên cận là 999 * 2^-53 * 100 = 99900 * 1.1102230246e-16 = 1.1091e-11, tức 1.109 theo đơn vị 1e-11. Đây là cận trường hợp xấu nhất; sai số đo được với đầu vào này là 1.41e-12, nhỏ hơn khoảng 8 lần, vì các sai số làm tròn riêng lẻ có dấu lẫn lộn."
+  },
+  "c2": {
+   "prompt": "Trung bình trượt O(n) giữ s = s + v[i+k] - v[i] rồi chia cho k. Với float Python, v = [1e16, 1, 1, 1] và k = 2, nó trả về danh sách nào?",
+   "options": [
+    "[5e15, 1.0, 1.0], giống như tính lại từng cửa sổ, vì cập nhật chính xác về mặt đại số",
+    "[5e15, 0.0, 0.0], vì 1e16 + 1 làm tròn thành 1e16 và số 1 đã mất không bao giờ lấy lại được",
+    "[5e15, 0.5, 1.0], vì sai số giảm đi khi giá trị lớn rời cửa sổ",
+    "[5e15, 0.0, 1.0], vì chỉ cửa sổ đầu tiên sau giá trị lớn bị ảnh hưởng"
+   ],
+   "explanation": "Tổng cửa sổ đầu 1e16 + 1 không biểu diễn được (các float gần 1e16 cách nhau 2) và trường hợp hòa làm tròn về số chẵn, cho 1e16. Cập nhật sau đó tính (1e16 + 1) - 1e16 = 1e16 - 1e16 = 0 và về sau 0 + 1 - 1 = 0, nên mọi cửa sổ sau đều là 0.0 dù trung bình đúng là 1.0. Cập nhật chính xác trong số thực, không chính xác trong float: sai số làm tròn ở lại trong s mãi mãi. Tính lại từng cửa sổ (hoặc math.fsum) trả về [5e15, 1.0, 1.0]."
+  },
+  "c3": {
+   "prompt": "Cho n = 2m + 1 phép đo đã sắp xếp. Chứng minh rằng nếu nhiều nhất m phép đo bị hỏng (thay bằng giá trị tùy ý), trung vị vẫn nằm giữa phép đo sạch nhỏ nhất và lớn nhất. Sau đó chỉ ra m + 1 phép đo hỏng có thể kéo nó đi xa tùy ý, và giải thích vì sao trung bình không có bảo đảm như vậy.",
+   "explanation": "Chứng minh theo rubric. Đáp án mẫu: trung vị M là giá trị nhỏ thứ (m+1), nên đúng m giá trị đứng trước và m giá trị đứng sau. Với nhiều nhất m phép đo hỏng còn ít nhất m+1 giá trị sạch. Nếu M > max(sạch), cả m+1 giá trị sạch đều đứng trước M, nhưng chỉ có m giá trị đứng trước: mâu thuẫn; đối xứng M < min(sạch) cũng không thể. Với m+1 giá trị hỏng cùng đặt bằng L > max(sạch), còn nhiều nhất m giá trị sạch chiếm vị trí 1..m, nên các vị trí m+1..n đều là L và M = L, tùy ý. Trung bình đổi đúng Delta/n khi một giá trị đổi Delta, không bị chặn theo Delta, nên chỉ một phép đo hỏng là đủ.",
+   "rubric": [
+    "Nêu trung vị là giá trị nhỏ thứ (m+1) với đúng m giá trị mỗi bên.",
+    "Lập luận phản chứng rằng M > max(sạch) cần m+1 giá trị đứng trước M, điều không thể, và xử lý trường hợp đối xứng.",
+    "Dựng phản ví dụ với m+1 giá trị hỏng mà trung vị bằng giá trị tùy ý L.",
+    "Chỉ ra trung bình dịch Delta/n với một phép đo hỏng, nên nó hỏng chỉ với một giá trị."
+   ]
   }
  }
 }

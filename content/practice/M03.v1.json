@@ -103,13 +103,13 @@
       "dimension": "C",
       "critical": false,
       "options": [
-        "[[1, 2], [0, 1]]",
-        "[[2, 0], [0, 3]]",
-        "[[1, 2], [2, 4]]",
-        "[[0, -1], [1, 0]]"
+        "[[1, 3], [0, 1]]",
+        "[[3, 0], [0, 2]]",
+        "[[2, 6], [1, 3]]",
+        "[[0, 1], [-1, 0]]"
       ],
       "answer": "2",
-      "explanation": "Its second row is twice the first, so it collapses the direction (2, −1) to zero."
+      "explanation": "Its first row is twice its second row (determinant 2·3 − 6·1 = 0), so it collapses the direction (3, −1) to zero: 2·3 + 6·(−1) = 0 and 1·3 + 3·(−1) = 0."
     },
     {
       "id": "m03-b5",
@@ -148,12 +148,12 @@
           "href": "/lessons/M03#theory-and-derivation"
         }
       ],
-      "prompt": "A = [[1, 2], [3, 4]], B = [[0, 1], [1, 0]]. What is (AB)₁₂?",
+      "prompt": "A = [[2, 5], [1, 3]], B = [[4, 0], [1, 2]]. What is (AB)₂₁?",
       "dimension": "M",
       "critical": false,
-      "answer": "1",
+      "answer": "7",
       "tolerance": 0.01,
-      "explanation": "Row 1 of A (1,2) dotted with column 2 of B (1,0) = 1."
+      "explanation": "Row 2 of A (1, 3) dotted with column 1 of B (4, 1) = 1·4 + 3·1 = 7."
     },
     {
       "id": "m03-b7",
@@ -236,12 +236,12 @@
           "href": "/lessons/M03#theory-and-derivation"
         }
       ],
-      "prompt": "Design the array shapes to apply a 3×3 camera matrix to 100 points stored (a) as columns and (b) as rows. State the product expression and a shape assertion for each.",
+      "prompt": "Design the array shapes to apply a 3×3 rotation matrix R to 1,000 lidar points stored (a) as columns and (b) as rows. State the product expression and a shape assertion for each.",
       "dimension": "T",
       "critical": false,
       "rubric": [
-        "Columns: P is 3×100, result K@P is 3×100.",
-        "Rows: X is 100×3, result X@K.T is 100×3.",
+        "Columns: P is 3×1000, result R@P is 3×1000.",
+        "Rows: X is 1000×3, result X@R.T is 1000×3.",
         "Includes an explicit shape check or test that catches a swapped order."
       ],
       "explanation": "Open question; check your answer against the rubric."
@@ -295,6 +295,75 @@
         "Explicit inverses are rarely needed beyond tiny 2×2 or 3×3 hand cases."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m03-c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "composition-order"
+      ],
+      "skillLabel": "Cost of bracketing a matrix product",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M03#theory-and-derivation"
+        }
+      ],
+      "prompt": "A is 10x500, B is 500x10 and C is 10x500. Count 2mnp flops per matrix product. How many times more flops does computing A(BC) need than computing (AB)C?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "50",
+      "tolerance": 0.01,
+      "explanation": "(AB)C: AB is 10x10 (2*10*500*10 = 100,000 flops), then (AB)C is 10x500 (2*10*10*500 = 100,000), total 200,000. A(BC): BC is 500x500 (2*500*10*500 = 5,000,000), then A(BC) (2*10*500*500 = 5,000,000), total 10,000,000. Ratio = 10,000,000 / 200,000 = 50."
+    },
+    {
+      "id": "m03-c2",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "transpose-inverse"
+      ],
+      "skillLabel": "Sensitivity of a linear solve",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M03#theory-and-derivation"
+        }
+      ],
+      "prompt": "A = [[4, 1], [2, 1]] and Ax = b with b = (5, 3). The second measurement is read 0.02 too high, so x~ solves A x~ = b + 0.02 e_2. Compute ||x~ - x|| (Euclidean norm) to 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0412",
+      "explanation": "Subtract Ax = b from A x~ = b + 0.02 e_2 to get A(x~ - x) = 0.02 e_2, so x~ - x = 0.02 A^-1 e_2. Here A^-1 = [[0.5, -0.5], [-1, 2]] (det A = 2), so A^-1 e_2 = (-0.5, 2) and x~ - x = (-0.01, 0.04), of norm 0.02·sqrt(0.25 + 4) = 0.0412. It depends only on the 2nd column of A^-1, not on b (check: x = (1, 1), x~ = (0.99, 1.04)).",
+      "tolerance": 0.001
+    },
+    {
+      "id": "m03-c3",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "composition-order"
+      ],
+      "skillLabel": "Orthogonal matrices and drift",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M03#theory-and-derivation"
+        }
+      ],
+      "prompt": "U = R(30°) and V = R(60°) are 2D rotation matrices. (a) Compute UV, then (UV)^-1 using orthogonality (no inversion routine), and apply (UV)^-1 to the point (0, 1). (b) A tracker multiplies 100,000 small rotation matrices in floating point and afterwards finds max|A^T A - I| = 4e-12. Explain how this arises, why it matters, and give one repair.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "(a) UV = R(90°) = [[0, -1], [1, 0]]; (UV)^-1 = (UV)^T = V^T U^T = [[0, 1], [-1, 0]]; applied to (0, 1) it gives (1, 0), because UV maps (1, 0) to (0, 1).",
+        "(b) Each product rounds at about 1e-16 relative, and the errors accumulate over 100,000 products, so the result is only approximately orthogonal: lengths and angles drift (4e-12 is the measured loss of orthogonality).",
+        "Repair: re-orthonormalise the matrix, for example with a QR or SVD factorisation, or keep a quaternion and renormalise it; monitor with max|A^T A - I|."
+      ],
+      "explanation": "Open question; check your answer against the rubric. UV = R(30°+60°) = R(90°); because U and V are orthogonal, (UV)^-1 = (UV)^T = V^T U^T = [[0, 1], [-1, 0]], which sends (0, 1) back to (1, 0). In floating point every product adds an error of about 1e-16, so after 100,000 products the matrix has drifted and max|A^T A - I| monitors it."
     }
   ]
 }

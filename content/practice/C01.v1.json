@@ -295,6 +295,72 @@
         "States that damping benefit must be compared on the same plant with noise."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "c01-c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "discrete-stability"
+      ],
+      "skillLabel": "Discrete stability limit",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A sampled proportional loop e[n+1] = e[n] - g*e[n-D] (g = h*k) has a computation delay of D = 2 whole steps. The largest g for which all roots of z^3 - z^2 + g = 0 stay inside the unit circle is 2*sin(pi/(2(2D+1))). Give it to three decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.618",
+      "tolerance": 0.002,
+      "explanation": "A root on the unit circle z = e^{jw} needs g = z^D (1 - z) real and positive. Since 1 - e^{jw} = 2 sin(w/2) e^{j(w-pi)/2}, the phase condition is (2D+1)w = pi (smallest solution) and g = 2 sin(w/2). For D = 2: g = 2 sin(pi/10) = 0.618. For D = 0 and D = 1 the same formula gives 2 and 1."
+    },
+    {
+      "id": "c01-c2",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "p-control-steady-error"
+      ],
+      "skillLabel": "Integral action",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Plant x' = u + d with PI control u = kp*e + ki*z, z' = e, r = 0, d = 0.5, kp = 2, ki = 2, plant at rest and z(0) = 0. The error is e(t) = -d/wd * exp(-zeta*wn*t) * sin(wd*t). What is the largest |e(t)| (three decimals)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.161",
+      "tolerance": 0.002,
+      "explanation": "wn = sqrt(ki) = 1.4142, zeta = kp/(2 sqrt(ki)) = 0.7071, wd = wn sqrt(1 - zeta^2) = 1. The maximum of |e| is where tan(wd t) = wd/(zeta wn) = 1, so t = pi/4 and |e| = 0.5 * sin(pi/4) * exp(-pi/4) = 0.5 * 0.7071 * 0.4559 = 0.1612."
+    },
+    {
+      "id": "c01-c3",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "p-control-steady-error"
+      ],
+      "skillLabel": "Proportional control steady error",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C01#theory-and-derivation"
+        }
+      ],
+      "prompt": "For x' = u + d with u = K(r - x), K = [[1, 10],[0, 1]] (both eigenvalues 1) and eta = e + K^{-1} d, the shifted error obeys eta' = -K eta, so eta(t) = exp(-t) [[1, -10t],[0, 1]] eta0. Starting from eta0 = (0, 1), what is the largest value of the Euclidean norm of eta over time (two decimals)?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.70",
+      "tolerance": 0.02,
+      "explanation": "|eta|^2 = exp(-2t)(100 t^2 + 1). Its derivative vanishes where 100 t^2 - 100 t + 1 = 0, and the maximum is the larger root t = 0.9899. There |eta|^2 = exp(-1.9798) * 98.99 = 13.67, so |eta| = 3.697. The norm grows by 3.7 times before decaying, although both eigenvalues are 1: V = |eta|^2/2 is not a Lyapunov function for this non-normal system."
     }
   ]
 }

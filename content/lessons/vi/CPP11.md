@@ -13,7 +13,116 @@ Bình phương tối thiểu có một hình học đẹp. Khớp tốt nhất $
 
 ![Hình chiếu của b lên không gian cột của A với phần dư vuông góc, và một biểu đồ cột về sai số của QR so với phương trình chuẩn cho đa thức bậc 3, 6, 9 và 12](/lesson-figures/CPP11.svg)
 
-*Trái: phần dư trực giao với không gian cột. Phải: sai số hệ số đo được của QR (khoảng cond nhân 1e-16) và của phương trình chuẩn (khoảng cond bình phương nhân 1e-16).*
+*Hình: Trái: phần dư trực giao với không gian cột. Phải: sai số hệ số đo được của QR (khoảng kappa nhân 1e-16, nét đứt) và của phương trình chuẩn (khoảng kappa bình phương nhân 1e-16, nét đứt), bậc 3, 6, 9, 12.*
+
+```explore
+{
+ "title": "Digits lost: QR against the normal equations",
+ "title_vi": "Chữ số bị mất: QR so với phương trình chuẩn",
+ "prompt": "Predict first: for which condition number does each method run out of correct digits? Then slide log10 κ and read the two curves and the point.",
+ "prompt_vi": "Dự đoán trước: với số điều kiện nào thì mỗi phương pháp hết sạch chữ số đúng? Sau đó kéo log10 κ và đọc hai đường cong cùng điểm đánh dấu.",
+ "params": [
+  {
+   "name": "lk",
+   "label": "log10 κ(A)",
+   "label_vi": "log10 κ(A)",
+   "min": 0,
+   "max": 12,
+   "step": 0.1,
+   "value": 6.5
+  }
+ ],
+ "let": [
+  {
+   "name": "kappa",
+   "expr": "10^lk"
+  },
+  {
+   "name": "dq",
+   "expr": "max(0, 16 - lk)"
+  },
+  {
+   "name": "dn",
+   "expr": "max(0, 16 - 2*lk)"
+  }
+ ],
+ "plot": {
+  "x": {
+   "name": "x",
+   "min": 0,
+   "max": 12,
+   "label": "log10 κ(A)",
+   "label_vi": "log10 κ(A)"
+  },
+  "y": {
+   "label": "correct digits (of 16)",
+   "label_vi": "chữ số đúng (trên 16)",
+   "min": 0,
+   "max": 16
+  },
+  "series": [
+   {
+    "expr": "max(0, 16 - x)",
+    "label": "QR: 16 - log10 κ",
+    "label_vi": "QR: 16 - log10 κ",
+    "color": "blue"
+   },
+   {
+    "expr": "max(0, 16 - 2*x)",
+    "label": "normal equations: 16 - 2 log10 κ",
+    "label_vi": "phương trình chuẩn: 16 - 2 log10 κ",
+    "color": "orange"
+   }
+  ],
+  "points": [
+   {
+    "x": "lk",
+    "y": "dq",
+    "label": "QR",
+    "label_vi": "QR",
+    "color": "blue"
+   },
+   {
+    "x": "lk",
+    "y": "dn",
+    "label": "normal eq.",
+    "label_vi": "PT chuẩn",
+    "color": "orange"
+   }
+  ]
+ },
+ "readouts": [
+  {
+   "label": "κ(A)",
+   "expr": "kappa",
+   "unit": "",
+   "digits": 0
+  },
+  {
+   "label": "digits kept by QR",
+   "label_vi": "chữ số QR giữ lại",
+   "expr": "dq",
+   "unit": "",
+   "digits": 1
+  },
+  {
+   "label": "digits kept by the normal equations",
+   "label_vi": "chữ số phương trình chuẩn giữ lại",
+   "expr": "dn",
+   "unit": "",
+   "digits": 1
+  }
+ ]
+}
+```
+
+**Hãy dự đoán trước khi tính.** Bạn khớp một đường thẳng với bốn điểm rồi khớp một đa thức bậc 12 với 50 điểm, cả hai bằng đúng cùng một đoạn code, với dữ liệu hoàn toàn không có nhiễu, nên đáp án đúng đã biết. Trước khi đọc tiếp, hãy dự đoán mỗi phép khớp trả về bao nhiêu chữ số đúng với phương pháp tốt và với phương pháp cẩu thả. Thanh trượt ở trên cho thấy quy luật quyết định điều đó.
+
+**Một hình ảnh để nhớ.** Bình phương tối thiểu là một cái bóng. Vector $b$ là một điểm trong không gian; các cột của $A$ span một mặt phẳng; các giá trị khớp là bóng của $b$ trên mặt phẳng đó, và phần dư là đoạn từ $b$ xuống bóng, gặp mặt phẳng ở góc vuông. Nếu hai cột của $A$ chỉ các hướng khác nhau rõ rệt, mặt phẳng được xác định tốt và một cú rung nhẹ của $b$ chỉ dịch bóng nhẹ. Nếu hai cột gần song song, mặt phẳng là một dải mỏng; mô tả bóng là "bấy nhiêu cột 1 cộng bấy nhiêu cột 2" giờ cần các hệ số khổng lồ trái dấu, và sai số nhỏ của bóng biến thành sai số lớn của các hệ số. Độ nhạy đó chính là điều kiện số, và nó là tính chất của bài toán, không phải của code.
+
+**Đáp án của dự đoán.** Đường thẳng trả về khoảng 15 chữ số đúng; đa thức bậc 12 khoảng 8 với QR và không chữ số nào với phương trình chuẩn (sai số 3.8, bảng bên dưới). Dữ liệu hoàn hảo ở cả hai trường hợp: cái thay đổi là độ nhạy của đáp án với sai số làm tròn.
+
+**Các trực giác sai.** "Nhiều chữ số ở đầu ra nghĩa là đáp án chính xác hơn": bộ giải in 16 chữ số dù 3 trong số đó có đúng hay không. "Nếu đường cong khớp trông đúng thì các hệ số đúng": hai vector hệ số rất khác nhau có thể cho các đường cong không phân biệt được khi bài toán điều kiện xấu, vì vậy oracle của bài so sánh phần dư và giá trị khớp. "Lập $A^\top A$ chỉ là đại số": nó bình phương điều kiện số, nên lặng lẽ vứt đi một nửa số chữ số của bạn. Và "Eigen sẽ tự lo": thư viện đúng, nhưng `auto` và aliasing có thể khiến một biểu thức đúng tính ra thứ khác.
 
 ## Lý thuyết và suy dẫn
 
@@ -36,6 +145,40 @@ Chỉ số bắt đầu từ không và `A(i, j)` là hàng $i$, cột $j$. `Eig
 1. `auto` bắt lấy biểu thức, không phải kết quả. `auto s = M.colPivHouseholderQr().solve(b);` giữ một reference tới phép phân rã tạm, thứ bị hủy ở cuối câu lệnh: đọc `s` về sau là use-after-scope (AddressSanitizer báo `stack-use-after-scope`). Hãy viết `Eigen::VectorXd s = ...;`.
 2. **Aliasing.** `A = A.transpose();` đọc và ghi cùng một vùng nhớ khi đang đánh giá. Ở bản build debug Eigen assert "aliasing detected during transposition"; với `-O2 -DNDEBUG` nó lặng lẽ tạo ra một ma trận sai (với $\begin{pmatrix}1&2\\3&4\end{pmatrix}$ nó in ra $\begin{pmatrix}1&2\\2&4\end{pmatrix}$ thay vì $\begin{pmatrix}1&3\\2&4\end{pmatrix}$). Dùng `A.transposeInPlace()` hoặc `A = A.transpose().eval();`.
 
+**Ví dụ.** Ma trận $M=\begin{pmatrix}1&2\\3&4\end{pmatrix}$ được chuyển vị ba cách trong bản build đã tắt assertion. Phép gán có aliasing `A = A.transpose();` ghi phần tử $(1,0)$ từ $(0,1)$ rồi đọc phần tử $(0,1)$ đã bị ghi đè, nên số 3 bị mất và ma trận in ra đối xứng một cách ngẫu nhiên; `transposeInPlace()` và `.eval()` cho kết quả đúng $\begin{pmatrix}1&3\\2&4\end{pmatrix}$. Với kết quả sai không có thông báo nào được in. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -O2 -DNDEBUG -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <iostream>
+
+int main() {
+  Eigen::MatrixXd A(2, 2);
+  A << 1, 2,
+       3, 4;
+  Eigen::MatrixXd B = A;
+  Eigen::MatrixXd C = A;
+
+  A = A.transpose();              // aliasing: reads and writes the same memory
+  B.transposeInPlace();           // correct, in place
+  C = C.transpose().eval();       // correct, through an explicit temporary
+
+  std::cout << "aliased A:\n" << A << "\ntransposeInPlace B:\n" << B
+            << "\neval() C:\n" << C << '\n';
+}
+```
+
+```text
+aliased A:
+1 2
+2 4
+transposeInPlace B:
+1 3
+2 4
+eval() C:
+1 3
+2 4
+```
+
 ### Giải hệ tuyến tính
 
 Đừng bao giờ lập nghịch đảo tường minh để giải $Ax=b$; hãy phân rã rồi giải. Chọn theo cấu trúc:
@@ -49,6 +192,40 @@ Chỉ số bắt đầu từ không và `A(i, j)` là hàng $i$, cột $j$. `Eig
 
 Ở $n=1000$, Cholesky là $\approx3.3\times10^{8}$ flop, khoảng 33 ms ở 10 GFLOP/s; ở $n=6$ khoảng 72 flop, không đáng kể.
 
+**Ví dụ.** Ba khối lượng nối bằng lò xo cho một ma trận độ cứng $K$ (N/m) đối xứng xác định dương với các trị riêng 54.6, 268.0 và 427.4, nên $\kappa(K)=7.8$. Với lực $f=(2,0,5)$ N, các độ dời $x$ (m) ra giống hệt nhau từ Cholesky (`llt()`, $\tfrac13n^3=9$ flop), từ LU (`partialPivLu()`, $\tfrac23n^3=18$ flop) và từ ma trận nghịch đảo tường minh, với phần dư gần $10^{-15}$ N. Ở $n=3$ và $\kappa=7.8$ không có gì phân biệt các phương pháp; bảng ở trên nêu lý do ưu tiên phân rã (Cholesky chỉ tốn một nửa flop, không phải lập ma trận nghịch đảo) khi $n$ hoặc $\kappa$ tăng. `info() == Success` xác nhận phân rã Cholesky thấy ma trận xác định dương. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <iomanip>
+#include <iostream>
+
+int main() {
+  // Three masses on springs in a chain: symmetric positive definite stiffness matrix (N/m), forces (N).
+  Eigen::Matrix3d K;
+  K <<  300, -100,    0,
+       -100,  250, -150,
+          0, -150,  200;
+  Eigen::Vector3d f(2.0, 0.0, 5.0);
+
+  Eigen::Vector3d x_llt = K.llt().solve(f);                 // Cholesky, the SPD choice
+  Eigen::Vector3d x_lu  = K.partialPivLu().solve(f);        // LU, the general choice
+  Eigen::Vector3d x_inv = K.inverse() * f;                  // explicit inverse: avoid
+
+  std::cout << std::setprecision(6);
+  std::cout << "llt  x = " << x_llt.transpose() << "  residual " << (K * x_llt - f).norm() << '\n';
+  std::cout << "lu   x = " << x_lu.transpose()  << "  residual " << (K * x_lu - f).norm() << '\n';
+  std::cout << "inv  x = " << x_inv.transpose() << "  residual " << (K * x_inv - f).norm() << '\n';
+  std::cout << "llt info() == Success: " << (K.llt().info() == Eigen::Success) << '\n';
+}
+```
+
+```text
+llt  x = 0.0208 0.0424 0.0568  residual 1.98603e-15
+lu   x = 0.0208 0.0424 0.0568  residual 1.77636e-15
+inv  x = 0.0208 0.0424 0.0568  residual 1.25607e-15
+llt info() == Success: 1
+```
+
 ### Bình phương tối thiểu
 
 Cho $A\in\mathbb R^{m\times n}$, $m\ge n$, tìm $\hat x=\arg\min\|Ax-b\|_2$. Đặt gradient bằng không cho ta phương trình chuẩn $A^\top A\hat x=A^\top b$, tương đương $A^\top(A\hat x-b)=0$. Với phân rã QR mỏng $A=QR$ ($Q^\top Q=I$, $R$ tam giác trên) bài toán trở thành $R\hat x=Q^\top b$, giải bằng thế ngược; chuẩn của phần dư là $\|(I-QQ^\top)b\|$.
@@ -56,6 +233,43 @@ Cho $A\in\mathbb R^{m\times n}$, $m\ge n$, tìm $\hat x=\arg\min\|Ax-b\|_2$. Đ�
 **Vì sao phương trình chuẩn mất độ chính xác.** Với SVD $A=U\Sigma V^\top$, $A^\top A=V\Sigma^2V^\top$ nên $\kappa(A^\top A)=\sigma_{\max}^2/\sigma_{\min}^2=\kappa(A)^2$. Một bộ giải có sai số $\approx\kappa\,\epsilon_{\text{mach}}$ áp dụng cho ma trận này cho $\kappa(A)^2\epsilon_{\text{mach}}$, trong khi QR đạt khoảng $\kappa(A)\epsilon_{\text{mach}}$ (với các bài toán phần dư nhỏ).
 
 **Số chữ số.** Số chữ số mất $\approx\log_{10}\kappa$. Với $\kappa=3.6\times10^{6}$: QR giữ khoảng $16-6.6\approx9$ chữ số; phương trình chuẩn giữ khoảng $16-13.1\approx3$.
+
+**Ví dụ.** Một encoder bánh xe báo vị trí $p$ (m) tại $t=0,\dots,4$ s: $0.20,\,1.10,\,1.90,\,3.20,\,3.90$. Khớp $p=p_0+vt$ cho vị trí đầu $p_0=0.16$ m và vận tốc $v=0.95$ m/s, bằng QR cũng như bằng phương trình chuẩn. Tính tay: $A^\top A=\begin{pmatrix}5&10\\10&30\end{pmatrix}$, $A^\top p=(10.3,\,30.1)^\top$, $\det=50$, nên $p_0=(30\cdot10.3-10\cdot30.1)/50=0.16$ và $v=(5\cdot30.1-10\cdot10.3)/50=0.95$. Vector phần dư trực giao với cả hai cột ($\|A^\top r\|\approx10^{-14}$), đó là tính chất xác định của cực tiểu. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <iomanip>
+#include <iostream>
+
+int main() {
+  // Wheel encoder: position (m) at t = 0..4 s. Fit p = p0 + v t.
+  Eigen::MatrixXd A(5, 2);
+  Eigen::VectorXd p(5);
+  const double t[5] = {0, 1, 2, 3, 4};
+  const double y[5] = {0.20, 1.10, 1.90, 3.20, 3.90};
+  for (int i = 0; i < 5; ++i) { A(i, 0) = 1.0; A(i, 1) = t[i]; p(i) = y[i]; }
+
+  Eigen::VectorXd x_qr = A.colPivHouseholderQr().solve(p);
+  Eigen::VectorXd x_ne = (A.transpose() * A).ldlt().solve(A.transpose() * p);
+  Eigen::VectorXd r = p - A * x_qr;
+
+  std::cout << std::fixed << std::setprecision(4);
+  std::cout << "QR      p0, v = " << x_qr.transpose() << '\n';
+  std::cout << "normal  p0, v = " << x_ne.transpose() << '\n';
+  std::cout << "residual      = " << r.transpose() << '\n';
+  std::cout << "||r||         = " << r.norm() << '\n';
+  std::cout << std::scientific << std::setprecision(2);
+  std::cout << "||A^T r||     = " << (A.transpose() * r).norm() << '\n';
+}
+```
+
+```text
+QR      p0, v = 0.1600 0.9500
+normal  p0, v = 0.1600 0.9500
+residual      =  0.0400 -0.0100 -0.1600  0.1900 -0.0600
+||r||         = 0.2588
+||A^T r||     = 6.00e-15
+```
 
 ### Điều kiện số của phép khớp đa thức
 
@@ -70,21 +284,452 @@ Ma trận Vandermonde với các cột $1,t,t^2,\dots,t^d$ trên $[0,1]$ trở n
 
 (sai số là $\|\hat c-c_{\text{true}}\|$ cho dữ liệu không nhiễu $y=Ac_{\text{true}}$ với $c_{\text{true},j}=(-1)^j(1+0.1j)$, cùng các hệ số với test của lab; các hệ số khác cho sai số cùng bậc, và các chữ số cuối phụ thuộc nền tảng.) Căn giữa và co giãn $t$ về $[-1,1]$ giảm condition number bậc 12 xuống $1.6\times10^{4}$; các cơ sở đa thức trực giao (Chebyshev) còn tốt hơn. Các biện pháp cho bài toán gần suy biến: co giãn các cột, dùng SVD có cắt cụt, hoặc thêm điều chuẩn Tikhonov (ridge) $(A^\top A+\lambda I)x=A^\top b$.
 
+**Ví dụ.** Ma trận Vandermonde bậc $d$ được lập trên 21 thời điểm cách đều, một lần trên $[0,1]$ và một lần sau khi ánh xạ $t\mapsto2t-1$ sang $[-1,1]$. Số điều kiện trên $[0,1]$ tăng khoảng 1000 lần mỗi khi thêm 4 bậc (593, $6.17\times10^{5}$, $1.49\times10^{8}$), và cùng dữ liệu trên $[-1,1]$ tốt hơn năm bậc độ lớn ở bậc 11 ($8.52\times10^{3}$). Căn giữa là miễn phí và loại bỏ phần lớn vấn đề. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <iostream>
+#include <vector>
+
+double cond(const Eigen::MatrixXd& A) {
+  Eigen::JacobiSVD<Eigen::MatrixXd> svd(A);
+  const auto s = svd.singularValues();
+  return s(0) / s(s.size() - 1);
+}
+
+Eigen::MatrixXd vander(const std::vector<double>& t, int degree) {
+  Eigen::MatrixXd A(t.size(), degree + 1);
+  for (std::size_t i = 0; i < t.size(); ++i) {
+    double p = 1.0;
+    for (int j = 0; j <= degree; ++j) { A(i, j) = p; p *= t[i]; }
+  }
+  return A;
+}
+
+int main() {
+  std::vector<double> t01, tpm;      // 21 equally spaced sample times
+  for (int i = 0; i <= 20; ++i) { t01.push_back(i / 20.0); tpm.push_back(2.0 * i / 20.0 - 1.0); }
+  std::cout.precision(3);
+  for (int d : {4, 8, 11})
+    std::cout << "degree " << d << ": cond on [0,1] = " << cond(vander(t01, d))
+              << "   cond on [-1,1] = " << cond(vander(tpm, d)) << '\n';
+}
+```
+
+```text
+degree 4: cond on [0,1] = 593   cond on [-1,1] = 17.2
+degree 8: cond on [0,1] = 6.17e+05   cond on [-1,1] = 529
+degree 11: cond on [0,1] = 1.49e+08   cond on [-1,1] = 8.52e+03
+```
+
 ### Kiểm chứng bằng một oracle
 
 Một cài đặt độc lập bắt được các lỗi nối dây (sai chỉ số, ma trận bị chuyển vị). So sánh *chuẩn phần dư* và *giá trị khớp*, không chỉ các hệ số, khi bài toán điều kiện xấu, vì các hệ số có thể khác nhau ở những chữ số cuối trong khi phép khớp giống hệt. Chọn dung sai từ $\kappa\,\epsilon_{\text{mach}}$, không phải $10^{-6}$ tùy tiện.
 
+**Ví dụ.** Tám số đọc hiệu chuẩn (số đếm ADC theo điện áp tham chiếu tính bằng V) được khớp bằng bộ giải QR trong C++ và bằng oracle NumPy `lstsq`. Các hệ số khớp nhau tới 11 chữ số, không phải 16: chúng khác nhau khoảng $10^{-12}$ ở các chữ số cuối được in, trong khi chuẩn phần dư khớp ở cả 12 chữ số được in. Với $\kappa(A)=6.28$ và $\|b\|\approx5.5\times10^{3}$, dung sai $10\,\kappa\,\epsilon_{\text{mach}}\|b\|=8.3\times10^{-11}$ của mục này được thỏa với biên rộng. Chuẩn phần dư 9.72 lớn vì bộ chuyển đổi không tuyến tính; đó là tính chất của dữ liệu, và oracle cho cùng giá trị. C++ (biên dịch như trên) rồi Python:
+
+```cpp
+#include <Eigen/Dense>
+#include <cstdio>
+
+int main() {
+  // 8 calibration readings (ADC counts) against a reference voltage.
+  const double v[8] = {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0};
+  const double c[8] = {412, 830, 1241, 1668, 2074, 2490, 2911, 3322};
+  Eigen::MatrixXd A(8, 2);
+  Eigen::VectorXd b(8);
+  for (int i = 0; i < 8; ++i) { A(i, 0) = 1.0; A(i, 1) = v[i]; b(i) = c[i]; }
+  Eigen::VectorXd x = A.colPivHouseholderQr().solve(b);
+  std::printf("x = [%.12f, %.12f]\n", x(0), x(1));
+  std::printf("residual norm = %.12f\n", (A * x - b).norm());
+}
+```
+
+```text
+x = [-2.642857142857, 831.619047619048]
+residual norm = 9.719886340703
+```
+
+```python
+import numpy as np
+v = np.arange(0.5, 4.01, 0.5)
+c = np.array([412, 830, 1241, 1668, 2074, 2490, 2911, 3322.0])
+A = np.vander(v, 2, increasing=True)
+x = np.linalg.lstsq(A, c, rcond=None)[0]
+print("x = [%.12f, %.12f]" % tuple(x))
+print("residual norm = %.12f" % np.linalg.norm(A @ x - c))
+print("cond(A) = %.4f, tolerance 10*cond*eps*||b|| = %.2e" % (np.linalg.cond(A), 10*np.linalg.cond(A)*np.finfo(float).eps*np.linalg.norm(c)))
+```
+
+```text
+x = [-2.642857142856, 831.619047619048]
+residual norm = 9.719886340703
+cond(A) = 6.2781, tolerance 10*cond*eps*||b|| = 8.27e-11
+```
+
+### Bình phương tối thiểu bằng phép chiếu, và một cái bẫy số học
+
+Nghiệm bình phương tối thiểu $\hat x$ được đặc trưng bởi $A^\top(A\hat x-b)=0$: phần dư $r=b-A\hat x$ vuông góc với mọi cột của $A$ (Boyd và Vandenberghe, VMLS, §12.2, phương trình chuẩn (12.4)). Với $A=QR$, các cột của $Q$ span cùng không gian, nên $A\hat x=QQ^\top b$ (VMLS, Bài tập 12.8). Vì $r\perp A\hat x$, Pythagoras cho $\|b\|^2=\|A\hat x\|^2+\|r\|^2$, và $\|A\hat x\|^2=\|Q^\top b\|^2$ vì $Q$ có các cột trực chuẩn. Do đó
+$$\|r\|^2=\|b\|^2-\|Q^\top b\|^2 .$$
+Đẳng thức này chính xác nhưng nguy hiểm về số học. Cả hai số hạng được tính với sai số tuyệt đối cỡ $\epsilon_{\text{mach}}\|b\|^2$, nên khi phép khớp tốt ($\|r\|\ll\|b\|$) thì *hiệu* có sai số tương đối cỡ $\epsilon_{\text{mach}}\|b\|^2/\|r\|^2$: mọi chữ số có nghĩa mất hết khi $\|r\|/\|b\|\lesssim\sqrt{\epsilon_{\text{mach}}}\approx10^{-8}$. Hãy tính vector phần dư $b-A\hat x$ rồi lấy chuẩn của nó (Bài tập 12). Cùng mẫu "trừ hai số lớn gần bằng nhau" là điều làm phương trình chuẩn mong manh.
+
+**Ví dụ.** Khớp một hằng số với ba số đọc $b=(2\cdot10^{8}+2,\ 2\cdot10^{8},\ 2\cdot10^{8}-2)$. Phần dư chính xác là $r=(2,0,-2)$, nên $\|r\|^2=8$. Công thức Pythagoras $\|b\|^2-\|Q^\top b\|^2$ trừ hai số gần $1.2\cdot10^{17}$, nơi các số double cách nhau 16, và trả về 0.0; lập vector phần dư trước thì trả về 8.0. Sai số tương đối dự đoán $\epsilon\|b\|^2/\|r\|^2=1.1\cdot10^{-16}\cdot1.2\cdot10^{17}/8\approx1.6$ đã vượt 100%. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), `-std=c++20 -Wall -Wextra`:
+
+```cpp
+#include <cmath>
+#include <cstdio>
+
+int main() {
+  // Fit a constant to b: A = (1,1,1)^T, Q = A/sqrt(3), exact residual r = b - mean(b).
+  const double b[3] = {2e8 + 2, 2e8, 2e8 - 2};
+  double bb = 0.0, qb = 0.0, mean = 0.0;
+  for (double x : b) { bb += x * x; qb += x / std::sqrt(3.0); mean += x / 3.0; }
+  const double trap = bb - qb * qb;            // ||b||^2 - ||Q^T b||^2
+  double direct = 0.0;
+  for (double x : b) direct += (x - mean) * (x - mean);   // ||b - A xhat||^2
+  std::printf("||b||^2 - ||Q^T b||^2 = %.1f\n", trap);
+  std::printf("||b - A xhat||^2      = %.1f\n", direct);
+}
+```
+
+```text
+||b||^2 - ||Q^T b||^2 = 0.0
+||b - A xhat||^2      = 8.0
+```
+
+### Phương pháp Gram (phương trình chuẩn) so với QR: chi phí và độ chính xác
+
+Lập $G=A^\top A$ tận dụng đối xứng tốn khoảng $mn^2$ flop và phân rã Cholesky tốn $\tfrac13n^3$, nên phương pháp Gram tốn $mn^2+\tfrac13n^3$, trong khi Householder QR tốn $2mn^2-\tfrac23n^3$ (bảng của bài). Với $m\gg n$ phương pháp Gram nhanh gấp khoảng hai lần, với $m\approx n$ chỉ nhanh khoảng 1,1 đến 1,4 lần (VMLS, Bài tập 12.16, phần nhận xét nói mức chênh tốc độ quá nhỏ để có ý nghĩa thực tế). Độ chính xác mới quyết định. Một bộ giải backward-stable trên $G$ có sai số tương đối $\approx\kappa(G)\epsilon_{\text{mach}}=\kappa(A)^2\epsilon_{\text{mach}}$, so với $\kappa(A)\epsilon_{\text{mach}}$ của QR. Danh mục các phân rã dense của Eigen phản ánh điều này: `LLT` "very fast" nhưng độ chính xác "depends on condition number", còn `ColPivHouseholderQR` là "fast" với độ tin cậy "good" và làm lộ hạng (rank-revealing) (Eigen, *Catalogue of dense decompositions*). Một quy tắc dùng được: phương trình chuẩn chỉ chấp nhận được khi $\kappa(A)^2\epsilon_{\text{mach}}$ thấp hơn hẳn độ chính xác bạn cần, tức $\kappa(A)\lesssim10^{3}$ đến $10^{4}$ cho sáu chữ số đúng; điểm mạnh của chúng là khi $G$ rẻ để có (ví dụ cộng dồn trên dữ liệu streaming).
+
+![Tỉ số flop của QR so với phương pháp Gram theo m chia n, và số chữ số đúng của cả hai cho phép khớp bậc 8](/lesson-figures/CPP11-2.svg)
+
+*Hình: Trái: QR tốn nhiều nhất gấp đôi flop của phương pháp Gram (tỉ số 1 với ma trận vuông, 1.99 tại m = 2000, n = 8). Phải: hệ số 2 đó đổi lấy khoảng 5 chữ số đúng thêm ở kappa = 6.16e5.*
+
+**Ví dụ.** Một phép khớp bậc 8 với 40 điểm trên $[0,1]$ có hệ số đã biết $c_j=(-1)^j(2+0.5j)$ ($\|c\|=12.6$) có $\kappa(A)=6.16\times10^{5}$. QR trả về các hệ số với sai số $1.3\times10^{-10}$ (khoảng $10^{-11}$ tương đối), phương pháp Gram với $1.2\times10^{-5}$ (khoảng $10^{-6}$ tương đối): các sai số đo được bám theo $\kappa\epsilon=6.8\times10^{-11}$ và $\kappa^2\epsilon=4.2\times10^{-5}$ trong phạm vi hệ số 2 đến 4. Cái giá của QR tính bằng flop cho bài toán $2000\times8$ là hệ số 1.99, không đáng kể ở cỡ này. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <cstdio>
+#include <vector>
+
+int main() {
+  // Fit degree 8 to 40 points of [0,1], noise-free data from known coefficients.
+  const int m = 40, d = 8;
+  Eigen::MatrixXd A(m, d + 1);
+  for (int i = 0; i < m; ++i) {
+    const double t = i / double(m - 1);
+    double p = 1.0;
+    for (int j = 0; j <= d; ++j) { A(i, j) = p; p *= t; }
+  }
+  Eigen::VectorXd c(d + 1);
+  for (int j = 0; j <= d; ++j) c(j) = (j % 2 ? -1.0 : 1.0) * (2.0 + 0.5 * j);
+  Eigen::VectorXd y = A * c;
+  Eigen::JacobiSVD<Eigen::MatrixXd> svd(A);
+  const double k = svd.singularValues()(0) / svd.singularValues()(d);
+  const double e_qr = (A.householderQr().solve(y) - c).norm();
+  const double e_ne = ((A.transpose() * A).llt().solve(A.transpose() * y) - c).norm();
+  std::printf("cond(A) = %.3g, kappa*eps = %.1e, kappa^2*eps = %.1e\n", k, k * 1.1e-16, k * k * 1.1e-16);
+  std::printf("QR error   %.1e\nGram error %.1e\n", e_qr, e_ne);
+  const double mm = 2000, nn = 8;     // flop model for a tall problem
+  std::printf("flops, m=2000, n=8: Gram %.3g, QR %.3g, ratio %.2f\n",
+              mm * nn * nn + nn * nn * nn / 3, 2 * mm * nn * nn - 2 * nn * nn * nn / 3,
+              (2 * mm * nn * nn - 2 * nn * nn * nn / 3) / (mm * nn * nn + nn * nn * nn / 3));
+}
+```
+
+```text
+cond(A) = 6.16e+05, kappa*eps = 6.8e-11, kappa^2*eps = 4.2e-05
+QR error   1.3e-10
+Gram error 1.2e-05
+flops, m=2000, n=8: Gram 1.28e+05, QR 2.56e+05, ratio 1.99
+```
+
+### Bình phương tối thiểu lặp: phép lặp Richardson
+
+Với $A$ rất lớn hoặc thưa, có thể bạn chỉ nhân được với $A$ và $A^\top$. Phép lặp $x_{k+1}=x_k-\mu A^\top(Ax_k-b)$ (VMLS, Bài tập 12.13) có $\hat x$ là điểm bất động. Trừ $\hat x$ và dùng $A^\top(A\hat x-b)=0$, sai số $e_k=x_k-\hat x$ thỏa $e_{k+1}=(I-\mu A^\top A)e_k$. Trong cơ sở singular phải của $A=U\Sigma V^\top$, thành phần $i$ của sai số được nhân với $1-\mu\sigma_i^2$ mỗi bước. Chọn $\mu=1/\sigma_{\max}^2$: các hệ số nằm trong $[0,\,1-1/\kappa^2]$ với $\kappa=\sigma_{\max}/\sigma_{\min}$, nên
+$$\|e_k\|\le\Big(1-\frac1{\kappa^2}\Big)^k\|e_0\|,\qquad k\ge\frac{\ln(\text{tol})}{\ln(1-1/\kappa^2)}\approx\kappa^2\ln\frac1{\text{tol}}.$$
+Bình phương của số điều kiện lại xuất hiện, lần này là số vòng lặp: giảm sai số $10^{-6}$ cần khoảng 1375 vòng với $\kappa=10$ và khoảng 138.000 với $\kappa=100$. Vì vậy người ta dùng tiền điều kiện (preconditioning), hoặc phương pháp Krylov như conjugate gradient trên cùng phương trình chuẩn; Richardson là thành viên đơn giản nhất của họ này và là mô hình đúng để hiểu vì sao điều kiện số chi phối mọi thứ trong bài.
+
+![Cận sai số Richardson theo số bước lặp cho kappa bằng 2, 4 và 6](/lesson-figures/CPP11-3.svg)
+
+*Hình: Gấp đôi kappa thì số bước lặp tăng khoảng 4 lần: 49, 215 và 491 bước để đạt 1e-6.*
+
+**Ví dụ.** Một ma trận $40\times4$ được dựng với các giá trị kỳ dị $1,\ 0.75,\ 0.5,\ 1/6$, nên $\kappa=6$ và $\mu=1/\sigma_{\max}^2=1$. Cận cho $k\ge\ln(10^{-6})/\ln(1-1/36)=490.4$ bước để giảm sai số $10^{-6}$ lần (đường tắt $\kappa^2\ln10^6=497.4$); vòng lặp dừng sau 488 bước, vừa trong cận, vì sai số ban đầu ngẫu nhiên có ít thành phần theo hướng kỳ dị chậm nhất. Mỗi bước tốn hai phép nhân ma trận-vector, $2\cdot2\cdot40\cdot4=320$ flop, nên cả lần chạy tốn khoảng $1.6\times10^{5}$ flop. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <cmath>
+#include <cstdio>
+#include <random>
+
+int main() {
+  // 40x4 matrix with singular values 1, 0.75, 0.5, 1/6 so that kappa = 6.
+  std::mt19937 g(3);
+  std::normal_distribution<double> n01;
+  Eigen::MatrixXd G = Eigen::MatrixXd::NullaryExpr(40, 4, [&] { return n01(g); });
+  Eigen::MatrixXd U = Eigen::HouseholderQR<Eigen::MatrixXd>(G).householderQ() * Eigen::MatrixXd::Identity(40, 4);
+  Eigen::MatrixXd V = Eigen::HouseholderQR<Eigen::MatrixXd>(Eigen::MatrixXd::NullaryExpr(4, 4, [&] { return n01(g); })).householderQ();
+  Eigen::Vector4d s(1.0, 0.75, 0.5, 1.0 / 6.0);
+  Eigen::MatrixXd A = U * s.asDiagonal() * V.transpose();
+  Eigen::VectorXd b = Eigen::VectorXd::NullaryExpr(40, [&] { return n01(g); });
+  const Eigen::VectorXd xhat = A.colPivHouseholderQr().solve(b);
+
+  const double kappa = 6.0, mu = 1.0;        // mu = 1/sigma_max^2 = 1
+  Eigen::VectorXd x = Eigen::VectorXd::Zero(4);
+  const double e0 = (x - xhat).norm();
+  int k = 0;
+  while ((x - xhat).norm() > 1e-6 * e0) { x -= mu * A.transpose() * (A * x - b); ++k; }
+  std::printf("iterations to reach 1e-6: %d\n", k);
+  std::printf("bound ln(1e-6)/ln(1-1/kappa^2) = %.1f\n", std::log(1e-6) / std::log(1 - 1 / (kappa * kappa)));
+  std::printf("kappa^2 ln(1e6) = %.1f\n", kappa * kappa * std::log(1e6));
+}
+```
+
+```text
+iterations to reach 1e-6: 488
+bound ln(1e-6)/ln(1-1/kappa^2) = 490.4
+kappa^2 ln(1e6) = 497.4
+```
+
+```explore
+{
+ "title": "Richardson iteration: error against step count",
+ "title_vi": "Phép lặp Richardson: sai số theo số bước",
+ "prompt": "Predict first: if κ doubles, by what factor does the number of steps to reach the same tolerance change? Then set κ = 3, then κ = 6, and compare the iteration counts.",
+ "prompt_vi": "Dự đoán trước: nếu κ tăng gấp đôi thì số bước để đạt cùng dung sai đổi theo hệ số nào? Sau đó đặt κ = 3, rồi κ = 6, và so sánh số bước lặp.",
+ "params": [
+  {
+   "name": "kappa",
+   "label": "κ(A)",
+   "label_vi": "κ(A)",
+   "min": 1.5,
+   "max": 12,
+   "step": 0.5,
+   "value": 6
+  },
+  {
+   "name": "te",
+   "label": "tolerance exponent (tol = 10^-n)",
+   "label_vi": "số mũ dung sai (tol = 10^-n)",
+   "min": 2,
+   "max": 10,
+   "step": 1,
+   "value": 6
+  }
+ ],
+ "let": [
+  {
+   "name": "lr",
+   "expr": "log10(1 - 1/kappa^2)"
+  },
+  {
+   "name": "kn",
+   "expr": "ceil(-te/lr)"
+  }
+ ],
+ "plot": {
+  "x": {
+   "name": "k",
+   "min": 0,
+   "max": 1600,
+   "label": "iteration k",
+   "label_vi": "bước lặp k"
+  },
+  "y": {
+   "label": "log10 of the error bound ratio",
+   "label_vi": "log10 của tỉ số cận sai số",
+   "min": -10,
+   "max": 0
+  },
+  "series": [
+   {
+    "expr": "k*lr",
+    "label": "(1 - 1/κ²)^k",
+    "label_vi": "(1 - 1/κ²)^k",
+    "color": "blue"
+   },
+   {
+    "expr": "-te",
+    "label": "tolerance",
+    "label_vi": "dung sai",
+    "color": "amber"
+   }
+  ],
+  "points": [
+   {
+    "x": "kn",
+    "y": "-te",
+    "label": "steps needed",
+    "label_vi": "số bước cần",
+    "color": "orange"
+   }
+  ]
+ },
+ "readouts": [
+  {
+   "label": "steps needed k",
+   "label_vi": "số bước cần k",
+   "expr": "kn",
+   "unit": "",
+   "digits": 0
+  },
+  {
+   "label": "κ² · ln(10^n)",
+   "label_vi": "κ² · ln(10^n)",
+   "expr": "kappa^2*te*ln(10)",
+   "unit": "",
+   "digits": 0
+  }
+ ]
+}
+```
+
+### Điều kiện (conditioning) so với ổn định (stability): điều kiện số chặn cái gì
+
+Hai ý niệm hay bị lẫn. **Conditioning** của một bài toán đo nghiệm chính xác thay đổi bao nhiêu khi đầu vào thay đổi nhẹ; nó thuộc về bài toán. **Stability** của một thuật toán đo xem đáp án tính được có phải là đáp án chính xác của một đầu vào bị nhiễu nhẹ hay không; nó thuộc về phương pháp. Với $Ax=b$, $A$ khả nghịch, giả sử vế phải bị nhiễu thành $b+\delta b$ và $A(x+\delta x)=b+\delta b$. Khi đó $\delta x=A^{-1}\delta b$, nên $\|\delta x\|\le\|A^{-1}\|\,\|\delta b\|$; và $\|b\|=\|Ax\|\le\|A\|\,\|x\|$ cho $1/\|x\|\le\|A\|/\|b\|$. Nhân lại,
+$$\frac{\|\delta x\|}{\|x\|}\le\kappa(A)\,\frac{\|\delta b\|}{\|b\|},\qquad\kappa(A)=\|A\|\,\|A^{-1}\|.$$
+Trong chuẩn 2, $\kappa=\sigma_{\max}/\sigma_{\min}$. Chặn này *đạt được*: lấy $b$ theo vector singular trái $u_{\max}$ (khi đó $\|x\|=\|b\|/\sigma_{\max}$ nhỏ nhất có thể) và $\delta b$ theo $u_{\min}$ (khi đó $\|\delta x\|=\|\delta b\|/\sigma_{\min}$ lớn nhất có thể); độ nhạy của một phần tử đơn lẻ là câu hỏi của VMLS Bài tập 11.26. Một thuật toán **backward-stable** trả về $\hat x$ giải $(A+E)\hat x=b$ với $\|E\|\approx\epsilon_{\text{mach}}\|A\|$. Kết hợp hai điều, bộ giải backward-stable có sai số tiến tối đa khoảng $\kappa(A)\,\epsilon_{\text{mach}}$: số chữ số mất là $\log_{10}\kappa$ không tránh được, và không thuật toán nào làm tốt hơn trên đầu vào đó, vì làm tròn dữ liệu về double đã là một nhiễu cỡ đó. Phương trình chuẩn *không* backward-stable cho bài toán bình phương tối thiểu: lập $A^\top A$ đã làm nhiễu dữ liệu ở mức tương đối $\epsilon_{\text{mach}}$ trong một ma trận có điều kiện số $\kappa^2$.
+
+**Ví dụ.** Với $A=\mathrm{diag}(1,\,10^{-3})$ ($\kappa=1000$) và $b=(1,0)$, cùng một nhiễu tuyệt đối $|\delta b|=10^{-6}$ được đặt theo hai hướng kỳ dị. Theo $u_{\max}$, sai số tương đối của $x$ bằng sai số tương đối của $b$ (tỉ số 1.0). Theo $u_{\min}$ nó lớn gấp 1000 lần: $10^{-6}$ thành $10^{-3}$, đúng là cận $\kappa\,\|\delta b\|/\|b\|$ đạt được chính xác. Cùng ma trận và cùng thuật toán cho cả hai kết quả; chỉ hướng của sai số khác nhau. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <cstdio>
+
+int main() {
+  // A = diag(1, 1e-3): kappa = 1000. Perturb b along u_max or along u_min.
+  Eigen::Matrix2d A = Eigen::Vector2d(1.0, 1e-3).asDiagonal();
+  Eigen::Vector2d b(1.0, 0.0), x = A.partialPivLu().solve(b);
+  for (int axis = 0; axis < 2; ++axis) {
+    Eigen::Vector2d db = Eigen::Vector2d::Zero();
+    db(axis) = 1e-6;
+    Eigen::Vector2d dx = A.partialPivLu().solve(b + db) - x;
+    std::printf("db along u%s: |db|/|b| = %.1e, |dx|/|x| = %.1e, ratio = %.1f\n",
+                axis == 0 ? "_max" : "_min", db.norm() / b.norm(), dx.norm() / x.norm(),
+                (dx.norm() / x.norm()) / (db.norm() / b.norm()));
+  }
+}
+```
+
+```text
+db along u_max: |db|/|b| = 1.0e-06, |dx|/|x| = 1.0e-06, ratio = 1.0
+db along u_min: |db|/|b| = 1.0e-06, |dx|/|x| = 1.0e-03, ratio = 1000.0
+```
+
+### Khi phương trình chuẩn hỏng hoàn toàn: ma trận Läuchli
+
+Lấy $A=\begin{pmatrix}1&1\\\delta&0\\0&\delta\end{pmatrix}$. Khi đó $A^\top A=\begin{pmatrix}1+\delta^2&1\\1&1+\delta^2\end{pmatrix}$ với $\det=\delta^2(2+\delta^2)$ và các giá trị singular $\sigma_{\max}=\sqrt{2+\delta^2}$, $\sigma_{\min}=\delta$, nên $\kappa(A)\approx\sqrt2/\delta$: với $\delta=10^{-8}$ khoảng $1{,}4\times10^{8}$, một bài toán mà độ chính xác kép giải được tới khoảng 8 chữ số. Nhưng $1+\delta^2=1+10^{-16}$ được làm tròn về $1$ trong độ chính xác kép (nửa đơn vị ở chữ số cuối của 1 là $1{,}1\times10^{-16}$, lớn hơn $10^{-16}$), ma trận Gram tính được đúng bằng $\begin{pmatrix}1&1\\1&1\end{pmatrix}$ và *suy biến*: phương trình chuẩn hỏng hẳn, không chỉ mất chữ số. Thông tin về $\delta^2$ đã bị hủy trong phép nhân, còn QR, không bao giờ lập $A^\top A$, không bị ảnh hưởng (Ví dụ có lời giải, trường hợp 2). Đây là phiên bản cực đoan của bảng trong bài: điều kiện số bình phương $2\times10^{16}$ vượt $1/\epsilon_{\text{mach}}$.
+
+![Sai số tương đối của QR và phương trình chuẩn trên ma trận Läuchli theo delta](/lesson-figures/CPP11-5.svg)
+
+*Hình: QR giữ ở mức sai số làm tròn trong khi phương trình chuẩn mất độ chính xác như 1/delta bình phương và thất bại khi delta bằng 1e-8 hoặc nhỏ hơn.*
+
+**Ví dụ.** Lấy $\delta=10^{-7}$ và $b=(1,1,0)^\top$. Nghiệm chính xác suy ra từ $x_1-x_2=1/\delta$ và $x_1+x_2=(2+\delta)/(2+\delta^2)$ (trừ và cộng hai phương trình chuẩn): $(5000000.5,\,-4999999.5)$. $\kappa(A)=1.41\times10^{7}$, nên QR chính xác khoảng 9 chữ số (ở đây đạt $10^{-16}$); $\kappa(A^\top A)=2\times10^{14}$, và phần tử Gram tính được $G_{00}-1=9.99\times10^{-15}$ mang sai số 0.08% của $\delta^2$, trở thành sai số tương đối $8\times10^{-4}$ trong $x$ (4000 theo giá trị tuyệt đối). Thêm một bậc độ lớn nữa của $\delta$ làm ma trận Gram suy biến hẳn, như hình cho thấy. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <cstdio>
+
+int main() {
+  const double delta = 1e-7;
+  Eigen::MatrixXd A(3, 2);
+  A << 1, 1, delta, 0, 0, delta;
+  Eigen::Vector3d b(1, 1, 0);
+  // Exact solution from the normal equations: x1 - x2 = 1/delta, x1 + x2 = (2+delta)/(2+delta^2).
+  const double s = (2 + delta) / (2 + delta * delta), d = 1 / delta;
+  const Eigen::Vector2d x_exact((s + d) / 2, (s - d) / 2);
+  Eigen::Vector2d x_qr = A.householderQr().solve(b);
+  Eigen::Matrix2d G = A.transpose() * A;
+  Eigen::Vector2d x_ne = G.ldlt().solve(A.transpose() * b);
+  std::printf("kappa(A) = %.2e, kappa(G) = %.2e\n", 1.4142135623730951 / delta, 2.0 / (delta * delta));
+  std::printf("exact  x = %.4f %.4f\n", x_exact(0), x_exact(1));
+  std::printf("QR     x = %.4f %.4f   relative error %.1e\n", x_qr(0), x_qr(1), (x_qr - x_exact).norm() / x_exact.norm());
+  std::printf("normal x = %.4f %.4f   relative error %.1e\n", x_ne(0), x_ne(1), (x_ne - x_exact).norm() / x_exact.norm());
+}
+```
+
+```text
+kappa(A) = 1.41e+07, kappa(G) = 2.00e+14
+exact  x = 5000000.5000 -4999999.5000
+QR     x = 5000000.5000 -4999999.5000   relative error 1.3e-16
+normal x = 5004000.0889 -5003999.0889   relative error 8.0e-04
+```
+
+### Thiếu hạng và SVD cắt cụt
+
+Nếu các cột của $A$ phụ thuộc (hoặc gần phụ thuộc), nghiệm cực tiểu bình phương không duy nhất. Với $A=U\Sigma V^\top$ và $r$ là số giá trị singular được giữ, nghiệm bình phương tối thiểu *chuẩn nhỏ nhất* là $\hat x=\sum_{i\le r}\frac{u_i^\top b}{\sigma_i}v_i=A^\dagger b$, $A^\dagger=V\Sigma^{+}U^\top$, trong đó $\Sigma^{+}$ nghịch đảo các giá trị singular khác không và đặt phần còn lại về không (giả nghịch đảo của VMLS §11.5 tổng quát hóa ra ngoài trường hợp cột độc lập). Mỗi số hạng nhân thành phần dữ liệu $u_i^\top b$ với $1/\sigma_i$, nên nhiễu theo hướng có $\sigma_i$ rất nhỏ bị khuếch đại rất mạnh; *cắt cụt* bỏ các số hạng đó và đánh đổi một độ chệch nhỏ lấy việc giảm lớn phương sai, cùng tinh thần với tham số ridge của Bài tập 9. `BDCSVD`/`JacobiSVD` của Eigen cho phép điều này qua một ngưỡng trên giá trị singular tương đối với giá trị lớn nhất, và `completeOrthogonalDecomposition` cho cùng nghiệm chuẩn nhỏ nhất với giá rẻ hơn (Eigen, *Catalogue of dense decompositions*). Ngưỡng là một quyết định mô hình hóa: chọn từ mức nhiễu của dữ liệu, không chỉ từ $\epsilon_{\text{mach}}$.
+
+**Ví dụ.** Cột thứ ba của ma trận $6\times3$ bằng cột 1 cộng cột 2 sai khác một dao động $10^{-9}$, nên các giá trị kỳ dị là 15.13, 2.243 và $1.7\times10^{-9}$. Giữ cả ba số hạng sẽ chia thành phần dữ liệu theo $v_3$ cho $1.7\times10^{-9}$: các hệ số đạt $2.5\times10^{8}$ (chuẩn $4.3\times10^{8}$) với phần dư 3.4425. Cắt cụt ở $10^{-6}\sigma_{\max}$ (hạng 2) cho các hệ số có chuẩn 1.28 và phần dư 3.5183, chỉ cao hơn 2.2%: một độ chệch nhỏ đổi lấy sự giảm phương sai khổng lồ. Biên dịch bằng g++ 11.4.0 (Ubuntu 22.04), Eigen 3.4.0, `-std=c++20 -Wall -Wextra -I/usr/include/eigen3`:
+
+```cpp
+#include <Eigen/Dense>
+#include <cstdio>
+
+int main() {
+  // Third column = column 1 + column 2 up to a 1e-9 wobble: numerically rank 2.
+  const int m = 6;
+  Eigen::MatrixXd A(m, 3);
+  const double w[m] = {1e-9, -1e-9, 2e-9, 0.0, -2e-9, 1e-9};
+  for (int i = 0; i < m; ++i) { A(i, 0) = i; A(i, 1) = (i % 3) + 1.0; A(i, 2) = A(i, 0) + A(i, 1) + w[i]; }
+  Eigen::VectorXd b(m);
+  b << 3.1, 4.2, 4.8, 8.1, 8.9, 10.2;
+  Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+  std::printf("singular values: %.3e %.3e %.3e\n", svd.singularValues()(0), svd.singularValues()(1), svd.singularValues()(2));
+  Eigen::VectorXd x_full = svd.solve(b);                     // all three terms, no truncation
+  svd.setThreshold(1e-6);                                    // drop sigma_i < 1e-6 sigma_max
+  Eigen::VectorXd x_trunc = svd.solve(b);
+  std::printf("rank kept = %d\n", int(svd.rank()));
+  std::printf("untruncated x = %.3e %.3e %.3e   |x| = %.2e   |r| = %.4f\n", x_full(0), x_full(1), x_full(2), x_full.norm(), (A * x_full - b).norm());
+  std::printf("truncated   x = %.4f %.4f %.4f   |x| = %.4f   |r| = %.4f\n", x_trunc(0), x_trunc(1), x_trunc(2), x_trunc.norm(), (A * x_trunc - b).norm());
+}
+```
+
+```text
+singular values: 1.513e+01 2.243e+00 1.704e-09
+rank kept = 2
+untruncated x = 2.462e+08 2.462e+08 -2.462e+08   |x| = 4.26e+08   |r| = 3.4425
+truncated   x = 0.9443 -0.0917 0.8526   |x| = 1.2755   |r| = 3.5183
+```
+
 ## Ví dụ có lời giải
 
-Khớp $y=a+bt$ vào các điểm $(0,1),(1,3),(2,4),(3,8)$.
+### Trường hợp 1: trường hợp cơ bản
 
-1. Ma trận thiết kế $A=\begin{pmatrix}1&0\\1&1\\1&2\\1&3\end{pmatrix}$, $b=(1,3,4,8)^\top$.
-2. $A^\top A=\begin{pmatrix}4&6\\6&14\end{pmatrix}$ (tổng các cột: $4$, $0+1+2+3=6$, $0+1+4+9=14$). $A^\top b=(1+3+4+8,\ 0\cdot1+1\cdot3+2\cdot4+3\cdot8)^\top=(16,\ 35)^\top$.
-3. Định thức $4\cdot14-6\cdot6=20$. Khi đó $a=\dfrac{14\cdot16-6\cdot35}{20}=\dfrac{224-210}{20}=0.7$ và $b=\dfrac{4\cdot35-6\cdot16}{20}=\dfrac{140-96}{20}=2.2$.
-4. Giá trị khớp $0.7+2.2t=(0.7,\ 2.9,\ 5.1,\ 7.3)$; phần dư $r=A\hat x-b=(-0.3,\ -0.1,\ 1.1,\ -0.7)$.
-5. Kiểm tra tính trực giao: $\sum r_i=-0.3-0.1+1.1-0.7=0$ và $\sum t_ir_i=0-0.1+2.2-2.1=0$. Cả hai bằng không, đúng như $A^\top r=0$ đòi hỏi.
-6. Chuẩn phần dư $\sqrt{0.09+0.01+1.21+0.49}=\sqrt{1.8}=1.3416$.
-7. Điều kiện số: các $\sigma$ của $A$ cho $\kappa(A)\approx3.76$ (nên không có chữ số nào gặp rủi ro), và cả hai phương pháp đều chạy được; ở ca bậc 12 phía trên thì không.
+**Đề bài.** Khớp đường thẳng $y=c_0+c_1t$ bằng bình phương tối thiểu với bốn điểm $(0,1),(1,3),(2,4),(3,8)$, $t$ tính bằng s và $y$ bằng m. Cho $\hat c$, vector phần dư, và kiểm tra rằng phần dư trực giao với các cột.
+
+**Lời giải.**
+
+1. Viết dữ liệu dưới dạng $A c\approx y$ (thiết lập bình phương tối thiểu của phần lý thuyết). $A=\begin{pmatrix}1&0\\1&1\\1&2\\1&3\end{pmatrix}$, $y=(1,3,4,8)^\top$.
+2. Phương trình chuẩn $A^\top A\hat c=A^\top y$. Các phần tử là tổng của các cột: $A^\top A=\begin{pmatrix}4&6\\6&14\end{pmatrix}$ ($4$; $0+1+2+3=6$; $0+1+4+9=14$) và $A^\top y=(1+3+4+8,\ 0\cdot1+1\cdot3+2\cdot4+3\cdot8)^\top=(16,\ 35)^\top$.
+3. Định thức là $4\cdot14-6\cdot6=20$. Theo công thức nghịch đảo $2\times2$, $c_0=\dfrac{14\cdot16-6\cdot35}{20}=\dfrac{224-210}{20}=0.7$ m và $c_1=\dfrac{4\cdot35-6\cdot16}{20}=\dfrac{140-96}{20}=2.2$ m/s.
+4. Giá trị khớp $0.7+2.2t=(0.7,\ 2.9,\ 5.1,\ 7.3)$ m, nên phần dư là $r=A\hat c-y=(-0.3,\ -0.1,\ 1.1,\ -0.7)$ m.
+5. Tối ưu $A^\top r=0$: $\sum r_i=-0.3-0.1+1.1-0.7=0$ và $\sum t_ir_i=0-0.1+2.2-2.1=0$.
+6. Chuẩn phần dư $\sqrt{0.09+0.01+1.21+0.49}=\sqrt{1.8}=1.3416$ m.
+7. Điều kiện số: các giá trị kỳ dị của $A$ cho $\kappa(A)=3.76$, nên chỉ khoảng $\log_{10}3.76\approx0.6$ chữ số gặp rủi ro và cả hai phương pháp đều chạy được; ở ca bậc 12 của phần lý thuyết thì không.
+
+**Kiểm tra.** `numpy.linalg.lstsq` trả về $(0.7,\ 2.2)$, chuẩn phần dư $1.3416$ và $\kappa=3.7589$, giống phép tính tay. Các tổng ở bước 5 triệt tiêu chính xác, như hình dưới cho thấy.
+
+![Đường bình phương tối thiểu qua bốn điểm cùng các phần dư theo phương thẳng đứng](/lesson-figures/CPP11-4.svg)
+
+*Hình: Bốn phần dư của trường hợp 1 vẽ đúng tỉ lệ; tổng và tổng có trọng số t của chúng triệt tiêu, đó chính là tính trực giao A^T r = 0.*
+
+**Rút ra.** Cực tiểu là điểm mà phần dư vuông góc với mọi cột của $A$; hai tổng bằng không là toàn bộ phép thử.
+
+### Trường hợp 2: bài toán Läuchli (phương trình chuẩn thất bại, QR thành công)
+
+**Đề bài.** Giải $\min_x\|Ax-b\|$ với $A=\begin{pmatrix}1&1\\\delta&0\\0&\delta\end{pmatrix}$, $\delta=10^{-8}$, $b=A\,(1,1)^\top=(2,\delta,\delta)^\top$, nên nghiệm chính xác là $\hat x=(1,1)$ với phần dư bằng không. Dùng độ chính xác kép IEEE ($\epsilon_{\text{mach}}=1.1\times10^{-16}$).
+
+**Lời giải.**
+
+1. **Điều kiện số.** $A^\top A=\begin{pmatrix}1+\delta^2&1\\1&1+\delta^2\end{pmatrix}$; các trị riêng của nó là $2+\delta^2$ và $\delta^2$, nên $\sigma_{\max}=\sqrt{2+\delta^2}\approx1.414$, $\sigma_{\min}=\delta=10^{-8}$ và $\kappa(A)\approx1.41\times10^{8}$. Phương pháp ổn định giữ khoảng $16-8.15\approx8$ chữ số. Với phương trình chuẩn $\kappa^2\approx2\times10^{16}>1/\epsilon_{\text{mach}}$: không chữ số nào được đảm bảo.
+2. **Phương trình chuẩn.** Trong dấu phẩy động $1+\delta^2=1+10^{-16}\to1$ (nửa đơn vị ở chữ số cuối của 1 là $1.1\times10^{-16}$), nên $A^\top A$ tính được là $\begin{pmatrix}1&1\\1&1\end{pmatrix}$ với định thức 0 (`numpy.linalg.det` cho $0.0$). Phép giải báo ma trận suy biến; không thể sửa gì sau đó, vì thông tin về $\delta^2$ đã mất trong phép nhân.
+3. **QR.** QR Householder của $A$ rồi thế ngược (lý thuyết: $R\hat x=Q^\top b$) trả về $\hat x=(1.0,\,1.0)$ (`numpy.linalg.qr` và `solve(R, Q.T @ b)`, in ra `[1. 1.]`).
+4. **Một trường hợp nhẹ hơn.** Với $\delta=10^{-4}$: $\kappa(A)=1.4\times10^{4}$ và $\kappa(A^\top A)=2.0\times10^{8}$. Phương trình chuẩn giờ chạy được và trả về $(1.0000000056,\,0.9999999944)$, sai số $7.9\times10^{-9}$, phù hợp với ước lượng $\kappa^2\epsilon_{\text{mach}}=2\times10^{8}\cdot1.1\times10^{-16}\approx2\times10^{-8}$; QR trả về sai số $3\times10^{-16}$, dưới chặn $\kappa\epsilon_{\text{mach}}\approx1.5\times10^{-12}$ của nó.
+5. **Trong C++** điều này là `A.householderQr().solve(b)` so với `(A.transpose()*A).llt().solve(A.transpose()*b)`; lời gọi thứ hai thường báo `info() == NumericalIssue` (pivot bằng không) hoặc trả về rác.
+
+**Kiểm tra.** Định thức của ma trận Gram tính được ($0.0$), kết quả QR `[1. 1.]` và các sai số ở $\delta=10^{-4}$ ở trên đều được tính bằng NumPy với độ chính xác kép; dự đoán $\kappa^2\epsilon_{\text{mach}}$ khớp về bậc độ lớn.
+
+**Rút ra.** Cùng dữ liệu cho thất bại ở $\delta=10^{-8}$ với phương trình chuẩn và 8 chữ số đúng với QR: hãy kiểm tra $\kappa(A)$ trước khi chọn phương pháp.
 
 ## Bài tập
 
@@ -106,6 +751,11 @@ Các bài đánh dấu *Adapted* diễn đạt lại một dạng bài tập chu
 9. **(Khó)** Các cột của một ma trận hiệu chuẩn gần như cộng tuyến: $\sigma_{\max}=1$, $\sigma_{\min}=10^{-4}$. Tính $\kappa(A)$ và $\kappa(A^\top A)$. Với tham số ridge $\lambda=10^{-6}$ tính condition number của $A^\top A+\lambda I$ và bàn về đánh đổi bias-variance khi chọn $\lambda$.
 10. **(Khó)** Mô hình chi phí: một bộ tối ưu visual-inertial giải một hệ SPD đặc kích thước $n=300$ mỗi 33 ms. Ước lượng flop cho Cholesky, LU và QR, thời gian ở 5 GFLOP/s, và nói điều gì thay đổi nếu ma trận thưa.
 11. **(Mini-project)** Tái tạo bảng của bài này cho bậc 3 đến 12 trên máy của bạn, thêm một cột cho `jacobiSvd().solve` và một cột cho phép khớp trên $t\in[-1,1]$, và ghi lại bậc mà sai số của mỗi phương pháp lần đầu vượt quá $10^{-6}$.
+
+12. **(Challenge)** Phần dư qua đẳng thức Pythagoras. (a) Chứng minh $\|b-A\hat x\|^2=\|b\|^2-\|Q^\top b\|^2$ cho $A=QR$ có các cột độc lập tuyến tính. (b) Lấy $A=(1,1,1)^\top$ và $b=(10^8+1,\,10^8,\,10^8-1)^\top$. Tính bằng tay chuẩn bình phương chính xác của phần dư, rồi tính vế phải của đẳng thức trong độ chính xác kép IEEE và so sánh. (c) Giải thích sự thất bại một cách định lượng và nêu công thức bền vững. (d) Ở tỉ lệ $\|r\|/\|b\|$ nào đẳng thức mất hết chữ số trong độ chính xác kép? (adapted from Boyd and Vandenberghe, VMLS, Exercise 12.8(b); the numerical trap is added)
+13. **(Challenge)** Phép lặp Richardson. (a) Chứng minh $x_{k+1}=x_k-\mu A^\top(Ax_k-b)$ với $\mu=1/\sigma_{\max}(A)^2$ thỏa $\|x_k-\hat x\|\le(1-1/\kappa^2)^k\|x_0-\hat x\|$. (b) Cần bao nhiêu vòng lặp để giảm sai số $10^{-6}$ với $\kappa=10,100,1000$? (c) Kiểm tra dự đoán bằng số trên ma trận $60\times5$ có các giá trị singular cách đều tuyến tính từ 1 đến $1/\kappa$ với $\kappa=10$ và $100$. (d) So với giải QR trực tiếp cho $n=5$ và nói khi nào phép lặp vẫn được ưu tiên. (adapted from Boyd and Vandenberghe, VMLS, Exercise 12.13)
+14. **(Challenge)** Bình phương tối thiểu có trọng số. (a) Chứng minh $\sum_iw_i(\tilde a_i^\top x-b_i)^2=\|D(Ax-b)\|^2$ với $D$ đường chéo, và $DA$ có các cột độc lập khi $A$ có và mọi $w_i>0$. (b) Suy ra $\hat x=(A^\top WA)^{-1}A^\top Wb$ với $W=\mathrm{diag}(w)$. (c) Với ma trận Vandermonde bậc ba trên 50 điểm cách đều của $[0,1]$ ($\kappa=117{,}9$) cho trọng số $10^{-6}$ cho 25 hàng đầu và $1$ cho 25 hàng còn lại. Tính $\kappa(DA)$ và $\kappa((DA)^\top DA)$, và nói điều này có nghĩa gì khi giải bài toán có trọng số bằng phương trình chuẩn. (adapted from Boyd and Vandenberghe, VMLS, Exercise 12.4)
+15. **(Challenge)** Phương pháp Gram so với QR. (a) Đếm flop của cả hai phương pháp như trong bảng của bài. (b) Tính tỉ lệ cho $(m,n)=(10^4,10)$ và $(600,500)$. (c) Với phép khớp không nhiễu $b=Ac_{\text{true}}$ trên 50 điểm cách đều của $[0,1]$ với $c_{\text{true},j}=(-1)^j(1+0{,}1j)$, đo $\|\hat c-c_{\text{true}}\|$ cho bậc 5, 7, 9 bằng QR và bằng phương pháp Gram, và so với $\kappa^2\epsilon_{\text{mach}}$ và $\kappa\epsilon_{\text{mach}}$. (d) Nêu một quy tắc quyết định. (adapted from Boyd and Vandenberghe, VMLS, Exercise 12.16; the accuracy study is added)
 
 ## Cài đặt tham khảo
 
@@ -423,11 +1073,25 @@ Cùng các ý tưởng xuất hiện trong Python (`numpy.linalg.lstsq` dựa tr
 9. $\kappa(A)=1/10^{-4}=10^{4}$; $\kappa(A^\top A)=10^{8}$. Với ridge: các trị riêng $\sigma^2+\lambda$: $(1+10^{-6})/(10^{-8}+10^{-6})=1.000001/1.01\times10^{-6}\approx9.9\times10^{5}$: tốt hơn khoảng 100 lần. Đánh đổi: $\lambda$ lớn hơn giảm phương sai (nghiệm ổn định) nhưng làm lệch nghiệm về không theo hướng yếu; chọn $\lambda$ bằng cross-validation hoặc đường cong L, hoặc dùng SVD cắt cụt.
 10. Cholesky $\tfrac13n^3=9\times10^{6}$ flop; LU $\tfrac23n^3=1.8\times10^{7}$; QR $\tfrac43n^3=3.6\times10^{7}$. Ở $5\times10^{9}$ flop/s: 1.8 ms, 3.6 ms, 7.2 ms; tất cả vừa trong ngân sách 33 ms, nhưng Cholesky để lại nhiều chỗ nhất. Nếu ma trận thưa (như trong pose graph), Cholesky thưa dùng ít flop hơn nhiều (phụ thuộc fill-in) và bộ nhớ: lưu trữ $O(n)$ thay vì $O(n^2)$.
 11. Một câu trả lời tốt gồm: bảng cho bậc 3-12 với các cột sai số; sai số SVD tương đương QR (cùng bậc); trên $[-1,1]$ các condition number giảm (với bậc 12: $1.6\times10^{4}$ thay vì $6.8\times10^{8}$), nên mọi phương pháp chính xác hơn nhiều; trên máy của bài này (50 điểm, dữ liệu không nhiễu) bậc đầu tiên có sai số trên $10^{-6}$ trên $[0,1]$ là 8 cho phương trình chuẩn và 15 cho QR và SVD; trên $[-1,1]$ là 14 cho phương trình chuẩn trong khi QR và SVD vẫn dưới $10^{-6}$ đến bậc 16; và một nhận xét về máy được dùng.
+12. (a) $A\hat x=QQ^\top b$ là hình chiếu trực giao của $b$ lên $\mathrm{range}(A)=\mathrm{range}(Q)$, nên $r=b-QQ^\top b$ vuông góc với $QQ^\top b$: $Q^\top r=Q^\top b-Q^\top QQ^\top b=0$ và $(QQ^\top b)^\top r=(Q^\top b)^\top Q^\top r=0$. Khi đó $\|b\|^2=\|QQ^\top b\|^2+\|r\|^2$ và $\|QQ^\top b\|^2=b^\top QQ^\top QQ^\top b=\|Q^\top b\|^2$, do đó $\|r\|^2=\|b\|^2-\|Q^\top b\|^2$. (b) $Q=(1,1,1)^\top/\sqrt3$, $Q^\top b=3\cdot10^8/\sqrt3$, nên $\|Q^\top b\|^2=3\cdot10^{16}$. $\|b\|^2=(10^8+1)^2+10^{16}+(10^8-1)^2=3\cdot10^{16}+2$. Chính xác $\|r\|^2=2$ (thật vậy $r=b-10^8\mathbf 1=(1,0,-1)$, $\|r\|^2=2$). Trong float64 (numpy) vế phải tính ra $-12.0$: âm, điều không thể với một chuẩn bình phương. (c) Các double gần $3\cdot10^{16}$ cách nhau $4$ (vì $2^{53}\approx9{,}0\cdot10^{15}$), nên $3\cdot10^{16}+2$ thậm chí không biểu diễn được, và mỗi số hạng có sai số tuyệt đối vài đơn vị, lớn hơn đáp án thật 2. Ước lượng sai số tương đối $\epsilon\|b\|^2/\|r\|^2=1{,}1\cdot10^{-16}\cdot3\cdot10^{16}/2\approx1{,}7$ đã vượt 100%. Công thức bền vững: lập $r=b-A\hat x$ (ở đây $(1,0,-1)$ sai khác làm tròn của $\hat x$; còn tốt hơn là tính $b-\bar b$ cho trường hợp một cột này) rồi lấy $\|r\|^2$. (d) Sai số tương đối khoảng $\epsilon\|b\|^2/\|r\|^2$, đạt 1 ở $\|r\|/\|b\|\approx\sqrt\epsilon\approx10^{-8}$. Trong ví dụ $\|r\|/\|b\|=\sqrt2/(\sqrt3\cdot10^8)\approx8\cdot10^{-9}$, ngay dưới ngưỡng đó.
+13. (a) Vì $A^\top(A\hat x-b)=0$, $e_{k+1}=x_{k+1}-\hat x=e_k-\mu A^\top Ae_k=(I-\mu A^\top A)e_k$. Với $A=U\Sigma V^\top$ và $e_k=V c_k$, $c_{k+1,i}=(1-\mu\sigma_i^2)c_{k,i}$. Với $\mu=1/\sigma_{\max}^2$, $0\le1-\mu\sigma_i^2\le1-\sigma_{\min}^2/\sigma_{\max}^2=1-1/\kappa^2$, nên $\|c_k\|\le(1-1/\kappa^2)^k\|c_0\|$ và $\|e_k\|=\|c_k\|$ vì $V$ trực giao. (b) $k\ge\ln10^{-6}/\ln(1-1/\kappa^2)$: $\kappa=10$: $1374{,}6\to1375$; $\kappa=100$: $138.148{,}2\to138.149$; $\kappa=1000$: $13.815.503{,}6\to13.815.504$ (khoảng $\kappa^2\ln10^6=13{,}8\,\kappa^2$). (c) Một lần chạy với các thừa số trực giao ngẫu nhiên (seed 0), dừng khi sai số xuống dưới $10^{-6}$ giá trị đầu, sau 1374 vòng với $\kappa=10$ và 138.098 với $\kappa=100$, khớp dự đoán trong 0,04%. (Chặn đạt được khi sai số ban đầu có thành phần theo vector singular nhỏ nhất, điều thường gặp.) (d) QR cho $m=60$, $n=5$ tốn khoảng $2mn^2-\tfrac23n^3\approx2900$ flop, một lần; Richardson với $\kappa=10$ tốn khoảng $4mn\cdot1375\approx1{,}6\cdot10^{6}$. Với bài toán dense nhỏ, QR trực tiếp thắng hàng nhiều bậc độ lớn. Phép lặp được ưu tiên khi $A$ khổng lồ và thưa (hoặc chỉ có dưới dạng tích ma trận-vector), nơi không thể lưu phân rã và mỗi vòng chỉ tốn hai phép nhân, và khi $\kappa$ vừa phải hoặc tiền điều kiện làm nó vừa phải.
+14. (a) Đặt $D=\mathrm{diag}(\sqrt{w_1},\dots,\sqrt{w_m})$; khi đó $\|D(Ax-b)\|^2=\sum_i w_i(\tilde a_i^\top x-b_i)^2$. Nếu $DAx=0$ thì $Ax=0$ vì $D$ khả nghịch với $w_i>0$, nên $x=0$ khi $A$ có các cột độc lập. (b) Áp dụng (12.5) cho $B=DA$, $d=Db$: $\hat x=(B^\top B)^{-1}B^\top d=(A^\top D^2A)^{-1}A^\top D^2b=(A^\top WA)^{-1}A^\top Wb$ với $W=D^2$. (c) Tính được: $\kappa(A)=117{,}86$; $\kappa(DA)=1807{,}18$ (trọng số $10^{-3}$ và 1 trong $D$); $\kappa((DA)^\top DA)=\kappa(DA)^2=3{,}27\cdot10^{6}$. Giảm trọng số một nửa số hàng xuống $10^{-6}$ làm bài toán xấu điều kiện hơn khoảng 15 lần theo $\kappa$, 235 lần theo $\kappa^2$: dữ liệu ở nửa đầu vẫn ghim đa thức bậc ba qua nửa sau nhưng chỉ yếu. Hãy giải qua QR của $DA$ (đó là ý nghĩa của "bình phương tối thiểu có trọng số như bài toán chuẩn" trong bài tập), không qua $A^\top WA$, thứ có $\kappa^2\epsilon_{\text{mach}}\approx3{,}6\cdot10^{-10}$ và hoàn toàn tránh được.
+15. (a) Gram: $mn^2$ (tích đối xứng) $+\tfrac13n^3$ (Cholesky) $+O(mn+n^2)$; Householder QR: $2mn^2-\tfrac23n^3$. (b) $(10^4,10)$: QR $1{,}9993\cdot10^{6}$, Gram $1{,}0003\cdot10^{6}$, tỉ lệ $2{,}00$. $(600,500)$: QR $2{,}17\cdot10^{8}$, Gram $1{,}92\cdot10^{8}$, tỉ lệ $1{,}13$. (c) Tính được (float64, numpy; QR bằng `numpy.linalg.qr`, Gram bằng `solve(AᵀA, Aᵀb)`):
+
+   | bậc | $\kappa(A)$ | sai số QR | sai số Gram | $\kappa^2\epsilon$ |
+   |---|---|---|---|---|
+   | 5 | $3{,}55\cdot10^{3}$ | $1{,}7\cdot10^{-13}$ | $1{,}1\cdot10^{-9}$ | $1{,}4\cdot10^{-9}$ |
+   | 7 | $1{,}11\cdot10^{5}$ | $9{,}8\cdot10^{-12}$ | $9{,}9\cdot10^{-7}$ | $1{,}4\cdot10^{-6}$ |
+   | 9 | $3{,}56\cdot10^{6}$ | $3{,}7\cdot10^{-11}$ | $8{,}2\cdot10^{-4}$ | $1{,}4\cdot10^{-3}$ |
+
+   Sai số Gram bám theo $\kappa^2\epsilon_{\text{mach}}$ (trong hệ số 1,7), sai số QR bám theo $\kappa\epsilon_{\text{mach}}$ ($3{,}9\cdot10^{-13}$, $1{,}2\cdot10^{-11}$, $3{,}9\cdot10^{-10}$ cho ba bậc, đều là chặn trên mà giá trị đo nằm dưới). (d) Dùng QR (hoặc SVD) làm mặc định; chỉ dùng đường Gram/Cholesky khi $\kappa(A)^2\epsilon_{\text{mach}}$ thấp hơn hẳn độ chính xác cần (tối đa $\kappa\approx10^{3}$ cho sáu chữ số), khi $m\gg n$ và tốc độ quan trọng, hoặc khi $G$ có sẵn rẻ; luôn kiểm tra $\kappa$ (từ SVD hoặc ước lượng điều kiện) và giữ QR dự phòng khi Cholesky báo pivot không dương.
 
 ## Đọc thêm
 
 - [Eigen: Getting started](https://eigen.tuxfamily.org/dox/GettingStarted.html) - cài đặt, ma trận, vector và chương trình đầu tiên.
 - [Eigen: Linear algebra and decompositions](https://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html) - giải hệ, bình phương tối thiểu, và bảng so sánh các phép phân rã.
 - [MIT 18.06 Linear Algebra](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/) - phép chiếu, bình phương tối thiểu, và SVD, với bài giảng và bài tập.
+- [Boyd và Vandenberghe: Introduction to Applied Linear Algebra (VMLS)](https://web.stanford.edu/~boyd/vmls/vmls.pdf) - PDF miễn phí; §12.2 và §12.3 (bình phương tối thiểu và nghiệm của nó), các Bài tập 12.4, 12.8, 12.13 và 12.16 là cơ sở của phần lý thuyết và các thử thách được thêm.
+- [Eigen: Catalogue of dense decompositions](https://eigen.tuxfamily.org/dox/group__TopicLinearAlgebraDecompositions.html) - tốc độ, độ chính xác và tính chất làm lộ hạng của từng phân rã.
 
 **Thực hành thêm:** [các bài tập MIT 18.06](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/pages/assignments/) (các bộ bài về phép chiếu và bình phương tối thiểu), các trang Eigen [Linear algebra and decompositions](https://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html), [Solving linear least squares systems](https://eigen.tuxfamily.org/dox/group__LeastSquares.html), [Aliasing](https://eigen.tuxfamily.org/dox/group__TopicAliasing.html) và [Lazy evaluation and `auto`](https://eigen.tuxfamily.org/dox/TopicLazyEvaluation.html), và tài liệu NumPy cho [`np.linalg.lstsq`](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html) và [Chebyshev polynomials](https://numpy.org/doc/stable/reference/routines.polynomials.chebyshev.html) (làm lại phép quét bậc trong một cơ sở tốt hơn).

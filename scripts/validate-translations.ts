@@ -63,6 +63,16 @@ type Contract = {
   questions: { id: string; options?: string[]; rubric?: string[] }[];
 };
 const allowed = new Set(["prompt", "options", "explanation", "rubric"]);
+/** The non-zero numbers in a string, comma decimals read as dots. */
+export function numbersIn(text: string) {
+  // Order-free and without zeros: word order and "0" vs "zero" vary
+  // between the languages, the non-zero values of a choice do not.
+  return (text.match(/\d+(?:[.,]\d+)?/g) ?? [])
+    .map((n) => Number(n.replace(",", ".")))
+    .filter((n) => n !== 0)
+    .sort((a, b) => a - b)
+    .join(" ");
+}
 
 export function validateQuestions(english: Contract, translation: unknown) {
   const errors: string[] = [];
@@ -91,6 +101,17 @@ export function validateQuestions(english: Contract, translation: unknown) {
         errors.push(
           `${id}: expected ${q.options?.length ?? 0} options, found ${Array.isArray(options) ? options.length : "invalid"}`,
         );
+      // A translated option must carry the same numbers as the English one,
+      // or the answer index points at a different choice in Vietnamese.
+      else
+        options.forEach((o, i) => {
+          const en = numbersIn(q.options![i]),
+            vi = numbersIn(o as string);
+          if (en !== vi)
+            errors.push(
+              `${id}: option ${i + 1} numbers differ from English (${en || "none"} vs ${vi || "none"})`,
+            );
+        });
     }
     if (t.rubric !== undefined) {
       const rubric = t.rubric as unknown[];

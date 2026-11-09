@@ -396,6 +396,89 @@
         "Agreement on special cases / limit cases is evidence of correctness; disagreement reveals bugs."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "A motor with rotor inertia 0.00125 kg m^2 drives a load of inertia 0.5 kg m^2 through an ideal gearhead of ratio G. The load acceleration is G*tau_m/(I_l + G^2 I_r). Which G maximises it?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "algorithm-cost"
+      ],
+      "skillLabel": "Gear ratio and apparent inertia",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Gear ratio and apparent inertia",
+          "href": "/lessons/R12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "answer": "20",
+      "tolerance": 0.01,
+      "explanation": "Differentiate: d/dG [G/(I_l + G^2 I_r)] has numerator (I_l + G^2 I_r) - 2 G^2 I_r = I_l - G^2 I_r. Setting it to zero gives G = sqrt(I_l/I_r) = sqrt(0.5/0.00125) = sqrt(400) = 20. There the apparent rotor inertia G^2 I_r = 0.5 equals the load inertia (inertia matching)."
+    },
+    {
+      "id": "c2",
+      "prompt": "For the worked-example arm at q = (0.5, 0.8), dq = (1, -0.5), the required torque is tau = (13.4718, 1.3439) N m and the bias (inverse dynamics with zero acceleration) is b = (11.6293, 0.8949) N m. After adding a gearmotor to the elbow the mass matrix becomes M' = [[0.8303, 0.3095], [0.3095, 12.58]]. What is the new joint-1 acceleration (rad/s^2) under the same torque? Solve M' ddq = tau - b.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "mass-matrix-from-id"
+      ],
+      "skillLabel": "Forward dynamics from M and bias",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Forward dynamics from M and bias",
+          "href": "/lessons/R12#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "answer": "2.226",
+      "tolerance": 0.01,
+      "explanation": "tau - b = (1.8425, 0.4490). Determinant of M' = 0.8303*12.58 - 0.3095^2 = 10.4453 - 0.0958 = 10.3495. ddq1 = (12.58*1.8425 - 0.3095*0.4490)/10.3495 = (23.1788 - 0.1390)/10.3495 = 2.226 rad/s^2, and ddq2 = (0.8303*0.4490 - 0.3095*1.8425)/10.3495 = -0.019 rad/s^2. The elbow barely moves because its apparent inertia dominates."
+    },
+    {
+      "id": "c3",
+      "prompt": "Joint torque data contain viscous and Coulomb friction, but the identification regresses only the five inertial parameters. Which statement is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "parameter-identification"
+      ],
+      "skillLabel": "Friction and identification bias",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Friction and identification bias",
+          "href": "/lessons/R12#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "M04"
+      ],
+      "options": [
+        "The estimate is unbiased but has larger variance, which more samples will remove",
+        "The estimate is generally biased, because least squares reassigns correlated friction torque to the inertial parameters, and more samples do not remove it",
+        "The estimate is unaffected, because friction is a joint effect and not an inertial effect",
+        "The regression becomes non-linear and least squares can no longer be applied"
+      ],
+      "answer": "1",
+      "explanation": "Viscous (b_v dq) and Coulomb (b_s sgn dq) friction are linear in their coefficients, so the correct model just adds columns. Omitting them leaves a deterministic residual that least squares projects onto the columns of Y that correlate with it, giving a systematic bias that does not shrink with N. Option 4 is wrong because the extended model is still linear. In the lesson's simulation the friction-free fit gave errors up to 0.9 in the parameters."
     }
   ]
 }

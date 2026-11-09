@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="Inter, sans-serif">
+<title>Constructor throw: chỉ các member đã hoàn tất bị hủy</title>
+<desc>Trái: trình tự với Holder có member a và b mà thân constructor throw: b rồi a bị hủy, ~Holder bị bỏ qua. Phải: số byte còn cấp phát sau cùng lỗi đó, 96 B với con trỏ thô (40 B + 56 B), 0 B với member unique_ptr.</desc>
+<defs></defs>
+<rect width="900" height="500" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Constructor throw: chỉ các member đã hoàn tất bị hủy</text>
+<rect x="32" y="72" width="404" height="396" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="52" y="102" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Holder() throw trong thân</text>
+<rect x="52" y="124" width="364" height="48" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="68" y="154" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">+a</text>
+<text x="404" y="154" font-size="15" fill="#e9e7e3" text-anchor="end">member a đã xây xong</text>
+<rect x="52" y="184" width="364" height="48" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="68" y="214" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">+b</text>
+<text x="404" y="214" font-size="15" fill="#e9e7e3" text-anchor="end">member b đã xây xong</text>
+<rect x="52" y="244" width="364" height="48" rx="8" fill="#22252a" stroke="#e58a80" stroke-width="2"/>
+<text x="68" y="274" font-size="15" fill="#e58a80" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">[body]</text>
+<text x="404" y="274" font-size="15" fill="#e9e7e3" text-anchor="end">thân constructor: throw</text>
+<rect x="52" y="304" width="364" height="48" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="68" y="334" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">-b -a</text>
+<text x="404" y="334" font-size="15" fill="#e9e7e3" text-anchor="end">b, a bị hủy (ngược)</text>
+<rect x="52" y="364" width="364" height="48" rx="8" fill="#22252a" stroke="#a7adb5" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="68" y="394" font-size="15" fill="#a7adb5" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">~Holder</text>
+<text x="404" y="394" font-size="15" fill="#a7adb5" text-anchor="end">thân destructor không chạy</text>
+<text x="52" y="434" font-size="14" fill="#a7adb5" text-anchor="start">Đầu ra: +a +b [body] -b -a caught</text>
+<rect x="464" y="72" width="404" height="396" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="484" y="102" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Số byte còn cấp phát sau đó</text>
+<text x="484" y="150" font-size="15" fill="#e9e7e3" text-anchor="start">Owner thô: a = new double[5], b = new double[7]</text>
+<rect x="484" y="164" width="136" height="36" rx="4" fill="#22252a" stroke="#e58a80" stroke-width="2"/>
+<rect x="620" y="164" width="190" height="36" rx="4" fill="#22252a" stroke="#e0c169" stroke-width="2"/>
+<text x="552" y="187" font-size="15" fill="#e58a80" text-anchor="middle" font-weight="600">a: 40 B</text>
+<text x="715" y="187" font-size="15" fill="#e0c169" text-anchor="middle" font-weight="600">b: 56 B</text>
+<text x="820" y="187" font-size="15" fill="#e9e7e3" text-anchor="start" font-weight="bold">96 B</text>
+<text x="484" y="250" font-size="15" fill="#e9e7e3" text-anchor="start">Member unique_ptr&lt;double[]&gt; a và b</text>
+<circle cx="488" cy="282" r="5" fill="#6fc693"/>
+<text x="504" y="287" font-size="15" fill="#6fc693" text-anchor="start" font-weight="bold">0 B</text>
+<line x1="484" y1="314" x2="824" y2="314" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="484" y1="308" x2="484" y2="320" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="484" y="340" font-size="14" fill="#a7adb5" text-anchor="middle">0</text>
+<line x1="620" y1="308" x2="620" y2="320" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="620" y="340" font-size="14" fill="#a7adb5" text-anchor="middle">40</text>
+<line x1="756" y1="308" x2="756" y2="320" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="756" y="340" font-size="14" fill="#a7adb5" text-anchor="middle">80</text>
+<text x="820" y="340" font-size="14" fill="#a7adb5" text-anchor="end">B</text>
+<text x="484" y="382" font-size="14" fill="#a7adb5" text-anchor="start">Quy tắc ([except.ctor]): các member đã</text>
+<text x="484" y="404" font-size="14" fill="#a7adb5" text-anchor="start">xây xong sẽ bị hủy.</text>
+<text x="484" y="426" font-size="14" fill="#a7adb5" text-anchor="start">Con trỏ thô không có destructor: không giải phóng gì.</text>
+</svg>

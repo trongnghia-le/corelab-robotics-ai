@@ -324,6 +324,80 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "p = malloc(29) returns an 8-byte aligned block, so the last of its four words has ASan shadow value 5 (29 = 24 + 5). Which 2-byte read, given as an offset from p, is NOT reported?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "offset 27",
+        "offset 28",
+        "offset 29",
+        "offset 30"
+      ],
+      "answer": "0",
+      "explanation": "For the last word the shadow value is 5, so an access is an error iff its last byte index inside the word, l = (offset mod 8) + size - 1, is >= 5. Offset 27: l = 3 + 1 = 4 < 5, fine. Offset 28: l = 4 + 1 = 5, reported. Offset 29: l = 5 + 1 = 6, reported. Offset 30: l = 6 + 1 = 7, reported.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sanitizer-reports"
+      ],
+      "skillLabel": "ASan shadow value check",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A bad commit fails with probability 0.1 per run; a good commit never fails. You bisect 300 commits (9 steps) and call a tested commit good only if all r runs pass. What is the smallest integer r for which the lower bound (1 - 0.9^r)^9 is at least 0.90?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "43",
+      "tolerance": 0.01,
+      "explanation": "Need 0.9^r <= 1 - 0.90^(1/9) = 0.011638, so r >= ln(0.011638)/ln(0.9) = 42.27 and r = 43. Check: (1 - 0.9^43)^9 = 0.9071 >= 0.90, while r = 42 gives 0.8973.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection-reduction"
+      ],
+      "skillLabel": "Repeats for a flaky bisect",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "struct Cfg { char name[8]; int baud; }; copy() writes name[0..8] and the program prints a wrong baud, but AddressSanitizer reports nothing. Explain why, name the tool or flag that finds it, and give the debugger command that identifies the offending line without knowing the loop.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "ASan only poisons redzones between allocations; name and baud are adjacent addressable bytes of one object, so name[8] hits a valid shadow byte (0) and passes.",
+        "UBSan -fsanitize=bounds (included in -fsanitize=undefined) reports the out-of-bounds index because the array bound is statically known.",
+        "GDB: watch -l c.baud (watch -location), then continue: it stops at the writing line showing Old and New value; hardware watchpoints keep this cheap."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "sanitizer-selection"
+      ],
+      "skillLabel": "Intra-object overflow",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP08#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

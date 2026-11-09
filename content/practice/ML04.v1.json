@@ -295,6 +295,80 @@
         "The nonlinearity prevents the layers from collapsing into one."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "ml04-c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "relu-representation"
+      ],
+      "skillLabel": "Units needed for a ReLU approximation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A one-hidden-layer ReLU network approximates f(x) = x^2 on [0, 1] by interpolation at equally spaced knots. The maximum error with spacing h is h^2/4. What is the smallest number of intervals (equal to the number of hidden units) that guarantees a maximum error of at most 0.0003?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "29",
+      "tolerance": 0.001,
+      "explanation": "h^2/4 <= 0.0003 gives h <= 0.03464, so N >= 1/0.03464 = 28.87, i.e. N = 29 (h = 1/29 gives 1/3364 = 0.000297). Check N = 28: 1/(4*784) = 0.000319 > 0.0003, so 28 is not enough."
+    },
+    {
+      "id": "ml04-c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "linear-regions"
+      ],
+      "skillLabel": "Linear regions of a shallow ReLU net",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A single hidden layer of 6 ReLU units acts on a 2-dimensional input. What is the maximum number of regions on which the on/off pattern of the units is constant?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "64, since each of the 6 units can be on or off independently of the others",
+        "36, since every pair of the 6 units can create exactly one new region",
+        "13, since each of the 6 units adds exactly two regions to the previous count",
+        "22, the number of cells cut out by 6 lines in general position"
+      ],
+      "answer": "3",
+      "explanation": "Each unit switches on a line. Adding the k-th line to the arrangement splits at most k existing regions, so the maximum is 1 + (1 + 2 + ... + 6) = 22 = C(6,0) + C(6,1) + C(6,2) = 1 + 6 + 15. The 2^6 = 64 patterns cannot all occur because lines in a plane cannot realise every sign combination."
+    },
+    {
+      "id": "ml04-c3",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "initialization"
+      ],
+      "skillLabel": "Variance-preserving initialization",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/ML04#theory-and-derivation"
+        }
+      ],
+      "prompt": "A 16-layer ReLU MLP (width 64) trains badly with weights drawn from a zero-mean symmetric distribution of variance 1.5/n (n = fan-in). Derive what happens to the second moment of the activations from layer to layer, state the variance that fixes it, and name one situation where the derivation does not apply.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Shows E[z^2] = Var(z) = n * sigma_w^2 * q for weights that are independent of the inputs, zero-mean, symmetric and independent of each other with variance sigma_w^2 (q = mean second moment of the inputs).",
+        "Uses the symmetry of z about zero so that E[relu(z)^2] = Var(z)/2, giving a factor n*sigma_w^2/2 = 3/4 per layer, about 0.75^16 = 0.010 after 16 layers, and the fix sigma_w^2 = 2/n.",
+        "Names a limit: non-zero biases or non-symmetric weights (the factor 1/2 fails), skip connections, normalisation layers, other activations (tanh needs a different constant), or that it describes only the initial step (trained weights correlate with the activations)."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

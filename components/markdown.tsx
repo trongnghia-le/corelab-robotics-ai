@@ -1,4 +1,6 @@
 "use client";
+import { LessonFigure } from "./lesson-figure";
+import { Explore } from "./explore";
 import { ConceptIllustration } from "./concept-illustration";
 import type { LessonMedia } from "@/lib/media";
 import Markdown from "react-markdown";
@@ -64,7 +66,7 @@ export function LessonMarkdown({
   /** Section numbers by order when only part of a lesson is rendered. */
   numbers?: number[];
 }) {
-  const { tx } = useI18n();
+  const { tx, lang } = useI18n();
   return (
     <div className="prose">
       <Markdown
@@ -100,10 +102,71 @@ export function LessonMarkdown({
               </>
             );
           },
+          // A paragraph made only of photos is a labelled gallery, so the
+          // learner can compare components side by side.
+          p: ({ children, node }) => {
+            const items = (node?.children ?? []).filter(
+              (c) => !(c.type === "text" && !c.value.trim()),
+            );
+            const photos = items.every(
+              (c) =>
+                c.type === "element" &&
+                c.tagName === "img" &&
+                String(c.properties.src ?? "").startsWith("/lesson-images/"),
+            );
+            if (!items.length || !photos) return <p>{children}</p>;
+            return (
+              <span
+                className={
+                  items.length > 1 ? "lesson-photos" : "lesson-photos is-single"
+                }
+              >
+                {items.map((c, i) => {
+                  if (c.type !== "element") return null;
+                  const src = String(c.properties.src);
+                  const alt = String(c.properties.alt ?? "");
+                  const title = c.properties.title
+                    ? String(c.properties.title)
+                    : "";
+                  return (
+                    <span className="lesson-photo" key={src + i}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt={alt} loading="lazy" />
+                      {title && <span className="lesson-photo-label">{title}</span>}
+                    </span>
+                  );
+                })}
+              </span>
+            );
+          },
+          img: ({ src, alt }) => {
+            const original = typeof src === "string" ? src : "";
+            if (/^\/lesson-figures\/[\w-]+\.svg$/.test(original))
+              return (
+                <LessonFigure
+                  src={
+                    lang === "vi"
+                      ? original.replace(
+                          "/lesson-figures/",
+                          "/lesson-figures/vi/",
+                        )
+                      : original
+                  }
+                  fallback={original}
+                  alt={alt ?? ""}
+                />
+              );
+            // eslint-disable-next-line @next/next/no-img-element
+            return <img src={original} alt={alt ?? ""} loading="lazy" />;
+          },
           pre: ({ children }) => {
             const element = isValidElement<{ className?: string }>(children)
               ? children
               : null;
+            const language =
+              element?.props.className?.match(/language-([^\s]+)/)?.[1];
+            if (language === "explore")
+              return <Explore source={textFromChildren(children)} />;
             return (
               <CodeBlock
                 code={textFromChildren(children)}

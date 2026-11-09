@@ -11,20 +11,20 @@
    "explanation": "Cấu trúc trong residual báo hiệu vấn đề; scatter là dáng vẻ của nhiễu."
   },
   "b2": {
-   "prompt": "Động cơ tau=0.5, K=2, u=3. Tốc độ tại t=0.25 s tính bằng rad/s (3 chữ số thập phân)?",
-   "explanation": "6(1-e^{-0.5})."
+   "prompt": "Động cơ tau=1.2, K=0.5, u=8. Tốc độ tại t=0.6 s tính bằng rad/s (3 chữ số thập phân)?",
+   "explanation": "K*u=4 rad/s; 4(1-e^{-0.5})=4*0.3935=1.574."
   },
   "b3": {
    "prompt": "Bao nhiêu phần trăm (1 chữ số thập phân) giá trị cuối đạt được tại t=2*tau?",
    "explanation": "1-e^{-2}=0.8647."
   },
   "b4": {
-   "prompt": "sigma_hat=0.083 và sqrt((J^T J)^-1) của tau = 0.102. SE của tau tính bằng mili giây (làm tròn số nguyên)?",
-   "explanation": "0.083*0.102=0.00847 s."
+   "prompt": "sigma_hat=0.12 và sqrt((J^T J)^-1) của tau = 0.35. SE của tau tính bằng mili giây (làm tròn số nguyên)?",
+   "explanation": "0.12*0.35=0.042 s = 42 ms."
   },
   "b5": {
-   "prompt": "Với SE(tau)=0.0085 s và giá trị tới hạn t là 2.045, nửa độ rộng khoảng 95% tính bằng mili giây (làm tròn số nguyên)?",
-   "explanation": "2.045*8.5=17.4 ms."
+   "prompt": "Với SE(tau)=0.042 s và giá trị tới hạn t là 2.101, nửa độ rộng khoảng 95% tính bằng mili giây (làm tròn số nguyên)?",
+   "explanation": "2.101*42=88.2 ms."
   },
   "b6": {
    "prompt": "40 điểm, 3 tham số, SSR=0.37. sigma_hat bằng bao nhiêu rad/s (3 chữ số thập phân)?",
@@ -61,8 +61,8 @@
    "explanation": "Tối ưu không ràng buộc trên thang log; SE(ln tau)~SE(tau)/tau."
   },
   "b10": {
-   "prompt": "SE(tau)=0.0085 s và tau_hat=0.498 s. Standard error xấp xỉ của ln(tau) theo phần trăm (1 chữ số thập phân)?",
-   "explanation": "0.0085/0.498=1.7%."
+   "prompt": "SE(tau)=0.042 s và tau_hat=1.21 s. Standard error xấp xỉ của ln(tau) theo phần trăm (1 chữ số thập phân)?",
+   "explanation": "0.042/1.21=3.47%, khoảng 3.5%."
   },
   "b11": {
    "prompt": "Hãy mô tả các đầu ra và metadata bạn sẽ lưu để một đồng nghiệp có thể tái lập và kiểm toán một phép khớp tham số nhiều tháng sau.",
@@ -81,6 +81,24 @@
     "Đề xuất siết rtol/atol và so sánh các phép khớp.",
     "Kiểm tra simulator với nghiệm giải tích và theo dõi trạng thái của bộ tối ưu."
    ]
+  },
+  "c1": {
+   "prompt": "Gauss-Newton (ở đây là Newton) cho tanh(x)=0 dùng x ← x - sinh(x)cosh(x). Nó hội tụ từ x0=0.95 và phân kỳ từ x0=1.15. Tại x_c dương nào phép lặp ánh xạ x_c thành -x_c, phân tách hai hành vi? Cho 3 chữ số thập phân.",
+   "explanation": "Phép lặp là x ← x - ½ sinh(2x). Yêu cầu x_c - ½ sinh(2x_c) = -x_c cho sinh(2x_c) = 4x_c. Nghiệm dương là x_c = 1.08866. Với |x0| < x_c ánh xạ co về 0 (0.95 cho -0.684, 0.234, -0.0087, ...), với |x0| > x_c mỗi bước vượt xa hơn (1.15 cho -1.318, 2.156, -16.5, ...) vì ½ sinh(2x) tăng nhanh hơn 2x."
+  },
+  "c2": {
+   "prompt": "Tại điểm tối ưu của một phép khớp hai tham số, Jacobian có các giá trị kỳ dị 12.87 và 1.865, và ước lượng nhiễu là σ̂ = 0.1. Standard error của tổ hợp tham số bị xác định kém nhất (hướng của giá trị kỳ dị nhỏ hơn) là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "Cov = σ̂²(JᵀJ)⁻¹ = σ̂² V Σ⁻² Vᵀ. Theo vector kỳ dị phải v_i độ lệch chuẩn là σ̂/σ_i. Với σ_min = 1.865: 0.1/1.865 = 0.0536 (khoảng 0.054). Với σ_max = 12.87 sẽ là 0.1/12.87 = 0.0078, nên tổ hợp theo hướng yếu được xác định kém hơn gần 7 lần."
+  },
+  "c3": {
+   "prompt": "Một phép khớp Levenberg-Marquardt cho hằng số thời gian hầu như không nhúc nhích khi bạn đổi đơn vị của nó từ giây sang mili giây, dù dữ liệu và mô hình vẫn như cũ. Cách khắc phục đúng là gì?",
+   "options": [
+    "Tăng damping λ cho đến khi bước đủ nhỏ để nằm trong vùng tin cậy.",
+    "Chỉ chạy lại phép khớp bằng float64, vì làm tròn float32 của giá trị mili giây chính là nguyên nhân gây đình trệ.",
+    "Cho τ một x_scale phù hợp (hoặc phi thứ nguyên hóa nó) để bước ở mọi biến ảnh hưởng tương đương lên chi phí.",
+    "Bỏ các bounds của τ để optimizer tự do đi bước dài hơn theo biến đó."
+   ],
+   "explanation": "Bước LM giải (JᵀJ + λI)δ = -Jᵀr. Tính bằng mili giây, cột τ của J nhỏ hơn 1000 lần, nên bình phương giá trị kỳ dị của nó rơi xa dưới λ và hướng đó bị nén mạnh: bước của τ gần như đóng băng (trong phép kiểm của bài, thay đổi τ giảm từ -1.40 s xuống -7e-6 s với λ = 1). Phạt λ‖δ‖² so sánh các đại lượng có đơn vị khác nhau. Cách chữa là đổi thang các biến (x_scale cỡ từng tham số, hoặc 'jac', hoặc phi thứ nguyên hóa) để vùng tin cậy khớp với kích thước tự nhiên của mỗi biến. Tăng λ làm tệ hơn, độ chính xác số không phải nguyên nhân, và bỏ bounds không đổi damping."
   }
  }
 }

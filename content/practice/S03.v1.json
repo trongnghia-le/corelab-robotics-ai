@@ -14,18 +14,15 @@
       "explanation": "1080*4*20=86400 B/s.",
       "knowledgeType": "procedure",
       "skillTags": [
-        "interface-choice"
+        "message-size"
       ],
-      "skillLabel": "Choose topic, service or action",
+      "skillLabel": "Serialized size and bandwidth",
       "mistakeCategory": "mathematical",
       "remediationRefs": [
         {
           "label": "Review: theory and derivation",
           "href": "/lessons/S03#theory-and-derivation"
         }
-      ],
-      "equivalentTo": [
-        "q2"
       ],
       "relatedPrerequisites": [
         "T01",
@@ -376,6 +373,89 @@
         "PY01"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A sensor publishes at 25 Hz into a subscription with depth 6; the callback needs 80 ms per message. After the queue has been full for a while, what is the upper bound on the age of the message being delivered, in ms? Precision 1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "240",
+      "tolerance": 1,
+      "explanation": "f_c = 1/0.08 = 12.5 Hz is below f_p = 25 Hz, so the queue stays full and every take delivers the oldest of the N newest samples. Its age is in ((N-1)T_p, N T_p] with T_p = 1/25 = 0.04 s, so the upper bound is 6 * 0.04 = 0.24 s = 240 ms (the lower bound is 200 ms).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "queue-depth-staleness"
+      ],
+      "skillLabel": "Queue depth, drops and staleness",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Which publisher and subscription pair is connected? (Offered profile of the publisher, requested profile of the subscription.)",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Publisher BEST_EFFORT, VOLATILE; subscription RELIABLE, VOLATILE",
+        "Publisher RELIABLE, VOLATILE; subscription RELIABLE, TRANSIENT_LOCAL",
+        "Publisher RELIABLE, TRANSIENT_LOCAL, deadline 0.1 s; subscription BEST_EFFORT, VOLATILE, deadline 0.2 s",
+        "Publisher RELIABLE, TRANSIENT_LOCAL, deadline 0.5 s; subscription BEST_EFFORT, VOLATILE, deadline 0.2 s"
+      ],
+      "answer": "2",
+      "explanation": "The rule is offered at least as strong as requested in every policy, and for deadlines offered <= requested. Option 0 fails reliability (best-effort offered, reliable requested). Option 1 fails durability (volatile offered, transient-local requested). Option 3 fails the deadline (0.5 s offered > 0.2 s requested). Option 2 passes all: RELIABLE >= BEST_EFFORT, TRANSIENT_LOCAL >= VOLATILE and 0.1 s <= 0.2 s.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "qos-compatibility"
+      ],
+      "skillLabel": "QoS request versus offered",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "geometry_msgs/PoseStamped with frame_id \"odom\" (4 characters) is serialized with CDR, including the 4-byte header (position and orientation are float64). Data rate in bytes per second at 50 Hz? Precision 1.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4200",
+      "tolerance": 1,
+      "explanation": "After the 4-byte header: stamp 8 bytes (offset 8); frame_id 4 + 5 = 9 bytes (offset 17); the position is three float64 aligned to 8, so 7 padding bytes (offset 24) then 24 bytes (48); the orientation is four float64, 32 bytes (80). Total 80 + 4 = 84 bytes (checked with rclpy serialize_message), and 84 * 50 = 4200 B/s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "message-size"
+      ],
+      "skillLabel": "Serialized size and bandwidth",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/S03#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "T01",
+        "PY01"
+      ]
     }
   ]
 }

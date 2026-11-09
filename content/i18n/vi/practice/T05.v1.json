@@ -93,6 +93,30 @@
     "API key chỉ trong biến môi trường hoặc kho bí mật; .env trong .gitignore và .env.example được commit chỉ với tên.",
     "Ghi log cấu hình hiệu lực với key được che giấu và xoay vòng key nếu nó từng vào Git."
    ]
+  },
+  "c1": {
+   "prompt": "Có bao nhiêu phiên bản trong 1.4.4, 1.4.5, 1.4.5.post1, 1.4.9, 1.4.9.3, 1.5.0.dev1, 1.5.0, 1.4.6rc1 mà `~=1.4.5` chấp nhận khi cho phép pre-release? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "`~=1.4.5` nghĩa là >=1.4.5 và ==1.4.* (PEP 440), tức [1.4.5, 1.5). Được chấp nhận: 1.4.5, 1.4.5.post1, 1.4.9, 1.4.9.3 và 1.4.6rc1 (một pre-release của 1.4.6, được phép ở đây). Bị loại: 1.4.4 (dưới cận dưới), 1.5.0.dev1 và 1.5.0 (không phải 1.4.*). Tổng cộng 5."
+  },
+  "c2": {
+   "prompt": "Một file requirements có `--hash=sha256:...` cho `numpy==1.26.4` nhưng liệt kê `scipy>=1.11` không có hash và không được ghim. `pip install -r` làm gì?",
+   "options": [
+    "Cài numpy có kiểm tra hash và scipy không kiểm tra",
+    "Thất bại: scipy không có hash và không được ghim bằng ==",
+    "Cài cả hai và cảnh báo scipy không có hash",
+    "Bỏ qua hash vì chỉ một requirement có hash"
+   ],
+   "explanation": "Hash-checking là tất cả hoặc không có gì: một hash trên bất kỳ requirement nào kích hoạt nó toàn cục, khi đó hash được yêu cầu cho mọi requirement và dependency và mỗi requirement phải được ghim (==, URL hoặc đường dẫn). `scipy>=1.11` vi phạm cả hai quy tắc, nên pip báo lỗi. (Tài liệu pip, Secure installs, Hash-checking Mode.)"
+  },
+  "c3": {
+   "prompt": "Phiên bản nào trong các phiên bản này thỏa specifier `>1.0`?",
+   "options": [
+    "1.0.post1",
+    "1.0+local",
+    "1.0rc1",
+    "1.0.1"
+   ],
+   "explanation": "Phép so sánh loại trừ `>V` không được khớp post-release của V (trừ khi V bản thân là một post-release) cũng không khớp phiên bản cục bộ của V, nên 1.0.post1 và 1.0+local bị loại; 1.0rc1 xếp dưới 1.0. Chỉ 1.0.1 lớn hơn thực sự và là một release khác. (PEP 440, Exclusive ordered comparison.)"
   }
  }
 }

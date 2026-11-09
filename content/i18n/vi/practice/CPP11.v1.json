@@ -41,8 +41,8 @@
    "explanation": "Các trị riêng trở thành sigma^2 + lambda, nên giá trị nhỏ nhất được nâng lên và tỉ số co lại."
   },
   "b5": {
-   "prompt": "cond(A) = 1e4. Dùng số chữ số mất ~ log10 của condition number mà bộ giải thấy, phương trình chuẩn giữ được bao nhiêu chữ số chính xác (trong 16)? Cho một số nguyên.",
-   "explanation": "cond(A^T A) = 1e8, nên còn khoảng 16-8 = 8 chữ số."
+   "prompt": "cond(A) = 1e5. Dùng số chữ số mất ~ log10 của condition number mà bộ giải thấy, phương trình chuẩn giữ được bao nhiêu chữ số chính xác (trong 16)? Cho một số nguyên.",
+   "explanation": "cond(A^T A) = 1e10, nên còn khoảng 16-10 = 6 chữ số."
   },
   "b6": {
    "prompt": "Đường thẳng bình phương tối thiểu qua (0,1), (1,1), (2,4). Đường khớp dự đoán gì tại t = 3? Cho một số với 1 chữ số thập phân.",
@@ -81,6 +81,29 @@
     "Eigen::VectorXd x = A.colPivHouseholderQr().solve(b); (không phải auto).",
     "double r = (A * x - b).norm();",
     "Tùy chọn kiểm tra A.rows() >= A.cols() và A^T(Ax-b) ~ 0."
+   ]
+  },
+  "c1": {
+   "prompt": "Phép lặp Richardson x <- x - mu*A^T(Ax - b) với mu = 1/sigma_max^2 co sai số tối đa (1 - 1/kappa^2) mỗi bước. Với kappa = 20, cần bao nhiêu vòng lặp để giảm sai số 1000 lần (tol 1e-3)? Cho chặn nguyên nhỏ nhất từ ln(tol)/ln(1 - 1/kappa^2).",
+   "explanation": "rho = 1 - 1/400 = 0,9975. k >= ln(1e-3)/ln(0,9975) = -6,9078/-0,0025031 = 2759,65, nên 2760 vòng lặp (khoảng kappa^2 ln(1000) = 2763)."
+  },
+  "c2": {
+   "prompt": "Một phép khớp có phần dư rất nhỏ so với dữ liệu, ||r||/||b|| = 1e-9. Vì sao tính ||r||^2 bằng ||b||^2 - ||Q^T b||^2 trong độ chính xác kép là ý tồi?",
+   "options": [
+    "Q^T b cần A^T A, quá tốn để lập",
+    "Hai số hạng gần triệt tiêu nhau và các chữ số biến mất",
+    "QR mất tính trực giao khi phần dư nhỏ",
+    "Đẳng thức chỉ đúng với A vuông"
+   ],
+   "explanation": "Đẳng thức chính xác, nhưng cả hai số hạng đều lớn và gần bằng nhau khi phép khớp tốt. Mỗi số hạng có sai số tuyệt đối cỡ eps*||b||^2, nên sai số tương đối của hiệu cỡ eps*||b||^2/||r||^2 = 1,1e-16 * 1e18 = 110, tức là mất hết chữ số (kể cả dấu). Hãy tính vector phần dư b - A x_hat rồi lấy chuẩn của nó."
+  },
+  "c3": {
+   "prompt": "Một bài toán hiệu chuẩn có m = 10^6 hàng, n = 8 cột và điều kiện số ước lượng kappa(A) = 10^4. Bạn cần 6 chữ số đúng và code chạy trên một CPU nhúng nhỏ. Hãy chọn giữa Cholesky trên phương trình chuẩn và Householder QR, biện minh bằng ước lượng chi phí và độ chính xác, kèm phương án dự phòng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Độ chính xác: phương trình chuẩn mất khoảng 2*log10(kappa) = 8 trong 16 chữ số, còn khoảng 8, và ước lượng kappa^2*eps = 1e8*1,1e-16 = 1,1e-8 đạt 6 chữ số với biên hệ số 10 đến 100; QR mất khoảng 4 chữ số, còn khoảng 12.",
+    "Chi phí: Gram là m n^2 + n^3/3 = 6,4e7 flop so với QR 2 m n^2 - 2n^3/3 = 1,28e8, hệ số 2; ma trận Gram cũng có thể cộng dồn khi streaming các hàng mà không cần lưu A.",
+    "Quyết định kèm dự phòng: cả hai lựa chọn đều biện hộ được; biện minh bằng biên độ, kiểm tra kappa lúc chạy (SVD của R hoặc G cỡ 8x8), chuyển sang QR (hoặc SVD cắt cụt) nếu kappa tăng hoặc Cholesky báo pivot không dương."
    ]
   }
  }

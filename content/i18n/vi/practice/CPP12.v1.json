@@ -82,6 +82,29 @@
     "Destructor và các phép move được định nghĩa trong .cpp (= default) nơi Impl đã đầy đủ.",
     "Lý do: deleter của unique_ptr cần kiểu đầy đủ, nếu không sẽ là 'invalid application of sizeof to incomplete type'."
    ]
+  },
+  "c1": {
+   "prompt": "Trên x86-64 Linux (Itanium ABI) cho struct A { double d; char b; ~A(); }; struct B : A { char c; char e; };. Offset (theo byte) của B::c là bao nhiêu? Cho một số nguyên.",
+   "explanation": "A có destructor do người dùng cung cấp nên không phải POD theo bố cục: d ở 0..7, b ở 8, dsize(A)=9, sizeof(A)=16. Subobject kế tiếp của B bắt đầu tại dsize(A)=9, tái sử dụng tail padding, nên c ở offset 9 và e ở 10; sizeof(B)=16 (đo bằng g++: 16 16 9). Nếu A là POD thì c sẽ ở offset 16."
+  },
+  "c2": {
+   "prompt": "Một thư viện build với -D_GLIBCXX_USE_CXX11_ABI=0 export int get_id(const Config&), với struct Config { std::string name; int id; };. Một ứng dụng build với ABI mặc định (mới) gọi nó. Chuyện gì xảy ra?",
+   "options": [
+    "Linker báo undefined reference vì std::string khác nhau giữa hai ABI",
+    "Chương trình link được, nhưng get_id đọc id sai offset vì sizeof(std::string) là 8 ở một ABI và 32 ở ABI kia",
+    "Chương trình link và chạy đúng vì symbol get_id và tên Config giống hệt nhau",
+    "Compiler từ chối lời gọi vì std::string cũ và mới không chuyển đổi được cho nhau"
+   ],
+   "explanation": "Config là kiểu người dùng nên tên mangle _Z6get_idRK6Config giống nhau ở cả hai bản build và linker hài lòng (std::string chỉ xuất hiện trong chữ ký khi nó là tham số hoặc kiểu trả về). Bố cục thì khác: std::string COW cũ là một con trỏ 8 byte, bản mới là 32 byte, nên id ở offset 8 trong thư viện nhưng ở offset 32 trong ứng dụng. Trong thí nghiệm ứng dụng lưu 42 tại offset 32 và get_id trả về 3, độ dài chuỗi nằm ở offset 8 của bố cục mới."
+  },
+  "c3": {
+   "prompt": "Class đa hình Sensor bạn export (virtual read(), virtual reset()) bị các plugin của client dẫn xuất và bạn không biên dịch lại chúng. Đề xuất cách thêm khả năng calibrate() ở phiên bản 2 mà không phá plugin cũ, và biện minh từ bố cục vtable.",
+   "rubric": [
+    "Không chèn hay thêm cuối một virtual function vào Sensor: các slot vtable được cố định lúc biên dịch từ header, và vtable của client dựng theo phiên bản 1 sẽ không có slot mới (hoặc làm dịch slot của các virtual khai báo ở class dẫn xuất), nên lời gọi rơi vào sai hàm.",
+    "Thêm khả năng ngoài vtable hiện có: một interface class mới (ví dụ Calibratable) mà plugin tự chọn dùng, tìm bằng dynamic_cast hoặc một hàm truy vấn; hoặc một Sensor::calibrate() non-virtual chuyển tiếp tới implementation ẩn; hoặc một hàm C mới.",
+    "Nêu rằng thêm virtual function chỉ an toàn với class không có class dẫn xuất ngoài thư viện, nếu không phải đổi SONAME; một opaque handle cộng bảng hàm có trường size tránh được vấn đề này."
+   ],
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
   }
  }
 }

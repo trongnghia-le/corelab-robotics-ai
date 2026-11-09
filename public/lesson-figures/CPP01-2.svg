@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" font-family="Inter, sans-serif">
+<title>Unsigned 32-bit values live on a ring</title>
+<desc>Ring of 2^32 values with 0 at the top; -20 converted to unsigned and then 30 subtracted, ending at 2^32 - 50.</desc>
+<rect width="900" height="460" rx="14" fill="#17181b"/>
+<defs><marker id="c012-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" font-weight="700">Unsigned 32-bit values live on a ring</text>
+<circle cx="300" cy="262" r="118" fill="none" stroke="#3d4148" stroke-width="2"/>
+<path d="M308,144 A118,118 0 0 1 308,380" fill="none" stroke="#6fc693" stroke-width="3"/>
+<path d="M292,380 A118,118 0 0 1 292,144" fill="none" stroke="#e08db5" stroke-width="3"/>
+<path d="M298,134 A128,128 0 0 0 248,145" fill="none" stroke="#e0904f" stroke-width="3" marker-end="url(#c012-arr)"/>
+<path d="M246,146 A128,128 0 0 0 189,198" fill="none" stroke="#6cc6ba" stroke-width="3" marker-end="url(#c012-arr)"/>
+<circle cx="300" cy="144" r="5" fill="#e9e7e3" stroke="#e9e7e3" stroke-width="1"/>
+<circle cx="300" cy="380" r="5" fill="#e9e7e3" stroke="#e9e7e3" stroke-width="1"/>
+<circle cx="252" cy="154" r="5" fill="#e0904f" stroke="#e0904f" stroke-width="1"/>
+<circle cx="198" cy="203" r="5" fill="#6cc6ba" stroke="#6cc6ba" stroke-width="1"/>
+<text x="300" y="114" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">0 (and 2^32)</text>
+<text x="300" y="410" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">2^31</text>
+<text x="300" y="256" font-size="14" fill="#6fc693" text-anchor="middle">signed reading &gt;= 0</text>
+<text x="300" y="280" font-size="14" fill="#e08db5" text-anchor="middle">signed reading &lt; 0</text>
+<text x="234" y="133" font-size="15" fill="#e0904f" font-weight="600" text-anchor="end">a = -20 -&gt; 2^32 - 20</text>
+<text x="172" y="200" font-size="15" fill="#6cc6ba" font-weight="600" text-anchor="end">a - b = 2^32 - 50</text>
+<rect x="520" y="72" width="348" height="330" rx="10" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="540" y="380" font-size="14" fill="#a7adb5">not to scale: 1 step drawn as 1.2 degrees</text>
+<text x="540" y="104" font-size="17" fill="#e9e7e3" font-weight="700">int a = -20;</text>
+<text x="540" y="128" font-size="17" fill="#e9e7e3" font-weight="700">unsigned b = 30</text>
+<text x="540" y="172" font-size="15" fill="#e9e7e3">a - b = 4294967276 - 30 = 4294967246</text>
+<line x1="540" y1="190" x2="848" y2="190" stroke="#2c3036" stroke-width="1"/>
+<text x="540" y="228" font-size="15" fill="#e9e7e3">a &lt; b: 4294967276 &lt; 30 is false</text>
+<line x1="540" y1="246" x2="848" y2="246" stroke="#2c3036" stroke-width="1"/>
+<text x="540" y="284" font-size="15" fill="#e9e7e3">long long c = -20: c &lt; b is -20 &lt; 30, true</text>
+<line x1="540" y1="302" x2="848" y2="302" stroke="#2c3036" stroke-width="1"/>
+<text x="540" y="340" font-size="15" fill="#e9e7e3">static_cast&lt;int&gt;(a - b) = -50</text>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="Inter, sans-serif">
+<title>Vector nhân đôi dung lượng, mọi iterator đều bị treo</title>
+<desc>Trái: dung lượng theo số lần push_back cho 100 lần push, bậc thang 1, 2, 4, ... 128 với 7 lần cấp phát lại và 127 phần tử được relocate. Phải: sơ đồ iterator trỏ vào khối cũ đã bị giải phóng.</desc>
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="500" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" font-weight="bold" fill="#e9e7e3">Vector nhân đôi dung lượng, mọi iterator đều bị treo</text>
+<rect x="32" y="64" width="430" height="404" rx="10" fill="#22252a"/>
+<rect x="486" y="64" width="382" height="404" rx="10" fill="#22252a"/>
+<text x="52" y="96" font-size="17" font-weight="bold" fill="#e9e7e3">Đo được: dung lượng sau n lần push_back</text>
+<line x1="104" y1="140" x2="104" y2="380" stroke="#3d4148" stroke-width="1"/>
+<text x="104" y="400" font-size="14" text-anchor="middle" fill="#a7adb5">0</text>
+<line x1="187" y1="140" x2="187" y2="380" stroke="#3d4148" stroke-width="1"/>
+<text x="187" y="400" font-size="14" text-anchor="middle" fill="#a7adb5">25</text>
+<line x1="270" y1="140" x2="270" y2="380" stroke="#3d4148" stroke-width="1"/>
+<text x="270" y="400" font-size="14" text-anchor="middle" fill="#a7adb5">50</text>
+<line x1="353" y1="140" x2="353" y2="380" stroke="#3d4148" stroke-width="1"/>
+<text x="353" y="400" font-size="14" text-anchor="middle" fill="#a7adb5">75</text>
+<line x1="436" y1="140" x2="436" y2="380" stroke="#3d4148" stroke-width="1"/>
+<text x="436" y="400" font-size="14" text-anchor="middle" fill="#a7adb5">100</text>
+<line x1="104" y1="380" x2="436" y2="380" stroke="#3d4148" stroke-width="1"/>
+<text x="96" y="385" font-size="14" text-anchor="end" fill="#a7adb5">0</text>
+<line x1="104" y1="320" x2="436" y2="320" stroke="#3d4148" stroke-width="1"/>
+<text x="96" y="325" font-size="14" text-anchor="end" fill="#a7adb5">32</text>
+<line x1="104" y1="260" x2="436" y2="260" stroke="#3d4148" stroke-width="1"/>
+<text x="96" y="265" font-size="14" text-anchor="end" fill="#a7adb5">64</text>
+<line x1="104" y1="200" x2="436" y2="200" stroke="#3d4148" stroke-width="1"/>
+<text x="96" y="205" font-size="14" text-anchor="end" fill="#a7adb5">96</text>
+<line x1="104" y1="140" x2="436" y2="140" stroke="#3d4148" stroke-width="1"/>
+<text x="96" y="145" font-size="14" text-anchor="end" fill="#a7adb5">128</text>
+<line x1="104" y1="380" x2="436" y2="380" stroke="#a7adb5" stroke-width="1.5"/>
+<line x1="104" y1="380" x2="104" y2="140" stroke="#a7adb5" stroke-width="1.5"/>
+<text x="436" y="424" font-size="15" text-anchor="end" fill="#e9e7e3">n (số lần push_back)</text>
+<text x="52" y="122" font-size="15" fill="#e9e7e3">dung lượng (phần tử)</text>
+<line x1="104" y1="380" x2="436" y2="192" stroke="#3d4148" stroke-width="2" stroke-dasharray="6 5"/>
+<polyline points="104.0,380.0 104.0,380.0 104.0,378.1 107.3,378.1 107.3,376.2 110.6,376.2 110.6,372.5 117.3,372.5 117.3,365.0 130.6,365.0 130.6,350.0 157.1,350.0 157.1,320.0 210.2,320.0 210.2,260.0 316.5,260.0 316.5,140.0 436.0,140.0" fill="none" stroke="#e0904f" stroke-width="2.5"/>
+<circle cx="107" cy="376" r="4" fill="#e0904f"/>
+<circle cx="111" cy="372" r="4" fill="#e0904f"/>
+<circle cx="117" cy="365" r="4" fill="#e0904f"/>
+<circle cx="131" cy="350" r="4" fill="#e0904f"/>
+<circle cx="157" cy="320" r="4" fill="#e0904f"/>
+<circle cx="210" cy="260" r="4" fill="#e0904f"/>
+<circle cx="316" cy="140" r="4" fill="#e0904f"/>
+<text x="306" y="164" font-size="14" text-anchor="end" fill="#e0904f">lần push 65 copy 64</text>
+<text x="143" y="254" font-size="14" fill="#a7adb5">size = n (nét đứt)</text>
+<text x="52" y="452" font-size="14" fill="#a7adb5">7 lần cấp phát lại copy 1+2+4+...+64 = 127 &lt; 2n = 200</text>
+<text x="506" y="96" font-size="17" font-weight="bold" fill="#e9e7e3">Vì sao `it` bị treo (sơ đồ)</text>
+<text x="506" y="134" font-size="15" font-weight="600" fill="#e9e7e3">trước: size = capacity = 4</text>
+<rect x="506" y="150" width="56" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<rect x="562" y="150" width="56" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<rect x="618" y="150" width="56" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<rect x="674" y="150" width="56" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<line x1="534" y1="226" x2="534" y2="194" stroke="#6fc693" stroke-width="2" marker-end="url(#a2)"/>
+<text x="546" y="222" font-size="15" font-weight="600" fill="#6fc693">it</text>
+<text x="506" y="276" font-size="15" font-weight="600" fill="#e9e7e3">sau push_back (phần tử thứ 5): dung lượng 8</text>
+<rect x="506" y="292" width="44" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<rect x="550" y="292" width="44" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<rect x="594" y="292" width="44" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<rect x="638" y="292" width="44" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<rect x="682" y="292" width="44" height="40" rx="0" fill="#2b3a52" stroke="#86abe2" stroke-width="2"/>
+<rect x="726" y="292" width="44" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="770" y="292" width="44" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="814" y="292" width="44" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="506" y="350" font-size="14" fill="#a7adb5">khối mới (4 phần tử cũ đã được copy)</text>
+<rect x="506" y="376" width="56" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="562" y="376" width="56" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="618" y="376" width="56" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="674" y="376" width="56" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 4"/>
+<line x1="534" y1="444" x2="534" y2="416" stroke="#e58a80" stroke-width="2" marker-end="url(#a2)"/>
+<text x="546" y="440" font-size="15" font-weight="600" fill="#e58a80">it</text>
+<text x="580" y="440" font-size="14" fill="#e58a80">khối cũ đã giải phóng: treo</text>
+</svg>

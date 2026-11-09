@@ -379,6 +379,89 @@
         "q2"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "An alpha-beta filter with alpha = 0.4, beta = 0.1 and dt = 0.05 s tracks a target with constant acceleration 2 m/s^2. The steady-state velocity error is e_v = -a*dt*(alpha/beta - 1/2). Give its magnitude in m/s (3 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.35",
+      "tolerance": 0.002,
+      "explanation": "alpha/beta = 4, so alpha/beta - 1/2 = 3.5 and |e_v| = 2 * 0.05 * 3.5 = 0.35 m/s. The estimate lags the true velocity. Because the lag scales as 1/beta, a smaller beta would make it worse.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A filter should have a double real error pole at lambda = 0.9 with dt = 0.02 s. Using alpha = 1 - lambda^2 and beta = (1 - lambda)^2, what is the velocity gain beta/dt that multiplies the residual, in 1/s (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.5",
+      "tolerance": 0.002,
+      "explanation": "The characteristic polynomial is z^2 - (2 - alpha - beta) z + (1 - alpha). A double root at lambda needs trace 2 lambda and determinant lambda^2, so alpha = 1 - lambda^2 = 0.19 and beta = 2 - alpha - 2 lambda = 2 - 0.19 - 1.8 = 0.01 = (1 - lambda)^2. The velocity update is v = v + (beta/dt) r, so the gain is 0.01/0.02 = 0.5 per second.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "error-dynamics"
+      ],
+      "skillLabel": "Estimation-error dynamics and stability",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "For alpha = 0.5, beta = 0.2, the stationary velocity variance of the alpha-beta filter with white position noise sigma satisfies dt^2 var(v)/sigma^2 = 2 beta^2/(alpha (4 - 2 alpha - beta)). Which value is correct, and how does it compare with the raw two-sample difference, which has the value 2 in the same units?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "0.4286, about 5 times better than the raw difference",
+        "0.0571, about 35 times better than the raw difference",
+        "0.2, about 10 times better than the raw difference",
+        "2, the same as the raw difference"
+      ],
+      "answer": "1",
+      "explanation": "Numerator 2 * 0.04 = 0.08; denominator 0.5 * (4 - 1 - 0.2) = 0.5 * 2.8 = 1.4; the ratio is 0.0571, about 35 times smaller than 2. 0.4286 is the position factor of the same filter, 0.2 is just beta, and 2 is the raw difference.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "noise-lag"
+      ],
+      "skillLabel": "Noise versus lag trade-off",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C06#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C02",
+        "M08"
+      ]
     }
   ]
 }

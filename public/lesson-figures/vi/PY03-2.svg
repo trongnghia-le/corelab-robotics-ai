@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" font-family="Inter, sans-serif">
+<title>Scope cố định lúc biên dịch; closure dùng chung một cell</title>
+<desc>Trái: thứ tự tìm LEGB cho tên k trong s(5): local, enclosing, global, built-in. Phải: hàm trong và frame ngoài đã kết thúc cùng đọc một cell, giữ giá trị 6 sau k = k*2.</desc>
+<defs><marker id="ahP3b6fc693" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="#6fc693"/></marker><marker id="ahP3b86abe2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="#86abe2"/></marker></defs>
+<rect width="900" height="540" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Scope cố định lúc biên dịch; closure dùng chung một cell</text>
+<rect x="32" y="72" width="436" height="420" rx="6" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="48" y="102" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">LEGB: một tên được tra ở đâu?</text>
+<rect x="48" y="118" width="404" height="352" rx="6" fill="none" stroke="#a7adb5" stroke-width="1.5"/>
+<text x="62" y="142" font-size="14" fill="#a7adb5" text-anchor="start">B  built-in: len, print, range</text>
+<rect x="68" y="156" width="364" height="296" rx="6" fill="none" stroke="#86abe2" stroke-width="1.5"/>
+<text x="82" y="180" font-size="14" fill="#86abe2" text-anchor="start">G  module: limit = 10</text>
+<rect x="88" y="194" width="324" height="240" rx="6" fill="none" stroke="#e0c169" stroke-width="1.5"/>
+<text x="102" y="218" font-size="14" fill="#e0c169" text-anchor="start">E  hàm bao ngoài: k</text>
+<rect x="108" y="232" width="284" height="184" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="122" y="258" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">L  local: x = 5</text>
+<text x="122" y="294" font-size="14" fill="#e9e7e3" text-anchor="start">x * k: x tìm thấy ở đây</text>
+<text x="122" y="320" font-size="14" fill="#e9e7e3" text-anchor="start">k không được gán ở đây</text>
+<text x="122" y="346" font-size="14" fill="#e0c169" text-anchor="start">đi ra ngoài: k thấy ở E</text>
+<text x="32" y="520" font-size="15" fill="#e9e7e3" text-anchor="start" font-weight="600">thứ tự tìm L, E, G, B; gặp trước thì dùng</text>
+<rect x="492" y="72" width="376" height="420" rx="6" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="508" y="102" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Một cell, hai bên đọc</text>
+<rect x="508" y="142" width="140" height="56" rx="6" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="578" y="166" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">hàm s</text>
+<text x="578" y="186" font-size="14" fill="#a7adb5" text-anchor="middle">đọc k</text>
+<rect x="508" y="300" width="140" height="56" rx="6" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="578" y="324" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">make_scaler(3)</text>
+<text x="578" y="344" font-size="14" fill="#a7adb5" text-anchor="middle">gắn k = 3, rồi 6</text>
+<rect x="716" y="206" width="128" height="84" rx="6" fill="#3a2a1e" stroke="#e0904f" stroke-width="2.5"/>
+<text x="780" y="234" font-size="14" fill="#a7adb5" text-anchor="middle">cell của k</text>
+<text x="780" y="268" font-size="17" fill="#e0904f" text-anchor="middle" font-weight="bold">k = 6</text>
+<line x1="648" y1="176" x2="716" y2="226" stroke="#6fc693" stroke-width="2" marker-end="url(#ahP3b6fc693)" stroke-linecap="round"/>
+<line x1="648" y1="330" x2="716" y2="276" stroke="#86abe2" stroke-width="2" marker-end="url(#ahP3b86abe2)" stroke-linecap="round"/>
+<text x="508" y="404" font-size="14" fill="#a7adb5" text-anchor="start">k = k*2 gắn lại cùng một cell (3 thành 6).</text>
+<text x="508" y="432" font-size="17" fill="#e0904f" text-anchor="start" font-weight="bold">s(5) = 5 * 6 = 30</text>
+<text x="508" y="460" font-size="14" fill="#a7adb5" text-anchor="start">late binding: giá trị được đọc khi s chạy</text>
+</svg>

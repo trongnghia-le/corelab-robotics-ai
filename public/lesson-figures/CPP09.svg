@@ -1,30 +1,86 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 415" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="415" fill="#111827" rx="12"/>
-<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Cache lines: 64 bytes = 8 doubles</text>
-<text x="20" y="58" font-size="14" fill="#38bdf8">vector: one line load serves 8 elements</text>
-<g stroke="#e5e7eb" stroke-width="1.5" fill="none">
-<rect x="20" y="68" width="40" height="28"/><rect x="60" y="68" width="40" height="28"/><rect x="100" y="68" width="40" height="28"/><rect x="140" y="68" width="40" height="28"/><rect x="180" y="68" width="40" height="28"/><rect x="220" y="68" width="40" height="28"/><rect x="260" y="68" width="40" height="28"/><rect x="300" y="68" width="40" height="28"/>
-</g>
-<rect x="18" y="66" width="324" height="32" fill="none" stroke="#a3e635" stroke-width="3"/>
-<text x="180" y="116" font-size="13" fill="#a3e635" text-anchor="middle">1 miss, 8 useful elements, prefetcher streams ahead</text>
-<text x="400" y="58" font-size="14" fill="#f97316">shuffled list: one line per node</text>
-<g stroke="#e5e7eb" stroke-width="1.5" fill="none">
-<rect x="400" y="68" width="40" height="28"/><rect x="520" y="68" width="40" height="28"/><rect x="640" y="68" width="40" height="28"/>
-</g>
-<path d="M440 82 H518 M560 82 H638" stroke="#f97316" stroke-width="2" stroke-dasharray="4 3"/>
-<text x="540" y="116" font-size="13" fill="#f97316" text-anchor="middle">each hop: new line, address unknown until loaded</text>
-<text x="20" y="168" font-size="16" font-weight="bold" fill="#e5e7eb">Measured ns per element (log scale)</text>
-<line x1="70" y1="360" x2="720" y2="360" stroke="#e5e7eb" stroke-width="2"/>
-<line x1="70" y1="360" x2="70" y2="185" stroke="#e5e7eb" stroke-width="2"/>
-<g font-size="13" fill="#e5e7eb">
-<text x="30" y="364">0.5</text><text x="42" y="344">1</text><text x="34" y="277">10</text><text x="26" y="210">100</text>
-<text x="70" y="382" text-anchor="middle">10^3</text><text x="330" y="382" text-anchor="middle">10^5</text><text x="640" y="382" text-anchor="middle">4x10^6</text>
-<text x="395" y="402" text-anchor="middle">n (elements)</text>
-</g>
-<polyline points="70,348 330,348 640,342" fill="none" stroke="#38bdf8" stroke-width="3"/>
-<polyline points="70,321 330,262 640,196" fill="none" stroke="#f97316" stroke-width="3"/>
-<g fill="#38bdf8"><circle cx="70" cy="348" r="4"/><circle cx="330" cy="348" r="4"/><circle cx="640" cy="342" r="4"/></g>
-<g fill="#f97316"><circle cx="70" cy="321" r="4"/><circle cx="330" cy="262" r="4"/><circle cx="640" cy="196" r="4"/></g>
-<text x="500" y="332" font-size="13" fill="#38bdf8">vector 0.76-0.92 ns</text>
-<text x="400" y="290" font-size="13" fill="#f97316">shuffled list 1.9 / 14 / 140 ns</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="Inter, sans-serif">
+<title>Cache lines decide the cost of one element</title>
+<desc>Top: a vector uses all 8 doubles of a 64-byte cache line while a shuffled list uses 2 of 8 slots per node. Bottom: log-log plot of measured ns per element for n = 1,000, 100,000 and 4,000,000: the vector stays near 0.8 ns, the shuffled list rises from 1.88 to 14.4 to 140 ns.</desc>
+<defs><marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="600" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Cache lines decide the cost of one element</text>
+<rect x="32" y="68" width="406" height="150" rx="8" fill="#22252a" stroke="none" stroke-width="1.5"/>
+<text x="48" y="94" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Vector: 8 doubles share one line</text>
+<rect x="462" y="68" width="406" height="150" rx="8" fill="#22252a" stroke="none" stroke-width="1.5"/>
+<text x="478" y="94" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Shuffled list: one line per node</text>
+<rect x="56" y="118" width="44" height="40" rx="0" fill="#1c3a4a" stroke="#86abe2" stroke-width="1.5"/>
+<rect x="100" y="118" width="44" height="40" rx="0" fill="#1c3a4a" stroke="#86abe2" stroke-width="1.5"/>
+<rect x="144" y="118" width="44" height="40" rx="0" fill="#1c3a4a" stroke="#86abe2" stroke-width="1.5"/>
+<rect x="188" y="118" width="44" height="40" rx="0" fill="#1c3a4a" stroke="#86abe2" stroke-width="1.5"/>
+<rect x="232" y="118" width="44" height="40" rx="0" fill="#1c3a4a" stroke="#86abe2" stroke-width="1.5"/>
+<rect x="276" y="118" width="44" height="40" rx="0" fill="#1c3a4a" stroke="#86abe2" stroke-width="1.5"/>
+<rect x="320" y="118" width="44" height="40" rx="0" fill="#1c3a4a" stroke="#86abe2" stroke-width="1.5"/>
+<rect x="364" y="118" width="44" height="40" rx="0" fill="#1c3a4a" stroke="#86abe2" stroke-width="1.5"/>
+<text x="56" y="184" font-size="14" fill="#a7adb5" text-anchor="start">1 miss, then 7 hits; the prefetcher runs ahead</text>
+<text x="56" y="206" font-size="14" fill="#a7adb5" text-anchor="start">64 B = 8 x 8 B</text>
+<rect x="486" y="118" width="12" height="40" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<rect x="498" y="118" width="12" height="40" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<rect x="510" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="522" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="534" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="546" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="558" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="570" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<line x1="584" y1="138" x2="612" y2="138" stroke="#e0904f" stroke-width="2" marker-end="url(#ara)" stroke-linecap="round"/>
+<rect x="614" y="118" width="12" height="40" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<rect x="626" y="118" width="12" height="40" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<rect x="638" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="650" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="662" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="674" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="686" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="698" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<line x1="712" y1="138" x2="740" y2="138" stroke="#e0904f" stroke-width="2" marker-end="url(#ara)" stroke-linecap="round"/>
+<rect x="742" y="118" width="12" height="40" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<rect x="754" y="118" width="12" height="40" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<rect x="766" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="778" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="790" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="802" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="814" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<rect x="826" y="118" width="12" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1"/>
+<text x="486" y="184" font-size="14" fill="#a7adb5" text-anchor="start">64 B loaded, 16 B used; next address unknown until loaded</text>
+<text x="486" y="206" font-size="14" fill="#e0904f" text-anchor="start">2 / 8 slots</text>
+<text x="32" y="282" font-size="15" fill="#e9e7e3" text-anchor="start" font-weight="600">ns per element (log scale)</text>
+<line x1="120" y1="494.548" x2="750" y2="494.548" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<text x="110" y="499.548" font-size="14" fill="#a7adb5" text-anchor="end">1</text>
+<line x1="120" y1="410" x2="750" y2="410" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<text x="110" y="415" font-size="14" fill="#a7adb5" text-anchor="end">10</text>
+<line x1="120" y1="325.452" x2="750" y2="325.452" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<text x="110" y="330.452" font-size="14" fill="#a7adb5" text-anchor="end">100</text>
+<line x1="120" y1="520" x2="120" y2="526" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="120" y="544" font-size="14" fill="#a7adb5" text-anchor="middle">10^3</text>
+<line x1="292.124" y1="520" x2="292.124" y2="526" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="292.124" y="544" font-size="14" fill="#a7adb5" text-anchor="middle">10^4</text>
+<line x1="464.247" y1="520" x2="464.247" y2="526" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="464.247" y="544" font-size="14" fill="#a7adb5" text-anchor="middle">10^5</text>
+<line x1="636.371" y1="520" x2="636.371" y2="526" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="636.371" y="544" font-size="14" fill="#a7adb5" text-anchor="middle">10^6</text>
+<line x1="740" y1="520" x2="740" y2="526" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="740" y="544" font-size="14" fill="#a7adb5" text-anchor="middle">4x10^6</text>
+<line x1="120" y1="300" x2="120" y2="520" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="120" y1="520" x2="750" y2="520" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="430" y="566" font-size="15" fill="#e9e7e3" text-anchor="middle">n (elements, log scale)</text>
+<polyline points="120.0,504.6 464.2,504.1 740.0,497.6" fill="none" stroke="#86abe2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="120.0,471.4 464.2,396.6 740.0,313.1" fill="none" stroke="#e0904f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="120" cy="504.625" r="5" fill="#86abe2" stroke="none" stroke-width="1.5"/>
+<circle cx="464.247" cy="504.145" r="5" fill="#86abe2" stroke="none" stroke-width="1.5"/>
+<circle cx="740" cy="497.61" r="5" fill="#86abe2" stroke="none" stroke-width="1.5"/>
+<circle cx="120" cy="471.369" r="5" fill="#e0904f" stroke="none" stroke-width="1.5"/>
+<circle cx="464.247" cy="396.611" r="5" fill="#e0904f" stroke="none" stroke-width="1.5"/>
+<circle cx="740" cy="313.097" r="5" fill="#e0904f" stroke="none" stroke-width="1.5"/>
+<text x="134" y="490.625" font-size="14" fill="#86abe2" text-anchor="start">0.76 ns</text>
+<text x="464.247" y="490.145" font-size="14" fill="#86abe2" text-anchor="middle">0.77 ns</text>
+<text x="740" y="483.61" font-size="14" fill="#86abe2" text-anchor="middle">0.92 ns</text>
+<text x="134" y="441.369" font-size="14" fill="#e0904f" text-anchor="start">1.88 ns</text>
+<text x="454.247" y="384.611" font-size="14" fill="#e0904f" text-anchor="end">14.4 ns</text>
+<text x="730" y="301.097" font-size="14" fill="#e0904f" text-anchor="end">140 ns</text>
+<text x="762" y="502.61" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600">vector</text>
+<text x="762" y="318.097" font-size="15" fill="#e0904f" text-anchor="start" font-weight="600">shuffled list</text>
+<text x="32" y="590" font-size="14" fill="#a7adb5" text-anchor="start">Measured on one performance core, g++ -O2 (table of Case 1)</text>
 </svg>

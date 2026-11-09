@@ -39,7 +39,7 @@
     },
     {
       "id": "b2",
-      "prompt": "l1 = 1.0, l2 = 0.6, target (0.7, 0.9). Give cos q2 (four decimals).",
+      "prompt": "l1 = 0.9, l2 = 0.5, target (0.6, 0.7). Give cos q2 (four decimals).",
       "kind": "number",
       "dimension": "M",
       "critical": false,
@@ -62,13 +62,13 @@
       "equivalentTo": [
         "q2"
       ],
-      "answer": "-0.05",
+      "answer": "-0.2333",
       "tolerance": 0.0005,
-      "explanation": "(1.30 - 1.00 - 0.36)/1.2 = -0.05."
+      "explanation": "r^2 = 0.36 + 0.49 = 0.85, so cos q2 = (0.85 - 0.81 - 0.25)/(2 x 0.9 x 0.5) = -0.21/0.9 = -0.2333."
     },
     {
       "id": "b3",
-      "prompt": "l1 = 0.5, l2 = 0.3. What is the inner radius |l1 - l2| (m) of the reachable ring?",
+      "prompt": "l1 = 0.65, l2 = 0.4. What is the inner radius |l1 - l2| (m) of the reachable ring?",
       "kind": "number",
       "dimension": "M",
       "critical": false,
@@ -91,13 +91,13 @@
       "equivalentTo": [
         "q3"
       ],
-      "answer": "0.2",
+      "answer": "0.25",
       "tolerance": 0.001,
-      "explanation": "|0.5-0.3| = 0.2."
+      "explanation": "|0.65 - 0.4| = 0.25."
     },
     {
       "id": "b4",
-      "prompt": "l1 = 0.6, l2 = 0.4, target (-0.5, 0.5): the buggy formula q1 = atan(y/x) - atan(l2 sin q2/(l1 + l2 cos q2)) with q2 = +1.61248 returns a pose whose tip is the mirror (0.5, -0.5). What is its distance error to the target (m, two decimals)?",
+      "prompt": "l1 = 0.7, l2 = 0.5, target (-0.6, 0.4): the buggy formula q1 = atan(y/x) - atan(l2 sin q2/(l1 + l2 cos q2)) with q2 = +1.8905 returns a pose whose tip is the mirror (0.6, -0.4). What is its distance error to the target (m, two decimals)?",
       "kind": "number",
       "dimension": "M",
       "critical": false,
@@ -121,9 +121,9 @@
       "equivalentTo": [
         "q4"
       ],
-      "answer": "1.414214",
+      "answer": "1.442",
       "tolerance": 0.01,
-      "explanation": "Distance between (0.5,-0.5) and (-0.5,0.5) is sqrt(1+1) = 1.41 m."
+      "explanation": "The distance between (0.6, -0.4) and (-0.6, 0.4) is sqrt(1.2^2 + 0.8^2) = sqrt(2.08) = 1.44 m (twice the target distance 0.721 m, because atan(y/x) is off by a half-turn)."
     },
     {
       "id": "b5",
@@ -157,7 +157,7 @@
     },
     {
       "id": "b6",
-      "prompt": "For l1 = l2 = 0.4 m, the determinant of J is 0.008 at q = (0, 0.05) and 0.16 at q = (0, 1.5). The tip must move along +x at the same speed in both poses. What follows?",
+      "prompt": "For l1 = l2 = 0.5 m, the determinant of J is 0.015 at q = (0, 0.06) and 0.233 at q = (0, 1.2). The tip must move along +x at the same speed in both poses. What follows?",
       "kind": "choice",
       "dimension": "C",
       "critical": false,
@@ -179,12 +179,12 @@
       ],
       "options": [
         "Joint rates are identical in both poses, because the tip speed is the same",
-        "The arm cannot move at all at q2 = 0.05, because J is singular at that point",
-        "Joint rates are more than 10 times larger at q2 = 0.05 (the determinant ratio alone is 20)",
+        "The arm cannot move at all at q2 = 0.06, because J is singular at that point",
+        "Joint rates are more than 10 times larger at q2 = 0.06 (the determinant ratio alone is 15)",
         "The determinant has no effect on joint rates, only on the tip's reach"
       ],
       "answer": "2",
-      "explanation": "Joint rates scale with 1/det J along the near-singular direction: 0.16/0.008 = 20, and for motion along +x the joint-rate norm ratio is about 42 (11.2 against 0.27 rad/s at 0.1 m/s)."
+      "explanation": "Joint rates scale with 1/det J along the near-singular direction: 0.233/0.015 = 15.5, and for motion along +x the joint-rate norm ratio is about 25 (7.45 rad/s against 0.303 rad/s at 0.1 m/s)."
     },
     {
       "id": "b7",
@@ -267,9 +267,6 @@
       "relatedPrerequisites": [
         "R04",
         "M06"
-      ],
-      "equivalentTo": [
-        "q5"
       ],
       "options": [
         "The solver stopped before its iteration cap",
@@ -371,6 +368,95 @@
         "Mentions verifying with FK residual and the start dependence of numerical methods."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ik-solution-count",
+        "elbow-solution"
+      ],
+      "skillLabel": "Elbow angle of a planar 3R arm with prescribed orientation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "prompt": "A planar 3R arm has link lengths 3, 2 and 1 m (relative joint angles). Its tip must reach (x, y) = (3.0, 2.5) m with tip orientation 60° (q1+q2+q3 = π/3). Give |q2| in radians (3 decimals).",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.918",
+      "tolerance": 0.002,
+      "explanation": "Remove the last link: the wrist point is (3.0 − 1·cos 60°, 2.5 − 1·sin 60°) = (2.5, 1.6340), so r² = 8.9199, inside the ring 1 ≤ r ≤ 5. The law of cosines for links 3 and 2 gives cos q2 = (8.9199 − 9 − 4)/(2·3·2) = −0.3400, so q2 = ±arccos(−0.3400) = ±1.917724. The two solutions are (q1, q2, q3) = (−0.1023, 1.9177, −0.7682) and (1.2601, −1.9177, 1.7048); both reach (3.0, 2.5) with orientation π/3 (checked by forward kinematics)."
+    },
+    {
+      "id": "c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "numerical-ik"
+      ],
+      "skillLabel": "Damped least squares gain",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "prompt": "A damped least-squares IK step Δq = Jᵀ(JJᵀ + λ²I)⁻¹e uses λ = 0.05. Along a direction in which the Jacobian has singular value σ = 0.1, what fraction of the requested task-space motion is actually delivered?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "About 50%",
+        "About 80%",
+        "About 99%",
+        "About 20%"
+      ],
+      "answer": "1",
+      "explanation": "With J = UΣVᵀ, the step has gain σ/(σ² + λ²) on that direction, so the task-space motion delivered is σ·σ/(σ² + λ²) = σ²/(σ² + λ²) of the request. For σ = 0.1 and λ = 0.05 this is 0.01/(0.01 + 0.0025) = 0.8, that is 80% (the gain itself is 0.1/0.0125 = 8 per unit error). The gain never exceeds 1/(2λ) = 10 (AM-GM: σ² + λ² ≥ 2σλ), which keeps the step finite at a singularity; the delivered fraction is exactly 50% when σ = λ and tends to 100% when σ ≫ λ."
+    },
+    {
+      "id": "c3",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "reachability-ring",
+        "numerical-ik"
+      ],
+      "skillLabel": "Proving unreachability from a stall",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/R05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "prompt": "For the arm l1 = 0.7, l2 = 0.4 a damped IK solver (λ = 0.05, step cap 0.3 rad), started from q = (0.3, 0.5), is aimed at (1.3, 0), 0.2 m beyond the reach. It never settles: the steps stay at 0.3 rad and the residual alternates between 0.2019 and 0.2033 m near q ≈ (0.04, −0.12). With λ = 0.2 the same run stops at q = (0, 0) with residual 0.2000 m. Explain (a) why the stretched pose q = (0, 0) is a possible stall point but the first run does not stay there, (b) what a residual of 0.2000 m does and does not prove about the target, and (c) what the controller should do, and why a step-size threshold alone cannot decide convergence.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Stationarity: at q2 = 0 both Jacobian columns are perpendicular to the arm, the error e = (0.2, 0) is along it, so Jᵀe = 0 and the damped step (JᵀJ+λ²I)⁻¹Jᵀe is zero: the stretched pose is a fixed point of the iteration and the global minimum of the cost.",
+        "Stability: a fixed point can be unstable. For small λ the stretched pose is unstable (measured here: stable only when λ² exceeds roughly 0.11 times the 0.2 m distance, λ_c ≈ 0.15), so the iterates leave it and are thrown back, giving a cycle whose size is bounded, not removed, by the step cap; with λ = 0.2 the same iteration stalls at q = (0, 0).",
+        "Meaning of the residual: r_target − (l1 + l2) = 0.2 m is the best any pose can achieve, so it confirms unreachability, but that distance is itself the ring test, so the ring test comes first; a small step, or a residual merely close to 0.2 m, proves nothing.",
+        "Controller response: apply the ring condition before iterating, report 'unreachable' with the nearest reachable point (arm stretched toward the target) and the distance, never the cycling pose as a solution, and do not use step size alone as a convergence test."
+      ],
+      "explanation": "(a) At q2 = 0 the arm is stretched along +x, both columns of J are along ±y, and the error (1.3, 0) − (1.1, 0) = (0.2, 0) is orthogonal to the range of J, so Jᵀe = 0 and the damped step (JᵀJ + λ²I)⁻¹Jᵀe is zero there: q = (0, 0) is a fixed point. A fixed point need not be stable: for λ = 0.05 (λ² = 0.0025) the iteration leaves it and falls into a two-cycle at the cap length, residual 0.2019/0.2033 m (simulated: without the cap the steps reach 2.0 rad); bisection on λ gives λ_c ≈ 0.15 for this arm, so λ = 0.2 stalls at 0.2000 m. (b) The reachable set is the ring 0.3 ≤ r ≤ 1.1; the nearest point to (1.3, 0) is (1.1, 0), 0.2 m away, so no pose does better, and a residual of exactly 0.2 m confirms that the target is unreachable. But 0.2 m is r_target − (l1 + l2), which is the ring test itself, so the test should be run first; neither a small step nor a residual near 0.2 m proves anything, as the λ = 0.05 run shows. (c) Check the ring condition, return 'unreachable' with the nearest reachable pose, and judge convergence by the residual against the ring distance, not by the step size."
     }
   ]
 }

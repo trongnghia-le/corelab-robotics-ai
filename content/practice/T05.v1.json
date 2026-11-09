@@ -341,6 +341,85 @@
         "q4"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "How many of the versions 1.4.4, 1.4.5, 1.4.5.post1, 1.4.9, 1.4.9.3, 1.5.0.dev1, 1.5.0, 1.4.6rc1 does `~=1.4.5` accept when pre-releases are allowed? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5",
+      "tolerance": 0.5,
+      "explanation": "`~=1.4.5` means >=1.4.5 and ==1.4.* (PEP 440), i.e. [1.4.5, 1.5). Accepted: 1.4.5, 1.4.5.post1, 1.4.9, 1.4.9.3 and 1.4.6rc1 (a pre-release of 1.4.6, allowed here). Rejected: 1.4.4 (below the lower bound), 1.5.0.dev1 and 1.5.0 (not 1.4.*). That is 5.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "version-specifiers",
+        "compatible-release"
+      ],
+      "skillLabel": "Compatible-release intervals",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A requirements file gives `--hash=sha256:...` for `numpy==1.26.4` but lists `scipy>=1.11` without a hash and without a pin. What does `pip install -r` do?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Installs numpy with hash checking and scipy without it",
+        "Fails: scipy is neither hashed nor pinned with ==",
+        "Installs both and warns that scipy is not hashed",
+        "Ignores the hash because only one requirement has one"
+      ],
+      "answer": "1",
+      "explanation": "Hash-checking is all-or-nothing: a hash on any requirement activates it globally, then hashes are required for all requirements and dependencies and each requirement must be pinned (==, URL or path). `scipy>=1.11` violates both rules, so pip errors out. (pip documentation, Secure installs, Hash-checking Mode.)",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dependency-locking",
+        "hash-checking"
+      ],
+      "skillLabel": "Hash-checking mode",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Which of these versions satisfies the specifier `>1.0`?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "1.0.post1",
+        "1.0+local",
+        "1.0rc1",
+        "1.0.1"
+      ],
+      "answer": "3",
+      "explanation": "The exclusive comparison `>V` must not match a post-release of V (unless V is itself one) nor a local version of V, so 1.0.post1 and 1.0+local are rejected; 1.0rc1 sorts below 1.0. Only 1.0.1 is strictly greater and is a different release. (PEP 440, Exclusive ordered comparison.)",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "version-specifiers",
+        "pep440-order"
+      ],
+      "skillLabel": "PEP 440 ordering and exclusive comparison",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T05#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

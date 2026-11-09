@@ -82,6 +82,29 @@
     "Định nghĩa __set__ raise AttributeError.",
     "Lưu ý rằng định nghĩa __set__ làm nó thành data descriptor nên instance dict không thể che nó."
    ]
+  },
+  "c1": {
+   "prompt": "Một class được định nghĩa là `@deco class Child(Base, tag='x')` với hai thuộc tính descriptor có định nghĩa __set_name__, và Base định nghĩa __init_subclass__. Thứ tự sự kiện nào đúng?",
+   "options": [
+    "Base.__init_subclass__, rồi __set_name__ của từng descriptor, rồi deco",
+    "__set_name__ của từng descriptor, rồi Base.__init_subclass__, rồi deco",
+    "deco, rồi __set_name__ của từng descriptor, rồi Base.__init_subclass__",
+    "Base.__init_subclass__ và deco, còn __set_name__ chỉ ở lần truy cập thuộc tính đầu tiên"
+   ],
+   "explanation": "Sau khi phần thân chạy xong, class được tạo bằng cách gọi metaclass. Bên trong type.__new__, trình thông dịch trước hết gọi __set_name__ trên mọi thuộc tính có định nghĩa nó, rồi gọi __init_subclass__ trên class cha. Chỉ khi đối tượng class hoàn chỉnh nó mới được đưa cho class decorator, nên decorator thấy một class đã khởi tạo đầy đủ. __set_name__ không bao giờ bị hoãn tới lần truy cập đầu (Python Language Reference, Data model, 3.3.3.6)."
+  },
+  "c2": {
+   "prompt": "Cho một class có __getattr__ trả về một chuỗi cho mọi tên, và các property `p` (getter: raise AttributeError) và `q` (getter: return self._missing). __getattr__ chạy bao nhiêu lần khi bạn tính a.p, a.q và a.zz mỗi cái một lần? Số nguyên.",
+   "explanation": "a.p: AttributeError của getter khiến toán tử dấu chấm gọi __getattr__('p'): 1 lần. a.q: trong getter, self._missing thất bại và gọi __getattr__('_missing'), trả về một chuỗi; getter trả chuỗi đó, nên bản thân q không bao giờ rơi xuống fallback: 1 lần. a.zz không tìm thấy ở đâu: 1 lần. Tổng 3. Quy tắc then chốt: __getattr__ bị kích hoạt bởi mọi AttributeError thoát ra khỏi __getattribute__, kể cả khi nó được ném bên trong getter của property."
+  },
+  "c3": {
+   "prompt": "Một generator `stage()` làm `result = yield from reader()`, trong đó reader() kết thúc bằng `return count`. Giải thích chính xác `result` nhận giá trị thế nào, các lời gọi send() và throw() của bên gọi làm gì khi reader() đang chạy, và chuyện gì xảy ra với reader() nếu bên gọi gọi stage_gen.close().",
+   "explanation": "Câu hỏi mở; hãy đối chiếu câu trả lời của bạn với rubric.",
+   "rubric": [
+    "Return trong sub-generator ném StopIteration(count); yield from bắt nó và .value của nó trở thành giá trị của biểu thức yield from, nên result == count.",
+    "Khi reader() chạy, các giá trị nó yield đi thẳng tới bên gọi, còn giá trị send() và exception throw() được chuyển tiếp cho reader(); exception mà reader() không xử lý cũng lan ra khỏi stage().",
+    "close() trên generator ngoài đóng generator trong trước (GeneratorExit), nên khối finally trong reader() vẫn chạy."
+   ]
   }
  }
 }

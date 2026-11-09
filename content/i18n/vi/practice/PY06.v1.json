@@ -11,8 +11,8 @@
    "explanation": "Gradient phải được xóa trước backward và được dùng trước lần xóa kế tiếp."
   },
   "b2": {
-   "prompt": "w=2 (requires_grad), L=3*w**2. Sau 2 lần gọi backward() không zero, w.grad bằng?",
-   "explanation": "Mỗi lần backward cho 6w=12."
+   "prompt": "w=2 (requires_grad), L=3*w**2. Sau 3 lần gọi backward() không zero, w.grad bằng?",
+   "explanation": "Mỗi lần backward cộng thêm 6w=12, nên 3 lần cho 36."
   },
   "b3": {
    "prompt": "Neuron với y=0.8 và target t=1 và L=0.5*(y-t)^2. dL/dz (4 chữ số thập phân; số âm)?",
@@ -23,8 +23,8 @@
    "explanation": "2q=8."
   },
   "b5": {
-   "prompt": "w=2,x=3, z=(w*x).detach()*w. dz/dw do autograd tính là bao nhiêu?",
-   "explanation": "Thừa số bị detach là hằng số 6."
+   "prompt": "w=4,x=2.5, z=(w*x).detach()*w. dz/dw do autograd tính là bao nhiêu?",
+   "explanation": "Thừa số bị detach là hằng số w*x = 10, nên dz/dw = 10."
   },
   "b6": {
    "prompt": "c = a.exp(); c.mul_(2); c.sum().backward() thất bại vì",
@@ -37,8 +37,8 @@
    "explanation": "Các tensor được lưu phải giữ nguyên."
   },
   "b7": {
-   "prompt": "Khớp y=ax+b với MSE trên x trong [-1,1] cho trị riêng Hessian 0.74 và 2.0. lr ổn định lớn nhất?",
-   "explanation": "2/2.0."
+   "prompt": "Một phép khớp bình phương tối thiểu y=ax+b có trị riêng Hessian 1.6 và 5.0. Learning rate ổn định lớn nhất (giới hạn)?",
+   "explanation": "2/lambda_max = 2/5.0 = 0.4."
   },
   "b8": {
    "prompt": "Tại learning rate đúng bằng 2/lambda_max trên một hàm bậc hai, phép lặp",
@@ -81,6 +81,24 @@
     "Lưu ý finite difference độc lập nhưng bị giới hạn bởi độ chính xác.",
     "Kết luận rằng sự đồng thuận của các oracle độc lập tạo ra độ tin cậy."
    ]
+  },
+  "c1": {
+   "prompt": "Gradient descent với một bước cố định cực tiểu hóa f(θ)=½(θ1²+100θ2²) từ θ0=(1,1). Dùng bước hằng tốt nhất, cần bao nhiêu vòng lặp k để bảo đảm ‖θk‖ ≤ 1e-6·‖θ0‖? Cho một số nguyên.",
+   "explanation": "Hessian là diag(1,100) nên λmin=1, λmax=100 và κ=100. Mỗi thành phần sai số tiến theo (1-ηλi)^k. Bước hằng tốt nhất cân bằng 1-ηλmin = ηλmax-1, cho η*=2/(λmin+λmax)=2/101 và hệ số co ρ*=(κ-1)/(κ+1)=99/101=0.980198. Khi đó cả hai thành phần co đúng theo ρ*^k về độ lớn, nên ‖θk‖/‖θ0‖=ρ*^k. Yêu cầu ρ*^k ≤ 1e-6 cho k ≥ ln(1e-6)/ln(99/101) = 690.75, vậy k = 691 (chạy phép lặp cũng cho 691)."
+  },
+  "c2": {
+   "prompt": "Phương pháp Newton x ← x - f'(x)/f''(x) được áp dụng cho f(x)=ln(e^x+e^(-2x-3)), có điểm cực tiểu x*=-0.769, xuất phát từ x0=1. Chuyện gì xảy ra?",
+   "options": [
+    "Nó hội tụ về -0.769 sau khoảng bốn vòng lặp, vì Newton hội tụ bậc hai.",
+    "Bước đầu vượt quá đến khoảng -43.7 rồi các vòng sau bùng nổ: f'' gần bằng 0 ở nơi f' không bằng 0.",
+    "Nó đứng gần 1 vì f'(1) gần bằng 0 ở đó.",
+    "Nó dao động giữa x=1 và x=-1 mãi mãi."
+   ],
+   "explanation": "Đặt p=σ(3x+3). Khi đó f'=3p-2 và f''=9p(1-p). Tại x=1, p≈0.9975 nên f'≈0.993 trong khi f''≈0.022. Bước Newton -f'/f'' ≈ -44.8 đưa điểm lặp đến khoảng -43.7. Ở đó p≈0 nên f'≈-2 trong khi f''=9p(1-p)≈0, và bước kế tiếp lớn đến phi lý (cỡ 1e55 sau hai bước). Hội tụ bậc hai chỉ là tính chất cục bộ gần x*; mô hình bậc hai vô dụng nơi độ cong gần bằng 0. Từ x0=-1 Newton hội tụ (-0.778, -0.76899, -0.76895)."
+  },
+  "c3": {
+   "prompt": "Với logit z=(2,1,0), Hessian của loss softmax cross-entropy theo z là diag(p)-ppᵀ. Trị riêng lớn nhất của nó là bao nhiêu? Cho 3 chữ số thập phân.",
+   "explanation": "p = softmax(2,1,0) = (0.66524, 0.24473, 0.09003). H = diag(p)-ppᵀ = [[0.2227,-0.1628,-0.0599],[-0.1628,0.1848,-0.0220],[-0.0599,-0.0220,0.0819]]. H triệt tiêu vector toàn số 1 (bất biến theo dịch chuyển) nên một trị riêng bằng 0. Vết là 0.4894, bằng tổng hai trị riêng còn lại, 0.1186 và 0.3709. Lớn nhất là 0.3709 (tính bằng số; cũng được Hessian của autograd xác nhận)."
   }
  }
 }

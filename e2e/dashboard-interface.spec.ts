@@ -13,7 +13,9 @@ test("dashboard presents actual topic evidence and opens the selected curriculum
     page.getByRole("heading", { name: "Your Robotics & AI journey." }),
   ).toBeVisible();
   await expect(
-    page.getByRole("img", { name: "Robotics and AI concept sketch" }),
+    page.getByRole("img", {
+      name: "CoreLab subjects connected as a constellation that converges on a robot",
+    }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Open Extra practice lab" }),
@@ -164,4 +166,23 @@ test("subject colors remain readable and consistent from dashboard to lesson", a
   expect(
     (await (await page.request.get("/api/state")).json()).progress,
   ).toEqual(before.progress);
+});
+
+test("sidebar folds into an icon rail and remembers it", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/lessons/M02");
+  const sidebar = page.locator(".sidebar");
+  expect((await sidebar.boundingBox())!.width).toBeGreaterThan(200);
+  await page.getByRole("button", { name: "Collapse the sidebar" }).click();
+  expect((await sidebar.boundingBox())!.width).toBeLessThan(80);
+  // Links keep their accessible names and a hover title.
+  const lessons = sidebar.getByRole("link", { name: "Lessons" });
+  await expect(lessons).toHaveAttribute("title", "Lessons");
+  expect((await page.locator(".main-shell").boundingBox())!.x).toBeLessThan(80);
+  await page.reload();
+  expect((await sidebar.boundingBox())!.width).toBeLessThan(80);
+  // The old per-topic notebook is gone; notes live in the study desk.
+  await expect(page.getByText("Research notebook")).toHaveCount(0);
+  await page.getByRole("button", { name: "Expand the sidebar" }).click();
+  expect((await sidebar.boundingBox())!.width).toBeGreaterThan(200);
 });

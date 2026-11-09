@@ -13,7 +13,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/R06#reasoning-and-assumptions"
+          "href": "/lessons/R06#theory-and-derivation"
         }
       ],
       "id": "j1",
@@ -40,7 +40,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/R06#intuition-and-definitions"
+          "href": "/lessons/R06#intuition"
         }
       ],
       "id": "j2",
@@ -62,7 +62,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/R06#reasoning-and-assumptions"
+          "href": "/lessons/R06#theory-and-derivation"
         }
       ],
       "id": "j3",
@@ -89,12 +89,12 @@
       ],
       "id": "j4",
       "kind": "number",
-      "prompt": "J = [[-1,-1],[1,0]] and the joint rates are (0.2, 0.3) rad/s. What is the x component of the tip velocity in m/s? Give 2 decimals.",
+      "prompt": "J = [[-0.6,-0.4],[0.9,0.2]] and the joint rates are (0.5, 0.25) rad/s. What is the x component of the tip velocity in m/s? Give 2 decimals.",
       "dimension": "M",
       "critical": false,
-      "answer": "-0.5",
+      "answer": "-0.4",
       "tolerance": 0.005,
-      "explanation": "v_x = (-1)(0.2) + (-1)(0.3) = -0.5 m/s."
+      "explanation": "v_x = (-0.6)(0.5) + (-0.4)(0.25) = -0.30 - 0.10 = -0.4 m/s."
     },
     {
       "knowledgeType": "procedure",
@@ -106,17 +106,17 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/R06#reasoning-and-assumptions"
+          "href": "/lessons/R06#theory-and-derivation"
         }
       ],
       "id": "j5",
       "kind": "number",
-      "prompt": "With J = [[-1,-1],[1,0]] the tip pushes with force F = (2, 0) N. Using tau = J^T F, what is the torque on joint 2 in N m? Give 1 decimal.",
+      "prompt": "With J = [[-0.6,-0.4],[0.9,0.2]] the tip pushes with force F = (3, -2) N. Using tau = J^T F, what is the torque on joint 2 in N m? Give 1 decimal.",
       "dimension": "M",
       "critical": false,
-      "answer": "-2.0",
+      "answer": "-1.6",
       "tolerance": 0.05,
-      "explanation": "J^T = [[-1,1],[-1,0]]; tau_2 = (-1)(2) + 0*0 = -2 N m."
+      "explanation": "J^T = [[-0.6,0.9],[-0.4,0.2]]; tau_2 = (-0.4)(3) + (0.2)(-2) = -1.2 - 0.4 = -1.6 N m."
     },
     {
       "knowledgeType": "concept",
@@ -204,7 +204,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/R06#reasoning-and-assumptions"
+          "href": "/lessons/R06#theory-and-derivation"
         }
       ],
       "id": "j9",
@@ -292,6 +292,89 @@
         "Logs the measure and joint rates, and notes that damping trades tracking accuracy for bounded rates"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "weighted-pseudoinverse"
+      ],
+      "skillLabel": "Mass-weighted inverse velocity kinematics",
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "A planar 3R arm with link lengths (0.7, 0.5, 0.3) m is at q=(0.4, -0.5, 0.9) rad with joint-space mass matrix M=diag(2,1,0.5) kg m². Using the 2×3 position Jacobian, find the joint velocity that gives tip velocity (0.06, 0.09) m/s with minimum kinetic energy ½q̇ᵀMq̇, and give that minimum kinetic energy in joules.",
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Minimising ½q̇ᵀMq̇ subject to Jq̇=v gives q̇=M⁻¹Jᵀ(JM⁻¹Jᵀ)⁻¹v. With J=[[-0.4379,-0.1653,-0.2152],[1.3513,0.7065,0.2090]] this is q̇=(0.05485,0.17854,-0.52754) rad/s, and K=½q̇ᵀMq̇=0.08852 J. The unweighted pseudoinverse solution (0.02352,0.23169,-0.50460) has the smaller norm (0.5557 against 0.5596 rad/s) but K=0.09105 J.",
+      "answer": "0.08852",
+      "tolerance": 2e-05
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "task-point-singularity"
+      ],
+      "skillLabel": "Singular set depends on the task point",
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "A 2R arm has l₁=0.6 m and l₂=0.4 m. The working point of its tool is 0.03 m to the side of link 2's axis, at distance l₂ along it. Using the 2×2 position Jacobian of that point, what is det J (in m²) at the stretched pose q₂=0?",
+      "dimension": "M",
+      "critical": false,
+      "explanation": "The point is at the elbow plus R(q₁+q₂)(l₂, w) with w=0.03, so det J = l₁(l₂ sin q₂ + w cos q₂). At q₂=0 this is 0.6·0.03=0.018 m², nonzero: the stretched arm is not singular for this point. The singular poses are q₂=−atan(w/l₂)=−4.29° and 175.71°.",
+      "answer": "0.018",
+      "tolerance": 1e-06
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "statics-moment-convention"
+      ],
+      "skillLabel": "Wrench reference point in τ = Jᵀ F",
+      "relatedPrerequisites": [
+        "R04",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R06#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "A planar 4R arm with unit links has joints at (0,0), (1,0), (2,0), (2,−1) and tip at (3,−1). A tip force f=(5, 2) N acts together with a moment of 4 N m specified about the BASE origin. The columns of your Jacobian are (1; −r_y, r_x) with r the vector from each joint to the tip. Which joint-torque vector (N m) holds the arm in equilibrium?",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "The tip-point Jacobian pairs with the moment about the tip: m_tip = m_base − p×f = 4 − (3·2 − (−1)·5) = −7. Then τ_j = −7 + r_j×f with r_j×f = 11, 9, 7, 2, giving (4, 2, 0, −5). Check: τ₁ must equal the total moment about joint 1, 4. Using 4 as if it were about the tip gives (15,13,11,6), the classic wrong answer.",
+      "options": [
+        "(15, 13, 11, 6)",
+        "(4, 2, 0, −5)",
+        "(−7, −7, −7, −7)",
+        "(4, 4, 4, 4)"
+      ],
+      "answer": "1"
     }
   ]
 }

@@ -81,6 +81,23 @@
     "Nêu các giả định độc lập và không chệch.",
     "Nêu một phép kiểm tra có thể bác bỏ kết quả, như tự tương quan hoặc một mục tiêu tham chiếu."
    ]
+  },
+  "c1": {
+   "prompt": "Hai cảm biến không chệch có phương sai sai số 4 và 1 và tương quan sai số 0.5. Phương sai của tổ hợp tuyến tính không chệch tốt nhất là bao nhiêu?",
+   "explanation": "Với c = ρ√(v1 v2) = 0.5·2·1 = 1: Var = (v1 v2 − c²)/(v1 + v2 − 2c) = (4 − 1)/(5 − 2) = 1.0. Trọng số tối ưu của cảm biến 1 là (v2 − c)/(v1 + v2 − 2c) = 0, nên ước lượng hợp nhất chỉ là cảm biến 2: với tương quan này cảm biến 1 không đóng góp gì. Dùng công thức trường hợp độc lập sẽ cho 0.8, là sai."
+  },
+  "c2": {
+   "prompt": "Với số đọc Gaussian, ước lượng SS/d với SS = Σ(xi − x̄)² có MSE(c)/σ⁴ = (c(n−1) − 1)² + 2(n−1)c², với c = 1/d. Với n = 6, MSE/σ⁴ của mẫu số d tốt nhất là bao nhiêu? Cho 4 chữ số thập phân.",
+   "explanation": "Đạo hàm của (c(n−1) − 1)² + 2(n−1)c² triệt tiêu tại c = 1/(n+1), tức d = 7 với n = 6. Khi đó MSE/σ⁴ = (5/7 − 1)² + 2·5/49 = 4/49 + 10/49 = 14/49 = 0.2857. So sánh: mẫu số không chệch d = 5 cho 0.4 và mẫu số MLE d = 6 cho 0.3056."
+  },
+  "c3": {
+   "prompt": "Chứng minh rằng với số đọc Gaussian i.i.d. trung bình mẫu và phương sai mẫu độc lập, và (n−1)s²/σ² là tổng của n−1 bình phương chuẩn tắc. Rồi nói điều gì sai với khoảng t nếu các số đọc tự tương quan dương.",
+   "explanation": "Câu hỏi mở; hãy đối chiếu câu trả lời với rubric. Lấy Q trực giao có hàng đầu (1,…,1)/√n và y = Qx; các y_k độc lập N(·, σ²). y1 = √n x̄ chỉ phụ thuộc x̄, và vì Q bảo toàn độ dài, Σ_{k≥2} yk² = Σ xi² − n x̄² = Σ(xi − x̄)² = (n−1)s², với E[yk] = 0 khi k ≥ 2, nên (n−1)s²/σ² ~ χ²(n−1) độc lập với x̄. Nếu các số đọc tự tương quan dương, Var(x̄) lớn hơn σ²/n (khoảng (1+φ)/(1−φ) với AR(1)), nên s/√n đánh giá thấp bất định và khoảng 95% danh nghĩa phủ ít hơn.",
+   "rubric": [
+    "Dùng phép biến đổi trực giao có tọa độ đầu là √n x̄, cho các tọa độ Gaussian độc lập cùng phương sai.",
+    "Chỉ ra Σ(xi − x̄)² bằng tổng bình phương của n−1 tọa độ còn lại, mỗi tọa độ có trung bình không, do đó là σ²·χ²(n−1).",
+    "Nêu rằng tự tương quan dương làm Var(x̄) vượt σ²/n, nên khoảng quá hẹp và phủ thiếu."
+   ]
   }
  }
 }

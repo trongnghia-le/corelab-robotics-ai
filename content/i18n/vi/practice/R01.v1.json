@@ -81,6 +81,24 @@
     "Đề cập đơn vị hoặc vận tốc giới hạn u/c như một phép kiểm tra bổ sung"
    ],
    "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "c1": {
+   "prompt": "Một xe 10 kg bắt đầu từ nghỉ với lực dẫn động không đổi u = 50 N chống lại lực cản khí động F = b v^2, b = 2 kg/m. Mất bao lâu (giây) để đạt 90% vận tốc cuối? Cho 2 chữ số thập phân.",
+   "explanation": "Tách biến: v(t) = v_T tanh(t/tau_q) với v_T = sqrt(u/b) = 5 m/s và tau_q = m/(b v_T) = 10/(2*5) = 1 s. Đặt tanh(t) = 0.9 cho t = artanh(0.9) = 1.4722 s. Xe nhớt có cùng v_T cần tau*ln 10 = 2.30 s, vì xe bậc hai tăng tốc gần u/m khi lực cản còn nhỏ."
+  },
+  "c2": {
+   "prompt": "Một robot 20 kg lăn ở 1.5 m/s với động cơ tắt. Lực cản gồm nhớt c = 2 kg/s cộng Coulomb F_c = 3 N (khi v > 0). Sau bao nhiêu giây thì nó dừng? Cho 2 chữ số thập phân.",
+   "explanation": "Với v > 0, m dv/dt = -c v - F_c. Đặt w = v + F_c/c, w suy giảm như exp(-c t/m), nên v = (v0 + F_c/c) exp(-c t/m) - F_c/c. Đặt v = 0 cho t_s = (m/c) ln(1 + c v0/F_c) = 10 ln(1 + 1) = 6.93 s. Robot thuần nhớt sẽ không bao giờ dừng sau thời gian hữu hạn."
+  },
+  "c3": {
+   "prompt": "Một xe cứng (stiff) tuân theo m dv/dt = -c v với lambda = c/m = 800 1/s. Bước Euler hiện nào giữ vận tốc mô phỏng vừa ổn định vừa không đổi dấu, như nghiệm thật?",
+   "options": [
+    "3 ms",
+    "10 ms",
+    "0.5 ms",
+    "2 ms"
+   ],
+   "explanation": "Hệ số hiện là r = 1 - lambda h. Giữ dấu cần r > 0, tức h < 1/lambda = 1.25 ms; ổn định cần |r| < 1, tức h < 2/lambda = 2.5 ms. Tại 0.5 ms r = 0.6 (tốt). Tại 2 ms r = -0.6: ổn định nhưng vận tốc đổi dấu mỗi bước. Tại 3 ms r = -1.4 và tại 10 ms r = -7: mất ổn định và năng lượng tăng."
   }
  }
 }

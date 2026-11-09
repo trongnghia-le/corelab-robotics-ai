@@ -5,7 +5,7 @@
   "questions": [
     {
       "id": "b1",
-      "prompt": "Which layout minimizes memory traffic when a loop reads only the z field of 10^6 points {x, y, z, intensity}?",
+      "prompt": "Which layout minimizes memory traffic when a loop reads only the gz field of 2x10^5 IMU samples {t, ax, ay, az, gx, gy, gz}, each field a 4-byte float?",
       "kind": "choice",
       "dimension": "C",
       "critical": false,
@@ -35,7 +35,7 @@
     },
     {
       "id": "b2",
-      "prompt": "A 4096x4096 row-major double matrix is summed column by column. Compared with row by row, what is expected?",
+      "prompt": "A 2048x2048 row-major double matrix is summed column by column. Compared with row by row, what is expected?",
       "kind": "choice",
       "dimension": "C",
       "critical": false,
@@ -46,7 +46,7 @@
         "Faster, because column sums vectorize better than row sums"
       ],
       "answer": "2",
-      "explanation": "Stride of 32 KB between consecutive accesses wastes 7/8 of every loaded line and defeats prefetching.",
+      "explanation": "Stride of 16 KB between consecutive accesses wastes 7/8 of every loaded line and defeats prefetching.",
       "knowledgeType": "concept",
       "skillTags": [
         "cache-locality"
@@ -327,6 +327,81 @@
         "q3"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A data cache is 64 KiB, 8-way, with 64-byte lines. A column of a row-major matrix of doubles with 512 rows is read repeatedly. Which row width N (doubles) makes all 512 lines of the column fall in a single cache set?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "N = 2000",
+        "N = 2056",
+        "N = 2048",
+        "N = 1536"
+      ],
+      "answer": "2",
+      "explanation": "The cache has 65536/(8*64)=128 sets. Row r starts at byte 8Nr, so its set is floor(8Nr/64) mod 128. For N=2048 the row stride is 256 lines and 256 mod 128 = 0, so every row maps to the same set, which has only 8 ways: the column thrashes. N=2056 has stride 257 lines (step 1) and spreads over all 128 sets; N=2000 (250 lines, step 122, gcd 2) uses 64 sets; N=1536 (192 lines, step 64) uses 2 sets, which is bad but not a single set.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cache-locality"
+      ],
+      "skillLabel": "Conflict misses",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Throughput model: DRAM latency L = 120 ns, peak bandwidth 12 bytes/ns, 64-byte lines, at most M = 8 cache-line fetches in flight. A program walks k = 6 independent shuffled linked lists in lock-step. Time per node in ns?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "20",
+      "tolerance": 0.1,
+      "explanation": "Time per line = max(L/min(k,M), 64/bandwidth) = max(120/min(6,8), 64/12) = max(20, 5.33) = 20 ns. The loop is still latency bound: k=6 is below both M=8 and the saturation point L*bandwidth/64 = 22.5 lines.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cache-locality"
+      ],
+      "skillLabel": "Latency versus bandwidth bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A routine is O(n) but timings at n = 2^8 ... 2^20 doubles give a fitted exponent of 1.3 over the whole range and 1.00 over the first four sizes, all inside L1. Explain the discrepancy and describe how you would design the size sweep and what you would report.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "The cost per element is a step function of the working set (L1, L2, L3, DRAM), so the log-log curve is piecewise linear with bends; a single line fitted across bends gives an exponent above 1 even for an O(n) loop.",
+        "Fit only inside one regime (no cache boundary in the range, at least four sizes), and extrapolate only within that regime; the local exponent across a boundary can be 2 or more.",
+        "Sweep sizes on both sides of each cache capacity (from lscpu), report ns per element and the median of repeated optimized runs, and state the machine and the regime boundaries next to each slope."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "empirical-complexity",
+        "benchmark-design"
+      ],
+      "skillLabel": "Reading an empirical exponent across cache levels",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP09#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

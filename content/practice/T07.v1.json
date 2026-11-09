@@ -359,6 +359,76 @@
         "Names a falsifiable test, such as removing the compute stage and seeing whether wall time barely changes."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "A pipeline spends 30% of its time in stage A, 50% in stage B and 20% in stage C. You speed A up 3 times and B up 2 times and leave C unchanged. What is the overall speedup? (tolerance 0.02)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.818",
+      "tolerance": 0.02,
+      "explanation": "New time = 0.30/3 + 0.50/2 + 0.20 = 0.10 + 0.25 + 0.20 = 0.55 of the old time, so the speedup is 1/0.55 = 1.818. The untouched stage C alone limits any further gain to 1/0.20 = 5, and after the change C (0.20) is now the largest single share, so it is the next bottleneck.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amdahl-speedup"
+      ],
+      "skillLabel": "Amdahl's law and speedup limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "You estimate a 99th-percentile latency as the 99th smallest of n = 100 independent samples from a continuous distribution. What is the probability that this estimate lies below the true 99th percentile? (tolerance 0.01)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.7358",
+      "tolerance": 0.01,
+      "explanation": "Each sample falls below the true percentile q with probability 0.99, so the number below q is Bin(100, 0.99). The 99th smallest value is below q exactly when at least 99 samples are below q: P = 0.99^100 + 100 x 0.99^99 x 0.01 = 0.3660 + 0.3697 = 0.7358. So with 100 samples the nearest-rank P99 underestimates the true value about three times out of four; a tail percentile needs many more samples or an interval.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "percentiles-and-tail"
+      ],
+      "skillLabel": "Percentiles and the tail",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A load test sends one request at a time on a single connection and reports P99 = 3 ms, yet users complain about 10-second freezes that the server logs confirm. Explain what went wrong with the measurement and redesign the test so that the freezes show up in the tail.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Closed-loop generator: the next request is sent only after the previous reply, so during a freeze it stops sending; the freeze yields one slow sample instead of the requests that would have arrived on schedule (coordinated omission).",
+        "Fix: open-loop generation at a constant intended rate, with latency measured from the scheduled send time (as wrk2 does), or several independent clients/connections with a fixed arrival schedule.",
+        "Record full distributions (histogram) and report P99/P99.9/max with the sample count, and state the intended rate; check the tool by injecting a known stall and confirming the tail shows it."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "timing-pitfalls",
+        "benchmark-design"
+      ],
+      "skillLabel": "Benchmark design and timing pitfalls",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T07#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

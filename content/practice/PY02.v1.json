@@ -354,6 +354,90 @@
         "Explains each index is appended once and removed at most once.",
         "Concludes O(n) total versus O(nk) brute force."
       ]
+    },
+    {
+      "id": "c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "list-queue-costs"
+      ],
+      "skillLabel": "CPython list growth rule",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "prompt": "CPython's list_resize computes the new allocation as (newsize + (newsize >> 3) + 6) & ~3 (the last step clears the two lowest bits). If an append makes a list of length 200 outgrow its capacity, what capacity is allocated?",
+      "answer": "228",
+      "tolerance": 0,
+      "explanation": "newsize >> 3 = 200 // 8 = 25, so 200 + 25 + 6 = 231. Clearing the two lowest bits rounds down to a multiple of 4: 231 = 0b11100111 becomes 0b11100100 = 228. The result exceeds the length by 28 slots, about 14%, consistent with the 9/8 growth factor plus the constant.",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hash-maps"
+      ],
+      "skillLabel": "CPython dict probe sequence",
+      "mistakeCategory": "procedural",
+      "dimension": "C",
+      "prompt": "A dict table has 8 slots and CPython probes with j = (5*j + 1) mod 8 (ignore the perturbation term). A new key's home slot is 5, and slots 5, 2, 3 and 0 are already occupied. Which slot does the key take?",
+      "options": [
+        "6, the next slot, as in linear probing",
+        "1, the fifth slot in the sequence 5, 2, 3, 0, 1",
+        "4, since 5*5 + 1 = 26 and 26 mod 8 is 2, then 4",
+        "7, the last slot of the table"
+      ],
+      "answer": "1",
+      "explanation": "Starting at 5: 5*5+1 = 26, 26 mod 8 = 2; 5*2+1 = 11, 11 mod 8 = 3; 5*3+1 = 16, 16 mod 8 = 0; 5*0+1 = 1. The probe order is 5, 2, 3, 0, 1, 6, 7, 4 and slots 5, 2, 3, 0 are taken, so the key goes into slot 1. Linear probing would have tried 6, but CPython deliberately jumps so that consecutive hash codes do not form clusters. The recurrence visits all 8 slots exactly once because the order of 5 modulo 2^(3+2) = 32 is 2^3 = 8.",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c3",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "list-queue-costs"
+      ],
+      "skillLabel": "Shrink thresholds in dynamic arrays",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "prompt": "A dynamic array doubles when full and halves as soon as the fill ratio drops to 1/2. Show a sequence of operations on which every operation costs Theta(n), then give a corrected shrink rule and prove the amortized cost per operation is O(1).",
+      "explanation": "Rubric-guided proof. Model answer: start with n = c (full). append doubles (copy n); the next pop leaves ratio exactly 1/2 and halves (copy n); repeating append/pop costs n per operation. Fix with hysteresis: grow when full to 2c; shrink only when n < c/4, to capacity c/2. After any resize the ratio is within one element of 1/2, so at least about c/4 operations are needed before the next resize, while a resize copies at most c elements: charging at most about 4 extra units (8 for small c) to each preceding operation pays for it, giving O(1) amortized.",
+      "rubric": [
+        "Gives the alternating append/pop counterexample from a full array and shows each operation copies n elements.",
+        "Proposes a separated pair of thresholds (for example shrink below 1/4 to ratio 1/2) rather than shrinking at the grow ratio.",
+        "States the invariant that after a resize the fill ratio is about 1/2, so both thresholds are Theta(c) operations away.",
+        "Charges each resize (at most c copies) to the at least c/4 - 1 operations since the previous resize and concludes O(1) amortized."
+      ],
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY02#theory-and-derivation"
+        }
+      ],
+      "critical": false
     }
   ]
 }

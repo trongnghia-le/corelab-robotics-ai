@@ -45,8 +45,8 @@
    "explanation": "Giới hạn tốc độ cho -0.2+0.6 = 0.4 rad, thấp hơn giới hạn 1.0, nên 0.40."
   },
   "b6": {
-   "prompt": "Bộ điều khiển P, kp = 2, dt = 0.1, mục tiêu 1, bắt đầu 0, không giới hạn. Dùng q += kp*(target-q)*dt, q sau 5 bước là bao nhiêu? Cho 4 chữ số thập phân.",
-   "explanation": "Sai số co lại 0.8 lần mỗi bước, nên q5 = 1 - 0.8^5 = 0.67232."
+   "prompt": "Bộ điều khiển P, kp = 3, dt = 0.05, mục tiêu 2, bắt đầu 0.5, không giới hạn. Dùng q += kp*(target-q)*dt, q sau 6 bước là bao nhiêu? Cho 4 chữ số thập phân.",
+   "explanation": "Sai số 2 - q được nhân với 1 - kp*dt = 0.85 mỗi bước, nên q6 = 2 - 1.5 * 0.85^6 = 2 - 1.5 * 0.377150 = 1.43428."
   },
   "b7": {
    "prompt": "Một fuzz test áp dụng 1000 cập nhật. Khớp chấp nhận 640 và từ chối phần còn lại. Có bao nhiêu cập nhật bị từ chối phải để trạng thái không đổi để lập luận invariant đúng? Cho một số nguyên.",
@@ -82,6 +82,31 @@
     "Chỉ gán q_ sau khi mọi kiểm tra đã qua và trả true.",
     "Lưu ý rằng hàm này là cách duy nhất để đổi q_ và getter là const."
    ]
+  },
+  "c1": {
+   "prompt": "Base::Base() gọi hàm ảo name(), và Derived override name() để trả về một member mà Derived khởi tạo. Hàm nào được gọi khi một đối tượng Derived được xây dựng?",
+   "options": [
+    "Derived::name(), đọc member trước khi nó được khởi tạo",
+    "Không biên dịch được: cấm lời gọi virtual trong constructor",
+    "Cái nào linker tìm thấy trước",
+    "Base::name(): kiểu động là Base trong khi Base() chạy"
+   ],
+   "explanation": "Trong constructor (hoặc destructor), kiểu động là lớp có constructor đang chạy, nên final overrider của lớp đó được chọn: Base::name(). Điều này bảo vệ chương trình khỏi việc gọi một hàm Derived đọc các member Derived chưa tồn tại. Lựa chọn 0 là cách các ngôn ngữ khác làm; lựa chọn 1 sai vì code biên dịch được (nó chỉ thành undefined nếu hàm được chọn là pure và chưa cài đặt)."
+  },
+  "c2": {
+   "prompt": "Một lưới 372 lời gọi (q' = 0.1k với k = -15..15, dt = 0.1j với j = 1..12, từ q = 0, giới hạn +-1.5) được áp dụng cho một khớp có vmax = 2 và cho một lớp con có vmax = 0.8. Lớp cơ sở chấp nhận 274 lời gọi. Lớp cơ sở chấp nhận bao nhiêu lời gọi mà lớp con từ chối? Số nguyên.",
+   "explanation": "Một lời gọi được chấp nhận khi 0.1|k| / (0.1 j) = |k|/j <= vmax, tức |k| <= vmax * j (kiểm tra phạm vi luôn qua). Với vmax = 2 phép liệt kê cho 274 lời gọi được chấp nhận; với vmax = 0.8 (5|k| <= 4j) là 126, tất cả đều cũng được lớp cơ sở chấp nhận. Vậy 274 - 126 = 148 lời gọi hợp lệ với lớp cơ sở mà lớp con từ chối: precondition chặt hơn, vi phạm substitutability."
+  },
+  "c3": {
+   "prompt": "Thiết kế một clone đa hình cho hệ phân cấp Shape trả về smart pointer sở hữu và phát hiện lớp dẫn xuất quên override hàm clone. Giải thích vì sao hàm public không thể đơn giản là một virtual covariant trả về unique_ptr, và kiểm tra tốn gì.",
+   "rubric": [
+    "Hàm public non-virtual std::unique_ptr<Shape> clone() const gọi một Shape* do_clone() const thuần ảo private (hoặc protected) và bọc kết quả vào unique_ptr.",
+    "Giải thích kiểu trả về covariant chỉ dùng được cho con trỏ thô/reference, không dùng cho unique_ptr<Derived> so với unique_ptr<Base>, nên clone smart pointer không thể virtual kèm covariance.",
+    "So sánh typeid(*result) với typeid(*this) (hoặc tương tự) và abort/assert khi lệch, bắt được lớp con thừa kế do_clone của lớp trung gian và sẽ slice âm thầm.",
+    "Lưu ý pure virtual chỉ buộc lớp cụ thể đầu tiên cài đặt do_clone, nên kiểm tra lúc chạy vẫn cần; chi phí là một phép so sánh typeid mỗi lần clone (chấp nhận được, có thể giới hạn ở bản debug).",
+    "Nhắc rằng các phép copy của lớp cơ sở là protected/deleted nên không thể slice theo giá trị (C.67/C.130)."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời với từng ý của rubric; câu hỏi này không được chấm tự động."
   }
  }
 }

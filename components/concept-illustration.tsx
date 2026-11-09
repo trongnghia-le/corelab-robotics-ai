@@ -1,10 +1,24 @@
+"use client";
 import type { LessonMedia } from "@/lib/media";
+import { useI18n } from "@/lib/i18n";
+
+// Vietnamese captions for the illustrations listed in lesson-media.v1.json.
+const captionVi: Record<string, string> = {
+  feedback:
+    "Phản hồi âm so sánh tín hiệu tham chiếu với đầu ra đo được của plant.",
+  projection:
+    "Tách một vector thành hình chiếu song song và phần dư vuông góc.",
+  frames: "Hai phép quay khớp tương đối nối đế, khuỷu và điểm cuối.",
+  backpropagation: "Tích lũy ngược dùng lại đạo hàm cục bộ của từng lớp.",
+  mdp: "Mô hình chuyển trạng thái Markov chỉ phụ thuộc trạng thái và hành động hiện tại.",
+};
 export function ConceptIllustration({
   illustration,
 }: {
   illustration: LessonMedia["illustrations"][number];
 }) {
   const id = illustration.id;
+  const { tx, lang } = useI18n();
   return (
     <figure className="concept-illustration">
       <svg
@@ -14,12 +28,12 @@ export function ConceptIllustration({
       >
         {id === "projection" ? (
           <>
-            <path d="M70 165 H500 M70 165 V20" stroke="#778598" />
-            <path d="M70 165 L450 35" stroke="#7ea7d8" strokeDasharray="5 4" />
-            <path d="M70 165 L360 35" stroke="#f97316" strokeWidth="4" />
+            <path d="M70 165 H500 M70 165 V20" stroke="#7f8690" />
+            <path d="M70 165 L450 35" stroke="#94a9c2" strokeDasharray="5 4" />
+            <path d="M70 165 L360 35" stroke="#d98a52" strokeWidth="4" />
             <path
               d="M70 165 L369 63 L360 35"
-              stroke="#84b39b"
+              stroke="#90a79b"
               strokeWidth="3"
               fill="none"
             />
@@ -27,36 +41,39 @@ export function ConceptIllustration({
               u
             </text>
             <text x="385" y="95">
-              projection
+              {tx("projection", "hình chiếu")}
             </text>
             <text x="100" y="195">
-              u = projᵥu + residual, residual · v = 0
+              {tx(
+                "u = projᵥu + residual, residual · v = 0",
+                "u = projᵥu + phần dư, phần dư · v = 0",
+              )}
             </text>
           </>
         ) : id === "frames" ? (
           <>
             <path
               d="M80 165 H175 M80 165 V70"
-              stroke="#7ea7d8"
+              stroke="#94a9c2"
               strokeWidth="3"
             />
             <path
               d="M80 165 L260 105 L390 50"
-              stroke="#f97316"
+              stroke="#d98a52"
               strokeWidth="7"
               fill="none"
             />
             <path
               d="M260 105 L340 75 M260 105 L230 25"
-              stroke="#84b39b"
+              stroke="#90a79b"
               strokeWidth="3"
             />
-            <circle cx="260" cy="105" r="7" fill="#d7e0eb" />
+            <circle cx="260" cy="105" r="7" fill="#dce0e6" />
             <text x="60" y="190">
-              world frame
+              {tx("world frame", "khung thế giới")}
             </text>
             <text x="315" y="140">
-              link frame
+              {tx("link frame", "khung khâu")}
             </text>
             <text x="335" y="180">
               p_world = R p_link + t
@@ -76,27 +93,34 @@ export function ConceptIllustration({
                           y1={y}
                           x2={x + 158}
                           y2={y2}
-                          stroke="#435365"
+                          stroke="#4b535d"
                         />
                       ))}
                     <circle
                       cx={x}
                       cy={y}
                       r="13"
-                      fill="#17222d"
-                      stroke={col === 1 ? "#f97316" : "#7ea7d8"}
+                      fill="#1f2225"
+                      stroke={col === 1 ? "#d98a52" : "#94a9c2"}
                       strokeWidth="2"
                     />
                   </g>
                 ))}
                 <text x={x - 35} y="195">
-                  {["input", "hidden", "output"][col]}
+                  {
+                    (lang === "vi"
+                      ? ["đầu vào", "ẩn", "đầu ra"]
+                      : ["input", "hidden", "output"])[col]
+                  }
                 </text>
               </g>
             ))}
-            <path d="M100 25 H440 M440 35 H100" stroke="#84b39b" />
+            <path d="M100 25 H440 M440 35 H100" stroke="#90a79b" />
             <text x="145" y="18">
-              forward → activations · gradients ← backward
+              {tx(
+                "forward → activations · gradients ← backward",
+                "forward → kích hoạt · gradient ← backward",
+              )}
             </text>
           </>
         ) : id === "mdp" ? (
@@ -107,8 +131,8 @@ export function ConceptIllustration({
               width="150"
               height="80"
               rx="8"
-              fill="#17222d"
-              stroke="#f97316"
+              fill="#1f2225"
+              stroke="#d98a52"
             />
             <rect
               x="350"
@@ -116,37 +140,43 @@ export function ConceptIllustration({
               width="160"
               height="80"
               rx="8"
-              fill="#17222d"
-              stroke="#7ea7d8"
+              fill="#1f2225"
+              stroke="#94a9c2"
             />
             <text x="95" y="112">
               Agent
             </text>
             <text x="370" y="112">
-              Environment
+              {tx("Environment", "Môi trường")}
             </text>
             <path
               d="M200 80 H350 l-10 -6 m10 6 l-10 6 M350 130 H200 l10 -6 m-10 6 l10 6"
               fill="none"
-              stroke="#84b39b"
+              stroke="#90a79b"
               strokeWidth="2"
             />
             <text x="225" y="65">
-              action aₜ →
+              {tx("action aₜ →", "hành động aₜ →")}
             </text>
             <text x="207" y="163">
-              ← state sₜ₊₁, reward rₜ₊₁
+              {tx(
+                "← state sₜ₊₁, reward rₜ₊₁",
+                "← trạng thái sₜ₊₁, phần thưởng rₜ₊₁",
+              )}
             </text>
             <text x="110" y="195">
-              Markov model: p(s′, r | s, a)
+              {tx(
+                "Markov model: p(s′, r | s, a)",
+                "Mô hình Markov: p(s′, r | s, a)",
+              )}
             </text>
           </>
         ) : (
           <>
             <text x="20" y="75">
-              reference
+              {tx("reference", "tham chiếu")}
             </text>
-            <circle cx="130" cy="100" r="22" fill="none" stroke="#84b39b" />
+            <circle cx="130" cy="100" r="22" fill="none" stroke="#90a79b" />
             <text x="122" y="106">
               Σ
             </text>
@@ -155,26 +185,26 @@ export function ConceptIllustration({
               y="70"
               width="105"
               height="60"
-              fill="#17222d"
-              stroke="#f97316"
+              fill="#1f2225"
+              stroke="#d98a52"
             />
             <rect
               x="380"
               y="70"
               width="110"
               height="60"
-              fill="#17222d"
-              stroke="#7ea7d8"
+              fill="#1f2225"
+              stroke="#94a9c2"
             />
             <text x="215" y="105">
-              Controller
+              {tx("Controller", "Bộ điều khiển")}
             </text>
             <text x="405" y="105">
               Plant
             </text>
             <path
               d="M20 100 H108 M152 100 H205 M310 100 H380 M490 100 H530 V170 H130 V122"
-              stroke="#84b39b"
+              stroke="#90a79b"
               fill="none"
               strokeWidth="2"
             />
@@ -191,14 +221,19 @@ export function ConceptIllustration({
               − y
             </text>
             <text x="220" y="194">
-              feedback: e = reference − output
+              {tx(
+                "feedback: e = reference − output",
+                "phản hồi: e = tham chiếu − đầu ra",
+              )}
             </text>
           </>
         )}
       </svg>
       <figcaption>
-        {illustration.description}{" "}
-        <span className="small muted">{illustration.attribution}</span>
+        {(lang === "vi" && captionVi[id]) || illustration.description}{" "}
+        <span className="small muted">
+          {tx(illustration.attribution, "Hình minh họa SVG gốc của CoreLab.")}
+        </span>
       </figcaption>
     </figure>
   );

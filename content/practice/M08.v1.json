@@ -295,6 +295,77 @@
         "Estimate the covariance/correlation of the errors."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m08-c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bayes-rule"
+      ],
+      "skillLabel": "Posterior predictive",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "A gripper's success rate μ has a flat Beta(1,1) prior. After 4 successes in 5 trials, what is the probability that the next two grasps both succeed? Give 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.535714",
+      "tolerance": 0.002,
+      "explanation": "Posterior Beta(1+4, 1+1) = Beta(5,2). The probability of two further successes is E[μ²] = a(a+1)/((a+b)(a+b+1)) = 5·6/(7·8) = 30/56 = 0.536. The plug-in estimate (4/5)² = 0.64 ignores the uncertainty in μ and is too high."
+    },
+    {
+      "id": "m08-c2",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "expectation-variance"
+      ],
+      "skillLabel": "Correlated averaging",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "Six sensors each have error standard deviation 1.5 and every pair of errors has correlation 0.4. What is the variance of their average?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.125",
+      "tolerance": 0.005,
+      "explanation": "Var(x̄) = (σ²/n)(1 + (n−1)ρ) = (2.25/6)(1 + 5·0.4) = 0.375·3 = 1.125. For independent sensors it would be 0.375; the correlated part sets a floor ρσ² = 0.9 that more sensors cannot beat."
+    },
+    {
+      "id": "m08-c3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "independence"
+      ],
+      "skillLabel": "Uncorrelated is not independent",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M08#theory-and-derivation"
+        }
+      ],
+      "prompt": "X is uniform on {−2, −1, 1, 2} and Y = X². Which statement is correct?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "X and Y are independent, because Cov(X,Y) = 0 leaves no relation between them",
+        "Cov(X,Y) = 0, yet Y is determined by X, so they are dependent",
+        "Cov(X,Y) > 0, because Y grows with the size of X and they move together",
+        "Cov(X,Y) = 0 only if X takes more than four different values"
+      ],
+      "answer": "1",
+      "explanation": "E[X] = 0 and E[XY] = E[X³] = (−8 − 1 + 1 + 8)/4 = 0, so Cov(X,Y) = 0. But Y is a function of X: P(Y=4 | X=2) = 1 while P(Y=4) = 1/2, so X and Y are dependent. Zero covariance rules out only linear dependence."
     }
   ]
 }

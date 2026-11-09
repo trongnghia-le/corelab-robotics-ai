@@ -334,6 +334,80 @@
         "q2"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "On x86-64 Linux (Itanium ABI) let struct A { double d; char b; ~A(); }; struct B : A { char c; char e; };. What is the byte offset of B::c? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9",
+      "tolerance": 0.01,
+      "explanation": "A has a user-provided destructor, so it is not a POD for layout: d at 0..7, b at 8, dsize(A)=9, sizeof(A)=16. The next subobject of B starts at dsize(A)=9, reusing the tail padding, so c is at offset 9 and e at 10; sizeof(B)=16 (measured with g++: 16 16 9). Had A been a POD, c would sit at offset 16.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Tail padding reuse",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A library built with -D_GLIBCXX_USE_CXX11_ABI=0 exports int get_id(const Config&), where struct Config { std::string name; int id; };. An application built with the default (new) ABI calls it. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The linker reports an undefined reference because std::string differs between the two ABIs",
+        "The program links, but get_id reads id at the wrong offset because sizeof(std::string) is 8 in one ABI and 32 in the other",
+        "The program links and runs correctly because the symbol get_id and the name Config are identical",
+        "The compiler rejects the call because the old and new std::string are not convertible"
+      ],
+      "answer": "1",
+      "explanation": "Config is a user type, so the mangled name _Z6get_idRK6Config is the same in both builds and the linker is satisfied (the std::string appears in the signature only when it is a parameter or return type). The layouts differ: the old COW std::string is one 8-byte pointer, the new one is 32 bytes, so id is at offset 8 in the library but 32 in the application. In the experiment the application stored 42 at offset 32 and get_id returned 3, the string length that sits at offset 8 of the new layout.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Silent dual-ABI mismatch",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Your exported polymorphic class Sensor (virtual read(), virtual reset()) is derived from by client plugins that you do not recompile. Propose how to add a new capability calibrate() in version 2 without breaking old plugins, and justify it from the vtable layout.",
+      "kind": "short",
+      "dimension": "M",
+      "critical": false,
+      "rubric": [
+        "Do not insert or append a virtual function to Sensor: the vtable slots are fixed at compile time from the header, and client vtables built against version 1 would not contain the new slot (or would shift the slots of virtuals declared in derived classes), so a call lands in the wrong function.",
+        "Add the capability outside the existing vtable: a new interface class (for example Calibratable) that plugins opt into, discovered with dynamic_cast or a query function, or a non-virtual Sensor::calibrate() forwarding to a hidden implementation, or a new C function.",
+        "Mention that adding a virtual function is only safe for a class with no derived classes outside the library, otherwise the SONAME must change; an opaque handle plus a function table with a size field avoids the issue."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "api-vs-abi"
+      ],
+      "skillLabel": "Evolving a polymorphic ABI",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP12#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

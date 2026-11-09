@@ -93,6 +93,30 @@
     "Dữ liệu và seed/cấu hình phải được cung cấp và quản lý phiên bản riêng.",
     "Ghi lại image digest, phiên bản kernel và driver của host, phần cứng, id commit và cấu hình cùng mỗi kết quả."
    ]
+  },
+  "c1": {
+   "prompt": "Một Dockerfile có hai bước dựng độc lập theo thứ tự: bước A tốn 100 s và thay đổi trong 2% số commit, bước B tốn 10 s và thay đổi trong 50% số commit. Một bước được dựng lại nếu nó hoặc bất kỳ bước nào trước nó thay đổi. Thời gian dựng kỳ vọng mỗi commit là bao nhiêu giây? (sai số cho phép 0.1)",
+   "explanation": "Bước A được dựng lại với xác suất 0.02, tốn 100 x 0.02 = 2 s. Bước B được dựng lại nếu A hoặc B thay đổi: 1 - (0.98)(0.5) = 0.51, tốn 10 x 0.51 = 5.1 s. Tổng cộng 2 + 5.1 = 7.1 s. Để so sánh, thứ tự B, A cho 10 x 0.5 + 100 x (1 - 0.5 x 0.98) = 5 + 51 = 56 s, khớp với quy tắc hoán đổi: c(1-q)/q bằng 4900 với A và 10 với B, nên A phải đứng trước."
+  },
+  "c2": {
+   "prompt": "Hai image X = A|B|C và Y = A|B'|C được dựng, trong đó layer C là changeset giống hệt từng byte ở cả hai nhưng B và B' khác nhau. Theo định nghĩa ChainID của OCI, phát biểu nào đúng?",
+   "options": [
+    "Hai layer C dùng chung một bản lưu, vì DiffID của chúng bằng nhau và kho layer được đánh khóa theo DiffID.",
+    "Chỉ layer A được dùng chung theo ChainID; hai layer C có DiffID bằng nhau nhưng ChainID khác nhau, nên kho đánh khóa theo ChainID lưu chúng riêng.",
+    "Không layer nào được dùng chung, vì ChainID của layer nền A cũng đổi khi B' thay B ở phía trên, nên cả stack đều khác.",
+    "Hai layer C được dùng chung, vì ChainID(C) được định nghĩa là digest của riêng DiffID của nó và bỏ qua các layer bên dưới."
+   ],
+   "explanation": "ChainID(A) = DiffID(A) giống nhau ở cả hai image. ChainID(A|B) = Digest(ChainID(A) + ' ' + DiffID(B)) khác ChainID(A|B') vì các DiffID khác nhau, và ChainID(A|B|C) = Digest(ChainID(A|B) + ' ' + DiffID(C)) thừa hưởng sự khác biệt đó dù DiffID(C) như nhau. Vậy A được dùng chung còn các layer C thì không. Phương án 0 nhầm DiffID (định danh changeset) với ChainID (định danh filesystem kết quả); phương án 2 quên rằng chuỗi hash chỉ phụ thuộc các layer bên dưới; phương án 3 chỉ mô tả trường hợp layer nền đơn lẻ."
+  },
+  "c3": {
+   "prompt": "Một Dockerfile có COPY dataset.tar /data/ (2 GB), rồi RUN tar -xf /data/dataset.tar -C /data (giải nén 6 GB), rồi RUN rm /data/dataset.tar. Hãy tính dung lượng image mà ba chỉ thị này thêm vào, giải thích vì sao chỉ thị cuối không giúp ích, và nêu hai cách khắc phục.",
+   "explanation": "Hướng dẫn bằng rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Dung lượng là 2 + 6 + ~0 = 8 GB: layer là changeset bất biến, và layer rm chỉ chứa một whiteout (.wh.dataset.tar) khoảng 0 byte, nên file tar 2 GB vẫn nằm ở layer trước.",
+    "File đã xóa vẫn được push, pull và vẫn đọc được bởi bất kỳ ai giải nén layer đó; whiteout chỉ che đường dẫn khi các layer được xếp chồng.",
+    "Cách 1: không bao giờ đưa file tar vào một layer, ví dụ RUN curl ... | tar -x trong một chỉ thị, hoặc tạo và xóa trong cùng một RUN (khi đó dung lượng là 6 GB).",
+    "Cách 2: để dataset ngoài image và cấp lúc chạy qua bind mount chỉ đọc hoặc volume, việc này cũng loại hẳn 6 GB khỏi image."
+   ]
   }
  }
 }

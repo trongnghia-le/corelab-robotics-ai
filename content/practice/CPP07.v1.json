@@ -327,6 +327,80 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "libP.a has p1.o (defines fp1, needs fq1) and p2.o (defines fp2, needs fq2). libQ.a has q1.o (defines fq1, needs fp2) and q2.o (defines fq2). main.o needs fp1. Which is the shortest of these link lines that succeeds with a GNU linker?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "main.o -lP -lQ",
+        "main.o -lQ -lP",
+        "main.o -lP -lQ -lP",
+        "main.o -lP -lQ -lP -lQ"
+      ],
+      "answer": "3",
+      "explanation": "Each archive is scanned once per occurrence, in order. -lP -lQ: p1.o then q1.o are extracted, fp2 stays undefined. -lQ -lP: nothing pending when libQ is scanned, and fq1 stays undefined after p1.o. -lP -lQ -lP: the second libP scan extracts p2.o which needs fq2, but libQ is not scanned again. Only -lP -lQ -lP -lQ extracts q2.o and leaves nothing undefined.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "build-stages"
+      ],
+      "skillLabel": "Static archive link order",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A generated header is included by 25 of 40 sources. Each compile takes 3 s and Ninja runs 8 jobs in parallel. The generator rewrites the header with different contents. Ignoring link time and assuming whole rounds of 8 jobs, how many seconds of wall-clock compile time does the rebuild take? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "12",
+      "tolerance": 0.01,
+      "explanation": "All 25 dependent sources are stale, so 25 compiles run. With 8 parallel jobs that is ceil(25/8) = 4 rounds of 3 s = 12 s. (With restat = 1 and an unchanged header the answer would be 0 compiles.)",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rebuild-graph"
+      ],
+      "skillLabel": "Parallel rebuild time",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Static library A links B PRIVATE, and B exports its include directory PUBLIC. Executable m links A and now needs a header of B. Explain (1) why libB.a is already on m's link line but B's include directory is not on m's compile line, and (2) the correct minimal change and the design mistake to avoid.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "For a static A, CMake records the private dependency in A's interface as $<LINK_ONLY:B>: B is linked (A's objects reference it) but none of B's compile-time usage requirements propagate.",
+        "Correct change: target_link_libraries(m PRIVATE B) so that m declares its own real dependency and receives B's include directory.",
+        "Mistake to avoid: changing A to PUBLIC B just to leak the include path, which makes every consumer of A depend on B and exposes an implementation detail."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "usage-requirements"
+      ],
+      "skillLabel": "PRIVATE static dependencies",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP07#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

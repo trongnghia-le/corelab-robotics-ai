@@ -82,6 +82,29 @@
     "Lệnh: gdb -batch -ex run -ex bt -ex 'info locals' ./prog (hoặc run, bt, info locals tương tác).",
     "Ý tưởng sửa: không dùng sau khi move, hoặc truyền bằng reference."
    ]
+  },
+  "c1": {
+   "prompt": "p = malloc(29) trả về khối căn hàng 8 byte, nên từ cuối trong bốn từ của nó có giá trị shadow ASan là 5 (29 = 24 + 5). Lần đọc 2 byte nào, cho bằng offset từ p, KHÔNG bị báo?",
+   "options": [
+    "offset 27",
+    "offset 28",
+    "offset 29",
+    "offset 30"
+   ],
+   "explanation": "Với từ cuối giá trị shadow là 5, nên một truy cập là lỗi khi chỉ số byte cuối trong từ, l = (offset mod 8) + size - 1, là >= 5. Offset 27: l = 3 + 1 = 4 < 5, ổn. Offset 28: l = 4 + 1 = 5, bị báo. Offset 29: l = 5 + 1 = 6, bị báo. Offset 30: l = 6 + 1 = 7, bị báo."
+  },
+  "c2": {
+   "prompt": "Một commit xấu lỗi với xác suất 0.1 mỗi lần chạy; commit tốt không bao giờ lỗi. Bạn bisect 300 commit (9 bước) và chỉ gọi commit được thử là tốt nếu cả r lần đều pass. Số nguyên r nhỏ nhất để cận dưới (1 - 0.9^r)^9 ít nhất bằng 0.90 là bao nhiêu?",
+   "explanation": "Cần 0.9^r <= 1 - 0.90^(1/9) = 0.011638, nên r >= ln(0.011638)/ln(0.9) = 42.27 và r = 43. Kiểm tra: (1 - 0.9^43)^9 = 0.9071 >= 0.90, còn r = 42 cho 0.8973."
+  },
+  "c3": {
+   "prompt": "struct Cfg { char name[8]; int baud; }; copy() ghi name[0..8] và chương trình in baud sai, nhưng AddressSanitizer không báo gì. Giải thích vì sao, nêu công cụ hay cờ tìm ra nó, và cho lệnh debugger xác định dòng gây lỗi mà không cần biết vòng lặp.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "ASan chỉ poison các redzone giữa các allocation; name và baud là các byte truy cập được liền kề của một đối tượng, nên name[8] chạm byte shadow hợp lệ (0) và qua.",
+    "UBSan -fsanitize=bounds (nằm trong -fsanitize=undefined) báo chỉ số ngoài phạm vi vì cận mảng biết tĩnh.",
+    "GDB: watch -l c.baud (watch -location), rồi continue: nó dừng ở dòng ghi và hiện Old và New value; watchpoint phần cứng giữ chi phí thấp."
+   ]
   }
  }
 }

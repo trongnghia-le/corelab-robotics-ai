@@ -398,6 +398,94 @@
         "Mentions back-EMF limit or acceleration optimum N* = sqrt(J_l/J_m)."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "A joint has gravity torque 9.81 N m, motor torque 0.5 N m, gearbox efficiency 0.8, load inertia 0.5 kg m^2 and rotor inertia 1e-5 kg m^2. The net acceleration is (eta*N*tau_m - tau_g)/(J_l + N^2 J_m). Which gear ratio maximises it? (one decimal)",
+      "kind": "number",
+      "dimension": "M",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gear-ratio-optimum-gravity"
+      ],
+      "skillLabel": "Optimal ratio with a load torque",
+      "mistakeCategory": "mathematical",
+      "answer": "249.5",
+      "tolerance": 0.6,
+      "explanation": "Setting d(alpha)/dN = 0 gives N^2 - (2 tau_g/(eta tau_m)) N - J_l/J_m = 0, so N* = c + sqrt(c^2 + J_l/J_m) with c = 9.81/(0.8*0.5) = 24.525. N* = 24.525 + sqrt(601.5 + 50000) = 249.47. Without gravity the answer would be sqrt(50000) = 223.6; gravity shifts the optimum to a larger ratio.",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: Optimal ratio with a load torque",
+          "href": "/lessons/R09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A motor (kt = 0.05 N m/A, R = 1 ohm, I_cont = 3 A) drives a joint through N = 100, eta = 0.8. Duty cycle: 0.5 s needing 3.0325 A, then 1.5 s needing 2.4525 A, repeating. What is the RMS current (A, two decimals) and does it satisfy the thermal limit?",
+      "kind": "choice",
+      "dimension": "M",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "rms-current-duty-cycle"
+      ],
+      "skillLabel": "RMS current over a duty cycle",
+      "mistakeCategory": "mathematical",
+      "options": [
+        "2.74 A (simple average of the two currents), passes",
+        "3.03 A (the peak segment), fails",
+        "2.61 A, passes the 3 A limit",
+        "2.61 A, fails because one segment exceeds 3 A"
+      ],
+      "answer": "2",
+      "explanation": "Heating is R I^2, so the thermal limit applies to the time-averaged square: I_rms = sqrt((3.0325^2*0.5 + 2.4525^2*1.5)/2) = 2.61 A < 3 A. A single segment above I_cont is allowed as long as the RMS value and the peak and voltage limits hold. The plain average 2.74 A is not the heating measure.",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: RMS current over a duty cycle",
+          "href": "/lessons/R09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "In Modern Robotics' 2R example, raising the gear ratio from G = 10 to G = 100 changes the joint-2 mass-matrix entry from 1.13 to 13.5. For a fixed motor torque (joint torque proportional to G), how does the joint-2 acceleration capability change, using alpha ~ G/M22?",
+      "kind": "choice",
+      "dimension": "M",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "apparent-inertia-matching"
+      ],
+      "skillLabel": "Apparent inertia beyond the matched ratio",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "Ten times higher, because torque scales with G",
+        "About 7.4 times higher, because inertia grows only by 12",
+        "About 0.84 times, i.e. about 16% lower",
+        "Unchanged, because torque and inertia both scale"
+      ],
+      "answer": "2",
+      "explanation": "alpha(G=10) ~ 10/1.13 = 8.85 and alpha(G=100) ~ 100/13.5 = 7.41, ratio 0.837. The rotor's apparent inertia (0.125 -> 12.5) now dominates; the inertia-matched ratio for this joint is about sqrt(1.0/0.00125) = 28.3, and beyond it extra gearing adds inertia faster than torque. Joint 1, with a larger non-rotor inertia, still gains.",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: Apparent inertia beyond the matched ratio",
+          "href": "/lessons/R09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R02"
+      ]
     }
   ]
 }

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="Inter, sans-serif">
+<title>Vòng debug và công cụ cho từng câu hỏi</title>
+<desc>Sáu bước từ lần chạy lỗi tới regression test, và bốn công cụ cùng loại lỗi mỗi công cụ tìm ra.</desc>
+<rect width="900" height="440" rx="14" fill="#17181b"/>
+<defs><marker id="ahe" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#a7adb5"/></marker></defs>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#e9e7e3">Vòng debug và công cụ cho từng câu hỏi</text>
+<rect x="32" y="72" width="120" height="64" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="44" y="100" font-size="17" font-weight="700" fill="#e9e7e3">1 Tái hiện</text>
+<text x="44" y="122" font-size="14" fill="#a7adb5">cùng input, seed</text>
+<line x1="154" y1="104" x2="173" y2="104" stroke="#a7adb5" stroke-width="2" marker-end="url(#ahe)"/>
+<rect x="175" y="72" width="120" height="64" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="187" y="100" font-size="17" font-weight="700" fill="#e9e7e3">2 Thu nhỏ</text>
+<text x="187" y="122" font-size="14" fill="#a7adb5">ca lỗi nhỏ nhất</text>
+<line x1="297" y1="104" x2="316" y2="104" stroke="#a7adb5" stroke-width="2" marker-end="url(#ahe)"/>
+<rect x="318" y="72" width="120" height="64" rx="8" fill="#22252a" stroke="#e0904f" stroke-width="2"/>
+<text x="330" y="100" font-size="17" font-weight="700" fill="#e9e7e3">3 Định vị</text>
+<text x="330" y="122" font-size="14" fill="#a7adb5">chọn công cụ</text>
+<line x1="440" y1="104" x2="459" y2="104" stroke="#a7adb5" stroke-width="2" marker-end="url(#ahe)"/>
+<rect x="461" y="72" width="120" height="64" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="473" y="100" font-size="17" font-weight="700" fill="#e9e7e3">4 Sửa</text>
+<text x="473" y="122" font-size="14" fill="#a7adb5">nguyên nhân</text>
+<line x1="583" y1="104" x2="602" y2="104" stroke="#a7adb5" stroke-width="2" marker-end="url(#ahe)"/>
+<rect x="604" y="72" width="120" height="64" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="616" y="100" font-size="17" font-weight="700" fill="#e9e7e3">5 Kiểm thử</text>
+<text x="616" y="122" font-size="14" fill="#a7adb5">regression test</text>
+<line x1="726" y1="104" x2="745" y2="104" stroke="#a7adb5" stroke-width="2" marker-end="url(#ahe)"/>
+<rect x="747" y="72" width="120" height="64" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="759" y="100" font-size="17" font-weight="700" fill="#e9e7e3">6 Kiểm lại</text>
+<text x="759" y="122" font-size="14" fill="#a7adb5">ASan + UBSan</text>
+<path d="M807 138 V162 H92 V140" fill="none" stroke="#a7adb5" stroke-width="2" marker-end="url(#ahe)"/>
+<text x="450" y="184" font-size="14" fill="#a7adb5" text-anchor="middle">lỗi tiếp theo: lặp lại</text>
+<text x="32" y="224" font-size="17" font-weight="700" fill="#e9e7e3">Bước 3: công cụ nào trả lời câu hỏi nào</text>
+<rect x="32" y="242" width="190" height="128" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="46" y="270" font-size="17" font-weight="700" fill="#e9e7e3">AddressSanitizer</text>
+<text x="46" y="296" font-size="14" fill="#86abe2" font-family="monospace">-fsanitize=address</text>
+<text x="46" y="326" font-size="14" fill="#a7adb5">truy cập ngoài đối tượng,</text>
+<text x="46" y="346" font-size="14" fill="#a7adb5">use after free, double free</text>
+<rect x="247" y="242" width="190" height="128" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="261" y="270" font-size="17" font-weight="700" fill="#e9e7e3">UBSan</text>
+<text x="261" y="296" font-size="14" fill="#6fc693" font-family="monospace">-fsanitize=undefined</text>
+<text x="261" y="326" font-size="14" fill="#a7adb5">tràn số có dấu, shift sai,</text>
+<text x="261" y="346" font-size="14" fill="#a7adb5">chỉ số vượt biên</text>
+<rect x="462" y="242" width="190" height="128" rx="8" fill="#22252a" stroke="#ae9ce6" stroke-width="2"/>
+<text x="476" y="270" font-size="17" font-weight="700" fill="#e9e7e3">ThreadSanitizer</text>
+<text x="476" y="296" font-size="14" fill="#ae9ce6" font-family="monospace">-fsanitize=thread</text>
+<text x="476" y="326" font-size="14" fill="#a7adb5">data race giữa</text>
+<text x="476" y="346" font-size="14" fill="#a7adb5">các thread (build riêng)</text>
+<rect x="677" y="242" width="190" height="128" rx="8" fill="#22252a" stroke="#e0904f" stroke-width="2"/>
+<text x="691" y="270" font-size="17" font-weight="700" fill="#e9e7e3">GDB</text>
+<text x="691" y="296" font-size="14" fill="#e0904f" font-family="monospace">-g</text>
+<text x="691" y="326" font-size="14" fill="#a7adb5">trạng thái lúc crash,</text>
+<text x="691" y="346" font-size="14" fill="#a7adb5">ai đã ghi giá trị này</text>
+<text x="32" y="404" font-size="14" fill="#a7adb5">Chạy im lặng là bằng chứng chứ không phải chứng minh: bước 5 biến lỗi thành test kiểm tra giá trị.</text>
+</svg>

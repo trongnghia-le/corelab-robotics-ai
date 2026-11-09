@@ -81,6 +81,24 @@
     "Có shebang, bit exec, chế độ chặt chẽ, kiểm tra đối số với giá trị mặc định, vị trí đầu ra tất định và logging.",
     "Trả về exit code có ý nghĩa và có ít nhất một bài kiểm thử thành công và một bài kiểm thử thất bại."
    ]
+  },
+  "c1": {
+   "prompt": "Một tiến trình có umask 035 tạo một file thường yêu cầu mode 666. Mode bát phân kết quả là gì? (các chữ số, sai số cho phép 0.5)",
+   "explanation": "Kernel áp dụng mode & ~umask. Umask 035 có chữ số group 3 (-wx) và chữ số other 5 (r-x). Owner 6 giữ nguyên 6; group 6 & ~3 = 110 & 100 = 100 = 4; other 6 & ~5 = 110 & 010 = 010 = 2. Kết quả 642. Phép trừ 666 - 035 = 631 là sai vì mask xóa bit chứ không trừ số (631 sẽ thêm các bit execute chưa từng được yêu cầu)."
+  },
+  "c2": {
+   "prompt": "Với set -e đang bật, hàm f kết thúc bằng lệnh thất bại false rồi echo after. Script in gì với \"if f; then echo yes; fi\"?",
+   "options": [
+    "Không gì cả, và script thoát với status 1 tại false",
+    "after rồi yes, vì -e bị bỏ qua bên trong hàm được gọi làm phép thử của if",
+    "chỉ yes, vì echo after bị bỏ qua khi false thất bại",
+    "chỉ after, vì nhánh if không được thực hiện khi f thất bại"
+   ],
+   "explanation": "errexit bị bỏ qua cho toàn thân hàm hoặc compound command chạy trong ngữ cảnh mà -e bị bỏ qua, như phép thử của if. Nên false không dừng f, echo after chạy và trả về 0, f thành công, và nhánh if in yes. Gọi thẳng (f trên một dòng riêng), cùng hàm sẽ dừng tại false với status 1."
+  },
+  "c3": {
+   "prompt": "Một script Bash có trap 'echo bye; exit 7' TERM và chạy sleep 10 ở foreground. SIGTERM được gửi tới script tại t=3 giây. Trap chạy ở giây thứ mấy kể từ lúc bắt đầu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Bash không thực thi trap khi đang chờ lệnh foreground; nó chạy trap khi lệnh hoàn tất, tức tại t=10 giây. Nếu script dùng sleep 10 & wait $!, wait sẽ trả về ngay với status > 128 và trap chạy tại t=3 giây."
   }
  }
 }

@@ -71,19 +71,19 @@ export function Vectors() {
         <Plane
           extent={extent}
           lines={[
-            { to: u, color: "#f97316", label: "u", labelOffset: [8, 18] },
-            { to: v, color: "#7ea7d8", label: "v" },
-            { from: u, to: sum, color: "#7ea7d8", dashed: true },
-            { to: sum, color: "#d8c08b", label: "u+v" },
+            { to: u, color: "#d98a52", label: "u", labelOffset: [8, 18] },
+            { to: v, color: "#94a9c2", label: "v" },
+            { from: u, to: sum, color: "#94a9c2", dashed: true },
+            { to: sum, color: "#c5b99e", label: "u+v" },
             ...(p
               ? [
                   {
                     to: p,
-                    color: "#84b39b",
+                    color: "#90a79b",
                     label: "proj",
                     labelOffset: [-35, -14] as Vec2,
                   },
-                  { from: p, to: u, color: "#84b39b", dashed: true },
+                  { from: p, to: u, color: "#90a79b", dashed: true },
                 ]
               : []),
           ]}
@@ -148,19 +148,19 @@ export function MatrixTransform() {
               {
                 from: transform(a, [-2, t]),
                 to: transform(a, [2, t]),
-                color: "#84b39b",
+                color: "#90a79b",
                 dashed: true,
               },
               {
                 from: transform(a, [t, -2]),
                 to: transform(a, [t, 2]),
-                color: "#84b39b",
+                color: "#90a79b",
                 dashed: true,
               },
             ]),
-            { to: e1, color: "#f97316", label: "Ae₁" },
-            { to: e2, color: "#7ea7d8", label: "Ae₂" },
-            { to: point, color: "#d8c08b", label: "A(1,1)" },
+            { to: e1, color: "#d98a52", label: "Ae₁" },
+            { to: e2, color: "#94a9c2", label: "Ae₂" },
+            { to: point, color: "#c5b99e", label: "A(1,1)" },
           ]}
           caption="Green: transformed grid. Orange/blue: basis columns; gold: mapped point. Axes rescale to keep the grid visible."
         />
@@ -275,17 +275,17 @@ export function Robot({ velocity = false }: { velocity?: boolean }) {
         <Plane
           extent={4.8}
           lines={[
-            { to: elbow, color: "#7ea7d8", thick: true },
-            { from: elbow, to: tip, color: "#f97316", thick: true },
+            { to: elbow, color: "#94a9c2", thick: true },
+            { from: elbow, to: tip, color: "#d98a52", thick: true },
             ...(velocity
-              ? [{ from: tip, to: predicted, color: "#84b39b", label: "Jq̇Δt" }]
+              ? [{ from: tip, to: predicted, color: "#90a79b", label: "Jq̇Δt" }]
               : []),
           ]}
           points={[
-            { point: [0, 0], color: "#d7e0eb" },
-            { point: elbow, color: "#d7e0eb" },
-            { point: tip, color: "#f97316" },
-            ...(velocity ? [{ point: actual, color: "#d8c08b" }] : []),
+            { point: [0, 0], color: "#dce0e6" },
+            { point: elbow, color: "#dce0e6" },
+            { point: tip, color: "#d98a52" },
+            ...(velocity ? [{ point: actual, color: "#c5b99e" }] : []),
           ]}
           caption={
             velocity

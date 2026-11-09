@@ -1,0 +1,233 @@
+{
+  "id": "HW15-diagnostic",
+  "topicId": "HW15",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A designer sizes an axis with T_M = (T_L + T_a) x S_f and is unsure about the payload mass and the friction. Where should the extra caution go?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "Into every input: heavier mass, lower efficiency and higher friction, then S_f as well.",
+        "Into the single safety factor S_f applied once to the torque, with the other inputs at honest values.",
+        "Nowhere: a datasheet rated torque already contains all margins.",
+        "Into the supply voltage, by choosing the highest available."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sizing-workflow"
+      ],
+      "skillLabel": "Sizing workflow",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW14",
+        "R09"
+      ],
+      "explanation": "Padding several inputs and then applying S_f stacks the factors silently, so the real margin becomes unknown. Keep inputs honest (or at a stated pessimistic end of a known range) and apply S_f once on the torque."
+    },
+    {
+      "id": "q2",
+      "prompt": "A 6 kg robot with two driven wheels of radius 0.05 m drives at constant speed on level ground with a rolling-resistance coefficient of 0.02. Torque per wheel in N m. Precision 0.002.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0294",
+      "tolerance": 0.002,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "load-models"
+      ],
+      "skillLabel": "Load models",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW14",
+        "R09"
+      ],
+      "explanation": "F = m g c_rr = 6 x 9.81 x 0.02 = 1.177 N; T = F r / 2 = 1.177 x 0.05 / 2 = 0.0294 N m."
+    },
+    {
+      "id": "q3",
+      "prompt": "A move of 1.2 m has a speed limit of 0.6 m/s and an acceleration limit of 0.6 m/s^2 (trapezoidal profile). Total time in seconds. Precision 0.02.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.02,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "motion-profile"
+      ],
+      "skillLabel": "Motion profile",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW14",
+        "R09"
+      ],
+      "explanation": "v^2/a = 0.6 < 1.2, so it is a trapezoid: T = d/v + v/a = 1.2/0.6 + 0.6/0.6 = 3.0 s."
+    },
+    {
+      "id": "q4",
+      "prompt": "A load inertia of 3 kg cm^2 is driven through a 4:1 gearbox by a motor with rotor inertia 0.05 kg cm^2. Inertia ratio J_L / (J_0 i^2). Precision 0.02.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.75",
+      "tolerance": 0.02,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inertia-ratio"
+      ],
+      "skillLabel": "Inertia ratio",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW14",
+        "R09"
+      ],
+      "explanation": "3 / (0.05 x 16) = 3.75."
+    },
+    {
+      "id": "q5",
+      "prompt": "A servo passes the peak-torque check, but its torque over a repeating cycle is high. Which quantity decides whether it overheats?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The peak torque, compared with the stall torque.",
+        "The RMS torque over the whole cycle including the rest, compared with the rated torque.",
+        "The average speed, compared with the no-load speed.",
+        "The supply voltage, compared with the rated voltage."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "safety-rms-thermal"
+      ],
+      "skillLabel": "Safety factor and RMS heat",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW14",
+        "R09"
+      ],
+      "explanation": "Winding heat is R x I^2, so the thermal limit applies to the root-mean-square torque (current) over the cycle, with the rest time counted in the cycle time."
+    },
+    {
+      "id": "q6",
+      "prompt": "A screw of lead 4 mm and efficiency 0.5 must push a 100 N load. Motor torque in N m. Precision 0.003.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.127",
+      "tolerance": 0.003,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "screw-axis"
+      ],
+      "skillLabel": "Lead-screw axis",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW14",
+        "R09"
+      ],
+      "explanation": "T = F l / (2 pi eta) = 100 x 0.004 / (2 pi x 0.5) = 0.127 N m."
+    },
+    {
+      "id": "q7",
+      "prompt": "A brushed motor at 12 V has a stall current of 6 A and runs at 1.5 A. The driver is rated 3 A continuous and 5 A peak. What is the correct verdict?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Pass: 1.5 A is below the 3 A continuous rating.",
+        "Pass: 6 A is close enough to 5 A peak.",
+        "Not safe: the stall current exceeds the peak rating, so add a current limit and stall detection or use a larger driver.",
+        "Fail only if the supply voltage is above 24 V."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "driver-headroom"
+      ],
+      "skillLabel": "Driver and voltage headroom",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW14",
+        "R09"
+      ],
+      "explanation": "A jammed shaft draws V/R, here 6 A, above the 5 A peak. The running current is fine, but the stall case needs a current limit, stall detection or a bigger driver."
+    },
+    {
+      "id": "q8",
+      "prompt": "A small arm must lift a 0.2 kg payload at the end of a 0.5 m link through 90 degrees in 1.5 s. Describe the sizing steps you would follow to choose a motor, a gear ratio and a driver, and name the checks that could reject your first choice.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Computes the gravity torque at the worst (horizontal) pose and the acceleration torque J times alpha from a trapezoidal profile, then applies a safety factor once.",
+        "Checks peak torque against the motor capability, RMS torque over the cycle against the rated torque, and the speed left at the working torque.",
+        "Checks driver current (continuous and stall), voltage headroom against back-EMF, and chooses feedback (resolution at the output, backlash)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "sizing-workflow"
+      ],
+      "skillLabel": "Sizing workflow",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW15#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW14",
+        "R09"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

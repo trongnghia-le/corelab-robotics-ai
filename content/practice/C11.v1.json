@@ -379,6 +379,90 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Stable plant x+ = 0.8 x + u with stage cost (x^2 + u^2)/2, horizon N = 1 and a Lyapunov terminal cost (P x^2)/2 with 0.8^2 P + 1 = P. The input bound is |u| <= 0.4. Below which |x| (3 decimals) is the bound inactive?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.680",
+      "tolerance": 0.003,
+      "explanation": "P = 1/(1 - 0.64) = 2.7778. Minimising (x^2 + u^2)/2 + P (0.8x + u)^2 / 2 gives u = -0.8 P x/(1 + P) = -0.5882 x. The bound is inactive while 0.5882 |x| <= 0.4, i.e. |x| <= 0.4/0.5882 = 0.680. Beyond that the input saturates at -0.4 (for positive x) until the state has shrunk to 0.680.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "horizon-terminal"
+      ],
+      "skillLabel": "Terminal cost and horizon",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Scalar plant x+ = x + u, Q = R = 1, unconstrained MPC with the Riccati matrix as terminal cost and horizon N = 3. What is the closed-loop pole (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.382",
+      "tolerance": 0.002,
+      "explanation": "The Riccati equation Pi = 1 + Pi - Pi^2/(1 + Pi) gives Pi^2 - Pi - 1 = 0, so Pi = 1.618. The gain is K = -Pi/(1 + Pi) = -0.618 for every horizon N, because with P = Pi every step of the Riccati recursion returns Pi. The closed-loop pole is 1 + K = 1/(1 + Pi) = 0.382, independent of N.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "horizon-terminal"
+      ],
+      "skillLabel": "Terminal cost and horizon",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "An unconstrained finite-horizon LQ controller (N = 5, terminal cost equal to the stage cost) destabilises a stable plant that has an unstable zero. Which statement explains this best?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The optimiser cannot satisfy any constraint at all, so the QP is infeasible and the previous input is simply held",
+        "The plan is optimal only inside the window; without a decreasing terminal cost the value function is not a Lyapunov function",
+        "The condensed Hessian H fails to be positive definite for short horizons, so the minimiser is not unique and may be arbitrary",
+        "The receding-horizon law applies the last planned input instead of the first one, which adds a delay to the feedback path"
+      ],
+      "answer": "1",
+      "explanation": "Without constraints the QP is feasible and strictly convex (H is positive definite since R > 0), and MPC applies the first input. Stability is not implied by optimality: it needs a terminal cost V_f that is a control-Lyapunov function (V_f(Ax + Bu) <= V_f(x) - l(x,u)), so that V_N^0 decreases along the closed loop. With V_f = stage cost, a small R and an unstable zero, the short-horizon optimiser inverts the plant and the closed loop has an eigenvalue 1.307 (N = 5); with the Riccati terminal cost the eigenvalue is 0.664 for every N.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "horizon-terminal",
+        "constraints-feasibility"
+      ],
+      "skillLabel": "Terminal cost and stability",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "M13"
+      ]
     }
   ]
 }

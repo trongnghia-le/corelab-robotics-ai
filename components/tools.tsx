@@ -20,7 +20,7 @@ import { practices } from "@/lib/practice";
 import { practiceVi } from "@/lib/practice-vi";
 import { sources } from "@/lib/resources";
 import { useCore, Loading, copyText } from "./provider";
-import { useTopic, Notebook } from "./topic";
+import { useTopic } from "./topic";
 import { PageHeading, Status, TopicChips, dateText } from "./ui";
 import { PracticeTabs, WeaknessPractice } from "./weakness-practice";
 import { useI18n } from "@/lib/i18n";
@@ -67,8 +67,8 @@ export function Practice() {
         <ShieldCheck size={19} />
         <span>
           {tx(
-            "Fixed tests currently support M02 and PY01. Other assignments include instructions and a notebook; self-reported results do not increase verified competence.",
-            "Test cố định hiện hỗ trợ M02 và PY01. Các bài khác có hướng dẫn và sổ ghi chép; kết quả tự báo cáo không làm tăng năng lực đã được kiểm chứng.",
+            "Fixed tests currently support M02 and PY01. Other assignments include instructions; keep your working in the study desk. Self-reported results do not increase verified competence.",
+            "Test cố định hiện hỗ trợ M02 và PY01. Các bài khác có hướng dẫn; hãy ghi bài làm trong bàn học. Kết quả tự báo cáo không làm tăng năng lực đã được kiểm chứng.",
           )}
         </span>
       </div>
@@ -149,8 +149,8 @@ export function Practice() {
           </h2>
           <p>
             {tx(
-              "This topic has no fixed verifier yet. Follow the independent practice section or overview guidance, then record your assumptions, reasoning, and results in the notebook.",
-              "Chủ đề này chưa có bộ kiểm chứng cố định. Hãy làm theo phần luyện tập độc lập hoặc hướng dẫn tổng quan, rồi ghi giả định, lập luận và kết quả vào sổ ghi chép.",
+              "This topic has no fixed verifier yet. Follow the independent practice section or overview guidance, then record your assumptions, reasoning, and results in the study desk.",
+              "Chủ đề này chưa có bộ kiểm chứng cố định. Hãy làm theo phần luyện tập độc lập hoặc hướng dẫn tổng quan, rồi ghi giả định, lập luận và kết quả vào bàn học.",
             )}
           </p>
           <Link className="button" href={`/lessons/${topic}`}>
@@ -217,7 +217,6 @@ export function Practice() {
           )}
         </p>
       </section>
-      {topic && <Notebook key={topic} id={topic} />}
     </div>
   );
 }
@@ -456,10 +455,7 @@ export function Paths() {
           ))
         ) : (
           <p className="muted">
-            {tx(
-              "No difficulties recorded yet. Use the notebook for each topic to capture open questions.",
-              "Chưa ghi khó khăn nào. Hãy dùng sổ ghi chép của từng chủ đề để lưu các câu hỏi còn mở.",
-            )}
+            {tx("No difficulties recorded yet.", "Chưa ghi khó khăn nào.")}
           </p>
         )}
       </section>

@@ -20,6 +20,7 @@ import { TopicChips, Status } from "./ui";
 import { useCore } from "./provider";
 import { useI18n } from "@/lib/i18n";
 import { domainTone } from "./domain-theme";
+import { useTheme } from "./theme-toggle";
 import { layoutGraph } from "@/lib/graph-layout";
 // Card height estimate for layout: wraps the bold title at ~22 characters a
 // line (290px card), plus the code line, status pill and padding.
@@ -34,22 +35,39 @@ function cardHeight(text: string) {
   }
   return 104 + 28 * lines;
 }
-// Minimap colors mirror the --domain-accent values in globals.css.
+// Minimap colors mirror the dark --domain-accent values in app/globals.css.
 const toneAccent: Record<string, string> = {
-  blue: "#93c5fd",
-  sky: "#7dd3fc",
-  violet: "#c4b5fd",
-  teal: "#5eead4",
-  orange: "#fdba74",
-  rose: "#f9a8d4",
-  indigo: "#a5b4fc",
-  amber: "#fde68a",
-  lime: "#bef264",
-  red: "#fca5a5",
-  green: "#4ade80",
-  fuchsia: "#f0abfc",
+  blue: "#86abe2",
+  sky: "#7fbfe0",
+  violet: "#ae9ce6",
+  teal: "#6cc6ba",
+  orange: "#e4a066",
+  rose: "#e08db5",
+  indigo: "#96a6e6",
+  amber: "#e0c169",
+  lime: "#aecb6c",
+  red: "#e58a80",
+  green: "#6fc693",
+  fuchsia: "#d18cdc",
 };
 const columnWidth = 400;
+// Arrow, grid and minimap colours per theme.
+const palette = {
+  dark: {
+    active: "#d98a52",
+    marker: "#83888f",
+    edge: "#696e76",
+    grid: "#373a41",
+    mask: "rgba(13,15,18,.7)",
+  },
+  light: {
+    active: "#a95a24",
+    marker: "#8d929a",
+    edge: "#a4a8af",
+    grid: "#d6d3cd",
+    mask: "rgba(245,244,241,.7)",
+  },
+};
 export function Graph({
   domain,
   query,
@@ -152,6 +170,8 @@ export function Graph({
     );
   }, [flowNodes, nodes, items, setFlowNodes]);
   // Highlight the arrows of the hovered (or selected) topic and fade the rest.
+  const theme = useTheme();
+  const colors = palette[theme];
   const active = [hovered, selected].find(
     (id) => id && nodes.some((n) => n.id === id),
   );
@@ -159,7 +179,7 @@ export function Graph({
     () =>
       links.map(({ source, target }) => {
         const on = active && (source === active || target === active);
-        const color = on ? "#f59e0b" : "#7d8795";
+        const color = on ? colors.active : colors.marker;
         return {
           id: `${source}-${target}`,
           source,
@@ -167,13 +187,13 @@ export function Graph({
           zIndex: on ? 1 : 0,
           markerEnd: { type: MarkerType.ArrowClosed, color },
           style: {
-            stroke: on ? color : "#626d7d",
+            stroke: on ? color : colors.edge,
             strokeWidth: on ? 2.5 : 1.25,
             opacity: active && !on ? 0.15 : 1,
           },
         };
       }),
-    [links, active],
+    [links, active, colors],
   );
   return (
     <section className="graph-section">
@@ -207,7 +227,7 @@ export function Graph({
           onNodesChange={onNodesChange}
           edges={edges}
           edgesFocusable={false}
-          colorMode="dark"
+          colorMode={theme}
           fitView
           fitViewOptions={{
             padding: 0.1,
@@ -222,15 +242,15 @@ export function Graph({
           onPaneClick={() => setSelected("")}
           onNodeDoubleClick={(_, node) => router.push(`/lessons/${node.id}`)}
         >
-          <Background gap={24} color="#323946" />
+          <Background gap={24} color={colors.grid} />
           <Controls showInteractive={false} />
           <MiniMap
             pannable
             zoomable
             nodeColor={(n) =>
-              toneAccent[domainTone(topicMap[n.id]?.domain)] ?? "#626d7d"
+              toneAccent[domainTone(topicMap[n.id]?.domain)] ?? "#696e76"
             }
-            maskColor="rgba(13,15,18,.7)"
+            maskColor={colors.mask}
           />
         </ReactFlow>
       </div>

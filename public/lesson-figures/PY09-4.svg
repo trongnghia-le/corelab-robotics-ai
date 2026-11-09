@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="Inter, sans-serif">
+<title>Case 1 profile and speedup</title>
+<desc>Left: own times of the loop body, math.cos and math.sin in a cProfile run, 31.0, 4.3 and 4.2 milliseconds. Right: run times of the loop version 10.43 ms, the vectorized version 2.85 ms and the Amdahl bound 2.23 ms.</desc>
+<rect width="900" height="400" rx="14" fill="#17181b"/>
+
+<text x="32" y="44" font-size="22" font-weight="bold" fill="#e9e7e3">Case 1: profile first, then predict the speedup</text>
+<rect x="32" y="72" width="408" height="296" rx="10" fill="#22252a"/>
+<rect x="464" y="72" width="404" height="296" rx="10" fill="#22252a"/>
+<text x="52" y="102" font-size="17" font-weight="bold" fill="#e9e7e3">Profile of the loop (own time, ms)</text>
+<text x="484" y="102" font-size="17" font-weight="bold" fill="#e9e7e3">Run time, best of repeats (ms)</text>
+<text x="60" y="132" font-size="15" fill="#e9e7e3">loop body</text>
+<rect x="60" y="140" width="248" height="30" rx="0" fill="#e0904f"/>
+<text x="318" y="161" font-size="15" font-weight="600" fill="#e9e7e3">31.0 ms (78.6%)</text>
+<text x="60" y="190" font-size="15" fill="#e9e7e3">math.cos</text>
+<rect x="60" y="198" width="34.4" height="30" rx="0" fill="#ae9ce6"/>
+<text x="104.4" y="219" font-size="15" font-weight="600" fill="#e9e7e3">4.3 ms (10.8%)</text>
+<text x="60" y="248" font-size="15" fill="#e9e7e3">math.sin</text>
+<rect x="60" y="256" width="33.6" height="30" rx="0" fill="#ae9ce6"/>
+<text x="103.6" y="277" font-size="15" font-weight="600" fill="#e9e7e3">4.2 ms (10.6%)</text>
+<text x="60" y="320" font-size="14" fill="#a7adb5">interpreter share p = 0.786, trigonometry 0.214</text>
+<text x="60" y="340" font-size="14" fill="#a7adb5">shares from a profile that adds overhead</text>
+<text x="484" y="132" font-size="15" fill="#e9e7e3">loop version</text>
+<rect x="484" y="140" width="208.6" height="30" rx="0" fill="#a7adb5"/>
+<text x="702.6" y="161" font-size="15" font-weight="600" fill="#e9e7e3">10.43 ms  (1.00x)</text>
+<text x="484" y="190" font-size="15" fill="#e9e7e3">vectorized</text>
+<rect x="484" y="198" width="57" height="30" rx="0" fill="#6fc693"/>
+<text x="551" y="219" font-size="15" font-weight="600" fill="#e9e7e3">2.85 ms  (3.66x)</text>
+<text x="484" y="248" font-size="15" fill="#e9e7e3">Amdahl bound</text>
+<rect x="484" y="256" width="44.6" height="30" rx="0" fill="#e0c169"/>
+<text x="538.6" y="277" font-size="15" font-weight="600" fill="#e9e7e3">2.23 ms  (4.67x)</text>
+<text x="484" y="320" font-size="14" fill="#a7adb5">bound: 10.43 x (1 - 0.786) = 2.23 ms</text>
+<text x="484" y="340" font-size="14" fill="#a7adb5">measured 2.85 ms stays above the bound</text>
+</svg>

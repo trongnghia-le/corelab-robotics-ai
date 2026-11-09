@@ -81,6 +81,24 @@
     "Đề xuất float64 hoặc gốc cục bộ / bộ tích lũy riêng.",
     "Nhắc đến cộng bù (compensated summation) hoặc test với độ lệch lớn."
    ]
+  },
+  "c1": {
+   "prompt": "Cố định x=(1,1)^T và đặt g(A)=Ax với A=[[1,2],[3,4]]. Nhiễu của A đo theo chuẩn Frobenius, đầu ra theo chuẩn 2. Cho số điều kiện tương đối của g tại A (3 chữ số thập phân).",
+   "explanation": "g tuyến tính theo A, và ||dA x||_2 <= ||dA||_F ||x||_2 với dấu bằng khi dA = u x^T/||x||. Vậy kappa_g = ||A||_F ||x||_2 / ||Ax||_2. Ở đây ||A||_F = sqrt(30) = 5.4772, ||x||_2 = sqrt(2) = 1.4142, Ax = (3,7) nên ||Ax||_2 = sqrt(58) = 7.6158. kappa_g = 5.4772*1.4142/7.6158 = 1.0171."
+  },
+  "c2": {
+   "prompt": "Bạn cộng n = 2^20 số float32 dương. So với vòng lặp tuần tự thông thường, cộng theo cặp (chia để trị) làm cận xấu nhất của sai số tính theo sum|x_i| thay đổi từ",
+   "options": [
+    "khoảng (n-1)u xuống khoảng u, không phụ thuộc n, vì sai số triệt tiêu ngẫu nhiên",
+    "khoảng (n-1)u xuống khoảng log2(n) u, vì mỗi số hạng chỉ bị cộng log2(n) lần",
+    "khoảng n u xuống khoảng sqrt(n) u, vì các tổng riêng được chia đôi",
+    "khoảng log2(n) u lên khoảng (n-1)u, vì đệ quy thêm các phép làm tròn"
+   ],
+   "explanation": "Trong vòng lặp tuần tự, một số hạng đầu bị làm tròn ở mỗi trong n-1 phép cộng, cho (n-1)u sum|x_i|. Trong cây pairwise với n = 2^m, mỗi số hạng đi qua đúng m = log2 n phép cộng (quy nạp: gộp hai nửa thêm một thừa số 1+delta), nên cận là log2(n) u sum|x_i|, ở đây 20u thay vì khoảng 10^6 u. Cận xấu nhất không dựa vào triệt tiêu ngẫu nhiên, và cây có ít phép làm tròn hơn chứ không nhiều hơn cho mỗi số hạng."
+  },
+  "c3": {
+   "prompt": "Dùng một đồng nhất thức ổn định để tính cot(0.3) - cot(0.3 + 1e-12). Cho đáp án theo đơn vị 1e-12 (4 chữ số thập phân), tức số D với giá trị = D x 1e-12.",
+   "explanation": "cot x - cot(x+y) = sin(y) / (sin x sin(x+y)), vì cos x sin(x+y) - cos(x+y) sin x = sin(y). Với x = 0.3 và y = 1e-12, sin(x+y) bằng sin(x) đến 12 chữ số và sin^2(0.3) = 0.087332, nên giá trị là 1e-12/0.087332 = 1.14505e-11 = 11.4505 x 1e-12. (Phép trừ ngây thơ cho 1.14500e-11, sai số tương đối 5e-5.)"
   }
  }
 }

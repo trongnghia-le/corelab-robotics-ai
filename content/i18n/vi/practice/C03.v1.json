@@ -29,8 +29,8 @@
    "explanation": "Cần a+bKp' = 2*(3+8)=22 nên Kp'=(22-3)/2=9.5."
   },
   "b5": {
-   "prompt": "Vòng PI với a = 1, b = 1, Kp = 3. Tìm Ki cho một cặp cực tắt dần tới hạn.",
-   "explanation": "s^2+4s+Ki có nghiệm kép khi 16 = 4 Ki."
+   "prompt": "Vòng PI với a = 2, b = 0.5, Kp = 6. Tìm Ki cho một cặp cực tắt dần tới hạn.",
+   "explanation": "s^2 + (a + b Kp) s + b Ki = s^2 + 5 s + 0.5 Ki có nghiệm kép khi 25 = 4(0.5 Ki) = 2 Ki, tức Ki = 12.5 (cực kép tại -2.5)."
   },
   "b6": {
    "prompt": "Với s^3 + 3 s^2 + 4 s + Ki (một vòng PI trên đối tượng có trễ vận tốc), phép thử Routh cho thấy ổn định khi 3*4 > Ki. Ki lớn nhất mà vẫn ổn định (biên) là bao nhiêu?",
@@ -75,6 +75,24 @@
     "Nêu tác dụng tích phân (windup/chậm) và feedforward trọng lực (cần mô hình/tải trọng).",
     "Đề cập công thức độ lệch hoặc quan hệ về độ lớn."
    ]
+  },
+  "c1": {
+   "prompt": "Điều khiển PI cho x' = -0.5x + 2u với Kp = 3. Ki nào cho tắt dần tới hạn của động lực sai số (hai cực thực bằng nhau)? Cho Ki với ba chữ số thập phân.",
+   "explanation": "Đa thức sai số là s^2 + (a + b Kp) s + b Ki = s^2 + 6.5 s + 2 Ki. Nghiệm kép cần 6.5^2 = 4 * 2 Ki, nên Ki = 42.25/8 = 5.28125 (cực kép tại -3.25)."
+  },
+  "c2": {
+   "prompt": "Đối tượng y' = -y + 2u, setpoint r = 1.6, giới hạn cơ cấu chấp hành |u| <= 1.5, PI với Kp = 2 và Ki = 4 và bộ tích phân thường (không bảo vệ), xuất phát từ nghỉ. Khi u = 1.5 đầu ra là y = 3(1 - e^-t). Trạng thái tích phân I tại lúc y lần đầu chạm 1.6 là bao nhiêu? (ba chữ số thập phân)",
+   "explanation": "y = 1.6 khi e^-t = 1 - 1.6/3 = 0.4667, tức t = 0.7621 s. I = tích phân của (1.6 - y) dt = 1.6 t - 3(t - (1 - e^-t)) = 1.2194 - 3(0.7621 - 0.5333) = 0.533. Lệnh thô lúc đó là Kp*0 + Ki*0.533 = 2.13, vẫn trên giới hạn 1.5, nên bộ điều khiển còn bão hòa và đầu ra vọt quá (đỉnh 1.968 tại 1.19 s trong mô phỏng, rời bão hòa lúc 0.97 s)."
+  },
+  "c3": {
+   "prompt": "Một vòng PID vọt quá nhiều khi setpoint nhảy bậc, nhưng khả năng loại nhiễu tải đã chấp nhận được. Thay đổi nào giảm vọt quá của setpoint mà không đổi các cực vòng kín hay đáp ứng nhiễu?",
+   "options": [
+    "Tăng Ki để tích phân sửa vọt quá sớm hơn",
+    "Đặt trọng số cho khâu tỉ lệ trên setpoint (w < 1) trong khi tích phân giữ sai số thật",
+    "Bỏ khâu tích phân vì nó gây vọt quá",
+    "Tăng Kd và tính nó trên sai số thay vì trên phép đo"
+   ],
+   "explanation": "Với trọng số setpoint, khâu tỉ lệ tác động lên w r - y, khâu vi phân lên -dy/dt và khâu tích phân lên sai số thật r - y. Đa thức đặc trưng không phụ thuộc w, nên cực và đáp ứng nhiễu không đổi; chỉ zero của đường setpoint-tới-đầu ra dịch chuyển. Trong ví dụ băng tải của bài, vọt quá giảm từ 17.4% (w = 1) xuống 8.5% (w = 0.5) và 6.8% (w = 0). Bỏ tích phân sẽ khôi phục độ lệch xác lập; tăng Ki làm dịch các cực; đạo hàm theo sai số thêm cú đá."
   }
  }
 }

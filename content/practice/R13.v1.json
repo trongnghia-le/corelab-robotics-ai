@@ -395,6 +395,90 @@
         "Mentions the margin computation or duty factor 0.75 with offsets 0, 0.5, 0.25, 0.75."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "A rimless wheel (m = 1, l = 1 m, g = 9.8 m/s^2, spoke half-angle alpha = pi/8) rolls down a slope gamma = 0.15 rad. Its post-impact angular speed obeys w' = cos(2 alpha) sqrt(w^2 + 4 (g/l) sin(alpha) sin(gamma)). What is the rolling fixed point w* in rad/s?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "orbital-energy"
+      ],
+      "skillLabel": "Rimless wheel fixed point",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Rimless wheel fixed point",
+          "href": "/lessons/R13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "answer": "1.497",
+      "tolerance": 0.01,
+      "explanation": "Set w' = w: w^2 (1 - cos^2 2alpha) = cos^2(2alpha) * c with c = 4 (g/l) sin(alpha) sin(gamma) = 4 * 9.8 * 0.38268 * 0.14944 = 2.2417. So w* = cot(2 alpha) sqrt(c) = 1 * 1.4972 = 1.497 rad/s, since cot(pi/4) = 1. The slope of the map there is cos^2(2 alpha) = 0.5 < 1, so it is stable."
+    },
+    {
+      "id": "c2",
+      "prompt": "An LIP robot has its centre of mass 0.9 m high and is accelerating upward at 2 m/s^2 (treat both as constant). Its horizontal speed is 0.3 m/s with the centre of mass above the ankle. Using x'' = ((g + z'')/z)(x - p), what is the capture point offset xi - x = v/omega in metres? Use g = 9.81.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lip-capture-point"
+      ],
+      "skillLabel": "LIP with vertical acceleration",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: LIP with vertical acceleration",
+          "href": "/lessons/R13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "answer": "0.083",
+      "tolerance": 0.002,
+      "explanation": "omega = sqrt((g + z'')/z) = sqrt(11.81/0.9) = 3.6209 1/s. The capture point offset is v/omega = 0.3/3.6209 = 0.0829 m. With z'' = 0 it would be 0.0909 m, so upward acceleration moves the capture point closer to the centre of mass."
+    },
+    {
+      "id": "c3",
+      "prompt": "A rimless wheel on a gentle slope converges to a constant rolling speed from many initial speeds (above the vault threshold). What is the reason?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "hybrid-modes",
+        "orbital-energy"
+      ],
+      "skillLabel": "Why a passive walker settles to a speed",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Why a passive walker settles to a speed",
+          "href": "/lessons/R13#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R11",
+        "C05"
+      ],
+      "options": [
+        "Friction at the foot removes energy in proportion to the speed, acting like viscous damping on the hub of the wheel",
+        "The stance dynamics are stable, so during each stride the speed of the wheel returns by itself to one fixed value",
+        "The ground exerts a constant driving force along the slope on the stance spoke, which fixes the speed of the hub",
+        "Impacts remove a fraction of the energy and the slope adds a fixed amount: the step map has a stable fixed point"
+      ],
+      "answer": "3",
+      "explanation": "The return map w' = cos(2 alpha) sqrt(w^2 + c) loses a fraction (1 - cos^2 2alpha) of the kinetic energy at each impact but gains a fixed amount c from gravity per step, so its slope at the fixed point is cos^2(2 alpha) < 1: a stable limit cycle. The stance dynamics themselves are unstable (inverted pendulum), no friction is modelled, and the ground force is not constant."
     }
   ]
 }

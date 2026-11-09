@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 450" font-family="Inter, Arial, sans-serif">
+<title>Đọc thanh ghi MPU-6050 qua I2C</title>
+<desc>Trên: controller và cảm biến trên bus hai dây với điện trở pull-up. Giữa: các byte của một lần đọc liên tiếp, pha ghi đặt con trỏ thanh ghi về 0x3B, repeated start và pha đọc 14 byte dữ liệu. Dưới: trích bản đồ thanh ghi của MPU-6050.</desc>
+<rect width="760" height="450" fill="#191b1f" rx="12"/>
+<text x="380" y="28" font-size="17" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Một lần đọc I2C: pull-up, chuỗi byte và bản đồ thanh ghi</text>
+<rect x="20" y="80" width="90" height="74" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="65" y="112" font-size="13" fill="#e5e7eb" text-anchor="middle" font-weight="bold">MCU</text>
+<text x="65" y="130" font-size="12" fill="#e5e7eb" text-anchor="middle">controller</text>
+<rect x="330" y="80" width="110" height="74" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="385" y="108" font-size="13" fill="#e5e7eb" text-anchor="middle" font-weight="bold">MPU-6050</text>
+<text x="385" y="126" font-size="12" fill="#e5e7eb" text-anchor="middle">target 0x68</text>
+<text x="385" y="142" font-size="11" fill="#e5e7eb" text-anchor="middle">(AD0 low)</text>
+<line x1="110" y1="104" x2="330" y2="104" stroke="#e5e7eb" stroke-width="2"/>
+<line x1="110" y1="134" x2="330" y2="134" stroke="#e5e7eb" stroke-width="2"/>
+<text x="120" y="98" font-size="11" fill="#e5e7eb" text-anchor="start">SDA</text>
+<text x="120" y="128" font-size="11" fill="#e5e7eb" text-anchor="start">SCL</text>
+<line x1="150" y1="52" x2="270" y2="52" stroke="#d97936" stroke-width="3"/>
+<text x="210" y="46" font-size="12" fill="#d97936" text-anchor="middle">Vcc (3.3 V)</text>
+<line x1="180" y1="52" x2="180" y2="66" stroke="#d97936" stroke-width="2"/>
+<rect x="173" y="66" width="14" height="26" rx="8" fill="#191b1f" stroke="#d97936" stroke-width="2"/>
+<line x1="180" y1="92" x2="180" y2="104" stroke="#d97936" stroke-width="2"/>
+<circle cx="180" cy="104" r="3.5" fill="#d97936"/>
+<line x1="240" y1="52" x2="240" y2="66" stroke="#d97936" stroke-width="2"/>
+<rect x="233" y="66" width="14" height="26" rx="8" fill="#191b1f" stroke="#d97936" stroke-width="2"/>
+<line x1="240" y1="92" x2="240" y2="134" stroke="#d97936" stroke-width="2"/>
+<circle cx="240" cy="134" r="3.5" fill="#d97936"/>
+<text x="206" y="84" font-size="12" fill="#d97936" text-anchor="start">Rp</text>
+<text x="268" y="84" font-size="12" fill="#d97936" text-anchor="start">Rp</text>
+<text x="600" y="76" font-size="12" fill="#e5e7eb" text-anchor="middle" style="font-size:10.77px">open-drain: thiết bị chỉ kéo đường xuống thấp</text>
+<text x="600" y="96" font-size="12" fill="#e5e7eb" text-anchor="middle">điện trở kéo nó lên cao</text>
+<text x="600" y="122" font-size="12" fill="#e5e7eb" text-anchor="middle">địa chỉ 0x68 = 7 bit; byte trên dây = 0xD0 (W) / 0xD1 (R)</text>
+<text x="600" y="142" font-size="12" fill="#e5e7eb" text-anchor="middle">100 kHz chuẩn, 400 kHz nhanh: Rp giới hạn thời gian lên</text>
+<rect x="77.0" y="200" width="22" height="40" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="88.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">S</text>
+<rect x="103.0" y="200" width="62" height="40" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="134.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">0x68 W</text>
+<rect x="169.0" y="200" width="22" height="40" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="180.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">A</text>
+<rect x="195.0" y="200" width="52" height="40" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="221.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">0x3B</text>
+<rect x="251.0" y="200" width="22" height="40" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="262.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">A</text>
+<rect x="277.0" y="200" width="26" height="40" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="290.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">Sr</text>
+<rect x="307.0" y="200" width="62" height="40" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="338.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">0x68 R</text>
+<rect x="373.0" y="200" width="22" height="40" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="384.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">A</text>
+<rect x="399.0" y="200" width="232" height="40" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="515.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold" style="font-size:11.19px">14 byte dữ liệu, MSB trước</text>
+<rect x="635.0" y="200" width="22" height="40" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="646.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">N</text>
+<rect x="661.0" y="200" width="22" height="40" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="672.0" y="225" font-size="12" fill="#e5e7eb" text-anchor="middle">P</text>
+<text x="380" y="186" font-size="12" fill="#e5e7eb" text-anchor="middle" style="font-size:9.36px">controller điều khiển (xanh dương)  /  target điều khiển (xanh lá)</text>
+<line x1="103.0" y1="250" x2="273.0" y2="250" stroke="#53b2dd" stroke-width="2"/>
+<text x="188.0" y="268" font-size="12" fill="#53b2dd" text-anchor="middle">pha ghi: đặt con trỏ thanh ghi = 0x3B</text>
+<line x1="307.0" y1="250" x2="631.0" y2="250" stroke="#9ccd4e" stroke-width="2"/>
+<text x="469.0" y="268" font-size="12" fill="#9ccd4e" text-anchor="middle">pha đọc: con trỏ tự tăng đến 0x48</text>
+<rect x="20" y="292" width="720" height="140" rx="8" fill="#191b1f" stroke="#e5e7eb" stroke-width="1"/>
+<text x="30" y="312" font-size="13" fill="#e5e7eb" text-anchor="start" font-weight="bold">Thanh ghi MPU-6050 (trích)</text>
+<text x="32" y="334" font-size="12" fill="#d97936" text-anchor="start" font-weight="bold">0x75</text>
+<text x="112" y="334" font-size="12" fill="#e5e7eb" text-anchor="start" font-weight="bold">WHO_AM_I</text>
+<text x="250" y="334" font-size="11.5" fill="#e5e7eb" text-anchor="start" style="font-size:10.28px">đọc ra 0x68 (kiểm tra danh tính)</text>
+<text x="32" y="353" font-size="12" fill="#d97936" text-anchor="start" font-weight="bold">0x6B</text>
+<text x="112" y="353" font-size="12" fill="#e5e7eb" text-anchor="start" font-weight="bold">PWR_MGMT_1</text>
+<text x="250" y="353" font-size="11.5" fill="#e5e7eb" text-anchor="start" style="font-size:11.2px">reset 0x40 = SLEEP bật; ghi 0x00 để đánh thức</text>
+<text x="32" y="372" font-size="12" fill="#d97936" text-anchor="start" font-weight="bold">0x1C</text>
+<text x="112" y="372" font-size="12" fill="#e5e7eb" text-anchor="start" font-weight="bold">ACCEL_CONFIG</text>
+<text x="250" y="372" font-size="11.5" fill="#e5e7eb" text-anchor="start">bit 4:3 AFS_SEL: 0..3 = +-2/4/8/16 g = 16384/8192/4096/2048 LSB/g</text>
+<text x="32" y="391" font-size="12" fill="#d97936" text-anchor="start" font-weight="bold">0x1B</text>
+<text x="112" y="391" font-size="12" fill="#e5e7eb" text-anchor="start" font-weight="bold">GYRO_CONFIG</text>
+<text x="250" y="391" font-size="11.5" fill="#e5e7eb" text-anchor="start">bit 4:3 FS_SEL: 0..3 = +-250/500/1000/2000 deg/s = 131/65.5/32.8/16.4 LSB</text>
+<text x="32" y="410" font-size="12" fill="#d97936" text-anchor="start" font-weight="bold">0x3B-0x48</text>
+<text x="112" y="410" font-size="12" fill="#e5e7eb" text-anchor="start" font-weight="bold">ACCEL, TEMP, GYRO</text>
+<text x="250" y="410" font-size="11.5" fill="#e5e7eb" text-anchor="start">7 x int16, big-endian: ax ay az temp gx gy gz; T(C) = raw/340 + 36.53</text>
+</svg>

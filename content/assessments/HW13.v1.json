@@ -1,0 +1,225 @@
+{
+  "id": "HW13-diagnostic",
+  "topicId": "HW13",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Which motor family is the natural first choice for holding a camera steady at near-zero speed, driven directly with no gearbox?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "A propeller outrunner with an ESC.",
+        "A high-resistance gimbal BLDC motor with a FOC driver and encoder.",
+        "A brushed gearmotor with a 160:1 gearbox.",
+        "A hobby servo with 20 kg-cm on the label."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "gimbal-vs-prop"
+      ],
+      "skillLabel": "Gimbal versus propeller motor",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05"
+      ],
+      "explanation": "A gimbal motor has a high winding resistance (order 10 ohm), so the stall current at a few volts is small and the heat is manageable; a propeller motor of about 0.07 ohm would draw over 100 A at 11 V."
+    },
+    {
+      "id": "q2",
+      "prompt": "A datasheet lists 30 kg-cm of stall torque. Give it in N m (1 kg-cm = 0.0980665 N m). Precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.942",
+      "tolerance": 0.005,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "unit-conversion"
+      ],
+      "skillLabel": "Torque and speed units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05"
+      ],
+      "explanation": "30 x 0.0980665 = 2.942 N m."
+    },
+    {
+      "id": "q3",
+      "prompt": "A joint needs 0.6 N m continuously and the motor's stall torque is 2.4 N m. What fraction of the stall torque is the working torque (as a fraction, not a percent)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.25",
+      "tolerance": 0.005,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stall-vs-working"
+      ],
+      "skillLabel": "Stall torque versus working torque",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05"
+      ],
+      "explanation": "0.6 / 2.4 = 0.25, about the quarter-to-a-third guideline of HW05."
+    },
+    {
+      "id": "q4",
+      "prompt": "A motor has a no-load speed of 120 rpm and a stall torque of 3 N m at its rated voltage. Using the two-point line, give its speed at a 0.75 N m load, in rpm. Precision 0.5.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "90",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "joint-fit-check"
+      ],
+      "skillLabel": "Joint fit check",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05"
+      ],
+      "explanation": "120 x (1 - 0.75/3) = 90 rpm."
+    },
+    {
+      "id": "q5",
+      "prompt": "What does a coreless (ironless) brushed motor remove, and what is the main consequence?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The magnets; it becomes a stepper.",
+        "The brushes; it needs no driver.",
+        "The iron core; it has no cogging and a light, fast rotor.",
+        "The gearbox; it turns at the load speed."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "coreless-brushless"
+      ],
+      "skillLabel": "Coreless, brushless and commutation",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05"
+      ],
+      "explanation": "No iron core means no iron teeth, so no cogging, much lower rotor inertia and low winding inductance (maxon academy, DC motor, p. 6 to 7)."
+    },
+    {
+      "id": "q6",
+      "prompt": "A rotor of 2e-6 kg m^2 sits behind a 50:1 gearbox. Give the reflected inertia at the output in kg m^2. Precision 0.0001.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.005",
+      "tolerance": 0.0001,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "reflected-inertia"
+      ],
+      "skillLabel": "Reflected inertia and QDD",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW13#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05"
+      ],
+      "explanation": "J_refl = N^2 J = 2500 x 2e-6 = 0.005 kg m^2."
+    },
+    {
+      "id": "q7",
+      "prompt": "A vertical axis must not fall when the power is cut. Which transmission choice can do that without a brake, in principle?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A ball screw (about 90 percent forward, 80 percent backdrive efficiency).",
+        "A lead screw whose lead angle is smaller than the friction angle.",
+        "A 5:1 planetary gearhead.",
+        "A harmonic drive in a 100:1 ratio."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "self-locking"
+      ],
+      "skillLabel": "Self-locking and backdriving",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade-offs",
+          "href": "/lessons/HW13#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05"
+      ],
+      "explanation": "A screw (or worm) whose lead angle is below the friction angle is self-locking; ball screws and low-ratio gears backdrive, and even self-locking pairs come with no guarantee (Boston Gear, Roton)."
+    },
+    {
+      "id": "q8",
+      "prompt": "Pick a motor family and a transmission for (a) a quadruped leg joint and (b) the vertical axis of a small pick-and-place machine, and say why they differ.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Leg: a large-gap BLDC with a low-ratio planetary (quasi-direct drive) and FOC, chosen for backdrivability and impact tolerance.",
+        "Vertical axis: a screw or belt axis with a stepper or servo, with a self-locking screw or a brake so the load holds when power is lost.",
+        "States the contrast: a joint that must react to contact is backdrivable, an axis that must hold a load is not."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "motor-family-map"
+      ],
+      "skillLabel": "Motor family and job",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: alternatives and trade-offs",
+          "href": "/lessons/HW13#alternatives-and-trade-offs"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW05"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

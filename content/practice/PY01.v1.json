@@ -160,6 +160,84 @@
         "Give a reference result, boundary tests, and a mutation that your tests reject.",
         "Record source version and exact commands; import a supported report separately."
       ]
+    },
+    {
+      "id": "c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "float-summation-error"
+      ],
+      "skillLabel": "First-order error bound for naive float summation",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "prompt": "Using the first-order bound |s_hat - s| <= (n-1) u sum|x_i| with u = 2^-53, what is the bound for adding n = 1000 terms, each equal to 0.1, with a plain left-to-right loop? Give the answer in units of 1e-11 (three significant figures).",
+      "answer": "1.109",
+      "tolerance": 0.01,
+      "explanation": "sum|x_i| = 1000 * 0.1 = 100 and n - 1 = 999, so the bound is 999 * 2^-53 * 100 = 99900 * 1.1102230246e-16 = 1.1091e-11, i.e. 1.109 in units of 1e-11. This is a worst-case bound; the measured error for this input was 1.41e-12, about 8 times smaller, because the individual rounding errors have mixed signs.",
+      "relatedPrerequisites": [],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY01#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "float-summation-error"
+      ],
+      "skillLabel": "Running-sum window update in floating point",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "prompt": "The O(n) moving average keeps s = s + v[i+k] - v[i] and divides by k. On Python floats with v = [1e16, 1, 1, 1] and k = 2, which list does it return?",
+      "options": [
+        "[5e15, 1.0, 1.0], the same as recomputing each window, since the update is algebraically exact",
+        "[5e15, 0.0, 0.0], because 1e16 + 1 rounds to 1e16 and the lost 1 is never recovered",
+        "[5e15, 0.5, 1.0], because the error shrinks as the large value leaves the window",
+        "[5e15, 0.0, 1.0], because only the first window after the large value is affected"
+      ],
+      "answer": "1",
+      "explanation": "The first window sum 1e16 + 1 is not representable (floats near 1e16 are 2 apart) and ties round to even, giving 1e16. The update then computes (1e16 + 1) - 1e16 = 1e16 - 1e16 = 0 and later 0 + 1 - 1 = 0, so every later window is 0.0 although the true window means are 1.0. The update is exact in real arithmetic, not in floats: the rounding error stays in s forever. Recomputing each window (or math.fsum) returns [5e15, 1.0, 1.0].",
+      "relatedPrerequisites": [],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY01#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c3",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "robust-statistics"
+      ],
+      "skillLabel": "Median robustness proof",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "prompt": "Let n = 2m + 1 readings be sorted. Prove that if at most m of them are corrupted (replaced by arbitrary values), the median stays between the smallest and largest clean readings. Then show that m + 1 corrupted readings can move it arbitrarily far, and explain why the mean offers no such guarantee.",
+      "explanation": "Rubric-guided proof. Model answer: the median M is the (m+1)-th smallest value, so exactly m values come before it and m after. With at most m corrupted there are at least m+1 clean values. If M > max(clean), all m+1 clean values would precede M, but only m values do: contradiction; symmetrically M < min(clean) is impossible. With m+1 corrupted values all set to L > max(clean), at most m clean values fill positions 1..m, so positions m+1..n all hold L and M = L, arbitrary. The mean changes by exactly Delta/n when one value changes by Delta, unbounded in Delta, so a single corrupted reading suffices.",
+      "rubric": [
+        "States that the median is the (m+1)-th smallest value with exactly m values on each side.",
+        "Argues by contradiction that M > max(clean) would need m+1 values before M, which is impossible, and handles the symmetric case.",
+        "Constructs the m+1 corrupted counterexample where the median equals the arbitrary value L.",
+        "Shows the mean moves by Delta/n for one corrupted reading, so it has breakdown at a single value."
+      ],
+      "relatedPrerequisites": [],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY01#theory-and-derivation"
+        }
+      ],
+      "critical": false
     }
   ]
 }

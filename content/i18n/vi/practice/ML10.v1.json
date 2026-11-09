@@ -81,6 +81,24 @@
     "Dùng log-sum-exp (trừ giá trị lớn nhất của hàng) và lấy đường chéo làm cặp dương: loss = mean(logsumexp(row) − diag).",
     "Kiểm thử: các cặp trực giao giống hệt cho log(1+e^(-1/tau)); collapse cho log N."
    ]
+  },
+  "c1": {
+   "prompt": "Một batch kiểu SimCLR có 128 ảnh, nên mỗi anchor được phân loại trong 2*128 - 1 = 255 ứng viên (một positive, 254 negative). Loss đo được là 2.0 nat. Cận dưới log(255) - loss của thông tin tương hỗ (mutual information) là bao nhiêu nat? (số thập phân, sai số cho phép 0.01)",
+   "explanation": "Cận InfoNCE là I >= log(số ứng viên) - L. Với 255 ứng viên, ln 255 = 5.5413, nên cận là 5.5413 - 2.0 = 3.5413 nat. Cận không bao giờ vượt quá ln 255 = 5.54 nat dù loss bằng bao nhiêu."
+  },
+  "c2": {
+   "prompt": "Một anchor, bốn ứng viên với độ tương đồng (0.8, 0.1, 0.1, 0.7), ứng viên đầu là positive, nhiệt độ tau = 0.1. Đạo hàm của loss theo độ tương đồng của negative 0.7 là bao nhiêu? (số thập phân, sai số cho phép 0.01)",
+   "explanation": "d loss / d s_ij = (p_ij - delta_ij)/tau. Các logit là (8, 1, 1, 7); trọng số softmax là (0.73009, 0.00067, 0.00067, 0.26858). Với negative 0.7, đạo hàm là 0.26858/0.1 = 2.6858. Hai negative dễ chỉ nhận 0.0067 mỗi cái, tỉ lệ e^6 = 403."
+  },
+  "c3": {
+   "prompt": "Trong SimCLR, vì sao kết hợp random cropping với colour distortion tốt hơn nhiều so với chỉ random cropping?",
+   "options": [
+    "Các crop của cùng một ảnh có histogram màu giống nhau, nên mạng có thể ghép các view bằng thống kê màu thay vì học cấu trúc vật thể",
+    "Colour distortion làm ảnh nhỏ đi, nhờ đó batch chứa được nhiều negative hơn",
+    "Chỉ cropping làm đổi nhãn của ảnh, còn colour distortion khôi phục lại nhãn",
+    "Colour distortion loại bỏ nhu cầu về tham số nhiệt độ trong loss"
+   ],
+   "explanation": "Các random crop của một ảnh thường có cùng phân bố màu, và chỉ riêng histogram màu đã đủ để nhận diện ảnh, nên tác vụ contrastive có đường tắt (shortcut). Colour distortion loại bỏ đường tắt đó; tác vụ pretext khó hơn nhưng biểu diễn tốt hơn (Chen et al., SimCLR, mục 3). Các lựa chọn khác không phải cơ chế của phương pháp: kích thước ảnh không đổi số negative, crop không đổi nhãn trong thiết lập chuẩn, và nhiệt độ vẫn cần thiết."
   }
  }
 }

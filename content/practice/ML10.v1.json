@@ -334,6 +334,77 @@
         "q1"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A SimCLR-style batch has 128 images, so each anchor is classified among 2*128 - 1 = 255 candidates (one positive, 254 negatives). The measured loss is 2.0 nats. What lower bound log(255) - loss on the mutual information does this give, in nats? (decimal, tolerance 0.01)",
+      "kind": "number",
+      "answer": "3.5413",
+      "tolerance": 0.01,
+      "explanation": "The InfoNCE bound is I >= log(N_candidates) - L. With 255 candidates, ln 255 = 5.5413, so the bound is 5.5413 - 2.0 = 3.5413 nats. The bound can never exceed ln 255 = 5.54 nats whatever the loss.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "infonce-loss"
+      ],
+      "skillLabel": "Computing the InfoNCE loss",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "One anchor, four candidates with similarities (0.8, 0.1, 0.1, 0.7) where the first is the positive, temperature tau = 0.1. What is d(loss)/d(similarity of the 0.7 negative)? (decimal, tolerance 0.01)",
+      "kind": "number",
+      "answer": "2.6858",
+      "tolerance": 0.01,
+      "explanation": "d loss / d s_ij = (p_ij - delta_ij)/tau. Logits are (8, 1, 1, 7); softmax weights are (0.73009, 0.00067, 0.00067, 0.26858). For the 0.7 negative the derivative is 0.26858/0.1 = 2.6858. The two easy negatives get only 0.0067 each, a ratio of e^6 = 403.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "infonce-loss"
+      ],
+      "skillLabel": "Computing the InfoNCE loss",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "In SimCLR, why is composing random cropping with colour distortion much better than random cropping alone?",
+      "kind": "choice",
+      "options": [
+        "Crops of the same image share a similar colour histogram, so the network can match views by colour statistics instead of learning object structure",
+        "Colour distortion makes the images smaller, which lets the batch contain more negative examples",
+        "Cropping alone changes the label of the image, and colour distortion restores it",
+        "Colour distortion removes the need for a temperature parameter in the loss"
+      ],
+      "answer": "0",
+      "explanation": "Random crops of one image tend to have the same colour distribution, and colour histograms alone can identify images, so the contrastive task has a shortcut. Colour distortion removes the shortcut; the pretext task becomes harder but the representation improves (Chen et al., SimCLR, section 3). The other options are not mechanisms of the method: image size does not change the number of negatives, crops do not change labels in the standard setting, and the temperature is still needed.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "augmentation-semantics"
+      ],
+      "skillLabel": "Augmentation as invariance",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML10#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

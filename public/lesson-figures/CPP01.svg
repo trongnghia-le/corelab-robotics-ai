@@ -1,22 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" font-family="Inter, Arial, sans-serif" font-size="14">
-<rect width="720" height="340" fill="#111827" rx="12"/>
-<g fill="#e5e7eb">
-<text x="30" y="36" font-size="15" font-weight="bold">std::vector&lt;double&gt; v{2.0, 4.0, 6.0}</text>
-<text x="52" y="136" text-anchor="middle">v[0]</text><text x="122" y="136" text-anchor="middle">v[1]</text><text x="192" y="136" text-anchor="middle">v[2]</text>
-<text x="262" y="136" text-anchor="middle" fill="#f97316">v[3]</text>
-<text x="52" y="107" text-anchor="middle" font-size="16">2.0</text><text x="122" y="107" text-anchor="middle" font-size="16">4.0</text><text x="192" y="107" text-anchor="middle" font-size="16">6.0</text>
-<text x="262" y="107" text-anchor="middle" fill="#f97316" font-size="16">?</text>
-<text x="30" y="186" fill="#a3e635">size() = 3, valid indices 0 .. 2</text>
-<text x="30" y="210" fill="#f97316">v[3] is undefined behaviour; v.at(3) throws</text>
-<text x="30" y="260" fill="#38bdf8">last valid index = size() - 1</text>
-<text x="30" y="284" fill="#e5e7eb">(size_t is unsigned: 0 - 1 wraps around)</text>
-<text x="380" y="36" font-size="15" font-weight="bold">Division depends on operand types</text>
-<text x="396" y="104">5 / 2</text><text x="396" y="124" fill="#38bdf8">int / int</text><text x="620" y="112" fill="#f97316" font-size="18">2</text>
-<text x="396" y="174">5.0 / 2</text><text x="396" y="194" fill="#38bdf8">double / int</text><text x="620" y="182" fill="#a3e635" font-size="18">2.5</text>
-<text x="396" y="244">double(5) / 2</text><text x="396" y="264" fill="#38bdf8">static_cast first</text><text x="620" y="252" fill="#a3e635" font-size="18">2.5</text>
-<text x="396" y="304" font-size="13">double r = 5 / 2;  holds 2.0</text>
-</g>
-<g fill="none" stroke-width="2"><rect x="22" y="70" width="60" height="50" stroke="#38bdf8"/><rect x="92" y="70" width="60" height="50" stroke="#38bdf8"/><rect x="162" y="70" width="60" height="50" stroke="#38bdf8"/><rect x="232" y="70" width="60" height="50" stroke="#f97316" stroke-dasharray="5 4"/></g>
-<g stroke="#e5e7eb" stroke-width="1" opacity="0.4"><line x1="350" y1="50" x2="350" y2="320"/></g>
-<g stroke="#e5e7eb" stroke-width="2"><line x1="520" y1="108" x2="600" y2="108"/><line x1="520" y1="178" x2="600" y2="178"/><line x1="520" y1="248" x2="600" y2="248"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="Inter, sans-serif">
+<title>Types decide the arithmetic and the valid indices</title>
+<desc>Left: a vector of three doubles in memory with the cell after the last element marked as outside; right: three divisions and the type that each one uses.</desc>
+<rect width="900" height="420" rx="14" fill="#17181b"/>
+<defs><marker id="c01-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" font-weight="700">Types decide the arithmetic and the valid indices</text>
+<rect x="32" y="72" width="420" height="316" rx="10" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<rect x="476" y="72" width="392" height="316" rx="10" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="52" y="104" font-size="17" fill="#e9e7e3" font-weight="700">std::vector&lt;double&gt; v{2.0, 4.0, 6.0}</text>
+<text x="496" y="104" font-size="17" fill="#e9e7e3" font-weight="700">Division follows the operand types</text>
+<rect x="52" y="150" width="88" height="56" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="96" y="184" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">2.0</text>
+<text x="96" y="140" font-size="14" fill="#a7adb5" text-anchor="middle">+0 B</text>
+<text x="96" y="230" font-size="15" fill="#86abe2" text-anchor="middle">v[0]</text>
+<rect x="140" y="150" width="88" height="56" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="184" y="184" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">4.0</text>
+<text x="184" y="140" font-size="14" fill="#a7adb5" text-anchor="middle">+8 B</text>
+<text x="184" y="230" font-size="15" fill="#86abe2" text-anchor="middle">v[1]</text>
+<rect x="228" y="150" width="88" height="56" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="272" y="184" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">6.0</text>
+<text x="272" y="140" font-size="14" fill="#a7adb5" text-anchor="middle">+16 B</text>
+<text x="272" y="230" font-size="15" fill="#86abe2" text-anchor="middle">v[2]</text>
+<rect x="316" y="150" width="88" height="56" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="360" y="184" font-size="15" fill="#e58a80" font-weight="600" text-anchor="middle">?</text>
+<text x="360" y="140" font-size="14" fill="#a7adb5" text-anchor="middle">+24 B</text>
+<text x="360" y="230" font-size="15" fill="#e58a80" text-anchor="middle">v[3]</text>
+<text x="360" y="250" font-size="14" fill="#e58a80" text-anchor="middle">outside</text>
+<line x1="52" y1="262" x2="316" y2="262" stroke="#6fc693" stroke-width="2"/>
+<text x="52" y="290" font-size="15" fill="#6fc693">size() = 3, valid indices 0 .. 2</text>
+<text x="52" y="316" font-size="15" fill="#e58a80">v[3]: undefined behaviour, v.at(3) throws</text>
+<text x="52" y="342" font-size="15" fill="#e9e7e3">last valid index = size() - 1</text>
+<text x="52" y="368" font-size="14" fill="#a7adb5">size() is unsigned: 0 - 1 wraps to 2^64 - 1</text>
+<text x="496" y="150" font-size="15" fill="#e9e7e3" font-weight="600" font-family="ui-monospace, Menlo, monospace">5 / 2</text>
+<text x="496" y="172" font-size="14" fill="#a7adb5">int / int</text>
+<text x="844" y="158" font-size="15" fill="#e0904f" font-weight="700" text-anchor="end">2</text>
+<line x1="496" y1="190" x2="844" y2="190" stroke="#2c3036" stroke-width="1"/>
+<text x="496" y="218" font-size="15" fill="#e9e7e3" font-weight="600" font-family="ui-monospace, Menlo, monospace">5.0 / 2</text>
+<text x="496" y="240" font-size="14" fill="#a7adb5">double / int</text>
+<text x="844" y="226" font-size="15" fill="#6fc693" font-weight="700" text-anchor="end">2.5</text>
+<line x1="496" y1="258" x2="844" y2="258" stroke="#2c3036" stroke-width="1"/>
+<text x="496" y="286" font-size="15" fill="#e9e7e3" font-weight="600" font-family="ui-monospace, Menlo, monospace">double(5) / 2</text>
+<text x="496" y="308" font-size="14" fill="#a7adb5">cast first, then divide</text>
+<text x="844" y="294" font-size="15" fill="#6fc693" font-weight="700" text-anchor="end">2.5</text>
+<text x="496" y="362" font-size="14" fill="#a7adb5">double r = 5 / 2;  stores 2.0, not 2.5</text>
 </svg>

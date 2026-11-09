@@ -336,6 +336,82 @@
         "q3"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A history has 5,000 linear commits; commit 1 is known good and commit 5,000 known bad. What is the maximum number of test runs that git bisect needs to find the first bad commit? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "13",
+      "tolerance": 0.5,
+      "explanation": "The first bad commit is one of commits 2..5000, that is 4,999 candidates. Each yes/no test at most halves the candidate set, so the worst case is ceil(log2 4999). Since 2^12 = 4096 < 4999 <= 8192 = 2^13, the answer is 13. Using 5,000 or 4,999 candidates gives the same result; using log2(5000) without the ceiling (12.3) or counting only the 4096 power gives 12, which is too few.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisect-steps"
+      ],
+      "skillLabel": "Binary search over commit history",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A directory contains a subdirectory named a and a file named a.txt. In the tree object of that directory, which entry is stored first and why?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "a first, because plain alphabetical order puts the shorter name first",
+        "a first, because trees list all directories before all files",
+        "a.txt first, because entries are sorted as if directory names ended with a slash and '.' sorts before '/'",
+        "The order is the order in which the files were added to the index"
+      ],
+      "answer": "2",
+      "explanation": "Git sorts tree entries by name, treating a directory name as if it had a trailing '/'. Comparing 'a.txt' with 'a/' the first difference is '.' (0x2e) against '/' (0x2f), so a.txt comes first. This matters because the tree id is a hash of the serialised bytes: a different order gives a different id. Plain alphabetical order and 'directories first' are common wrong assumptions.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "tree-objects"
+      ],
+      "skillLabel": "Tree object layout and ordering",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "The working file contains v5, the index v4 and HEAD (commit c3) v3. You run git reset --mixed HEAD~1, where c2 has v2. What are HEAD's file, the index and the working file afterwards?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "HEAD v2, index v4, working v5",
+        "HEAD v2, index v2, working v2",
+        "HEAD v3, index v3, working v5",
+        "HEAD v2, index v2, working v5"
+      ],
+      "answer": "3",
+      "explanation": "reset has three steps: move HEAD (and its branch), then make the index match the new HEAD (mixed stops here), then, only for --hard, make the working directory match. So HEAD becomes c2 (v2), the index becomes v2 (the staged v4 is discarded), and the working file stays v5. Option 1 describes --soft, option 2 describes --hard.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "reset-three-trees"
+      ],
+      "skillLabel": "The three steps of git reset",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T02#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

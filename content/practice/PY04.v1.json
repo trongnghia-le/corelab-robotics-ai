@@ -89,17 +89,17 @@
       ],
       "id": "n4",
       "kind": "choice",
-      "prompt": "After a = np.arange(6.); b = a[1:4]; b[0] = 99, and separately c = a[[1,2,3]]; c[0] = -5, which statement is true about a?",
+      "prompt": "x = np.arange(8.); v = x[2:5]; v[1] = 7; w = x[[2, 3, 4]]; w[0] = -9. What is x afterwards?",
       "dimension": "C",
       "critical": true,
       "options": [
-        "Both writes change a",
-        "Only the write through b changes a",
-        "Neither write changes a",
-        "Only the write through c changes a"
+        "[0. 1. -9. 7. 4. 5. 6. 7.]",
+        "[0. 1. 2. 7. 4. 5. 6. 7.]",
+        "[0. 1. 2. 3. 4. 5. 6. 7.]",
+        "[0. 1. -9. 3. 4. 5. 6. 7.]"
       ],
       "answer": "1",
-      "explanation": "Basic slicing returns a view (writes go through to a); fancy indexing with a list returns a copy."
+      "explanation": "v = x[2:5] is a view, so v[1] = 7 writes x[3] = 7. w = x[[2, 3, 4]] uses a list of indices and is a copy, so w[0] = -9 does not touch x. Result: [0. 1. 2. 7. 4. 5. 6. 7.]."
     },
     {
       "knowledgeType": "procedure",
@@ -259,17 +259,17 @@
       ],
       "id": "n11",
       "kind": "choice",
-      "prompt": "x = np.zeros(3, dtype=int); x[:] = 1.9; print(x). What is printed?",
+      "prompt": "y = np.array([7, 8, 9]); y[2] = -3.8; print(y). What is printed?",
       "dimension": "C",
       "critical": false,
       "options": [
         "An error is raised",
-        "[1.9 1.9 1.9]",
-        "[1 1 1]",
-        "[2 2 2]"
+        "[ 7  8 -4]",
+        "[ 7.   8.  -3.8]",
+        "[ 7  8 -3]"
       ],
-      "answer": "2",
-      "explanation": "Assigning floats into an int array truncates toward zero: [1 1 1]."
+      "answer": "3",
+      "explanation": "Assigning a float into an integer array casts it to the array's dtype by truncation toward zero: -3.8 becomes -3, so [ 7  8 -3]; no error is raised and the array stays integer."
     },
     {
       "knowledgeType": "procedure",
@@ -292,6 +292,80 @@
       "answer": "38.5",
       "tolerance": 0.1,
       "explanation": "64*224*224*3*4 B = 38,535,168 B = 38.5 MB."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "advanced-indexing"
+      ],
+      "skillLabel": "Shape of advanced indexing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "choice",
+      "prompt": "x has shape (4,5,6) and m is a boolean array of shape (4,5) with exactly 7 True entries. What is the shape of x[m]?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "(4, 5, 6)",
+        "(7,)",
+        "(7, 6)",
+        "(6, 7)"
+      ],
+      "answer": "2",
+      "explanation": "A boolean mask of shape (4,5) indexes the first two axes together; it is equivalent to the 7 pairs of integer indices (via m.nonzero()). The 7 selected pairs replace axes 0 and 1 with one axis of length 7, and the remaining axis stays: (7, 6). The result is a copy."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "floating-point-cancellation"
+      ],
+      "skillLabel": "Rounding spacing near large values",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "Points a=(1.5e7,1.5e7) and b=a+(0.2,0) are 0.2 apart. Computing |a|²+|b|²-2a·b in float64 involves |a|² = 4.5e14. What is the spacing between adjacent float64 values there? Give a decimal.",
+      "answer": "0.0625",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.0001,
+      "explanation": "Doubles have 52 stored fraction bits. Numbers in [2^48, 2^49) = [2.8e14, 5.6e14) are spaced 2^(48-52) = 0.0625 apart, and |a|² = 4.5e14 lies there. The squared distance is only 0.04, smaller than that spacing, so the expansion cannot resolve it, whereas ((a-b)**2).sum() is accurate."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "vectorized-normalization"
+      ],
+      "skillLabel": "Memory-safe pairwise distances",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY04#failure-modes"
+        }
+      ],
+      "id": "c3",
+      "kind": "short",
+      "prompt": "You must compute the nearest neighbour of each of 200 000 3D points (coordinates around 1e6, float64). A full (N, N) distance matrix is impossible. Design a vectorised solution and name two numerical or memory pitfalls you guard against.",
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified.",
+      "rubric": [
+        "Processes the points in blocks of rows (for example 1000 x N distances at a time) and keeps only a running argmin and min per row, so peak memory is block x N, not N x N.",
+        "Centres the coordinates (subtracts the mean) before using the expansion |a|²+|b|²-2a·b, or uses differences, because with coordinates near 1e6 and small neighbour distances the expansion suffers catastrophic cancellation.",
+        "Clips squared distances at 0 before sqrt, excludes the self-match (distance 0 on the diagonal of each block), and verifies on a small case against a brute-force broadcast version (or a KD-tree)."
+      ]
     }
   ]
 }

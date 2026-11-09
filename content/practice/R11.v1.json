@@ -398,6 +398,90 @@
         "Concludes contact is the channel by which actuators influence the base."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "A robot on flat ground with mu = 0.4 must accelerate its centre of mass forward at 4 m/s^2. What is the minimum upward centre-of-mass acceleration z'' (m/s^2) for which the friction bound |x''| <= mu (z'' + g) allows it? Use g = 9.81.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "friction-limit"
+      ],
+      "skillLabel": "Friction bound with vertical acceleration",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Friction bound with vertical acceleration",
+          "href": "/lessons/R11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "answer": "0.19",
+      "tolerance": 0.01,
+      "explanation": "From |x''| <= mu(z'' + g): 4 <= 0.4 (z'' + 9.81), so z'' >= 4/0.4 - 9.81 = 10 - 9.81 = 0.19 m/s^2. At constant height the bound is mu g = 3.924 < 4, so the push is impossible; the robot must press into the ground slightly harder than its weight."
+    },
+    {
+      "id": "c2",
+      "prompt": "A 30 kg robot has its centre of mass 0.9 m above flat ground and accelerates with x'' = 2 m/s^2 and z'' = 1.5 m/s^2 with zero angular acceleration. Using (m z'' + m g)(x_cp - x) = (z_cp - z) m x'' - I theta'', find the horizontal offset x_cp - x (in m) of the centre of pressure from the centre of mass. Use g = 9.81.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contact-wrench"
+      ],
+      "skillLabel": "Centre of pressure from moment balance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Centre of pressure from moment balance",
+          "href": "/lessons/R11#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "answer": "-0.159",
+      "tolerance": 0.002,
+      "explanation": "With theta'' = 0 and z_cp = 0: (30 * 1.5 + 30 * 9.81)(x_cp - x) = (0 - 0.9) * 30 * 2, i.e. 339.3 (x_cp - x) = -54. Hence x_cp - x = -54/339.3 = -0.159 m: the CoP is 0.159 m behind the centre of mass. A common error is to use the ZMP shortcut with z'' = 0, which gives -0.1835 and ignores the extra vertical force."
+    },
+    {
+      "id": "c3",
+      "prompt": "A standing robot (mu = 0.6, centre of mass 0.9 m high, foot reaching 0.25 m behind the centre of mass) accelerates forward at constant height. Its maximum acceleration is limited by the centre-of-pressure condition (2.725 m/s^2), not by friction (5.886 m/s^2). Which change raises the maximum forward acceleration?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "friction-limit",
+        "contact-wrench"
+      ],
+      "skillLabel": "Which constraint binds",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Which constraint binds",
+          "href": "/lessons/R11#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R07",
+        "R08"
+      ],
+      "options": [
+        "Fit higher-friction soles (increase mu)",
+        "Use motors with a higher torque limit",
+        "Lengthen the foot behind the centre of mass",
+        "Make the robot heavier"
+      ],
+      "answer": "2",
+      "explanation": "At constant height the ZMP relation gives x''_max = g * l_b / z, with l_b the reach of the foot behind the centre of mass; lengthening the heel side raises it. More friction does not help because friction is not the binding constraint (5.886 > 2.725). Motor torque does not enter the base rows of the dynamics, and mass cancels in x'' = g (x - x_cp)/z."
     }
   ]
 }

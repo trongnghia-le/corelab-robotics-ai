@@ -181,7 +181,7 @@ export function curriculumPreview() {
       sourceHash: z.string().length(64),
       nodes: z
         .array(z.object({ id, prerequisites: z.array(id) }).strict())
-        .length(197),
+        .length(200),
     })
     .strict()
     .parse(

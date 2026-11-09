@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 425" font-family="Inter, Arial, sans-serif">
+<rect width="760" height="425" fill="#191b1f" rx="12"/>
+<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Giao diện hai lớp</text>
+<g font-size="14" text-anchor="middle">
+<rect x="30" y="50" width="300" height="56" rx="8" fill="none" stroke="#53b2dd" stroke-width="2"/>
+<text x="180" y="74" fill="#53b2dd" style="font-size:10.92px">mã người dùng (compiler nào cũng được)</text><text x="180" y="94" font-size="13" fill="#e5e7eb">Arm a(3); a.set(1, 0.5);</text>
+<rect x="30" y="124" width="300" height="56" rx="8" fill="none" stroke="#9ccd4e" stroke-width="2"/>
+<text x="180" y="148" fill="#9ccd4e">C++ wrapper (header-only)</text><text x="180" y="168" font-size="13" fill="#e5e7eb">unique_ptr + deleter, mã sang ngoại lệ</text>
+<rect x="30" y="198" width="300" height="56" rx="8" fill="#272a2f" stroke="#d97936" stroke-width="3"/>
+<text x="180" y="222" fill="#d97936">C ABI ổn định (extern "C")</text><text x="180" y="242" font-size="13" fill="#e5e7eb">rc_arm* (opaque), mã int, không ngoại lệ</text>
+<rect x="30" y="272" width="300" height="56" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/>
+<text x="180" y="296" fill="#e5e7eb">nội bộ thư viện</text><text x="180" y="316" font-size="13" fill="#e5e7eb" style="font-size:12.47px">std::vector, template, bất cứ thứ gì</text>
+</g>
+<path d="M180 106 V124 M180 180 V198 M180 254 V272" stroke="#e5e7eb" stroke-width="2"/>
+<text x="30" y="395" font-size="13" fill="#e5e7eb">Chủ sở hữu: wrapper giữ handle; rc_arm_destroy chạy đúng một lần.</text>
+<text x="30" y="415" font-size="13" fill="#e5e7eb">Lỗi: catch(...) ở ranh giới, trả mã, wrapper ném lại thành Error.</text>
+<line x1="365" y1="20" x2="365" y2="368" stroke="#3b414d" stroke-width="2"/>
+<text x="385" y="30" font-size="16" font-weight="bold" fill="#e5e7eb" style="font-size:12.48px">Thay đổi có an toàn không?</text>
+<g font-size="13" fill="#e5e7eb">
+<text x="385" y="62" font-weight="bold" style="font-size:12.58px">thay đổi</text><text x="610" y="62" font-weight="bold">source</text><text x="680" y="62" font-weight="bold">binary</text>
+<line x1="385" y1="70" x2="745" y2="70" stroke="#3b414d"/>
+<text x="385" y="94">thêm hàm tự do</text><text x="620" y="94" fill="#9ccd4e">ok</text><text x="690" y="94" fill="#9ccd4e">ok</text>
+<text x="385" y="124" style="font-size:12.5px">chèn trường vào struct</text><text x="620" y="124" fill="#9ccd4e">ok</text><text x="690" y="124" fill="#d97936">vỡ</text>
+<text x="385" y="154">thêm hàm virtual</text><text x="620" y="154" fill="#9ccd4e">ok</text><text x="690" y="154" fill="#d97936">vỡ</text>
+<text x="385" y="184">đổi kiểu tham số</text><text x="620" y="184" fill="#d97936">vỡ</text><text x="690" y="184" fill="#d97936">vỡ</text>
+<text x="385" y="214" style="font-size:11.09px">thêm trường vào Impl của pimpl</text><text x="620" y="214" fill="#9ccd4e">ok</text><text x="690" y="214" fill="#9ccd4e">ok</text>
+<text x="385" y="244">đổi tên tham số</text><text x="620" y="244" fill="#9ccd4e">ok</text><text x="690" y="244" fill="#9ccd4e">ok</text>
+</g>
+<text x="385" y="290" font-size="13" fill="#53b2dd">Thí nghiệm: v2 chèn z vào giữa.</text>
+<text x="385" y="310" font-size="13" fill="#e5e7eb">App cũ in x=1 y=9 thay vì y=2.</text>
+<text x="385" y="334" font-size="13" fill="#e5e7eb">nm -D lib.so liệt kê ABI:</text>
+<text x="385" y="354" font-size="13" fill="#9ccd4e" style="font-size:11.8px">c_add  so với  _Z7cxx_addii</text>
+</svg>

@@ -81,6 +81,24 @@
     "Giải thích rủi ro với ưu tiên cân bằng.",
     "Phương án: cận momen làm ràng buộc trong QP hoặc bão hòa có nhận thức về ưu tiên."
    ]
+  },
+  "c1": {
+   "prompt": "Tay máy phẳng (khối điểm đơn vị ở trung điểm các khâu, l = 1 m, g = 9.81) tại q = (1.2, -0.8) rad, qdot = 0, bàn tay bị ràng buộc ở độ cao cố định (A = [1.2834, 0.9211]). Ma trận khối lượng M = [[2.1967, 0.5984],[0.5984, 0.25]], mô-men trọng lực g(q) = (9.8499, 4.5178) N m, M^-1 = [[1.3079, -3.1303],[-3.1303, 11.4921]]. Với tau = (14, 3) N m, lực tiếp xúc lambda = -(A M^-1 A^T)^-1 A M^-1 (tau - g) là bao nhiêu N (3 chữ số thập phân)?",
+   "explanation": "tau - g = (4.1501, -1.5178). A M^-1 = [-1.2046, 6.5674], nên A M^-1 (tau - g) = -1.2046*4.1501 + 6.5674*(-1.5178) = -4.9993 - 9.9680 = -14.967. A M^-1 A^T = 4.5030. lambda = 14.967 / 4.5030 = 3.324 N. Nó dương, nên bàn đẩy lên và bàn tay ở lại tiếp xúc; nếu âm bàn tay sẽ nhấc lên."
+  },
+  "c2": {
+   "prompt": "Cùng tay máy và tư thế. Mỗi khớp có |tau_i| <= 15 N m. Bàn tay đẩy LÊN trần với lực dọc N, nên tau = g(q) + J2^T N với g(q) = (9.8499, 4.5178) N m và J2 = [1.2834, 0.9211]. N lớn nhất là bao nhiêu newton (3 chữ số thập phân)?",
+   "explanation": "Khớp 1: 9.8499 + 1.2834 N <= 15 cho N <= 5.1501/1.2834 = 4.013. Khớp 2: 4.5178 + 0.9211 N <= 15 cho N <= 11.38. Cận nhỏ hơn, 4.013 N, do vai đặt ra. Ước lượng ellipsoid lực 15/||J2|| = 9.495 N bỏ qua độ lệch trọng lực và sẽ vượt giới hạn vai (tau_1 = 22.04 N m)."
+  },
+  "c3": {
+   "prompt": "Tác vụ có trọng số: cực tiểu hóa w*||J1 dq - e1||^2 + ||J2 dq - e2||^2 với J1 hạng hàng đầy đủ và tác vụ chính đạt được. Điều gì xảy ra khi w tăng?",
+   "options": [
+    "Nó bằng đúng nghiệm ưu tiên nghiêm ngặt khi w >= 1",
+    "Nó tiến gần nghiệm ưu tiên nghiêm ngặt, với sai số chính cỡ 1/w",
+    "Nó tiến gần nghiệm thỏa chính xác tác vụ 2",
+    "Nó trở nên suy biến và phép giải thất bại"
+   ],
+   "explanation": "Nghiệm có trọng số là (w J1^T J1 + J2^T J2)^-1 (w J1^T e1 + J2^T e2). Khi w -> vô cùng nó hội tụ về nghiệm ưu tiên nghiêm ngặt (không gian null) và sai số chính giảm như 1/w, nhưng số điều kiện tăng gần tuyến tính theo w. Với mọi w hữu hạn sai số chính khác không (nên nghiệm có trọng số không bao giờ bằng đúng nghiệm nghiêm ngặt), nó không hội tụ về nghiệm thỏa chính xác tác vụ 2, và ma trận vẫn khả nghịch nhưng điều kiện xấu chứ không suy biến."
   }
  }
 }

@@ -81,6 +81,24 @@
     "Đề cập tính ổn định vòng kín (trị riêng) và tính đối xứng của P.",
     "Đề cập đồng nhất thức chi phí x0'Px0 so với mô phỏng hoặc dạng đóng vô hướng."
    ]
+  },
+  "c1": {
+   "prompt": "LQR chiết khấu cho x[k+1] = x[k] + u[k] với q = r = 1 và hệ số chiết khấu gamma = 0.8. Phương trình Riccati là S = 1 + gamma S - gamma^2 S^2/(1 + gamma S). Cho gain tối ưu K = gamma S/(1 + gamma S) (4 chữ số thập phân).",
+   "explanation": "Nhân với (1 + gamma S): gamma S^2 + (1 - 2 gamma) S - 1 = 0, tức 0.8 S^2 - 0.6 S - 1 = 0, nên S = (0.6 + sqrt(0.36 + 3.2))/1.6 = 1.5542 (loại nghiệm âm). K = 0.8 * 1.5542/(1 + 0.8 * 1.5542) = 0.5542. Hệ số nhân vòng kín 1 - K = 0.4458."
+  },
+  "c2": {
+   "prompt": "Chân trời hữu hạn: x[k+1] = x[k] + u[k], q = 1, r = 4, chi phí cuối bằng không (S[N] = 0), chi phí cộng từ n = 0 đến N-1. Tính S[N-3] (4 chữ số thập phân).",
+   "explanation": "S[N-1] = Q = 1. Sau đó S[N-2] = 1 + 1 - 1/(4 + 1) = 1.8. Sau đó S[N-3] = 1 + 1.8 - 1.8^2/(4 + 1.8) = 2.8 - 3.24/5.8 = 2.2414."
+  },
+  "c3": {
+   "prompt": "Đối tượng x' = x + u với q = 0 và r = 1. Phương trình Riccati 2P - P^2 = 0 có nghiệm P = 0 và P = 2. Phát biểu nào đúng cho thiết kế LQR?",
+   "options": [
+    "K = 0, vì q = 0 nghĩa là trạng thái tự do",
+    "K = 1, cực dời về 0",
+    "K = 2, cực dời về -1, ảnh gương",
+    "K = 4, cực dời về -3"
+   ],
+   "explanation": "Nghiệm ổn định hóa là P = 2 (K = 2, cực 1 - 2 = -1, ảnh gương của +1). Nghiệm P = 0 cho K = 0 và để cực ở +1: nó thỏa phương trình nhưng không ổn định hóa. Detectability làm cho nghiệm ổn định hóa là nghiệm đúng dù q = 0 không phạt trực tiếp trạng thái. Chọn gain 0 vì 'q = 0 nghĩa là không có chi phí trạng thái' bỏ qua việc trạng thái bất ổn vẫn phải bị đưa về không thì chi phí mới hữu hạn."
   }
  }
 }

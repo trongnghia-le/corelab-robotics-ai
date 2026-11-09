@@ -22,6 +22,49 @@ for (const topic of topics) {
     `Missing overview: ${topic.id}`,
   );
 }
+// Scripts that write lessons with plain (non-raw) strings turn "\frac" into a
+// form feed and "\times" into a tab, which silently breaks the KaTeX.
+for (const id of ids)
+  for (const file of [
+    `content/lessons/${id}.md`,
+    `content/lessons/vi/${id}.md`,
+  ]) {
+    if (!fs.existsSync(file)) continue;
+    const text = fs.readFileSync(file, "utf8");
+    assert(
+      !/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]|\r(?!\n)/.test(text),
+      `Control character in ${file} (an escaped LaTeX command written without a raw string?)`,
+    );
+    const prose = text.replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]*`/g, "");
+    assert(
+      !/\$[^$\n]*\t[^$\n]*\$/.test(prose),
+      `Tab inside a formula in ${file} (\\t... written without a raw string?)`,
+    );
+  }
+// The same mistake in question JSON: "\rho" or "\frac" read as escapes.
+function controlIn(value: unknown, where: string) {
+  if (typeof value === "string")
+    assert(
+      !/[\x00-\x09\x0b-\x1f\x7f]/.test(value),
+      `Control character in ${where} (an escaped LaTeX command such as \\rho or \\frac?)`,
+    );
+  else if (Array.isArray(value))
+    value.forEach((v, i) => controlIn(v, `${where}[${i}]`));
+  else if (value && typeof value === "object")
+    for (const [k, v] of Object.entries(value)) controlIn(v, `${where}.${k}`);
+}
+for (const dir of [
+  "content/assessments",
+  "content/practice",
+  "content/i18n/vi/assessments",
+  "content/i18n/vi/practice",
+])
+  for (const file of fs.existsSync(dir) ? fs.readdirSync(dir) : [])
+    if (file.endsWith(".json"))
+      controlIn(
+        JSON.parse(fs.readFileSync(`${dir}/${file}`, "utf8")),
+        `${dir}/${file}`,
+      );
 for (const id of ids) {
   const lesson = getLesson(id)!;
   assert.equal(lesson.meta.module_id, id);

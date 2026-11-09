@@ -296,8 +296,8 @@
       ],
       "id": "b10",
       "kind": "number",
-      "prompt": "a = [[1, 2], [3, 4]]; b = a.copy(); a[0][0] = 99. What is b[0][0]?",
-      "answer": "99",
+      "prompt": "a = [[5, 6], [7, 8]]; b = a.copy(); a[1][0] = 0. What is b[1][0]?",
+      "answer": "0",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.01,
@@ -365,6 +365,91 @@
       "equivalentTo": [
         "q1"
       ]
+    },
+    {
+      "id": "c1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "closures"
+      ],
+      "skillLabel": "Name resolution in class bodies",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "prompt": "In a class body: xs = [1, 2]; k = 3; zs = [x * k for x in xs]. What happens on Python 3.11?",
+      "options": [
+        "NameError for k, because the comprehension scope cannot see class-level names; only the leftmost iterable xs is read in the class scope",
+        "NameError for xs, because comprehensions cannot read any class-level names",
+        "It works and gives [3, 6], because class variables are visible in nested scopes",
+        "It works but gives [1, 2], because k is looked up as a global default of 1"
+      ],
+      "answer": "0",
+      "explanation": "The leftmost iterable (xs) is evaluated in the enclosing class scope, so xs is found. The element expression x * k runs in the implicit comprehension function, and a class block's names are not visible to nested scopes (Execution model, resolution of names), so k raises NameError: name 'k' is not defined. Fixes: build the list outside the class, or iterate over pairs such as itertools.product so that the value arrives through the leftmost iterable.",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c2",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "default-arguments"
+      ],
+      "skillLabel": "Memo cache stored in a default argument",
+      "mistakeCategory": "procedural",
+      "dimension": "M",
+      "prompt": "def fib(n, memo={}): calls += 1; if n < 2: return n; if n not in memo: memo[n] = fib(n-1) + fib(n-2); return memo[n] (calls counts every invocation; the recursive calls do not pass memo). How many invocations does the first call fib(20) make? Give the number.",
+      "answer": "39",
+      "tolerance": 0,
+      "explanation": "The recursive calls use the shared default dict. Let T(n) be the invocations of a cold-memo call fib(n). T(2) = 3 (fib(2), fib(1), fib(0)). For n >= 3, fib(n) calls fib(n-1), which costs T(n-1) and fills memo for every smaller index from 2, and then fib(n-2), which is already in memo (or is a base case) and costs exactly 1 invocation: T(n) = 1 + T(n-1) + 1 = T(n-1) + 2. Hence T(n) = 2n - 1 and T(20) = 39 (confirmed by running the code on Python 3.11.9). A second call fib(20) takes 1 invocation because the memo persists in fib.__defaults__, and the version without memo makes 21891 invocations.",
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c3",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mutability",
+        "copying"
+      ],
+      "skillLabel": "Deep copy memo and aliasing structure",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "prompt": "For a = [7, 8] and s = [a, a], what are d[0] is d[1] and d[0] is a for d = copy.deepcopy(s)? Explain how the memo dictionary produces this, why a self-referential list x = [1]; x.append(x) does not make deepcopy loop forever, and how to make two separate deepcopy calls share a copy of a.",
+      "explanation": "Rubric-guided. Model answer: d[0] is d[1] is True and d[0] is a is False. deepcopy keeps a memo mapping id(original) to its copy for the current call; the first time it meets a it copies it and records the copy, the second time it finds a in the memo and returns the same copy, so the aliasing pattern of s is reproduced while a itself is duplicated. For x it registers the new list in the memo before copying its items, so when it reaches x again inside itself it returns the new list: the result y satisfies y is not x and y[1] is y. The memo lives for one call; to share copies between calls pass the same dict, e.g. m = {}; c1 = copy.deepcopy(t1, m); c2 = copy.deepcopy(t2, m), after which c1[0] is c2[0].",
+      "rubric": [
+        "States d[0] is d[1] is True and d[0] is a is False.",
+        "Explains the memo as a mapping from id(original) to the copy, consulted before copying and reused on the second encounter.",
+        "Explains that the copy is registered before descending, so the cycle maps back to the new list: y is not x and y[1] is y.",
+        "Says the memo lasts only for one call and shows passing a shared memo dict to two calls."
+      ],
+      "relatedPrerequisites": [
+        "PY01"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY03#theory-and-derivation"
+        }
+      ],
+      "critical": false
     }
   ]
 }

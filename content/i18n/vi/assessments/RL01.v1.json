@@ -9,16 +9,16 @@
    "explanation": "π(a|s) chọn hành động; P(s′|s,a) mô hình hóa các phép chuyển của môi trường."
   },
   "q2": {
-   "prompt": "Một episode cho phần thưởng 1 ở bước đầu tiên, rồi phần thưởng 2 ở bước thứ hai, rồi kết thúc. Với hệ số chiết khấu γ = 0.5, return có chiết khấu từ đầu là bao nhiêu?",
-   "explanation": "Thay các giá trị đã cho vào và giữ đúng thứ tự thực hiện phép tính."
+   "prompt": "Return có chiết khấu là G = r₁ + γ·r₂ + γ²·r₃ + … Một episode cho phần thưởng 1 ở bước đầu, phần thưởng 2 ở bước thứ hai, rồi kết thúc. Với hệ số chiết khấu γ = 0.5, G từ lúc bắt đầu bằng bao nhiêu?",
+   "explanation": "G = r₁ + γ·r₂ = 1 + 0,5 × 2 = 1 + 1 = 2. Không có phần thưởng nào sau khi kết thúc."
   },
   "q3": {
-   "prompt": "Một trạng thái tự chuyển về chính nó mãi mãi và trả phần thưởng 1 ở mỗi bước. Với hệ số chiết khấu γ = 0.5, giá trị có chiết khấu của nó là bao nhiêu?",
-   "explanation": "Thay các giá trị đã cho vào và giữ đúng thứ tự thực hiện phép tính."
+   "prompt": "Một trạng thái tự chuyển về chính nó mãi mãi và trả phần thưởng 1 ở mỗi bước. Với hệ số chiết khấu γ = 0.5 và V = r₁ + γ·r₂ + γ²·r₃ + …, giá trị V của trạng thái này là bao nhiêu?",
+   "explanation": "V = 1 + γ + γ² + … là chuỗi hình học bằng 1 / (1 − γ) = 1 / (1 − 0,5) = 2. Tương đương V = 1 + γ·V, nên V = 1 / (1 − γ) = 2."
   },
   "q4": {
-   "prompt": "Trong một MDP episodic, trạng thái kết thúc không có phần thưởng tương lai sau khi bạn vào nó. Giá trị nào nên được lưu cho chính trạng thái kết thúc?",
-   "explanation": "Thay các giá trị đã cho vào và giữ đúng thứ tự thực hiện phép tính."
+   "prompt": "Trong một MDP episodic, vào trạng thái kết thúc là kết thúc episode, nên không thể thu thêm phần thưởng nào từ nó. Giá trị V(terminal) nên được lưu cho chính trạng thái kết thúc là bao nhiêu?",
+   "explanation": "Giá trị là phần thưởng tương lai có chiết khấu kỳ vọng từ trạng thái đó. Sau khi vào trạng thái kết thúc không thu thêm gì, nên V(terminal) = 0. Khi đó mục tiêu bootstrap ở bước cuối dùng r + γ·0."
   },
   "explain": {
    "prompt": "Một robot cân bằng quan sát độ nghiêng nhưng không quan sát vận tốc góc. Hãy giải thích vì sao quan sát đó có thể vi phạm giả định Markov và đề xuất một biểu diễn trạng thái được cải thiện.",

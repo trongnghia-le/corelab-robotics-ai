@@ -292,6 +292,77 @@
         "Explains that tilt is coupled to horizontal acceleration, so the vehicle can reach any position and yaw over time (flat outputs) but roll and pitch cannot be chosen independently; reachability depends on dynamics, not only on the dof count"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "chain-workspace"
+      ],
+      "skillLabel": "Annulus workspace of a planar chain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "A planar 3R open chain without joint limits has link lengths 4, 1 and 1. What is the area of the set of points its tip can reach? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "100.53",
+      "tolerance": 0.1,
+      "explanation": "The reachable radii fill [r_min, r_max] with r_max = sum of lengths = 6 and r_min = max(0, 2*l_max - sum) = 8 - 6 = 2. The workspace is an annulus of area pi(6^2 - 2^2) = 32 pi = 100.53. The order of the links does not matter, and the hole of radius 2 exists because the longest link exceeds the sum of the others."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Grubler count for cooperating arms",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "Four identical S-R-S arms (spherical, revolute, spherical joints; two links each) rigidly grasp one common object, and the arm bases are fixed to the ground. Using the spatial Grubler formula, what is the mobility of the whole system? Give an integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.01,
+      "explanation": "Links: ground + object + 4*2 arm links = 10. Joints: 4*3 = 12, with sum f_i = 4*(3+1+3) = 28. dof = 6(10 - 1 - 12) + 28 = -18 + 28 = 10. It equals 6 (object pose) + 4 (one internal swivel freedom per arm), the general form n + 6."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nonholonomic-constraints"
+      ],
+      "skillLabel": "Holonomic versus nonholonomic constraints",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R02#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "A differential-drive robot has configuration (phi, x, y, theta_L, theta_R) and two wheel-speed controls. Which statement about its Pfaffian constraints A(q) qdot = 0 is correct?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Two constraints, both holonomic, so the reachable set is three-dimensional",
+        "Three constraints: one holonomic and two nonholonomic, so the reachable set is four-dimensional",
+        "Three constraints, all nonholonomic, so every configuration of the five-dimensional space is reachable",
+        "No constraints, because the controls are independent"
+      ],
+      "answer": "1",
+      "explanation": "Five coordinates and a two-dimensional velocity set give 5 - 2 = 3 Pfaffian constraints. Since phi-dot = (r/2d)(u_R - u_L) and theta_R-dot - theta_L-dot = u_R - u_L, the combination phi - (r/2d)(theta_R - theta_L) is constant: one holonomic constraint. The vector fields g_L, g_R, [g_L, g_R] and [g_L,[g_L,g_R]] span only four dimensions, so the remaining two constraints are nonholonomic and the reachable set is four-dimensional."
     }
   ]
 }

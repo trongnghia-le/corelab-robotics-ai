@@ -81,6 +81,24 @@
     "Dùng kiểu chuẩn khi có thể.",
     "Kết luận bằng việc tách theo tốc độ và bên tiêu thụ, có biện minh."
    ]
+  },
+  "c1": {
+   "prompt": "Một cảm biến publish ở 25 Hz vào một subscription có depth 6; callback cần 80 ms cho mỗi message. Sau khi hàng đợi đã đầy một lúc, cận trên của tuổi message đang được chuyển phát là bao nhiêu ms? Độ chính xác 1.",
+   "explanation": "f_c = 1/0.08 = 12.5 Hz thấp hơn f_p = 25 Hz, nên hàng đợi luôn đầy và mỗi lần lấy chuyển phát mẫu cũ nhất trong N mẫu mới nhất. Tuổi của nó nằm trong ((N-1)T_p, N T_p] với T_p = 1/25 = 0.04 s, nên cận trên là 6 * 0.04 = 0.24 s = 240 ms (cận dưới là 200 ms)."
+  },
+  "c2": {
+   "prompt": "Cặp publisher và subscription nào được kết nối? (Profile đưa ra của publisher, profile yêu cầu của subscription.)",
+   "options": [
+    "Publisher BEST_EFFORT, VOLATILE; subscription RELIABLE, VOLATILE",
+    "Publisher RELIABLE, VOLATILE; subscription RELIABLE, TRANSIENT_LOCAL",
+    "Publisher RELIABLE, TRANSIENT_LOCAL, deadline 0.1 s; subscription BEST_EFFORT, VOLATILE, deadline 0.2 s",
+    "Publisher RELIABLE, TRANSIENT_LOCAL, deadline 0.5 s; subscription BEST_EFFORT, VOLATILE, deadline 0.2 s"
+   ],
+   "explanation": "Quy tắc là mức đưa ra mạnh ít nhất bằng mức yêu cầu ở mọi policy, và với deadline thì đưa ra <= yêu cầu. Lựa chọn 0 lỗi reliability (đưa ra best-effort, yêu cầu reliable). Lựa chọn 1 lỗi durability (đưa ra volatile, yêu cầu transient-local). Lựa chọn 3 lỗi deadline (đưa ra 0.5 s > yêu cầu 0.2 s). Lựa chọn 2 đạt tất cả: RELIABLE >= BEST_EFFORT, TRANSIENT_LOCAL >= VOLATILE và 0.1 s <= 0.2 s."
+  },
+  "c3": {
+   "prompt": "geometry_msgs/PoseStamped với frame_id \"odom\" (4 ký tự) được tuần tự hóa bằng CDR, gồm cả header 4 byte (position và orientation là float64). Tốc độ dữ liệu tính bằng byte mỗi giây ở 50 Hz là bao nhiêu? Độ chính xác 1.",
+   "explanation": "Sau header 4 byte: stamp 8 byte (offset 8); frame_id 4 + 5 = 9 byte (offset 17); position là ba float64 căn theo 8 nên có 7 byte đệm (offset 24) rồi 24 byte (48); orientation là bốn float64, 32 byte (80). Tổng 80 + 4 = 84 byte (đã kiểm tra bằng rclpy serialize_message), và 84 * 50 = 4200 B/s."
   }
  }
 }

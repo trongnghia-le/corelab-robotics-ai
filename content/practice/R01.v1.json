@@ -292,6 +292,77 @@
         "Mentions units or terminal velocity u/c as a further check"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "quadratic-drag"
+      ],
+      "skillLabel": "Quadratic drag with constant drive",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "A 10 kg cart starts from rest with a constant drive u = 50 N against aerodynamic drag F = b v^2, b = 2 kg/m. How long (in seconds) does it take to reach 90% of its terminal speed? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.47",
+      "tolerance": 0.02,
+      "explanation": "Separate variables: v(t) = v_T tanh(t/tau_q) with v_T = sqrt(u/b) = 5 m/s and tau_q = m/(b v_T) = 10/(2*5) = 1 s. Setting tanh(t) = 0.9 gives t = artanh(0.9) = 1.4722 s. A viscous cart with the same v_T would need tau*ln 10 = 2.30 s, because the quadratic cart accelerates at nearly u/m while drag is small."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "coulomb-friction"
+      ],
+      "skillLabel": "Stopping time with Coulomb and viscous resistance",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "A 20 kg robot rolls at 1.5 m/s with the motor off. The resistance is viscous c = 2 kg/s plus Coulomb F_c = 3 N (for v > 0). After how many seconds does it stop? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "6.93",
+      "tolerance": 0.02,
+      "explanation": "For v > 0, m dv/dt = -c v - F_c. With w = v + F_c/c, w decays as exp(-c t/m), so v = (v0 + F_c/c) exp(-c t/m) - F_c/c. Setting v = 0 gives t_s = (m/c) ln(1 + c v0/F_c) = 10 ln(1 + 1) = 6.93 s. A purely viscous robot would never stop in finite time."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "euler-stability"
+      ],
+      "skillLabel": "Explicit Euler step limits",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R01#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "A stiff cart obeys m dv/dt = -c v with lambda = c/m = 800 1/s. Which explicit Euler step keeps the simulated velocity both stable and of constant sign, as the true solution is?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "3 ms",
+        "10 ms",
+        "0.5 ms",
+        "2 ms"
+      ],
+      "answer": "2",
+      "explanation": "The explicit factor is r = 1 - lambda h. Sign preservation needs r > 0, i.e. h < 1/lambda = 1.25 ms; stability needs |r| < 1, i.e. h < 2/lambda = 2.5 ms. At 0.5 ms r = 0.6 (good). At 2 ms r = -0.6: stable but the velocity flips sign every step. At 3 ms r = -1.4 and at 10 ms r = -7: unstable and the energy grows."
     }
   ]
 }

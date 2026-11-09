@@ -1,27 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" font-family="Inter, Arial, sans-serif" font-size="14">
 <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5e7eb"/></marker></defs>
-<rect width="760" height="440" fill="#111827" rx="12"/>
+<rect width="760" height="440" fill="#191b1f" rx="12"/>
 <text x="380" y="30" fill="#e5e7eb" font-size="16" text-anchor="middle">Off-policy learning: replay, target network and stale data</text>
 <rect x="20" y="60" width="150" height="70" rx="10" fill="none" stroke="#e5e7eb" stroke-width="2"/>
 <text x="95" y="90" fill="#e5e7eb" text-anchor="middle">Behaviour policy</text><text x="95" y="112" fill="#e5e7eb" text-anchor="middle">b (old policies)</text>
-<rect x="225" y="60" width="150" height="70" rx="10" fill="none" stroke="#f97316" stroke-width="2.5"/>
-<text x="300" y="90" fill="#f97316" text-anchor="middle">Replay buffer</text><text x="300" y="112" fill="#e5e7eb" text-anchor="middle">last C transitions</text>
-<rect x="430" y="60" width="150" height="70" rx="10" fill="none" stroke="#38bdf8" stroke-width="2.5"/>
-<text x="505" y="90" fill="#38bdf8" text-anchor="middle">Online Q(s,a;w)</text><text x="505" y="112" fill="#e5e7eb" text-anchor="middle">learner, updated</text>
-<rect x="590" y="60" width="150" height="70" rx="10" fill="none" stroke="#a3e635" stroke-width="2.5"/>
-<text x="665" y="90" fill="#a3e635" text-anchor="middle">Target Q(s,a;w-)</text><text x="665" y="112" fill="#e5e7eb" text-anchor="middle">slow copy of w</text>
+<rect x="225" y="60" width="150" height="70" rx="10" fill="none" stroke="#d97936" stroke-width="2.5"/>
+<text x="300" y="90" fill="#d97936" text-anchor="middle">Replay buffer</text><text x="300" y="112" fill="#e5e7eb" text-anchor="middle">last C transitions</text>
+<rect x="430" y="60" width="150" height="70" rx="10" fill="none" stroke="#53b2dd" stroke-width="2.5"/>
+<text x="505" y="90" fill="#53b2dd" text-anchor="middle">Online Q(s,a;w)</text><text x="505" y="112" fill="#e5e7eb" text-anchor="middle">learner, updated</text>
+<rect x="590" y="60" width="150" height="70" rx="10" fill="none" stroke="#9ccd4e" stroke-width="2.5"/>
+<text x="665" y="90" fill="#9ccd4e" text-anchor="middle">Target Q(s,a;w-)</text><text x="665" y="112" fill="#e5e7eb" text-anchor="middle">slow copy of w</text>
 <line x1="170" y1="95" x2="225" y2="95" stroke="#e5e7eb" stroke-width="2" marker-end="url(#ar)"/>
 <line x1="375" y1="95" x2="430" y2="95" stroke="#e5e7eb" stroke-width="2" marker-end="url(#ar)"/>
 <text x="402" y="82" fill="#e5e7eb" text-anchor="middle">batch</text>
-<path d="M640 130 Q 600 160 520 132" fill="none" stroke="#a3e635" stroke-width="2" marker-end="url(#ar)"/>
-<text x="560" y="182" fill="#a3e635" text-anchor="middle">target y = r + g max Q(s',a'; w-)</text>
+<path d="M640 130 Q 600 160 520 132" fill="none" stroke="#9ccd4e" stroke-width="2" marker-end="url(#ar)"/>
+<text x="560" y="182" fill="#9ccd4e" text-anchor="middle">target y = r + g max Q(s',a'; w-)</text>
 <text x="380" y="225" fill="#e5e7eb" text-anchor="middle">Staleness: a reward changes at step 600; the buffer holds the last C = 1000 of 1000 steps</text>
-<rect x="60" y="245" width="360" height="40" fill="#f97316" opacity="0.85"/>
-<rect x="420" y="245" width="240" height="40" fill="#38bdf8" opacity="0.85"/>
-<text x="240" y="271" fill="#111827" text-anchor="middle" font-weight="bold">stale: 600 transitions (reward 3)</text>
-<text x="540" y="271" fill="#111827" text-anchor="middle" font-weight="bold">fresh: 400 (reward 0)</text>
+<rect x="60" y="245" width="360" height="40" fill="#d97936" opacity="0.85"/>
+<rect x="420" y="245" width="240" height="40" fill="#53b2dd" opacity="0.85"/>
+<text x="240" y="271" fill="#191b1f" text-anchor="middle" font-weight="bold">stale: 600 transitions (reward 3)</text>
+<text x="540" y="271" fill="#191b1f" text-anchor="middle" font-weight="bold">fresh: 400 (reward 0)</text>
 <text x="60" y="310" fill="#e5e7eb">step 0</text><text x="420" y="310" fill="#e5e7eb" text-anchor="middle">600 (change)</text><text x="660" y="310" fill="#e5e7eb" text-anchor="end">1000 (now)</text>
 <text x="380" y="350" fill="#e5e7eb" text-anchor="middle">Buffer-mean estimate of the arm's reward: 0.6 x 3 + 0.4 x 0 = 1.8 (truth now: 0)</text>
 <text x="380" y="378" fill="#e5e7eb" text-anchor="middle">With C = 100 the buffer holds only fresh data and the estimate is 0, at the cost of more noise</text>
-<text x="380" y="412" fill="#a3e635" text-anchor="middle">Importance weights pi(a)/b(a) fix the action mix, not outdated dynamics or rewards</text>
+<text x="380" y="412" fill="#9ccd4e" text-anchor="middle">Importance weights pi(a)/b(a) fix the action mix, not outdated dynamics or rewards</text>
 </svg>

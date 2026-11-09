@@ -4,25 +4,29 @@
    "prompt": "Một tay máy nối tiếp phẳng có q₁=30° và q₂ tương đối =40°. Hướng của khâu 2 trong hệ quy chiếu đế là bao nhiêu?",
    "options": [
     "70°",
-    "40°"
+    "40°",
+    "10°",
+    "30°"
    ],
-   "explanation": "Hướng thứ hai tích lũy cả hai phép quay khớp tương đối."
+   "explanation": "Hướng thứ hai tích lũy cả hai phép quay khớp tương đối: 30°+40°=70°. 40° chỉ là số đọc của khuỷu, 10° trừ nhầm, còn 30° quên khuỷu."
   },
   "relative-angle-2": {
    "prompt": "Nếu khớp 1 quay trong khi khớp 2 tương đối giữ cố định, hướng của khâu 2 trong hệ đế có thay đổi không?",
    "options": [
-    "Không, chỉ q₂ quyết định hướng của nó trong hệ đế.",
-    "Có, phép quay phía trước cũng quay khâu 2."
+    "Không: chỉ q₂ quyết định hướng của nó trong hệ đế, dù q₁ là bao nhiêu.",
+    "Chỉ khi q₂ cũng được đổi cùng lúc với q₁.",
+    "Có: khâu 2 bị mang theo, hướng của nó là q₁+q₂.",
+    "Có, nhưng chỉ khi độ lớn của q₁ vượt quá 90°."
    ],
    "explanation": "Khâu 2 gắn với khâu 1, nên hướng của nó trong hệ đế là q₁+q₂."
   },
   "fk-values-1": {
-   "prompt": "l₁=2,l₂=1, q₁=0,q₂=π/2. Cho hoành độ x của điểm cuối.",
-   "explanation": "x=2cos(0)+cos(π/2)=2."
+   "prompt": "l₁=1.5, l₂=0.5, q₁=π/2, q₂=π/2. Cho hoành độ x của điểm cuối.",
+   "explanation": "x=1.5cos(π/2)+0.5cos(π)=0−0.5=−0.5."
   },
   "fk-values-2": {
-   "prompt": "l₁=2,l₂=1, q₁=π/2,q₂=0. Cho tung độ y của điểm cuối.",
-   "explanation": "Cả hai khâu hướng lên: y=2sin(π/2)+sin(π/2)=3."
+   "prompt": "l₁=1.5, l₂=0.5, q₁=π/6, q₂=π/3. Cho tung độ y của điểm cuối.",
+   "explanation": "Khâu thứ hai có góc thế giới π/6+π/3=π/2: y=1.5sin(π/6)+0.5sin(π/2)=0.75+0.5=1.25."
   },
   "design-scenario-1": {
    "prompt": "Hãy chọn giữa lượng giác trực tiếp hay hợp thành các phép biến đổi cho một camera cổ tay gắn sau một tay máy hai khâu. Giải thích về góc tương đối, hiệu chuẩn, và một bài kiểm thử bắt được lỗi sai thứ tự hệ quy chiếu.",
@@ -41,6 +45,24 @@
     "Đưa ra một kết quả tham chiếu, các kiểm thử biên và một đột biến (mutation) mà các kiểm thử của bạn bác bỏ.",
     "Ghi lại phiên bản nguồn và các lệnh chính xác; nhập báo cáo được hỗ trợ một cách riêng."
    ]
+  },
+  "c1": {
+   "prompt": "Một tay máy có l₁=0.5 m, l₂=0.35 m và đầu mút ở (0.6, 0.45) m. Trong hai nghiệm khớp, hãy lấy nghiệm có q₂>0 (khuỷu đối xứng gương). Cho q₁ theo độ.",
+   "explanation": "r²=0.5625 nên cos q₂=(r²−l₁²−l₂²)/(2l₁l₂)=0.1900/0.35=0.5429 và q₂=+57.12°. Khi đó q₁=atan2(y,x)−atan2(l₂ sin q₂, l₁+l₂ cos q₂)=36.87°−atan2(0.2939,0.6900)=36.87°−23.07°=13.80°. Thế (13.80°, 57.12°) vào ánh xạ thuận trả lại (0.6, 0.45) m, giống nghiệm còn lại (59.94°, −57.12°)."
+  },
+  "c2": {
+   "prompt": "Chuỗi phẳng 3 khâu nào (độ dài tính bằng m, khớp không bị giới hạn) không thể với tới các điểm gần đế, tức không gian làm việc có lỗ?",
+   "options": [
+    "(0.5, 0.4, 0.3)",
+    "(0.6, 0.6, 0.6)",
+    "(0.9, 0.25, 0.15)",
+    "(0.4, 0.3, 0.3)"
+   ],
+   "explanation": "Bán kính trong là max(0, 2·l_max − Σl). (0.5,0.4,0.3): 1.0−1.2<0, không có lỗ. (0.6,0.6,0.6): 1.2−1.8<0, không lỗ. (0.9,0.25,0.15): 1.8−1.3=0.5>0 nên các điểm trong vòng 0.5 m quanh đế không đến được. (0.4,0.3,0.3): 0.8−1.0<0, không lỗ. Lỗ chỉ xuất hiện khi một khâu dài hơn tổng các khâu còn lại."
+  },
+  "c3": {
+   "prompt": "Để ước lượng l₁ và l₂ bạn ra lệnh q=(0, 15°) một lần và đo đầu mút với nhiễu độc lập có độ lệch chuẩn 1 mm theo x và y. Dùng mô hình tuyến tính 2×2 chính xác, độ lệch chuẩn (mm) của ước lượng l₁ là bao nhiêu?",
+   "explanation": "Mô hình là [x;y]=[[cos q₁, cos(q₁+q₂)],[sin q₁, sin(q₁+q₂)]]·[l₁;l₂], ở đây A=[[1,cos15°],[0,sin15°]]. Cov=σ²(AᵀA)⁻¹, đường chéo cho 1/sin15°=3.86 mm cho mỗi chiều dài. Giá trị suy biến nhỏ √(1−cos15°)=0.185 của A khuếch đại nhiễu; tại q₂=90° cùng nhiễu chỉ cho 1 mm."
   }
  }
 }

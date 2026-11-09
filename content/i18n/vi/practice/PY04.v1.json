@@ -19,14 +19,14 @@
    "explanation": "Trung bình 5, độ lệch -3,-1,1,3, phương sai 5, std 2.236; (8-5)/2.236 = 1.342."
   },
   "n4": {
-   "prompt": "Sau a = np.arange(6.); b = a[1:4]; b[0] = 99, và riêng c = a[[1,2,3]]; c[0] = -5, phát biểu nào đúng về a?",
+   "prompt": "x = np.arange(8.); v = x[2:5]; v[1] = 7; w = x[[2, 3, 4]]; w[0] = -9. Sau đó x là gì?",
    "options": [
-    "Cả hai lần ghi đều làm thay đổi a",
-    "Chỉ lần ghi qua b làm thay đổi a",
-    "Không lần ghi nào làm thay đổi a",
-    "Chỉ lần ghi qua c làm thay đổi a"
+    "[0. 1. -9. 7. 4. 5. 6. 7.]",
+    "[0. 1. 2. 7. 4. 5. 6. 7.]",
+    "[0. 1. 2. 3. 4. 5. 6. 7.]",
+    "[0. 1. -9. 3. 4. 5. 6. 7.]"
    ],
-   "explanation": "Slicing cơ bản trả về một view (ghi được truyền xuống a); fancy indexing bằng list trả về một bản sao."
+   "explanation": "v = x[2:5] là một view, nên v[1] = 7 ghi vào x[3] = 7. w = x[[2, 3, 4]] dùng danh sách chỉ số nên là một bản sao, do đó w[0] = -9 không chạm tới x. Kết quả: [0. 1. 2. 7. 4. 5. 6. 7.]."
   },
   "n5": {
    "prompt": "Hiệu từng cặp theo broadcast của N=2000 điểm 3D tạo ra một biến tạm float64 (N,N,3). Nó dùng bao nhiêu megabyte (1 MB = 10^6 byte)? Cho một số nguyên.",
@@ -69,18 +69,41 @@
    "explanation": "Các cửa sổ: (4,8)=6, (8,6)=7, (6,2)=4, (2,10)=6; giá trị thứ ba là 4."
   },
   "n11": {
-   "prompt": "x = np.zeros(3, dtype=int); x[:] = 1.9; print(x). Cái gì được in ra?",
+   "prompt": "y = np.array([7, 8, 9]); y[2] = -3.8; print(y). Cái gì được in ra?",
    "options": [
     "Một lỗi được raise",
-    "[1.9 1.9 1.9]",
-    "[1 1 1]",
-    "[2 2 2]"
+    "[ 7  8 -4]",
+    "[ 7.   8.  -3.8]",
+    "[ 7  8 -3]"
    ],
-   "explanation": "Gán float vào mảng int sẽ cắt cụt về phía không: [1 1 1]."
+   "explanation": "Gán số thực vào mảng nguyên ép nó sang dtype của mảng bằng cách cắt cụt về phía không: -3.8 thành -3, nên được [ 7  8 -3]; không có lỗi và mảng vẫn là mảng nguyên."
   },
   "n12": {
    "prompt": "Một batch 64 ảnh RGB kích thước 224x224 được lưu dưới dạng float32. Mảng cần bao nhiêu megabyte (10^6 byte)? Cho một chữ số thập phân.",
    "explanation": "64*224*224*3*4 B = 38,535,168 B = 38.5 MB."
+  },
+  "c1": {
+   "prompt": "x có shape (4,5,6) và m là mảng boolean shape (4,5) có đúng 7 phần tử True. Shape của x[m] là gì?",
+   "options": [
+    "(4, 5, 6)",
+    "(7,)",
+    "(7, 6)",
+    "(6, 7)"
+   ],
+   "explanation": "Mặt nạ boolean shape (4,5) đánh chỉ số cùng lúc hai axis đầu; nó tương đương 7 cặp chỉ số nguyên (qua m.nonzero()). 7 cặp được chọn thay axis 0 và 1 bằng một axis độ dài 7, axis còn lại giữ nguyên: (7, 6). Kết quả là một bản sao."
+  },
+  "c2": {
+   "prompt": "Các điểm a=(1.5e7,1.5e7) và b=a+(0.2,0) cách nhau 0.2. Tính |a|²+|b|²-2a·b trong float64 có |a|² = 4.5e14. Khoảng cách giữa hai giá trị float64 liền kề ở đó là bao nhiêu? Cho một số thập phân.",
+   "explanation": "Số double có 52 bit phần thập phân được lưu. Các số trong [2^48, 2^49) = [2.8e14, 5.6e14) cách nhau 2^(48-52) = 0.0625, và |a|² = 4.5e14 nằm ở đó. Bình phương khoảng cách chỉ là 0.04, nhỏ hơn khoảng cách đó, nên khai triển không phân giải được, trong khi ((a-b)**2).sum() chính xác."
+  },
+  "c3": {
+   "prompt": "Bạn phải tính láng giềng gần nhất của mỗi điểm trong 200 000 điểm 3D (tọa độ cỡ 1e6, float64). Ma trận khoảng cách (N, N) đầy đủ là bất khả thi. Hãy thiết kế một lời giải vector hóa và nêu hai cạm bẫy về số hoặc bộ nhớ mà bạn đề phòng.",
+   "explanation": "Bài luyện tập có rubric, không được tự động kiểm chứng.",
+   "rubric": [
+    "Xử lý các điểm theo khối hàng (ví dụ 1000 x N khoảng cách mỗi lần) và chỉ giữ argmin và min chạy cho mỗi hàng, nên bộ nhớ đỉnh là khối x N, không phải N x N.",
+    "Căn giữa tọa độ (trừ trung bình) trước khi dùng khai triển |a|²+|b|²-2a·b, hoặc dùng hiệu, vì với tọa độ gần 1e6 và khoảng cách láng giềng nhỏ khai triển bị triệt tiêu thảm họa.",
+    "Cắt bình phương khoảng cách tại 0 trước sqrt, loại trừ khớp với chính nó (khoảng cách 0 trên đường chéo của mỗi khối), và kiểm chứng trên ca nhỏ với phiên bản broadcast vét cạn (hoặc KD-tree)."
+   ]
   }
  }
 }

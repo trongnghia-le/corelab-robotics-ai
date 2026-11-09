@@ -85,6 +85,24 @@
     "Thư viện đệ quy được dùng trong sản phẩm để có tốc độ.",
     "Khớp nhau trên các trường hợp đặc biệt / giới hạn là bằng chứng của tính đúng; lệch nhau lộ ra lỗi."
    ]
+  },
+  "c1": {
+   "prompt": "Một động cơ có quán tính rotor 0.00125 kg m^2 kéo tải quán tính 0.5 kg m^2 qua hộp số lý tưởng tỉ số G. Gia tốc tải là G*tau_m/(I_l + G^2 I_r). G nào cực đại hóa nó?",
+   "explanation": "Đạo hàm: d/dG [G/(I_l + G^2 I_r)] có tử số (I_l + G^2 I_r) - 2 G^2 I_r = I_l - G^2 I_r. Cho bằng 0 được G = sqrt(I_l/I_r) = sqrt(0.5/0.00125) = sqrt(400) = 20. Tại đó quán tính biểu kiến của rotor G^2 I_r = 0.5 bằng quán tính tải (khớp quán tính)."
+  },
+  "c2": {
+   "prompt": "Với cánh tay trong ví dụ tại q = (0.5, 0.8), dq = (1, -0.5), mô-men cần thiết là tau = (13.4718, 1.3439) N m và số hạng thiên lệch (động lực học ngược với gia tốc bằng 0) là b = (11.6293, 0.8949) N m. Sau khi thêm động cơ hộp số vào khuỷu, ma trận khối lượng thành M' = [[0.8303, 0.3095], [0.3095, 12.58]]. Gia tốc khớp 1 mới (rad/s^2) dưới cùng mô-men là bao nhiêu? Giải M' ddq = tau - b.",
+   "explanation": "tau - b = (1.8425, 0.4490). Định thức của M' = 0.8303*12.58 - 0.3095^2 = 10.4453 - 0.0958 = 10.3495. ddq1 = (12.58*1.8425 - 0.3095*0.4490)/10.3495 = (23.1788 - 0.1390)/10.3495 = 2.226 rad/s^2, và ddq2 = (0.8303*0.4490 - 0.3095*1.8425)/10.3495 = -0.019 rad/s^2. Khuỷu gần như không chuyển động vì quán tính biểu kiến của nó chiếm ưu thế."
+  },
+  "c3": {
+   "prompt": "Dữ liệu mô-men khớp có ma sát nhớt và ma sát Coulomb, nhưng bước nhận dạng chỉ hồi quy năm tham số quán tính. Phát biểu nào đúng?",
+   "options": [
+    "Ước lượng không lệch nhưng có phương sai lớn hơn, thêm mẫu sẽ loại bỏ được",
+    "Ước lượng nói chung bị lệch, vì bình phương tối thiểu gán lại mô-men ma sát tương quan cho các tham số quán tính, và thêm mẫu không loại bỏ được",
+    "Ước lượng không bị ảnh hưởng, vì ma sát là hiệu ứng khớp chứ không phải hiệu ứng quán tính",
+    "Hồi quy trở nên phi tuyến và không thể dùng bình phương tối thiểu nữa"
+   ],
+   "explanation": "Ma sát nhớt (b_v dq) và Coulomb (b_s sgn dq) tuyến tính theo hệ số của chúng, nên mô hình đúng chỉ cần thêm cột. Bỏ chúng để lại phần dư tất định mà bình phương tối thiểu chiếu lên các cột của Y tương quan với nó, cho độ lệch hệ thống không giảm theo N. Phương án 4 sai vì mô hình mở rộng vẫn tuyến tính. Trong mô phỏng của bài, khớp không có ma sát cho sai số tới 0.9 ở các tham số."
   }
  }
 }

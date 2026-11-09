@@ -372,6 +372,87 @@
       "equivalentTo": [
         "q6"
       ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "concentration-bounds"
+      ],
+      "skillLabel": "Hoeffding sample size",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "Readings lie in [0,1] and are independent. By Hoeffding, how many are needed so that the sample mean is within 0.05 of the true mean with probability at least 0.99 (integer)?",
+      "answer": "1060",
+      "tolerance": 1,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Set 2exp(-2nt^2/(b-a)^2) <= delta: n >= ln(2/0.01)/(2*0.05^2) = 5.298/0.005 = 1059.7, so 1060."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "concentration-bounds"
+      ],
+      "skillLabel": "Union bound over many channels",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "1000 channels each have sub-Gaussian error with variance proxy 1 (dependence unknown). Using the union bound, the threshold t such that all |X_i| <= t with probability at least 0.95 is (2 decimals)?",
+      "answer": "4.60",
+      "tolerance": 0.02,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "P(max|X_i|>t) <= 2N exp(-t^2/2) = 0.05 gives t = sqrt(2 ln(2N/0.05)) = sqrt(2 ln 40000) = 4.604."
+    },
+    {
+      "knowledgeType": "design",
+      "skillTags": [
+        "concentration-bounds"
+      ],
+      "skillLabel": "Estimating with heavy tails",
+      "relatedPrerequisites": [
+        "M08",
+        "M09"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M14#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "short",
+      "prompt": "A range sensor has outliers: its error has finite variance sigma^2 but no bound and no known tail decay. Design an estimator of the mean with a failure probability delta that depends on ln(1/delta), and state the guarantee and its assumptions.",
+      "rubric": [
+        "Proposes median of means: split n=KG samples into G groups, average each, take the median.",
+        "Uses Chebyshev per group (failure at most 1/4 at width 2*sigma/sqrt(K)) and a Hoeffding bound on the number of bad groups, exp(-G/8).",
+        "States the guarantee |mu_hat-mu| <= 4 sigma sqrt(2 ln(1/delta)/n) with G = 8 ln(1/delta), and requires independent samples and a known variance bound."
+      ],
+      "dimension": "T",
+      "critical": false,
+      "explanation": "Rubric-guided practice, not automatically verified. Full reasoning: each group mean is within 2sigma/sqrt(K) with probability >= 3/4 by Chebyshev; the median is wrong only if at least half the groups are, which by Hoeffding on the indicators has probability <= exp(-G/8) = delta for G = 8 ln(1/delta); the width is 2 sigma sqrt(G/n) = 4 sigma sqrt(2 ln(1/delta)/n)."
     }
   ]
 }

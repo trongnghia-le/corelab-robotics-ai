@@ -81,6 +81,24 @@
     "Nêu một thước đo (sai số đỉnh, thời gian xác lập, chi phí, vi phạm ràng buộc, thời gian giải).",
     "Đề cập ngân sách tính toán hoặc một dự phòng."
    ]
+  },
+  "c1": {
+   "prompt": "Đối tượng ổn định x+ = 0.8 x + u với stage cost (x^2 + u^2)/2, horizon N = 1 và terminal cost Lyapunov (P x^2)/2 với 0.8^2 P + 1 = P. Giới hạn đầu vào là |u| <= 0.4. Dưới |x| bằng bao nhiêu (3 chữ số thập phân) thì giới hạn không active?",
+   "explanation": "P = 1/(1 - 0.64) = 2.7778. Cực tiểu (x^2 + u^2)/2 + P (0.8x + u)^2 / 2 cho u = -0.8 P x/(1 + P) = -0.5882 x. Giới hạn không active khi 0.5882 |x| <= 0.4, tức |x| <= 0.4/0.5882 = 0.680. Vượt qua đó đầu vào bão hòa tại -0.4 (với x dương) cho đến khi trạng thái co về 0.680."
+  },
+  "c2": {
+   "prompt": "Đối tượng vô hướng x+ = x + u, Q = R = 1, MPC không ràng buộc với ma trận Riccati làm terminal cost và horizon N = 3. Cực vòng kín là bao nhiêu (3 chữ số thập phân)?",
+   "explanation": "Phương trình Riccati Pi = 1 + Pi - Pi^2/(1 + Pi) cho Pi^2 - Pi - 1 = 0, nên Pi = 1.618. Gain là K = -Pi/(1 + Pi) = -0.618 với mọi horizon N, vì với P = Pi mỗi bước của đệ quy Riccati trả về Pi. Cực vòng kín là 1 + K = 1/(1 + Pi) = 0.382, không phụ thuộc N."
+  },
+  "c3": {
+   "prompt": "Một bộ điều khiển LQ horizon hữu hạn không ràng buộc (N = 5, terminal cost bằng stage cost) làm bất ổn một đối tượng ổn định có zero bất ổn. Phát biểu nào giải thích tốt nhất?",
+   "options": [
+    "Bộ tối ưu hoàn toàn không thể thỏa mãn ràng buộc nào, nên QP vô nghiệm và đầu vào trước đó đơn giản được giữ lại",
+    "Kế hoạch chỉ tối ưu trong cửa sổ; không có terminal cost giảm thì hàm giá trị không phải hàm Lyapunov",
+    "Hessian ngưng tụ H không xác định dương với horizon ngắn, nên nghiệm cực tiểu không duy nhất và có thể tùy ý",
+    "Luật receding-horizon áp dụng đầu vào cuối cùng của kế hoạch thay vì đầu vào đầu tiên, thêm một độ trễ vào đường phản hồi"
+   ],
+   "explanation": "Không có ràng buộc thì QP khả thi và lồi chặt (H xác định dương vì R > 0), và MPC áp dụng đầu vào đầu tiên. Tối ưu không suy ra ổn định: nó cần một terminal cost V_f là control-Lyapunov function (V_f(Ax + Bu) <= V_f(x) - l(x,u)), để V_N^0 giảm dọc vòng kín. Với V_f = stage cost, R nhỏ và một zero bất ổn, bộ tối ưu horizon ngắn nghịch đảo đối tượng và vòng kín có trị riêng 1.307 (N = 5); với terminal cost Riccati trị riêng là 0.664 với mọi N."
   }
  }
 }

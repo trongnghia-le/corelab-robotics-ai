@@ -84,10 +84,15 @@ describe("lesson formulas", () => {
     expect(kalman.length).toBeGreaterThan(3);
     expect(kalman[0].block).toBe(true);
     expect(new Set(kalman.map((f) => f.tex)).size).toBe(kalman.length);
-    // M02 writes all of its math inline; the palette still finds equations.
+    // Display equations come before inline ones; inline picks are equations.
     const vectors = lessonFormulas(getLesson("M02")!.body);
     expect(vectors.length).toBeGreaterThan(3);
-    expect(vectors.every((f) => !f.block && /[=<>]|\\/.test(f.tex))).toBe(true);
+    const firstInline = vectors.findIndex((f) => !f.block);
+    expect(firstInline).toBeGreaterThanOrEqual(0);
+    expect(vectors.slice(firstInline).every((f) => !f.block)).toBe(true);
+    expect(
+      vectors.filter((f) => !f.block).every((f) => /[=<>]|\\/.test(f.tex)),
+    ).toBe(true);
     for (const f of [...kalman, ...vectors])
       expect(() =>
         katex.renderToString(f.tex, {

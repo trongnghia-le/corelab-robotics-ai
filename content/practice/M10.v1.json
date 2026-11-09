@@ -126,12 +126,12 @@
           "href": "/lessons/M10#theory-and-derivation"
         }
       ],
-      "prompt": "J = (θ − 5)², θ₀ = 1, α = 0.2. What is θ₁?",
+      "prompt": "J = (θ − 5)², θ₀ = 1, α = 0.4. What is θ₁?",
       "dimension": "M",
       "critical": false,
-      "answer": "2.6",
+      "answer": "4.2",
       "tolerance": 0.001,
-      "explanation": "Gradient 2(1−5) = −8; θ₁ = 1 + 1.6 = 2.6."
+      "explanation": "Gradient 2(1−5) = −8; θ₁ = 1 + 0.4·8 = 4.2."
     },
     {
       "id": "m10-b6",
@@ -148,12 +148,12 @@
           "href": "/lessons/M10#theory-and-derivation"
         }
       ],
-      "prompt": "J(θ) = (θ − 5)² and one gradient step from θ₀ = 1 with α = 0.2 gives θ₁ = 2.6. What is J(θ₁)? Give 2 decimals.",
+      "prompt": "J(θ) = (θ − 5)² and one gradient step from θ₀ = 1 with α = 0.4 gives θ₁ = 4.2. What is J(θ₁)? Give 2 decimals.",
       "dimension": "M",
       "critical": false,
-      "answer": "5.76",
+      "answer": "0.64",
       "tolerance": 0.01,
-      "explanation": "(2.6 − 5)² = 5.76."
+      "explanation": "(4.2 − 5)² = 0.64."
     },
     {
       "id": "m10-b7",
@@ -214,12 +214,12 @@
           "href": "/lessons/M10#theory-and-derivation"
         }
       ],
-      "prompt": "The error factor per step is 0.9. How many steps until the error is at most 1% of its start? (round up)",
+      "prompt": "The error factor per step is 0.85. How many steps until the error is at most 1% of its start? (round up)",
       "dimension": "M",
       "critical": false,
-      "answer": "44",
+      "answer": "29",
       "tolerance": 0.01,
-      "explanation": "ln(0.01)/ln(0.9) = 43.7, so 44 steps."
+      "explanation": "ln(0.01)/ln(0.85) = 28.3, so 29 steps."
     },
     {
       "id": "m10-b10",
@@ -295,6 +295,80 @@
         "Mentions initialisation and maximum iterations."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m10-c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "conditioning"
+      ],
+      "skillLabel": "Best fixed step",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "J(θ) = 3θ1² + 12θ2², so the Hessian is diag(6, 24). What fixed step α minimises the worst per-coordinate error factor |1 − αλ|? Give α to 4 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.066667",
+      "tolerance": 0.0005,
+      "explanation": "Per coordinate the factor is |1 − αλ| with λ = 6 and 24. The worst factor is smallest when the two are equal with opposite signs: 1 − 6α = 24α − 1, so α = 2/(λmin + λmax) = 2/30 = 0.0667. Then both factors are 0.6 in modulus (κ = 4)."
+    },
+    {
+      "id": "m10-c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "conditioning"
+      ],
+      "skillLabel": "Momentum versus plain descent",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "For a quadratic with condition number κ = 100, tuned gradient descent contracts the error by (κ−1)/(κ+1) per step and tuned heavy-ball momentum by (√κ−1)/(√κ+1). Asymptotically (for a very tight tolerance), roughly how many times fewer iterations does momentum need for the same accuracy?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "About 2 times fewer, since momentum only halves the oscillation",
+        "About 5 times fewer, since momentum removes half of the iterations twice",
+        "About 10 times fewer, since the rate improves from κ to √κ",
+        "About 100 times fewer, since the condition number drops to 1"
+      ],
+      "answer": "2",
+      "explanation": "GD: 99/101 = 0.9802, ln = −0.0200 per step. Heavy ball: 9/11 = 0.8182, ln = −0.2007 per step. The ratio of logarithms is about 10, so asymptotically momentum needs about ten times fewer iterations. At a finite tolerance the double-root factor k reduces the gain: a simulation with tolerance 1e-3 needs 58 steps against 346 (about 6 times), and 95 against 691 at 1e-6 (7.3 times), approaching 10. The gain scales like √κ, here 10; it is not a factor 2 or 100. This tuning is derived for quadratics only."
+    },
+    {
+      "id": "m10-c3",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "step-size"
+      ],
+      "skillLabel": "Descent lemma proof",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M10#theory-and-derivation"
+        }
+      ],
+      "prompt": "Assume ∇J is L-Lipschitz, so J(y) ≤ J(x) + ∇J(x)ᵀ(y−x) + (L/2)‖y−x‖². Prove that the step x⁺ = x − t∇J(x) decreases J for every 0 < t < 2/L, find the t with the largest guaranteed decrease, and explain why this fixes the usable learning rate by the largest curvature.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Substitutes y = x − t g into the quadratic bound and obtains J − t(1 − Lt/2)‖g‖².",
+        "Concludes decrease iff 0 < t < 2/L and maximises t(1 − Lt/2) at t = 1/L, decrease ≥ ‖g‖²/(2L).",
+        "Links L to the largest Hessian eigenvalue: the stiffest direction limits the step."
+      ],
+      "explanation": "Open question; check your answer against the rubric. Put y = x − tg: J(x⁺) ≤ J − t‖g‖² + (L t²/2)‖g‖² = J − t(1 − Lt/2)‖g‖², which is below J iff 0 < t < 2/L (when g ≠ 0). The coefficient t(1 − Lt/2) is maximised at t = 1/L, giving a decrease of at least ‖g‖²/(2L). L is the largest curvature (largest Hessian eigenvalue in modulus), and the bound fails as soon as t exceeds 2/L along the stiffest direction, whatever the curvature elsewhere."
     }
   ]
 }

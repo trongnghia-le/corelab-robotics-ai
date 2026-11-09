@@ -1,26 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="340" fill="#111827" rx="12"/>
-<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Move transfers ownership: Buffer b = std::move(a)</text>
-<text x="20" y="62" font-size="14" fill="#38bdf8" font-weight="bold">Before</text>
-<rect x="20" y="85" width="170" height="60" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/>
-<text x="105" y="108" font-size="14" fill="#e5e7eb" text-anchor="middle">a</text>
-<text x="105" y="130" font-size="13" fill="#e5e7eb" text-anchor="middle">data_ = A, size_ = 3</text>
-<rect x="260" y="85" width="170" height="60" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="5 4"/>
-<text x="345" y="120" font-size="14" fill="#e5e7eb" text-anchor="middle">b (not yet built)</text>
-<rect x="520" y="85" width="220" height="60" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
-<text x="630" y="108" font-size="14" fill="#a3e635" text-anchor="middle">heap block A</text>
-<text x="630" y="130" font-size="13" fill="#e5e7eb" text-anchor="middle">[0.0, 1.0, 2.0]</text>
-<path d="M105 85 V76 H630 V83" fill="none" stroke="#38bdf8" stroke-width="2"/><path d="M624 75 L630 83 L636 75" fill="none" stroke="#38bdf8" stroke-width="2"/>
-<text x="20" y="195" font-size="14" fill="#f97316" font-weight="bold">After (O(1): two pointer writes)</text>
-<rect x="20" y="210" width="170" height="60" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/>
-<text x="105" y="233" font-size="14" fill="#e5e7eb" text-anchor="middle">a (moved-from)</text>
-<text x="105" y="255" font-size="13" fill="#f97316" text-anchor="middle">data_ = nullptr, size_ = 0</text>
-<rect x="260" y="210" width="170" height="60" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/>
-<text x="345" y="233" font-size="14" fill="#e5e7eb" text-anchor="middle">b (owner)</text>
-<text x="345" y="255" font-size="13" fill="#e5e7eb" text-anchor="middle">data_ = A, size_ = 3</text>
-<rect x="520" y="210" width="220" height="60" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
-<text x="630" y="233" font-size="14" fill="#a3e635" text-anchor="middle">heap block A</text>
-<text x="630" y="255" font-size="13" fill="#e5e7eb" text-anchor="middle">[0.0, 1.0, 2.0]</text>
-<path d="M430 240 H518" stroke="#38bdf8" stroke-width="2"/><path d="M510 234 L518 240 L510 246" fill="none" stroke="#38bdf8" stroke-width="2"/>
-<text x="20" y="310" font-size="13" fill="#e5e7eb">Scope ends: ~b frees A once; ~a does delete[] nullptr, a no-op. Without nulling a, A is freed twice.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="Inter, sans-serif">
+<title>Move transfers ownership: Buffer b = std::move(a)</title>
+<desc>Memory diagram: before the move a points at heap block A holding 0,1,2; after the move b points at A and a holds a null pointer; at scope exit ~b frees A once and ~a frees nothing.</desc>
+<defs><marker id="ahCPP03en86abe2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9 z" fill="#86abe2"/></marker><marker id="ahCPP03ene0904f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9 z" fill="#e0904f"/></marker></defs>
+<rect width="900" height="440" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Move transfers ownership: Buffer b = std::move(a)</text>
+<text x="32" y="92" font-size="17" fill="#86abe2" text-anchor="start" font-weight="bold">Before</text>
+<rect x="32" y="124" width="220" height="60" rx="8" fill="#22252a" stroke="#e9e7e3" stroke-width="2"/>
+<text x="142" y="150" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">a</text>
+<text x="142" y="172" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">data_ = A, size_ = 3</text>
+<rect x="300" y="124" width="220" height="60" rx="8" fill="none" stroke="#a7adb5" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="410" y="160" font-size="15" fill="#a7adb5" text-anchor="middle">b (not built yet)</text>
+<rect x="640" y="124" width="228" height="60" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="754" y="150" font-size="15" fill="#6fc693" text-anchor="middle" font-weight="600">heap block A</text>
+<text x="754" y="172" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">[0.0, 1.0, 2.0]</text>
+<path d="M142,124 V108 H754 V122" fill="none" stroke="#86abe2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ahCPP03en86abe2)"/>
+<text x="448" y="100" font-size="14" fill="#86abe2" text-anchor="middle">owns</text>
+<text x="32" y="222" font-size="17" fill="#e0904f" text-anchor="start" font-weight="bold">After the move: two pointer writes, O(1)</text>
+<rect x="32" y="244" width="220" height="60" rx="8" fill="#22252a" stroke="#e58a80" stroke-width="2"/>
+<text x="142" y="270" font-size="15" fill="#e58a80" text-anchor="middle" font-weight="600">a (moved-from)</text>
+<text x="142" y="292" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">data_ = nullptr, size_ = 0</text>
+<rect x="300" y="244" width="220" height="60" rx="8" fill="#22252a" stroke="#e0904f" stroke-width="2"/>
+<text x="410" y="270" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="600">b</text>
+<text x="410" y="292" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">data_ = A, size_ = 3</text>
+<rect x="640" y="244" width="228" height="60" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="754" y="270" font-size="15" fill="#6fc693" text-anchor="middle" font-weight="600">heap block A</text>
+<text x="754" y="292" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">[0.0, 1.0, 2.0]</text>
+<line x1="520" y1="274" x2="638" y2="274" stroke="#e0904f" stroke-width="2" stroke-linecap="round" marker-end="url(#ahCPP03ene0904f)"/>
+<text x="580" y="262" font-size="14" fill="#e0904f" text-anchor="middle">owns</text>
+<text x="142" y="326" font-size="14" fill="#e58a80" text-anchor="middle">owns nothing</text>
+<rect x="32" y="350" width="836" height="58" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="48" y="376" font-size="15" fill="#e9e7e3" text-anchor="start">Scope exit (reverse order): ~b runs delete[] A once; ~a runs delete[] nullptr, a defined no-op.</text>
+<text x="48" y="397" font-size="14" fill="#a7adb5" text-anchor="start">Without a.data_ = nullptr both destructors would free A: a double free.</text>
 </svg>

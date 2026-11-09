@@ -330,6 +330,77 @@
         "q4"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Logistic regression with w=(2,−1,1), b=0, x=(1,1,3), label +1. Worst-case loss over ‖δ‖∞≤0.75 is ζ(ε‖w‖₁−m) with ζ(z)=ln(1+eᶻ). Compute it (decimal, tolerance 0.002).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.3133",
+      "tolerance": 0.002,
+      "explanation": "Margin m=2−1+3=4. ‖w‖₁=2+1+1=4, so ε‖w‖₁=0.75·4=3. Worst-case loss ζ(3−4)=ζ(−1)=ln(1+e^{−1})=0.3133. The clean loss ζ(−4)=0.0181 is much smaller, so the attack matters; a common mistake is to use ‖w‖₂ or to subtract ε‖w‖₁ from the loss instead of the margin.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "adversarial-logistic"
+      ],
+      "skillLabel": "Worst-case loss of adversarially trained logistic regression",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "For g(θ,δ)=θδ with δ∈[−ε,ε] and φ(θ)=max_δ g, you run the Danskin recipe at θ=0 using the maximiser δ=ε and step along −∇θ g. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "φ decreases, because −∇θ g is always a descent direction of the max-function",
+        "φ is unchanged, because the gradient at a maximiser is zero when the maximiser is not unique",
+        "φ increases to ε²τ for step τε, because at a non-unique maximiser the directional derivative is ε|h| in every direction",
+        "φ becomes undefined, because the maximum does not exist on a compact interval"
+      ],
+      "answer": "2",
+      "explanation": "φ(θ)=ε|θ|, so φ(0)=0 and the argmax at θ=0 is the whole interval. Danskin gives φ'(0;h)=sup_δ hδ=ε|h|>0 for every h≠0, so every step, including −ε·τ, raises φ (to τε²). The gradient at one maximiser (ε) describes only one side of the kink. The set-valued argmax is why the recipe needs a unique maximiser. The max exists because the interval is compact.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "danskin-minmax"
+      ],
+      "skillLabel": "Danskin's theorem and descent directions for min-max training",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "In the parametric loss E+A/N^α+B/D^β with α=0.34, β=0.28 and the constraint 6ND=C, the compute budget is multiplied by 100. By what factor does the optimal N grow? (decimal, tolerance 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "8.0",
+      "tolerance": 0.1,
+      "explanation": "N_opt ∝ C^a with a=β/(α+β)=0.28/0.62=0.4516. So the factor is 100^0.4516=10^0.9032=8.00. (Using the other exponent α/(α+β)=0.5484 would give 12.5, which is the growth of D.) Optimising N and D each by the square root (a=b=0.5) would give 10, which is the equal-scaling answer only when α=β.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compute-optimal-allocation"
+      ],
+      "skillLabel": "Compute-optimal allocation from a parametric loss",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML12#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

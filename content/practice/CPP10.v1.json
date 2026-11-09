@@ -182,13 +182,13 @@
     },
     {
       "id": "b7",
-      "prompt": "Backlog is 40 items and the consumer handles 160 items/s with no new input. How many seconds to drain it? Give a number with 2 decimals.",
+      "prompt": "Backlog is 48 items and the consumer handles 160 items/s with no new input. How many seconds to drain it? Give a number with 2 decimals.",
       "kind": "number",
       "dimension": "M",
       "critical": false,
-      "answer": "0.25",
+      "answer": "0.3",
       "tolerance": 0.005,
-      "explanation": "40 / 160 = 0.25 s.",
+      "explanation": "48 / 160 = 0.30 s.",
       "knowledgeType": "procedure",
       "skillTags": [
         "queue-contract"
@@ -324,6 +324,81 @@
         "q4"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A producer runs data = 42; ready.store(true, S); a consumer spins on ready.load(L) and then reads data. Which pair (S, L) makes the read of data correct, always seeing 42 with no data race?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "S = relaxed, L = relaxed",
+        "S = relaxed, L = acquire",
+        "S = release, L = acquire",
+        "S = release, L = relaxed"
+      ],
+      "answer": "2",
+      "explanation": "A release store synchronizes-with an acquire load that reads the value it wrote, so data = 42 happens-before the read of data. With a relaxed store or a relaxed load there is no synchronizes-with edge: the write and the read of data are unordered conflicting accesses, a data race, even if a test on x86 never fails. A release store needs an acquire (or stronger) load on the other side, and an acquire load needs a release (or stronger) store.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "data-races"
+      ],
+      "skillLabel": "Release/acquire publication",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Two threads each run the three steps load, add 1, store on one shared integer that starts at 0 (each thread keeps its loaded value in a private register). Among all interleavings that keep each thread's step order, how many end with the shared integer equal to 1?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "18",
+      "tolerance": 0,
+      "explanation": "There are C(6,3)=20 interleavings. The final value is 2 only when one thread's load comes after the other thread's store, which happens only when one thread runs all three steps before the other starts: 2 interleavings. The other 20 - 2 = 18 end with 1 (both threads loaded 0, or the later store overwrites with a value computed from a stale load).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "data-races"
+      ],
+      "skillLabel": "Counting lost-update interleavings",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A capacity-1 queue uses one condition variable for both 'not full' and 'not empty' and calls notify_one after every change. Show a schedule with two producers and two consumers that leaves all threads blocked while the queue holds an item, and give two fixes with their costs.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Schedule: queue full, producers P1 and P2 waiting; C1 pops and notify_one wakes P1; before P1 runs C2 finds the queue empty and waits; P1 pushes and notify_one wakes P2 instead of C2; P2 sees full and sleeps again; C2 sleeps with a non-empty queue and nobody notifies.",
+        "Fix 1: notify_all with predicate loops; correct, but wakes every waiter (thundering herd, O(waiters) wake-ups per operation).",
+        "Fix 2: one condition variable per predicate (not_full, not_empty) with notify_one on the right one; each notification is useful. State the invariant that each operation restores before unlocking."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "condition-variables",
+        "queue-contract"
+      ],
+      "skillLabel": "Missed notification with shared condition variable",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP10#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

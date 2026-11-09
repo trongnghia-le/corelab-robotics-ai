@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" font-family="Inter, Arial, sans-serif" font-size="14">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5e7eb"/></marker></defs>
+<rect width="760" height="440" fill="#191b1f" rx="12"/>
+<text x="380" y="30" fill="#e5e7eb" font-size="16" text-anchor="middle">Học off-policy: replay, target network và dữ liệu cũ</text>
+<rect x="20" y="60" width="150" height="70" rx="10" fill="none" stroke="#e5e7eb" stroke-width="2"/>
+<text x="95" y="90" fill="#e5e7eb" text-anchor="middle">Behaviour policy</text><text x="95" y="112" fill="#e5e7eb" text-anchor="middle">b (policy cũ)</text>
+<rect x="225" y="60" width="150" height="70" rx="10" fill="none" stroke="#d97936" stroke-width="2.5"/>
+<text x="300" y="90" fill="#d97936" text-anchor="middle">Replay buffer</text><text x="300" y="112" fill="#e5e7eb" text-anchor="middle" style="font-size:11.89px">C transition gần nhất</text>
+<rect x="430" y="60" width="150" height="70" rx="10" fill="none" stroke="#53b2dd" stroke-width="2.5"/>
+<text x="505" y="90" fill="#53b2dd" text-anchor="middle">Online Q(s,a;w)</text><text x="505" y="112" fill="#e5e7eb" text-anchor="middle" style="font-size:10.92px">learner, được cập nhật</text>
+<rect x="590" y="60" width="150" height="70" rx="10" fill="none" stroke="#9ccd4e" stroke-width="2.5"/>
+<text x="665" y="90" fill="#9ccd4e" text-anchor="middle">Target Q(s,a;w-)</text><text x="665" y="112" fill="#e5e7eb" text-anchor="middle" style="font-size:10.92px">bản sao chậm của w</text>
+<line x1="170" y1="95" x2="225" y2="95" stroke="#e5e7eb" stroke-width="2" marker-end="url(#ar)"/>
+<line x1="375" y1="95" x2="430" y2="95" stroke="#e5e7eb" stroke-width="2" marker-end="url(#ar)"/>
+<text x="402" y="82" fill="#e5e7eb" text-anchor="middle">batch</text>
+<path d="M640 130 Q 600 160 520 132" fill="none" stroke="#9ccd4e" stroke-width="2" marker-end="url(#ar)"/>
+<text x="560" y="182" fill="#9ccd4e" text-anchor="middle">target y = r + g max Q(s',a'; w-)</text>
+<text x="380" y="225" fill="#e5e7eb" text-anchor="middle">Dữ liệu cũ: reward đổi ở bước 600; buffer giữ C = 1000 trong 1000 bước</text>
+<rect x="60" y="245" width="360" height="40" fill="#d97936" opacity="0.85"/>
+<rect x="420" y="245" width="240" height="40" fill="#53b2dd" opacity="0.85"/>
+<text x="240" y="271" fill="#191b1f" text-anchor="middle" font-weight="bold">cũ: 600 transition (reward 3)</text>
+<text x="540" y="271" fill="#191b1f" text-anchor="middle" font-weight="bold">mới: 400 (reward 0)</text>
+<text x="60" y="310" fill="#e5e7eb" style="font-size:12.57px">bước 0</text><text x="420" y="310" fill="#e5e7eb" text-anchor="middle">600 (đổi)</text><text x="660" y="310" fill="#e5e7eb" text-anchor="end">1000 (nay)</text>
+<text x="380" y="350" fill="#e5e7eb" text-anchor="middle" style="font-size:13.24px">Ước lượng trung bình buffer cho reward của arm: 0.6 x 3 + 0.4 x 0 = 1.8 (thực tế nay: 0)</text>
+<text x="380" y="378" fill="#e5e7eb" text-anchor="middle">Với C = 100 buffer chỉ giữ dữ liệu mới, ước lượng là 0, đổi lại nhiễu hơn</text>
+<text x="380" y="412" fill="#9ccd4e" text-anchor="middle" style="font-size:13.85px">Importance weight pi(a)/b(a) sửa tỉ lệ action, không sửa dynamics hay reward đã lỗi thời</text>
+</svg>

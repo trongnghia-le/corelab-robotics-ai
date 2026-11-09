@@ -87,6 +87,30 @@
     "Giải thích rằng mỗi chỉ số được thêm một lần và gỡ nhiều nhất một lần.",
     "Kết luận tổng cộng O(n) so với O(nk) của vét cạn."
    ]
+  },
+  "c1": {
+   "prompt": "list_resize của CPython tính dung lượng cấp phát mới là (newsize + (newsize >> 3) + 6) & ~3 (bước cuối xóa hai bit thấp nhất). Nếu một lần append làm list độ dài 200 vượt dung lượng, dung lượng nào được cấp phát?",
+   "explanation": "newsize >> 3 = 200 // 8 = 25, nên 200 + 25 + 6 = 231. Xóa hai bit thấp nhất làm tròn xuống bội của 4: 231 = 0b11100111 thành 0b11100100 = 228. Kết quả vượt độ dài 28 ô, khoảng 14%, phù hợp với hệ số tăng 9/8 cộng hằng số."
+  },
+  "c2": {
+   "prompt": "Một bảng dict có 8 ô và CPython dò bằng j = (5*j + 1) mod 8 (bỏ qua số hạng nhiễu). Ô gốc của khóa mới là 5, và các ô 5, 2, 3 và 0 đã bị chiếm. Khóa sẽ vào ô nào?",
+   "options": [
+    "6, ô kế tiếp, như dò tuyến tính",
+    "1, ô thứ năm trong dãy 5, 2, 3, 0, 1",
+    "4, vì 5*5 + 1 = 26 và 26 mod 8 là 2, rồi 4",
+    "7, ô cuối của bảng"
+   ],
+   "explanation": "Bắt đầu từ 5: 5*5+1 = 26, 26 mod 8 = 2; 5*2+1 = 11, 11 mod 8 = 3; 5*3+1 = 16, 16 mod 8 = 0; 5*0+1 = 1. Thứ tự dò là 5, 2, 3, 0, 1, 6, 7, 4 và các ô 5, 2, 3, 0 đã bị chiếm, nên khóa vào ô 1. Dò tuyến tính sẽ thử 6, nhưng CPython cố ý nhảy để các hash liên tiếp không tạo cụm. Hồi quy thăm cả 8 ô đúng một lần vì cấp của 5 modulo 2^(3+2) = 32 là 2^3 = 8."
+  },
+  "c3": {
+   "prompt": "Một mảng động nhân đôi khi đầy và giảm một nửa ngay khi tỉ lệ lấp đầy tụt xuống 1/2. Chỉ ra một dãy thao tác mà mỗi thao tác đều tốn Theta(n), rồi đưa ra quy tắc co đã sửa và chứng minh chi phí khấu hao mỗi thao tác là O(1).",
+   "explanation": "Chứng minh theo rubric. Đáp án mẫu: bắt đầu với n = c (đầy). append nhân đôi (sao chép n); pop kế tiếp để tỉ lệ đúng 1/2 và giảm một nửa (sao chép n); lặp lại append/pop tốn n mỗi thao tác. Sửa bằng độ trễ: tăng khi đầy lên 2c; chỉ co khi n < c/4, về dung lượng c/2. Sau mỗi lần đổi kích thước tỉ lệ nằm trong phạm vi một phần tử quanh 1/2, nên cần ít nhất khoảng c/4 thao tác trước lần đổi kế tiếp, trong khi một lần đổi sao chép tối đa c phần tử: tính thêm tối đa khoảng 4 đơn vị (8 với c nhỏ) cho mỗi thao tác trước đó là đủ trả, cho O(1) khấu hao.",
+   "rubric": [
+    "Đưa ra phản ví dụ append/pop luân phiên từ mảng đầy và chỉ ra mỗi thao tác sao chép n phần tử.",
+    "Đề xuất cặp ngưỡng tách biệt (ví dụ co khi dưới 1/4 về tỉ lệ 1/2) thay vì co ở đúng tỉ lệ tăng.",
+    "Nêu bất biến rằng sau khi đổi kích thước tỉ lệ lấp đầy khoảng 1/2, nên cả hai ngưỡng cách Theta(c) thao tác.",
+    "Dồn mỗi lần đổi kích thước (tối đa c lần sao chép) vào ít nhất c/4 - 1 thao tác kể từ lần đổi trước và kết luận O(1) khấu hao."
+   ]
   }
  }
 }

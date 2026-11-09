@@ -366,6 +366,85 @@
         "q6"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Planar arm (unit point masses at the link midpoints, l = 1 m, g = 9.81) at q = (1.2, -0.8) rad, qdot = 0, hand constrained to a fixed height (A = [1.2834, 0.9211]). Mass matrix M = [[2.1967, 0.5984],[0.5984, 0.25]], gravity torque g(q) = (9.8499, 4.5178) N m, M^-1 = [[1.3079, -3.1303],[-3.1303, 11.4921]]. For tau = (14, 3) N m, what is the contact force lambda = -(A M^-1 A^T)^-1 A M^-1 (tau - g) in N (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.324",
+      "tolerance": 0.01,
+      "explanation": "tau - g = (4.1501, -1.5178). A M^-1 = [-1.2046, 6.5674], so A M^-1 (tau - g) = -1.2046*4.1501 + 6.5674*(-1.5178) = -4.9993 - 9.9680 = -14.967. A M^-1 A^T = 4.5030. lambda = 14.967 / 4.5030 = 3.324 N. It is positive, so the table pushes up and the hand stays in contact; if it were negative the hand would lift off.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "contact-constraints"
+      ],
+      "skillLabel": "Contact forces, friction and CoP",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Same arm and pose. Each joint has |tau_i| <= 15 N m. The hand pushes UP on a ceiling with a vertical force N, so tau = g(q) + J2^T N with g(q) = (9.8499, 4.5178) N m and J2 = [1.2834, 0.9211]. What is the largest N in newtons (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.013",
+      "explanation": "Joint 1: 9.8499 + 1.2834 N <= 15 gives N <= 5.1501/1.2834 = 4.013. Joint 2: 4.5178 + 0.9211 N <= 15 gives N <= 11.38. The smaller bound, 4.013 N, is set by the shoulder. The force-ellipsoid estimate 15/||J2|| = 9.495 N ignores the gravity offset and would exceed the shoulder limit (tau_1 = 22.04 N m).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "wbc-dynamics"
+      ],
+      "skillLabel": "Whole-body dynamics and actuation limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Weighted tasks: minimise w*||J1 dq - e1||^2 + ||J2 dq - e2||^2 with J1 of full row rank and the primary task reachable. What happens as w grows?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It equals the strict-priority solution exactly once w >= 1",
+        "It approaches the strict-priority solution, with primary error of order 1/w",
+        "It approaches the solution that meets task 2 exactly",
+        "It becomes singular and the solve fails"
+      ],
+      "answer": "1",
+      "explanation": "The weighted solution is (w J1^T J1 + J2^T J2)^-1 (w J1^T e1 + J2^T e2). As w -> infinity it converges to the strict-priority (null-space) solution and the primary error falls like 1/w, but the condition number grows roughly linearly with w. For any finite w the primary error is non-zero (so the weighted solution never equals the strict one exactly), it does not converge to the solution that meets task 2 exactly, and the matrix stays invertible but ill-conditioned rather than singular.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "task-priority"
+      ],
+      "skillLabel": "Strict priority and null-space projection",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C13"
+      ]
     }
   ]
 }

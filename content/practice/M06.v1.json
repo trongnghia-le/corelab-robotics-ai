@@ -78,7 +78,7 @@
       "options": [
         "The change in x when f is held constant at its present value",
         "The total change in f as x and y both vary together",
-        "The rate of change in x with y treated as a constant",
+        "The rate of change of f with respect to x, with y held constant",
         "The derivative of f after replacing y by x everywhere"
       ],
       "answer": "2",
@@ -295,6 +295,77 @@
         "Mentions damped least squares or avoiding singular configurations."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "damped-least-squares"
+      ],
+      "skillLabel": "Damped least squares gain bound",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "In damped least squares the step is δ = (JᵀJ + λI)⁻¹Jᵀe with λ = 0.0025. What is the largest possible ratio ‖δ‖/‖e‖ over all J and e?",
+      "answer": "10",
+      "tolerance": 0.01,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "With the SVD J = UΣVᵀ, δ = Σ σᵢ/(σᵢ²+λ)(uᵢᵀe)vᵢ. By AM-GM, σ²+λ ≥ 2σ√λ, so σ/(σ²+λ) ≤ 1/(2√λ), with equality when σ = √λ. Hence ‖δ‖ ≤ ‖e‖/(2√λ) = ‖e‖/(2·0.05) = 10‖e‖. The bound holds even for a singular J, which is why damping keeps joint rates finite near a singularity."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "manipulability"
+      ],
+      "skillLabel": "Manipulability ellipse of a 2R arm",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "A planar 2R arm with unit links has Jacobian J with JJᵀ having trace 3+2cos q₂ and determinant sin²q₂. At q₂ = π/3 compute the ratio σ_max/σ_min of the singular values of J (three decimals).",
+      "answer": "4.391",
+      "tolerance": 0.003,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "At q₂ = π/3: trace = 3 + 2cos(π/3) = 4 and det = sin²(π/3) = 0.75, so the eigenvalues of JJᵀ solve λ² − 4λ + 0.75 = 0, giving λ = 2 ± √3.25 = 3.8028 and 0.1972. The singular values are the square roots: 1.9501 and 0.4441. The ratio is 1.9501/0.4441 = 4.391. This is the manipulability ellipse's axis ratio (Modern Robotics §5.4), and it grows without bound as q₂ → 0."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "newton-ik-convergence"
+      ],
+      "skillLabel": "Convergence of Newton–Raphson inverse kinematics",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M06#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "Which statement about Newton–Raphson inverse kinematics, θ ← θ + J⁻¹(x_d − f(θ)), is correct?",
+      "options": [
+        "It converges quadratically from any starting configuration, because each step solves the linearised problem exactly.",
+        "It always reaches the root closest to the start in joint space, so a poor start only costs more iterations.",
+        "Near a singular root it converges even faster, since the Jacobian entries become small.",
+        "Near a root with invertible J the error roughly squares per step; a far start may overshoot or reach another root."
+      ],
+      "answer": "3",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Near a root where J is invertible and Lipschitz, ‖e_{k+1}‖ ≤ (βL/2)‖e_k‖², so the error roughly squares each step. The proof is local: from a distant start the linear model can be poor, the step can overshoot, and different starts land in different roots (basins of attraction, Modern Robotics §6.2.2, Fig. 6.7). It does not always find the nearest root in joint space, it is only linear (error halves for θ²=0) when J is singular at the root, and J⁻¹ does not exist at a singular configuration so the step is undefined, not 'exact'."
     }
   ]
 }

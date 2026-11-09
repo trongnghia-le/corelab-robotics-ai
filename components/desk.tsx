@@ -1,6 +1,6 @@
 "use client";
-// Study desk: a second window beside the lesson for notes, exercise answers
-// and code. It follows the topic open in the lesson window.
+// Study desk for notes, exercise answers and code. It is docked beside the
+// lesson (embedded) or opened as its own window, and follows the open topic.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import {
@@ -20,6 +20,8 @@ import {
   Sigma,
   SquarePlus,
   LayoutTemplate,
+  ExternalLink,
+  X,
 } from "lucide-react";
 import { topics, topicMap } from "@/lib/curriculum";
 import { useI18n } from "@/lib/i18n";
@@ -30,6 +32,7 @@ import { lastTopic, onTopic } from "@/lib/desk-channel";
 import { deskExercises, labFiles } from "@/lib/desk-parse";
 import { langFor } from "./code-editor";
 import { MathToolbar } from "./math-toolbar";
+import { ThemeToggle } from "./theme-toggle";
 import { insertSnippet, noteTemplates } from "@/lib/math-snippets";
 import type { TopicPayload } from "@/lib/types";
 
@@ -95,7 +98,15 @@ function useAutosave(topic: string) {
   return { save, state };
 }
 
-export function Desk() {
+export function Desk({
+  embedded = false,
+  onClose,
+  onPopOut,
+}: {
+  embedded?: boolean;
+  onClose?: () => void;
+  onPopOut?: () => void;
+} = {}) {
   const { title } = useCore();
   const { tx, lang, setLang } = useI18n();
   const [topic, setTopic] = useState("");
@@ -114,10 +125,10 @@ export function Desk() {
     [follow],
   );
   useEffect(() => {
-    if (topic) document.title = `Desk · ${topic} · CoreLab`;
-  }, [topic]);
+    if (topic && !embedded) document.title = `Desk · ${topic} · CoreLab`;
+  }, [topic, embedded]);
   return (
-    <div className="desk">
+    <div className={`desk ${embedded ? "is-embedded" : ""}`}>
       <header className="desk-header">
         <select
           aria-label={tx("Topic", "Chủ đề")}
@@ -148,19 +159,45 @@ export function Desk() {
             {follow ? tx("Following", "Đang theo") : tx("Pinned", "Đã ghim")}
           </span>
         </button>
-        <div className="lang-switch" role="group" aria-label="Language">
-          {(["en", "vi"] as const).map((l) => (
+        {embedded ? (
+          <>
             <button
-              key={l}
               type="button"
-              aria-pressed={lang === l}
-              className={lang === l ? "selected" : ""}
-              onClick={() => setLang(l)}
+              className="icon-button"
+              title={tx("Open in its own window", "Tách ra cửa sổ riêng")}
+              aria-label={tx("Open in its own window", "Tách ra cửa sổ riêng")}
+              onClick={onPopOut}
             >
-              {l.toUpperCase()}
+              <ExternalLink size={16} />
             </button>
-          ))}
-        </div>
+            <button
+              type="button"
+              className="icon-button"
+              title={tx("Close the desk (Ctrl+\\)", "Đóng bàn học (Ctrl+\\)")}
+              aria-label={tx("Close the desk", "Đóng bàn học")}
+              onClick={onClose}
+            >
+              <X size={16} />
+            </button>
+          </>
+        ) : (
+          <>
+            <ThemeToggle />
+            <div className="lang-switch" role="group" aria-label="Language">
+              {(["en", "vi"] as const).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  aria-pressed={lang === l}
+                  className={lang === l ? "selected" : ""}
+                  onClick={() => setLang(l)}
+                >
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </header>
       <nav className="desk-tabs" role="tablist">
         {(

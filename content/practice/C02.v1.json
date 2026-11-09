@@ -413,6 +413,92 @@
         "States a rejection rule, e.g. error above tolerance within the intended operating range or wrong scaling."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "id": "c1",
+      "prompt": "x' = -2x + x^3 has a stable linearization at 0 (slope -2) but a finite basin. Starting from x0 = 1.5 the state escapes to infinity. After how many seconds (three decimals)? Use u = x^-2.",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "linearization-stability"
+      ],
+      "skillLabel": "Region of attraction vs linearization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Stability from linearization",
+          "href": "/lessons/C02#theory-and-derivation"
+        }
+      ],
+      "answer": "0.549306",
+      "tolerance": 0.002,
+      "explanation": "With u = x^-2: u' = -2x^-3 x' = 4u - 2, so u(t) = 1/2 + (1/x0^2 - 1/2) e^{4t}. With x0 = 1.5, 1/x0^2 = 0.4444 < 0.5, so u reaches zero when e^{4t} = 0.5/(0.5 - 0.4444) = 9, i.e. t = ln(9)/4 = 0.5493 s. The linear model predicts 1.5 e^{-1} = 0.55 at that time."
+    },
+    {
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "id": "c2",
+      "prompt": "Overdamped pendulum b x' = u0 - mgl sin x with b = 1, mgl = 2 and constant torque u0 = 1.98. Time constant of the linearization about the stable equilibrium, in seconds (two decimals)?",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "time-constant"
+      ],
+      "skillLabel": "Time constant near a bifurcation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Time constant",
+          "href": "/lessons/C02#theory-and-derivation"
+        }
+      ],
+      "answer": "3.54",
+      "tolerance": 0.02,
+      "explanation": "sin x* = u0/mgl = 0.99, so cos x* = sqrt(1 - 0.9801) = 0.14107 and a = -(mgl/b) cos x* = -0.28213 s^-1. tau = 1/0.28213 = 3.544 s. As u0 approaches mgl (saddle-node bifurcation) a tends to 0 and tau diverges."
+    },
+    {
+      "dimension": "C",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C01",
+        "M07",
+        "M03"
+      ],
+      "id": "c3",
+      "prompt": "A stable scalar system has slope a < 0 at its equilibrium and curvature f''. The linearization error e(t) between the nonlinear and linear trajectories from the same start is largest at about which time?",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "linearization-error"
+      ],
+      "skillLabel": "Where the linearization error peaks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Quadratic error law",
+          "href": "/lessons/C02#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "t = 0, because the initial deviation is largest",
+        "t = tau ln 2, about 0.69 time constants",
+        "t = 3 tau, when the response has settled",
+        "It grows without bound, because the model is only first order"
+      ],
+      "answer": "1",
+      "explanation": "To leading order e(t) = (1/2) f'' d0^2 (e^{2at} - e^{at})/a. Setting the derivative to zero gives e^{at} = 1/2, i.e. t = ln2/|a| = tau ln 2, where |e| = |f''| d0^2/(8|a|). At t = 0 the error is zero (same start) and it returns to zero as both trajectories converge to x*."
     }
   ]
 }

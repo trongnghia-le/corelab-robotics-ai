@@ -1,24 +1,77 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" font-family="Inter, Arial, sans-serif" font-size="14">
-<rect width="720" height="340" fill="#111827" rx="12"/>
-<g fill="#e5e7eb">
-<text x="24" y="30" font-size="15" font-weight="bold">Gradient descent on J = (theta - 3)^2</text>
-<text x="384" y="30" font-size="15" font-weight="bold">Error factor |1 - 2 alpha| per step</text>
-<text x="60" y="68" fill="#38bdf8" font-size="13">J(theta)</text>
-<text x="262" y="290" font-size="13">theta</text>
-<text x="120" y="222" fill="#a3e635" font-size="13">alpha = 0.1: slow, safe</text>
-<text x="24" y="312" fill="#f97316" font-size="13">alpha = 1.1: 0 to 6.6 to -1.3 to 8.2 ... (diverges)</text>
-<text x="394" y="136" font-size="13">1</text><text x="394" y="274" font-size="13">0</text>
-<text x="510.0" y="292" font-size="13">0.5</text><text x="614" y="292" font-size="13">1</text><text x="416" y="292" font-size="13">0</text>
-<text x="640" y="292" font-size="13">alpha</text>
-<text x="490.0" y="240" fill="#a3e635" font-size="13">one step</text>
-<text x="430" y="122" fill="#f97316" font-size="13">above 1: error grows</text>
-<text x="440" y="190" fill="#a3e635" font-size="13">below 1: converges</text>
-<text x="384" y="318" font-size="13">stable range 0 &lt; alpha &lt; 1</text>
-</g>
-<g stroke="#e5e7eb" stroke-width="1.5"><line x1="40" y1="270" x2="300" y2="270"/><line x1="40" y1="270" x2="40" y2="70"/><line x1="420" y1="270" x2="680" y2="270"/><line x1="420" y1="270" x2="420" y2="70"/></g>
-<line x1="420" y1="140" x2="670" y2="140" stroke="#f97316" stroke-width="1.5" stroke-dasharray="5 4"/>
-<polyline points="40.0,74.0 49.0,101.0 58.0,126.0 67.0,149.0 76.0,170.0 85.0,189.0 94.0,206.0 103.0,221.0 112.0,234.0 121.0,245.0 130.0,254.0 139.0,261.0 148.0,266.0 157.0,269.0 166.0,270.0 175.0,269.0 184.0,266.0 193.0,261.0 202.0,254.0 211.0,245.0 220.0,234.0 229.0,221.0 238.0,206.0 247.0,189.0 256.0,170.0 265.0,149.0 274.0,126.0 283.0,101.0 292.0,74.0" fill="none" stroke="#38bdf8" stroke-width="3"/><circle cx="58.0" cy="126.0" r="4" fill="#a3e635"/><circle cx="79.6" cy="177.8" r="4" fill="#a3e635"/><circle cx="96.9" cy="211.0" r="4" fill="#a3e635"/><circle cx="110.7" cy="232.3" r="4" fill="#a3e635"/><circle cx="121.8" cy="245.8" r="4" fill="#a3e635"/><circle cx="130.6" cy="254.5" r="4" fill="#a3e635"/><circle cx="137.7" cy="260.1" r="4" fill="#a3e635"/><circle cx="143.4" cy="263.7" r="4" fill="#a3e635"/>
-<circle cx="295.6" cy="62.6" r="5" fill="#f97316"/><circle cx="58.0" cy="126.0" r="5" fill="#fff"/>
-<polyline points="420,140 520,270 660,88" fill="none" stroke="#38bdf8" stroke-width="3"/>
-<circle cx="520" cy="270" r="5" fill="#a3e635"/><circle cx="440" cy="166" r="5" fill="#a3e635"/><circle cx="640" cy="114" r="5" fill="#f97316"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="Inter, sans-serif">
+<title>Step size decides: shrink, jump, or blow up</title>
+<desc>Gradient descent on J = (theta - 3)^2 with step sizes 0.1 and 1.1, and the per-step error factor |1 - 2 alpha| against alpha.</desc>
+<defs><marker id="m10a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<rect width="900" height="470" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Step size decides: shrink, jump, or blow up</text>
+<rect x="32" y="64" width="424" height="386" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<rect x="480" y="64" width="388" height="386" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<line x1="84" y1="380" x2="436" y2="380" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="84" y1="380" x2="84" y2="130" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="128" y1="380" x2="128" y2="385" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="128" y="402" font-size="14" fill="#a7adb5" text-anchor="middle">0</text>
+<line x1="216" y1="380" x2="216" y2="385" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="216" y="402" font-size="14" fill="#a7adb5" text-anchor="middle">2</text>
+<line x1="304" y1="380" x2="304" y2="385" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="304" y="402" font-size="14" fill="#a7adb5" text-anchor="middle">4</text>
+<line x1="392" y1="380" x2="392" y2="385" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="392" y="402" font-size="14" fill="#a7adb5" text-anchor="middle">6</text>
+<line x1="79" y1="380" x2="84" y2="380" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="74" y="385" font-size="14" fill="#a7adb5" text-anchor="end">0</text>
+<line x1="79" y1="317.5" x2="84" y2="317.5" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="74" y="322.5" font-size="14" fill="#a7adb5" text-anchor="end">5</text>
+<line x1="79" y1="255" x2="84" y2="255" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="74" y="260" font-size="14" fill="#a7adb5" text-anchor="end">10</text>
+<line x1="79" y1="192.5" x2="84" y2="192.5" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="74" y="197.5" font-size="14" fill="#a7adb5" text-anchor="end">15</text>
+<text x="260" y="424" font-size="15" fill="#a7adb5" text-anchor="middle">θ</text>
+<text x="84" y="118" font-size="15" fill="#a7adb5" text-anchor="start">J(θ) = (θ − 3)²</text>
+<path d="M84,180 L86.2,184.97 L88.4,189.88 L90.6,194.72 L92.8,199.5 L95,204.22 L97.2,208.87 L99.4,213.47 L101.6,218 L103.8,222.47 L106,226.88 L108.2,231.22 L110.4,235.5 L112.6,239.72 L114.8,243.88 L117,247.97 L119.2,252 L121.4,255.97 L123.6,259.88 L125.8,263.72 L128,267.5 L130.2,271.22 L132.4,274.88 L134.6,278.47 L136.8,282 L139,285.47 L141.2,288.88 L143.4,292.22 L145.6,295.5 L147.8,298.72 L150,301.88 L152.2,304.97 L154.4,308 L156.6,310.97 L158.8,313.88 L161,316.72 L163.2,319.5 L165.4,322.22 L167.6,324.88 L169.8,327.47 L172,330 L174.2,332.47 L176.4,334.88 L178.6,337.22 L180.8,339.5 L183,341.72 L185.2,343.88 L187.4,345.97 L189.6,348 L191.8,349.97 L194,351.88 L196.2,353.72 L198.4,355.5 L200.6,357.22 L202.8,358.88 L205,360.47 L207.2,362 L209.4,363.47 L211.6,364.88 L213.8,366.22 L216,367.5 L218.2,368.72 L220.4,369.88 L222.6,370.97 L224.8,372 L227,372.97 L229.2,373.88 L231.4,374.72 L233.6,375.5 L235.8,376.22 L238,376.88 L240.2,377.47 L242.4,378 L244.6,378.47 L246.8,378.88 L249,379.22 L251.2,379.5 L253.4,379.72 L255.6,379.88 L257.8,379.97 L260,380 L262.2,379.97 L264.4,379.88 L266.6,379.72 L268.8,379.5 L271,379.22 L273.2,378.88 L275.4,378.47 L277.6,378 L279.8,377.47 L282,376.88 L284.2,376.22 L286.4,375.5 L288.6,374.72 L290.8,373.88 L293,372.97 L295.2,372 L297.4,370.97 L299.6,369.88 L301.8,368.72 L304,367.5 L306.2,366.22 L308.4,364.88 L310.6,363.47 L312.8,362 L315,360.47 L317.2,358.88 L319.4,357.22 L321.6,355.5 L323.8,353.72 L326,351.88 L328.2,349.97 L330.4,348 L332.6,345.97 L334.8,343.88 L337,341.72 L339.2,339.5 L341.4,337.22 L343.6,334.88 L345.8,332.47 L348,330 L350.2,327.47 L352.4,324.88 L354.6,322.22 L356.8,319.5 L359,316.72 L361.2,313.88 L363.4,310.97 L365.6,308 L367.8,304.97 L370,301.88 L372.2,298.72 L374.4,295.5 L376.6,292.22 L378.8,288.88 L381,285.47 L383.2,282 L385.4,278.47 L387.6,274.88 L389.8,271.22 L392,267.5 L394.2,263.72 L396.4,259.88 L398.6,255.97 L400.8,252 L403,247.97 L405.2,243.88 L407.4,239.72 L409.6,235.5 L411.8,231.22 L414,226.88 L416.2,222.47 L418.4,218 L420.6,213.47 L422.8,208.87 L425,204.22 L427.2,199.5 L429.4,194.72 L431.6,189.87 L433.8,184.97 L436,180" fill="none" stroke="#e0904f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="128" y1="267.5" x2="418.4" y2="218" stroke="#e58a80" stroke-width="2" stroke-linecap="round" stroke-dasharray="6 5" marker-end="url(#m10a)"/>
+<circle cx="128" cy="267.5" r="6" fill="#86abe2"/>
+<circle cx="154.4" cy="308" r="6" fill="#86abe2"/>
+<circle cx="175.52" cy="333.92" r="6" fill="#86abe2"/>
+<circle cx="418.4" cy="218" r="6" fill="#e58a80"/>
+<text x="116" y="272.5" font-size="14" fill="#86abe2" text-anchor="end">θ₀</text>
+<text x="142.4" y="313" font-size="14" fill="#86abe2" text-anchor="end">θ₁ = 0.6</text>
+<text x="163.52" y="338.92" font-size="14" fill="#86abe2" text-anchor="end">θ₂ = 1.08</text>
+<text x="408.4" y="185" font-size="15" fill="#e58a80" text-anchor="end" font-weight="600">α = 1.1: θ₁ = 6.6, J = 12.96</text>
+<text x="260" y="290" font-size="15" fill="#86abe2" text-anchor="middle" font-weight="600">α = 0.1: θ₀, θ₁, θ₂</text>
+<circle cx="260" cy="380" r="6" fill="#6fc693"/>
+<text x="260" y="331.25" font-size="15" fill="#6fc693" text-anchor="middle" font-weight="600">α = 0.5: θ₁ = 3</text>
+<line x1="540" y1="380" x2="844" y2="380" stroke="#3d4148" stroke-width="1" stroke-linecap="round"/>
+<line x1="540" y1="301.88" x2="844" y2="301.88" stroke="#3d4148" stroke-width="1" stroke-linecap="round"/>
+<line x1="540" y1="223.75" x2="844" y2="223.75" stroke="#3d4148" stroke-width="1" stroke-linecap="round"/>
+<line x1="540" y1="145.62" x2="844" y2="145.62" stroke="#3d4148" stroke-width="1" stroke-linecap="round"/>
+<line x1="540" y1="380" x2="844" y2="380" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="540" y1="380" x2="540" y2="130" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="540" y1="380" x2="540" y2="385" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="540" y="402" font-size="14" fill="#a7adb5" text-anchor="middle">0</text>
+<line x1="648.57" y1="380" x2="648.57" y2="385" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="648.57" y="402" font-size="14" fill="#a7adb5" text-anchor="middle">0.5</text>
+<line x1="757.14" y1="380" x2="757.14" y2="385" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="757.14" y="402" font-size="14" fill="#a7adb5" text-anchor="middle">1</text>
+<line x1="535" y1="380" x2="540" y2="380" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="530" y="385" font-size="14" fill="#a7adb5" text-anchor="end">0</text>
+<line x1="535" y1="301.88" x2="540" y2="301.88" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="530" y="306.88" font-size="14" fill="#a7adb5" text-anchor="end">0.5</text>
+<line x1="535" y1="223.75" x2="540" y2="223.75" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="530" y="228.75" font-size="14" fill="#a7adb5" text-anchor="end">1</text>
+<line x1="535" y1="145.62" x2="540" y2="145.62" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="530" y="150.62" font-size="14" fill="#a7adb5" text-anchor="end">1.5</text>
+<text x="692" y="424" font-size="15" fill="#a7adb5" text-anchor="middle">step size α</text>
+<text x="540" y="118" font-size="15" fill="#a7adb5" text-anchor="start">error factor |1 − 2α| per step</text>
+<path d="M540,223.75 L542.17,226.88 L544.34,230 L546.51,233.12 L548.69,236.25 L550.86,239.38 L553.03,242.5 L555.2,245.62 L557.37,248.75 L559.54,251.88 L561.71,255 L563.89,258.12 L566.06,261.25 L568.23,264.38 L570.4,267.5 L572.57,270.62 L574.74,273.75 L576.91,276.88 L579.09,280 L581.26,283.12 L583.43,286.25 L585.6,289.38 L587.77,292.5 L589.94,295.62 L592.11,298.75 L594.29,301.88 L596.46,305 L598.63,308.12 L600.8,311.25 L602.97,314.38 L605.14,317.5 L607.31,320.62 L609.49,323.75 L611.66,326.88 L613.83,330 L616,333.12 L618.17,336.25 L620.34,339.38 L622.51,342.5 L624.69,345.62 L626.86,348.75 L629.03,351.88 L631.2,355 L633.37,358.12 L635.54,361.25 L637.71,364.38 L639.89,367.5 L642.06,370.62 L644.23,373.75 L646.4,376.88 L648.57,380 L650.74,376.88 L652.91,373.75 L655.09,370.62 L657.26,367.5 L659.43,364.38 L661.6,361.25 L663.77,358.12 L665.94,355 L668.11,351.88 L670.29,348.75 L672.46,345.62 L674.63,342.5 L676.8,339.38 L678.97,336.25 L681.14,333.12 L683.31,330 L685.49,326.88 L687.66,323.75 L689.83,320.62 L692,317.5 L694.17,314.38 L696.34,311.25 L698.51,308.13 L700.69,305 L702.86,301.88 L705.03,298.75 L707.2,295.62 L709.37,292.5 L711.54,289.38 L713.71,286.25 L715.89,283.12 L718.06,280 L720.23,276.88 L722.4,273.75 L724.57,270.63 L726.74,267.5 L728.91,264.38 L731.09,261.25 L733.26,258.12 L735.43,255 L737.6,251.88 L739.77,248.75 L741.94,245.63 L744.11,242.5 L746.29,239.38 L748.46,236.25 L750.63,233.13 L752.8,230 L754.97,226.88 L757.14,223.75 L757.14,380 Z" fill="#6fc693" fill-opacity="0.18" stroke="none"/>
+<path d="M540,223.75 L542.17,226.88 L544.34,230 L546.51,233.12 L548.69,236.25 L550.86,239.38 L553.03,242.5 L555.2,245.62 L557.37,248.75 L559.54,251.88 L561.71,255 L563.89,258.12 L566.06,261.25 L568.23,264.38 L570.4,267.5 L572.57,270.62 L574.74,273.75 L576.91,276.88 L579.09,280 L581.26,283.12 L583.43,286.25 L585.6,289.38 L587.77,292.5 L589.94,295.62 L592.11,298.75 L594.29,301.88 L596.46,305 L598.63,308.12 L600.8,311.25 L602.97,314.38 L605.14,317.5 L607.31,320.62 L609.49,323.75 L611.66,326.88 L613.83,330 L616,333.12 L618.17,336.25 L620.34,339.38 L622.51,342.5 L624.69,345.62 L626.86,348.75 L629.03,351.88 L631.2,355 L633.37,358.12 L635.54,361.25 L637.71,364.38 L639.89,367.5 L642.06,370.62 L644.23,373.75 L646.4,376.88 L648.57,380 L650.74,376.88 L652.91,373.75 L655.09,370.62 L657.26,367.5 L659.43,364.38 L661.6,361.25 L663.77,358.12 L665.94,355 L668.11,351.88 L670.29,348.75 L672.46,345.62 L674.63,342.5 L676.8,339.38 L678.97,336.25 L681.14,333.12 L683.31,330 L685.49,326.88 L687.66,323.75 L689.83,320.62 L692,317.5 L694.17,314.38 L696.34,311.25 L698.51,308.13 L700.69,305 L702.86,301.88 L705.03,298.75 L707.2,295.62 L709.37,292.5 L711.54,289.38 L713.71,286.25 L715.89,283.12 L718.06,280 L720.23,276.88 L722.4,273.75 L724.57,270.63 L726.74,267.5 L728.91,264.38 L731.09,261.25 L733.26,258.12 L735.43,255 L737.6,251.88 L739.77,248.75 L741.94,245.63 L744.11,242.5 L746.29,239.38 L748.46,236.25 L750.63,233.13 L752.8,230 L754.97,226.88 L757.14,223.75 L757.14,380" fill="none" stroke="#6fc693" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M540,223.75 L542.17,226.88 L544.34,230 L546.51,233.12 L548.69,236.25 L550.86,239.38 L553.03,242.5 L555.2,245.62 L557.37,248.75 L559.54,251.88 L561.71,255 L563.89,258.12 L566.06,261.25 L568.23,264.38 L570.4,267.5 L572.57,270.62 L574.74,273.75 L576.91,276.88 L579.09,280 L581.26,283.12 L583.43,286.25 L585.6,289.38 L587.77,292.5 L589.94,295.62 L592.11,298.75 L594.29,301.88 L596.46,305 L598.63,308.12 L600.8,311.25 L602.97,314.38 L605.14,317.5 L607.31,320.62 L609.49,323.75 L611.66,326.88 L613.83,330 L616,333.12 L618.17,336.25 L620.34,339.38 L622.51,342.5 L624.69,345.62 L626.86,348.75 L629.03,351.88 L631.2,355 L633.37,358.12 L635.54,361.25 L637.71,364.38 L639.89,367.5 L642.06,370.62 L644.23,373.75 L646.4,376.88 L648.57,380 L650.74,376.88 L652.91,373.75 L655.09,370.62 L657.26,367.5 L659.43,364.38 L661.6,361.25 L663.77,358.12 L665.94,355 L668.11,351.88 L670.29,348.75 L672.46,345.62 L674.63,342.5 L676.8,339.38 L678.97,336.25 L681.14,333.12 L683.31,330 L685.49,326.88 L687.66,323.75 L689.83,320.62 L692,317.5 L694.17,314.38 L696.34,311.25 L698.51,308.13 L700.69,305 L702.86,301.88 L705.03,298.75 L707.2,295.62 L709.37,292.5 L711.54,289.38 L713.71,286.25 L715.89,283.12 L718.06,280 L720.23,276.88 L722.4,273.75 L724.57,270.63 L726.74,267.5 L728.91,264.38 L731.09,261.25 L733.26,258.12 L735.43,255 L737.6,251.88 L739.77,248.75 L741.94,245.63 L744.11,242.5 L746.29,239.38 L748.46,236.25 L750.63,233.13 L752.8,230 L754.97,226.88 L757.14,223.75 L759.31,220.63 L761.49,217.5 L763.66,214.38 L765.83,211.25 L768,208.12 L770.17,205 L772.34,201.88 L774.51,198.75 L776.69,195.63 L778.86,192.5 L781.03,189.38 L783.2,186.25 L785.37,183.13 L787.54,180 L789.71,176.88 L791.89,173.75 L794.06,170.63 L796.23,167.5 L798.4,164.38 L800.57,161.25 L802.74,158.13 L804.91,155 L807.09,151.88 L809.26,148.75 L811.43,145.62 L813.6,142.5 L815.77,139.38 L817.94,136.25 L820.11,133.12 L822.29,130 L824.46,126.88 L826.63,123.75 L828.8,120.63 L830.97,117.5 L833.14,114.38 L835.31,111.25 L837.49,108.13 L839.66,105 L841.83,101.88 L844,98.75" fill="none" stroke="#e9e7e3" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="540" y1="223.75" x2="844" y2="223.75" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="6 5"/>
+<text x="844" y="215.75" font-size="14" fill="#a7adb5" text-anchor="end">factor = 1</text>
+<line x1="757.14" y1="223.75" x2="757.14" y2="380" stroke="#6fc693" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 4"/>
+<text x="648.57" y="176.88" font-size="15" fill="#6fc693" text-anchor="middle" font-weight="600">stable: 0 &lt; α &lt; 1</text>
+<circle cx="561.71" cy="255" r="6" fill="#86abe2"/>
+<circle cx="648.57" cy="380" r="6" fill="#6fc693"/>
+<circle cx="778.86" cy="192.5" r="6" fill="#e58a80"/>
+<text x="571.71" y="247" font-size="14" fill="#86abe2" text-anchor="start">0.8</text>
+<text x="648.57" y="368" font-size="14" fill="#6fc693" text-anchor="middle">0</text>
+<text x="766.86" y="197.5" font-size="14" fill="#e58a80" text-anchor="end">1.2</text>
 </svg>

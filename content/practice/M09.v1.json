@@ -363,6 +363,84 @@
         "States independence and no-bias assumptions.",
         "Names a check that could reject the result, such as autocorrelation or a reference target."
       ]
+    },
+    {
+      "id": "c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "estimator-fusion"
+      ],
+      "skillLabel": "Correlated fusion",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M09#theory-and-derivation"
+        }
+      ],
+      "prompt": "Two unbiased sensors have error variances 4 and 1 and error correlation 0.5. What is the variance of the best linear unbiased combination?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1",
+      "tolerance": 0.01,
+      "explanation": "With c = ρ√(v1 v2) = 0.5·2·1 = 1: Var = (v1 v2 − c²)/(v1 + v2 − 2c) = (4 − 1)/(5 − 2) = 1.0. The optimal weight on sensor 1 is (v2 − c)/(v1 + v2 − 2c) = 0, so the fused estimate is just sensor 2: with this correlation sensor 1 adds nothing. Using the independent-case formula would give 0.8, which is wrong."
+    },
+    {
+      "id": "c2",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "unbiased-variance"
+      ],
+      "skillLabel": "Minimum-MSE variance divisor",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M09#theory-and-derivation"
+        }
+      ],
+      "prompt": "For Gaussian readings the estimator SS/d with SS = Σ(xi − x̄)² has MSE(c)/σ⁴ = (c(n−1) − 1)² + 2(n−1)c², with c = 1/d. For n = 6, what is the MSE/σ⁴ of the best divisor d? Give 4 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.2857",
+      "tolerance": 0.001,
+      "explanation": "The derivative of (c(n−1) − 1)² + 2(n−1)c² vanishes at c = 1/(n+1), i.e. d = 7 for n = 6. Then MSE/σ⁴ = (5/7 − 1)² + 2·5/49 = 4/49 + 10/49 = 14/49 = 0.2857. For comparison the unbiased divisor d = 5 gives 0.4 and the MLE divisor d = 6 gives 0.3056."
+    },
+    {
+      "id": "c3",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "independence-assumption"
+      ],
+      "skillLabel": "Independence of x̄ and s²",
+      "relatedPrerequisites": [
+        "M08"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M09#theory-and-derivation"
+        }
+      ],
+      "prompt": "Prove that for i.i.d. Gaussian readings the sample mean and sample variance are independent and that (n−1)s²/σ² is a sum of n−1 squared standard normals. Then say what goes wrong with the t interval if the readings are positively autocorrelated.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Uses an orthogonal transformation whose first coordinate is √n x̄, giving independent Gaussian coordinates with equal variance.",
+        "Shows Σ(xi − x̄)² equals the sum of squares of the remaining n−1 coordinates, each with mean zero, hence σ²·χ²(n−1).",
+        "States that positive autocorrelation inflates Var(x̄) beyond σ²/n, so the interval is too narrow and under-covers."
+      ],
+      "explanation": "Open question; check your answer against the rubric. Take an orthogonal Q with first row (1,…,1)/√n and y = Qx; the y_k are independent N(·, σ²). y1 = √n x̄ depends on x̄ only, and since Q preserves length, Σ_{k≥2} yk² = Σ xi² − n x̄² = Σ(xi − x̄)² = (n−1)s², with E[yk] = 0 for k ≥ 2, so (n−1)s²/σ² ~ χ²(n−1) independent of x̄. If readings are positively autocorrelated, Var(x̄) is larger than σ²/n (by about (1+φ)/(1−φ) for AR(1)), so s/√n understates the uncertainty and the nominal 95% interval covers less often."
     }
   ]
 }

@@ -49,8 +49,8 @@
    "explanation": "Mỗi lần copy là 16,000,000 byte; ba lần copy: 48,000,000. Move sẽ không copy dữ liệu phần tử nào."
   },
   "b7": {
-   "prompt": "Buffer a(2); Buffer b(std::move(a)); { Buffer c(1); auto p = std::make_unique<Buffer>(3); } -- nếu Buffer::alive đếm số đối tượng đã dựng trừ số đã hủy, giá trị của nó sau khi khối đóng là bao nhiêu? Số nguyên.",
-   "explanation": "a và b còn sống (a là moved-from nhưng vẫn là một đối tượng): 2. c và Buffer trên heap đã chết ở dấu ngoặc đóng."
+   "prompt": "Buffer a(5); Buffer b(std::move(a)); Buffer d(std::move(b)); { Buffer c(2); auto p = std::make_unique<Buffer>(4); Buffer e(std::move(c)); } -- nếu Buffer::alive đếm số đối tượng đã dựng trừ số đã hủy, giá trị của nó sau khi khối đóng là bao nhiêu? Số nguyên.",
+   "explanation": "a, b và d còn sống (a và b là moved-from nhưng vẫn là đối tượng): 3. Trong khối có thêm c, Buffer trên heap và e (mỗi phép move cũng là một đối tượng mới), tổng 6 trước dấu ngoặc đóng; e, p và c chết ở dấu ngoặc đóng, còn lại 3."
   },
   "b8": {
    "prompt": "Một vector của một kiểu copy được có move constructor có thể throw tăng trưởng bằng cách nhân đôi (dung lượng 1, 2, 4, 8) khi 8 phần tử được push lần lượt từng cái. Có bao nhiêu phép copy phần tử xảy ra, chỉ tính khi di dời? Số nguyên.",
@@ -82,6 +82,31 @@
     "~Samples() { delete[] p_; } (delete trên nullptr là phép không làm gì).",
     "Đánh dấu nó noexcept và giải thích vì sao nguồn phải được reset."
    ]
+  },
+  "c1": {
+   "prompt": "Một class có hai member sở hữu thô được khởi tạo trong danh sách initializer của constructor bằng new double[12] và new double[20]. Thân constructor sau đó luôn throw. Một robot thử xây dựng nó ở 5 Hz trong 2 phút. Tổng cộng rò rỉ bao nhiêu byte? Số nguyên.",
+   "explanation": "Constructor throw thì destructor của chính đối tượng không bao giờ chạy, và các member là con trỏ thô nên việc hủy chúng không giải phóng gì. Mỗi lần thử rò rỉ (12 + 20) * 8 = 256 byte. Số lần thử: 5 Hz * 120 s = 600. Tổng 600 * 256 = 153.600 byte. Với member std::unique_ptr<double[]>, các member đã hoàn tất sẽ bị hủy và không có gì rò rỉ."
+  },
+  "c2": {
+   "prompt": "Một Buffer chỉ định nghĩa Buffer& operator=(Buffer o) noexcept { swap(*this, o); return *this; } và copy constructor của Buffer throw std::bad_alloc trong câu lệnh a = b. Trạng thái của a sau đó là gì?",
+   "options": [
+    "a rỗng (size 0) vì vùng nhớ của nó đã được giải phóng trước",
+    "Không xác định: với toán tử gán chỉ có basic guarantee",
+    "a không đổi: phép copy thất bại trước khi thân hàm chạy",
+    "a chứa một nửa phần tử của b, vì phép copy dừng giữa chừng"
+   ],
+   "explanation": "Tham số theo giá trị o được dựng trước khi thân hàm chạy. Khi copy constructor của nó throw, thân hàm (chứa thao tác thay đổi duy nhất, phép swap noexcept) không bao giờ chạy, nên a không bị đụng tới: đây là strong exception guarantee. Lựa chọn 0 mô tả phép gán ngây thơ delete rồi new; lựa chọn 3 nhầm bản copy dở của đối tượng tạm với đích; lựa chọn 1 đúng với bản ngây thơ, không đúng với copy-and-swap."
+  },
+  "c3": {
+   "prompt": "Giải thích vì sao std::vector relocate bằng std::move_if_noexcept khi tăng dung lượng. Chứng minh rằng relocation bằng move không thể đạt strong exception guarantee nếu lần move thứ k có thể throw, nêu vector làm gì với kiểu copy được có move throw, và điều gì bị bỏ đối với kiểu chỉ-move.",
+   "rubric": [
+    "Strong guarantee nghĩa là một push_back/emplace_back throw để vector y hệt trước đó.",
+    "Nếu lần move thứ k throw thì các phần tử 1..k-1 đã bị move từ; hoàn tác cần thêm k-1 phép move, mà chúng cũng có thể throw, nên không có rollback được đảm bảo.",
+    "Copy để nguồn nguyên vẹn: khi throw thì các bản sao mới bị hủy và khối mới được giải phóng, nên vector cũ không bị đụng tới.",
+    "move_if_noexcept chỉ trả về rvalue nếu move là noexcept hoặc kiểu không copy được; vì vậy kiểu copy được có move throw sẽ bị copy (tốn O(n) phép copy thay vì O(n) phép move, do đó lời khuyên đánh dấu move là noexcept).",
+    "Với kiểu chỉ-move có move throw thì không có lựa chọn khác; strong guarantee bị bỏ và tác dụng là unspecified."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời với từng ý của rubric; câu hỏi này không được chấm tự động."
   }
  }
 }

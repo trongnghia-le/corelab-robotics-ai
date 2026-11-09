@@ -81,6 +81,24 @@
     "Đề xuất một phương pháp độc lập (cài đặt tham chiếu chậm, số học độ chính xác cao) hoặc kiểm tra các tính chất toán học"
    ],
    "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "c1": {
+   "prompt": "Tổng của [1e16, 1, -1e16] có số điều kiện kappa = (tổng |x_j|) / |tổng x_j|. kappa bằng bao nhiêu? (sai số cho phép 1e12)",
+   "explanation": "tổng |x_j| = 1e16 + 1 + 1e16, làm tròn ở thang này thành 2e16, và |tổng x_j| = 1. Vậy kappa = 2e16. Cận bậc nhất (n-1)*u*tổng|x_j| khi đó cho phép sai số tuyệt đối cỡ 2 * 1.1e-16 * 2e16, khoảng 4.4 (và khoảng 6.66 với cận tích vô hướng n*u*tổng|a_i b_i| khi n = 3), nên kết quả 0.0 (sai số 1) nằm trong cận dù sai 100%."
+  },
+  "c2": {
+   "prompt": "Phát biểu nào về math.isclose(a, b, rel_tol=r) với abs_tol để mặc định 0 và 0 < r < 1 là đúng?",
+   "options": [
+    "isclose(a, b) đúng khi và chỉ khi |a-b| <= r*max(|a|,|b|)",
+    "Nếu isclose(a, b) và isclose(b, c) cùng đúng thì isclose(a, c) đúng",
+    "isclose(x, 0.0) đúng với mọi x có |x| < r",
+    "isclose(a, b) có thể khác isclose(b, a) khi a lớn hơn b nhiều"
+   ],
+   "explanation": "Quy tắc được ghi trong tài liệu là |a-b| <= max(rel_tol*max(|a|,|b|), abs_tol). Nó đối xứng nên lựa chọn cuối sai. Nó không bắc cầu (r = 0.1: 1 ~ 1.1 và 1.1 ~ 1.21 nhưng 1 không gần 1.21). So với 0, cận là r*|x| < |x|, nên nếu không có abs_tol thì chỉ số không đúng mới gần."
+  },
+  "c3": {
+   "prompt": "Phép cộng Kahan (S = x1, C = 0; với mỗi x: Y = x - C, T = S + Y, C = (T - S) - Y, S = T) được chạy trong độ chính xác kép trên [1.0, 1e100, 1.0, -1e100]. Nó trả về gì? (sai số cho phép 0.5)",
+   "explanation": "Bắt đầu (S, C) = (1, 0). Cộng 1e100: T = 1e100, C = (1e100 - 1) - 1e100 = 0 vì 1e100 - 1 làm tròn về 1e100, nên số 1 bị mất. Cộng 1: Y = 1, T = 1e100, C = -1. Cộng -1e100: Y = -1e100 (phần -(-1) biến mất khi làm tròn), T = 0, C = 0. Kết quả là 0, trong khi tổng chính xác, và math.fsum, cho 2."
   }
  }
 }

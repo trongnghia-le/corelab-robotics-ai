@@ -81,6 +81,24 @@
     "Kiểm tra trên một hiệp phương sai đồ chơi có trị riêng đã biết (ví dụ 4 và 1).",
     "Kiểm tra tính trực chuẩn của các thành phần, phương sai giảm dần, và tổng phương sai bằng vết (trace)."
    ]
+  },
+  "c1": {
+   "prompt": "N=50 ảnh, mỗi ảnh có D=10,000 pixel, đã được căn tâm (trừ trung bình). Ma trận hiệp phương sai 10,000×10,000 có tối đa bao nhiêu trị riêng khác không? (số nguyên)",
+   "explanation": "Ma trận dữ liệu đã căn tâm X (D×N) có hạng tối đa N−1=49 vì các cột có tổng bằng không. Hiệp phương sai S=XXᵀ/N có cùng hạng, nên có tối đa 49 trị riêng khác không; chúng bằng các trị riêng khác không của ma trận 50×50 XᵀX/N."
+  },
+  "c2": {
+   "prompt": "Power iteration trên ma trận hiệp phương sai có trị riêng 5 và 4.5 (tỉ số 0.9) bắt đầu lệch 45 độ so với vector riêng trội (tan θ0 = 1). Khoảng bao nhiêu bước để tan θ ≤ 0.001? (số thập phân, sai số cho phép 0.6)",
+   "explanation": "tan θk = (λ2/λ1)^k tan θ0 = 0.9^k. 0.9^k ≤ 10⁻³ cho k ≥ ln(1000)/ln(1/0.9)=6.908/0.10536=65.6, tức khoảng 66 bước. Khoảng cách trị riêng nhỏ làm phương pháp chậm."
+  },
+  "c3": {
+   "prompt": "Bạn chạy PCA trên hai đặc trưng, chiều cao tính bằng cm (phương sai 100) và cân nặng tính bằng kg (phương sai 4), tương quan 0.75, không chuẩn hóa. PC1 gần như đúng trục chiều cao. Bạn đổi chiều cao sang mét rồi chạy lại. Điều gì xảy ra?",
+   "options": [
+    "PC1 giữ nguyên, vì co giãn một trục không bao giờ làm đổi vector riêng.",
+    "PC1 trở nên gần như trục cân nặng, vì chiều cao sau khi đổi đơn vị có phương sai nhỏ hơn nhiều.",
+    "PC1 vẫn ở trục chiều cao nhưng tỉ lệ phương sai giải thích đổi, vì vector riêng không phụ thuộc đơn vị.",
+    "PC1 tự động thành (1,1)/√2, vì PCA tự chuẩn hóa bên trong."
+   ],
+   "explanation": "PCA phụ thuộc đơn vị: chiều cao tính bằng mét có phương sai 0.01, nên đặc trưng cân nặng (phương sai 4) giờ chi phối và PC1 gần như trục cân nặng. Sau khi chuẩn hóa, PC1 là (1,1)/√2 ở cả hai hệ đơn vị. Hãy khớp phép chuẩn hóa chỉ trên dữ liệu huấn luyện."
   }
  }
 }

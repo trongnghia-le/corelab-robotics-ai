@@ -1936,5 +1936,38 @@
     "overview": "Localisation fuses odometry, gyro and landmark detections in an EKF, and consistency statistics tell you whether its uncertainty can be trusted.",
     "application": "Calibrate the simulated camera, detect wall markers, run an EKF on seeded trajectories and audit it with NEES and NIS.",
     "task": "Build a small reproducible example. Implement an EKF with a range-bearing landmark update, a Joseph-form covariance and a gate, run seeded trajectories with ground truth and compute NEES and NIS. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW13": {
+    "concepts": [
+      "motor families",
+      "coreless vs brushless",
+      "transmissions and backdrivability",
+      "task-to-family table"
+    ],
+    "overview": "Robot motors come in a few families (brushed, brushless, stepper, servo, linear) and each needs a transmission; the right choice depends on speed, torque, backdrivability and holding behaviour, not on one headline number.",
+    "application": "Pick candidate motor families and a transmission for a drive wheel, an arm joint, a gimbal, a printer axis, a lift or a legged joint, and check a real product against one working point.",
+    "task": "Build a small reproducible example. Write unit conversions, a joint fit check, reflected inertia, stall current and a self-locking test in Python and compare four real products against one working point. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW14": {
+    "concepts": [
+      "reading datasheet rows",
+      "units and kt = 60/(2 pi kv)",
+      "derived stall current and tau_m",
+      "continuous vs peak and derating"
+    ],
+    "overview": "A motor or gearhead datasheet is a set of measured points, limits and constants under stated conditions; reading it well means converting units, deriving the missing rows and trusting the continuous rating, not the stall value.",
+    "application": "Read the sheet of a DC or brushless motor, a stepper, a smart servo, a planetary gearhead and an encoder, and check a motor and gearhead pair against torque, current and temperature limits.",
+    "task": "Build a small reproducible example. Write a datasheet calculator for unit conversions, stall current, mechanical time constant, thermal derating, a gearhead limit check, a stepper current rise time and an encoder rate, and test it on real sheet values. State assumptions, a baseline, a boundary case, and a check that could reject your result."
+  },
+  "HW15": {
+    "concepts": [
+      "load models",
+      "motion profile and RMS torque",
+      "inertia ratio and safety factor",
+      "driver current and voltage headroom"
+    ],
+    "overview": "Motor sizing turns a task into numbers (force, torque, speed, duty) and then checks motor, gear ratio and driver against each of them: peak torque, heat, speed left under load, inertia ratio, stall current and back-EMF headroom.",
+    "application": "Size a wheel drive, an arm joint and a lead-screw axis, and end with a motor class, a ratio, a driver and a list of checks that passed.",
+    "task": "Build a small reproducible example. Reproduce the three worked designs in a Python sizing calculator and size a differential-drive robot of your own from two real datasheets. State assumptions, a baseline, a boundary case, and a check that could reject your result."
   }
 }

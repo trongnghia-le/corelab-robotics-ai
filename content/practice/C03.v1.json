@@ -127,13 +127,13 @@
     },
     {
       "id": "b5",
-      "prompt": "PI loop with a = 1, b = 1, Kp = 3. Find the Ki that gives a critically damped pair of poles.",
+      "prompt": "PI loop with a = 2, b = 0.5, Kp = 6. Find the Ki that gives a critically damped pair of poles.",
       "kind": "number",
       "dimension": "M",
       "critical": false,
-      "answer": "4",
+      "answer": "12.5",
       "tolerance": 0.01,
-      "explanation": "s^2+4s+Ki has a double root when 16 = 4 Ki.",
+      "explanation": "s^2 + (a + b Kp) s + b Ki = s^2 + 5 s + 0.5 Ki has a double root when 25 = 4(0.5 Ki) = 2 Ki, so Ki = 12.5 (double pole at -2.5).",
       "knowledgeType": "procedure",
       "skillTags": [
         "pi-poles"
@@ -363,6 +363,86 @@
         "q1"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "id": "c1",
+      "prompt": "PI control of x' = -0.5x + 2u with Kp = 3. Which Ki gives critical damping of the error dynamics (two equal real poles)? Give Ki to three decimals.",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pi-poles"
+      ],
+      "skillLabel": "Closed-loop poles of a PI loop",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Closed-loop poles of a PI loop",
+          "href": "/lessons/C03#theory-and-derivation"
+        }
+      ],
+      "answer": "5.28125",
+      "tolerance": 0.005,
+      "explanation": "The error polynomial is s^2 + (a + b Kp) s + b Ki = s^2 + 6.5 s + 2 Ki. Equal roots need 6.5^2 = 4 * 2 Ki, so Ki = 42.25/8 = 5.28125 (double pole at -3.25)."
+    },
+    {
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "id": "c2",
+      "prompt": "Plant y' = -y + 2u, setpoint r = 1.6, actuator limit |u| <= 1.5, PI with Kp = 2 and Ki = 4 and a plain (unprotected) integrator, starting from rest. While u = 1.5 the output is y = 3(1 - e^-t). What is the integral state I at the instant y first reaches 1.6? (three decimals)",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "windup"
+      ],
+      "skillLabel": "Integrator windup and anti-windup",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Integrator windup",
+          "href": "/lessons/C03#worked-example"
+        }
+      ],
+      "answer": "0.533",
+      "tolerance": 0.005,
+      "explanation": "y = 1.6 when e^-t = 1 - 1.6/3 = 0.4667, i.e. t = 0.7621 s. I = integral of (1.6 - y) dt = 1.6 t - 3(t - (1 - e^-t)) = 1.2194 - 3(0.7621 - 0.5333) = 0.533. The raw command there is Kp*0 + Ki*0.533 = 2.13, still above the limit 1.5, so the controller stays saturated and the output overshoots (peak 1.968 at 1.19 s in simulation, leaving the limit at 0.97 s)."
+    },
+    {
+      "dimension": "T",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C01"
+      ],
+      "id": "c3",
+      "prompt": "A PID loop overshoots badly when the setpoint steps, but its rejection of load disturbances is already acceptable. Which change reduces the setpoint overshoot without changing the closed-loop poles or the disturbance response?",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pid-terms"
+      ],
+      "skillLabel": "Shaping the setpoint response",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: Setpoint weighting",
+          "href": "/lessons/C03#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "Raise Ki so the integral corrects the overshoot sooner",
+        "Weight the proportional term on the setpoint (w < 1) while the integral keeps the true error",
+        "Remove the integral term, since it causes overshoot",
+        "Increase Kd and compute it on the error instead of the measurement"
+      ],
+      "answer": "1",
+      "explanation": "With setpoint weighting the proportional term acts on w r - y, the derivative on -dy/dt and the integral on the true error r - y. The characteristic polynomial does not depend on w, so poles and disturbance response are unchanged; only the zeros of the setpoint-to-output path move. In the conveyor example of the lesson the overshoot falls from 17.4% (w = 1) to 8.5% (w = 0.5) and 6.8% (w = 0). Removing the integral would restore the steady-state offset; raising Ki moves the poles; derivative on error adds a kick."
     }
   ]
 }

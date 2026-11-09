@@ -391,6 +391,84 @@
         "States model limits (variable curvature under gravity/contact)."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "The aluminium link of the lesson (E = 69 GPa, rho = 2700 kg/m^3, 20 mm by 6 mm section, bending about the weak axis so I = 3.6e-10 m^4, A = 1.2e-4 m^2, L = 0.4 m, g = 9.81) is held horizontally as a cantilever. Its sag at the tip under its own weight, qL^4/(8EI), in mm (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "beam-stiffness-frequency"
+      ],
+      "skillLabel": "Cantilever scaling",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Cantilever scaling",
+          "href": "/lessons/R15#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "0.409",
+      "tolerance": 0.005,
+      "explanation": "q = rho*A*g = 2700 * 1.2e-4 * 9.81 = 3.178 N/m. EI = 69e9 * 3.6e-10 = 24.84 N m^2. delta = q L^4/(8 EI) = 3.178 * 0.0256 / 198.72 = 4.095e-4 m = 0.409 mm. (Cross-check: f1 = 0.198*sqrt(g/delta) = 30.6 Hz, the same as the direct formula.)"
+    },
+    {
+      "id": "c2",
+      "prompt": "Four identical SRS arms (spherical shoulder at the ground, revolute elbow, spherical wrist joint attached to a common object) hold the object. How many degrees of freedom does the arms-plus-object system have by Grubler's formula (spatial, m = 6)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "grubler-mobility"
+      ],
+      "skillLabel": "Grubler mobility",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Grubler mobility",
+          "href": "/lessons/R15#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "10",
+      "tolerance": 0,
+      "explanation": "Each arm has 2 links and 3 joints with total freedom 3 + 1 + 3 = 7. N = 2 + 2n = 10 links (ground and object included), J = 3n = 12 joints, sum f = 7n = 28. dof = 6(N - 1 - J) + sum f = 6(10 - 1 - 12) + 28 = -18 + 28 = 10 = 6 + n. The n surplus degrees are the elbow swivel of each arm."
+    },
+    {
+      "id": "c3",
+      "prompt": "A constant-curvature arc of total bend theta = pi rad (half circle) is approximated by m = 3 equal rigid links at the mid-segment angles (2i-1)*theta/(2m). By what percentage is the chain tip farther from the base than the arc tip? (two decimals)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "continuum-arc"
+      ],
+      "skillLabel": "Constant-curvature arm",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Constant-curvature arm",
+          "href": "/lessons/R15#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R12",
+        "R14"
+      ],
+      "answer": "4.72",
+      "tolerance": 0.05,
+      "explanation": "With phi = theta/(2m) = pi/6 the chain tip lies on the same ray as the arc tip, farther by the factor phi/sin(phi) = 0.5236/0.5 = 1.0472, i.e. 4.72 percent. (Derived by telescoping sum_i sin((2i-1)phi) = sin^2(m phi)/sin(phi) and sum_i cos((2i-1)phi) = sin(2 m phi)/(2 sin phi).)"
     }
   ]
 }

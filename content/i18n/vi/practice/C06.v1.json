@@ -81,6 +81,24 @@
     "Hội tụ trên đường dốc không nhiễu hoặc mục tiêu đứng yên (bắt lỗi mô hình/hệ số).",
     "Các cực của ma trận sai số hoặc kiểm tra độ trễ gia tốc (bắt các giả định về ổn định và độ trễ)."
    ]
+  },
+  "c1": {
+   "prompt": "Một bộ lọc alpha-beta với alpha = 0.4, beta = 0.1 và dt = 0.05 s bám một mục tiêu có gia tốc không đổi 2 m/s^2. Sai số vận tốc ổn định là e_v = -a*dt*(alpha/beta - 1/2). Cho độ lớn của nó theo m/s (3 chữ số thập phân).",
+   "explanation": "alpha/beta = 4, nên alpha/beta - 1/2 = 3.5 và |e_v| = 2 * 0.05 * 3.5 = 0.35 m/s. Ước lượng trễ so với vận tốc thật. Vì lag tỉ lệ 1/beta, beta nhỏ hơn sẽ làm nó tệ hơn."
+  },
+  "c2": {
+   "prompt": "Một bộ lọc cần có cực sai số thực kép tại lambda = 0.9 với dt = 0.02 s. Dùng alpha = 1 - lambda^2 và beta = (1 - lambda)^2, gain vận tốc beta/dt nhân với phần dư là bao nhiêu, theo 1/s (3 chữ số thập phân)?",
+   "explanation": "Đa thức đặc trưng là z^2 - (2 - alpha - beta) z + (1 - alpha). Nghiệm kép tại lambda cần vết 2 lambda và định thức lambda^2, nên alpha = 1 - lambda^2 = 0.19 và beta = 2 - alpha - 2 lambda = 2 - 0.19 - 1.8 = 0.01 = (1 - lambda)^2. Cập nhật vận tốc là v = v + (beta/dt) r, nên gain là 0.01/0.02 = 0.5 trên giây."
+  },
+  "c3": {
+   "prompt": "Với alpha = 0.5, beta = 0.2, phương sai vận tốc dừng của bộ lọc alpha-beta với nhiễu vị trí trắng sigma thỏa dt^2 var(v)/sigma^2 = 2 beta^2/(alpha (4 - 2 alpha - beta)). Giá trị nào đúng, và nó so với phép sai phân hai mẫu thô, có giá trị 2 trong cùng đơn vị, thế nào?",
+   "options": [
+    "0.4286, tốt hơn phép sai phân thô khoảng 5 lần",
+    "0.0571, tốt hơn phép sai phân thô khoảng 35 lần",
+    "0.2, tốt hơn phép sai phân thô khoảng 10 lần",
+    "2, bằng phép sai phân thô"
+   ],
+   "explanation": "Tử số 2 * 0.04 = 0.08; mẫu số 0.5 * (4 - 1 - 0.2) = 0.5 * 2.8 = 1.4; tỉ số là 0.0571, nhỏ hơn 2 khoảng 35 lần. 0.4286 là hệ số vị trí của cùng bộ lọc, 0.2 chỉ là beta, và 2 là phép sai phân thô."
   }
  }
 }

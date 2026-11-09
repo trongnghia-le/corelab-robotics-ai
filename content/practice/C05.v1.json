@@ -382,6 +382,91 @@
         "q2"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Discounted LQR for x[k+1] = x[k] + u[k] with q = r = 1 and discount gamma = 0.8. The Riccati equation is S = 1 + gamma S - gamma^2 S^2/(1 + gamma S). Give the optimal gain K = gamma S/(1 + gamma S) (4 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.554248",
+      "tolerance": 0.001,
+      "explanation": "Multiply by (1 + gamma S): gamma S^2 + (1 - 2 gamma) S - 1 = 0, i.e. 0.8 S^2 - 0.6 S - 1 = 0, so S = (0.6 + sqrt(0.36 + 3.2))/1.6 = 1.5542 (the negative root is rejected). K = 0.8 * 1.5542/(1 + 0.8 * 1.5542) = 0.5542. Closed-loop multiplier 1 - K = 0.4458.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "riccati"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Finite horizon: x[k+1] = x[k] + u[k], q = 1, r = 4, terminal cost zero (S[N] = 0), cost summed from n = 0 to N-1. Compute S[N-3] (4 decimals).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2.2414",
+      "tolerance": 0.001,
+      "explanation": "S[N-1] = Q = 1. Then S[N-2] = 1 + 1 - 1/(4 + 1) = 1.8. Then S[N-3] = 1 + 1.8 - 1.8^2/(4 + 1.8) = 2.8 - 3.24/5.8 = 2.2414.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "riccati",
+        "lqr-properties"
+      ],
+      "skillLabel": "Solving the Riccati equation for the gain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Plant x' = x + u with q = 0 and r = 1. The Riccati equation 2P - P^2 = 0 has the roots P = 0 and P = 2. Which statement is correct for the LQR design?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "K = 0, because q = 0 means the state is free",
+        "K = 1, the pole moves to 0",
+        "K = 2, the pole moves to -1, the mirror image",
+        "K = 4, the pole moves to -3"
+      ],
+      "answer": "2",
+      "explanation": "The stabilising root is P = 2 (K = 2, pole 1 - 2 = -1, the mirror image of +1). The root P = 0 gives K = 0 and leaves the pole at +1: it solves the equation but does not stabilise. Detectability is what makes the stabilising root the right one even though q = 0 never penalises the state directly. Picking the gain 0 because 'q = 0 means no state cost' ignores that the unstable state must still be driven to zero for the cost to be finite.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lqr-properties",
+        "riccati"
+      ],
+      "skillLabel": "LQR cost and the roles of Q and R",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C05#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04",
+        "M10"
+      ]
     }
   ]
 }

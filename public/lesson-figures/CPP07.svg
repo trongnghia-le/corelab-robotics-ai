@@ -1,22 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="380" fill="#111827" rx="12"/>
-<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Build pipeline and dependency graph</text>
-<g font-size="13" fill="#e5e7eb" text-anchor="middle">
-<rect x="20" y="60" width="120" height="44" rx="6" fill="none" stroke="#e5e7eb" stroke-width="2"/><text x="80" y="87">vec2.cpp</text>
-<rect x="20" y="120" width="120" height="44" rx="6" fill="none" stroke="#e5e7eb" stroke-width="2"/><text x="80" y="147">main.cpp</text>
-<rect x="20" y="180" width="120" height="44" rx="6" fill="none" stroke="#e5e7eb" stroke-width="2"/><text x="80" y="207">test_vec2.cpp</text>
-<rect x="190" y="60" width="110" height="44" rx="6" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/><text x="245" y="87">vec2.o</text>
-<rect x="190" y="120" width="110" height="44" rx="6" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/><text x="245" y="147">main.o</text>
-<rect x="190" y="180" width="110" height="44" rx="6" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/><text x="245" y="207">test_vec2.o</text>
-<rect x="350" y="60" width="130" height="44" rx="6" fill="#1f2937" stroke="#a3e635" stroke-width="2"/><text x="415" y="87">librobotmath.a</text>
-<rect x="540" y="120" width="120" height="44" rx="6" fill="#1f2937" stroke="#f97316" stroke-width="2"/><text x="600" y="147">demo</text>
-<rect x="540" y="180" width="120" height="44" rx="6" fill="#1f2937" stroke="#f97316" stroke-width="2"/><text x="600" y="207">test_vec2</text>
-</g>
-<path d="M140 82 H188 M140 142 H188 M140 202 H188 M300 82 H348 M300 142 H538 M300 202 H538" stroke="#e5e7eb" stroke-width="2"/>
-<path d="M415 104 V142 H538 M415 104 V202 H538" stroke="#a3e635" stroke-width="2" fill="none"/>
-<text x="20" y="262" font-size="13" fill="#e5e7eb">compile: .cpp to .o   |   archive: ar   |   link: objects + library to executable</text>
-<rect x="20" y="285" width="720" height="70" rx="8" fill="#1f2937"/>
-<text x="34" y="310" font-size="14" fill="#f97316">include/robotmath/vec2.hpp changes:</text>
-<text x="34" y="332" font-size="13" fill="#e5e7eb">vec2.o, main.o and test_vec2.o all include it, so all three recompile, then archive and both links.</text>
-<text x="34" y="350" font-size="13" fill="#e5e7eb">main.cpp changes: only main.o and demo. the PUBLIC include dir reaches demo and test.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" font-family="Inter, sans-serif">
+<title>Where each build error comes from</title>
+<desc>Four pipeline stages, what each one reads and the typical error message of each stage.</desc>
+<rect width="900" height="380" rx="14" fill="#17181b"/>
+<defs><marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#a7adb5"/></marker></defs>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#e9e7e3">Where each build error comes from</text>
+<rect x="32" y="70" width="190" height="92" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="46" y="98" font-size="17" font-weight="700" fill="#e9e7e3">1 Preprocess</text>
+<text x="46" y="122" font-size="14" fill="#a7adb5">#include, #define</text>
+<text x="46" y="144" font-size="14" fill="#86abe2">reads: headers</text>
+<line x1="225" y1="116" x2="243" y2="116" stroke="#a7adb5" stroke-width="2" marker-end="url(#aha)"/>
+<rect x="32" y="186" width="190" height="164" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="46" y="214" font-size="14" fill="#86abe2" font-family="monospace">fatal error:</text>
+<text x="46" y="236" font-size="14" fill="#86abe2" font-family="monospace">No such file or</text>
+<text x="46" y="258" font-size="14" fill="#86abe2" font-family="monospace">directory</text>
+<text x="46" y="292" font-size="14" fill="#a7adb5">cause:</text>
+<text x="46" y="312" font-size="14" fill="#a7adb5">include path not</text>
+<text x="46" y="330" font-size="14" fill="#a7adb5">given to this target</text>
+<rect x="246" y="70" width="190" height="92" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="260" y="98" font-size="17" font-weight="700" fill="#e9e7e3">2 Compile</text>
+<text x="260" y="122" font-size="14" fill="#a7adb5">.cpp to .o</text>
+<text x="260" y="144" font-size="14" fill="#6fc693">reads: declarations</text>
+<line x1="439" y1="116" x2="457" y2="116" stroke="#a7adb5" stroke-width="2" marker-end="url(#aha)"/>
+<rect x="246" y="186" width="190" height="164" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="260" y="214" font-size="14" fill="#6fc693" font-family="monospace">error: 'foo' was</text>
+<text x="260" y="236" font-size="14" fill="#6fc693" font-family="monospace">not declared in</text>
+<text x="260" y="258" font-size="14" fill="#6fc693" font-family="monospace">this scope</text>
+<text x="260" y="292" font-size="14" fill="#a7adb5">cause:</text>
+<text x="260" y="312" font-size="14" fill="#a7adb5">typo, missing</text>
+<text x="260" y="330" font-size="14" fill="#a7adb5">#include, namespace</text>
+<rect x="460" y="70" width="190" height="92" rx="8" fill="#22252a" stroke="#ae9ce6" stroke-width="2"/>
+<text x="474" y="98" font-size="17" font-weight="700" fill="#e9e7e3">3 Archive</text>
+<text x="474" y="122" font-size="14" fill="#a7adb5">.o files to .a</text>
+<text x="474" y="144" font-size="14" fill="#ae9ce6">reads: objects</text>
+<line x1="653" y1="116" x2="671" y2="116" stroke="#a7adb5" stroke-width="2" marker-end="url(#aha)"/>
+<rect x="460" y="186" width="190" height="164" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="474" y="214" font-size="14" fill="#ae9ce6" font-family="monospace">ar rcs lib.a *.o</text>
+<text x="474" y="236" font-size="14" fill="#ae9ce6" font-family="monospace">(almost never</text>
+<text x="474" y="258" font-size="14" fill="#ae9ce6" font-family="monospace">fails)</text>
+<text x="474" y="292" font-size="14" fill="#a7adb5">cause:</text>
+<text x="474" y="312" font-size="14" fill="#a7adb5">no symbol check</text>
+<text x="474" y="330" font-size="14" fill="#a7adb5">happens here</text>
+<rect x="674" y="70" width="190" height="92" rx="8" fill="#22252a" stroke="#e0904f" stroke-width="2"/>
+<text x="688" y="98" font-size="17" font-weight="700" fill="#e9e7e3">4 Link</text>
+<text x="688" y="122" font-size="14" fill="#a7adb5">objects + .a to exe</text>
+<text x="688" y="144" font-size="14" fill="#e0904f">reads: definitions</text>
+<rect x="674" y="186" width="190" height="164" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="688" y="214" font-size="14" fill="#e0904f" font-family="monospace">undefined</text>
+<text x="688" y="236" font-size="14" fill="#e0904f" font-family="monospace">reference to ...</text>
+<text x="688" y="258" font-size="14" fill="#e0904f" font-family="monospace">multiple definition</text>
+<text x="688" y="292" font-size="14" fill="#a7adb5">cause:</text>
+<text x="688" y="312" font-size="14" fill="#a7adb5">definition missing</text>
+<text x="688" y="330" font-size="14" fill="#a7adb5">or defined twice</text>
 </svg>

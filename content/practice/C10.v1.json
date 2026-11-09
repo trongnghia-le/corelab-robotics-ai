@@ -363,6 +363,86 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Inverted pendulum, g/l = 9.81, feedback-linearised with k1 = 20 (poles -4, -5) and torque limit a_max = 15. Starting at rest at angle theta0, the first commanded value has magnitude (g/l) sin(theta0) + k1 theta0. Largest theta0 (rad, 3 decimals) for which the command is not saturated?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.510",
+      "tolerance": 0.004,
+      "explanation": "Solve 9.81 sin(t) + 20 t = 15. The left side is increasing, so bisection gives t = 0.5104 rad (29.2 deg). Note that gravity alone (9.81) never exceeds 15: the restriction comes from the gain k1. A larger k1 would shrink the region where the pole-based linear design is valid.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "feedback-linearization"
+      ],
+      "skillLabel": "Feedback linearisation and actuator limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "x1' = x2 - x1^3, x2' = -x1 - x2^3 with V = x1^2 + x2^2 and x(0) = (2, 0). Using V-dot <= -V^2, what guaranteed upper bound does this give for V(100) (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0100",
+      "tolerance": 0.0001,
+      "explanation": "V-dot = -2(x1^4 + x2^4) and x1^4 + x2^4 >= V^2/2, so V-dot <= -V^2. Then d(1/V)/dt >= 1, so 1/V(t) >= 1/V0 + t and V(t) <= V0/(1 + V0 t). With V0 = 4 and t = 100: 4/401 = 0.00998, i.e. 0.0100 to four decimals. (The matching lower bound V0/(1 + 2 V0 t) shows the decay is only algebraic, so the origin is not exponentially stable.)",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lyapunov-sign"
+      ],
+      "skillLabel": "Lyapunov decay and rates",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A single link is controlled by computed torque with the exact gravity term but an inertia estimate M~ = alpha M (alpha = 0.8). Compared with the exact-model case, what happens to the tracking error e = theta_d - theta?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The error poles are unchanged and only a constant offset appears, whose size is set by the inertia mismatch alone",
+        "The gains are scaled by alpha, and the desired acceleration forces the error through a factor (1 - alpha)",
+        "The loop becomes unstable for every alpha < 1 because the cancellation of the inertia term is no longer exact",
+        "The gains are scaled by 1/alpha and the error is forced by the desired velocity and the integral of position error"
+      ],
+      "answer": "1",
+      "explanation": "True dynamics give theta'' = alpha (theta_d'' + Kp e + Kd e'). With theta'' = theta_d'' - e'' this is e'' + alpha Kd e' + alpha Kp e = (1 - alpha) theta_d''. For alpha > 0 the loop stays stable (poles of s^2 + alpha Kd s + alpha Kp), the effective gains are scaled by alpha, and the error is driven by the desired acceleration, which is zero for a constant set-point and large for fast motions.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "feedback-linearization"
+      ],
+      "skillLabel": "Feedback linearisation and model error",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C04"
+      ]
     }
   ]
 }

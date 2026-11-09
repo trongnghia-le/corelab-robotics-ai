@@ -80,6 +80,24 @@
     "Cận tăng theo ln|H| ngay cả khi số hành vi riêng biệt hiệu dụng trên mẫu là nhỏ.",
     "Nêu VC dimension, growth function, Rademacher complexity hoặc PAC-Bayes như các lựa chọn thay thế."
    ]
+  },
+  "c1": {
+   "prompt": "Logistic regression với w=(2,−1,1), b=0, x=(1,1,3), nhãn +1. Loss trường hợp xấu nhất trên ‖δ‖∞≤0.75 là ζ(ε‖w‖₁−m) với ζ(z)=ln(1+eᶻ). Tính nó (số thập phân, sai số cho phép 0.002).",
+   "explanation": "Margin m=2−1+3=4. ‖w‖₁=2+1+1=4, nên ε‖w‖₁=0.75·4=3. Loss xấu nhất ζ(3−4)=ζ(−1)=ln(1+e^{−1})=0.3133. Loss sạch ζ(−4)=0.0181 nhỏ hơn nhiều, nên tấn công có ý nghĩa; lỗi thường gặp là dùng ‖w‖₂ hoặc trừ ε‖w‖₁ khỏi loss thay vì khỏi margin."
+  },
+  "c2": {
+   "prompt": "Với g(θ,δ)=θδ, δ∈[−ε,ε] và φ(θ)=max_δ g, bạn chạy công thức Danskin tại θ=0 dùng cực đại δ=ε và bước theo −∇θ g. Chuyện gì xảy ra?",
+   "options": [
+    "φ giảm, vì −∇θ g luôn là hướng giảm của hàm max",
+    "φ không đổi, vì gradient tại cực đại bằng 0 khi cực đại không duy nhất",
+    "φ tăng lên ε²τ với bước τε, vì tại cực đại không duy nhất đạo hàm theo hướng là ε|h| theo mọi hướng",
+    "φ không xác định, vì cực đại không tồn tại trên đoạn compact"
+   ],
+   "explanation": "φ(θ)=ε|θ|, nên φ(0)=0 và argmax tại θ=0 là cả đoạn. Danskin cho φ'(0;h)=sup_δ hδ=ε|h|>0 với mọi h≠0, nên mọi bước, kể cả −ε·τ, đều làm φ tăng (lên τε²). Gradient tại một cực đại (ε) chỉ mô tả một phía của điểm gãy. Argmax là một tập chính là lý do công thức cần cực đại duy nhất. Cực đại tồn tại vì đoạn compact."
+  },
+  "c3": {
+   "prompt": "Trong hàm loss tham số E+A/N^α+B/D^β với α=0.34, β=0.28 và ràng buộc 6ND=C, ngân sách compute được nhân 100. N tối ưu tăng bao nhiêu lần? (số thập phân, sai số cho phép 0.1)",
+   "explanation": "N_opt ∝ C^a với a=β/(α+β)=0.28/0.62=0.4516. Nên hệ số là 100^0.4516=10^0.9032=8.00. (Dùng số mũ còn lại α/(α+β)=0.5484 sẽ cho 12.5, đó là mức tăng của D.) Tăng N và D mỗi cái theo căn bậc hai (a=b=0.5) sẽ cho 10, chỉ đúng khi α=β."
   }
  }
 }

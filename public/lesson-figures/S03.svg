@@ -1,35 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="420" fill="#111827" rx="12"/>
-<text x="380.0" y="30" font-size="17" fill="#e5e7eb" text-anchor="middle" font-weight="bold">A ROS 2 graph: nodes talk through named, typed topics</text>
-<rect x="25" y="60" width="140" height="60" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
-<text x="95.0" y="94.9" font-size="14" fill="#e5e7eb" text-anchor="middle" font-weight="bold">teleop node</text>
-<rect x="25" y="150" width="140" height="60" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
-<text x="95.0" y="184.9" font-size="14" fill="#e5e7eb" text-anchor="middle" font-weight="bold">planner node</text>
-<rect x="590" y="100" width="145" height="70" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
-<text x="662.5" y="131.4" font-size="14" fill="#e5e7eb" text-anchor="middle" font-weight="bold">base driver</text>
-<text x="662.5" y="148.4" font-size="14" fill="#e5e7eb" text-anchor="middle">node</text>
-<rect x="260" y="105" width="210" height="60" rx="30" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
-<text x="365" y="131" font-size="13" fill="#e5e7eb" text-anchor="middle" font-weight="bold">/cmd_vel</text>
-<text x="365" y="151" font-size="13" fill="#e5e7eb" text-anchor="middle">geometry_msgs/Twist</text>
-<line x1="165" y1="90" x2="262" y2="125" stroke="#38bdf8" stroke-width="2"/>
-<polygon points="262.0,125.0 253.0,125.5 255.4,118.9" fill="#38bdf8"/>
-<line x1="165" y1="180" x2="262" y2="148" stroke="#38bdf8" stroke-width="2"/>
-<polygon points="262.0,148.0 255.2,153.9 253.0,147.3" fill="#38bdf8"/>
-<line x1="470" y1="135" x2="590" y2="135" stroke="#a3e635" stroke-width="2"/>
-<polygon points="590.0,135.0 581.7,138.5 581.7,131.5" fill="#a3e635"/>
-<text x="530" y="125" font-size="13" fill="#a3e635" text-anchor="middle">subscribe</text>
-<text x="200" y="95" font-size="13" fill="#38bdf8" text-anchor="middle">publish</text>
-<rect x="260" y="215" width="210" height="52" rx="26" fill="#1f2937" stroke="#f97316" stroke-width="2"/>
-<text x="365" y="238" font-size="13" fill="#e5e7eb" text-anchor="middle" font-weight="bold">/odom</text>
-<text x="365" y="257" font-size="13" fill="#e5e7eb" text-anchor="middle">nav_msgs/Odometry</text>
-<line x1="660" y1="170" x2="660" y2="241" stroke="#f97316" stroke-width="2"/>
-<polygon points="660.0,241.0 656.5,232.7 663.5,232.7" fill="#f97316"/>
-<line x1="660" y1="241" x2="472" y2="241" stroke="#f97316" stroke-width="2"/>
-<polygon points="472.0,241.0 480.3,237.5 480.3,244.5" fill="#f97316"/>
-<text x="575" y="232" font-size="13" fill="#f97316" text-anchor="middle">publish</text>
-<text x="365" y="300" font-size="13" fill="#a3e635" text-anchor="middle">Same name + same type + compatible QoS = connected</text>
-<text x="365" y="320" font-size="13" fill="#f97316" text-anchor="middle">Different type on the same name = no data, no error</text>
-<text x="40" y="358" font-size="13" fill="#e5e7eb" text-anchor="start" font-weight="bold">Units live in the contract (REP 103):</text>
-<text x="40" y="380" font-size="13" fill="#e5e7eb" text-anchor="start">linear.x in m/s, forward +x;  angular.z in rad/s, counter-clockwise +</text>
-<text x="40" y="400" font-size="13" fill="#e5e7eb" text-anchor="start">stamp in integer nanoseconds;  range in m, measured from frame_id</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 570" font-family="Inter, sans-serif">
+<title>A connection needs the same name, the same type and compatible QoS</title>
+<desc>Two panels: on /cmd_vel the teleop and planner publish Twist and the base driver subscribes and receives 30 messages per second, while a logger expecting TwistStamped gets nothing; on /image_raw a best-effort camera driver and a reliable viewer do not connect.</desc>
+<defs><marker id="s03m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<rect width="900" height="570" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" font-weight="bold" text-anchor="start">A connection needs the same name, the same type and compatible QoS</text>
+<rect x="32" y="64" width="836" height="236" rx="10" fill="#22252a"/>
+<rect x="32" y="324" width="836" height="200" rx="10" fill="#22252a"/>
+<text x="48" y="92" font-size="17" fill="#e9e7e3" font-weight="bold" text-anchor="start">Same name, different type</text>
+<text x="48" y="352" font-size="17" fill="#e9e7e3" font-weight="bold" text-anchor="start">Same name and type, different QoS</text>
+<rect x="56" y="112" width="176" height="58" rx="8" fill="#17181b" stroke="#86abe2" stroke-width="2"/>
+<text x="144" y="137" font-size="15" fill="#e9e7e3" font-weight="bold" text-anchor="middle">teleop</text>
+<text x="144" y="157" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">publishes 10 Hz</text>
+<rect x="56" y="200" width="176" height="58" rx="8" fill="#17181b" stroke="#86abe2" stroke-width="2"/>
+<text x="144" y="225" font-size="15" fill="#e9e7e3" font-weight="bold" text-anchor="middle">planner</text>
+<text x="144" y="245" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">publishes 20 Hz</text>
+<rect x="344" y="148" width="212" height="66" rx="33" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<text x="450" y="176" font-size="15" fill="#e9e7e3" font-weight="bold" text-anchor="middle">/cmd_vel</text>
+<text x="450" y="198" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">geometry_msgs/Twist</text>
+<line x1="232" y1="141" x2="344" y2="170" stroke="#86abe2" stroke-width="2" stroke-linecap="round" marker-end="url(#s03m1)"/>
+<line x1="232" y1="229" x2="344" y2="196" stroke="#86abe2" stroke-width="2" stroke-linecap="round" marker-end="url(#s03m1)"/>
+<rect x="668" y="112" width="176" height="58" rx="8" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<text x="756" y="137" font-size="15" fill="#e9e7e3" font-weight="bold" text-anchor="middle">base driver</text>
+<text x="756" y="157" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">Twist, RELIABLE</text>
+<rect x="668" y="200" width="176" height="58" rx="8" fill="#17181b" stroke="#e58a80" stroke-width="2"/>
+<text x="756" y="225" font-size="15" fill="#e9e7e3" font-weight="bold" text-anchor="middle">logger</text>
+<text x="756" y="245" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">TwistStamped</text>
+<line x1="556" y1="168" x2="668" y2="141" stroke="#6fc693" stroke-width="2.5" stroke-linecap="round" marker-end="url(#s03m1)"/>
+<line x1="556" y1="196" x2="668" y2="229" stroke="#e58a80" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 5" marker-end="url(#s03m1)"/>
+<text x="450" y="244" font-size="15" fill="#e58a80" font-weight="600" text-anchor="middle">no data: type differs</text>
+<text x="612" y="104" font-size="15" fill="#6fc693" font-weight="600" text-anchor="middle">connected: 10 + 20 = 30 msg/s</text>
+<rect x="56" y="376" width="176" height="58" rx="8" fill="#17181b" stroke="#86abe2" stroke-width="2"/>
+<text x="144" y="401" font-size="15" fill="#e9e7e3" font-weight="bold" text-anchor="middle">camera driver</text>
+<text x="144" y="421" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">BEST_EFFORT offered</text>
+<rect x="344" y="380" width="212" height="66" rx="33" fill="#17181b" stroke="#86abe2" stroke-width="2"/>
+<text x="450" y="408" font-size="15" fill="#e9e7e3" font-weight="bold" text-anchor="middle">/image_raw</text>
+<text x="450" y="430" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">sensor_msgs/Image</text>
+<line x1="232" y1="408" x2="344" y2="412" stroke="#86abe2" stroke-width="2" stroke-linecap="round" marker-end="url(#s03m1)"/>
+<rect x="668" y="376" width="176" height="58" rx="8" fill="#17181b" stroke="#e58a80" stroke-width="2"/>
+<text x="756" y="401" font-size="15" fill="#e9e7e3" font-weight="bold" text-anchor="middle">viewer</text>
+<text x="756" y="421" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="middle">RELIABLE requested</text>
+<line x1="556" y1="412" x2="668" y2="408" stroke="#e58a80" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 5" marker-end="url(#s03m1)"/>
+<text x="450" y="476" font-size="15" fill="#e58a80" font-weight="600" text-anchor="middle">no data: offered &lt; requested</text>
+<text x="32" y="552" font-size="14" fill="#a7adb5" font-weight="normal" text-anchor="start">Units are not checked: linear.x in m/s, angular.z in rad/s (REP 103).</text>
 </svg>

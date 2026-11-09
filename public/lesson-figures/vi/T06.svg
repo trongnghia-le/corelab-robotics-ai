@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="Inter, Arial, sans-serif" font-size="14">
+<rect width="800" height="420" fill="#191b1f" rx="12"/>
+<text x="200" y="30" fill="#e5e7eb" font-size="16" text-anchor="middle">Container = lớp image + lớp ghi được</text>
+<text x="600" y="30" fill="#e5e7eb" font-size="16" text-anchor="middle">Lưu trữ ngoài container</text>
+<rect x="40" y="60" width="320" height="50" rx="8" fill="#d97936" fill-opacity="0.25" stroke="#d97936" stroke-width="2"/><text x="200.0" y="90.0" fill="#e5e7eb" font-size="13" text-anchor="middle">lớp ghi được: /tmp, cache, file mới</text>
+<rect x="40" y="125" width="320" height="44" rx="8" fill="#53b2dd" fill-opacity="0.15" stroke="#53b2dd" stroke-width="2"/><text x="200.0" y="152.0" fill="#e5e7eb" font-size="13" text-anchor="middle" style="font-size:12.9px">lớp 3: COPY . .   (code của bạn)</text>
+<rect x="40" y="177" width="320" height="44" rx="8" fill="#53b2dd" fill-opacity="0.15" stroke="#53b2dd" stroke-width="2"/><text x="200.0" y="204.0" fill="#e5e7eb" font-size="13" text-anchor="middle" style="font-size:11.53px">lớp 2: RUN pip install (dependency đã khóa)</text>
+<rect x="40" y="229" width="320" height="44" rx="8" fill="#53b2dd" fill-opacity="0.15" stroke="#53b2dd" stroke-width="2"/><text x="200.0" y="256.0" fill="#e5e7eb" font-size="13" text-anchor="middle">lớp 1: OS nền + Python (đã ghim)</text>
+<text x="200" y="298" fill="#53b2dd" font-size="13" text-anchor="middle">lớp image: chỉ đọc, dùng chung giữa các container</text>
+<path d="M200 322 v30" stroke="#d97936" stroke-width="2"/><path d="M194 346 l6 8 l6 -8" fill="none" stroke="#d97936" stroke-width="2"/>
+<text x="200" y="382" fill="#d97936" font-size="14" text-anchor="middle">docker rm  →  lớp ghi được bị bỏ</text>
+<text x="200" y="404" fill="#e5e7eb" font-size="13" text-anchor="middle">kernel và GPU driver lấy từ host</text>
+<rect x="440" y="60" width="320" height="56" rx="8" fill="#9ccd4e" fill-opacity="0.2" stroke="#9ccd4e" stroke-width="2"/><text x="600.0" y="93.0" fill="#e5e7eb" font-size="13" text-anchor="middle">named volume  t06results  →  /results</text>
+<rect x="440" y="135" width="320" height="56" rx="8" fill="#9ccd4e" fill-opacity="0.2" stroke="#9ccd4e" stroke-width="2"/><text x="600.0" y="168.0" fill="#e5e7eb" font-size="13" text-anchor="middle">bind mount  ./  →  /app  (chỉ đọc)</text>
+<text x="600" y="224" fill="#9ccd4e" font-size="13" text-anchor="middle">tồn tại sau docker rm; ghi vào /app lỗi (chỉ đọc)</text>
+<path d="M360 85 L440 88" stroke="#9ccd4e" stroke-width="2" stroke-dasharray="5 4"/><path d="M360 160 L440 163" stroke="#9ccd4e" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="600" y="262" fill="#e5e7eb" font-size="13" text-anchor="middle">ghi vào đường dẫn p sẽ đi đâu?</text><text x="600" y="284" fill="#e5e7eb" font-size="13" text-anchor="middle">mount target dài nhất là tiền tố của p,</text><text x="600" y="306" fill="#e5e7eb" font-size="13" text-anchor="middle">nếu không thì lớp ghi được</text>
+<text x="600" y="346" fill="#e5e7eb" font-size="13" text-anchor="middle">cache: lệnh đổi đầu tiên làm dựng lại mọi lệnh sau</text><text x="600" y="368" fill="#e5e7eb" font-size="13" text-anchor="middle">thứ tự: nền, lock + cài, code cuối</text>
+</svg>

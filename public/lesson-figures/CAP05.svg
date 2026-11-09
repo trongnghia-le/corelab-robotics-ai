@@ -1,24 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="Inter, Arial, sans-serif" role="img">
 <title>CAP05: from RGB-D pixels to a grasp</title>
 <desc>Pipeline: RGB-D image to segmentation mask, depth deprojection to a camera-frame point, hand-eye transform to the arm base frame, top-down grasp with inverse kinematics for pre-grasp, grasp and lift, quintic trajectory, gripper; failure reasons feed a taxonomy.</desc>
-<rect width="900" height="470" fill="#111827" rx="12"/>
+<rect width="900" height="470" fill="#191b1f" rx="12"/>
 <text x="450" y="30" font-size="17" fill="#e5e7eb" text-anchor="middle" font-weight="bold">CAP05: pixels to joint trajectories, with a reason for every failure</text>
-<rect x="20" y="80" width="130" height="70" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
+<rect x="20" y="80" width="130" height="70" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
 <text x="85.0" y="111.7" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">ImageFrame</text>
 <text x="85.0" y="126.7" font-size="12" fill="#e5e7eb" text-anchor="middle">RGB + depth, K</text>
-<rect x="185" y="80" width="140" height="70" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<rect x="185" y="80" width="140" height="70" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
 <text x="255.0" y="104.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Segmentation</text>
 <text x="255.0" y="119.2" font-size="12" fill="#e5e7eb" text-anchor="middle">HSV baseline / CNN</text>
 <text x="255.0" y="134.2" font-size="12" fill="#e5e7eb" text-anchor="middle">mask per colour</text>
-<rect x="360" y="80" width="150" height="70" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<rect x="360" y="80" width="150" height="70" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
 <text x="435.0" y="104.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Deproject</text>
 <text x="435.0" y="119.2" font-size="12" fill="#e5e7eb" text-anchor="middle">median of masked</text>
 <text x="435.0" y="134.2" font-size="12" fill="#e5e7eb" text-anchor="middle">pixels -&gt; p_cam</text>
-<rect x="545" y="80" width="150" height="70" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
+<rect x="545" y="80" width="150" height="70" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
 <text x="620.0" y="104.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Hand-eye</text>
 <text x="620.0" y="119.2" font-size="12" fill="#e5e7eb" text-anchor="middle">p_base = T_base_cam</text>
 <text x="620.0" y="134.2" font-size="12" fill="#e5e7eb" text-anchor="middle">* p_cam</text>
-<rect x="730" y="80" width="150" height="70" rx="8" fill="#1f2937" stroke="#e5e7eb" stroke-width="2"/>
+<rect x="730" y="80" width="150" height="70" rx="8" fill="#272a2f" stroke="#e5e7eb" stroke-width="2"/>
 <text x="805.0" y="104.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Detection</text>
 <text x="805.0" y="119.2" font-size="12" fill="#e5e7eb" text-anchor="middle">label, yaw, xyz_base</text>
 <text x="805.0" y="134.2" font-size="12" fill="#e5e7eb" text-anchor="middle">score</text>
@@ -30,19 +30,19 @@
 <polygon points="545,115 536.0,118.5 536.0,111.5" fill="#e5e7eb"/>
 <line x1="695" y1="115" x2="730" y2="115" stroke="#e5e7eb" stroke-width="2"/>
 <polygon points="730,115 721.0,118.5 721.0,111.5" fill="#e5e7eb"/>
-<rect x="20" y="230" width="170" height="76" rx="8" fill="#1f2937" stroke="#fbbf24" stroke-width="2"/>
+<rect x="20" y="230" width="170" height="76" rx="8" fill="#272a2f" stroke="#ddb242" stroke-width="2"/>
 <text x="105.0" y="257.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Grasp planner</text>
 <text x="105.0" y="272.2" font-size="12" fill="#e5e7eb" text-anchor="middle">pre-grasp +8 cm</text>
 <text x="105.0" y="287.2" font-size="12" fill="#e5e7eb" text-anchor="middle">grasp, lift +10 cm</text>
-<rect x="225" y="230" width="170" height="76" rx="8" fill="#1f2937" stroke="#fbbf24" stroke-width="2"/>
+<rect x="225" y="230" width="170" height="76" rx="8" fill="#272a2f" stroke="#ddb242" stroke-width="2"/>
 <text x="310.0" y="257.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">IK (damped LS)</text>
 <text x="310.0" y="272.2" font-size="12" fill="#e5e7eb" text-anchor="middle">pos + pitch, limits</text>
 <text x="310.0" y="287.2" font-size="12" fill="#e5e7eb" text-anchor="middle">start from q_now</text>
-<rect x="430" y="230" width="170" height="76" rx="8" fill="#1f2937" stroke="#fbbf24" stroke-width="2"/>
+<rect x="430" y="230" width="170" height="76" rx="8" fill="#272a2f" stroke="#ddb242" stroke-width="2"/>
 <text x="515.0" y="257.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Quintic trajectory</text>
 <text x="515.0" y="272.2" font-size="12" fill="#e5e7eb" text-anchor="middle">v, a limits</text>
 <text x="515.0" y="287.2" font-size="12" fill="#e5e7eb" text-anchor="middle">torque check R07</text>
-<rect x="635" y="230" width="170" height="76" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
+<rect x="635" y="230" width="170" height="76" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
 <text x="720.0" y="257.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Arm + gripper</text>
 <text x="720.0" y="272.2" font-size="12" fill="#e5e7eb" text-anchor="middle">SO-101, 5 joints</text>
 <text x="720.0" y="287.2" font-size="12" fill="#e5e7eb" text-anchor="middle">close, verify width</text>
@@ -57,14 +57,14 @@
 <polygon points="430,268 421.0,271.5 421.0,264.5" fill="#e5e7eb"/>
 <line x1="600" y1="268" x2="635" y2="268" stroke="#e5e7eb" stroke-width="2"/>
 <polygon points="635,268 626.0,271.5 626.0,264.5" fill="#e5e7eb"/>
-<rect x="160" y="350" width="580" height="70" rx="8" fill="#1f2937" stroke="#f87171" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="160" y="350" width="580" height="70" rx="8" fill="#272a2f" stroke="#e58484" stroke-width="2" stroke-dasharray="5 4"/>
 <text x="450.0" y="381.7" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Failure taxonomy (counts must sum to the number of failures)</text>
 <text x="450.0" y="396.7" font-size="12" fill="#e5e7eb" text-anchor="middle">no_detection | ik_fail | joint_limit | slip | knocked | place_miss | timeout</text>
-<line x1="310" y1="306" x2="310" y2="350" stroke="#f87171" stroke-width="2" stroke-dasharray="5 4"/>
-<polygon points="310,350 306.5,341.0 313.5,341.0" fill="#f87171"/>
-<line x1="520" y1="306" x2="520" y2="350" stroke="#f87171" stroke-width="2" stroke-dasharray="5 4"/>
-<polygon points="520,350 516.5,341.0 523.5,341.0" fill="#f87171"/>
-<line x1="720" y1="306" x2="720" y2="350" stroke="#f87171" stroke-width="2" stroke-dasharray="5 4"/>
-<polygon points="720,350 716.5,341.0 723.5,341.0" fill="#f87171"/>
-<text x="450" y="452" font-size="12" fill="#9ca3af" text-anchor="middle">Frames: camera_link -&gt; base_link -&gt; arm_base -&gt; tool0. T_base_cam is a tested artefact in configs/.</text>
+<line x1="310" y1="306" x2="310" y2="350" stroke="#e58484" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="310,350 306.5,341.0 313.5,341.0" fill="#e58484"/>
+<line x1="520" y1="306" x2="520" y2="350" stroke="#e58484" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="520,350 516.5,341.0 523.5,341.0" fill="#e58484"/>
+<line x1="720" y1="306" x2="720" y2="350" stroke="#e58484" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="720,350 716.5,341.0 723.5,341.0" fill="#e58484"/>
+<text x="450" y="452" font-size="12" fill="#a0a4ab" text-anchor="middle">Frames: camera_link -&gt; base_link -&gt; arm_base -&gt; tool0. T_base_cam is a tested artefact in configs/.</text>
 </svg>

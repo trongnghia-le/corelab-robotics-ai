@@ -13,23 +13,23 @@
    "explanation": "10 + (0.05/0.2)*4 = 11."
   },
   "b4": {
-   "prompt": "Hợp nhất độc lập 1.8 (phương sai 0.09) và 1.5 (phương sai 0.01). Phương sai hợp nhất (4 chữ số thập phân)?",
-   "explanation": "1/(11.11+100) = 0.009."
+   "prompt": "Hợp nhất độc lập 3.40 (phương sai 0.16) và 3.10 (phương sai 0.04). Phương sai hợp nhất (4 chữ số thập phân)?",
+   "explanation": "1/(6.25 + 25) = 0.032."
   },
   "b5": {
-   "prompt": "Hợp nhất độc lập 1.8 (phương sai 0.09) và 1.5 (phương sai 0.01). Trung bình hợp nhất (3 chữ số thập phân)?",
-   "explanation": "(1.8*11.11+1.5*100)/111.11 = 1.53."
+   "prompt": "Hợp nhất độc lập 3.40 (phương sai 0.16) và 3.10 (phương sai 0.04). Trung bình hợp nhất (3 chữ số thập phân)?",
+   "explanation": "(3.40*6.25 + 3.10*25)/31.25 = 3.16."
   },
   "b6": {
-   "prompt": "sigma1 = 1, sigma2 = 2, tương quan 0.5. Trọng số tối ưu cho cảm biến 1 (2 chữ số thập phân)?",
-   "explanation": "c = 1, w = (4-1)/(1+4-2) = 1: cảm biến 2 không thêm gì."
+   "prompt": "sigma1 = 0.4, sigma2 = 0.8, tương quan 0.25. Trọng số tối ưu cho cảm biến 1 (3 chữ số thập phân)?",
+   "explanation": "v1 = 0.16, v2 = 0.64, c = 0.25*0.4*0.8 = 0.08, nên w = (0.64 - 0.08)/(0.16 + 0.64 - 0.16) = 0.56/0.64 = 0.875. Ở đây rho nhỏ hơn sigma1/sigma2 = 0.5, nên trọng số nằm trong [0, 1]."
   },
   "b7": {
    "prompt": "Các cảm biến bằng nhau (phương sai 4 mỗi cái), tương quan 0.5. Phương sai hợp nhất tối ưu (2 chữ số thập phân)?",
    "explanation": "c=2; (16-4)/(8-4) = 3."
   },
   "b8": {
-   "prompt": "Khi nào bạn chọn covariance intersection thay vì cập nhật Kalman độc lập?",
+   "prompt": "Khi nào nên chọn covariance intersection thay vì cập nhật Kalman độc lập?",
    "options": [
     "Khi các phép đo đến cùng tần số, nên cả hai có thể được hợp nhất mà không cần nội suy",
     "Khi tương quan chéo của hai ước lượng chưa biết và tính nhất quán quan trọng hơn tính tối ưu",
@@ -69,13 +69,31 @@
    "explanation": "error = tau*bias tăng; đường gia tốc kế bị cắt ở tần số thấp hơn."
   },
   "b12": {
-   "prompt": "Hãy thiết kế cách xử lý timestamp để hợp nhất một GPS 5 Hz (trễ 40 ms) vào một bộ lọc dựa trên odometry 100 Hz. Bạn làm gì với mỗi phép đo và ghi log gì để kiểm chứng?",
+   "prompt": "Hãy thiết kế cách xử lý timestamp để hợp nhất một GPS 5 Hz (trễ 40 ms) vào một bộ lọc dựa trên odometry 100 Hz. Mỗi phép đo nên được xử lý ra sao và nên ghi log gì để kiểm chứng?",
    "explanation": "Chấm theo rubric: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
    "rubric": [
     "Dùng thời điểm đo (không phải thời điểm đến), bù độ trễ bằng cập nhật trễ hoặc nội suy trạng thái.",
     "Đề cập đệm/phát lại hoặc nội suy, không ngoại suy.",
     "Nêu một kiểm tra: các đỉnh innovation sau khi rẽ hoặc độ chệch phụ thuộc tốc độ."
    ]
+  },
+  "c1": {
+   "prompt": "Ba ước lượng không chệch của cùng một đại lượng có hiệp phương sai sai số Sigma = [[0.5, 0.2, 0], [0.2, 1.0, 0], [0, 0, 0.8]] (cảm biến 1 và 2 tương quan, cảm biến 3 độc lập). Tổ hợp tuyến tính phương sai cực tiểu có phương sai 1/(1' Sigma^-1 1). Hãy cho nó (4 chữ số thập phân).",
+   "explanation": "Giải Sigma w = 1. Khối của cảm biến 1 và 2 là [[0.5, 0.2], [0.2, 1.0]] có định thức 0.46, nên nghịch đảo của nó nhân (1, 1) là (0.8, 0.3)/0.46, các thành phần cộng lại 2.3913; cảm biến 3 cho 1/0.8 = 1.25. Tổng là 3.6413, nên phương sai là 1/3.6413 = 0.2746. Kiểm tra: coi cả ba là độc lập sẽ tuyên bố 1/(2 + 1 + 1.25) = 0.2353, quá lạc quan."
+  },
+  "c2": {
+   "prompt": "Bộ lọc bù với dt = 0.01 s và hằng số thời gian tau = 0.3 s, nên alpha = tau/(tau + dt). Góc accelerometer có nhiễu trắng với độ lệch chuẩn 0.06 rad. Phương sai dừng của sai số bộ lọc là (1 - alpha)/(1 + alpha) * sigma^2. Hãy cho độ lệch chuẩn dừng theo rad (4 chữ số thập phân).",
+   "explanation": "alpha = 0.3/0.31 = 0.96774, nên (1 - alpha)/(1 + alpha) = 0.032258/1.96774 = 0.016393 và độ lệch chuẩn là 0.06 * sqrt(0.016393) = 0.007682 rad. Nó đến từ e_k = alpha e_{k-1} + (1 - alpha) n_k, có phương sai V thỏa V = alpha^2 V + (1 - alpha)^2 sigma^2."
+  },
+  "c3": {
+   "prompt": "m_i = x + s + n_i cho n cảm biến, với sai số chung Var(s) = 0.05 m^2 và các nhiễu độc lập Var(n_i) = 0.15 m^2 mỗi cái. Khi n tăng không giới hạn, phương sai hợp nhất tốt nhất đạt được tiến tới:",
+   "options": [
+    "0, vì nhiều cảm biến hơn luôn trung bình hóa hết sai số",
+    "0.15 m^2, nhiễu của một cảm biến",
+    "0.05 m^2, sàn do sai số chung đặt ra",
+    "0.20 m^2, tổng phương sai của một cảm biến"
+   ],
+   "explanation": "Phương sai hợp nhất tối ưu là Var(s) + nu/n, vì các phần độc lập được trung bình hóa giảm nhưng sai số chung s có mặt trong mọi số đọc và không thể trung bình hóa. Khi n tăng, nó tiến tới Var(s) = 0.05 m^2, không phải 0. Quy tắc giả định độc lập sẽ tuyên bố (0.05 + 0.15)/n = 0.20/n, tiến tới 0 và trở nên quá tự tin tùy ý."
   }
  }
 }

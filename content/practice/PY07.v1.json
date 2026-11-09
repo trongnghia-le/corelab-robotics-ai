@@ -297,6 +297,77 @@
       ],
       "answer": "3",
       "explanation": "Bisection assumes monotonicity: once a commit is bad all later ones are bad, and the test result is deterministic."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mutation-oracle"
+      ],
+      "skillLabel": "Equivalent mutants",
+      "mistakeCategory": "conceptual",
+      "id": "c1",
+      "kind": "choice",
+      "dimension": "C",
+      "prompt": "Consider max3(a, b, c): `m = a`, then `if b > m: m = b`, then `if c > m: m = c`, then `return m`. Which single mutation produces a mutant that NO test can kill (an equivalent mutant)?",
+      "options": [
+        "Change the first line `m = a` to `m = b`",
+        "Change `if b > m` to `if b >= m`",
+        "Change `if c > m` to `if c > a`",
+        "Change `if c > m` to `if c < m`"
+      ],
+      "answer": "1",
+      "explanation": "With `b >= m` the assignment `m = b` also runs when b == m, but then m already equals b, so nothing changes: the two programs return the same value for every input and no test can kill the mutant. The other three are killable: starting from `m = b` loses a, so max3(9, 1, 2) returns 2 instead of 9; `c > a` returns 3 for max3(1, 5, 3) instead of 5; `c < m` returns 0 for max3(2, 1, 0) instead of 2.",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "float-tolerance"
+      ],
+      "skillLabel": "Tolerance from a summation error bound",
+      "mistakeCategory": "mathematical",
+      "id": "c2",
+      "kind": "number",
+      "dimension": "M",
+      "prompt": "A test checks a left-to-right float64 sum of n = 2001 numbers whose absolute values add up to 3000. Using the first-order bound (n-1)*u*sum|x_j| with u = 2^-53, what absolute tolerance does the bound allow? Give the value in units of 1e-10 (for example, answer 6.5 means 6.5e-10).",
+      "answer": "6.661",
+      "tolerance": 0.02,
+      "explanation": "(n-1) = 2000, so the bound is 2000 * 1.1102e-16 * 3000 = 6.661e-10, i.e. 6.661 in units of 1e-10. It scales with the sum of absolute values of the terms, not with the (possibly tiny) value of the sum.",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection-debugging"
+      ],
+      "skillLabel": "Bisecting with a flaky test",
+      "mistakeCategory": "mathematical",
+      "id": "c3",
+      "kind": "number",
+      "dimension": "M",
+      "prompt": "git bisect searches 500 commits (commit 1 good, first bad commit 311) with midpoint m = floor((lo+hi)/2). A good commit never fails; on a bad commit each test run fails with probability 0.6. Each probe runs the test 3 times and calls the commit bad if any run fails. Exactly 3 probes on the correct path (375, 312 and 311) hit bad commits. What is the probability that bisection returns commit 311? Give 4 decimals.",
+      "answer": "0.8200",
+      "tolerance": 0.002,
+      "explanation": "A probe on a bad commit misses only if all 3 runs pass: 0.4^3 = 0.064, so it detects with probability 0.936. A single miss moves lo to a bad commit and the search can never return 311, so all 3 bad probes must detect: 0.936^3 = 0.8200.",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY07#theory-and-derivation"
+        }
+      ],
+      "critical": false
     }
   ]
 }

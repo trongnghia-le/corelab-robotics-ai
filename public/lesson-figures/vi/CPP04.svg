@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="Inter, sans-serif">
+<title>Class bảo vệ invariant; interface che giấu phần cài đặt</title>
+<desc>Trái: class JointState với member private và các thao tác public là cổng duy nhất; ghi trực tiếp q = 99 bị chặn và một cập nhật bị từ chối không đổi gì. Phải: Controller trừu tượng với PController và một cài đặt khác, được hàm tự do step sử dụng.</desc>
+<defs><marker id="ahCPP04vi6fc693" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9 z" fill="#6fc693"/></marker></defs>
+<rect width="900" height="480" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Class bảo vệ invariant; interface che giấu phần cài đặt</text>
+<rect x="32" y="72" width="420" height="380" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="52" y="102" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">JointState</text>
+<rect x="52" y="118" width="380" height="110" rx="8" fill="none" stroke="#a7adb5" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="68" y="142" font-size="14" fill="#a7adb5" text-anchor="start">private</text>
+<text x="68" y="170" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">lo_, hi_, vmax_</text>
+<text x="68" y="194" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">q_, v_</text>
+<text x="240" y="170" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">I:  lo_ &lt;= q_ &lt;= hi_</text>
+<text x="240" y="194" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">    |v_| &lt;= vmax_</text>
+<rect x="52" y="250" width="380" height="86" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="68" y="274" font-size="14" fill="#6fc693" text-anchor="start" font-weight="600">public</text>
+<text x="68" y="300" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">try_set_position(q, dt) -&gt; bool</text>
+<text x="68" y="324" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">position() const,  velocity() const</text>
+<line x1="160" y1="368" x2="160" y2="340" stroke="#6fc693" stroke-width="2" stroke-linecap="round" marker-end="url(#ahCPP04vi6fc693)"/>
+<text x="160" y="392" font-size="14" fill="#6fc693" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">try_set_position(0.15, 0.1)</text>
+<text x="160" y="412" font-size="14" fill="#a7adb5" text-anchor="middle">được chấp nhận: state cập nhật</text>
+<line x1="380" y1="368" x2="380" y2="350" stroke="#e58a80" stroke-width="2" stroke-linecap="round" stroke-dasharray="6 4"/>
+<line x1="362" y1="342" x2="398" y2="342" stroke="#e58a80" stroke-width="3" stroke-linecap="round"/>
+<text x="380" y="392" font-size="14" fill="#e58a80" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">j.q_ = 99</text>
+<text x="380" y="412" font-size="14" fill="#a7adb5" text-anchor="middle">lỗi biên dịch: private</text>
+<rect x="476" y="72" width="392" height="380" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="496" y="102" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Interface và các cài đặt</text>
+<rect x="536" y="124" width="272" height="70" rx="8" fill="#22252a" stroke="#ae9ce6" stroke-width="2"/>
+<text x="672" y="150" font-size="15" fill="#ae9ce6" text-anchor="middle" font-weight="600">Controller</text>
+<text x="672" y="174" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">compute(error) const = 0</text>
+<rect x="496" y="282" width="168" height="70" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="580" y="308" font-size="15" fill="#86abe2" text-anchor="middle" font-weight="600">PController</text>
+<text x="580" y="332" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">kp_</text>
+<rect x="680" y="282" width="168" height="70" rx="8" fill="#22252a" stroke="#6cc6ba" stroke-width="2"/>
+<text x="764" y="308" font-size="15" fill="#6cc6ba" text-anchor="middle" font-weight="600">PID</text>
+<text x="764" y="332" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">kp_, ki_, kd_</text>
+<path d="M580,282 V244 H672 V206" fill="none" stroke="#ae9ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M764,282 V244 H672" fill="none" stroke="#ae9ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M672,194 L662,210 L682,210 Z" fill="#22252a" stroke="#ae9ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="496" y="236" font-size="14" fill="#a7adb5" text-anchor="start">là một</text>
+<rect x="496" y="386" width="352" height="46" rx="8" fill="none" stroke="#3d4148" stroke-width="1.5"/>
+<text x="512" y="414" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">step(JointState&amp;, const Controller&amp;)</text>
+<text x="496" y="376" font-size="14" fill="#a7adb5" text-anchor="start">hàm tự do chỉ thấy interface:</text>
+</svg>

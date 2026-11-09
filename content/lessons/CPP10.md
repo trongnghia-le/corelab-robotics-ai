@@ -66,6 +66,12 @@ Waiting is a different problem from locking. A consumer that finds the queue emp
 
 *Left: producer, queue and consumer synchronized by one mutex and two condition variables. Right: two interleaved increments lose an update.*
 
+**Predict before you compute.** Two threads each add 1 to the same shared integer one million times. Before running anything, write down the final value you expect, and whether it is the same on every run. Most people say 2,000,000. The measured answer in this lesson is "less, and different each time", with 11,654 updates lost in one run, and the C++ standard says the program has no defined meaning at all.
+
+**A picture to hold on to.** Imagine two clerks updating one paper ledger line. Each reads the number, walks to a calculator, adds one and walks back to write the result. If both read 7 before either writes, both write 8 and one sale vanishes. A lock is a rule that only the clerk holding the pen may even look at the line; a condition variable is the waiting room where a clerk sleeps until someone rings a bell saying "there is now something to do". Deadlock is two clerks each holding one pen and refusing to put it down until they get the other's.
+
+**The wrong intuitions.** "It printed the right answer when I tried, so it is correct": races depend on timing, and a debugger, a `printf` or a different CPU changes the timing. "Reading a shared `int` without a lock is harmless": a data race is undefined behavior even for a read, because the compiler is allowed to assume it cannot happen. "A bigger queue fixes overload": it only delays the moment the producer has to wait and increases latency. Hold the opposite rule: shared mutable data needs one named owner (a mutex), every wait needs a predicate, and a threaded program is judged by the interleavings that *can* happen, not by the ones you saw.
+
 ## Theory and derivation
 
 ### Data races and the memory model
@@ -75,6 +81,50 @@ Two memory accesses *conflict* if they touch the same location and at least one 
 Not data races: concurrent reads of data nobody writes; writes to different objects (distinct vector elements; though neighbouring elements share a cache line, which is a performance issue called false sharing); accesses protected by the same mutex; operations on `std::atomic`.
 
 Lost update, step by step: counter $=0$. Thread A loads 0; thread B loads 0; A stores 1; B stores 1. Two increments, final value 1. In an experiment with two threads each doing $10^6$ plain increments, the observed total was 1,988,346 instead of 2,000,000, losing $11{,}654$ updates ($0.58\%$) in one run. A mutex-protected or atomic counter always gives 2,000,000.
+
+**Example.** Two threads each add 1 to a shared counter 400,000 times, first on a plain `int` and then on a `std::atomic<int>` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O0 -pthread`; `-O0` keeps the load, add and store visible as three steps):
+
+```cpp
+#include <atomic>
+#include <cstdio>
+#include <thread>
+// Two threads each add 1 to a shared counter 400,000 times: plain int (a data race) versus atomic.
+int plain = 0;
+std::atomic<int> safe{0};
+int main() {
+  for (int run = 1; run <= 3; ++run) {
+    plain = 0;
+    {
+      std::jthread a([] { for (int i = 0; i < 400000; ++i) ++plain; });
+      std::jthread b([] { for (int i = 0; i < 400000; ++i) ++plain; });
+    }
+    std::printf("run %d: plain int  = %d (expected 800000, lost %d)\n", run, plain, 800000 - plain);
+  }
+  {
+    std::jthread a([] { for (int i = 0; i < 400000; ++i) safe.fetch_add(1); });
+    std::jthread b([] { for (int i = 0; i < 400000; ++i) safe.fetch_add(1); });
+  }
+  std::printf("atomic counter = %d\n", safe.load());
+}
+```
+
+```text
+run 1: plain int  = 421010 (expected 800000, lost 378990)
+run 2: plain int  = 481171 (expected 800000, lost 318829)
+run 3: plain int  = 481774 (expected 800000, lost 318226)
+atomic counter = 800000
+```
+
+The plain counter ends at 421,010, 481,171 and 481,774, never 800,000 and different on every run, while the atomic counter is always exactly 800,000. The loss here (40 to 47 %) is far larger than the 0.58 % quoted above for another build on another machine: its size depends on timing, which is the point, because the program has no defined result. Built with ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel), the same plain loop is reported (excerpt):
+
+```text
+WARNING: ThreadSanitizer: data race
+  Read of size 4 by thread T2:
+    #0 operator() e10_1.cpp:12
+  Previous write of size 4 by thread T1:
+    #0 operator() e10_1.cpp:11
+SUMMARY: ThreadSanitizer: data race e10_1.cpp:12 in operator()
+```
 
 ### Threads, mutexes and RAII
 
@@ -88,6 +138,41 @@ Protect shared state with a mutex and lock it with RAII (CP.20): `std::lock_guar
 
 **Deadlock** needs a cycle: thread 1 holds $A$ and waits for $B$, thread 2 holds $B$ and waits for $A$. Avoid it by lock ordering or by acquiring several mutexes at once with `std::scoped_lock lk(a.m, b.m);` (CP.21), which uses a deadlock-avoidance algorithm.
 
+**Example.** A critical section throws an exception (a failed sensor read). After the exception is caught, a second thread tries to take the same mutex with `try_lock`; one version locks with `lock_guard`, the other with `m.lock()` and `m.unlock()` by hand (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+
+```cpp
+#include <cstdio>
+#include <mutex>
+#include <stdexcept>
+#include <thread>
+// A critical section that throws. Can another thread take the mutex afterwards?
+std::mutex m;
+bool other_can_lock() {
+  bool ok = false;
+  std::jthread t([&] { ok = m.try_lock(); if (ok) m.unlock(); });
+  t.join();
+  return ok;
+}
+void with_guard() { std::lock_guard<std::mutex> lk(m); throw std::runtime_error("sensor read failed"); }
+void by_hand() { m.lock(); throw std::runtime_error("sensor read failed"); m.unlock(); }
+int main() {
+  try { with_guard(); } catch (const std::exception& e) { std::printf("caught: %s\n", e.what()); }
+  std::printf("lock_guard : other thread can lock afterwards = %d\n", other_can_lock());
+  try { by_hand(); } catch (const std::exception& e) { std::printf("caught: %s\n", e.what()); }
+  std::printf("m.lock()   : other thread can lock afterwards = %d\n", other_can_lock());
+  m.unlock();   // clean up the leaked lock (same thread that took it)
+}
+```
+
+```text
+caught: sensor read failed
+lock_guard : other thread can lock afterwards = 1
+caught: sensor read failed
+m.lock()   : other thread can lock afterwards = 0
+```
+
+The guard's destructor runs while the exception unwinds the stack, so the mutex is free afterwards (`1`). The hand-written version never reaches `m.unlock()`, so the mutex stays locked for good (`0`): every other thread that asked for it would block forever. The final `m.unlock()` in `main` only cleans up the demonstration.
+
 ### Condition variables
 
 ```cpp
@@ -95,6 +180,44 @@ std::unique_lock<std::mutex> lk(m);
 cv.wait(lk, [&]{ return !q.empty() || closed; });   // predicate form
 ```
 `wait` atomically releases the lock and sleeps; on wake-up it re-acquires the lock. The predicate is checked *with the lock held*, in a loop (the overload with a predicate does this for you), because of **spurious wake-ups** and because another consumer may have taken the item first. Notify after changing the state, either with the lock held or just after releasing it. A lost wake-up happens when a thread checks a condition without the lock, and the state changes between the check and the sleep.
+
+**Example.** A notifier sets `ready` and calls `notify_one` *before* the waiter starts to wait. The waiter first uses `wait_for` without a predicate and then the predicate overload, each with a 200 ms timeout so that a lost wake-up shows as a timeout instead of a hang (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+
+```cpp
+#include <chrono>
+#include <condition_variable>
+#include <cstdio>
+#include <mutex>
+#include <thread>
+using namespace std::chrono_literals;
+// The notification arrives BEFORE the waiter starts waiting. Without a predicate it is lost.
+std::mutex m;
+std::condition_variable cv;
+bool ready = false;
+int main() {
+  {
+    std::jthread notifier([] { { std::lock_guard<std::mutex> lk(m); ready = true; } cv.notify_one(); });
+  }                                            // notifier has finished: ready == true, nobody was waiting
+  auto t0 = std::chrono::steady_clock::now();
+  std::unique_lock<std::mutex> lk(m);
+  auto st = cv.wait_for(lk, 200ms);            // no predicate: waits for a notify that already happened
+  auto t1 = std::chrono::steady_clock::now();
+  std::printf("no predicate  : %s after %ld ms, ready = %d\n", st == std::cv_status::timeout ? "timed out" : "woken",
+              (long)std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count(), ready);
+  t0 = std::chrono::steady_clock::now();
+  bool ok = cv.wait_for(lk, 200ms, [] { return ready; });   // predicate form tests the state first
+  t1 = std::chrono::steady_clock::now();
+  std::printf("with predicate: %s after %ld ms\n", ok ? "returned true" : "timed out",
+              (long)std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count());
+}
+```
+
+```text
+no predicate  : timed out after 200 ms, ready = 1
+with predicate: returned true after 0 ms
+```
+
+The state was already true, but the bare `wait_for` sleeps through the whole 200 ms because the one notification came earlier and is gone: a condition variable remembers nothing. The predicate overload tests `ready` under the lock before sleeping and returns at once (0 ms). The rule is to wait for a *state*, never for a signal.
 
 ### The bounded queue and its contract
 
@@ -108,6 +231,100 @@ A bounded queue with capacity $K$ separates producer and consumer rates: if the 
 
 *Sizing example.* A sensor bursts 50 items in 50 ms (1000 items/s); the consumer handles 200 items/s. During the burst the consumer removes $200\times0.05=10$ items, so the backlog is $50-10=40$ items and drains in $40/200=0.2$ s. Capacity $\ge40$ avoids blocking the producer; with capacity 8 the producer is slowed to the consumer's pace.
 
+**Example.** The sizing rule of the contract is tested on a running queue. A burst of 60 items arrives, one every 0.5 ms (2000 items/s), and the consumer needs 2.5 ms per item (400 items/s). The burst lasts $60\times0.5=30$ ms, in which the consumer removes about $400\times0.030=12$ items, so the predicted backlog is $60-12=48$ items. The program runs capacities $K=64$ and $K=8$ and counts the pushes that had to wait (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+
+```cpp
+#include <chrono>
+#include <condition_variable>
+#include <cstdio>
+#include <deque>
+#include <mutex>
+#include <thread>
+using namespace std::chrono_literals;
+// Bounded queue of capacity K. A burst of 60 items arrives every 0.5 ms (2000 items/s);
+// the consumer needs 2.5 ms per item (400 items/s). Count the pushes that had to wait.
+struct Queue {
+  std::size_t K; std::deque<int> q; std::mutex m; std::condition_variable not_full, not_empty;
+  std::size_t peak = 0; int waited = 0;
+  explicit Queue(std::size_t k) : K(k) {}
+  void push(int x) {
+    std::unique_lock<std::mutex> lk(m);
+    if (q.size() >= K) ++waited;
+    not_full.wait(lk, [&] { return q.size() < K; });
+    q.push_back(x); if (q.size() > peak) peak = q.size();
+    not_empty.notify_one();
+  }
+  int pop() {
+    std::unique_lock<std::mutex> lk(m);
+    not_empty.wait(lk, [&] { return !q.empty(); });
+    int x = q.front(); q.pop_front();
+    not_full.notify_one();
+    return x;
+  }
+};
+int main() {
+  for (std::size_t K : {64u, 8u}) {
+    Queue q(K);
+    auto t0 = std::chrono::steady_clock::now();
+    double producer_ms = 0;
+    {
+      std::jthread consumer([&] { for (int i = 0; i < 60; ++i) { q.pop(); std::this_thread::sleep_for(2500us); } });
+      std::jthread producer([&] {
+        for (int i = 0; i < 60; ++i) { q.push(i); std::this_thread::sleep_for(500us); }
+        producer_ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t0).count();
+      });
+    }
+    std::printf("K = %2zu: peak backlog = %2zu, pushes that blocked = %2d, producer done after %5.1f ms\n", K, q.peak, q.waited, producer_ms);
+  }
+}
+```
+
+```text
+K = 64: peak backlog = 47, pushes that blocked =  0, producer done after  33.9 ms
+K =  8: peak backlog =  8, pushes that blocked = 48, producer done after 137.1 ms
+```
+
+With $K=64$ the measured peak backlog is 47 (prediction 48; the first item is taken at once and the sleeps are not exact), no push blocks and the producer is done after 33.9 ms. With $K=8$ the queue is full after 8 items, 48 pushes wait and the producer is slowed to the consumer's pace: it finishes after 137.1 ms, close to $(60-8)\times2.5=130$ ms.
+
+```explore
+{
+  "title": "How big must the queue be for a burst?",
+  "title_vi": "Hàng đợi phải lớn bao nhiêu cho một đợt dồn dập?",
+  "prompt": "Predict first: a burst of 50 items arrives at 1000 items/s and the consumer handles 200 items/s. How large is the backlog when the burst ends, and how long does it take to drain? Then drag the sliders: which single change shrinks the required capacity most?",
+  "prompt_vi": "Dự đoán trước: một đợt 50 phần tử đến với tốc độ 1000 phần tử/s và consumer xử lý 200 phần tử/s. Backlog lúc đợt kết thúc là bao nhiêu, và mất bao lâu để xả hết? Rồi kéo các thanh trượt: thay đổi nào làm dung lượng cần thiết giảm nhiều nhất?",
+  "params": [
+    { "name": "n", "label": "burst size n", "label_vi": "cỡ đợt n", "min": 10, "max": 200, "step": 5, "value": 50, "unit": "items" },
+    { "name": "rp", "label": "producer rate", "label_vi": "tốc độ producer", "min": 250, "max": 5000, "step": 50, "value": 1000, "unit": "items/s" },
+    { "name": "rc", "label": "consumer rate", "label_vi": "tốc độ consumer", "min": 50, "max": 1000, "step": 10, "value": 200, "unit": "items/s" },
+    { "name": "K", "label": "queue capacity K", "label_vi": "dung lượng hàng đợi K", "min": 1, "max": 100, "step": 1, "value": 8, "unit": "items" }
+  ],
+  "let": [
+    { "name": "dur", "expr": "n / rp" },
+    { "name": "backlog", "expr": "max(n - rc * dur, 0)" },
+    { "name": "drain", "expr": "backlog / rc" },
+    { "name": "late", "expr": "max(n / rc - dur, 0)" }
+  ],
+  "plot": {
+    "x": { "name": "x", "min": 0, "max": 0.6, "label": "time since the burst starts (s)", "label_vi": "thời gian từ lúc đợt bắt đầu (s)" },
+    "y": { "label": "items waiting", "label_vi": "số phần tử đang chờ", "min": 0 },
+    "series": [
+      { "expr": "max(min(rp * x, n) - min(rc * x, n), 0)", "label": "backlog with no limit", "label_vi": "backlog không giới hạn", "color": "orange" },
+      { "expr": "K", "label": "capacity K", "label_vi": "dung lượng K", "color": "blue" }
+    ],
+    "points": [
+      { "x": "dur", "y": "backlog", "label": "end of burst", "label_vi": "hết đợt", "color": "rose" }
+    ]
+  },
+  "readouts": [
+    { "label": "backlog at the end of the burst", "label_vi": "backlog lúc hết đợt", "expr": "backlog", "unit": "items", "digits": 1 },
+    { "label": "time to drain", "label_vi": "thời gian xả hết", "expr": "drain", "unit": "s", "digits": 3 },
+    { "label": "minimum capacity so the producer never blocks", "label_vi": "dung lượng tối thiểu để producer không bị chặn", "expr": "ceil(backlog)", "unit": "items", "digits": 0 },
+    { "label": "last item waits", "label_vi": "phần tử cuối phải chờ", "expr": "late", "unit": "s", "digits": 3 },
+    { "label": "producer blocks? (1 yes, 0 no)", "label_vi": "producer bị chặn? (1 có, 0 không)", "expr": "ifpos(backlog - K, 1, 0)", "unit": "", "digits": 0 }
+  ]
+}
+```
+
 ### Atomics and memory ordering
 
 `std::atomic<T>` makes single operations indivisible and race-free. With `memory_order_seq_cst` (the default) all atomic operations appear in one global order. **Release/acquire** ordering gives a publication guarantee: everything written before a release store is visible after an acquire load that reads the stored value.
@@ -119,26 +336,347 @@ int data; std::atomic<bool> ready{false};
 ```
 With `memory_order_relaxed` for both, the write to `data` is not ordered with the flag, and the read of `data` would be a data race. Use atomics for flags and counters; use mutexes for anything with an invariant across several variables.
 
+**Example.** The publication pattern of this section is run 2000 times, each round with a fresh pair of threads: the producer writes `data = 42` and sets `ready` with release; the consumer spins with acquire and then reads `data` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; the same source compiled with `-DRELAXED` uses relaxed ordering on both operations):
+
+```cpp
+#include <atomic>
+#include <cstdio>
+#include <thread>
+// Publication: data is written, then a flag is set. Compile with -DRELAXED for the broken version.
+#ifdef RELAXED
+constexpr auto STORE = std::memory_order_relaxed, LOAD = std::memory_order_relaxed;
+#else
+constexpr auto STORE = std::memory_order_release, LOAD = std::memory_order_acquire;
+#endif
+int data = 0;
+std::atomic<bool> ready{false};
+int main() {
+  int seen = 0;
+  const int rounds = 2000;
+  for (int r = 0; r < rounds; ++r) {
+    data = 0; ready.store(false, std::memory_order_seq_cst);
+    std::jthread producer([] { data = 42; ready.store(true, STORE); });
+    std::jthread consumer([&] { while (!ready.load(LOAD)) {} if (data == 42) ++seen; });
+  }
+  std::printf("rounds where the consumer read 42: %d of %d\n", seen, rounds);
+}
+```
+
+```text
+rounds where the consumer read 42: 2000 of 2000
+```
+
+All 2000 rounds see 42, and ThreadSanitizer is silent on this version. On x86-64 the relaxed build also prints 2000 of 2000, because the hardware keeps stores in order, so a passing test proves nothing about the relaxed version; ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel) does report it (excerpt):
+
+```text
+WARNING: ThreadSanitizer: data race
+  Read of size 4 by thread T2:
+    #0 operator() e10_5.cpp:18
+  Previous write of size 4 by thread T1:
+    #0 operator() e10_5.cpp:17
+SUMMARY: ThreadSanitizer: data race e10_5.cpp:18 in operator()
+```
+
+### Happens-before made precise
+
+The data-race definition above rests on three relations from the C++ memory model (cppreference, *std::memory_order*, "Formal description"). *Sequenced-before* orders evaluations within one thread. A release operation on an atomic $M$ *synchronizes-with* an acquire operation on $M$ that reads the value it wrote (or a value from its release sequence). *Inter-thread happens-before* is the closure of synchronizes-with composed with sequenced-before; *happens-before* includes sequenced-before. A data race is then exactly two conflicting non-atomic accesses with neither happening before the other.
+
+*Proof that the flag pattern is correct.* In the producer/consumer example, let $W$ be `data = 42`, $S$ the release store of `ready`, $L$ the acquire load that returns `true`, and $R$ the read of `data`. $W$ is sequenced-before $S$; $S$ synchronizes-with $L$ because $L$ read the value $S$ wrote; $L$ is sequenced-before $R$. Composing, $W$ happens-before $R$, so $R$ is not a race and it reads a visible side effect of $W$, i.e. 42. If the load used `relaxed`, no synchronizes-with edge exists, so $W$ and $R$ are unordered conflicting accesses: a data race and undefined behavior, not merely "a stale value".
+
+*Relaxed atomics can even form cycles.* With `x` and `y` initially 0, thread 1 runs `r1 = y.load(relaxed); x.store(r1, relaxed)` and thread 2 runs `r2 = x.load(relaxed); y.store(42, relaxed)`. The outcome `r1 == r2 == 42` is allowed: nothing orders the store of 42 after the load in thread 2, and the model only forbids "out-of-thin-air" values that depend circularly on themselves (cppreference, *Relaxed ordering*). Exercise 14 asks you to prove which orderings forbid it.
+
+![Two thread timelines showing the happens-before chain from the write of data to its read with release/acquire, and the missing edge with relaxed](/lesson-figures/CPP10-2.svg)
+
+*Figure: the proof of this section drawn as a graph. The orange synchronizes-with edge exists only for release/acquire; remove it (relaxed) and $W$ and $R$ are unordered conflicting accesses, a data race.*
+
+**Example.** Thread creation and `join` are synchronization points, so a value can be handed to a thread and back without any atomic. The thread reads `input` (written before it was created) and writes `output`; the parent reads `output` after `join` (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; with `-DEARLY` the parent reads before `join`):
+
+```cpp
+#include <cstdio>
+#include <thread>
+// Thread creation and join are synchronization points: no atomics needed here.
+// Compile with -DEARLY to read the result before join(), which is a data race.
+int main() {
+  int input = 7, output = 0;                       // written before the thread starts
+  std::thread t([&] { output = input * 6; });      // start of t happens-after everything above
+#ifdef EARLY
+  std::printf("output read before join = %d\n", output);
+  t.join();
+#else
+  t.join();                                        // end of t happens-before join() returns
+  std::printf("output read after join  = %d\n", output);
+#endif
+}
+```
+
+```text
+output read after join  = 42
+```
+
+Writing `input` happens-before the start of the thread, and the end of the thread happens-before the return of `join`, so every access is ordered: no race, and the result is 42. Under ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel) the `-DEARLY` variant, which reads `output` while the thread may still write it, is reported (excerpt):
+
+```text
+WARNING: ThreadSanitizer: data race
+  Write of size 4 by thread T1:
+    #0 operator() e10_6.cpp:7
+  Previous read of size 4 by main thread:
+    #0 main e10_6.cpp:9
+SUMMARY: ThreadSanitizer: data race e10_6.cpp:7 in operator()
+```
+
+### Sequential consistency, store buffering and why default is `seq_cst`
+
+Consider two atomics `x`, `y` initially 0; thread 1 runs `x.store(1); r1 = y.load();` and thread 2 runs `y.store(1); r2 = x.load();`. This is the *store-buffering* shape. With all four operations `memory_order_seq_cst`, all of them appear in one total order consistent with each thread's program order (cppreference, *Sequentially-consistent ordering*). **Claim:** $r1=r2=0$ is impossible. *Proof.* Suppose both loads return 0. The load of $y$ returning 0 means it precedes thread 2's store of $y$ in the total order $T$; the load of $x$ returning 0 means it precedes thread 1's store of $x$. With program order, $T$ would need $\text{store}_x < \text{load}_y < \text{store}_y < \text{load}_x < \text{store}_x$, a cycle. Contradiction. With only release stores and acquire loads there is no total order: the stores need not be globally visible before the loads execute (each core can hold the store in a store buffer while the later load runs) and $r1=r2=0$ is allowed. On an x86-64 machine with 200,000 rounds we observed $r1=r2=0$ in 0 rounds with `seq_cst`, 630 with release/acquire and 564 with `relaxed`. Hence Dekker/Peterson style mutual exclusion written with plain flags needs `seq_cst` (or fences); a mutex or `seq_cst` atomics is the safe default and weaker orders are an optimization to be justified.
+
+![Timeline of the store-buffering test: both stores wait in buffers while both loads read the old values, giving (0, 0)](/lesson-figures/CPP10-3.svg)
+
+*Figure: why $(r1,r2)=(0,0)$ is possible without a single total order. The loads run between the stores being issued and becoming visible; the counts at the bottom are the measurements of the example below.*
+
+**Example.** The store-buffering test is run 200,000 times with a `std::barrier` releasing both threads together each time, once with relaxed and once with `seq_cst` operations (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`, one machine with an x86-64 CPU):
+
+```cpp
+#include <atomic>
+#include <barrier>
+#include <cstdio>
+#include <thread>
+#include <vector>
+// Store buffering: x.store(1); r1 = y.load()  ||  y.store(1); r2 = x.load().  Count r1 == 0 && r2 == 0.
+template <std::memory_order MO>
+int run(int n) {
+  std::vector<std::atomic<int>> x(n), y(n);
+  for (int i = 0; i < n; ++i) { x[i].store(0, std::memory_order_relaxed); y[i].store(0, std::memory_order_relaxed); }
+  std::vector<int> r1(n), r2(n);
+  std::barrier sync(2);
+  {
+    std::jthread t1([&] { for (int i = 0; i < n; ++i) { sync.arrive_and_wait(); x[i].store(1, MO); r1[i] = y[i].load(MO); } });
+    std::jthread t2([&] { for (int i = 0; i < n; ++i) { sync.arrive_and_wait(); y[i].store(1, MO); r2[i] = x[i].load(MO); } });
+  }
+  int both_zero = 0;
+  for (int i = 0; i < n; ++i) both_zero += (r1[i] == 0 && r2[i] == 0);
+  return both_zero;
+}
+int main() {
+  const int n = 200000;
+  std::printf("relaxed: (0,0) seen in %d of %d runs\n", run<std::memory_order_relaxed>(n), n);
+  std::printf("seq_cst: (0,0) seen in %d of %d runs\n", run<std::memory_order_seq_cst>(n), n);
+}
+```
+
+```text
+relaxed: (0,0) seen in 2 of 200000 runs
+seq_cst: (0,0) seen in 0 of 200000 runs
+```
+
+With relaxed operations the outcome that sequential consistency forbids $(r1,r2)=(0,0)$ appeared in 2 runs; with `seq_cst` it never appeared in 200,000. The count is small and varies from run to run because the window is a few nanoseconds wide, so a stress test can show the outcome but never exclude it; the proof above does.
+
+### Deadlock freedom by lock ordering: a proof and its limits
+
+A deadlock requires a cycle in the wait-for graph (the lesson's definition). **Theorem.** If every thread acquires locks only in increasing order of a fixed rank, no deadlock is possible. *Proof.* Suppose threads $T_1,\dots,T_k$ form a cycle: $T_i$ holds lock $a_i$ and waits for $a_{i+1}$ (indices mod $k$). A thread waiting for $a_{i+1}$ while holding $a_i$ acquired $a_i$ first, so $\text{rank}(a_i)<\text{rank}(a_{i+1})$. Going round the cycle gives $\text{rank}(a_1)<\text{rank}(a_2)<\dots<\text{rank}(a_1)$, impossible. $\square$ The proof needs *every* acquisition path to obey the order, including those inside callbacks: this is why CP.22 forbids calling unknown code while holding a lock (C++ Core Guidelines, CP.21 and CP.22). `std::scoped_lock` removes the need for a global rank by using a deadlock-avoidance algorithm, but it needs all the locks in one statement; locks acquired in different functions still need a convention. Two traps: locking the *same* `std::mutex` twice in one thread (for example `transfer(a, a)`) is undefined behavior for a non-recursive mutex, with or without `scoped_lock`; and ordering by address (`std::less<>{}(&a.m, &b.m)`) is a valid rank for mutexes of unrelated objects.
+
+**Example.** Two accounts, $0$ and $1$, and two transfers in opposite directions. The naive version locks the source first; a barrier makes both threads hold their first lock, and a 200 ms limit on the second lock turns the permanent wait into a visible failure. The ordered version always locks the lower index first, and runs 200,000 transfers (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`; also clean under ThreadSanitizer (`-fsanitize=thread`, run as `setarch -R ./a.out` on this kernel)):
+
+```cpp
+#include <barrier>
+#include <chrono>
+#include <cstdio>
+#include <mutex>
+#include <thread>
+using namespace std::chrono_literals;
+// Two accounts, two transfers in opposite directions.
+struct Account { std::mutex m; int balance; };
+Account acc[2] = {{{}, 500000}, {{}, 500000}};
+// Lock m, giving up after d (a stand-in for "would wait forever").
+bool lock_within(std::mutex& m, std::chrono::milliseconds d) {
+  auto end = std::chrono::steady_clock::now() + d;
+  while (!m.try_lock()) {
+    if (std::chrono::steady_clock::now() > end) return false;
+    std::this_thread::sleep_for(1ms);
+  }
+  return true;
+}
+// Naive: lock the source, then the destination. A barrier forces both threads to hold their first lock.
+bool transfer_naive(int from, int to, int amount, std::barrier<>& both_hold_first) {
+  std::lock_guard<std::mutex> a(acc[from].m);
+  both_hold_first.arrive_and_wait();
+  if (!lock_within(acc[to].m, 200ms)) return false;   // would wait forever: report the deadlock instead
+  std::lock_guard<std::mutex> b(acc[to].m, std::adopt_lock);
+  acc[from].balance -= amount; acc[to].balance += amount;
+  return true;
+}
+// Ordered: always lock the lower index first.
+void transfer_ordered(int from, int to, int amount) {
+  int lo = from < to ? from : to, hi = from < to ? to : from;
+  std::lock_guard<std::mutex> a(acc[lo].m);
+  std::lock_guard<std::mutex> b(acc[hi].m);
+  acc[from].balance -= amount; acc[to].balance += amount;
+}
+int main() {
+  std::barrier<> sync(2);
+  bool ok1 = true, ok2 = true;
+  {
+    std::jthread t1([&] { ok1 = transfer_naive(0, 1, 30, sync); });
+    std::jthread t2([&] { ok2 = transfer_naive(1, 0, 20, sync); });
+  }
+  std::printf("naive  : transfer 0->1 completed = %d, transfer 1->0 completed = %d\n", ok1, ok2);
+  {
+    std::jthread t1([] { for (int i = 0; i < 100000; ++i) transfer_ordered(0, 1, 3); });
+    std::jthread t2([] { for (int i = 0; i < 100000; ++i) transfer_ordered(1, 0, 2); });
+  }
+  std::printf("ordered: 200000 transfers done, balances = %d + %d = %d\n", acc[0].balance, acc[1].balance, acc[0].balance + acc[1].balance);
+}
+```
+
+```text
+naive  : transfer 0->1 completed = 0, transfer 1->0 completed = 1
+ordered: 200000 transfers done, balances = 400020 + 599980 = 1000000
+```
+
+In the naive run one transfer gave up after 200 ms (without the limit both would wait forever; which of the two gives up varies), and the other then proceeded. The ordered version completed all 200,000 transfers, and the balances still sum to $400{,}020+599{,}980=1{,}000{,}000$, the starting total, as the conservation check requires. The proof applies: both threads acquire in increasing rank, so no cycle can form.
+
+### Condition variables: the invariant and the missed-notification argument
+
+A condition variable is not a flag; it is a *queue of sleeping threads* attached to a predicate over state protected by a mutex. Correctness has three parts (C++ Core Guidelines, CP.42; cppreference, `std::condition_variable`). (1) The predicate is read and the decision to sleep is made while holding the mutex, and `wait` releases the mutex and enqueues the thread atomically; otherwise a state change plus notification could fall between the check and the sleep, and the notification would be lost (the thread sleeps with a true predicate). (2) After waking, the predicate is re-tested under the re-acquired lock, in a loop, because a wake-up proves nothing: it may be spurious, or another thread may have consumed the item between the notification and this thread acquiring the lock. (3) Every state change that can make some waiter's predicate true is followed by a notification that reaches *that kind* of waiter.
+
+Part (3) is where `notify_one` is dangerous. With one condition variable shared by "not full" and "not empty" waiters, `notify_one` may wake a waiter whose predicate is still false, the wake-up is consumed, and a waiter who could have proceeded sleeps on (Exercise 15). The two safe designs are `notify_all` with predicates (correct, but $O(\text{waiters})$ wake-ups per operation) and one condition variable per predicate with `notify_one`. A useful invariant to state in the queue's contract is: *whenever the lock is free, if the queue is non-empty then no consumer that is asleep has a true predicate, and if it is not full then no producer asleep has a true predicate.* Each operation must restore this invariant before unlocking, which is exactly the notification rule. Notifying after unlocking is allowed and can save one context switch, but notifying *before* the state change is a bug.
+
+**Example.** Four consumers wait on *one* condition variable while a producer publishes 6 items, 20 ms apart. Each consumer re-tests its predicate in a loop, so both `notify_one` and `notify_all` are correct; the program counts how often `wait` returned (g++ 11.4.0, `-std=c++20 -Wall -Wextra -O2 -pthread`):
+
+```cpp
+#include <chrono>
+#include <condition_variable>
+#include <cstdio>
+#include <mutex>
+#include <thread>
+#include <vector>
+using namespace std::chrono_literals;
+// Four consumers wait on ONE condition variable; the producer publishes 6 items, 20 ms apart.
+// Compare notify_one with notify_all (the predicates make both correct).
+struct Run { int taken = 0, wakeups = 0; };
+Run run(bool all) {
+  std::mutex m; std::condition_variable cv; int items = 0; bool done = false; Run r;
+  {
+    std::vector<std::jthread> consumers;
+    for (int c = 0; c < 4; ++c)
+      consumers.emplace_back([&] {
+        std::unique_lock<std::mutex> lk(m);
+        for (;;) {
+          while (items == 0 && !done) { cv.wait(lk); ++r.wakeups; }
+          if (items == 0) return;
+          --items; ++r.taken;
+        }
+      });
+    std::this_thread::sleep_for(50ms);             // let all four go to sleep
+    for (int i = 0; i < 6; ++i) {
+      { std::lock_guard<std::mutex> lk(m); ++items; }
+      if (all) cv.notify_all(); else cv.notify_one();
+      std::this_thread::sleep_for(20ms);
+    }
+    { std::lock_guard<std::mutex> lk(m); done = true; }
+    cv.notify_all();
+  }
+  return r;
+}
+int main() {
+  Run a = run(false), b = run(true);
+  std::printf("notify_one: items taken = %d, wake-ups = %d\n", a.taken, a.wakeups);
+  std::printf("notify_all: items taken = %d, wake-ups = %d\n", b.taken, b.wakeups);
+}
+```
+
+```text
+notify_one: items taken = 6, wake-ups = 10
+notify_all: items taken = 6, wake-ups = 28
+```
+
+Both runs deliver all 6 items. `notify_one` costs $6+4=10$ wake-ups (one per item, plus the four consumers woken by the final `notify_all` that ends the run); `notify_all` costs $6\cdot4+4=28$, because each item wakes all four consumers and three of them find nothing and go back to sleep. This is the cost side of the safe design; one condition variable per predicate lets `notify_one` be both correct and cheap.
+
 ## Worked example
 
-Trace a producer-consumer run with capacity $K=2$, one producer $P$ pushing $1,2,3$ and one consumer $C$.
+### Case 1: the basic case
 
-1. $P$ locks, `size=0<2`, pushes 1, `notify_one(not_empty)`, unlocks. Queue: $[1]$.
-2. $P$ pushes 2. Queue: $[1,2]$, full.
-3. $P$ tries `push(3)`: locks, the predicate `closed || size<2` is false, so `wait` releases the lock and blocks on `not_full`.
-4. $C$ calls `pop`: locks, the queue is non-empty, takes 1, queue $[2]$, `notify_one(not_full)`, unlocks, returns 1.
-5. $P$ wakes (it re-acquires the lock inside `wait`), the predicate `size<2` is true, pushes 3, queue $[2,3]$.
-6. $C$ pops 2, then 3: queue empty. A fourth `pop` finds the queue empty and open, so it blocks on `not_empty`.
-7. $P$ calls `close()`: sets `closed`, `notify_all` on both conditions. $C$ wakes, the predicate `closed || !empty` holds, the queue is empty, so `pop` returns `nullopt`, and the consumer loop `while (auto v = q.pop())` ends.
+**Problem.** A bounded queue has capacity $K=2$. One producer $P$ pushes the items $1,2,3$ and then calls `close()`; one consumer $C$ loops `while (auto v = q.pop())`. Trace one run in which the queue fills up, say which thread blocks where and why, and decide what is delivered.
 
-Every item was delivered once, in order, 1, 2, 3. Without step 7, $C$ would block forever (a hang): this is why `close()` exists. The checks: total delivered $=3$, sum $=6$; the same program with plain `int` and no lock for the count shows lost updates under load.
+**Solution.** (Contract of the bounded-queue section; condition-variable rules of the first two sections.)
+
+1. $P$ locks, `size=0<2`, pushes 1, calls `notify_one(not_empty)`, unlocks. Queue: $[1]$.
+2. $P$ pushes 2. Queue: $[1,2]$, full ($\text{size}=K$).
+3. $P$ calls `push(3)`: it locks, the predicate `closed || size<2` is false, so `wait` atomically releases the lock and blocks on `not_full`. Queue unchanged: $[1,2]$.
+4. $C$ calls `pop`: it locks, the queue is non-empty, takes 1, queue $[2]$, `notify_one(not_full)`, unlocks, returns 1.
+5. $P$ wakes (inside `wait` it re-acquires the lock first), re-tests the predicate `size<2`: $1<2$ is true, so it pushes 3. Queue $[2,3]$.
+6. $C$ pops 2, then 3: queue empty. A fourth `pop` finds the queue empty and open, so its predicate `closed || !empty` is false and it blocks on `not_empty`.
+7. $P$ calls `close()`: sets `closed` under the lock, then `notify_all` on both conditions. $C$ wakes, the predicate holds, the queue is empty, so `pop` returns `nullopt` and the loop ends.
+
+![Grid of the seven steps of Case 1: queue slots, the state of P and C, and the condition variable each waits on](/lesson-figures/CPP10-4.svg)
+
+*Figure: the trace of Case 1 for a queue of capacity 2. Read each column top to bottom: slots, what P does, what C does, what a blocked thread waits on.*
+
+**Check.** Every item was delivered once, in order $1,2,3$, so the total delivered is $3$ and the sum is $6$. Without step 7, $C$ would block forever, which is why `close()` exists. Independent check: the same seven steps replayed against the `BoundedQueue` of the reference implementation (the producer of step 3 is a thread, a short sleep shows that it is blocked):
+
+```cpp
+#include <chrono>
+#include <cstdio>
+#include <thread>
+// BoundedQueue<T> exactly as in the Reference implementation section above
+using namespace std::chrono_literals;
+int main() {
+  BoundedQueue<int> q(2);
+  bool a = q.try_push(1), b = q.try_push(2), c = q.try_push(3);
+  std::printf("steps 1-3: push 1 -> %d, push 2 -> %d, try_push 3 -> %d (full), size = %zu\n", a, b, c, q.size());
+  {
+    std::jthread producer([&] { q.push(3); });    // blocks on not_full until a slot is free
+    std::this_thread::sleep_for(50ms);
+    std::printf("step 3  : producer blocked, size still %zu\n", q.size());
+    std::printf("step 4  : pop -> %d\n", *q.pop());
+  }                                               // producer woke, pushed 3, finished
+  std::printf("step 5  : size = %zu\n", q.size());
+  int x = *q.pop(), y = *q.pop();
+  std::printf("step 6  : pop -> %d, pop -> %d, size = %zu\n", x, y, q.size());
+  std::jthread consumer([&] {
+    auto v = q.pop();                             // fourth pop: empty and open, so it blocks
+    std::printf("step 7  : blocked pop returned %s\n", v ? "a value" : "nullopt");
+  });
+  std::this_thread::sleep_for(50ms);
+  q.close();
+}
+```
+
+```text
+steps 1-3: push 1 -> 1, push 2 -> 1, try_push 3 -> 0 (full), size = 2
+step 3  : producer blocked, size still 2
+step 4  : pop -> 1
+step 5  : size = 2
+step 6  : pop -> 2, pop -> 3, size = 0
+step 7  : blocked pop returned nullopt
+```
+
+**Takeaway.** Each wait is tied to a predicate over the state, and each state change notifies the condition it may have made true; the stream ends only because `close()` wakes everybody.
+
+### Case 2: three accounts and a lock-order cycle
+
+**Problem.** Three threads transfer money between accounts guarded by mutexes $m_0,m_1,m_2$: $T_1$: `transfer(0→2)`, $T_2$: `transfer(2→1)`, $T_3$: `transfer(1→0)`. A transfer locks the source mutex first, then the destination. Show that a deadlock is reachable, then show that locking in increasing index order removes it, and count the cases.
+
+**Solution.** (Deadlock section and the rank theorem of the theory.)
+
+1. **Naive order.** Lock sequences: $T_1:(0,2)$, $T_2:(2,1)$, $T_3:(1,0)$. Schedule: $T_1$ locks $m_0$, $T_2$ locks $m_2$, $T_3$ locks $m_1$. Now $T_1$ waits for $m_2$ (held by $T_2$), $T_2$ waits for $m_1$ (held by $T_3$), $T_3$ waits for $m_0$ (held by $T_1$): a cycle of length 3 in the wait-for graph. None can proceed.
+2. **Ranked order.** Sort each pair by index, rank $=$ index: $T_1:(0,2)$, $T_2:(1,2)$, $T_3:(0,1)$. Suppose a cycle existed, each member holding a lock and waiting for a higher-ranked one; going around it the ranks would strictly increase and return to the start, which is impossible. So no deadlock, by the theorem.
+3. **Exhaustive check.** State $=$ (progress of each thread, owner of each mutex); a thread releases both locks when it finishes its second lock. Exploring every interleaving, the naive version has 27 reachable states and 1 deadlocked state (the one in step 1); the ranked version has 24 reachable states and 0 deadlocked states.
+4. **Fix in code.** `std::scoped_lock lk(acct[from].m, acct[to].m);` avoids the explicit order and needs `from != to` as a precondition, since locking the same non-recursive mutex twice is undefined behavior.
+5. **Contract.** Money is conserved: the sum of balances before and after is equal, which a test can assert after joining the threads, together with ThreadSanitizer to exclude races on the balances.
+
+![Left: wait-for cycle of three threads with the naive lock order. Right: ranked order where every acquisition goes up](/lesson-figures/CPP10-5.svg)
+
+*Figure: the two lock orders of Case 2. The dashed red arrows on the left close a cycle; on the right every arrow points to a higher rank, so the cycle argument of the theory section cannot be completed.*
+
+**Check.** A Python search over all interleavings of the three two-step sequences reproduces step 3: `(27, 1)` for the naive order and `(24, 0)` for the ranked one. The ranked order has the longest chain $0<1<2$, so the rank argument covers all three transfers.
+
+**Takeaway.** A deadlock needs a cycle; one global order of the locks makes a cycle impossible, and exhaustive search of a small model confirms it.
 
 ## Exercises
 
 Problems marked *Adapted* restate a standard exercise type from the cited source in new words and numbers.
 
 1. **(Easy)** *(Adapted from: C++ Core Guidelines, CP.2 and CP.3)* Which of these are data races? (a) two threads read the same `const int`; (b) one thread writes an `int`, another reads it, no synchronization; (c) two threads do `fetch_add` on one `std::atomic<int>`; (d) thread 1 writes `v[0]`, thread 2 writes `v[1]` of a pre-sized `std::vector<int>`. Which one may still be slow, and why?
-2. **(Easy)** Two threads each execute `++counter` $10^6$ times on a plain `int`; one run printed 1,988,346. How many updates were lost and what percentage is that? Write an interleaving of a load/add/store sequence that loses one update, and name two fixes.
+2. **(Easy)** Two threads each execute `++counter` $3\times10^5$ times on a plain `int`; one run printed 583,904. How many updates were lost and what percentage is that? Write an interleaving of a load/add/store sequence that loses one update, and name two fixes.
 3. **(Easy)** Rewrite using RAII so the mutex is released on every path:
    ```cpp
    m.lock();
@@ -160,10 +698,15 @@ Problems marked *Adapted* restate a standard exercise type from the cited source
    int main() { std::thread t([] { std::cout << "work\n"; }); }
    ```
 7. **(Medium)** `BoundedQueue::size()` is `const` but locks a mutex; why must the mutex be `mutable`? A caller writes `if (q.size() < cap) q.push(x);`. Explain the check-then-act race and the correct call.
-8. **(Hard)** *(Adapted from: cppreference, std::condition_variable example)* A sensor bursts 50 items in 50 ms; the consumer processes 200 items/s. Compute the backlog at the end of the burst, the time to drain it, and the minimum capacity so the producer never blocks. What is the latency of the last item of the burst?
+8. **(Hard)** *(Adapted from: cppreference, std::condition_variable example)* A sensor bursts 90 items in 30 ms; the consumer processes 500 items/s. Compute the backlog at the end of the burst, the time to drain it, and the minimum capacity so the producer never blocks. What is the latency of the last item of the burst?
 9. **(Hard)** *(Adapted from: cppreference, std::memory_order)* Explain why the release/acquire flag pattern in the theory section is correct and what goes wrong with `memory_order_relaxed` on both operations. When would you use a mutex instead?
 10. **(Hard)** Design. A control thread must always use the most recent sensor reading, ignoring older ones; a logger must see every reading. Specify (i) a `Latest<T>` mailbox, (ii) the queue for the logger, with their locking contracts, and what happens when the logger is slower than the sensor. Which is bounded, and what does "drop" mean for each?
 11. **(Mini-project)** Measure throughput (items per second) of your queue with 1 producer and 1 consumer for capacities 1, 8 and 1024 and $10^6$ items; explain the trend; add `pop_for(std::chrono::milliseconds)` using `wait_for`; run everything under ThreadSanitizer.
+
+12. **(Challenge)** Store buffering. Thread 1: `x.store(1); r1 = y.load();` thread 2: `y.store(1); r2 = x.load();` with `x = y = 0`. (a) List all interleavings that preserve program order (there are $\binom42=6$) and the resulting $(r1,r2)$; how many give $r1=r2=1$? (b) Prove that $(0,0)$ cannot occur when all four operations are `seq_cst`. (c) Explain why $(0,0)$ can occur with release stores and acquire loads, and give a minimal change that forbids it. (d) What would you conclude about a flag-based mutual-exclusion protocol written with release/acquire? (adapted from cppreference, *std::memory_order*, "Sequentially-consistent ordering" and "Release-Acquire ordering")
+13. **(Challenge)** Lock ordering. Five philosophers sit around a table with five forks (mutexes $f_0,\dots,f_4$); philosopher $i$ needs forks $i$ and $(i+1)\bmod5$. (a) Show an interleaving in which the naive rule "left fork then right fork" deadlocks. (b) Prove that the rule "always take the lower-numbered fork first" cannot deadlock, using the rank argument. Which philosopher's behavior changes? (c) Why does `std::scoped_lock lk(f[i], f[(i+1)%5])` also work, and what would go wrong for a table with one philosopher and one fork? (adapted from C++ Core Guidelines, CP.21 and CP.22)
+14. **(Challenge)** The relaxed cycle. Thread 1: `r1 = y.load(); x.store(r1);` thread 2: `r2 = x.load(); y.store(42);`, `x = y = 0`. (a) Prove that $r1=r2=42$ is impossible if all operations are `seq_cst`. (b) Prove it is also impossible if the loads are `acquire` and the stores are `release`, by finding a cycle in happens-before. (c) Why is it allowed when everything is `relaxed`? (d) Why is it irrelevant for the mutex-based queue of this lesson? (adapted from cppreference, *std::memory_order*, "Relaxed ordering")
+15. **(Challenge)** A liveness bug. A bounded queue of capacity 1 uses *one* condition variable `cv` for both conditions (not full / not empty) and calls `notify_one()` after every change. (a) Construct a schedule with two producers and two consumers that ends with all four threads blocked although the queue holds an item. (b) Give two different fixes and compare their costs. (c) Which of the CP.42 rules does the "check, then act" `if` version also violate? (adapted from C++ Core Guidelines, CP.42; the schedule is the standard missed-notification argument)
 
 ## Reference implementation
 
@@ -529,16 +1072,20 @@ Python has the same concepts under different names (`threading.Lock`, `queue.Que
 ## Exercise answers
 
 1. (a) no race (reads only). (b) race. (c) no race (atomic). (d) no race (distinct objects). (d) can still be slow because adjacent elements often share a 64-byte cache line (false sharing): the line bounces between cores.
-2. Lost: $2{,}000{,}000-1{,}988{,}346=11{,}654$, which is $0.58\%$. Interleaving: A loads 5; B loads 5; A adds and stores 6; B adds and stores 6; two increments, final 6. Fixes: `std::atomic<int>` with `fetch_add`, or a `std::mutex` with `lock_guard` around the increment, or one counter per thread summed at the end (no sharing).
+2. Lost: $600{,}000-583{,}904=16{,}096$, which is $2.68\%$. Interleaving: A loads 5; B loads 5; A adds and stores 6; B adds and stores 6; two increments, final 6. Fixes: `std::atomic<int>` with `fetch_add`, or a `std::mutex` with `lock_guard` around the increment, or one counter per thread summed at the end (no sharing).
 3. `{ std::lock_guard<std::mutex> lk(m); if (queue.empty()) return false; x = queue.front(); queue.pop(); return true; }`: the lock is released when `lk` goes out of scope on both returns (and on an exception thrown by `front`/`pop` or the copy).
 4. Bug 1: `if` instead of a loop or predicate: after a spurious wake-up, or if another consumer took the item, `q.front()` is called on an empty queue. Bug 2 (design): there is no way to stop waiting at shutdown. Fix: `cv.wait(lk, [&]{ return closed || !q.empty(); }); if (q.empty()) return std::nullopt;`.
 5. Thread 1 locks `a.m`, thread 2 locks `b.m`; then thread 1 waits for `b.m` held by thread 2, and thread 2 waits for `a.m`: a cycle, so both wait forever. Fix: `std::scoped_lock lk(from.m, to.m);` (acquires both without deadlock regardless of argument order); alternatively impose a global order, such as by address.
 6. The thread object is destroyed while joinable, so `std::terminate` is called: output `terminate called without an active exception` and exit code 134. Fixes: `t.join();` before returning, or use `std::jthread` (C++20), or a small RAII wrapper that joins in its destructor.
 7. `size()` is logically `const` (does not change the queue) but must lock the mutex, which changes the mutex's internal state; declaring the mutex `mutable` allows that. `if (q.size() < cap) q.push(x);` is a check-then-act race: another thread can fill the queue between the two calls, so `push` may block (or exceed an intended policy). Use `try_push(x)`, which does the test and the insertion in one critical section.
-8. Burst: the consumer removes $200\times0.05=10$ items during the 50 ms, so the backlog is $50-10=40$ items. Drain time $40/200=0.2$ s. Minimum capacity without blocking: 40 (plus the one being processed). The last item of the burst waits for the 40 items ahead of it to be processed: latency about $40/200=0.2$ s plus its own processing time $5$ ms.
+8. Burst: the consumer removes $500\times0.03=15$ items during the 30 ms, so the backlog is $90-15=75$ items. Drain time $75/500=0.15$ s. Minimum capacity without blocking: 75 (plus the one being processed). The last item of the burst is the 75th in the backlog, so it is finished after $75/500=0.15$ s, which is its latency (its own $2$ ms of processing is included).
 9. The release store happens after `data = 42`; the acquire load that reads `true` synchronizes with it, creating a happens-before edge from the write of `data` to the read, so reading `data` is race-free and sees 42. With relaxed operations there is no ordering between the flag and `data`: the compiler or CPU may reorder, and the read of `data` is a data race (undefined behavior). Use a mutex when more than one variable must be consistent or the logic is more complex than a flag.
 10. `Latest<T>`: contract: one mutex protects one `T` and a version counter; `set` overwrites, never blocks beyond the short lock; `get` returns a copy and the version; "drop" = the old value is discarded when replaced. The logger queue: bounded, FIFO, `push` blocks (back-pressure on the sensor thread, usually unacceptable) or `try_push` drops the newest item and increments a drop counter. If the logger is slower, the mailbox hides it (the controller is unaffected); the logger queue either blocks the producer or drops; real systems choose drop-with-counter for sensors and bigger capacity plus a dedicated logging thread.
 11. A good answer includes: capacity 1 forces a context switch per item, so throughput is lowest (hundreds of thousands to about a million items/s depending on the machine); capacities 8 and 1024 allow batching and the throughput increases then flattens; `pop_for` returns `std::optional<T>` and uses `not_empty_.wait_for(lk, timeout, predicate)` returning false on timeout; TSan reports no warnings.
+12. (a) Operations: $a$ = `x.store(1)`, $b$ = `r1=y.load()` (thread 1, $a$ before $b$), $c$ = `y.store(1)`, $d$ = `r2=x.load()` ($c$ before $d$). The six orders and results: $abcd\to(0,1)$; $acbd\to(1,1)$; $acdb\to(1,1)$; $cabd\to(1,1)$; $cadb\to(1,1)$; $cdab\to(1,0)$. So 4 of the 6 give $(1,1)$, one gives $(0,1)$, one $(1,0)$, and $(0,0)$ never appears (enumerated by script). (b) Suppose $r1=0$ and $r2=0$ with a single total order $T$ consistent with program order. $b$ reads 0, so $b$ precedes $c$ in $T$ (otherwise it would read 1). Likewise $d$ precedes $a$. Program order gives $a<b$ and $c<d$. Hence $a<b<c<d<a$, a cycle in a total order: contradiction. (c) With release/acquire there is no single total order across different atomic variables; the model lets thread 1's store to `x` still sit in a store buffer while its later load of `y` executes, and symmetrically for thread 2, so both loads see 0. Experiment (200,000 rounds, x86-64, `g++ -O2`): $(0,0)$ in 0 rounds for `seq_cst`, 630 for release/acquire and 564 for relaxed. Minimal change: make the stores and loads `seq_cst`, or put a `std::atomic_thread_fence(std::memory_order_seq_cst)` between the store and the load in each thread. (d) A protocol such as Dekker's, where each thread sets its flag and then reads the other's, is exactly this shape, so with release/acquire both threads can enter the critical section; it needs `seq_cst` (or use a mutex).
+13. (a) Philosopher $i$ locks $f_i$ and then $f_{(i+1)\bmod5}$. If all five execute their first lock before any second lock, philosopher $i$ holds $f_i$ and waits for $f_{i+1}$ held by $i+1$: a cycle of length 5. (b) Rank fork $j$ as $j$. Philosophers $0,\dots,3$ already lock the lower fork first ($i<i+1$). Philosopher 4 needs forks 4 and 0, and under the new rule locks $f_0$ first, then $f_4$ (the only behavior change). By the theorem every acquisition is in increasing rank, so no cycle exists. Concretely the cycle is broken because philosopher 4 cannot hold $f_4$ while waiting for $f_0$. (c) `scoped_lock` with several mutexes uses a deadlock-avoidance algorithm, so the argument does not depend on the order of arguments (CP.21). With one philosopher and one fork the two arguments are the same mutex `f[0]`, locked twice by one thread: undefined behavior for a non-recursive `std::mutex` (typically a self-deadlock), which no ordering can fix; guard `i != j` or use a single lock.
+14. (a) Let the total order be $T$. Program order gives $A<B$ (thread 1: load $y$ = $A$, store $x$ = $B$) and $C<D$ (thread 2: load $x$ = $C$, store $y=42$ = $D$). $r1=42$ means $A$ read $D$'s value, so $D<A$ in $T$ (the only store of 42 to $y$; the initial value is 0). $r2=42$ means $C$ read $B$'s value, so $B<C$. Then $D<A<B<C<D$, a cycle, impossible. (b) Now $A$ is an acquire load that reads the value written by release store $D$, so $D$ synchronizes-with $A$ and $D$ happens-before $A$. Likewise $B$ (release) happens-before $C$. With $A$ sequenced-before $B$ and $C$ sequenced-before $D$: $D\to A\to B\to C\to D$ in happens-before, a cycle, but happens-before must be irreflexive (acyclic), so the outcome is forbidden. (c) With relaxed operations there are no synchronizes-with edges, so only per-variable modification order applies; the model permits $D$ before $A$ in `y`'s order and $B$ before $C$ in `x`'s order with no contradiction (cppreference states this explicitly). (d) The queue uses a mutex, whose unlock/lock pairs form synchronizes-with edges for all data, so all accesses are totally ordered by the lock and no relaxed-cycle reasoning arises.
+15. (a) Capacity 1, one cv, `notify_one` after each change. Start: queue holds $x$; producers $P_1,P_2$ are blocked in `push` (predicate `size<1` false) on `cv`. $C_1$ pops $x$ (queue empty) and calls `notify_one`, which picks $P_1$. Before $P_1$ reacquires the lock, $C_2$ calls `pop`, sees an empty queue and waits on `cv`: waiters are $\{P_2,C_2\}$. $P_1$ wakes, pushes $y$ (queue full) and calls `notify_one`; the implementation may choose $P_2$ (waiters are indistinguishable). $P_2$ wakes, finds the queue full, and waits again. Now $C_2$ waits although the queue holds $y$, $P_2$ waits, $P_1$ and $C_1$ have no more work: nobody calls `notify`, all four threads are blocked or idle forever. (b) Fix 1: `notify_all` on the single cv; correct but wakes every waiter (thundering herd, $O(\text{waiters})$ context switches per operation). Fix 2: two condition variables, `not_full` and `not_empty`, with `notify_one` on the one the changed state satisfies; each notification is useful and only the right kind of waiter wakes (this is the design of the lesson's queue). (c) The `if (q.empty()) cv.wait(lk);` form waits without re-checking the condition in a loop, which CP.42 says to avoid (use the predicate overload): with spurious wake-ups or a competing consumer, the code pops from an empty queue. 
 
 ## Further reading
 

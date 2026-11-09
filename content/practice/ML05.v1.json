@@ -178,6 +178,81 @@
         "Give a reference result, boundary tests, and a mutation that your tests reject.",
         "Record source version and exact commands; import a supported report separately."
       ]
+    },
+    {
+      "id": "hard-vector-1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "neuron-gradients"
+      ],
+      "skillLabel": "Backpropagate through a vector layer",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/ML05#theory-and-derivation"
+        }
+      ],
+      "prompt": "Sigmoid hidden layer with z = (1, -2), hidden activations a = (0.73106, 0.11920), linear output y_hat = W2 a + b2 with W2 = (-1.5, 2), and loss L = 1/2 (y_hat - y)^2 with residual y_hat - y = 0.8. What is dL/dz for the SECOND hidden unit? Give a number with 3 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.168",
+      "tolerance": 0.002,
+      "explanation": "dL/da2 = W2[2] * residual = 2 * 0.8 = 1.6. The sigmoid slope is a2 (1 - a2) = 0.11920 * 0.88080 = 0.10499. So dL/dz2 = 1.6 * 0.10499 = 0.1680, about 0.168."
+    },
+    {
+      "id": "hard-loss-1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "neuron-gradients",
+        "saturation"
+      ],
+      "skillLabel": "Loss and activation pairing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/ML05#theory-and-derivation"
+        }
+      ],
+      "prompt": "A sigmoid output unit has pre-activation z = -4 and the target is y = 1. Compared with squared error, the cross-entropy gradient dL/dz is about:",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The same, because both losses have the same minimum",
+        "57 times larger, because cross-entropy cancels the factor a(1-a) = 0.0177",
+        "4 times larger, because |z| = 4 enters once",
+        "57 times smaller, because cross-entropy is a logarithm"
+      ],
+      "answer": "1",
+      "explanation": "Squared error: dL/dz = (a - y) a (1 - a) = (-0.98201)(0.017663) = -0.01735. Cross-entropy: dL/dz = a - y = -0.98201 because 1/(a(1-a)) from dL/da cancels the sigmoid slope. The ratio is 1/(a(1-a)) = 56.6, about 57. Same minimum does not mean same gradient."
+    },
+    {
+      "id": "hard-checkpoint-1",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "reverse-mode-cost"
+      ],
+      "skillLabel": "Memory versus recomputation in reverse mode",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/ML05#theory-and-derivation"
+        }
+      ],
+      "prompt": "A 400-layer chain does not fit in GPU memory when every activation is stored for backpropagation. Design a checkpointing scheme: choose the number of segments, give the memory and the extra time compared with standard backpropagation (forward 1 unit, backward 2 units), and name a case where it does not help.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Stores only segment boundaries and recomputes the forward pass inside each segment during the backward sweep.",
+        "Minimises n/k + k at k = sqrt(n) = 20, giving about 40 stored tensors instead of 400, for one extra forward pass (4 units instead of 3, about 33% more time).",
+        "Names a limit: memory is not the bottleneck, recomputation is stochastic (dropout) without a saved seed, or the graph is not a simple chain."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

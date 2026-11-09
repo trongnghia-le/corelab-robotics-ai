@@ -24,7 +24,9 @@
       "prompt": "A sensor computes y=f(g(t)). To find sensitivity to t, what must be propagated?",
       "options": [
         "Only f′(t); the inner conversion is irrelevant.",
-        "The local derivative of f at g(t), multiplied by g′(t)."
+        "The local derivative of f at g(t), multiplied by g′(t).",
+        "Only g′(t); f is a fixed scale factor and contributes nothing to the sensitivity.",
+        "The sum f′(g(t)) + g′(t), because the two sensitivities add."
       ],
       "answer": "1",
       "dimension": "C",
@@ -56,7 +58,9 @@
       "prompt": "For y=sin(2x), which reasoning identifies the missing factor in a derivative written as cos(2x)?",
       "options": [
         "The inner quantity 2x changes at rate 2, so multiply by 2.",
-        "No factor is missing because the sine already contains 2x."
+        "No factor is missing because the sine already contains 2x.",
+        "The derivative is cos(2x)+2, because the inner derivative is added to the outer one.",
+        "The derivative is cos(2x)/2, because the argument was doubled and the rate must be divided."
       ],
       "answer": "0",
       "dimension": "C",
@@ -174,6 +178,111 @@
         "Give a reference result, boundary tests, and a mutation that your tests reject.",
         "Record source version and exact commands; import a supported report separately."
       ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "step-size-scale"
+      ],
+      "skillLabel": "Choosing a finite-difference step from the function's scale",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M05#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "A sensor response is f(x)=exp(−x²/(2σ²)) with σ=0.05. Using the leading truncation term (h²/6)·f‴, find the largest h for which the central difference at x=2σ has relative error below 10⁻⁴. Give h in units of 10⁻⁴ (for example, 2.5 means h=2.5×10⁻⁴).",
+      "answer": "12.25",
+      "tolerance": 0.2,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "With t=x/σ, f=e^(−t²/2), so f′=−(t/σ)f and f‴=((3t−t³)/σ³)f. At t=2: f′=−2f/σ and f‴=−2f/σ³, so |f‴|/|f′|=1/σ². The relative error is (h²/6)·|f‴|/|f′| = h²/(6σ²). Setting this ≤ 10⁻⁴ gives h² ≤ 6σ²·10⁻⁴, h ≤ σ·√(6×10⁻⁴) = 0.02449σ = 1.2247×10⁻³ for σ=0.05, i.e. 12.25 in units of 10⁻⁴. The step must be a small fraction (about 2.4 %) of the feature size σ, and the fraction depends on where on the bump you are (1.7 % at x=σ, 2.4 % at x=2σ)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "chain-composition-bound"
+      ],
+      "skillLabel": "Chain rule through repeated saturating units",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M05#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "Let σ(z)=1/(1+e⁻ᶻ) and s₃(x)=σ(σ(σ(x))). Compute s₃′(1). Give the value multiplied by 100 (so 1.5 means s₃′(1)=0.015).",
+      "answer": "0.9642",
+      "tolerance": 0.005,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "By the chain rule s₃′(1)=σ′(z₀)σ′(z₁)σ′(z₂) with z₀=1, z₁=σ(1)=0.731059, z₂=σ(0.731059)=0.675038. With σ′=σ(1−σ): σ′(1)=0.731059×0.268941=0.196612, σ′(0.731059)=0.675038×0.324962=0.219362, σ′(0.675038)=0.662630×0.337370=0.223551. The product is 0.196612×0.219362×0.223551≈0.0096416, i.e. 0.9642 after multiplying by 100. It is far below the bound 4⁻³=0.015625 because no argument sits at the peak of σ′ (z=0)."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "step-size-optimum"
+      ],
+      "skillLabel": "Truncation versus rounding in finite differences",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M05#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "For a smooth f in double precision (machine epsilon ε), which statement about the best achievable accuracy of the central difference [f(x+h)−f(x−h)]/(2h) is correct?",
+      "options": [
+        "The best error is about ε^(1/2), reached at h about ε^(1/2), because the central and forward quotients share the same leading truncation term.",
+        "Any h below 10⁻⁸ is equally good: truncation error vanishes and rounding error does not depend on h.",
+        "The best error is about ε^(2/3), reached at h about ε^(1/3), where the truncation term h² and the rounding term 1/h balance.",
+        "The best error is about ε, reached at h about ε, because the central quotient cancels all truncation error for smooth f."
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Truncation error is about (M₃/6)h² and rounding error about δ/h with δ≈ε|f|. Minimising the sum gives h* = (3δ/M₃)^(1/3) ∝ ε^(1/3) and a minimum error (3/2)(M₃/3)^(1/3)δ^(2/3) ∝ ε^(2/3) ≈ 4×10⁻¹¹ for order-one derivatives. The forward quotient has truncation ∝ h and so reaches only ε^(1/2); central differences do not remove truncation error entirely (only the h² and lower terms, for quadratics), and rounding error grows as h shrinks, so smaller h is not better."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dual-numbers"
+      ],
+      "skillLabel": "Forward-mode automatic differentiation with dual numbers",
+      "relatedPrerequisites": [
+        "M01"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the from-scratch implementation",
+          "href": "/lessons/M05#reference-implementation"
+        }
+      ],
+      "id": "c4",
+      "kind": "number",
+      "prompt": "Evaluate f(x)=e^(2x)/(1+x) at the dual number x=0.5+ε, where ε²=0 and f(v+v̇ε)=f(v)+f′(v)v̇ε. What is the coefficient of ε in the result, to three decimals?",
+      "answer": "2.4163",
+      "tolerance": 0.002,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "exp(2(0.5+ε)) = exp(1+2ε) = e(1+2ε) = e + 2eε, and 1+x = 1.5+ε. The quotient (a+bε)/(c+dε) has ε-part (bc−ad)/c², here (2e·1.5 − e·1)/1.5² = 2e/2.25 = 2.4163 (the value part is e/1.5 = 1.8122). Check by the quotient rule: f′(x)=e^(2x)(2(1+x)−1)/(1+x)², which at x=0.5 is e·2/2.25=2.4163."
     }
   ]
 }

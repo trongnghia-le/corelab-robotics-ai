@@ -567,8 +567,16 @@ describe("authored variant answer checks", () => {
       ["M05", "chain-values-2", 2 * (4 * 0 + 2) * 4],
       ["PY01", "mean-values-1", (-2 + 4 + 10) / 3],
       ["PY01", "mean-values-2", (1 + 2 + 6) / 3],
-      ["R04", "fk-values-1", 2 * Math.cos(0) + Math.cos(Math.PI / 2)],
-      ["R04", "fk-values-2", 2 * Math.sin(Math.PI / 2) + Math.sin(Math.PI / 2)],
+      [
+        "R04",
+        "fk-values-1",
+        1.5 * Math.cos(Math.PI / 2) + 0.5 * Math.cos(Math.PI),
+      ],
+      [
+        "R04",
+        "fk-values-2",
+        1.5 * Math.sin(Math.PI / 6) + 0.5 * Math.sin(Math.PI / 6 + Math.PI / 3),
+      ],
       ["ML05", "neuron-values-1", (2 * 3 + 0 - 4) * 3],
       ["ML05", "neuron-values-2", 1 * 2 + 1 - 5],
       ["V01", "pixel-count-1", 3 * 5],

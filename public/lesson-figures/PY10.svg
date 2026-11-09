@@ -1,34 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="360" fill="#111827" rx="12"/>
-<text x="20" y="30" font-size="16" fill="#e5e7eb" font-weight="bold">Iterator protocol</text>
-<rect x="20" y="50" width="150" height="56" rx="8" fill="none" stroke="#38bdf8" stroke-width="2"/>
-<text x="95" y="74" font-size="14" fill="#e5e7eb" text-anchor="middle">iterable</text>
-<text x="95" y="94" font-size="13" fill="#38bdf8" text-anchor="middle">__iter__()</text>
-<rect x="215" y="50" width="150" height="56" rx="8" fill="none" stroke="#f97316" stroke-width="2"/>
-<text x="290" y="74" font-size="14" fill="#e5e7eb" text-anchor="middle">iterator</text>
-<text x="290" y="94" font-size="13" fill="#f97316" text-anchor="middle">__next__()</text>
-<path d="M170 78 H213" stroke="#e5e7eb" stroke-width="2"/><path d="M205 72 L213 78 L205 84" fill="none" stroke="#e5e7eb" stroke-width="2"/>
-<text x="192" y="44" font-size="13" fill="#e5e7eb" text-anchor="middle">iter()</text>
-<rect x="20" y="140" width="345" height="40" rx="6" fill="#1f2937"/>
-<text x="30" y="165" font-size="14" fill="#e5e7eb">next -&gt; 1   next -&gt; 2   next -&gt; 3</text>
-<text x="30" y="215" font-size="14" fill="#a3e635">StopIteration: exhausted</text>
-<text x="30" y="240" font-size="13" fill="#e5e7eb">list(it) again gives [] (one-shot)</text>
-<text x="30" y="275" font-size="13" fill="#e5e7eb">generator frame alive until exhausted,</text>
-<text x="30" y="295" font-size="13" fill="#e5e7eb">close() or garbage collection</text>
-<line x1="395" y1="20" x2="395" y2="340" stroke="#374151" stroke-width="2"/>
-<text x="420" y="30" font-size="16" fill="#e5e7eb" font-weight="bold">Lookup of obj.name</text>
-<rect x="420" y="50" width="320" height="50" rx="8" fill="none" stroke="#f97316" stroke-width="2"/>
-<text x="580" y="72" font-size="14" fill="#e5e7eb" text-anchor="middle">1. data descriptor on type</text>
-<text x="580" y="90" font-size="13" fill="#f97316" text-anchor="middle">has __set__ / __delete__</text>
-<rect x="420" y="130" width="320" height="50" rx="8" fill="none" stroke="#38bdf8" stroke-width="2"/>
-<text x="580" y="152" font-size="14" fill="#e5e7eb" text-anchor="middle">2. obj.__dict__["name"]</text>
-<text x="580" y="170" font-size="13" fill="#38bdf8" text-anchor="middle">instance attribute</text>
-<rect x="420" y="210" width="320" height="50" rx="8" fill="none" stroke="#a3e635" stroke-width="2"/>
-<text x="580" y="232" font-size="14" fill="#e5e7eb" text-anchor="middle">3. non-data descriptor / class attr</text>
-<text x="580" y="250" font-size="13" fill="#a3e635" text-anchor="middle">functions become bound methods</text>
-<text x="580" y="295" font-size="14" fill="#e5e7eb" text-anchor="middle">4. AttributeError</text>
-<path d="M580 100 V128 M580 180 V208 M580 260 V278" stroke="#e5e7eb" stroke-width="2"/>
-<text x="600" y="120" font-size="13" fill="#e5e7eb">not found</text>
-<text x="600" y="200" font-size="13" fill="#e5e7eb">not found</text>
-<text x="600" y="274" font-size="13" fill="#e5e7eb">not found</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="Inter, sans-serif">
+<title>Iterator exhaustion and attribute lookup order</title>
+<desc>Left: a list of four waypoints, an iterator after two next calls with two items left, and the exhausted iterator after list. Right: four steps in order, data descriptor, instance dictionary, non-data descriptor or class variable, and the __getattr__ fallback.</desc>
+<rect width="900" height="500" rx="14" fill="#17181b"/>
+
+<text x="32" y="44" font-size="22" font-weight="bold" fill="#e9e7e3">Two things Python does lazily: iterate and look up</text>
+<rect x="32" y="72" width="408" height="404" rx="10" fill="#22252a"/>
+<rect x="464" y="72" width="404" height="404" rx="10" fill="#22252a"/>
+<text x="52" y="102" font-size="17" font-weight="bold" fill="#e9e7e3">Iterable and iterator</text>
+<text x="484" y="102" font-size="17" font-weight="bold" fill="#e9e7e3">Resolving obj.name</text>
+<text x="52" y="140" font-size="15" fill="#e9e7e3">waypoints = [A, B, C, D]  (iterable)</text>
+<rect x="52" y="154" width="64" height="44" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="1.5"/>
+<text x="84" y="182" font-size="17" font-weight="bold" text-anchor="middle" fill="#e9e7e3">A</text>
+<rect x="128" y="154" width="64" height="44" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="1.5"/>
+<text x="160" y="182" font-size="17" font-weight="bold" text-anchor="middle" fill="#e9e7e3">B</text>
+<rect x="204" y="154" width="64" height="44" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="1.5"/>
+<text x="236" y="182" font-size="17" font-weight="bold" text-anchor="middle" fill="#e9e7e3">C</text>
+<rect x="280" y="154" width="64" height="44" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="1.5"/>
+<text x="312" y="182" font-size="17" font-weight="bold" text-anchor="middle" fill="#e9e7e3">D</text>
+<text x="52" y="240" font-size="15" fill="#e9e7e3">it = iter(waypoints); next(it) twice</text>
+<rect x="52" y="254" width="64" height="44" rx="8" fill="#2c3036" stroke="#3d4148" stroke-width="1.5"/>
+<text x="84" y="282" font-size="17" font-weight="bold" text-anchor="middle" fill="#6f757d">A</text>
+<rect x="128" y="254" width="64" height="44" rx="8" fill="#2c3036" stroke="#3d4148" stroke-width="1.5"/>
+<text x="160" y="282" font-size="17" font-weight="bold" text-anchor="middle" fill="#6f757d">B</text>
+<rect x="204" y="254" width="64" height="44" rx="8" fill="#22252a" stroke="#6cc6ba" stroke-width="1.5"/>
+<text x="236" y="282" font-size="17" font-weight="bold" text-anchor="middle" fill="#6cc6ba">C</text>
+<rect x="280" y="254" width="64" height="44" rx="8" fill="#22252a" stroke="#6cc6ba" stroke-width="1.5"/>
+<text x="312" y="282" font-size="17" font-weight="bold" text-anchor="middle" fill="#6cc6ba">D</text>
+<text x="52" y="322" font-size="14" fill="#a7adb5">consumed A B</text>
+<text x="204" y="322" font-size="14" fill="#6cc6ba">left C D</text>
+<text x="52" y="350" font-size="15" fill="#e9e7e3">list(it) gives [C, D]; the next list(it) gives []</text>
+<rect x="52" y="364" width="64" height="44" rx="8" fill="#2c3036" stroke="#3d4148" stroke-width="1.5"/>
+<text x="84" y="392" font-size="17" font-weight="bold" text-anchor="middle" fill="#6f757d">A</text>
+<rect x="128" y="364" width="64" height="44" rx="8" fill="#2c3036" stroke="#3d4148" stroke-width="1.5"/>
+<text x="160" y="392" font-size="17" font-weight="bold" text-anchor="middle" fill="#6f757d">B</text>
+<rect x="204" y="364" width="64" height="44" rx="8" fill="#2c3036" stroke="#3d4148" stroke-width="1.5"/>
+<text x="236" y="392" font-size="17" font-weight="bold" text-anchor="middle" fill="#6f757d">C</text>
+<rect x="280" y="364" width="64" height="44" rx="8" fill="#2c3036" stroke="#3d4148" stroke-width="1.5"/>
+<text x="312" y="392" font-size="17" font-weight="bold" text-anchor="middle" fill="#6f757d">D</text>
+<text x="52" y="436" font-size="15" font-weight="600" fill="#e58a80">StopIteration: empty for ever</text>
+<rect x="484" y="122" width="364" height="68" rx="8" fill="#22252a" stroke="#ae9ce6" stroke-width="2"/>
+<text x="500" y="150" font-size="15" font-weight="600" fill="#e9e7e3">1  data descriptor on type(obj)</text>
+<text x="500" y="174" font-size="14" fill="#a7adb5">__get__ runs, wins over __dict__</text>
+<line x1="666" y1="190" x2="666.0" y2="195.0" stroke="#a7adb5" stroke-width="2"/>
+<polygon points="666.0,206.0 660.5,195.0 671.5,195.0" fill="#a7adb5"/>
+<rect x="484" y="206" width="364" height="68" rx="8" fill="#22252a" stroke="#6cc6ba" stroke-width="2"/>
+<text x="500" y="234" font-size="15" font-weight="600" fill="#e9e7e3">2  obj.__dict__[name]</text>
+<text x="500" y="258" font-size="14" fill="#a7adb5">instance value</text>
+<line x1="666" y1="274" x2="666.0" y2="279.0" stroke="#a7adb5" stroke-width="2"/>
+<polygon points="666.0,290.0 660.5,279.0 671.5,279.0" fill="#a7adb5"/>
+<rect x="484" y="290" width="364" height="68" rx="8" fill="#22252a" stroke="#e0c169" stroke-width="2"/>
+<text x="500" y="318" font-size="15" font-weight="600" fill="#e9e7e3">3  non-data descriptor or class variable</text>
+<text x="500" y="342" font-size="14" fill="#a7adb5">function becomes a bound method</text>
+<line x1="666" y1="358" x2="666.0" y2="363.0" stroke="#a7adb5" stroke-width="2"/>
+<polygon points="666.0,374.0 660.5,363.0 671.5,363.0" fill="#a7adb5"/>
+<rect x="484" y="374" width="364" height="68" rx="8" fill="#22252a" stroke="#e08db5" stroke-width="2"/>
+<text x="500" y="402" font-size="15" font-weight="600" fill="#e9e7e3">4  __getattr__(name)</text>
+<text x="500" y="426" font-size="14" fill="#a7adb5">called only if 1-3 raised AttributeError</text>
 </svg>

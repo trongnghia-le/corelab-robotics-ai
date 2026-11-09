@@ -41,6 +41,29 @@
     "Đưa ra một kết quả tham chiếu, các kiểm thử biên và một đột biến (mutation) mà các kiểm thử của bạn bác bỏ.",
     "Ghi lại phiên bản nguồn và các lệnh chính xác; nhập báo cáo được hỗ trợ một cách riêng."
    ]
+  },
+  "hard-vector-1": {
+   "prompt": "Lớp ẩn sigmoid với z = (1, -2), activation ẩn a = (0.73106, 0.11920), đầu ra tuyến tính y_hat = W2 a + b2 với W2 = (-1.5, 2), và mất mát L = 1/2 (y_hat - y)^2 với phần dư y_hat - y = 0.8. dL/dz của nơ-ron ẩn THỨ HAI là bao nhiêu? Cho một số với 3 chữ số thập phân.",
+   "explanation": "dL/da2 = W2[2] * phần dư = 2 * 0.8 = 1.6. Độ dốc sigmoid là a2 (1 - a2) = 0.11920 * 0.88080 = 0.10499. Vậy dL/dz2 = 1.6 * 0.10499 = 0.1680, khoảng 0.168."
+  },
+  "hard-loss-1": {
+   "prompt": "Một nơ-ron đầu ra sigmoid có pre-activation z = -4 và nhãn y = 1. So với sai số bình phương, gradient dL/dz của cross-entropy xấp xỉ:",
+   "options": [
+    "Bằng nhau, vì hai hàm mất mát có cùng cực tiểu",
+    "Lớn hơn 57 lần, vì cross-entropy khử thừa số a(1-a) = 0.0177",
+    "Lớn hơn 4 lần, vì |z| = 4 xuất hiện một lần",
+    "Nhỏ hơn 57 lần, vì cross-entropy là logarit"
+   ],
+   "explanation": "Sai số bình phương: dL/dz = (a - y) a (1 - a) = (-0.98201)(0.017663) = -0.01735. Cross-entropy: dL/dz = a - y = -0.98201 vì 1/(a(1-a)) từ dL/da khử độ dốc sigmoid. Tỉ số là 1/(a(1-a)) = 56.6, khoảng 57. Cùng cực tiểu không có nghĩa cùng gradient."
+  },
+  "hard-checkpoint-1": {
+   "prompt": "Một chuỗi 400 lớp không vừa bộ nhớ GPU khi lưu mọi activation cho backpropagation. Hãy thiết kế sơ đồ checkpointing: chọn số đoạn, cho bộ nhớ và thời gian thêm so với backpropagation chuẩn (xuôi 1 đơn vị, ngược 2 đơn vị), và nêu một trường hợp nó không giúp ích.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chỉ lưu các ranh giới đoạn và tính lại lượt xuôi bên trong mỗi đoạn trong lượt quét ngược.",
+    "Cực tiểu n/k + k tại k = sqrt(n) = 20, cho khoảng 40 tensor được lưu thay vì 400, với thêm một lượt xuôi (4 đơn vị thay vì 3, nhiều hơn khoảng 33% thời gian).",
+    "Nêu một giới hạn: bộ nhớ không phải nút thắt, tính lại ngẫu nhiên (dropout) mà không lưu seed, hoặc đồ thị không phải chuỗi đơn giản."
+   ]
   }
  }
 }

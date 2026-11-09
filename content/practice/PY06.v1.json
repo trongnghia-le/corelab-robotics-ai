@@ -53,12 +53,12 @@
       ],
       "id": "b2",
       "kind": "number",
-      "prompt": "w=2 (requires_grad), L=3*w**2. After 2 backward() calls without zeroing, w.grad equals?",
-      "answer": "24",
+      "prompt": "w=2 (requires_grad), L=3*w**2. After 3 backward() calls without zeroing, w.grad equals?",
+      "answer": "36",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.01,
-      "explanation": "Each backward gives 6w=12.",
+      "explanation": "Each backward adds 6w=12, so 3 calls give 36.",
       "equivalentTo": [
         "q2"
       ]
@@ -141,12 +141,12 @@
       ],
       "id": "b5",
       "kind": "number",
-      "prompt": "w=2,x=3, z=(w*x).detach()*w. What is dz/dw as autograd computes it?",
-      "answer": "6",
+      "prompt": "w=4,x=2.5, z=(w*x).detach()*w. What is dz/dw as autograd computes it?",
+      "answer": "10",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.01,
-      "explanation": "The detached factor is a constant 6.",
+      "explanation": "The detached factor is the constant w*x = 10, so dz/dw = 10.",
       "equivalentTo": [
         "q4"
       ]
@@ -201,12 +201,12 @@
       ],
       "id": "b7",
       "kind": "number",
-      "prompt": "Fitting y=ax+b with MSE on x in [-1,1] gives Hessian eigenvalues 0.74 and 2.0. Largest stable lr?",
-      "answer": "1.0",
+      "prompt": "A least-squares fit of y=ax+b has Hessian eigenvalues 1.6 and 5.0. Largest stable learning rate (the limit)?",
+      "answer": "0.4",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.01,
-      "explanation": "2/2.0.",
+      "explanation": "2/lambda_max = 2/5.0 = 0.4.",
       "equivalentTo": [
         "q6"
       ]
@@ -365,6 +365,89 @@
         "Notes finite differences are independent but limited by precision.",
         "Concludes agreement of independent oracles gives confidence."
       ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lr-stability"
+      ],
+      "skillLabel": "Step size and conditioning",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "Gradient descent with one fixed step size minimizes f(θ)=½(θ1²+100θ2²) from θ0=(1,1). Using the best constant step size, how many iterations k are needed to guarantee ‖θk‖ ≤ 1e-6·‖θ0‖? Give an integer.",
+      "answer": "691",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 3,
+      "explanation": "The Hessian is diag(1,100), so λmin=1, λmax=100 and κ=100. Each error component evolves as (1-ηλi)^k. The best constant step balances 1-ηλmin = ηλmax-1, giving η*=2/(λmin+λmax)=2/101 and contraction ρ*=(κ-1)/(κ+1)=99/101=0.980198. Both components then shrink exactly as ρ*^k in magnitude, so ‖θk‖/‖θ0‖=ρ*^k. Requiring ρ*^k ≤ 1e-6 gives k ≥ ln(1e-6)/ln(99/101) = 690.75, so k = 691 (running the iteration also gives 691)."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "lr-stability"
+      ],
+      "skillLabel": "Newton's method far from the minimum",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "choice",
+      "prompt": "Newton's method x ← x - f'(x)/f''(x) is applied to f(x)=ln(e^x+e^(-2x-3)), whose minimizer is x*=-0.769, starting at x0=1. What happens?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It converges to -0.769 in about four iterations, as Newton's method is quadratically convergent.",
+        "Step one overshoots to about -43.7, then iterates blow up: f'' is nearly 0 where f' is not.",
+        "It stays near 1 because f'(1) is close to zero there.",
+        "It oscillates between x=1 and x=-1 forever."
+      ],
+      "answer": "1",
+      "explanation": "Write p=σ(3x+3). Then f'=3p-2 and f''=9p(1-p). At x=1, p≈0.9975, so f'≈0.993 while f''≈0.022. The Newton step -f'/f'' ≈ -44.8 sends the iterate to about -43.7. There p≈0, so f'≈-2 while f''=9p(1-p)≈0, and the next step is astronomically large (about 1e55 after two steps). Quadratic convergence is only a local property near x*; the quadratic model is useless where the curvature is nearly zero. From x0=-1 Newton does converge (-0.778, -0.76899, -0.76895)."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "autograd-gradient"
+      ],
+      "skillLabel": "Curvature of softmax cross-entropy",
+      "relatedPrerequisites": [
+        "PY04",
+        "ML04"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY06#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "number",
+      "prompt": "For logits z=(2,1,0), the Hessian of the softmax cross-entropy loss with respect to z is diag(p)-ppᵀ. What is its largest eigenvalue? Give 3 decimals.",
+      "answer": "0.371",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "p = softmax(2,1,0) = (0.66524, 0.24473, 0.09003). H = diag(p)-ppᵀ = [[0.2227,-0.1628,-0.0599],[-0.1628,0.1848,-0.0220],[-0.0599,-0.0220,0.0819]]. H annihilates the all-ones vector (shift invariance), so one eigenvalue is 0. The trace is 0.4894, which equals the sum of the other two eigenvalues, 0.1186 and 0.3709. The largest is 0.3709 (computed numerically; also confirmed by autograd's Hessian)."
     }
   ]
 }

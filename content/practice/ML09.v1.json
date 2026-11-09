@@ -331,6 +331,77 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A softmax over four scores (8, 0, 0, 0) gives weights a. What is the derivative da_1/ds_1 = a_1(1 - a_1) at these scores? (decimal, tolerance 0.0001)",
+      "kind": "number",
+      "answer": "0.001004",
+      "tolerance": 0.0001,
+      "explanation": "da_1/ds_1 = a_1(1-a_1). With scores (8,0,0,0): a_1 = e^8/(e^8+3) = 2980.958/2983.958 = 0.998995, so a_1(1-a_1) = 0.998995*0.001005 = 0.001004. With scores (1,0,0,0) the same quantity is 0.2494, about 248 times larger: saturation is why unscaled large-d_k heads train slowly.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-scaling"
+      ],
+      "skillLabel": "Scaled dot-product attention",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "In 2D rotary position embedding the query at position m is rotated by m*theta and the key at position n by n*theta before the dot product. On what does the score depend, for fixed query and key content?",
+      "kind": "choice",
+      "options": [
+        "the sum m + n, because the two rotation angles add",
+        "m and n separately: shifting both positions by 5 changes the score",
+        "only the difference n - m: shifting both positions by 5 changes nothing",
+        "m alone, because only the query carries position"
+      ],
+      "answer": "2",
+      "explanation": "(R(m*theta)q)^T (R(n*theta)k) = q^T R(-m*theta) R(n*theta) k = q^T R((n-m)*theta) k, because rotations are orthogonal (transpose = inverse) and compose by adding angles. The score therefore depends on the positions only through n - m. Additive sinusoidal encodings do not give this exactly, because W_Q W_K^T sits between the content and position terms.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "positional-information"
+      ],
+      "skillLabel": "Positional information",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "For a base transformer layer with d_model=512 and d_ff=2048, the multiply-adds per token that do not depend on sequence length are 4*d_model^2 + 2*d_model*d_ff, and the attention scores add 2*n*d_model per token. At what sequence length n do the two become equal? (integer, tolerance 1)",
+      "kind": "number",
+      "answer": "3072",
+      "tolerance": 1,
+      "explanation": "Linear part: 4*512^2 + 2*512*2048 = 1,048,576 + 2,097,152 = 3,145,728. Attention part: 2*n*512 = 1024 n. Setting 1024 n = 3,145,728 gives n = 3072 (equivalently n* = 2*d_model + d_ff). Below this length projections and the FFN dominate; above it the quadratic attention term does.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "attention-cost"
+      ],
+      "skillLabel": "Attention cost",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML09#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

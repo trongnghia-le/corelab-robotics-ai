@@ -87,6 +87,24 @@
     "Kết quả kiểm thử phải tất định và tiếp tục thất bại với mọi commit sau đó"
    ],
    "explanation": "Bisect giả định tính đơn điệu: một khi một commit xấu thì mọi commit sau đều xấu, và kết quả kiểm thử là tất định."
+  },
+  "c1": {
+   "prompt": "Xét max3(a, b, c): `m = a`, rồi `if b > m: m = b`, rồi `if c > m: m = c`, rồi `return m`. Đột biến đơn nào tạo ra một mutant mà KHÔNG test nào diệt được (mutant tương đương)?",
+   "options": [
+    "Đổi dòng đầu `m = a` thành `m = b`",
+    "Đổi `if b > m` thành `if b >= m`",
+    "Đổi `if c > m` thành `if c > a`",
+    "Đổi `if c > m` thành `if c < m`"
+   ],
+   "explanation": "Với `b >= m`, phép gán `m = b` cũng chạy khi b == m, nhưng lúc đó m đã bằng b nên không có gì đổi: hai chương trình trả cùng một giá trị trên mọi đầu vào và không test nào diệt được mutant. Ba mutant còn lại diệt được: bắt đầu từ `m = b` làm mất a, nên max3(9, 1, 2) trả 2 thay vì 9; `c > a` trả 3 với max3(1, 5, 3) thay vì 5; `c < m` trả 0 với max3(2, 1, 0) thay vì 2."
+  },
+  "c2": {
+   "prompt": "Một bài kiểm thử kiểm tra tổng float64 cộng từ trái sang phải của n = 2001 số mà tổng các giá trị tuyệt đối là 3000. Dùng cận bậc nhất (n-1)*u*sum|x_j| với u = 2^-53, dung sai tuyệt đối mà cận cho phép là bao nhiêu? Cho giá trị theo đơn vị 1e-10 (ví dụ đáp án 6.5 nghĩa là 6.5e-10).",
+   "explanation": "(n-1) = 2000 nên cận là 2000 * 1.1102e-16 * 3000 = 6.661e-10, tức 6.661 theo đơn vị 1e-10. Nó tỉ lệ với tổng các giá trị tuyệt đối của các số hạng, không phải với giá trị (có thể rất nhỏ) của tổng."
+  },
+  "c3": {
+   "prompt": "git bisect tìm trong 500 commit (commit 1 tốt, commit xấu đầu tiên là 311) với điểm giữa m = floor((lo+hi)/2). Commit tốt không bao giờ thất bại; trên commit xấu mỗi lần chạy kiểm thử thất bại với xác suất 0.6. Mỗi lần thăm dò chạy kiểm thử 3 lần và coi commit là xấu nếu có một lần chạy thất bại. Đúng 3 lần thăm dò trên đường đúng (375, 312 và 311) rơi vào commit xấu. Xác suất bisection trả về commit 311 là bao nhiêu? Cho 4 chữ số thập phân.",
+   "explanation": "Một lần thăm dò trên commit xấu bỏ sót chỉ khi cả 3 lần chạy đều qua: 0.4^3 = 0.064, nên phát hiện với xác suất 0.936. Chỉ một lần bỏ sót đã đưa lo lên commit xấu và tìm kiếm không bao giờ trả về 311, nên cả 3 lần thăm dò xấu đều phải phát hiện: 0.936^3 = 0.8200."
   }
  }
 }

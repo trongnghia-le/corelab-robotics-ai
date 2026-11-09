@@ -18,32 +18,32 @@
     },
     {
       "id": "q2",
-      "prompt": "A first-order plant is ẋ = u with proportional control u = k(r − x). With r = 1, x = 0 and k = 2, what is the initial control u?",
+      "prompt": "A first-order plant obeys ẋ = u, with proportional control u = k(r − x). At the start the reference is r = 1, the state is x = 0 and the gain is k = 2. What is the initial control signal u?",
       "kind": "number",
       "answer": "2",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "u = k(r − x) = 2·(1 − 0) = 2. The error r − x = 1 is multiplied by the gain k.",
       "tolerance": 1e-05
     },
     {
       "id": "q3",
-      "prompt": "A plant ẋ = u + d is under proportional control u = k(r − x), with constant disturbance d = 0.2 and k = 2. What is the equilibrium error e = r − x?",
+      "prompt": "A plant ẋ = u + d is under proportional control u = k(r − x), with constant disturbance d = 0.2 and gain k = 2. At equilibrium ẋ = 0. What is the steady-state error e = r − x?",
       "kind": "number",
       "answer": "-0.1",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "At equilibrium 0 = k(r − x) + d, so k·e = −d and e = −d/k = −0.2/2 = −0.1. The error does not vanish because P control needs a nonzero error to cancel d.",
       "tolerance": 1e-05
     },
     {
       "id": "q4",
-      "prompt": "A sampled P loop on ẋ = u uses Euler updates xₙ₊₁ = xₙ + h·k(r − xₙ) with h = 0.1 s. What is the strict upper bound on k for stability?",
+      "prompt": "A sampled P loop on ẋ = u uses the Euler update xₙ₊₁ = xₙ + h·k(r − xₙ) with step h = 0.1 s and k > 0. The loop is stable when the error shrinks every step. What is the strict upper bound on k (in 1/s)?",
       "kind": "number",
       "answer": "20",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "The error obeys eₙ₊₁ = (1 − h·k)eₙ. It decays when |1 − h·k| < 1, i.e. 0 < h·k < 2. So k < 2/h = 2/0.1 = 20 1/s.",
       "tolerance": 1e-05
     },
     {

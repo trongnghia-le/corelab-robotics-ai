@@ -1,0 +1,228 @@
+{
+  "id": "HW14-diagnostic",
+  "topicId": "HW14",
+  "version": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "A motor sheet lists a stall torque of 548 mNm and a rated torque of 72.2 mNm. You must hold a load for several minutes. Which row do you compare the load torque with?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": true,
+      "options": [
+        "The stall torque, because it is the largest torque the motor can produce.",
+        "The rated torque (continuous limit), because holding a load for minutes is continuous duty.",
+        "The no-load torque, because it is the first row of the sheet.",
+        "Neither: the stall torque divided by two."
+      ],
+      "answer": "1",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "continuous-vs-peak"
+      ],
+      "skillLabel": "Continuous versus peak rating",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW13",
+        "HW02"
+      ],
+      "explanation": "Stall torque is reached only at zero speed and the stall current heats the winding within seconds; the rated torque is the thermal limit for continuous duty."
+    },
+    {
+      "id": "q2",
+      "prompt": "A motor sheet lists a nominal voltage of 24 V and a terminal resistance of 1.63 ohm. Stall current in amperes (U/R).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "14.72",
+      "tolerance": 0.05,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "derived-numbers"
+      ],
+      "skillLabel": "Derive the hidden rows",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW13",
+        "HW02"
+      ],
+      "explanation": "At stall there is no back-EMF, so I = U/R = 24/1.63 = 14.72 A."
+    },
+    {
+      "id": "q3",
+      "prompt": "A stepper sheet gives a holding torque of 3.17 kgf-cm. Convert it to N m (1 kgf = 9.80665 N).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.311",
+      "tolerance": 0.002,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "unit-conversion"
+      ],
+      "skillLabel": "Units and conversions",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW13",
+        "HW02"
+      ],
+      "explanation": "3.17 x 0.0980665 = 0.3109 N m (44.0 oz-in)."
+    },
+    {
+      "id": "q4",
+      "prompt": "A motor has a speed constant of 250 rpm/V. Its torque constant in mNm/A (kt = 60/(2 pi kv)). Precision 0.3.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "38.2",
+      "tolerance": 0.3,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "constants-kt-kv"
+      ],
+      "skillLabel": "Torque and speed constants",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW13",
+        "HW02"
+      ],
+      "explanation": "kt = 60/(2 pi 250) = 0.03820 N m/A = 38.2 mNm/A; the sheet prints 38.3."
+    },
+    {
+      "id": "q5",
+      "prompt": "Why does the pull-out torque of a stepper at a high step rate depend on the driver supply voltage?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "A higher voltage makes the magnets stronger.",
+        "A higher voltage lowers the winding resistance.",
+        "A higher voltage lets the winding current rise faster through its L/R time constant, so more current flows in each short step.",
+        "It does not: the curve depends only on the motor."
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stepper-curve"
+      ],
+      "skillLabel": "Stepper pull-out curve",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW13",
+        "HW02"
+      ],
+      "explanation": "Winding current rises exponentially with time constant L/R; at a high step rate the step is short, so a higher voltage is needed to reach the current (TI AN-828)."
+    },
+    {
+      "id": "q6",
+      "prompt": "A motor produces 0.0722 N m at its rated point. With a 14:1 planetary gearhead of 85 % efficiency, what is the output torque in N m? Precision 0.005.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.859",
+      "tolerance": 0.005,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gearhead-limits"
+      ],
+      "skillLabel": "Gearhead limits",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: worked example",
+          "href": "/lessons/HW14#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW13",
+        "HW02"
+      ],
+      "explanation": "0.0722 x 14 x 0.85 = 0.859 N m."
+    },
+    {
+      "id": "q7",
+      "prompt": "A motor's rated current is 2.36 A at 22 C ambient with a 155 C winding limit. Estimate the continuous current at 60 C ambient in amperes (scale by sqrt((Tmax - Ta)/(Tmax - 22))). Precision 0.03.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.99",
+      "tolerance": 0.03,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "thermal-rating"
+      ],
+      "skillLabel": "Thermal rating and derating",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/HW14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW13",
+        "HW02"
+      ],
+      "explanation": "sqrt(95/133) = 0.845; 2.36 x 0.845 = 1.99 A."
+    },
+    {
+      "id": "q8",
+      "prompt": "A hobby listing says 'stall torque 25 kg-cm' and nothing else about voltage, resistance or rated torque. Describe how you would audit it before using it in a robot.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Notes that the voltage is missing and a torque in kg-cm without a voltage cannot be used; asks for or measures the voltage conditions.",
+        "Asks for the terminal resistance (to derive stall current U/R and kt) and the rated or continuous torque and current, since stall is not a working value.",
+        "Proposes consistency checks or bench measurements (no-load speed and current, resistance) and a derating margin before committing."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "red-flags"
+      ],
+      "skillLabel": "Datasheet red flags",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: failure modes",
+          "href": "/lessons/HW14#failure-modes"
+        }
+      ],
+      "relatedPrerequisites": [
+        "HW13",
+        "HW02"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    }
+  ]
+}

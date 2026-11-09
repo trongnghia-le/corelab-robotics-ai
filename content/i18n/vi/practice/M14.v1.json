@@ -75,6 +75,23 @@
     "Lưu ý rằng nó bảo thủ hơn CLT.",
     "Nêu một vi phạm như mẫu phụ thuộc hoặc không bị chặn."
    ]
+  },
+  "c1": {
+   "prompt": "Các giá trị đọc nằm trong [0,1] và độc lập. Theo Hoeffding, cần bao nhiêu mẫu để trung bình mẫu sai lệch không quá 0.05 so với trung bình thật với xác suất ít nhất 0.99 (số nguyên)?",
+   "explanation": "Đặt 2exp(-2nt^2/(b-a)^2) <= delta: n >= ln(2/0.01)/(2*0.05^2) = 5.298/0.005 = 1059.7, nên 1060."
+  },
+  "c2": {
+   "prompt": "1000 kênh, mỗi kênh có sai số sub-Gaussian với variance proxy 1 (không biết phụ thuộc). Dùng union bound, ngưỡng t sao cho mọi |X_i| <= t với xác suất ít nhất 0.95 là (2 chữ số thập phân)?",
+   "explanation": "P(max|X_i|>t) <= 2N exp(-t^2/2) = 0.05 cho t = sqrt(2 ln(2N/0.05)) = sqrt(2 ln 40000) = 4.604."
+  },
+  "c3": {
+   "prompt": "Một cảm biến khoảng cách có outlier: sai số có phương sai hữu hạn sigma^2 nhưng không bị chặn và không biết tốc độ suy giảm đuôi. Hãy thiết kế bộ ước lượng trung bình với xác suất thất bại delta phụ thuộc vào ln(1/delta), và nêu bảo đảm cùng các giả thiết.",
+   "explanation": "Bài luyện tập có rubric hướng dẫn, không được tự động kiểm chứng. Lập luận đầy đủ: mỗi trung bình nhóm nằm trong 2sigma/sqrt(K) với xác suất >= 3/4 theo Chebyshev; median sai chỉ khi ít nhất nửa số nhóm sai, theo Hoeffding trên các biến chỉ thị xác suất <= exp(-G/8) = delta khi G = 8 ln(1/delta); độ rộng là 2 sigma sqrt(G/n) = 4 sigma sqrt(2 ln(1/delta)/n).",
+   "rubric": [
+    "Đề xuất median of means: chia n=KG mẫu thành G nhóm, lấy trung bình mỗi nhóm, rồi lấy median.",
+    "Dùng Chebyshev cho từng nhóm (thất bại tối đa 1/4 ở độ rộng 2*sigma/sqrt(K)) và Hoeffding cho số nhóm xấu, exp(-G/8).",
+    "Nêu bảo đảm |mu_hat-mu| <= 4 sigma sqrt(2 ln(1/delta)/n) với G = 8 ln(1/delta), và yêu cầu mẫu độc lập cùng cận phương sai đã biết."
+   ]
   }
  }
 }

@@ -332,6 +332,84 @@
         "q1"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "How many comparisons does std::lower_bound need in the worst case on a sorted vector of n = 3,000,000 elements, given the standard halving loop (count = count/2 or count - count/2 - 1)? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "22",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "binary-search"
+      ],
+      "skillLabel": "Exact binary search comparison count",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        }
+      ],
+      "explanation": "Each iteration costs one comparison and leaves at most floor(count/2) candidates, so W(n) = 1 + W(floor(n/2)) with W(0) = 0, which is the bit length of n: floor(log2 n) + 1. Since 2^21 = 2,097,152 <= 3,000,000 < 2^22, log2(3,000,000) is about 21.5, so W = 21 + 1 = 22 (a simulation of the loop for the target below the first element gives 22). The ceiling form ceil(log2(n+1)) gives the same value: log2(3,000,001) is just above 21.5, so its ceiling is 22."
+    },
+    {
+      "id": "c2",
+      "prompt": "A std::set<double> uses the default operator<. Which statement about inserting a NaN is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It is safe: NaN is simply ordered before every other number in the set",
+        "The set throws std::domain_error as soon as it meets a NaN key",
+        "It is rejected at compile time because floating-point keys are not allowed",
+        "Equivalence stops being transitive, so behavior is undefined"
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "container-choice",
+        "binary-search"
+      ],
+      "skillLabel": "Strict weak ordering and NaN",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        }
+      ],
+      "explanation": "NaN compares false in both directions with every number, so 3 ~ NaN and NaN ~ 7 (equivalent) while 3 < 7 means 3 and 7 are not equivalent. A strict weak ordering requires equivalence to be transitive; without it, std::set, std::sort and friends have undefined behavior (in libstdc++ the resulting size even depends on insertion order). There is no exception, no compile-time check, and NaN is not given any position by operator<. The fix is to reject NaN at the boundary or to supply a comparator such as comp(a,b) = !isnan(a) && (isnan(b) || a < b)."
+    },
+    {
+      "id": "c3",
+      "prompt": "A sorted std::vector of 60,000 samples receives about 300 late samples at random timestamps every few seconds. Compare inserting them one by one against sort + append + std::inplace_merge: give the element-move estimates for both, the complexity facts you rely on, and one situation where the one-by-one approach is better.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "One-by-one: each vector::insert costs time linear in the distance from the position to the end, average n/2, so about k*n/2 = 300*30,000 = 9e6 element moves.",
+        "Batch: sort k late samples O(k log k) (about 2.5e3 moves), append k, then inplace_merge over N = n + k elements with N-1 comparisons given a buffer (O(N log N) without), about 6e4 moves in total; a ratio of over a hundred.",
+        "Cites the complexity statements of vector::insert and std::inplace_merge.",
+        "One-by-one wins for very small k (e.g. 1) or when late samples land near the end (cost is the lateness, O(k*L)).",
+        "Says to measure the distribution of lateness (distance of the insertion point from the end) and the real batch size before choosing."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "container-choice",
+        "benchmarking"
+      ],
+      "skillLabel": "Batch merge versus repeated insert",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP05#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

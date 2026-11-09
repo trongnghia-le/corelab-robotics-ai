@@ -18,10 +18,13 @@ import {
   ArrowUpRight,
   Languages,
   PanelRight,
+  PanelLeftOpen,
 } from "lucide-react";
 import { useI18n, type Dict } from "@/lib/i18n";
+import { ThemeToggle } from "./theme-toggle";
+import { DeskPanel, useDeskPanel } from "./desk-panel";
 type TKey = keyof Dict;
-/** Open (or focus) the study desk as a window beside the lesson. */
+/** Open (or focus) the study desk as its own window beside the lesson. */
 export function openDesk() {
   const width = Math.min(760, Math.round(screen.availWidth * 0.42));
   const left = screen.availWidth - width;
@@ -66,6 +69,22 @@ export function Shell({
   const pathname = usePathname(),
     { t, lang, setLang } = useI18n(),
     [open, setOpen] = useState(false);
+  const desk = useDeskPanel();
+  // Wide screens can fold the sidebar into an icon rail; remembered per browser.
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    try {
+      setCollapsed(localStorage.getItem("corelab:sidebar") === "rail");
+    } catch {}
+  }, []);
+  function toggleRail() {
+    setCollapsed((c) => {
+      try {
+        localStorage.setItem("corelab:sidebar", c ? "full" : "rail");
+      } catch {}
+      return !c;
+    });
+  }
   const closeRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
@@ -85,7 +104,9 @@ export function Shell({
       </main>
     );
   return (
-    <div className="app-shell">
+    <div
+      className={`app-shell ${desk.open ? "has-desk" : ""} ${collapsed ? "is-collapsed" : ""}`}
+    >
       <a className="skip-link" href="#main">
         {t("shell.skip")}
       </a>
@@ -125,10 +146,26 @@ export function Shell({
           <span className="brand-mark">
             <Atom size={24} />
           </span>
-          <span>
+          <span className="brand-text">
             CoreLab<span className="brand-dot">.</span>
           </span>
         </Link>
+        <button
+          type="button"
+          className="icon-button sidebar-toggle"
+          onClick={toggleRail}
+          aria-expanded={!collapsed}
+          aria-label={t(
+            collapsed ? "shell.expandSidebar" : "shell.collapseSidebar",
+          )}
+          title={t(collapsed ? "shell.expandSidebar" : "shell.collapseSidebar")}
+        >
+          {collapsed ? (
+            <PanelLeftOpen size={18} />
+          ) : (
+            <PanelLeftClose size={18} />
+          )}
+        </button>
         <button
           ref={closeRef}
           className="icon-button drawer-close"
@@ -137,13 +174,12 @@ export function Shell({
         >
           <PanelLeftClose size={20} />
         </button>
-        <div className="workspace-label">
+        <div
+          className="workspace-label"
+          title={`${t("shell.workspace")} · ${t("shell.workspaceSub")}`}
+        >
           <span className="workspace-initial">N</span>
-          <div>
-            {t("shell.workspace")}
-            <small>{t("shell.workspaceSub")}</small>
-          </div>
-          <span className="local-dot" />
+          <span className="workspace-name">{t("shell.workspace")}</span>
         </div>
         <div className="nav-caption">{t("shell.captionLearn")}</div>
         <nav>
@@ -151,6 +187,7 @@ export function Shell({
             <Link
               key={href}
               href={href}
+              title={collapsed ? t(key) : undefined}
               onClick={() => setOpen(false)}
               className={
                 (href === "/" ? pathname === "/" : pathname.startsWith(href))
@@ -163,8 +200,8 @@ export function Shell({
                   : undefined
               }
             >
-              <Icon size={18} />
-              {t(key)}
+              <Icon size={18} aria-hidden="true" />
+              <span className="nav-text">{t(key)}</span>
             </Link>
           ))}
         </nav>
@@ -174,11 +211,12 @@ export function Shell({
             <Link
               key={href}
               href={href}
+              title={collapsed ? t(key) : undefined}
               onClick={() => setOpen(false)}
               className={`nav-link ${pathname.startsWith(href) ? "active" : ""}`}
             >
-              <Icon size={18} />
-              {t(key)}
+              <Icon size={18} aria-hidden="true" />
+              <span className="nav-text">{t(key)}</span>
             </Link>
           ))}
           {v2Enabled && (
@@ -190,24 +228,24 @@ export function Shell({
               }
               onClick={() => setOpen(false)}
             >
-              <FlaskConical size={18} />
-              {t("nav.lab")}
+              <FlaskConical size={18} aria-hidden="true" />
+              <span className="nav-text">{t("nav.lab")}</span>
             </Link>
           )}
         </nav>
         <div className="sidebar-bottom">
-          <div className="local-card">
+          <div className="local-card" title={t("shell.localBody")}>
             <span className="local-dot" />
-            <strong>{t("shell.localTitle")}</strong>
-            <p>{t("shell.localBody")}</p>
+            <span>{t("shell.localTitle")}</span>
           </div>
           <Link
             href="/settings"
+            title={collapsed ? t("nav.settings") : undefined}
             className={`nav-link ${pathname === "/settings" ? "active" : ""}`}
             onClick={() => setOpen(false)}
           >
-            <Settings size={18} />
-            {t("nav.settings")}
+            <Settings size={18} aria-hidden="true" />
+            <span className="nav-text">{t("nav.settings")}</span>
           </Link>
           <div className="version">
             CORELAB <span>{v2Enabled ? "V2 workspace" : "v1.0"}</span>
@@ -237,14 +275,16 @@ export function Shell({
             </strong>
           </div>
           <div className="topbar-right">
+            <ThemeToggle />
             <button
               type="button"
               className="button secondary desk-open"
-              onClick={() => openDesk()}
+              onClick={() => desk.setOpen(!desk.open)}
+              aria-pressed={desk.open}
               title={t("shell.deskHint")}
             >
               <PanelRight size={15} aria-hidden="true" />
-              {t("shell.desk")}
+              <span>{t("shell.desk")}</span>
             </button>
             <div
               className="lang-switch"
@@ -279,6 +319,15 @@ export function Shell({
           <span>{t("shell.footer2")}</span>
         </footer>
       </div>
+      {desk.open && (
+        <DeskPanel
+          onClose={() => desk.setOpen(false)}
+          onPopOut={() => {
+            desk.setOpen(false);
+            openDesk();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="Inter, sans-serif">
+<title>Stack unwinding releases resources in reverse order</title>
+<desc>Timeline of run(): Port imu0 opens, Port gps1 opens, a runtime_error is thrown, gps1 then imu0 are closed during unwinding and main catches the error.</desc>
+<defs></defs>
+<rect width="900" height="470" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Stack unwinding releases resources in reverse order</text>
+<rect x="404" y="110" width="308" height="236" rx="6" fill="#2a2124" stroke="#e58a80" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="558" y="134" font-size="15" fill="#e58a80" text-anchor="middle" font-weight="600">stack unwinding</text>
+<text x="32" y="172" font-size="15" fill="#a7adb5" text-anchor="start" font-weight="600">run()</text>
+<line x1="96" y1="180" x2="712" y2="180" stroke="#a7adb5" stroke-width="2" stroke-linecap="round"/>
+<line x1="96" y1="172" x2="96" y2="188" stroke="#a7adb5" stroke-width="2" stroke-linecap="round"/>
+<line x1="712" y1="172" x2="712" y2="188" stroke="#a7adb5" stroke-width="2" stroke-linecap="round"/>
+<text x="96" y="160" font-size="14" fill="#a7adb5" text-anchor="start">scope of run()</text>
+<rect x="96" y="208" width="616" height="34" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="108" y="231" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600">imu0</text>
+<rect x="250" y="262" width="308" height="34" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="262" y="285" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">gps1</text>
+<text x="700" y="231" font-size="14" fill="#a7adb5" text-anchor="end">alive</text>
+<text x="546" y="285" font-size="14" fill="#a7adb5" text-anchor="end">alive</text>
+<path d="M404,300 L393,322 L415,322 Z" fill="#e58a80" stroke="#e58a80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="100" y1="340" x2="880" y2="340" stroke="#3d4148" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="96" y1="334" x2="96" y2="346" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="96" y="368" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="bold">1</text>
+<text x="96" y="392" font-size="15" fill="#e9e7e3" text-anchor="middle">open imu0</text>
+<line x1="250" y1="334" x2="250" y2="346" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="250" y="368" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="bold">2</text>
+<text x="250" y="392" font-size="15" fill="#e9e7e3" text-anchor="middle">open gps1</text>
+<line x1="404" y1="334" x2="404" y2="346" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="404" y="368" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="bold">3</text>
+<text x="404" y="392" font-size="15" fill="#e9e7e3" text-anchor="middle">throw</text>
+<line x1="558" y1="334" x2="558" y2="346" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="558" y="368" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="bold">4</text>
+<text x="558" y="392" font-size="15" fill="#e9e7e3" text-anchor="middle">close gps1</text>
+<line x1="712" y1="334" x2="712" y2="346" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="712" y="368" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="bold">5</text>
+<text x="712" y="392" font-size="15" fill="#e9e7e3" text-anchor="middle">close imu0</text>
+<line x1="844" y1="334" x2="844" y2="346" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="844" y="368" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="bold">6</text>
+<text x="844" y="392" font-size="15" fill="#e9e7e3" text-anchor="middle">catch</text>
+<text x="32" y="436" font-size="14" fill="#a7adb5" text-anchor="start">Output of the program: open imu0 / open gps1 / close gps1 / close imu0 / caught: bad checksum</text>
+<text x="32" y="458" font-size="14" fill="#a7adb5" text-anchor="start">Last opened is first closed (LIFO); no finally block, no explicit cleanup call.</text>
+</svg>

@@ -81,6 +81,24 @@
     "Tính được rằng tối ưu 15% còn lại cho tối đa 1.18 lần.",
     "Khuyến nghị đo trước và sau."
    ]
+  },
+  "c1": {
+   "prompt": "Một chương trình chạy trên N = 64 bộ xử lý dành tỉ lệ s' = 0.05 của thời gian song song đo được cho code tuần tự, và kích thước bài toán được phóng to để thời gian chạy giữ nguyên. Dùng mức tăng tốc theo quy mô của Gustafson N + (1-N)s', mức tăng tốc so với một bộ xử lý là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "S = N + (1-N)s' = 64 + (1-64)*0.05 = 64 - 3.15 = 60.85. Công thức Amdahl kích thước cố định với cùng con số 0.05 làm tỉ lệ tuần tự một bộ xử lý sẽ cho 1/(0.05+0.95/64) = 15.4, một câu hỏi khác (công việc cố định), vì vậy phải nêu tỉ lệ tuần tự được đo ở đâu."
+  },
+  "c2": {
+   "prompt": "Một chương trình có tỉ lệ tuần tự s = 0.04 và overhead giao tiếp cộng thêm c*N vào thời gian chuẩn hóa, c = 4e-4, nên S(N) = 1/(s + (1-s)/N + c*N). Làm tròn đến số nguyên, số bộ xử lý N nào cực đại hóa mức tăng tốc?",
+   "explanation": "Mẫu số f(N) = s + p/N + cN đạt cực tiểu tại f'(N) = -p/N^2 + c = 0, nên N* = sqrt(p/c) = sqrt(0.96/4e-4) = sqrt(2400) = 48.99, tức 49. Tại đó S = 1/(0.04 + 2*sqrt(0.96*4e-4)) = 12.63, bằng một nửa giới hạn Amdahl 25."
+  },
+  "c3": {
+   "prompt": "Bạn tính mọi khoảng cách cặp bằng d2 = |p|^2 + |q|^2 - 2 p.q trong float64 cho các điểm tạo thành một cụm chặt (độ trải 1e-3) quanh điểm (1000, 1000, 1000). Một số kết quả là các số âm rất nhỏ. Điều gì giải thích điều này, và cách sửa chuẩn là gì?",
+   "options": [
+    "np.sqrt không chính xác với đầu vào nhỏ; hãy tính căn bậc hai bằng float128",
+    "Sai số làm tròn của d2 cỡ u*|p|^2, lớn hơn nhiều so với d2 thật; hãy trừ trọng tâm trước",
+    "Broadcasting tạo ra các mảng tạm sai; hãy tính khoảng cách bằng vòng lặp Python",
+    "Tích ma trận P @ P.T không đối xứng trong dấu phẩy động; hãy lấy trung bình với ma trận chuyển vị của nó"
+   ],
+   "explanation": "Ba số hạng mỗi số cỡ 3e6 và được làm tròn với sai số tương đối u = 1.1e-16, nên d2 mang sai số tuyệt đối cỡ 4*u*3e6 = 1e-9, trong khi d2 thật chỉ khoảng 5e-6 (và có thể thấp hơn sai số với các cặp gần nhất, cho kết quả âm). Đây là catastrophic cancellation. Khoảng cách bất biến theo tịnh tiến, nên trừ trọng tâm làm |p| cỡ 1e-3 và sai số cỡ 1e-22. Độ chính xác cao hơn cho sqrt, vòng lặp hay đối xứng hóa không loại bỏ được sự triệt tiêu bên trong d2."
   }
  }
 }

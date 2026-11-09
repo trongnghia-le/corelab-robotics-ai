@@ -329,6 +329,77 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A process with umask 035 creates a regular file requesting mode 666. What is the resulting octal mode? (integer digits, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "642",
+      "tolerance": 0.5,
+      "explanation": "The kernel applies mode & ~umask. Umask 035 has group digit 3 (-wx) and other digit 5 (r-x). Owner 6 stays 6; group 6 & ~3 = 110 & 100 = 100 = 4; other 6 & ~5 = 110 & 010 = 010 = 2. Result 642. Subtracting 666 - 035 = 631 is wrong because a mask clears bits instead of subtracting numbers (631 would add execute bits never requested).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "umask-mask"
+      ],
+      "skillLabel": "Umask as a bit mask",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "With set -e active, a function f ends with the failing command false followed by echo after. What does the script print for \"if f; then echo yes; fi\"?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Nothing, and the script exits with status 1 at false",
+        "after and then yes, because -e is ignored inside a function called as an if test",
+        "yes only, because echo after is skipped when false fails",
+        "after only, because the if branch is not taken when f fails"
+      ],
+      "answer": "1",
+      "explanation": "errexit is ignored for the whole body of a function or compound command that runs in a context where -e is ignored, such as the test of an if. So false does not stop f, echo after runs and returns 0, f succeeds, and the if branch prints yes. Called plainly (f on its own line), the same function would stop at false with status 1.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "errexit-contexts"
+      ],
+      "skillLabel": "Where set -e is and is not active",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A Bash script has trap 'echo bye; exit 7' TERM and runs sleep 10 in the foreground. SIGTERM is sent to the script at t=3 s. At which second since start does the trap run? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "10",
+      "tolerance": 0.5,
+      "explanation": "Bash does not execute a trap while it waits for a foreground command; it runs the trap when the command completes, so at t=10 s. Had the script used sleep 10 & wait $!, wait would return immediately with status > 128 and the trap would run at t=3 s.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "trap-timing"
+      ],
+      "skillLabel": "When a Bash trap runs",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T01#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

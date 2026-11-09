@@ -11,8 +11,8 @@
    "explanation": "Một khóa lạ như learning_rat phải là lỗi."
   },
   "b2": {
-   "prompt": "Độ lệch chuẩn mỗi lần chạy là 0.0164 và có 20 seed. Sai số chuẩn của trung bình (4 chữ số thập phân)?",
-   "explanation": "0.0164/sqrt(20)."
+   "prompt": "Độ lệch chuẩn mỗi lần chạy là 0.031 và có 40 seed. Sai số chuẩn của trung bình (4 chữ số thập phân)?",
+   "explanation": "0.031/sqrt(40) = 0.0049."
   },
   "b3": {
    "prompt": "Độ lệch chuẩn mỗi lần chạy là 0.5; cần bao nhiêu seed để sai số chuẩn bằng 0.1?",
@@ -39,8 +39,8 @@
    "explanation": "basicConfig là no-op nếu root logger đã có handler."
   },
   "b6": {
-   "prompt": "Dấu phẩy động: (0.1+0.2)+0.3 trừ 0.1+(0.2+0.3), theo đơn vị 1e-16 (1 chữ số thập phân).",
-   "explanation": "0.6000000000000001-0.6=1.1e-16."
+   "prompt": "Dấu phẩy động: (0.3+0.6)+0.1 trừ 0.3+(0.6+0.1), theo đơn vị 1e-16 (1 chữ số thập phân).",
+   "explanation": "(0.3+0.6)+0.1 = 0.9999999999999999 và 0.3+(0.6+0.1) = 1.0, nên hiệu là -1.1e-16."
   },
   "b7": {
    "prompt": "So sánh bằng nhau từng bit của kết quả là phép thử đúng cho",
@@ -53,8 +53,8 @@
    "explanation": "Kết quả dấu phẩy động nên được so sánh bằng dung sai."
   },
   "b8": {
-   "prompt": "Với các giá trị PYTHONHASHSEED 1, 2 và 3, thứ tự set của ba chuỗi lần lượt là ABC, ABC, ACB. Quan sát được bao nhiêu thứ tự khác nhau?",
-   "explanation": "Thứ tự của seed 1 và 2 trùng nhau."
+   "prompt": "Với các giá trị PYTHONHASHSEED 1, 2, 3 và 4, tập {'wheel', 'arm', 'gripper', 'base'} được liệt kê lần lượt là ['arm', 'base', 'gripper', 'wheel'], ['gripper', 'base', 'arm', 'wheel'], ['base', 'arm', 'wheel', 'gripper'] và ['base', 'gripper', 'wheel', 'arm']. Quan sát được bao nhiêu phần tử đầu tiên khác nhau?",
+   "explanation": "Các phần tử đầu là arm, gripper, base và base: ba phần tử khác nhau, nên thứ tự của một set các chuỗi thay đổi giữa các lần chạy."
   },
   "b9": {
    "prompt": "Git commit hash trong env.json nên bảo đảm điều gì?",
@@ -87,6 +87,24 @@
     "Kiểm tra thứ tự duyệt set/dict và PYTHONHASHSEED.",
     "Kiểm tra timestamp, luồng/thứ tự dấu phẩy động và các phụ thuộc không được ghim."
    ]
+  },
+  "c1": {
+   "prompt": "Một đợt sweep khởi động 5000 lần chạy và mỗi lần lấy seed đều trong 2^32 số nguyên 32-bit. Dùng P ≈ 1 - exp(-k(k-1)/(2M)), xác suất có ít nhất hai lần chạy trùng seed là bao nhiêu? Cho 4 chữ số thập phân.",
+   "explanation": "k(k-1)/(2M) = 5000*4999/2^33 = 24,995,000 / 8,589,934,592 = 0.0029099. Khi đó P = 1 - exp(-0.0029099) = 0.0029056, khoảng 0.29%. Cận birthday tăng theo k^2, nên 10^4 lần chạy đã cho 1.2%."
+  },
+  "c2": {
+   "prompt": "Một thí nghiệm có 100 trial độc lập có thể chạy trên 1, 4 hoặc 32 worker. Cách gán luồng ngẫu nhiên nào cho các số giống hệt nhau ở mỗi trial bất kể số worker?",
+   "options": [
+    "Cho worker w seed base + w, và để nó chạy các trial của mình theo thứ tự",
+    "Spawn một con của SeedSequence(base) cho mỗi worker và chạy các trial của nó trên luồng đó",
+    "Dựng generator của trial i từ SeedSequence(base, spawn_key=(i,)), độc lập với worker",
+    "Dùng chung một default_rng(base) giữa mọi worker sau một lock"
+   ],
+   "explanation": "Luồng phải chỉ là hàm của định danh tác vụ. Phương án A và B buộc các số vào số worker và vào thứ tự worker tiêu thụ luồng của nó; A còn dùng các seed liền kề, chính là sơ đồ yếu mà SeedSequence được thiết kế để tránh. Phương án D làm các số phụ thuộc vào thứ tự lập lịch của các thread. Phương án C không có trạng thái và chỉ phụ thuộc (base, i)."
+  },
+  "c3": {
+   "prompt": "Với n = 2^16 số, so sánh cận sai số bậc nhất của tổng từ trái sang phải, (n-1)*u*sum|x_j|, và của tổng cặp đôi cân bằng, ceil(log2 n)*u*sum|x_j|. Tỉ số cận tuần tự / cận cặp đôi là bao nhiêu? Cho một chữ số thập phân.",
+   "explanation": "Thừa số u*sum|x_j| triệt tiêu. Tuần tự: n-1 = 65,535; cặp đôi: ceil(log2 2^16) = 16. Tỉ số = 65,535/16 = 4,095.94, khoảng 4095.9. Đây là các cận trường hợp xấu nhất; sai số quan sát nhỏ hơn nhiều, nhưng tỉ số cho thấy vì sao tổng cặp đôi là lựa chọn mặc định an toàn."
   }
  }
 }

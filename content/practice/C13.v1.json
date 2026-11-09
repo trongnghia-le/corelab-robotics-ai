@@ -373,6 +373,89 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Sampled linear-quadratic problem: x[n+1] = x[n] + h(x[n] + u[n]) with cost h*sum(3x^2 + u^2). The optimal cost-to-go is S_h x^2 with S_h^2 - (2+4h) S_h - 3 = 0 (positive root). What is S_h for h = 0.5 (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "4.6458",
+      "tolerance": 0.001,
+      "explanation": "S_h = (1+2h) + sqrt((1+2h)^2 + 3). For h = 0.5: 2 + sqrt(4 + 3) = 2 + 2.6458 = 4.6458. Check: as h -> 0, S_h -> 1 + 2 = 3, the continuous-time HJB value (S^2 - 2S - 3 = 0). Equivalent form 1 + 2h + 2 sqrt(h^2 + h + 1) = 1 + 1 + 2*1.3229 = 4.6458.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "dynamic-programming"
+      ],
+      "skillLabel": "Dynamic programming and the principle of optimality",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Undiscounted value iteration for a goal-reaching problem (cost 1 per step, zero-cost absorbing goal) is started from J* + 10. Which statement is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "It converges to J* in about ln(10/0.01)/ln(1/0.9) sweeps",
+        "It stays at J* + 10, and the greedy policy is still optimal",
+        "It diverges to infinity",
+        "It stays at J* + 10, but the greedy policy is no longer optimal"
+      ],
+      "answer": "1",
+      "explanation": "With gamma = 1, min_a[l + J*(f) + 10] = J*(s) + 10, so J* + 10 is itself a fixed point: the iteration does not move, the values are wrong by a constant, but the greedy policy is unchanged and still optimal. With gamma < 1 the constant would shrink by gamma per sweep and the iteration would converge to J*; so it is not true that undiscounted VI always converges to J* from any start, nor that the constant changes the policy.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dynamic-programming"
+      ],
+      "skillLabel": "Dynamic programming and the principle of optimality",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Minimum-time double integrator (|u| <= 1, goal at the origin). From the state (q, qdot) = (-1, 1) the bang-bang policy accelerates with u = +1 until the braking parabola q = -qdot^2/2 and then brakes. Using J = 2*sqrt(qdot^2/2 - q) - qdot, what is the time to the origin (4 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.4495",
+      "tolerance": 0.001,
+      "explanation": "s = sqrt(0.5 + 1) = 1.2247, J = 2*1.2247 - 1 = 1.4495 s. Check: accelerate from qdot = 1 to s = 1.2247 (0.2247 s, reaching q = -1 + 1*0.2247 + 0.2247^2/2 = -0.7500, which equals -s^2/2 = -0.75), then brake for s = 1.2247 s; total 0.2247 + 1.2247 = 1.4495. The HJB holds here with minimiser u = +1 because the coefficient dJ/dqdot = qdot/s - 1 = -0.1835 < 0.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "trajopt-formulation"
+      ],
+      "skillLabel": "Formulating trajectory optimization",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C13#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C05",
+        "C04"
+      ]
     }
   ]
 }

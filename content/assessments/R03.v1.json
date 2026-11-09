@@ -13,37 +13,39 @@
       "explanation": "Orthogonality preserves geometry and +1 excludes reflections.",
       "options": [
         "RᵀR=I and det(R)=+1.",
-        "RRᵀ=0 and det(R)=−1."
+        "RRᵀ=0 and det(R)=−1.",
+        "RᵀR=I and det(R)=−1.",
+        "det(R)=+1 but RᵀR≠I (for example a stretch)."
       ]
     },
     {
       "id": "q2",
-      "prompt": "Determinant of a +90° planar rotation?",
+      "prompt": "A planar rotation by angle θ is R = [[cos θ, −sin θ], [sin θ, cos θ]]. What is det R for θ = +90°?",
       "kind": "number",
       "answer": "1",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "At 90°, R = [[0, −1], [1, 0]]. det R = 0·0 − (−1)(1) = 1. (Any proper rotation has det = +1.)",
       "tolerance": 1e-05
     },
     {
       "id": "q3",
-      "prompt": "T1 is a planar rotation by +90° with translation t₁=(1,0); T2 is a pure translation by (2,0). In the product T1·T2, what is the y component of the translation?",
+      "prompt": "Planar rigid transforms act as p ↦ R·p + t. T1 has rotation +90° (counter-clockwise) and translation t₁ = (3, 1); T2 is a pure translation by t₂ = (0, 2). The product T1·T2 means apply T2 first, then T1. What is the y component of the translation of T1·T2?",
       "kind": "number",
-      "answer": "2",
+      "answer": "1",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "The composed translation is R₁·t₂ + t₁. R₁ = [[0, −1], [1, 0]], so R₁·(0, 2) = (−2, 0). Adding t₁ = (3, 1) gives (1, 1). The y component is 1.",
       "tolerance": 1e-05
     },
     {
       "id": "q4",
-      "prompt": "For identity R and t=(2,3), inverse translation x?",
+      "prompt": "A rigid transform p ↦ R·p + t has R = I (identity) and t = (2, 3). Its inverse is p ↦ Rᵀ·p − Rᵀ·t. What is the x component of the inverse's translation, −Rᵀ·t?",
       "kind": "number",
       "answer": "-2",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "With R = I, Rᵀ = I, so the inverse translation is −t = (−2, −3). The x component is −2.",
       "tolerance": 1e-05
     },
     {

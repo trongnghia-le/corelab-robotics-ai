@@ -82,6 +82,31 @@
     "Tính removed = v.end() - e trước khi xóa và gọi v.erase(e, v.end()).",
     "Nhắc đến O(n) và rằng riêng remove_if không thay đổi size()."
    ]
+  },
+  "c1": {
+   "prompt": "std::lower_bound cần bao nhiêu phép so sánh trong trường hợp xấu nhất trên một vector đã sắp xếp có n = 3.000.000 phần tử, với vòng lặp chia đôi chuẩn (count = count/2 hoặc count - count/2 - 1)? Số nguyên.",
+   "explanation": "Mỗi vòng lặp tốn một phép so sánh và để lại tối đa floor(count/2) ứng viên, nên W(n) = 1 + W(floor(n/2)) với W(0) = 0, tức độ dài bit của n: floor(log2 n) + 1. Vì 2^21 = 2.097.152 <= 3.000.000 < 2^22, log2(3.000.000) khoảng 21,5, nên W = 21 + 1 = 22 (mô phỏng vòng lặp với mục tiêu nhỏ hơn phần tử đầu cho 22). Công thức trần ceil(log2(n+1)) cho cùng giá trị: log2(3.000.001) chỉ trên 21,5 một chút nên trần của nó là 22."
+  },
+  "c2": {
+   "prompt": "Một std::set<double> dùng operator< mặc định. Phát biểu nào về việc chèn một NaN là đúng?",
+   "options": [
+    "An toàn: NaN đơn giản được xếp trước mọi số khác trong set",
+    "Set throw std::domain_error ngay khi gặp khóa NaN",
+    "Bị từ chối lúc biên dịch vì không cho phép khóa dấu phẩy động",
+    "Equivalence không còn bắc cầu, nên hành vi là undefined"
+   ],
+   "explanation": "NaN so sánh sai theo cả hai chiều với mọi số, nên 3 ~ NaN và NaN ~ 7 (tương đương) trong khi 3 < 7 nghĩa là 3 và 7 không tương đương. Strict weak ordering yêu cầu equivalence bắc cầu; thiếu nó, std::set, std::sort và các hàm liên quan có hành vi undefined (trong libstdc++ kích thước kết quả còn phụ thuộc thứ tự chèn). Không có exception, không có kiểm tra lúc biên dịch, và operator< không gán vị trí nào cho NaN. Cách sửa là từ chối NaN ở biên hoặc cung cấp comparator như comp(a,b) = !isnan(a) && (isnan(b) || a < b)."
+  },
+  "c3": {
+   "prompt": "Một std::vector đã sắp xếp gồm 60.000 mẫu nhận khoảng 300 mẫu đến trễ với timestamp ngẫu nhiên mỗi vài giây. So sánh chèn từng cái với sort + nối + std::inplace_merge: cho ước lượng số phép move phần tử của cả hai, các sự kiện về độ phức tạp bạn dựa vào, và một tình huống mà cách chèn từng cái tốt hơn.",
+   "rubric": [
+    "Chèn từng cái: mỗi vector::insert tốn thời gian tuyến tính theo khoảng cách từ vị trí tới cuối, trung bình n/2, nên khoảng k*n/2 = 300*30.000 = 9e6 phép move phần tử.",
+    "Theo lô: sắp xếp k mẫu trễ O(k log k) (khoảng 2,5e3 phép move), nối k mẫu, rồi inplace_merge trên N = n + k phần tử với N-1 phép so sánh khi có buffer (O(N log N) nếu không), tổng khoảng 6e4 phép move; tỉ lệ hơn một trăm lần.",
+    "Trích dẫn các phát biểu độ phức tạp của vector::insert và std::inplace_merge.",
+    "Chèn từng cái thắng khi k rất nhỏ (ví dụ 1) hoặc khi mẫu trễ rơi gần cuối (chi phí là độ trễ, O(k*L)).",
+    "Nói cần đo phân bố độ trễ (khoảng cách từ điểm chèn tới cuối) và kích thước lô thực trước khi chọn."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời với từng ý của rubric; câu hỏi này không được chấm tự động."
   }
  }
 }

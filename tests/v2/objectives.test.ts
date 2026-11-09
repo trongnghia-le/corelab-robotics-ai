@@ -10,9 +10,9 @@ it("resolves typed authored objectives, readiness, media and advisory curriculum
   const r = objectives(),
     p = curriculumPreview();
   expect(r.objectives).toHaveLength(43);
-  expect(topics).toHaveLength(190);
-  expect(p.nodes).toHaveLength(197);
-  expect(p.nodes.reduce((n, x) => n + x.prerequisites.length, 0)).toBe(393);
+  expect(topics).toHaveLength(193);
+  expect(p.nodes).toHaveLength(200);
+  expect(p.nodes.reduce((n, x) => n + x.prerequisites.length, 0)).toBe(398);
   expect(
     r.objectives.find((o) => o.id === "R04.planar-fk")?.learn,
   ).toContainEqual({

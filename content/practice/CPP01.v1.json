@@ -192,12 +192,12 @@
           "href": "/lessons/CPP01#theory-and-derivation"
         }
       ],
-      "prompt": "`int a = 5; double r = a / 2 * 2.0;` What is r?",
+      "prompt": "`int a = 17; double r = a / 5 * 2.0;` What is r?",
       "dimension": "M",
       "critical": false,
-      "answer": "4",
+      "answer": "6",
       "tolerance": 0.001,
-      "explanation": "a / 2 is integer 2, then 2 * 2.0 = 4.0 (not 5.0)."
+      "explanation": "a / 5 is integer 3, then 3 * 2.0 = 6.0 (not 6.8)."
     },
     {
       "id": "cpp01-b9",
@@ -295,6 +295,81 @@
         "Chooses eps from the scale of the quantities."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "cpp01-c1",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "signed-unsigned-conversion"
+      ],
+      "skillLabel": "Usual arithmetic conversions",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "On a platform with 32-bit int and unsigned int, what does `long long j = -1; unsigned int u = 3; std::cout << (j < u);` print, and why?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "0, because comparing a signed and an unsigned value is always false",
+        "0, because -1 is converted to unsigned int and becomes 4294967295",
+        "1, because long long outranks unsigned int and can represent all its values, so u is converted to long long",
+        "1, because the unsigned operand is always converted to int before the comparison"
+      ],
+      "answer": "2",
+      "explanation": "The common type is chosen by the usual arithmetic conversions. When the signed type (long long) has greater rank than the unsigned one (unsigned int) and can represent every value of it, the common type is the signed type: u becomes 3LL and -1 < 3 is true, so it prints 1. The surprising result (false) appears when ranks are equal, as with -1 < 3u, where -1 becomes 4294967295. There is no rule that mixed comparisons are always false, and unsigned operands are not generally converted to int."
+    },
+    {
+      "id": "cpp01-c2",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "unsigned-modular-arithmetic"
+      ],
+      "skillLabel": "Modular arithmetic of unsigned types",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "With 32-bit `unsigned`, what does `unsigned a = 70000u, b = 70000u; a * b` evaluate to? Give the integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "605032704",
+      "tolerance": 0.5,
+      "explanation": "Unsigned arithmetic is performed modulo 2^32 = 4294967296. The true product is 70000 * 70000 = 4,900,000,000. Subtracting one multiple of 2^32 gives 4,900,000,000 - 4,294,967,296 = 605,032,704, which is below 2^32, so that is the result (checked in Python). With signed int the same overflow would be undefined behaviour instead."
+    },
+    {
+      "id": "cpp01-c3",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "moving-average-error"
+      ],
+      "skillLabel": "Choosing a numerically safe moving average",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A velocity signal sampled at 1 kHz rides on an offset of about 1e8 with variations of about 1. You need a window-10 moving average over hours of data. Compare the direct window sum, the streaming update S += x[k+w] - x[k], and prefix sums y = (P[k+w] - P[k]) / w in double precision. State where each one's error comes from, and which you would ship and how you would test it.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Direct sum: error bounded by roughly (w+1)/2 * u * max|x| (about ulp of 1e8), independent of signal length; cost O(n*w) is acceptable for small w.",
+        "Streaming sum: rounding errors of every update accumulate and are never removed, so error grows with the number of samples (up to k*u*|S|, typically sqrt(k)*u*|S|); needs periodic recomputation or compensated summation.",
+        "Prefix sums: P_n is huge (about offset * n), so P[k+w] and P[k] are rounded at ulp(P_n); their difference is a catastrophic cancellation and the error is about ulp(P_n)/w; fix by subtracting a reference (x_0 or a running mean) before accumulating.",
+        "Ships direct sum (or shifted prefix sum / compensated streaming) and tests with a large-offset, small-variation signal against an exact integer or long double reference with tolerance proportional to u*|x|."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

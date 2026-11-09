@@ -180,13 +180,13 @@
     },
     {
       "id": "b7",
-      "prompt": "Buffer a(2); Buffer b(std::move(a)); { Buffer c(1); auto p = std::make_unique<Buffer>(3); } -- if Buffer::alive counts constructed-minus-destroyed objects, what is it after the block closes? Integer.",
+      "prompt": "Buffer a(5); Buffer b(std::move(a)); Buffer d(std::move(b)); { Buffer c(2); auto p = std::make_unique<Buffer>(4); Buffer e(std::move(c)); } -- if Buffer::alive counts constructed-minus-destroyed objects, what is it after the block closes? Integer.",
       "kind": "number",
       "dimension": "M",
       "critical": false,
-      "answer": "2",
+      "answer": "3",
       "tolerance": 0.01,
-      "explanation": "a and b are alive (a is moved-from but still an object): 2. c and the heap Buffer died at the closing brace.",
+      "explanation": "a, b and d are alive (a and b are moved-from but still objects): 3. Inside the block c, the heap Buffer and e (each move constructs a new object) bring the total to 6; e, p and c die at the closing brace, leaving 3.",
       "knowledgeType": "procedure",
       "skillTags": [
         "raii-lifetime",
@@ -330,6 +330,84 @@
       "equivalentTo": [
         "q3",
         "q6"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A class has two raw owning members initialised in the constructor's initialiser list with new double[12] and new double[20]. The constructor body then always throws. A robot attempts to construct it at 5 Hz for 2 minutes. How many bytes leak in total? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "153600",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "raii-lifetime"
+      ],
+      "skillLabel": "Leaks from a throwing constructor",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ],
+      "explanation": "A throwing constructor never runs the object's own destructor, and the members are raw pointers, so their destruction frees nothing. Each attempt leaks (12 + 20) * 8 = 256 bytes. Attempts: 5 Hz * 120 s = 600. Total 600 * 256 = 153,600 bytes. With std::unique_ptr<double[]> members the completed members would be destroyed and nothing would leak."
+    },
+    {
+      "id": "c2",
+      "prompt": "A Buffer defines only Buffer& operator=(Buffer o) noexcept { swap(*this, o); return *this; } and the copy constructor of Buffer throws std::bad_alloc inside the statement a = b. What is the state of a afterwards?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "a is empty (size 0) because its storage was released first",
+        "Unspecified: only the basic guarantee holds for assignment operators",
+        "a is unchanged: the copy fails before the body runs",
+        "a holds half of b's elements, because the copy stopped midway"
+      ],
+      "answer": "2",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rule-of-five",
+        "move-semantics"
+      ],
+      "skillLabel": "Strong guarantee of copy-and-swap",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
+      ],
+      "explanation": "The by-value parameter o is constructed before the function body runs. When its copy constructor throws, the body (which contains the only mutation, the noexcept swap) never executes, so a is untouched: this is the strong exception guarantee. Option 0 describes the naive delete-then-new assignment; option 3 confuses a partial copy of the temporary with the target; option 1 is true of the naive version, not of copy-and-swap."
+    },
+    {
+      "id": "c3",
+      "prompt": "Explain why std::vector relocates with std::move_if_noexcept when it grows. Show that relocation by moves cannot give the strong exception guarantee if the k-th move may throw, state what the vector does for a copyable type with a throwing move, and what is waived for a move-only type.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Strong guarantee means a throwing push_back/emplace_back leaves the vector exactly as before.",
+        "If the k-th move throws, elements 1..k-1 have already been moved from; undoing needs k-1 more moves, which may throw too, so no guaranteed rollback exists.",
+        "Copying leaves the sources intact: on a throw the new copies are destroyed and the new block freed, so the old vector is untouched.",
+        "move_if_noexcept yields an rvalue only if the move is noexcept or the type is not copyable; a copyable type with a throwing move is therefore copied (cost O(n) copies instead of O(n) moves, hence the advice to mark moves noexcept).",
+        "For a move-only type with a throwing move there is no alternative; the strong guarantee is waived and the effects are unspecified."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "move-semantics",
+        "ownership-signatures"
+      ],
+      "skillLabel": "Relocation and move_if_noexcept",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP03#theory-and-derivation"
+        }
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }

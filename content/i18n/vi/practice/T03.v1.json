@@ -93,6 +93,24 @@
     "Kiểm tra các biến cục bộ bằng `p`, stack bằng `w`/`u`/`d`, và chạy lại với một conditional breakpoint nếu cần.",
     "Ghi lại phát hiện và viết một regression test."
    ]
+  },
+  "c1": {
+   "prompt": "Một predicate đơn điệu tốt-sang-xấu trên n = 3.000.000 bước (bước 0 tốt; bước xấu đầu tiên có thể là bất kỳ bước nào trong 1..n, hoặc không bước nào xấu). Số lần thăm dò tối thiểu ở trường hợp xấu nhất mà mọi chiến lược cần là bao nhiêu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Có n+1 = 3.000.001 đáp án khả dĩ và mỗi lần thăm dò cho một bit, nên cây quyết định độ sâu d cần 2^d >= 3.000.001. Vì 2^21 = 2.097.152 < 3.000.001 <= 4.194.304 = 2^22, giá trị tối thiểu là d = 22, và bisection điểm giữa đạt được nó."
+  },
+  "c2": {
+   "prompt": "proj/util.py và proj/tools/util.py cùng tồn tại, proj/tools/run.py có `import util`, và proj/tools/__init__.py tồn tại. Từ thư mục proj, cách khởi chạy nào import proj/util.py?",
+   "options": [
+    "python tools/run.py",
+    "python -m tools.run",
+    "python -P tools/run.py",
+    "cd tools && python run.py"
+   ],
+   "explanation": "Với một script, sys.path[0] là thư mục của script (tools/), nên `python tools/run.py` và `cd tools && python run.py` import tools/util.py. Với -m, phần tử đầu tiên là thư mục hiện tại (proj), nên proj/util.py được import. Với -P không có gì được đặt lên đầu, nên `import util` thất bại với ModuleNotFoundError."
+  },
+  "c3": {
+   "prompt": "Với `for i in range(10): total += i * i`, breakpoint pdb ở dòng cập nhật `b loop.py:3, i % 3 == 0` theo sau là `ignore 1 2` và `continue`, thì `total` bằng bao nhiêu ở lần dừng đầu tiên? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Các lần đi qua đủ điều kiện xảy ra tại i = 0, 3, 6, 9. Ignore count 2 bỏ qua hai lần đầu (i = 0 và 3; một lần đi qua chỉ được tính khi điều kiện đúng). Lần dừng đầu tiên là tại i = 6, trước phép cập nhật, khi total = 0+1+4+9+16+25 = 55."
   }
  }
 }

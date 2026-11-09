@@ -56,12 +56,12 @@
       ],
       "id": "b2",
       "kind": "number",
-      "prompt": "Motor tau=0.5, K=2, u=3. Speed at t=0.25 s in rad/s (3 decimals)?",
-      "answer": "2.361",
+      "prompt": "Motor tau=1.2, K=0.5, u=8. Speed at t=0.6 s in rad/s (3 decimals)?",
+      "answer": "1.574",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.005,
-      "explanation": "6(1-e^{-0.5}).",
+      "explanation": "K*u=4 rad/s; 4(1-e^{-0.5})=4*0.3935=1.574.",
       "equivalentTo": [
         "q2"
       ]
@@ -114,12 +114,12 @@
       ],
       "id": "b4",
       "kind": "number",
-      "prompt": "sigma_hat=0.083 and sqrt((J^T J)^-1) for tau = 0.102. SE of tau in milliseconds (nearest integer)?",
-      "answer": "8",
+      "prompt": "sigma_hat=0.12 and sqrt((J^T J)^-1) for tau = 0.35. SE of tau in milliseconds (nearest integer)?",
+      "answer": "42",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.6,
-      "explanation": "0.083*0.102=0.00847 s.",
+      "explanation": "0.12*0.35=0.042 s = 42 ms.",
       "equivalentTo": [
         "q4"
       ]
@@ -143,12 +143,12 @@
       ],
       "id": "b5",
       "kind": "number",
-      "prompt": "With SE(tau)=0.0085 s and t critical value 2.045, the 95% half-width in milliseconds (nearest integer)?",
-      "answer": "17",
+      "prompt": "With SE(tau)=0.042 s and t critical value 2.101, the 95% half-width in milliseconds (nearest integer)?",
+      "answer": "88",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.6,
-      "explanation": "2.045*8.5=17.4 ms.",
+      "explanation": "2.101*42=88.2 ms.",
       "equivalentTo": [
         "q4"
       ]
@@ -303,12 +303,12 @@
       ],
       "id": "b10",
       "kind": "number",
-      "prompt": "SE(tau)=0.0085 s and tau_hat=0.498 s. The approximate standard error of ln(tau) in percent (1 decimal)?",
-      "answer": "1.7",
+      "prompt": "SE(tau)=0.042 s and tau_hat=1.21 s. The approximate standard error of ln(tau) in percent (1 decimal)?",
+      "answer": "3.5",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.1,
-      "explanation": "0.0085/0.498=1.7%.",
+      "explanation": "0.042/1.21=3.47%, about 3.5%.",
       "equivalentTo": [
         "q4"
       ]
@@ -371,6 +371,89 @@
         "Proposes tightening rtol/atol and compare fits.",
         "Checks the simulator against an analytic solution and monitors optimizer status."
       ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nonlinear-least-squares"
+      ],
+      "skillLabel": "Gauss-Newton divergence threshold",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "Gauss-Newton (here Newton) for tanh(x)=0 uses x ← x - sinh(x)cosh(x). It converges from x0=0.95 and diverges from x0=1.15. At which positive x_c does the iteration map x_c to -x_c, separating the two behaviours? Give 3 decimals.",
+      "answer": "1.089",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.002,
+      "explanation": "The iteration is x ← x - ½ sinh(2x). Requiring x_c - ½ sinh(2x_c) = -x_c gives sinh(2x_c) = 4x_c. The positive root is x_c = 1.08866. For |x0| < x_c the map contracts to 0 (0.95 gives -0.684, 0.234, -0.0087, ...), for |x0| > x_c each step overshoots farther (1.15 gives -1.318, 2.156, -16.5, ...) because ½ sinh(2x) grows faster than 2x."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "parameter-uncertainty"
+      ],
+      "skillLabel": "Standard error along a singular direction",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "At the optimum of a two-parameter fit, the Jacobian has singular values 12.87 and 1.865, and the noise estimate is σ̂ = 0.1. What is the standard error of the worst-determined combination of parameters (the direction of the smaller singular value)? Give 3 decimals.",
+      "answer": "0.054",
+      "dimension": "M",
+      "critical": false,
+      "tolerance": 0.001,
+      "explanation": "Cov = σ̂²(JᵀJ)⁻¹ = σ̂² V Σ⁻² Vᵀ. Along the right singular vector v_i the standard deviation is σ̂/σ_i. For σ_min = 1.865: 0.1/1.865 = 0.0536 (about 0.054). For σ_max = 12.87 it would be 0.1/12.87 = 0.0078, so the combination along the weak direction is nearly 7 times less well determined."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "nonlinear-least-squares"
+      ],
+      "skillLabel": "Levenberg-Marquardt and parameter scale",
+      "relatedPrerequisites": [
+        "PY04",
+        "M11"
+      ],
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY05#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "A Levenberg-Marquardt fit of a time constant barely moves it when you switch its unit from seconds to milliseconds, even though the data and model are the same. What is the right fix?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Increase the damping λ until the step becomes small enough to stay inside the trust region.",
+        "Run the same fit in float64 only, since float32 rounding of the milliseconds value is what causes the stall.",
+        "Give τ a suitable x_scale (or non-dimensionalize it) so steps in all variables affect the cost comparably.",
+        "Remove the bounds on τ so the optimizer is free to take longer steps in that variable."
+      ],
+      "answer": "2",
+      "explanation": "The LM step solves (JᵀJ + λI)δ = -Jᵀr. In milliseconds the τ column of J is 1000 times smaller, so its squared singular value falls far below λ and that direction is heavily damped: the step in τ is almost frozen (in the lesson's check the change in τ drops from -1.40 s to -7e-6 s for λ = 1). The penalty λ‖δ‖² compares quantities in different units. The remedy is to scale the variables (x_scale of the order of each parameter, or 'jac', or non-dimensionalizing) so the trust region matches each variable's natural size. Raising λ makes it worse, precision is not the cause, and removing bounds does not change the damping."
     }
   ]
 }

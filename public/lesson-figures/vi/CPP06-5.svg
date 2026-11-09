@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="Inter, sans-serif">
+<title>SFINAE: ứng viên thất bại khi thay thế sẽ biến mất</title>
+<desc>Bốn lời gọi to_text so với hai overload, một trả về decltype(std::to_string(x)) và một decltype(x.name()): với mỗi lời gọi, mỗi ứng viên hoặc khả dụng hoặc bị loại, và kết quả là một giá trị hoặc lỗi biên dịch khi không còn ứng viên.</desc>
+<defs><marker id="b5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="500" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" font-weight="bold" fill="#e9e7e3">SFINAE: ứng viên thất bại khi thay thế sẽ biến mất</text>
+<rect x="32" y="64" width="836" height="404" rx="10" fill="#22252a"/>
+<text x="52" y="100" font-size="17" font-weight="bold" fill="#e9e7e3">lời gọi</text>
+<text x="232" y="100" font-size="17" font-weight="bold" fill="#e9e7e3">A: std::to_string(x)</text>
+<text x="462" y="100" font-size="17" font-weight="bold" fill="#e9e7e3">B: x.name()</text>
+<text x="692" y="100" font-size="17" font-weight="bold" fill="#e9e7e3">kết quả</text>
+<rect x="52" y="120" width="170" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2"/>
+<text x="62" y="158" font-size="14" fill="#e9e7e3">to_text(42)</text>
+<rect x="232" y="120" width="210" height="64" rx="8" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<path d="M246,152 l8,9 l16,-18" fill="none" stroke="#6fc693" stroke-width="3"/>
+<text x="278" y="158" font-size="15" font-weight="600" fill="#6fc693">khả dụng</text>
+<rect x="462" y="120" width="210" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2" stroke-dasharray="6 4"/>
+<line x1="476" y1="142" x2="492" y2="162" stroke="#e58a80" stroke-width="3"/>
+<line x1="492" y1="142" x2="476" y2="162" stroke="#e58a80" stroke-width="3"/>
+<text x="504" y="154" font-size="15" font-weight="600" fill="#e58a80">bị loại</text>
+<text x="504" y="174" font-size="14" fill="#a7adb5">không có thành viên name</text>
+<line x1="672" y1="152" x2="692" y2="152" stroke="#a7adb5" stroke-width="2" marker-end="url(#b5)"/>
+<rect x="692" y="120" width="160" height="64" rx="8" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<text x="706" y="158" font-size="15" font-weight="600" fill="#6fc693">"42"</text>
+<rect x="52" y="202" width="170" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2"/>
+<text x="62" y="240" font-size="14" fill="#e9e7e3">to_text(2.5)</text>
+<rect x="232" y="202" width="210" height="64" rx="8" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<path d="M246,234 l8,9 l16,-18" fill="none" stroke="#6fc693" stroke-width="3"/>
+<text x="278" y="240" font-size="15" font-weight="600" fill="#6fc693">khả dụng</text>
+<rect x="462" y="202" width="210" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2" stroke-dasharray="6 4"/>
+<line x1="476" y1="224" x2="492" y2="244" stroke="#e58a80" stroke-width="3"/>
+<line x1="492" y1="224" x2="476" y2="244" stroke="#e58a80" stroke-width="3"/>
+<text x="504" y="236" font-size="15" font-weight="600" fill="#e58a80">bị loại</text>
+<text x="504" y="256" font-size="14" fill="#a7adb5">không có thành viên name</text>
+<line x1="672" y1="234" x2="692" y2="234" stroke="#a7adb5" stroke-width="2" marker-end="url(#b5)"/>
+<rect x="692" y="202" width="160" height="64" rx="8" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<text x="706" y="240" font-size="15" font-weight="600" fill="#6fc693">"2.500000"</text>
+<rect x="52" y="284" width="170" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2"/>
+<text x="62" y="322" font-size="14" fill="#e9e7e3">to_text(Joint{"elbow"})</text>
+<rect x="232" y="284" width="210" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2" stroke-dasharray="6 4"/>
+<line x1="246" y1="306" x2="262" y2="326" stroke="#e58a80" stroke-width="3"/>
+<line x1="262" y1="306" x2="246" y2="326" stroke="#e58a80" stroke-width="3"/>
+<text x="274" y="318" font-size="15" font-weight="600" fill="#e58a80">bị loại</text>
+<text x="274" y="338" font-size="14" fill="#a7adb5">không có overload khớp</text>
+<rect x="462" y="284" width="210" height="64" rx="8" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<path d="M476,316 l8,9 l16,-18" fill="none" stroke="#6fc693" stroke-width="3"/>
+<text x="508" y="322" font-size="15" font-weight="600" fill="#6fc693">khả dụng</text>
+<line x1="672" y1="316" x2="692" y2="316" stroke="#a7adb5" stroke-width="2" marker-end="url(#b5)"/>
+<rect x="692" y="284" width="160" height="64" rx="8" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<text x="706" y="322" font-size="15" font-weight="600" fill="#6fc693">"elbow"</text>
+<rect x="52" y="366" width="170" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2"/>
+<text x="62" y="404" font-size="14" fill="#e9e7e3">to_text("x")</text>
+<rect x="232" y="366" width="210" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2" stroke-dasharray="6 4"/>
+<line x1="246" y1="388" x2="262" y2="408" stroke="#e58a80" stroke-width="3"/>
+<line x1="262" y1="388" x2="246" y2="408" stroke="#e58a80" stroke-width="3"/>
+<text x="274" y="400" font-size="15" font-weight="600" fill="#e58a80">bị loại</text>
+<text x="274" y="420" font-size="14" fill="#a7adb5">không có overload khớp</text>
+<rect x="462" y="366" width="210" height="64" rx="8" fill="#17181b" stroke="#3d4148" stroke-width="2" stroke-dasharray="6 4"/>
+<line x1="476" y1="388" x2="492" y2="408" stroke="#e58a80" stroke-width="3"/>
+<line x1="492" y1="388" x2="476" y2="408" stroke="#e58a80" stroke-width="3"/>
+<text x="504" y="400" font-size="15" font-weight="600" fill="#e58a80">bị loại</text>
+<text x="504" y="420" font-size="14" fill="#a7adb5">không có thành viên name</text>
+<line x1="672" y1="398" x2="692" y2="398" stroke="#a7adb5" stroke-width="2" marker-end="url(#b5)"/>
+<rect x="692" y="366" width="160" height="64" rx="8" fill="#17181b" stroke="#e58a80" stroke-width="2"/>
+<text x="706" y="404" font-size="15" font-weight="600" fill="#e58a80">lỗi biên dịch</text>
+</svg>

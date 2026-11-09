@@ -81,6 +81,24 @@
     "Phương án: tăng tần số hoặc thiết kế lại trong thời gian rời rạc với mô hình chính xác.",
     "Phương án: bù độ trễ hoặc giảm gain."
    ]
+  },
+  "c1": {
+   "prompt": "Một notch ở 50 rad/s được cài đặt bằng phương pháp Tustin (không prewarping) với T = 0.03 s. Bộ lọc số thực sự có notch ở tần số nào (rad/s, 2 chữ số thập phân)?",
+   "explanation": "Tustin tính bộ lọc tương tự tại (2/T) tan(wT/2), nên một đặc điểm tương tự ở wP xuất hiện tại w = (2/T) arctan(wP T/2) = (2/0.03) arctan(0.75) = 66.667 x 0.6435 = 42.90 rad/s, thấp hơn 14%. Prewarping tại tần số đó chỉ sửa đúng một tần số."
+  },
+  "c2": {
+   "prompt": "Đối tượng y' = -5 y + 20 u, ZOH với T = 0.05 s, luật u = -K y với một mẫu trễ. K ổn định lớn nhất (3 chữ số thập phân)?",
+   "explanation": "Ad = e^{-0.25} = 0.77880 và Bd = (20/5)(1 - Ad) = 0.88480. Với một mẫu trễ y_{k+1} = Ad y_k - Bd K y_{k-1}, nên z^2 - Ad z + Bd K = 0. Với K > 0 các điều kiện Jury 1 - Ad + Bd K > 0 và 1 + Ad + Bd K > 0 luôn đúng, và |Bd K| < 1 cho K < 1/Bd = 1.130. (Nếu không có trễ thì giới hạn là (1 + Ad)/Bd = 2.010.)"
+  },
+  "c3": {
+   "prompt": "Bộ tích phân y' = u với u = -K y. Lệnh tính từ mẫu y_k tới đối tượng sau mẫu 0.2 T (lệnh cũ được giữ cho đến lúc đó). K*T ổn định lớn nhất là bao nhiêu?",
+   "options": [
+    "2.000, giống như khi không có độ trễ, vì bộ giữ không đổi",
+    "3.333, lớn hơn trường hợp không có độ trễ",
+    "1.000, giá trị của một mẫu trễ, vì mọi độ trễ đều tính là một mẫu đầy đủ",
+    "5.000, vì chưa tới một nửa lệnh bị trễ"
+   ],
+   "explanation": "y_{k+1} = y_k + 0.2 T u_{k-1} + 0.8 T u_k. Với x = K T: z^2 - (1 - 0.8x) z + 0.2x = 0. Jury: |0.2x| < 1 cho x < 5; 1 + a1 + a0 = x > 0; 1 - a1 + a0 = 2 - x + 0.4x > 0 cho x < 2/0.6 = 3.333. Cận chặt hơn là 3.333. Độ trễ phân số dưới T/4 nâng giới hạn lên trên 2 trong mô hình này, nhưng trường hợp xấu nhất trên mọi độ trễ trong [0, T] là 1."
   }
  }
 }

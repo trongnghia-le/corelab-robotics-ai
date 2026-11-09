@@ -99,6 +99,7 @@ function proseAndCode(markdown: string) {
 /** Minutes for one exercise from its difficulty tag. */
 function exerciseMinutes(line: string) {
   if (/mini-?project/i.test(line)) return 45;
+  if (/\(challenge\)/i.test(line)) return 30;
   if (/\(hard\)/i.test(line)) return 20;
   if (/\(medium\)/i.test(line)) return 12;
   if (/\(easy\)/i.test(line)) return 6;

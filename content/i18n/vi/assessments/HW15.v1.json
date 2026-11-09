@@ -1,0 +1,59 @@
+{
+ "questions": {
+  "q1": {
+   "prompt": "Một người thiết kế chọn cỡ một trục bằng T_M = (T_L + T_a) x S_f và chưa chắc về khối lượng tải và ma sát. Sự thận trọng thêm nên đặt ở đâu?",
+   "options": [
+    "Vào mọi đầu vào: khối lượng nặng hơn, hiệu suất thấp hơn và ma sát cao hơn, rồi còn thêm S_f.",
+    "Vào hệ số an toàn S_f duy nhất áp một lần lên mô-men, còn các đầu vào giữ ở giá trị trung thực.",
+    "Không ở đâu cả: mô-men định mức của datasheet đã chứa mọi biên.",
+    "Vào điện áp nguồn, bằng cách chọn mức cao nhất có thể."
+   ],
+   "explanation": "Đệm nhiều đầu vào rồi còn áp S_f làm các hệ số chồng lên nhau một cách âm thầm, nên biên thật không còn biết. Hãy giữ đầu vào trung thực (hoặc ở đầu bi quan được nêu rõ của một khoảng đã biết) và áp S_f một lần lên mô-men."
+  },
+  "q2": {
+   "prompt": "Một robot 6 kg có hai bánh dẫn động bán kính 0.05 m chạy tốc độ không đổi trên mặt phẳng với hệ số cản lăn 0.02. Mô-men mỗi bánh tính bằng N m. Độ chính xác 0.002.",
+   "explanation": "F = m g c_rr = 6 x 9.81 x 0.02 = 1.177 N; T = F r / 2 = 1.177 x 0.05 / 2 = 0.0294 N m."
+  },
+  "q3": {
+   "prompt": "Một chuyển động 1.2 m có giới hạn tốc độ 0.6 m/s và giới hạn gia tốc 0.6 m/s^2 (profile hình thang). Tổng thời gian tính bằng giây. Độ chính xác 0.02.",
+   "explanation": "v^2/a = 0.6 < 1.2, nên là hình thang: T = d/v + v/a = 1.2/0.6 + 0.6/0.6 = 3.0 s."
+  },
+  "q4": {
+   "prompt": "Quán tính tải 3 kg cm^2 được dẫn qua hộp số 4:1 bởi động cơ có quán tính rotor 0.05 kg cm^2. Tỉ số quán tính J_L / (J_0 i^2). Độ chính xác 0.02.",
+   "explanation": "3 / (0.05 x 16) = 3.75."
+  },
+  "q5": {
+   "prompt": "Một servo đạt phép kiểm tra mô-men đỉnh, nhưng mô-men của nó trên một chu kỳ lặp lại là cao. Đại lượng nào quyết định nó có quá nhiệt không?",
+   "options": [
+    "Mô-men đỉnh, so với mô-men kẹt.",
+    "Mô-men RMS trên cả chu kỳ kể cả quãng nghỉ, so với mô-men định mức.",
+    "Tốc độ trung bình, so với tốc độ không tải.",
+    "Điện áp nguồn, so với điện áp định mức."
+   ],
+   "explanation": "Nhiệt cuộn dây là R x I^2, nên giới hạn nhiệt áp dụng cho mô-men (dòng) hiệu dụng trên chu kỳ, với thời gian nghỉ tính vào thời gian chu kỳ."
+  },
+  "q6": {
+   "prompt": "Một vít bước 4 mm và hiệu suất 0.5 phải đẩy tải 100 N. Mô-men động cơ tính bằng N m. Độ chính xác 0.003.",
+   "explanation": "T = F l / (2 pi eta) = 100 x 0.004 / (2 pi x 0.5) = 0.127 N m."
+  },
+  "q7": {
+   "prompt": "Một động cơ chổi than ở 12 V có dòng kẹt 6 A và chạy ở 1.5 A. Driver định mức 3 A liên tục và 5 A đỉnh. Kết luận đúng là gì?",
+   "options": [
+    "Đạt: 1.5 A thấp hơn định mức liên tục 3 A.",
+    "Đạt: 6 A đủ gần 5 A đỉnh.",
+    "Không an toàn: dòng kẹt vượt định mức đỉnh, nên thêm giới hạn dòng và phát hiện kẹt hoặc dùng driver lớn hơn.",
+    "Chỉ trượt nếu điện áp nguồn trên 24 V."
+   ],
+   "explanation": "Một trục bị kẹt kéo V/R, ở đây là 6 A, cao hơn 5 A đỉnh. Dòng chạy thì ổn, nhưng trường hợp kẹt cần giới hạn dòng, phát hiện kẹt hoặc driver lớn hơn."
+  },
+  "q8": {
+   "prompt": "Một cánh tay nhỏ phải nâng tải 0.2 kg ở đầu mút thanh dài 0.5 m qua 90 độ trong 1.5 s. Mô tả các bước chọn cỡ bạn sẽ theo để chọn động cơ, tỉ số truyền và driver, và nêu các phép kiểm tra có thể bác bỏ lựa chọn đầu tiên của bạn.",
+   "rubric": [
+    "Tính mô-men trọng lực ở tư thế xấu nhất (nằm ngang) và mô-men tăng tốc J nhân alpha từ profile hình thang, rồi áp hệ số an toàn một lần.",
+    "Kiểm tra mô-men đỉnh so với khả năng động cơ, mô-men RMS trên chu kỳ so với mô-men định mức, và tốc độ còn lại ở mô-men làm việc.",
+    "Kiểm tra dòng driver (liên tục và kẹt), dư điện áp so với sức điện động ngược, và chọn phản hồi (độ phân giải ở đầu ra, backlash)."
+   ],
+   "explanation": "Có rubric hướng dẫn: so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  }
+ }
+}

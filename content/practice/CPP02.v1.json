@@ -295,6 +295,77 @@
         "Justified case: polymorphic object or large object shared across components with unclear lifetime."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "cpp02-c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "object-layout"
+      ],
+      "skillLabel": "Size and padding of a struct",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "On a platform where char is 1 byte, short 2, int 4 and double 8 (each aligned to its size), what is sizeof(R) for `struct R { char flag; int count; short code; double stamp; };`? Give the integer.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "24",
+      "tolerance": 0.5,
+      "explanation": "Offsets by the layout rule: flag at 0; count at ceil(1/4)*4 = 4; code at ceil(8/2)*2 = 8; stamp at ceil(10/8)*8 = 16. The last member ends at 16 + 8 = 24, and the struct alignment is 8, so sizeof is ceil(24/8)*8 = 24 (checked by compiling with g++ 11.4.0). Padding totals 24 - 15 = 9 bytes. Declaring the members in the order stamp, count, code, flag gives offsets 0, 8, 12, 14, an end of 15 and sizeof 16."
+    },
+    {
+      "id": "cpp02-c2",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "vector-growth"
+      ],
+      "skillLabel": "Relocation cost of push_back",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A std::vector<int> starts empty with capacity growing 1, 2, 4, 8, 16, ... (factor 2). You push_back 20 elements one by one. How many element relocations (moves or copies of existing elements into a new block) happen in total?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "31",
+      "tolerance": 0.01,
+      "explanation": "A reallocation happens when size equals capacity: before pushes 2, 3, 5, 9 and 17, with sizes 1, 2, 4, 8 and 16, and each relocates that many elements. The total is 1 + 2 + 4 + 8 + 16 = 31 (the allocations are 6, with capacities 1, 2, 4, 8, 16, 32). The bound g/(g-1) * n with g = 2 and n = 20 gives 40, and 31 is below it."
+    },
+    {
+      "id": "cpp02-c3",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "shared-ownership"
+      ],
+      "skillLabel": "Strong and weak counts",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/CPP02#theory-and-derivation"
+        }
+      ],
+      "prompt": "After `auto p = std::make_shared<int>(1); std::weak_ptr<int> w = p; auto q = p; p.reset();` what are q.use_count() and w.expired()?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "2 and false, because weak_ptr counts as an owner and reset() only empties p",
+        "0 and true, because reset() destroys the object for every owner at once",
+        "1 and false, because q still owns the object and a weak_ptr does not count",
+        "1 and true, because the weak_ptr was created before q and therefore expires first"
+      ],
+      "answer": "2",
+      "explanation": "make_shared creates one owner (count 1). The weak_ptr observes the object and does not change the strong count. Copying p into q makes the count 2. p.reset() releases p's share, leaving count 1, held by q, so the object is alive and w.expired() is false. A weak_ptr never keeps the object alive and never counts as an owner; reset() affects only the pointer it is called on."
     }
   ]
 }

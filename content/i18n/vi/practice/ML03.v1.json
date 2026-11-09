@@ -82,6 +82,29 @@
     "Với mỗi fold và bậc: tính mean/std chỉ trên các fold huấn luyện, chuẩn hóa cả hai phần bằng chúng, khớp trên huấn luyện, chấm điểm trên validation.",
     "Lấy trung bình qua các fold, chọn bậc có trung bình thấp nhất, rồi khớp lại trên toàn bộ dữ liệu huấn luyện và đánh giá một lần trên tập test."
    ]
+  },
+  "c1": {
+   "prompt": "Ridge regression với singular value của thiết kế d = (4, 1, 0.25), tọa độ quay thật gamma = (1, 1, 1) và nhiễu sigma = 1. Dùng công thức SVD, sai số bình phương kỳ vọng của tham số (bias^2 + variance) tại lambda = 1 là bao nhiêu? Cho một số với 2 chữ số thập phân.",
+   "explanation": "Mỗi tọa độ có sai số (lambda^2 gamma^2 + sigma^2 d^2)/(d^2 + lambda)^2. Với lambda = 1: d=4: (1+16)/289 = 0.0588; d=1: (1+1)/4 = 0.5; d=0.25: (1+0.0625)/1.0625^2 = 0.9412. Tổng = 1.5000 (bias^2 1.1393 + variance 0.3607). Để so sánh, lambda = 0 cho 17.0625."
+  },
+  "c2": {
+   "prompt": "Mười mô hình ứng viên đều có cùng rủi ro thật 0.10. Ước lượng cross-validation của mỗi mô hình có nhiễu độc lập với độ lệch chuẩn 0.02. Bạn chọn mô hình có điểm CV thấp nhất. Điểm CV kỳ vọng của mô hình thắng là bao nhiêu? (E[max của 10 biến chuẩn tắc] = 1.539.)",
+   "options": [
+    "0.100, vì mọi rủi ro thật bằng nhau và CV không chệch cho từng mô hình",
+    "0.084, vì tốt nhất trong mười là thấp hơn trung bình một độ lệch chuẩn",
+    "0.069, vì mô hình thắng trung bình thấp hơn 0.10 khoảng 1.54 độ lệch chuẩn",
+    "0.131, vì chọn giữa nhiều mô hình làm tăng sai số"
+   ],
+   "explanation": "Mỗi ước lượng CV là 0.10 + 0.02 Z_j. Điểm của mô hình thắng là 0.10 + 0.02 min Z_j, và E[min Z_j] = -E[max Z_j] = -1.539 với K = 10. Vậy điểm kỳ vọng của mô hình thắng là 0.10 - 0.0308 = 0.069: không chệch với từng mô hình, nhưng lệch thấp với mô hình được chọn. Nested cross-validation hoặc một tập test chưa đụng tới loại bỏ sự lạc quan này."
+  },
+  "c3": {
+   "prompt": "Với bình phương tối thiểu, ma trận thiết kế cố định hạng p, phương sai nhiễu sigma^2 và nghiệm thật nằm trong mô hình, hãy suy ra MSE huấn luyện kỳ vọng và MSE kỳ vọng trên đáp ứng mới tại cùng các đầu vào, và nêu mỗi kết quả cho biết gì về việc chọn bậc.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Viết phần dư là (I - H) epsilon với H là phép chiếu lên không gian cột, tr H = p, và được MSE huấn luyện kỳ vọng = sigma^2 (1 - p/n).",
+    "Viết sai số đáp ứng mới là n sigma^2 cộng E||A beta - y_hat||^2 = sigma^2 tr H (số hạng chéo triệt tiêu do độc lập), cho sigma^2 (1 + p/n).",
+    "Kết luận độ lạc quan là 2 sigma^2 p / n, nên sai số huấn luyện lệch thấp và càng gây hiểu lầm khi p/n lớn; nêu các điều kiện (nghiệm thật trong mô hình, cùng đầu vào)."
+   ]
   }
  }
 }

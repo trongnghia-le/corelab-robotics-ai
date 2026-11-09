@@ -366,6 +366,77 @@
         "Computes that optimizing the other 15% gives at most 1.18 times.",
         "Recommends measuring before and after."
       ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amdahl"
+      ],
+      "skillLabel": "Scaled speedup",
+      "mistakeCategory": "mathematical",
+      "id": "c1",
+      "kind": "number",
+      "dimension": "M",
+      "prompt": "A program run on N = 64 processors spends a fraction s' = 0.05 of the measured parallel time in serial code, and the problem size is scaled so that the run time stays the same. Using Gustafson's scaled speedup N + (1-N)s', what is the speedup over one processor? Give 2 decimals.",
+      "answer": "60.85",
+      "tolerance": 0.02,
+      "explanation": "S = N + (1-N)s' = 64 + (1-64)*0.05 = 64 - 3.15 = 60.85. Amdahl's fixed-size formula with the same number 0.05 as the single-processor serial fraction would give 1/(0.05+0.95/64) = 15.4, a different question (fixed work), which is why you must state where the serial fraction was measured.",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "amdahl"
+      ],
+      "skillLabel": "Optimal processor count with overhead",
+      "mistakeCategory": "mathematical",
+      "id": "c2",
+      "kind": "number",
+      "dimension": "M",
+      "prompt": "A program has serial fraction s = 0.04 and a communication overhead that adds c*N to the normalised time, c = 4e-4, so S(N) = 1/(s + (1-s)/N + c*N). To the nearest integer, which number of processors N maximises the speedup?",
+      "answer": "49",
+      "tolerance": 1,
+      "explanation": "The denominator f(N) = s + p/N + cN is minimised where f'(N) = -p/N^2 + c = 0, so N* = sqrt(p/c) = sqrt(0.96/4e-4) = sqrt(2400) = 48.99, i.e. 49. There S = 1/(0.04 + 2*sqrt(0.96*4e-4)) = 12.63, half of the Amdahl limit 25.",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "equivalence-testing"
+      ],
+      "skillLabel": "Cancellation in the Gram distance identity",
+      "mistakeCategory": "conceptual",
+      "id": "c3",
+      "kind": "choice",
+      "dimension": "C",
+      "prompt": "You compute all pairwise distances with d2 = |p|^2 + |q|^2 - 2 p.q in float64 for points that form a tight cluster (spread 1e-3) around the point (1000, 1000, 1000). Some results are tiny negative numbers. What explains this, and what is the standard fix?",
+      "options": [
+        "np.sqrt is inaccurate for small inputs; compute the square root in float128 instead",
+        "The rounding error of d2 is about u*|p|^2, far larger than the true d2; subtract the centroid first",
+        "Broadcasting creates incorrect temporaries; compute the distances in a Python loop instead",
+        "The matrix product P @ P.T is not symmetric in floating point; average it with its transpose"
+      ],
+      "answer": "1",
+      "explanation": "The three terms are each about 3e6 and are rounded with relative error u = 1.1e-16, so d2 carries an absolute error of order 4*u*3e6 = 1e-9, while the true d2 is only about 5e-6 (and can be below the error for the closest pairs, giving a negative result). This is catastrophic cancellation. Distances are translation invariant, so subtracting the centroid makes |p| about 1e-3 and the error about 1e-22. Higher precision for sqrt, loops or symmetrising do not remove the cancellation inside d2.",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY09#theory-and-derivation"
+        }
+      ],
+      "critical": false
     }
   ]
 }

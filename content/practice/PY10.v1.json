@@ -326,6 +326,80 @@
         "q4"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A class is defined as `@deco class Child(Base, tag='x')` with two descriptor attributes that define __set_name__, and Base defines __init_subclass__. Which order of events is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Base.__init_subclass__, then each descriptor's __set_name__, then deco",
+        "Each descriptor's __set_name__, then Base.__init_subclass__, then deco",
+        "deco, then each descriptor's __set_name__, then Base.__init_subclass__",
+        "Base.__init_subclass__ and deco, with __set_name__ only on first attribute access"
+      ],
+      "answer": "1",
+      "explanation": "After the body has run, the class is created by calling the metaclass. Inside type.__new__ the interpreter first calls __set_name__ on every attribute that defines it, then calls __init_subclass__ on the parent. Only when the class object is complete is it passed to the class decorator, which therefore sees a fully initialised class. __set_name__ is never deferred to first access (Python Language Reference, Data model, 3.3.3.6).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "class-hooks"
+      ],
+      "skillLabel": "Order of class-creation hooks",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Given a class whose __getattr__ returns a string for every name, and properties `p` (getter: raise AttributeError) and `q` (getter: return self._missing), how many times does __getattr__ run when you evaluate a.p, a.q and a.zz once each? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3",
+      "tolerance": 0.01,
+      "explanation": "a.p: the getter's AttributeError makes the dot operator call __getattr__('p'): 1 call. a.q: inside the getter, self._missing fails and calls __getattr__('_missing'), which returns a string; the getter returns it, so q itself never falls back: 1 call. a.zz is not found anywhere: 1 call. Total 3. The key rule is that __getattr__ is triggered by any AttributeError that escapes __getattribute__, even one raised inside a property getter.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "descriptor-lookup"
+      ],
+      "skillLabel": "getattr fallback after AttributeError",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A generator `stage()` does `result = yield from reader()`, where reader() ends with `return count`. Explain precisely how `result` gets its value, what the caller's send() and throw() calls do while reader() is running, and what happens to reader() if the caller calls stage_gen.close().",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "A return inside the sub-generator raises StopIteration(count); yield from catches it and its .value becomes the value of the yield from expression, so result == count.",
+        "While reader() runs, values it yields go straight to the caller, and send() values and throw() exceptions are forwarded to reader(); an exception reader() does not handle propagates out of stage() too.",
+        "close() on the outer generator closes the inner one first (GeneratorExit), so a finally block in reader() still runs."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "iterator-protocol"
+      ],
+      "skillLabel": "Generator delegation with yield from",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/PY10#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

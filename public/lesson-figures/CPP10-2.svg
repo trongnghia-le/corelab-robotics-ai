@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 590" font-family="Inter, sans-serif">
+<title>Why release/acquire publishes data and relaxed does not</title>
+<desc>Two thread timelines. With release/acquire, the write of data is sequenced before the release store, which synchronizes with the acquire load that reads true, which is sequenced before the read of data: the write happens before the read. With relaxed ordering the synchronizes-with edge is missing and the write and the read are unordered.</desc>
+<defs><marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="590" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Why release/acquire publishes data and relaxed does not</text>
+<text x="32" y="76" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">release / acquire</text>
+<text x="32" y="150" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600">producer</text>
+<text x="32" y="260" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">consumer</text>
+<rect x="150" y="120" width="230" height="44" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="265" y="148" font-size="15" fill="#e9e7e3" text-anchor="middle">W: data = 42</text>
+<rect x="450" y="120" width="330" height="44" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="615" y="148" font-size="15" fill="#e9e7e3" text-anchor="middle">S: ready.store(true, release)</text>
+<rect x="150" y="230" width="290" height="44" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="295" y="258" font-size="15" fill="#e9e7e3" text-anchor="middle">L: ready.load(acquire) = true</text>
+<rect x="500" y="230" width="230" height="44" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="615" y="258" font-size="15" fill="#e9e7e3" text-anchor="middle">R: read data</text>
+<line x1="380" y1="142" x2="448" y2="142" stroke="#a7adb5" stroke-width="2" marker-end="url(#arb)" stroke-linecap="round"/>
+<line x1="440" y1="252" x2="498" y2="252" stroke="#a7adb5" stroke-width="2" marker-end="url(#arb)" stroke-linecap="round"/>
+<text x="414" y="114" font-size="14" fill="#a7adb5" text-anchor="middle">sequenced-before</text>
+<text x="470" y="224" font-size="14" fill="#e9e7e3" text-anchor="start"></text>
+<line x1="560" y1="166" x2="330" y2="228" stroke="#e0904f" stroke-width="3" marker-end="url(#arb)" stroke-linecap="round"/>
+<text x="580" y="204" font-size="15" fill="#e0904f" text-anchor="start" font-weight="600">synchronizes-with</text>
+<text x="150" y="304" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">W happens-before R: R reads 42</text>
+<text x="32" y="344" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">relaxed / relaxed</text>
+<text x="32" y="418" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600">producer</text>
+<text x="32" y="528" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">consumer</text>
+<rect x="150" y="388" width="230" height="44" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="265" y="416" font-size="15" fill="#e9e7e3" text-anchor="middle">W: data = 42</text>
+<rect x="450" y="388" width="330" height="44" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="615" y="416" font-size="15" fill="#e9e7e3" text-anchor="middle">S: ready.store(true, relaxed)</text>
+<rect x="150" y="498" width="290" height="44" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="295" y="526" font-size="15" fill="#e9e7e3" text-anchor="middle">L: ready.load(relaxed) = true</text>
+<rect x="500" y="498" width="230" height="44" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="615" y="526" font-size="15" fill="#e9e7e3" text-anchor="middle">R: read data</text>
+<line x1="380" y1="410" x2="448" y2="410" stroke="#a7adb5" stroke-width="2" marker-end="url(#arb)" stroke-linecap="round"/>
+<line x1="440" y1="520" x2="498" y2="520" stroke="#a7adb5" stroke-width="2" marker-end="url(#arb)" stroke-linecap="round"/>
+<text x="414" y="382" font-size="14" fill="#a7adb5" text-anchor="middle">sequenced-before</text>
+<text x="470" y="492" font-size="14" fill="#e9e7e3" text-anchor="start"></text>
+<line x1="560" y1="434" x2="330" y2="496" stroke="#e58a80" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round"/>
+<text x="580" y="464" font-size="15" fill="#e58a80" text-anchor="start" font-weight="600">no edge (the load may read true</text>
+<text x="580" y="484" font-size="15" fill="#e58a80" text-anchor="start" font-weight="600">without seeing the write)</text>
+<text x="150" y="572" font-size="15" fill="#e58a80" text-anchor="start" font-weight="600">W and R unordered: data race, UB</text>
+</svg>

@@ -19,12 +19,12 @@
    "explanation": "0.6*0.4*sin(30 độ) = 0.24*0.5 = 0.120."
   },
   "j4": {
-   "prompt": "J = [[-1,-1],[1,0]] và tốc độ khớp là (0.2, 0.3) rad/s. Thành phần x của vận tốc đầu mút là bao nhiêu m/s? Cho 2 chữ số thập phân.",
-   "explanation": "v_x = (-1)(0.2) + (-1)(0.3) = -0.5 m/s."
+   "prompt": "J = [[-0.6,-0.4],[0.9,0.2]] và tốc độ khớp là (0.5, 0.25) rad/s. Thành phần x của vận tốc đầu mút là bao nhiêu m/s? Cho 2 chữ số thập phân.",
+   "explanation": "v_x = (-0.6)(0.5) + (-0.4)(0.25) = -0.30 - 0.10 = -0.4 m/s."
   },
   "j5": {
-   "prompt": "Với J = [[-1,-1],[1,0]] đầu mút đẩy với lực F = (2, 0) N. Dùng tau = J^T F, mô-men trên khớp 2 là bao nhiêu N m? Cho 1 chữ số thập phân.",
-   "explanation": "J^T = [[-1,1],[-1,0]]; tau_2 = (-1)(2) + 0*0 = -2 N m."
+   "prompt": "Với J = [[-0.6,-0.4],[0.9,0.2]] đầu mút đẩy với lực F = (3, -2) N. Dùng tau = J^T F, mô-men trên khớp 2 là bao nhiêu N m? Cho 1 chữ số thập phân.",
+   "explanation": "J^T = [[-0.6,0.9],[-0.4,0.2]]; tau_2 = (-0.4)(3) + (0.2)(-2) = -1.2 - 0.4 = -1.6 N m."
   },
   "j6": {
    "prompt": "Một bộ điều khiển tốc độ phân giải (resolved-rate) đưa tay máy 2R về một tư thế gần như duỗi thẳng và các tốc độ khớp được ra lệnh tăng vọt. Cách sửa phù hợp nhất là gì?",
@@ -81,6 +81,24 @@
     "Ghi log đại lượng đó và các tốc độ khớp, và lưu ý giảm chấn đánh đổi độ chính xác bám để lấy tốc độ bị chặn"
    ],
    "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "c1": {
+   "prompt": "Một tay máy 3R phẳng có chiều dài khâu (0.7, 0.5, 0.3) m tại q=(0.4, -0.5, 0.9) rad với ma trận khối lượng không gian khớp M=diag(2,1,0.5) kg m². Dùng Jacobian vị trí 2×3, tìm vận tốc khớp cho vận tốc đầu mút (0.06, 0.09) m/s với động năng ½q̇ᵀMq̇ nhỏ nhất, và cho động năng cực tiểu đó theo jun.",
+   "explanation": "Cực tiểu ½q̇ᵀMq̇ với Jq̇=v cho q̇=M⁻¹Jᵀ(JM⁻¹Jᵀ)⁻¹v. Với J=[[-0.4379,-0.1653,-0.2152],[1.3513,0.7065,0.2090]] được q̇=(0.05485,0.17854,-0.52754) rad/s, và K=½q̇ᵀMq̇=0.08852 J. Nghiệm giả nghịch đảo không trọng số (0.02352,0.23169,-0.50460) có chuẩn nhỏ hơn (0.5557 so với 0.5596 rad/s) nhưng K=0.09105 J."
+  },
+  "c2": {
+   "prompt": "Một tay máy 2R có l₁=0.6 m và l₂=0.4 m. Điểm làm việc của dụng cụ nằm lệch 0.03 m sang bên so với trục khâu 2, ở khoảng cách l₂ dọc theo nó. Dùng Jacobian vị trí 2×2 của điểm đó, det J (m²) tại tư thế duỗi thẳng q₂=0 là bao nhiêu?",
+   "explanation": "Điểm nằm tại khuỷu cộng R(q₁+q₂)(l₂, w) với w=0.03, nên det J = l₁(l₂ sin q₂ + w cos q₂). Tại q₂=0 bằng 0.6·0.03=0.018 m², khác không: tay duỗi thẳng không kỳ dị với điểm này. Các tư thế kỳ dị là q₂=−atan(w/l₂)=−4.29° và 175.71°."
+  },
+  "c3": {
+   "prompt": "Một tay máy 4R phẳng khâu đơn vị có các khớp tại (0,0), (1,0), (2,0), (2,−1) và đầu mút tại (3,−1). Lực đầu mút f=(5, 2) N tác dụng cùng một mô-men 4 N m được cho quanh gốc ĐẾ. Các cột Jacobian của bạn là (1; −r_y, r_x) với r là vector từ mỗi khớp đến đầu mút. Vector mô-men khớp (N m) nào giữ tay máy cân bằng?",
+   "options": [
+    "(15, 13, 11, 6)",
+    "(4, 2, 0, −5)",
+    "(−7, −7, −7, −7)",
+    "(4, 4, 4, 4)"
+   ],
+   "explanation": "Jacobian điểm đầu mút ghép với mô-men quanh đầu mút: m_tip = m_base − p×f = 4 − (3·2 − (−1)·5) = −7. Khi đó τ_j = −7 + r_j×f với r_j×f = 11, 9, 7, 2, cho (4, 2, 0, −5). Kiểm tra: τ₁ phải bằng tổng mô-men quanh khớp 1, tức 4. Dùng 4 như thể nó quanh đầu mút cho (15,13,11,6), đáp án sai kinh điển."
   }
  }
 }

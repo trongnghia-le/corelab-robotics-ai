@@ -405,6 +405,89 @@
         "Mentions the cost: required squeeze force and dependence on mu."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "Two circular fingers press on opposite sides of a regular heptagon (n = 7) at mirror-symmetric points on the edges whose normals differ by (n-1)/2 edge steps. The smallest friction coefficient that gives two-finger force closure is tan(pi/(2n)). Give it to three decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "antipodal-force-closure"
+      ],
+      "skillLabel": "Antipodal grasp and force closure",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Antipodal grasp and force closure",
+          "href": "/lessons/R14#exercises"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R06",
+        "R08"
+      ],
+      "answer": "0.228",
+      "tolerance": 0.002,
+      "explanation": "Normals of the best edge pair differ by pi - pi/n, so the angle between n1 and -n2 is pi/n and each friction cone needs half-angle pi/(2n). For n = 7, tan(pi/14) = 0.2282. For n = 3 the same formula gives tan 30 deg = 0.577, matching Modern Robotics Figure 12.22."
+    },
+    {
+      "id": "c2",
+      "prompt": "0.2 kg object, mu = 0.5, a = 0.03 m, d = 0.01 m, g = 9.81. The hand does not accelerate vertically but accelerates horizontally along the squeeze axis at 4 m/s^2, so that the finger that does the pushing carries N1 = N2 + m*ax. Total normal load N1 + N2 in N (three decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "squeeze-force"
+      ],
+      "skillLabel": "Squeeze force",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Squeeze force",
+          "href": "/lessons/R14#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R06",
+        "R08"
+      ],
+      "answer": "6.032",
+      "tolerance": 0.01,
+      "explanation": "W = 1.962 N. f2 = (W/2)(1 + d/a) = 1.308 N is the larger friction demand, so N2 = f2/mu = 2.616 N. Horizontal balance gives N1 = N2 + m*ax = 2.616 + 0.8 = 3.416 N. Check finger 1: f1/N1 = 0.654/3.416 = 0.19 < 0.5. Total = 6.032 N (5.232 N when the hand is not accelerating sideways)."
+    },
+    {
+      "id": "c3",
+      "prompt": "Modern Robotics Example 12.7 has contact wrenches (columns, rows m, fx, fy) c1=(0,-1,0), c2=(0,0,-1), c3=(-1,1,0), c4=(m,0,1) with m = 2 in the book. For which values of m does this grasp have first-order form closure?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "knowledgeType": "concept",
+      "skillTags": [
+        "antipodal-force-closure"
+      ],
+      "skillLabel": "Antipodal grasp and force closure",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Form closure",
+          "href": "/lessons/R14#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R06",
+        "R08"
+      ],
+      "options": [
+        "Only m = 2",
+        "All real m",
+        "Every m > 0",
+        "Every m < 0"
+      ],
+      "answer": "2",
+      "explanation": "F has rank 3 for every m. F k = 0 gives k3 = k1 (row fx), k4 = k2 (row fy) and m*k4 = k3 (row m). So k = k4*(m, 1, m, 1), which is strictly positive exactly when m > 0. By the positive-span test (rank n and a k > 0 with F k = 0), closure holds iff m > 0. For m = 2 this is the book's (2,1,2,1) solution."
     }
   ]
 }

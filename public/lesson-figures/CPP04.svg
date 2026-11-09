@@ -1,29 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="360" fill="#111827" rx="12"/>
-<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Encapsulation: the public functions are the gate</text>
-<rect x="20" y="50" width="330" height="270" rx="10" fill="none" stroke="#e5e7eb" stroke-width="2"/>
-<text x="185" y="74" font-size="14" text-anchor="middle" fill="#e5e7eb" font-weight="bold">class JointState</text>
-<rect x="40" y="90" width="290" height="100" rx="8" fill="#1f2937" stroke="#f97316" stroke-width="2"/>
-<text x="185" y="114" font-size="14" text-anchor="middle" fill="#f97316">private state</text>
-<text x="185" y="138" font-size="13" text-anchor="middle" fill="#e5e7eb">q_, v_, lo_, hi_, vmax_</text>
-<text x="185" y="164" font-size="13" text-anchor="middle" fill="#e5e7eb">invariant: lo &lt;= q &lt;= hi, |v| &lt;= vmax</text>
-<rect x="40" y="210" width="290" height="90" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
-<text x="185" y="234" font-size="14" text-anchor="middle" fill="#a3e635">public gate</text>
-<text x="185" y="258" font-size="13" text-anchor="middle" fill="#e5e7eb">try_set_position(q, dt) -&gt; bool</text>
-<text x="185" y="282" font-size="13" text-anchor="middle" fill="#e5e7eb">position() const, velocity() const</text>
-<path d="M185 210 V192" stroke="#e5e7eb" stroke-width="2"/>
-<text x="20" y="344" font-size="13" fill="#e5e7eb">Rejected call: state unchanged. Accepted call: invariant still true.</text>
-<text x="400" y="74" font-size="14" fill="#e5e7eb" font-weight="bold">Abstract interface, virtual dispatch</text>
-<rect x="470" y="90" width="230" height="64" rx="8" fill="none" stroke="#38bdf8" stroke-width="2"/>
-<text x="585" y="114" font-size="14" text-anchor="middle" fill="#38bdf8">Controller (abstract)</text>
-<text x="585" y="136" font-size="13" text-anchor="middle" fill="#e5e7eb">compute(error) = 0</text>
-<rect x="400" y="230" width="150" height="56" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/>
-<text x="475" y="254" font-size="14" text-anchor="middle" fill="#e5e7eb">PController</text>
-<text x="475" y="274" font-size="13" text-anchor="middle" fill="#e5e7eb">kp * e</text>
-<rect x="580" y="230" width="150" height="56" rx="8" fill="none" stroke="#e5e7eb" stroke-width="2"/>
-<text x="655" y="254" font-size="14" text-anchor="middle" fill="#e5e7eb">PIDController</text>
-<text x="655" y="274" font-size="13" text-anchor="middle" fill="#e5e7eb">P + I + D terms</text>
-<path d="M475 230 L560 156 M655 230 L610 156" stroke="#38bdf8" stroke-width="2"/>
-<text x="585" y="214" font-size="13" text-anchor="middle" fill="#e5e7eb">is-a (override)</text>
-<text x="400" y="324" font-size="13" fill="#e5e7eb">step(JointState&amp;, const Controller&amp;, ...) accepts either</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="Inter, sans-serif">
+<title>A class guards its invariant; an interface hides the implementation</title>
+<desc>Left: class JointState with private members and public operations as the only gate; a direct write q = 99 is blocked and a rejected update changes nothing. Right: abstract Controller with PController and another implementation, used by the free function step.</desc>
+<defs><marker id="ahCPP04en6fc693" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9 z" fill="#6fc693"/></marker></defs>
+<rect width="900" height="480" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">A class guards its invariant; an interface hides the implementation</text>
+<rect x="32" y="72" width="420" height="380" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="52" y="102" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">JointState</text>
+<rect x="52" y="118" width="380" height="110" rx="8" fill="none" stroke="#a7adb5" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="68" y="142" font-size="14" fill="#a7adb5" text-anchor="start">private</text>
+<text x="68" y="170" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">lo_, hi_, vmax_</text>
+<text x="68" y="194" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">q_, v_</text>
+<text x="240" y="170" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">I:  lo_ &lt;= q_ &lt;= hi_</text>
+<text x="240" y="194" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600" font-family="ui-monospace, Menlo, Consolas, monospace">    |v_| &lt;= vmax_</text>
+<rect x="52" y="250" width="380" height="86" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="68" y="274" font-size="14" fill="#6fc693" text-anchor="start" font-weight="600">public</text>
+<text x="68" y="300" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">try_set_position(q, dt) -&gt; bool</text>
+<text x="68" y="324" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">position() const,  velocity() const</text>
+<line x1="160" y1="368" x2="160" y2="340" stroke="#6fc693" stroke-width="2" stroke-linecap="round" marker-end="url(#ahCPP04en6fc693)"/>
+<text x="160" y="392" font-size="14" fill="#6fc693" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">try_set_position(0.15, 0.1)</text>
+<text x="160" y="412" font-size="14" fill="#a7adb5" text-anchor="middle">accepted: state updated</text>
+<line x1="380" y1="368" x2="380" y2="350" stroke="#e58a80" stroke-width="2" stroke-linecap="round" stroke-dasharray="6 4"/>
+<line x1="362" y1="342" x2="398" y2="342" stroke="#e58a80" stroke-width="3" stroke-linecap="round"/>
+<text x="380" y="392" font-size="14" fill="#e58a80" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">j.q_ = 99</text>
+<text x="380" y="412" font-size="14" fill="#a7adb5" text-anchor="middle">compile error: private</text>
+<rect x="476" y="72" width="392" height="380" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="496" y="102" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Interface and implementations</text>
+<rect x="536" y="124" width="272" height="70" rx="8" fill="#22252a" stroke="#ae9ce6" stroke-width="2"/>
+<text x="672" y="150" font-size="15" fill="#ae9ce6" text-anchor="middle" font-weight="600">Controller</text>
+<text x="672" y="174" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">compute(error) const = 0</text>
+<rect x="496" y="282" width="168" height="70" rx="8" fill="#22252a" stroke="#86abe2" stroke-width="2"/>
+<text x="580" y="308" font-size="15" fill="#86abe2" text-anchor="middle" font-weight="600">PController</text>
+<text x="580" y="332" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">kp_</text>
+<rect x="680" y="282" width="168" height="70" rx="8" fill="#22252a" stroke="#6cc6ba" stroke-width="2"/>
+<text x="764" y="308" font-size="15" fill="#6cc6ba" text-anchor="middle" font-weight="600">PID</text>
+<text x="764" y="332" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">kp_, ki_, kd_</text>
+<path d="M580,282 V244 H672 V206" fill="none" stroke="#ae9ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M764,282 V244 H672" fill="none" stroke="#ae9ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M672,194 L662,210 L682,210 Z" fill="#22252a" stroke="#ae9ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="496" y="236" font-size="14" fill="#a7adb5" text-anchor="start">is-a</text>
+<rect x="496" y="386" width="352" height="46" rx="8" fill="none" stroke="#3d4148" stroke-width="1.5"/>
+<text x="512" y="414" font-size="15" fill="#e9e7e3" text-anchor="start" font-family="ui-monospace, Menlo, Consolas, monospace">step(JointState&amp;, const Controller&amp;)</text>
+<text x="496" y="376" font-size="14" fill="#a7adb5" text-anchor="start">a free function sees only the interface:</text>
 </svg>

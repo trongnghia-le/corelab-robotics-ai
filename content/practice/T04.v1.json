@@ -40,7 +40,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#reasoning-and-assumptions"
+          "href": "/lessons/T04#theory-and-derivation"
         }
       ],
       "id": "v2",
@@ -62,7 +62,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#reasoning-and-assumptions"
+          "href": "/lessons/T04#theory-and-derivation"
         }
       ],
       "id": "v3",
@@ -84,7 +84,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#reasoning-and-assumptions"
+          "href": "/lessons/T04#theory-and-derivation"
         }
       ],
       "id": "v4",
@@ -111,7 +111,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#reasoning-and-assumptions"
+          "href": "/lessons/T04#theory-and-derivation"
         }
       ],
       "id": "v5",
@@ -133,7 +133,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#reasoning-and-assumptions"
+          "href": "/lessons/T04#theory-and-derivation"
         }
       ],
       "id": "v6",
@@ -160,7 +160,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#reasoning-and-assumptions"
+          "href": "/lessons/T04#theory-and-derivation"
         }
       ],
       "id": "v7",
@@ -182,7 +182,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#reasoning-and-assumptions"
+          "href": "/lessons/T04#theory-and-derivation"
         }
       ],
       "id": "v8",
@@ -231,7 +231,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#reasoning-and-assumptions"
+          "href": "/lessons/T04#theory-and-derivation"
         }
       ],
       "id": "v10",
@@ -253,7 +253,7 @@
       "remediationRefs": [
         {
           "label": "Review the worked reasoning",
-          "href": "/lessons/T04#intuition-and-definitions"
+          "href": "/lessons/T04#intuition"
         }
       ],
       "id": "v11",
@@ -292,6 +292,78 @@
         "Proposes an independent method (slow reference, high-precision arithmetic) or checking mathematical properties"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "The sum of [1e16, 1, -1e16] has condition number kappa = (sum of |x_j|) / |sum of x_j|. What is kappa? (tolerance 1e12)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2e16",
+      "tolerance": 1000000000000,
+      "explanation": "sum of |x_j| = 1e16 + 1 + 1e16 which rounds to 2e16 at this scale, and |sum of x_j| = 1. So kappa = 2e16. The first-order bound (n-1)*u*sum|x_j| then allows an absolute error of order 2 * 1.1e-16 * 2e16, about 4.4 (and about 6.66 for the dot-product bound n*u*sum|a_i b_i| with n = 3), so a result of 0.0 (error 1) is within the bound although it is wrong by 100%.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "condition-number"
+      ],
+      "skillLabel": "Condition number of a sum",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T04#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Which statement about math.isclose(a, b, rel_tol=r) with abs_tol left at 0 and 0 < r < 1 is true?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "isclose(a, b) is true exactly when |a-b| <= r*max(|a|,|b|)",
+        "If isclose(a, b) and isclose(b, c) are both true then isclose(a, c) is true",
+        "isclose(x, 0.0) is true for every x with |x| < r",
+        "isclose(a, b) can differ from isclose(b, a) when a is much larger than b"
+      ],
+      "answer": "0",
+      "explanation": "The documented rule is |a-b| <= max(rel_tol*max(|a|,|b|), abs_tol). It is symmetric, so the last option is false. It is not transitive (r = 0.1: 1 ~ 1.1 and 1.1 ~ 1.21 but 1 is not close to 1.21). Against 0 the bound is r*|x| < |x|, so only exact zero is close without abs_tol.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "float-tolerance",
+        "isclose-semantics"
+      ],
+      "skillLabel": "Tolerance semantics",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T04#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Kahan summation (S = x1, C = 0; for each x: Y = x - C, T = S + Y, C = (T - S) - Y, S = T) is run in double precision on [1.0, 1e100, 1.0, -1e100]. What does it return? (tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0",
+      "tolerance": 0.5,
+      "explanation": "Start (S, C) = (1, 0). Add 1e100: T = 1e100, C = (1e100 - 1) - 1e100 = 0 because 1e100 - 1 rounds to 1e100, so the 1 is lost. Add 1: Y = 1, T = 1e100, C = -1. Add -1e100: Y = -1e100 (the -(-1) vanishes in rounding), T = 0, C = 0. The result is 0, while the exact sum, and math.fsum, give 2.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "compensated-summation"
+      ],
+      "skillLabel": "Limits of Kahan summation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T04#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

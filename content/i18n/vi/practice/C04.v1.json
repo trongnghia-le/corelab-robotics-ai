@@ -81,6 +81,24 @@
     "Nhận xét rằng gia tốc = phần truyền thẳng phụ thuộc u và không cho thông tin về z và vz.",
     "Nêu kết luận và cần bổ sung gì (ví dụ barometer)."
    ]
+  },
+  "c1": {
+   "prompt": "Tích phân kép p' = v, v' = u, xuất phát từ nghỉ tại gốc. Năng lượng đầu vào cực tiểu (tích phân của u^2) cần để tới p = 1, v = 0 tại t = 2 s là x^T Wr(2)^-1 x với Wr(t) = [[t^3/3, t^2/2],[t^2/2, t]]. Hãy tính (hai chữ số thập phân).",
+   "explanation": "det Wr = t^4/12, nên Wr^-1 = (12/t^4)[[t, -t^2/2],[-t^2/2, t^3/3]]. Với x = (1, 0), E = (12/t^4) * t = 12/t^3 = 12/8 = 1.5. Đầu vào tối ưu là u(tau) = (6/t^3)(t - 2 tau); tích phân u^2 trên [0, 2] cho cùng 1.5."
+  },
+  "c2": {
+   "prompt": "Chuỗi hai bể x1' = -x1 + u, x2' = x1 - 2 x2 với bơm ở bể 1. Gramian khả điều khiển của nó là Wr = [[1/2, 1/6],[1/6, 1/12]]. Năng lượng cực tiểu để đưa trạng thái từ rỗng tới bể 2 mức 1 và bể 1 mức 0 là bao nhiêu?",
+   "explanation": "E = x^T Wr^-1 x với x = (0, 1) là phần tử (2,2) của Wr^-1. det Wr = 1/24 - 1/36 = 1/72, nên Wr^-1 = 72 [[1/12, -1/6],[-1/6, 1/2]] và phần tử (2,2) là 36. Bể 2 chỉ tới được qua bể 1 và xả nhanh hơn, nên tốn gấp sáu lần bể 1 (E = 6)."
+  },
+  "c3": {
+   "prompt": "Một nhà máy có A = diag(1, -2), B = [1, 1]^T và C = [0, 1]. Phát biểu nào đúng?",
+   "options": [
+    "Nó không quan sát được và đầu ra bằng không đồng nhất với mọi đầu vào",
+    "G(s) = 1/(s+2) trông ổn định, nhưng mode không ổn định tại +1 bị ẩn: x1 tăng như e^t trong khi y không thấy nó",
+    "Nó không điều khiển được, vì B có hai phần tử bằng nhau",
+    "Cực tại +1 có thể được loại bỏ bằng bộ quan sát xây từ y"
+   ],
+   "explanation": "Ma trận khả điều khiển [[1,1],[1,-2]] có hạng 2 (điều khiển được); ma trận quan sát [[0,1],[0,-2]] có hạng 1. Hàm truyền là C(sI-A)^-1 B = 1/(s+2): chỉ phần vừa điều khiển được vừa quan sát được còn lại. Với u = 0 và x(0) = (1,0) đầu ra bằng 0 đồng nhất trong khi x1 = e^t. Mode này điều khiển được (nên ổn định hóa được bằng phản hồi trạng thái) nhưng không phát hiện được, nên không bộ ước lượng nào dựa trên y thấy hay sửa được nó."
   }
  }
 }

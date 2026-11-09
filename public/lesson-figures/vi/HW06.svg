@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" font-family="Inter, Arial, sans-serif">
+<title>Bốn bus của robot và ba tầng tính toán</title>
+<desc>Trên: UART điểm-điểm, I2C với hai điện trở pull-up và nhiều thiết bị, SPI với một chip-select cho mỗi thiết bị, và CAN vi sai nhiều nút với hai điện trở đầu cuối 120 ohm, kèm số dây và tốc độ thường gặp. Dưới: dải từ vi điều khiển qua máy tính nhúng (SBC) đến module GPU, từ real-time cứng đến tính toán nặng.</desc>
+<rect width="900" height="640" fill="#191b1f" rx="12"/>
+<text x="24" y="30" font-size="16" fill="#e5e7eb" text-anchor="start" font-weight="bold">Bus: số dây, tốc độ, ai nói</text>
+<rect x="20" y="44" width="420" height="170" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="34" y="68" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">UART: điểm-điểm</text>
+<text x="34" y="88" font-size="12" fill="#a0a4ab" text-anchor="start">2 dây tín hiệu + GND; thường 115200 baud, tới vài Mbit/s</text>
+<rect x="50" y="134" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="82" y="156" font-size="12" fill="#e5e7eb" text-anchor="middle">MCU</text>
+<rect x="346" y="134" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="378" y="156" font-size="12" fill="#e5e7eb" text-anchor="middle">GPS / PC</text>
+<line x1="114" y1="144" x2="346" y2="164" stroke="#9ccd4e" stroke-width="2"/>
+<line x1="114" y1="164" x2="346" y2="144" stroke="#53b2dd" stroke-width="2"/>
+<text x="230" y="128" font-size="12" fill="#e5e7eb" text-anchor="middle" style="font-size:11.4px">TX nối RX, RX nối TX</text>
+<text x="230" y="204" font-size="12" fill="#a0a4ab" text-anchor="middle">không clock, không địa chỉ: hai bên thống nhất baud rate</text>
+<rect x="460" y="44" width="420" height="170" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="474" y="68" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">I2C: hai dây, nhiều thiết bị</text>
+<text x="474" y="88" font-size="12" fill="#a0a4ab" text-anchor="start">SDA + SCL (+GND); 100 / 400 kHz, 1 MHz fast-mode plus; địa chỉ 7 bit</text>
+<line x1="490" y1="114" x2="850" y2="114" stroke="#d97936" stroke-width="2"/>
+<line x1="490" y1="134" x2="850" y2="134" stroke="#d97936" stroke-width="2"/>
+<text x="854" y="118" font-size="11" fill="#d97936" text-anchor="start">Vcc</text>
+<rect x="490" y="98" width="0.1" height="0.1" rx="8" fill="none" stroke="none" stroke-width="0"/>
+<text x="464" y="118" font-size="11" fill="#e5e7eb" text-anchor="start">SDA</text>
+<text x="464" y="138" font-size="11" fill="#e5e7eb" text-anchor="start">SCL</text>
+<rect x="570" y="158" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="602" y="180" font-size="12" fill="#e5e7eb" text-anchor="middle">MCU</text>
+<line x1="592" y1="158" x2="592" y2="114" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="612" y1="158" x2="612" y2="134" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="666" y="158" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="698" y="180" font-size="12" fill="#e5e7eb" text-anchor="middle">IMU 0x68</text>
+<line x1="688" y1="158" x2="688" y2="114" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="708" y1="158" x2="708" y2="134" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="762" y="158" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="794" y="180" font-size="12" fill="#e5e7eb" text-anchor="middle">OLED 0x3C</text>
+<line x1="784" y1="158" x2="784" y2="114" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="804" y1="158" x2="804" y2="134" stroke="#e5e7eb" stroke-width="1"/>
+<text x="670" y="204" font-size="12" fill="#a0a4ab" text-anchor="middle" style="font-size:10.82px">đường open-drain: điện trở pull-up lên Vcc quyết định thời gian lên</text>
+<rect x="20" y="224" width="420" height="170" rx="8" fill="#272a2f" stroke="#d97936" stroke-width="2"/>
+<text x="34" y="248" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold" style="font-size:13.18px">SPI: nhanh, mỗi thiết bị một CS</text>
+<text x="34" y="268" font-size="12" fill="#a0a4ab" text-anchor="start">SCLK + MOSI + MISO + 1 CS mỗi thiết bị; MHz đến chục MHz; dây ngắn</text>
+<rect x="40" y="284" width="64" height="90" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="72" y="334" font-size="12" fill="#e5e7eb" text-anchor="middle">MCU</text>
+<rect x="290" y="286" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="322" y="308" font-size="12" fill="#e5e7eb" text-anchor="middle">IMU</text>
+<rect x="290" y="336" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="322" y="358" font-size="12" fill="#e5e7eb" text-anchor="middle">Thẻ SD</text>
+<line x1="104" y1="302" x2="240" y2="302" stroke="#53b2dd" stroke-width="2"/>
+<line x1="240" y1="302" x2="240" y2="352" stroke="#53b2dd" stroke-width="2"/>
+<line x1="240" y1="302" x2="290" y2="302" stroke="#53b2dd" stroke-width="2"/>
+<line x1="240" y1="352" x2="290" y2="352" stroke="#53b2dd" stroke-width="2"/>
+<text x="112" y="296" font-size="11" fill="#e5e7eb" text-anchor="start" style="font-size:9.97px">SCLK, MOSI, MISO (dùng chung)</text>
+<line x1="104" y1="316" x2="290" y2="316" stroke="#9ccd4e" stroke-width="2"/>
+<text x="112" y="330" font-size="11" fill="#9ccd4e" text-anchor="start">CS1</text>
+<line x1="104" y1="366" x2="290" y2="366" stroke="#9ccd4e" stroke-width="2"/>
+<text x="112" y="362" font-size="11" fill="#9ccd4e" text-anchor="start">CS2</text>
+<text x="230" y="388" font-size="12" fill="#a0a4ab" text-anchor="middle" style="font-size:10.12px">host chọn thiết bị bằng cách kéo CS của nó xuống thấp</text>
+<rect x="460" y="224" width="420" height="170" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="474" y="248" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">CAN: vi sai, nhiều nút</text>
+<text x="474" y="268" font-size="12" fill="#a0a4ab" text-anchor="start">CANH + CANL xoắn đôi; 1 Mbit/s tới khoảng 40 m; ID bản tin</text>
+<line x1="490" y1="308" x2="850" y2="308" stroke="#53b2dd" stroke-width="2"/>
+<line x1="490" y1="324" x2="850" y2="324" stroke="#9ccd4e" stroke-width="2"/>
+<text x="464" y="312" font-size="11" fill="#53b2dd" text-anchor="start">H</text>
+<text x="464" y="328" font-size="11" fill="#9ccd4e" text-anchor="start">L</text>
+<rect x="474" y="302" width="16" height="28" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<rect x="850" y="302" width="16" height="28" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="482" y="348" font-size="10" fill="#a0a4ab" text-anchor="middle">120</text>
+<text x="858" y="348" font-size="10" fill="#a0a4ab" text-anchor="middle">120</text>
+<rect x="520" y="344" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="552" y="366" font-size="12" fill="#e5e7eb" text-anchor="middle">Motor 1</text>
+<line x1="542" y1="344" x2="542" y2="324" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="562" y1="344" x2="562" y2="308" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="630" y="344" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="662" y="366" font-size="12" fill="#e5e7eb" text-anchor="middle">Motor 2</text>
+<line x1="652" y1="344" x2="652" y2="324" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="672" y1="344" x2="672" y2="308" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="740" y="344" width="64" height="34" rx="8" fill="#272a2f" stroke="#a0a4ab" stroke-width="1"/>
+<text x="772" y="366" font-size="12" fill="#e5e7eb" text-anchor="middle">Master</text>
+<line x1="762" y1="344" x2="762" y2="324" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="782" y1="344" x2="782" y2="308" stroke="#e5e7eb" stroke-width="1"/>
+<text x="670" y="390" font-size="12" fill="#a0a4ab" text-anchor="middle" style="font-size:11.98px">khung 8 byte khoảng 111 bit; ID thấp nhất thắng phân xử</text>
+<text x="24" y="424" font-size="16" fill="#e5e7eb" text-anchor="start" font-weight="bold" style="font-size:15.22px">Các tầng tính toán: vòng lặp nằm ở đâu</text>
+<line x1="60" y1="520" x2="840" y2="520" stroke="#e5e7eb" stroke-width="2"/>
+<text x="60" y="548" font-size="12" fill="#a0a4ab" text-anchor="start">real-time cứng, nhỏ, ít điện</text>
+<text x="840" y="548" font-size="12" fill="#a0a4ab" text-anchor="end" style="font-size:11.44px">best-effort, lớn, nóng</text>
+<rect x="40" y="440" width="260" height="66" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="52" y="462" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">MCU</text>
+<text x="52" y="480" font-size="12" fill="#e5e7eb" text-anchor="start">ATmega328P, ESP32, RP2040, STM32</text>
+<text x="52" y="497" font-size="11" fill="#a0a4ab" text-anchor="start">vòng motor 1 kHz; jitter cỡ us; 0.1-1 W</text>
+<rect x="310" y="440" width="260" height="66" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="322" y="462" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">SBC (Linux)</text>
+<text x="322" y="480" font-size="12" fill="#e5e7eb" text-anchor="start">Raspberry Pi</text>
+<text x="322" y="497" font-size="11" fill="#a0a4ab" text-anchor="start" style="font-size:10.96px">ROS 2, camera; jitter cỡ ms; khoảng 3-8 W</text>
+<rect x="580" y="440" width="260" height="66" rx="8" fill="#272a2f" stroke="#d97936" stroke-width="2"/>
+<text x="592" y="462" font-size="14" fill="#e5e7eb" text-anchor="start" font-weight="bold">Module GPU</text>
+<text x="592" y="480" font-size="12" fill="#e5e7eb" text-anchor="start">Loại Jetson Orin Nano</text>
+<text x="592" y="497" font-size="11" fill="#a0a4ab" text-anchor="start" style="font-size:10.05px">mạng nơ-ron; hàng chục TOPS; 7-25 W</text>
+<text x="24" y="586" font-size="13" fill="#d97936" text-anchor="start">Quy tắc: vòng lặp nhạy thời gian đặt trên MCU, phần tính toán nặng trên SBC hoặc GPU, nối với nhau bằng bus.</text>
+<text x="24" y="608" font-size="12" fill="#a0a4ab" text-anchor="start" style="font-size:11.49px">Thời gian truyền: 1 byte UART = 10 bit ở 8N1; 1 byte I2C = 9 clock; khung dữ liệu CAN = 47 + 8n bit.</text>
+</svg>

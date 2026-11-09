@@ -375,6 +375,92 @@
         "Identifies that estimated variance from 5 samples is uncertain, risking overconfidence.",
         "Suggests a Student-t or normal-inverse-gamma posterior or an explicit robustness check."
       ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "banach-fixed-point"
+      ],
+      "skillLabel": "Value iteration sweep count",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "Value iteration is a gamma-contraction in the sup-norm with gamma=0.9 and initial error 20. Using the a-priori bound, how many sweeps guarantee error at most 0.01 (integer)?",
+      "answer": "73",
+      "tolerance": 0.5,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Need 20*0.9^k <= 0.01, so k >= ln(0.01/20)/ln(0.9) = -7.601/-0.10536 = 72.1, hence 73."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "gaussian-inference"
+      ],
+      "skillLabel": "Sequential Gaussian update",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "Prior N(0,4) on a distance, noise variance 1, observations 1.0, 1.4 and 0.7. Posterior mean (3 decimals)?",
+      "answer": "0.954",
+      "tolerance": 0.002,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Precision 1/4+3 = 13/4; mean = (4/13)(0/4 + 3.1/1) = 12.4/13 = 0.954. Sequential updating gives the same: 0.8, 1.067, 0.954."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kl-divergence"
+      ],
+      "skillLabel": "Direction of the KL divergence",
+      "relatedPrerequisites": [
+        "M07",
+        "M14",
+        "M13"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M16#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "p = 0.5 N(-3,1) + 0.5 N(3,1). Which Gaussian q = N(m, s^2) minimises KL(p || q)?",
+      "options": [
+        "m = 3, s^2 = 1 (one mode)",
+        "m = 0, s^2 = 10 (matching mean and variance of p)",
+        "m = 0, s^2 = 1 (centred, unit variance)",
+        "m = 0, s^2 = 9 (spread of the two means only)"
+      ],
+      "answer": "1",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "Minimising KL(p||q) over a Gaussian matches the mean and variance of p. The mean is 0 and, by total variance, Var = 1 (within) + 9 (between) = 10. The single mode m=3, s^2=1 is (approximately) the minimiser of the reverse KL(q||p), which is mode-seeking."
     }
   ]
 }

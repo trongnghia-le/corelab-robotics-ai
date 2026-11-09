@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="Inter, sans-serif">
+<title>Hai cách một handle hỏng, và một cách trao quyền</title>
+<desc>Trái: con trỏ vào vector bị treo sau khi push_back thứ năm cấp phát lại; phải: một unique_ptr trao đối tượng cho unique_ptr khác.</desc>
+<rect width="900" height="440" rx="14" fill="#17181b"/>
+<defs><marker id="c02-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" font-weight="700">Hai cách một handle hỏng, và một cách trao quyền</text>
+<rect x="32" y="72" width="520" height="336" rx="10" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<rect x="576" y="72" width="292" height="336" rx="10" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="52" y="104" font-size="17" fill="#e9e7e3" font-weight="700">vector&lt;int&gt; v: push_back vượt capacity</text>
+<text x="596" y="104" font-size="17" fill="#e9e7e3" font-weight="700">unique_ptr: chuyển quyền</text>
+<text x="60" y="140" font-size="14" fill="#a7adb5">trước: size 4, capacity 4</text>
+<rect x="60" y="150" width="34" height="36" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="77" y="174" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">0</text>
+<rect x="94" y="150" width="34" height="36" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="111" y="174" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">1</text>
+<rect x="128" y="150" width="34" height="36" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="145" y="174" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">2</text>
+<rect x="162" y="150" width="34" height="36" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="179" y="174" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">3</text>
+<line x1="77" y1="226" x2="77" y2="192" stroke="#86abe2" stroke-width="2" marker-end="url(#c02-arr)"/>
+<text x="77" y="248" font-size="15" fill="#86abe2" font-weight="600" text-anchor="middle">p = &amp;v[0]</text>
+<text x="60" y="290" font-size="14" fill="#a7adb5">sau push_back thứ 5: size 5, capacity 8</text>
+<rect x="60" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="77" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">0</text>
+<rect x="94" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="111" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">1</text>
+<rect x="128" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="145" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">2</text>
+<rect x="162" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="179" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">3</text>
+<rect x="196" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="213" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">4</text>
+<rect x="230" y="300" width="34" height="36" rx="0" fill="none" stroke="#3d4148" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="264" y="300" width="34" height="36" rx="0" fill="none" stroke="#3d4148" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="298" y="300" width="34" height="36" rx="0" fill="none" stroke="#3d4148" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="372" y="300" width="34" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 3"/>
+<rect x="406" y="300" width="34" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 3"/>
+<rect x="440" y="300" width="34" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 3"/>
+<rect x="474" y="300" width="34" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 3"/>
+<text x="404" y="358" font-size="14" fill="#e58a80">khối cũ, đã giải phóng</text>
+<line x1="389" y1="392" x2="389" y2="340" stroke="#e58a80" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#c02-arr)"/>
+<text x="398" y="390" font-size="15" fill="#e58a80" font-weight="600">p giờ bị treo</text>
+<text x="596" y="140" font-size="14" fill="#a7adb5">trước</text>
+<rect x="596" y="154" width="64" height="34" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="628" y="177" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">a</text>
+<rect x="776" y="154" width="76" height="34" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="814" y="177" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">đối tượng</text>
+<line x1="660" y1="171" x2="772" y2="171" stroke="#86abe2" stroke-width="2" marker-end="url(#c02-arr)"/>
+<rect x="596" y="204" width="64" height="34" rx="0" fill="none" stroke="#ae9ce6" stroke-width="2"/>
+<text x="628" y="227" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">b</text>
+<text x="676" y="227" font-size="15" fill="#a7adb5">nullptr</text>
+<text x="596" y="290" font-size="14" fill="#a7adb5">sau auto b = std::move(a);</text>
+<rect x="596" y="304" width="64" height="34" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="628" y="327" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">a</text>
+<text x="676" y="327" font-size="15" fill="#a7adb5">nullptr</text>
+<rect x="596" y="354" width="64" height="34" rx="0" fill="none" stroke="#ae9ce6" stroke-width="2"/>
+<text x="628" y="377" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">b</text>
+<rect x="776" y="354" width="76" height="34" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="814" y="377" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">đối tượng</text>
+<line x1="660" y1="371" x2="772" y2="371" stroke="#ae9ce6" stroke-width="2" marker-end="url(#c02-arr)"/>
+</svg>

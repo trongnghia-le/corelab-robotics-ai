@@ -98,7 +98,7 @@ export function Plane({
     <figure>
       <svg viewBox="0 0 340 290" role="img" aria-label={caption}>
         <defs>
-          {["#f97316", "#84b39b", "#7ea7d8", "#d8c08b"].map((color, i) => (
+          {["#d98a52", "#90a79b", "#94a9c2", "#c5b99e"].map((color, i) => (
             <marker
               key={color}
               id={`${marker}${i}`}
@@ -119,18 +119,18 @@ export function Plane({
               y1="20"
               x2={x((i * extent) / 2)}
               y2="270"
-              stroke="#28303a"
+              stroke="#2e3134"
             />
             <line
               x1="40"
               y1={y((i * extent) / 2)}
               x2="300"
               y2={y((i * extent) / 2)}
-              stroke="#28303a"
+              stroke="#2e3134"
             />
           </g>
         ))}
-        <path d="M35 145 H310 M170 15 V275" stroke="#778598" />
+        <path d="M35 145 H310 M170 15 V275" stroke="#7f8690" />
         <text x="310" y="138">
           x
         </text>
@@ -150,7 +150,7 @@ export function Plane({
               markerEnd={
                 line.thick || line.dashed
                   ? undefined
-                  : `url(#${marker}${Math.max(0, ["#f97316", "#84b39b", "#7ea7d8", "#d8c08b"].indexOf(line.color))})`
+                  : `url(#${marker}${Math.max(0, ["#d98a52", "#90a79b", "#94a9c2", "#c5b99e"].indexOf(line.color))})`
               }
             />
             {line.label && (
@@ -202,7 +202,7 @@ export function Plot({
   return (
     <figure>
       <svg viewBox="0 0 340 290" role="img" aria-label={caption}>
-        <path d="M45 20 V240 H320" stroke="#778598" fill="none" />
+        <path d="M45 20 V240 H320" stroke="#7f8690" fill="none" />
         {series.map((s) => (
           <polyline
             key={s.label}

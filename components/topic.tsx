@@ -8,7 +8,6 @@ import {
   Copy,
   ClipboardCheck,
   Pin,
-  FileText,
   Clock3,
 } from "lucide-react";
 import { domainTone } from "./domain-theme";
@@ -20,7 +19,6 @@ import { announceTopic } from "@/lib/desk-channel";
 import { TopicChips, Status, Matrix, dateText } from "./ui";
 import { LessonReader, SessionProgressBar } from "./lesson-study";
 import { lessonPlan } from "@/lib/lesson-plan";
-import { isCheckoff } from "@/lib/checkoff";
 import { formatDuration, useI18n } from "@/lib/i18n";
 import { AssessmentQuestion, AssistanceSelect } from "./assessment-question";
 import { AssessmentMethods } from "./assessment-methods";
@@ -96,7 +94,6 @@ export function TopicPage({
   }
   const after = (
     <>
-      <Notebook id={id} />
       <div className="lesson-nav">
         {prev ? (
           <Link href={`/lessons/${prev.id}`}>
@@ -345,128 +342,6 @@ function OverviewBody({
     </div>
   );
 }
-const noteKinds: Record<string, [string, string]> = {
-  note: ["note", "ghi chú"],
-  difficulty: ["difficulty", "khó khăn"],
-  practice: ["practice", "luyện tập"],
-  self_assessment: ["self_assessment", "tự đánh giá"],
-  ai_feedback: ["ai_feedback", "phản hồi AI"],
-};
-export function Notebook({ id }: { id: string }) {
-  const { state, act, busy, notify } = useCore();
-  const { t, tx } = useI18n();
-  const [text, setText] = useState(""),
-    [kind, setKind] = useState("note"),
-    [minutes, setMinutes] = useState(15),
-    [level, setLevel] = useState(1);
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    if (!text.trim()) return;
-    try {
-      await act({
-        type: "session",
-        topicId: id,
-        kind,
-        text,
-        minutes,
-        provisionalLevel: kind === "self_assessment" ? level : undefined,
-      });
-      setText("");
-      notify(t("notebook.saved"));
-    } catch {}
-  }
-  const notes =
-    state?.progress.sessions
-      .filter((s) => s.topicId === id && s.kind !== "reading" && !isCheckoff(s))
-      .slice(-5)
-      .reverse() ?? [];
-  return (
-    <section className="notebook panel">
-      <div className="panel-heading">
-        <h2>{t("notebook.title")}</h2>
-        <FileText size={18} />
-      </div>
-      <p className="small muted">{t("notebook.intro")}</p>
-      <form onSubmit={submit}>
-        <div className="form-row">
-          <label>
-            {t("notebook.type")}
-            <select value={kind} onChange={(e) => setKind(e.target.value)}>
-              <option value="note">{t("notebook.note")}</option>
-              <option value="difficulty">{t("notebook.difficulty")}</option>
-              <option value="practice">{t("notebook.practice")}</option>
-              <option value="self_assessment">{t("notebook.self")}</option>
-            </select>
-          </label>
-          <label>
-            {t("notebook.time")}
-            <input
-              type="number"
-              min="0"
-              max="1440"
-              value={minutes}
-              onChange={(e) => setMinutes(Number(e.target.value))}
-            />
-          </label>
-          {kind === "self_assessment" && (
-            <label>
-              {t("notebook.level")}
-              <select
-                value={level}
-                onChange={(e) => setLevel(Number(e.target.value))}
-              >
-                {[1, 2, 3, 4].map((l) => (
-                  <option key={l} value={l}>
-                    {tx("Provisional", "Tạm thời")} L{l}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-        </div>
-        <label className="sr-only" htmlFor={`note-${id}`}>
-          {tx("Notebook entry", "Nội dung ghi chú")}
-        </label>
-        <textarea
-          id={`note-${id}`}
-          required
-          maxLength={20000}
-          rows={4}
-          placeholder={t("notebook.placeholder")}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <button
-          className="button"
-          disabled={busy || !text.trim()}
-          type="submit"
-        >
-          {t("notebook.save")}
-        </button>
-      </form>
-      {notes.length > 0 && (
-        <div className="note-list">
-          {notes.map((n) => (
-            <div key={n.id}>
-              <div className="between">
-                <span className="status">
-                  {noteKinds[n.kind]
-                    ? tx(noteKinds[n.kind][0], noteKinds[n.kind][1])
-                    : n.kind}
-                  {n.provisionalLevel
-                    ? ` · ${tx("Provisional", "Tạm thời")} L${n.provisionalLevel}`
-                    : ""}
-                </span>
-                <small className="muted">{dateText(n.at)}</small>
-              </div>
-              <p>{n.text}</p>
-            </div>
-          ))}
-        </div>
-      )}
-    </section>
-  );
-}
 function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
   const { state, act, busy } = useCore();
   const { t, tx, lang } = useI18n();
@@ -624,7 +499,6 @@ function AssessmentWorkspace({ id, data }: { id: string; data: TopicPayload }) {
             )}
           </div>
         )}
-        <Notebook id={id} />
       </section>
       <aside className="evidence-history">
         <div className="panel">

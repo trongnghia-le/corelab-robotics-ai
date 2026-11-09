@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="Inter, sans-serif">
+<title>Store buffering: how (r1, r2) = (0, 0) happens</title>
+<desc>A time line of the store-buffering test with x = y = 0. Each thread's store waits in its own store buffer, so both loads read the old value 0 from memory. The relaxed version showed this outcome 2 times in 200,000 runs, the seq_cst version never.</desc>
+<defs><marker id="arc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="500" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Store buffering: how (r1, r2) = (0, 0) happens</text>
+<text x="120" y="92" font-size="15" fill="#a7adb5" text-anchor="start" font-weight="600">1: stores issued</text>
+<text x="330" y="92" font-size="15" fill="#a7adb5" text-anchor="start" font-weight="600">2: loads run</text>
+<text x="540" y="92" font-size="15" fill="#a7adb5" text-anchor="start" font-weight="600">3: buffers drain</text>
+<line x1="110" y1="100" x2="110" y2="410" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<line x1="320" y1="100" x2="320" y2="410" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<line x1="530" y1="100" x2="530" y2="410" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<text x="32" y="152" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600">thread 1</text>
+<text x="32" y="252" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">thread 2</text>
+<rect x="120" y="128" width="180" height="44" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="210" y="156" font-size="15" fill="#e9e7e3" text-anchor="middle">x.store(1)</text>
+<rect x="330" y="128" width="180" height="44" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="420" y="156" font-size="15" fill="#e9e7e3" text-anchor="middle">r1 = y.load()</text>
+<rect x="120" y="228" width="180" height="44" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="210" y="256" font-size="15" fill="#e9e7e3" text-anchor="middle">y.store(1)</text>
+<rect x="330" y="228" width="180" height="44" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="420" y="256" font-size="15" fill="#e9e7e3" text-anchor="middle">r2 = x.load()</text>
+<text x="420" y="196" font-size="15" fill="#86abe2" text-anchor="middle" font-weight="600">reads y = 0</text>
+<text x="420" y="296" font-size="15" fill="#6fc693" text-anchor="middle" font-weight="600">reads x = 0</text>
+<text x="210" y="196" font-size="14" fill="#a7adb5" text-anchor="middle">waits in buffer</text>
+<text x="210" y="296" font-size="14" fill="#a7adb5" text-anchor="middle">waits in buffer</text>
+<text x="630" y="160" font-size="15" fill="#86abe2" text-anchor="middle">x = 1 becomes visible</text>
+<text x="630" y="260" font-size="15" fill="#6fc693" text-anchor="middle">y = 1 becomes visible</text>
+<rect x="32" y="348" width="836" height="56" rx="8" fill="#22252a" stroke="none" stroke-width="1.5"/>
+<text x="48" y="383" font-size="15" fill="#e9e7e3" text-anchor="start" font-weight="600">memory seen by the loads:</text>
+<text x="330" y="383" font-size="15" fill="#e0c169" text-anchor="start">x = 0, y = 0</text>
+<text x="560" y="383" font-size="15" fill="#a7adb5" text-anchor="start">then x = 1, y = 1</text>
+<text x="32" y="442" font-size="15" fill="#e58a80" text-anchor="start" font-weight="600">relaxed: (0, 0) seen in 2 of 200,000 runs (Example, x86-64)</text>
+<text x="32" y="468" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">seq_cst: all four operations in one total order, so (0, 0) is impossible: 0 of 200,000</text>
+</svg>

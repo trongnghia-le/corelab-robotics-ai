@@ -295,6 +295,80 @@
         "States neither justifies extrapolation outside the calibrated domain."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "id": "m01-c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "affine-model"
+      ],
+      "skillLabel": "Affine model from measurements",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A device with two processors has temperature T (deg C) that is an affine function of their powers P1, P2 (watts). Measurements: P=(10,10) gives T=40; P=(60,10) gives T=55; P=(10,60) gives T=70. If both processors run at the same power P, what is the largest P (in watts) with T <= 100?",
+      "dimension": "M",
+      "critical": false,
+      "answer": "76.67",
+      "tolerance": 0.05,
+      "explanation": "Slopes: a1=(55-40)/50=0.3 and a2=(70-40)/50=0.6. Offset: b=40-(0.3*10+0.6*10)=40-9=31. With equal powers T=0.9P+31<=100 gives P<=69/0.9=76.67 W."
+    },
+    {
+      "id": "m01-c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "affine-model"
+      ],
+      "skillLabel": "Recognising non-affine functions",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M01#theory-and-derivation"
+        }
+      ],
+      "prompt": "Which function of x=(x1,x2) is NOT affine?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "2*x1 - 5*x2 + 7",
+        "(x1 + x2)/2 - 4",
+        "|x1| + x2",
+        "x1 - 3"
+      ],
+      "answer": "2",
+      "explanation": "An affine function satisfies f(ax+by)=af(x)+bf(y) whenever a+b=1. For f=|x1|+x2 take x=(1,0), y=(-1,0), a=b=1/2: f(ax+by)=f(0,0)=0 but a f(x)+b f(y)=1/2+1/2=1, so it fails. The other three are of the form a^T x + b."
+    },
+    {
+      "id": "m01-c3",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "inverse-domain"
+      ],
+      "skillLabel": "Floating-point truncation in an inverse",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M01#theory-and-derivation"
+        }
+      ],
+      "prompt": "A student inverts calib(n)=0.02*(n-10) with n = int(m/0.02) + 10 and finds it returns 38 for m=calib(39). Explain the mechanism, state the computed quotient, and give two fixes with their trade-offs.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Identifies that 0.02 and the product are not exactly representable, so m/0.02 comes out as 28.999999999999996 instead of 29.",
+        "Explains that int() truncates toward zero, turning a 1e-15 error into a whole-count error.",
+        "Fix 1: round() (or add a small tolerance); fix 2: integer millimetres or exact integer arithmetic; mentions a cost such as fixed resolution or unit conversion."
+      ],
+      "explanation": "Open question; check your answer against the rubric. The quotient is 28.999999999999996 for n=39, so int gives 28 and the result is 38; round() gives 29 and is correct for every count 10..1023."
     }
   ]
 }

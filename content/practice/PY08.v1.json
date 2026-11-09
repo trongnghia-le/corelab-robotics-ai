@@ -56,12 +56,12 @@
       ],
       "id": "b2",
       "kind": "number",
-      "prompt": "Per-run std 0.0164 and 20 seeds. Standard error of the mean (4 decimals)?",
-      "answer": "0.0037",
+      "prompt": "Per-run std 0.031 and 40 seeds. Standard error of the mean (4 decimals)?",
+      "answer": "0.0049",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.0002,
-      "explanation": "0.0164/sqrt(20).",
+      "explanation": "0.031/sqrt(40) = 0.0049.",
       "equivalentTo": [
         "q4"
       ]
@@ -182,12 +182,12 @@
       ],
       "id": "b6",
       "kind": "number",
-      "prompt": "Floating point: (0.1+0.2)+0.3 minus 0.1+(0.2+0.3), in units of 1e-16 (1 decimal).",
-      "answer": "1.1",
+      "prompt": "Floating point: (0.3+0.6)+0.1 minus 0.3+(0.6+0.1), in units of 1e-16 (1 decimal).",
+      "answer": "-1.1",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.2,
-      "explanation": "0.6000000000000001-0.6=1.1e-16.",
+      "explanation": "(0.3+0.6)+0.1 = 0.9999999999999999 and 0.3+(0.6+0.1) = 1.0, so the difference is -1.1e-16.",
       "equivalentTo": [
         "q1"
       ]
@@ -245,12 +245,12 @@
       ],
       "id": "b8",
       "kind": "number",
-      "prompt": "With PYTHONHASHSEED values 1, 2 and 3 the set order of three strings was ABC, ABC, ACB. How many distinct orders were observed?",
-      "answer": "2",
+      "prompt": "With PYTHONHASHSEED values 1, 2, 3 and 4 the set {'wheel', 'arm', 'gripper', 'base'} was listed as ['arm', 'base', 'gripper', 'wheel'], ['gripper', 'base', 'arm', 'wheel'], ['base', 'arm', 'wheel', 'gripper'] and ['base', 'gripper', 'wheel', 'arm']. How many different first elements were observed?",
+      "answer": "3",
       "dimension": "M",
       "critical": false,
       "tolerance": 0.01,
-      "explanation": "Orders for seeds 1 and 2 coincided.",
+      "explanation": "The first elements were arm, gripper, base and base: three different ones, so the order of a set of strings changes from run to run.",
       "equivalentTo": [
         "q1"
       ]
@@ -379,6 +379,77 @@
       "equivalentTo": [
         "q1"
       ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "seed-variability"
+      ],
+      "skillLabel": "Seed collision probability",
+      "mistakeCategory": "mathematical",
+      "id": "c1",
+      "kind": "number",
+      "dimension": "M",
+      "prompt": "A sweep starts 5000 runs and each draws its seed uniformly from the 2^32 possible 32-bit integers. Using P ≈ 1 - exp(-k(k-1)/(2M)), what is the probability that at least two runs share a seed? Give 4 decimals.",
+      "answer": "0.0029",
+      "tolerance": 0.0002,
+      "explanation": "k(k-1)/(2M) = 5000*4999/2^33 = 24,995,000 / 8,589,934,592 = 0.0029099. Then P = 1 - exp(-0.0029099) = 0.0029056, about 0.29%. The birthday bound grows with k^2, so 10^4 runs already give 1.2%.",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Independent streams in parallel code",
+      "mistakeCategory": "method_selection",
+      "id": "c2",
+      "kind": "choice",
+      "dimension": "C",
+      "prompt": "An experiment has 100 independent trials that may run on 1, 4 or 32 workers. Which way of assigning random streams gives identical numbers for each trial whatever the number of workers?",
+      "options": [
+        "Give worker w the seed base + w, and let it run its trials in order",
+        "Spawn one child of SeedSequence(base) per worker and run its trials on that stream",
+        "Build trial i's generator from SeedSequence(base, spawn_key=(i,)), independent of the worker",
+        "Share one default_rng(base) between all workers behind a lock"
+      ],
+      "answer": "2",
+      "explanation": "The stream must be a function of the task identity only. Options A and B tie the numbers to the worker count and to the order in which a worker consumes its stream; A also uses adjacent seeds, which is the weak scheme SeedSequence was designed to avoid. Option D makes the numbers depend on the scheduling order of the threads. Option C is stateless and depends only on (base, i).",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "determinism"
+      ],
+      "skillLabel": "Reduction-order error bounds",
+      "mistakeCategory": "mathematical",
+      "id": "c3",
+      "kind": "number",
+      "dimension": "M",
+      "prompt": "For n = 2^16 numbers, compare the first-order error bounds of a left-to-right sum, (n-1)*u*sum|x_j|, and of a balanced pairwise sum, ceil(log2 n)*u*sum|x_j|. What is the ratio sequential bound / pairwise bound? Give one decimal.",
+      "answer": "4095.9",
+      "tolerance": 1,
+      "explanation": "The factor u*sum|x_j| cancels. Sequential: n-1 = 65,535; pairwise: ceil(log2 2^16) = 16. Ratio = 65,535/16 = 4,095.94, about 4095.9. These are worst-case bounds; observed errors are far smaller, but the ratio shows why pairwise summation is a safe default.",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/PY08#theory-and-derivation"
+        }
+      ],
+      "critical": false
     }
   ]
 }

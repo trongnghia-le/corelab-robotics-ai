@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="Inter, Arial, sans-serif" role="img">
+<title>CAP05: từ pixel RGB-D đến cú gắp</title>
+<desc>Pipeline: ảnh RGB-D thành mask phân đoạn, deproject độ sâu thành điểm trong frame camera, biến đổi hand-eye sang frame gốc tay, gắp từ trên xuống với IK cho tiền gắp, gắp và nhấc, quỹ đạo quintic, gripper; lý do thất bại đưa vào bảng phân loại.</desc>
+<rect width="900" height="470" fill="#191b1f" rx="12"/>
+<text x="450" y="30" font-size="17" fill="#e5e7eb" text-anchor="middle" font-weight="bold">CAP05: từ pixel đến quỹ đạo khớp, có lý do cho mọi lần thất bại</text>
+<rect x="20" y="80" width="130" height="70" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="85.0" y="111.7" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">ImageFrame</text>
+<text x="85.0" y="126.7" font-size="12" fill="#e5e7eb" text-anchor="middle">RGB + depth, K</text>
+<rect x="185" y="80" width="140" height="70" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="255.0" y="104.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Phân đoạn</text>
+<text x="255.0" y="119.2" font-size="12" fill="#e5e7eb" text-anchor="middle">HSV cơ sở / CNN</text>
+<text x="255.0" y="134.2" font-size="12" fill="#e5e7eb" text-anchor="middle">mask mỗi màu</text>
+<rect x="360" y="80" width="150" height="70" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="435.0" y="104.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Deproject</text>
+<text x="435.0" y="119.2" font-size="12" fill="#e5e7eb" text-anchor="middle">trung vị vùng mask</text>
+<text x="435.0" y="134.2" font-size="12" fill="#e5e7eb" text-anchor="middle">pixel -&gt; p_cam</text>
+<rect x="545" y="80" width="150" height="70" rx="8" fill="#272a2f" stroke="#9ccd4e" stroke-width="2"/>
+<text x="620.0" y="104.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Hand-eye</text>
+<text x="620.0" y="119.2" font-size="12" fill="#e5e7eb" text-anchor="middle">p_base = T_base_cam</text>
+<text x="620.0" y="134.2" font-size="12" fill="#e5e7eb" text-anchor="middle">* p_cam</text>
+<rect x="730" y="80" width="150" height="70" rx="8" fill="#272a2f" stroke="#e5e7eb" stroke-width="2"/>
+<text x="805.0" y="104.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Phát hiện</text>
+<text x="805.0" y="119.2" font-size="12" fill="#e5e7eb" text-anchor="middle">nhãn, yaw, xyz_base</text>
+<text x="805.0" y="134.2" font-size="12" fill="#e5e7eb" text-anchor="middle" style="font-size:9.36px">điểm số</text>
+<line x1="150" y1="115" x2="185" y2="115" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="185,115 176.0,118.5 176.0,111.5" fill="#e5e7eb"/>
+<line x1="325" y1="115" x2="360" y2="115" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="360,115 351.0,118.5 351.0,111.5" fill="#e5e7eb"/>
+<line x1="510" y1="115" x2="545" y2="115" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="545,115 536.0,118.5 536.0,111.5" fill="#e5e7eb"/>
+<line x1="695" y1="115" x2="730" y2="115" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="730,115 721.0,118.5 721.0,111.5" fill="#e5e7eb"/>
+<rect x="20" y="230" width="170" height="76" rx="8" fill="#272a2f" stroke="#ddb242" stroke-width="2"/>
+<text x="105.0" y="257.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold" style="font-size:9.36px">Bộ lập kế hoạch gắp</text>
+<text x="105.0" y="272.2" font-size="12" fill="#e5e7eb" text-anchor="middle">tiền gắp +8 cm</text>
+<text x="105.0" y="287.2" font-size="12" fill="#e5e7eb" text-anchor="middle">gắp, nhấc +10 cm</text>
+<rect x="225" y="230" width="170" height="76" rx="8" fill="#272a2f" stroke="#ddb242" stroke-width="2"/>
+<text x="310.0" y="257.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">IK (damped LS)</text>
+<text x="310.0" y="272.2" font-size="12" fill="#e5e7eb" text-anchor="middle" style="font-size:10.53px">vị trí + pitch, giới hạn</text>
+<text x="310.0" y="287.2" font-size="12" fill="#e5e7eb" text-anchor="middle">bắt đầu từ q_now</text>
+<rect x="430" y="230" width="170" height="76" rx="8" fill="#272a2f" stroke="#ddb242" stroke-width="2"/>
+<text x="515.0" y="257.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Quỹ đạo quintic</text>
+<text x="515.0" y="272.2" font-size="12" fill="#e5e7eb" text-anchor="middle" style="font-size:9.61px">giới hạn v, a</text>
+<text x="515.0" y="287.2" font-size="12" fill="#e5e7eb" text-anchor="middle" style="font-size:10.37px">kiểm tra mô-men R07</text>
+<rect x="635" y="230" width="170" height="76" rx="8" fill="#272a2f" stroke="#53b2dd" stroke-width="2"/>
+<text x="720.0" y="257.2" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Tay + gripper</text>
+<text x="720.0" y="272.2" font-size="12" fill="#e5e7eb" text-anchor="middle">SO-101, 5 khớp</text>
+<text x="720.0" y="287.2" font-size="12" fill="#e5e7eb" text-anchor="middle" style="font-size:10.03px">đóng, kiểm tra độ rộng</text>
+<line x1="805" y1="150" x2="805" y2="190" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="805,190 801.5,181.0 808.5,181.0" fill="#e5e7eb"/>
+<line x1="805" y1="190" x2="105" y2="190" stroke="#e5e7eb" stroke-width="2"/>
+<line x1="105" y1="190" x2="105" y2="230" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="105,230 101.5,221.0 108.5,221.0" fill="#e5e7eb"/>
+<line x1="190" y1="268" x2="225" y2="268" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="225,268 216.0,271.5 216.0,264.5" fill="#e5e7eb"/>
+<line x1="395" y1="268" x2="430" y2="268" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="430,268 421.0,271.5 421.0,264.5" fill="#e5e7eb"/>
+<line x1="600" y1="268" x2="635" y2="268" stroke="#e5e7eb" stroke-width="2"/>
+<polygon points="635,268 626.0,271.5 626.0,264.5" fill="#e5e7eb"/>
+<rect x="160" y="350" width="580" height="70" rx="8" fill="#272a2f" stroke="#e58484" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="450.0" y="381.7" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">Phân loại lỗi (tổng số phải bằng số lần thất bại)</text>
+<text x="450.0" y="396.7" font-size="12" fill="#e5e7eb" text-anchor="middle">no_detection | ik_fail | joint_limit | slip | knocked | place_miss | timeout</text>
+<line x1="310" y1="306" x2="310" y2="350" stroke="#e58484" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="310,350 306.5,341.0 313.5,341.0" fill="#e58484"/>
+<line x1="520" y1="306" x2="520" y2="350" stroke="#e58484" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="520,350 516.5,341.0 523.5,341.0" fill="#e58484"/>
+<line x1="720" y1="306" x2="720" y2="350" stroke="#e58484" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="720,350 716.5,341.0 723.5,341.0" fill="#e58484"/>
+<text x="450" y="452" font-size="12" fill="#a0a4ab" text-anchor="middle" style="font-size:11.46px">Các frame: camera_link -&gt; base_link -&gt; arm_base -&gt; tool0. T_base_cam là artefact đã được test trong configs/.</text>
+</svg>

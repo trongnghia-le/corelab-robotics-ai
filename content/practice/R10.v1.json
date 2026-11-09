@@ -402,6 +402,94 @@
         "Concludes each case must be evaluated against its own allowable."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "A 6 mm diameter aluminium strut (E = 69 GPa, I = 6.362e-11 m^4) is 0.15 m long, fixed at one end and free at the other (K = 2). What is the Euler critical load in newtons (nearest whole number)?",
+      "kind": "number",
+      "dimension": "M",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "euler-buckling-load"
+      ],
+      "skillLabel": "Euler buckling load",
+      "mistakeCategory": "mathematical",
+      "answer": "481",
+      "tolerance": 2,
+      "explanation": "P_cr = pi^2 E I/(K L)^2 with K L = 2 x 0.15 = 0.30 m: 9.8696 x 69e9 x 6.362e-11 / 0.09 = 481.4 N. The yield load would be 7804 N, so the slender strut buckles at about 6% of it (slenderness 200 against a limit of 49.7).",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: Euler buckling load",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "At a section of a rectangular cantilever a distance x from the load point, with x/h = 0.3, which location has the larger von Mises stress: the outer fibre (bending only) or the neutral axis (shear only)? Use tau_0 = 1.5F/(bh) and sigma_0 = 6Fx/(bh^2).",
+      "kind": "choice",
+      "dimension": "C",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "von-mises-depth-profile"
+      ],
+      "skillLabel": "Where combined stress peaks",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "The outer fibre, because bending always dominates",
+        "Somewhere between them, where both stresses are non-zero and combine",
+        "The neutral axis, since sqrt(3)*tau_0 > sigma_0 here",
+        "They are equal for every x because the criterion is symmetric"
+      ],
+      "answer": "2",
+      "explanation": "The ratio r = tau_0/sigma_0 = h/(4x). (sigma_v/sigma_0)^2 = u + 3 r^2 (1-u)^2 with u = (2y/h)^2 is convex in u, so its maximum is at u = 1 (outer fibre, value 1) or u = 0 (neutral axis, value 3 r^2). For x/h = 0.3, r = 0.833 and 3 r^2 = 2.08 > 1, so the neutral axis governs; the crossover is x/h = sqrt(3)/4 = 0.433. Far from the load (slender bracket root) the outer fibre governs.",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: Where combined stress peaks",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A cantilever bracket's thickness is tapered as h(x) = h0*sqrt(x/L) (x from the load point, constant width) so that bending stress is uniform, with root thickness h0. Compared with a uniform bracket of thickness h0, what are its tip deflection and mass?",
+      "kind": "choice",
+      "dimension": "M",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "constant-strength-taper"
+      ],
+      "skillLabel": "Constant-strength cantilever trade-off",
+      "mistakeCategory": "mathematical",
+      "options": [
+        "Deflection 4 times larger, mass 1/2",
+        "Same deflection, mass 2/3",
+        "Deflection 2 times larger, mass 2/3",
+        "Deflection 1/2, mass 2/3"
+      ],
+      "answer": "2",
+      "explanation": "With I(x) = b h0^3 (x/L)^(3/2)/12 the curvature is kappa = 12 F L^(3/2) x^(-1/2)/(E b h0^3) and the tip deflection is the integral of kappa*x dx = 8 F L^3/(E b h0^3), twice the uniform value 4 F L^3/(E b h0^3). The mass is proportional to the integral of h dx = (2/3) h0 L, i.e. 2/3 of the uniform bracket. Stress is uniform but stiffness is halved.",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: Constant-strength cantilever trade-off",
+          "href": "/lessons/R10#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R09"
+      ]
     }
   ]
 }

@@ -76,6 +76,24 @@
     "Nói rằng tính khả thi dưới giới hạn momen và tính bền vững quan trọng hơn một khoản tiết kiệm nỗ lực nhỏ.",
     "Nêu các phép đo (momen đỉnh, nỗ lực, sai số bám, biên khi tải trọng thay đổi)."
    ]
+  },
+  "c1": {
+   "prompt": "Bài toán tuyến tính-toàn phương lấy mẫu: x[n+1] = x[n] + h(x[n] + u[n]) với chi phí h*sum(3x^2 + u^2). Chi phí-đến-đích tối ưu là S_h x^2 với S_h^2 - (2+4h) S_h - 3 = 0 (nghiệm dương). S_h với h = 0.5 là bao nhiêu (4 chữ số thập phân)?",
+   "explanation": "S_h = (1+2h) + sqrt((1+2h)^2 + 3). Với h = 0.5: 2 + sqrt(4 + 3) = 2 + 2.6458 = 4.6458. Kiểm tra: khi h -> 0, S_h -> 1 + 2 = 3, giá trị HJB thời gian liên tục (S^2 - 2S - 3 = 0). Dạng tương đương 1 + 2h + 2 sqrt(h^2 + h + 1) = 1 + 1 + 2*1.3229 = 4.6458."
+  },
+  "c2": {
+   "prompt": "Value iteration không chiết khấu cho bài toán đạt-đích (chi phí 1 mỗi bước, đích hấp thụ chi phí không) bắt đầu từ J* + 10. Phát biểu nào đúng?",
+   "options": [
+    "Nó hội tụ về J* sau khoảng ln(10/0.01)/ln(1/0.9) lượt quét",
+    "Nó ở nguyên tại J* + 10, và chính sách tham lam vẫn tối ưu",
+    "Nó phân kỳ đến vô cùng",
+    "Nó ở nguyên tại J* + 10, nhưng chính sách tham lam không còn tối ưu"
+   ],
+   "explanation": "Với gamma = 1, min_a[l + J*(f) + 10] = J*(s) + 10, nên J* + 10 chính nó là điểm bất động: phép lặp không dịch chuyển, giá trị sai một hằng, nhưng chính sách tham lam không đổi và vẫn tối ưu. Với gamma < 1 hằng số sẽ co lại gamma mỗi lượt quét và phép lặp sẽ hội tụ về J*; nên không đúng rằng VI không chiết khấu luôn hội tụ về J* từ mọi điểm bắt đầu, cũng không đúng rằng hằng số đổi chính sách."
+  },
+  "c3": {
+   "prompt": "Tích phân kép thời gian tối thiểu (|u| <= 1, đích tại gốc). Từ trạng thái (q, qdot) = (-1, 1) chính sách bang-bang tăng tốc với u = +1 đến parabol phanh q = -qdot^2/2 rồi phanh. Dùng J = 2*sqrt(qdot^2/2 - q) - qdot, thời gian đến gốc là bao nhiêu (4 chữ số thập phân)?",
+   "explanation": "s = sqrt(0.5 + 1) = 1.2247, J = 2*1.2247 - 1 = 1.4495 s. Kiểm tra: tăng tốc từ qdot = 1 đến s = 1.2247 (0.2247 s, đạt q = -1 + 0.2247 + 0.2247^2/2 = -0.7500 bằng -s^2/2 = -0.75), rồi phanh trong s = 1.2247 s; tổng 0.2247 + 1.2247 = 1.4495. HJB đúng ở đây với điểm cực tiểu u = +1 vì hệ số dJ/dqdot = qdot/s - 1 = -0.1835 < 0."
   }
  }
 }

@@ -356,6 +356,87 @@
       "equivalentTo": [
         "q1"
       ]
+    },
+    {
+      "id": "c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "lagrange-multipliers"
+      ],
+      "skillLabel": "Price of an equality constraint",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "prompt": "Minimize ||Ax - b||^2 with A = [[1,0],[0,1],[1,1]], b = (1,2,3) subject to x1 - x2 = h. At h = 0.5, by how much does the optimal cost increase per unit increase of h (dp*/dh, 2 decimals)?",
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "Parametrize x = (h,0) + t(1,1). The unconstrained fit is x=(1,2) with zero residual, which has x1 - x2 = -1, so the residual of the constrained optimum is proportional to (h+1): p*(h) = (h+1)^2/2. Then dp*/dh = h+1 = 1.5 at h = 0.5. Equivalently the KKT multiplier is nu* = -1.5 and dp*/dh = -nu*. Check: x* = (1.75,1.25), cost 1.125 = 1.5^2/2.",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "duality"
+      ],
+      "skillLabel": "Failure of strong duality",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "prompt": "Consider min exp(-x) subject to x^2/y <= 0 on the domain y > 0. Which statement is correct?",
+      "options": [
+        "Strong duality holds because the problem is convex, so d* = p* = 1",
+        "The problem is unbounded below, since exp(-x) tends to 0 only as x grows",
+        "p* = 1 but the dual optimum is d* = 0, because Slater's condition fails: no point has x^2/y < 0",
+        "p* = 0, attained in the limit y -> infinity, so there is no duality gap"
+      ],
+      "answer": "2",
+      "explanation": "The constraint forces x = 0, so p* = exp(0) = 1. The dual function is inf over x, y>0 of exp(-x) + lambda x^2/y = 0 for lambda >= 0 (take x large and y much larger), so d* = 0 and the gap is 1. Convexity is not enough: Slater's condition needs a strictly feasible point, and x^2/y < 0 is impossible. The objective is bounded below by 0 and the feasible values are all exp(0) = 1.",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c3",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "duality",
+        "kkt-active-constraints"
+      ],
+      "skillLabel": "Perturbed optimal value",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "prompt": "Minimize x^2 + 1 subject to (x-3)(x-6) <= u. Its multiplier at u = 0 is lambda* = 2 and p*(0) = 10. Compute the exact optimal value p*(1) (3 decimals); the first-order estimate is 8.",
+      "answer": "8.275",
+      "tolerance": 0.001,
+      "explanation": "The constraint x^2 - 9x + 18 <= 1 gives x >= (9 - sqrt(9+4))/2 = (9 - 3.60555)/2 = 2.69722, which is non-negative, so the optimum sits at this smallest feasible x: p*(1) = 2.69722^2 + 1 = 8.2750. The global inequality p*(u) >= p*(0) - lambda* u = 8 holds; the exact value is above it because p*(u) is convex and flattens as the constraint is relaxed.",
+      "relatedPrerequisites": [
+        "M10"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M13#theory-and-derivation"
+        }
+      ],
+      "critical": false
     }
   ]
 }

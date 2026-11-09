@@ -377,6 +377,89 @@
       "equivalentTo": [
         "q5"
       ]
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bch-composition"
+      ],
+      "skillLabel": "Size of the BCH correction",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "a=(0.3,0,0) and b=(0,0.3,0) are rotation vectors (rad). What is the norm of log(exp(a)exp(b)) - (a+b) (3 decimals)?",
+      "answer": "0.045",
+      "tolerance": 0.002,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Leading BCH term is (1/2) a x b = (0,0,0.045), norm 0.045. The exact computed value is 0.0451; adding the term leaves 0.0032."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "so3-log"
+      ],
+      "skillLabel": "Logarithm at angle pi",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "choice",
+      "prompt": "R is a rotation with trace -1 (angle pi). Which procedure gives its rotation axis?",
+      "options": [
+        "Compute vee(R - R^T) / (2 sin theta), which is well defined because R is symmetric there",
+        "Take omega_i = sqrt((r_ii + 1)/2) for i=1,2,3 with all signs positive, which is exact at angle pi",
+        "Normalise a nonzero column of R + I, which equals 2 w w^T, accepting that the sign of the axis is ambiguous",
+        "Take the eigenvector of R with eigenvalue -1, which is the axis because the angle is pi"
+      ],
+      "answer": "2",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "At angle pi, R = 2ww^T - I, so R + I = 2ww^T and each nonzero column is proportional to w. The first option divides by sin(pi)=0 (and R-R^T=0); the second loses the relative signs fixed by r_ij = 2 w_i w_j; the eigenvalue -1 eigenspace is the plane perpendicular to the axis, not the axis."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "se3-exp-log"
+      ],
+      "skillLabel": "SE(3) logarithm",
+      "relatedPrerequisites": [
+        "M12",
+        "M06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M15#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "number",
+      "prompt": "A pose has R = Rz(90 deg) and p = (2/pi, 2/pi, 0). Its screw axis has omega=(0,0,1), theta=pi/2 and v = G^-1(theta) p with G^-1 = I/theta - [omega]/2 + (1/theta - cot(theta/2)/2)[omega]^2. What is the x component of v (4 decimals)?",
+      "answer": "0.6366",
+      "tolerance": 0.001,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "With theta=pi/2, cot(pi/4)=1, so G^-1 = (2/pi) I - [omega]/2 + (2/pi - 1/2)[omega]^2. Applied to p: (2/pi)p = (4/pi^2,4/pi^2,0); -[omega]p/2 = -(1/2)(-2/pi,2/pi,0) = (1/pi,-1/pi,0); [omega]^2 p = (-2/pi,-2/pi,0) times (2/pi-1/2) gives (-4/pi^2+1/pi, -4/pi^2+1/pi, 0). Sum: x = 4/pi^2+1/pi-4/pi^2+1/pi = 2/pi = 0.6366 (and y = 0)."
     }
   ]
 }

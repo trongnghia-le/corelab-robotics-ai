@@ -337,6 +337,77 @@
         "Mentions a retry limit and surfacing the final error."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "A job has checkpoint cost C = 45 s and platform mean time between faults mu = 10800 s (take downtime and recovery as zero). Using the waste model Waste(T) = 1 - (1 - C/T)(1 - T/(2 mu)), what is the optimal period T* in seconds? (tolerance 1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "985.9",
+      "tolerance": 1,
+      "explanation": "With D = R = 0 we have a = 0 and the derivative of Waste is 1/(2 mu) - C/T^2, which vanishes at T^2 = 2 C mu = 2 x 45 x 10800 = 972000, so T* = 985.9 s. The second derivative 2C/T^3 is positive, so this is a minimum.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "checkpoint-interval"
+      ],
+      "skillLabel": "Checkpoint interval and waste",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Same job (C = 45 s, mu = 10800 s, D = R = 0). You checkpoint at twice the optimal period, T = 2T*. By how much does the waste fraction exceed the minimum waste? Give the difference as a fraction (for example 0.02 means 2 percentage points). (tolerance 0.001)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.0228",
+      "tolerance": 0.001,
+      "explanation": "Writing T = k T*, the T-dependent part of the waste is (T*/(2 mu))(k + 1/k), so the excess over the optimum is (T*/(2 mu))(k + 1/k - 2). With T* = 985.9 s, mu = 10800 s and k = 2: 985.9/21600 x (2 + 0.5 - 2) = 0.04564 x 0.5 = 0.0228. Checkpointing at T*/2 gives the same excess, because k and 1/k are symmetric.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "checkpoint-interval"
+      ],
+      "skillLabel": "Checkpoint interval and waste",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "The scheduler may start a duplicate pod while the first is still writing results. Each run writes result.json, metrics.csv and manifest.json to runs/<hash>/. Design a publication protocol that is safe in every interleaving, name the POSIX error that signals that the other pod won, and state what the loser does.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Write all files into a temporary directory next to the final one (same parent, same file system, for example runs/.tmp-<hash>-<pid>/), fsync the files, then rename the whole directory to runs/<hash>/ in one step.",
+        "If the target already exists and is non-empty, rename fails with ENOTEMPTY (or EEXIST); this signals that a duplicate already published.",
+        "The loser verifies the existing manifest (checksums), removes its temporary directory and exits with success, so running twice is harmless (idempotence).",
+        "Notes: rename across file systems can fail with EXDEV; rename alone does not guarantee durability, which needs fsync; a DONE marker written last is a weaker alternative for readers that obey it."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "atomic-publish",
+        "idempotence-and-restart"
+      ],
+      "skillLabel": "Atomic publish and idempotent restart",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T08#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

@@ -252,8 +252,10 @@ export function Catalog({
               </div>
               <span className="small muted">{tp.domain}</span>
               <h2>{title(tp.id)}</h2>
-              <Status mastery={state.mastery[tp.id]} />
-              {mode === "lessons" && badge(tp.id)}
+              <div className="lesson-card-tags">
+                <Status mastery={state.mastery[tp.id]} />
+                {mode === "lessons" && badge(tp.id)}
+              </div>
               <div className="lesson-card-bottom">
                 <span>
                   {mode === "lessons"

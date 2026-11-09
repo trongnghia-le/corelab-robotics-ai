@@ -342,6 +342,79 @@
         "q4"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A monotone good-to-bad predicate over n = 3,000,000 steps (step 0 good; the first bad step may be any of 1..n, or none is bad). What is the minimum worst-case number of probes any strategy needs? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "C",
+      "critical": false,
+      "answer": "22",
+      "tolerance": 0.5,
+      "explanation": "There are n+1 = 3,000,001 possible answers and each probe returns one bit, so a decision tree of depth d needs 2^d >= 3,000,001. Since 2^21 = 2,097,152 < 3,000,001 <= 4,194,304 = 2^22, the minimum is d = 22, and midpoint bisection achieves it.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bisection"
+      ],
+      "skillLabel": "Bisection cost and optimality",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "proj/util.py and proj/tools/util.py both exist, proj/tools/run.py does `import util`, and proj/tools/__init__.py exists. From the directory proj, which launch imports proj/util.py?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "python tools/run.py",
+        "python -m tools.run",
+        "python -P tools/run.py",
+        "cd tools && python run.py"
+      ],
+      "answer": "1",
+      "explanation": "For a script, sys.path[0] is the script's directory (tools/), so `python tools/run.py` and `cd tools && python run.py` import tools/util.py. For -m, the first entry is the current directory (proj), so proj/util.py is imported. With -P nothing is prepended, so `import util` fails with ModuleNotFoundError.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "sys-path",
+        "working-directory"
+      ],
+      "skillLabel": "Import resolution and launch mode",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "For `for i in range(10): total += i * i` with the pdb breakpoint on the update line `b loop.py:3, i % 3 == 0` followed by `ignore 1 2` and `continue`, what is `total` at the first stop? (integer, tolerance 0.5)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "55",
+      "tolerance": 0.5,
+      "explanation": "Qualifying crossings occur at i = 0, 3, 6, 9. The ignore count 2 skips the first two (i = 0 and 3; a crossing counts only when the condition is true). The first stop is at i = 6, before the update, where total = 0+1+4+9+16+25 = 55.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stepping",
+        "conditional-breakpoint"
+      ],
+      "skillLabel": "Scripted breakpoints",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T03#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

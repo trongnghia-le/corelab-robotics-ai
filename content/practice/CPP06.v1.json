@@ -322,6 +322,81 @@
         "q4"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "template <class T> void f(T&&); const long total = 4; f(total); What are the deduced T and the parameter type?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "T = const long, parameter const long&&",
+        "T = const long&, parameter const long&",
+        "T = long&, parameter long&",
+        "T = const long, parameter const long&"
+      ],
+      "answer": "1",
+      "explanation": "T&& with a bare T is a forwarding reference. For an lvalue argument of type const long the deduction uses const long&, so T = const long&. The parameter type is then const long& && which collapses to const long&. T = const long would only be deduced for an rvalue argument, and the parameter would then be const long&&.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "template-deduction"
+      ],
+      "skillLabel": "Forwarding reference deduction",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "template <class... A> auto r(A... a) { return (a - ...); } What does r(20, 8, 5, 2) return? Give an integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "15",
+      "tolerance": 0.01,
+      "explanation": "A unary right fold (E op ...) expands to E1 op (E2 op (E3 op E4)). So 20 - (8 - (5 - 2)) = 20 - (8 - 3) = 20 - 5 = 15. A left fold would give ((20 - 8) - 5) - 2 = 5, which is the usual mistake.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "template-deduction"
+      ],
+      "skillLabel": "Fold expansion order",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "With template <class T> struct id { using type = T; }; and template <class T> constexpr T clamp_to(T x, typename id<T>::type lo, typename id<T>::type hi), what does clamp_to(9, 0.0, 6.5) return and why is that a design problem? Propose a fix that keeps mixed argument types but rejects the bad call at compile time.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "T is deduced from x only (the bounds are in a non-deduced context), so T = int and the bounds are converted: hi becomes 6, the result is 6 instead of 6.5.",
+        "The conversion is silent, so a wrong answer is returned without any diagnostic.",
+        "Fix: take three independent template parameters and static_assert(std::is_same_v<std::common_type_t<T, L, H>, T>, \"bounds would be narrowed\") (or require braces/conversion checks); the caller who wants promotion writes clamp_to<double>(9, 0, 6.5)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "template-deduction",
+        "template-constraints"
+      ],
+      "skillLabel": "Non-deduced contexts and narrowing",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP06#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

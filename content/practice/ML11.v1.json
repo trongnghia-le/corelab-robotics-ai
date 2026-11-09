@@ -325,6 +325,77 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "An encoder outputs q = N(mu=1, sigma^2=0.5) for a one-dimensional code whose prior is N(0, 4). What is KL(q || prior) in nats? (decimal, tolerance 0.002)",
+      "kind": "number",
+      "answer": "0.7272",
+      "tolerance": 0.002,
+      "explanation": "For q = N(mu, sigma^2) and prior N(0, s^2): KL = 1/2 [ (sigma^2 + mu^2)/s^2 - 1 - ln(sigma^2/s^2) ]. Here (0.5 + 1)/4 = 0.375 and ln(0.5/4) = ln 0.125 = -2.0794, so KL = 1/2 [0.375 - 1 + 2.0794] = 0.7272 nats.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "elbo"
+      ],
+      "skillLabel": "The evidence lower bound",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A two-dimensional mixture has components with independent coordinates, weights (0.3, 0.7) and means (0, 0) and (3, 2), all variances 1. Given x_a = 0, what is the posterior weight of component 1 in the conditional p(x_b | x_a)? (decimal, tolerance 0.001)",
+      "kind": "number",
+      "answer": "0.9747",
+      "tolerance": 0.001,
+      "explanation": "The conditional weights are gamma_k = w_k N(x_a; mu_ka, 1) / sum_j w_j N(x_a; mu_ja, 1). At x_a = 0: component 1 gives 0.3 * N(0;0,1) = 0.3 * 0.39894 = 0.11968; component 2 gives 0.7 * N(0;3,1) = 0.7 * 0.004432 = 0.003102. So gamma_1 = 0.11968 / 0.12278 = 0.9747. The prior weight 0.3 is overruled by the evidence in x_a.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "latent-variables-em"
+      ],
+      "skillLabel": "Mixtures, responsibilities and EM",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Why can the maximum-likelihood objective of a Gaussian mixture be unbounded above?",
+      "kind": "choice",
+      "options": [
+        "EM is not guaranteed to increase the likelihood, so it can diverge",
+        "A component centred exactly on a data point can shrink its variance to zero, making that point's density go to infinity while the other points stay explained by other components",
+        "The mixing weights can exceed one when there are many components",
+        "The log of a sum of densities is not defined when responsibilities are small"
+      ],
+      "answer": "1",
+      "explanation": "With mu_j = x_n, the component's density at x_n is w_j (2 pi sigma_j^2)^(-1/2), which tends to infinity as sigma_j^2 -> 0, while the other data points are still explained by other components with bounded density, so the total log-likelihood diverges (Bishop, PRML, section 9.2.1). A single Gaussian cannot do this because shrinking its variance would send the other points' densities to zero. EM does not decrease the likelihood, and weights stay in [0,1]. Remedies: a variance floor, a prior, or restarting collapsed components.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "likelihood-evaluation"
+      ],
+      "skillLabel": "Evaluating generative models",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML11#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

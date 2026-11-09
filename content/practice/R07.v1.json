@@ -292,6 +292,87 @@
         "Notes that a gravity sign or unit error shows up as a large, step-size independent energy violation"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "manipulator-equation"
+      ],
+      "skillLabel": "Joint torque from the manipulator equation",
+      "relatedPrerequisites": [
+        "R01",
+        "M07",
+        "R06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "A planar 2R arm (angles from the horizontal) has m₁=m₂=2 kg point masses at the link ends, l₁=l₂=1 m, g=10 m/s². At q=(π/4, π/4) with q̇=(2, −1) rad/s and q̈=(3, −1) rad/s², what torque τ₁ (N m) does joint 1 need?",
+      "dimension": "M",
+      "critical": false,
+      "explanation": "τ=M(q)q̈+c(q,q̇)+g(q). M₁₁=m₁l₁²+m₂(l₁²+2l₁l₂cos q₂+l₂²)=8.8284, M₁₂=m₂(l₁l₂cos q₂+l₂²)=3.4142, so (Mq̈)₁=8.8284·3−3.4142=23.071. c₁=−m₂l₁l₂ sin q₂(2q̇₁q̇₂+q̇₂²)=−1.4142·(−4+1)=4.243. g₁=(m₁+m₂)g l₁cos q₁+m₂g l₂cos(q₁+q₂)=28.284+0=28.284. Sum τ₁=55.598 N m.",
+      "answer": "55.598",
+      "tolerance": 0.01
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "integrator-energy-growth"
+      ],
+      "skillLabel": "Explicit Euler energy amplification",
+      "relatedPrerequisites": [
+        "R01",
+        "M07",
+        "R06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "For the linearised pendulum with ω²=g/l=9.81 s⁻² integrated by explicit Euler with Δt=0.01 s, the energy is multiplied by (1+ω²Δt²) per step. By what factor does the energy grow over 1000 steps (10 s)?",
+      "dimension": "M",
+      "critical": false,
+      "explanation": "Explicit Euler maps (x,v) to (x+Δt v, v−Δtω²x); its eigenvalues are 1±iωΔt with modulus² 1+ω²Δt² = 1.000981. Over 1000 steps (1.000981)^1000 = 2.666. The same order as the measured doubling for the nonlinear pendulum of the lesson. For a fixed duration the growth rate per second is about ω²Δt, so halving Δt halves the exponent.",
+      "answer": "2.666",
+      "tolerance": 0.01
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "inertia-matching"
+      ],
+      "skillLabel": "Maximum acceleration with an optimal gear ratio",
+      "relatedPrerequisites": [
+        "R01",
+        "M07",
+        "R06"
+      ],
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R07#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "number",
+      "prompt": "A joint has load inertia 0.5 kg m² and motor rotor inertia 2×10⁻⁵ kg m². With ideal gearing the load acceleration is G τ_m/(I_link+G² I_rotor). Maximised over G, what acceleration (rad/s²) results per 1 N m of motor torque?",
+      "dimension": "M",
+      "critical": false,
+      "explanation": "d(acc)/dG = τ_m (I_link − G² I_rotor)/(I_link + G² I_rotor)² = 0 gives G*=√(I_link/I_rotor)=158.1, where the reflected rotor inertia equals I_link. Then acc = G* τ_m/(2 I_link) = 158.11·1/(1.0) = 158.11 rad/s² (equivalently 1/(2√(I_link I_rotor))). For comparison G=50 gives only 90.9.",
+      "answer": "158.11",
+      "tolerance": 0.05
     }
   ]
 }

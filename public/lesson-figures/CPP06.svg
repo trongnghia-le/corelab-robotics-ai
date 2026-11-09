@@ -1,24 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="360" fill="#111827" rx="12"/>
-<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Templates: one stencil, one real function per type</text>
-<rect x="260" y="50" width="240" height="60" rx="8" fill="none" stroke="#38bdf8" stroke-width="2"/>
-<text x="380" y="75" font-size="14" fill="#38bdf8" text-anchor="middle">template &lt;class T&gt;</text>
-<text x="380" y="97" font-size="13" fill="#e5e7eb" text-anchor="middle">T clamp_to(T x, T lo, T hi)</text>
-<path d="M330 110 L140 170 M380 110 V170 M430 110 L620 170" stroke="#e5e7eb" stroke-width="2"/>
-<rect x="40" y="170" width="200" height="56" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
-<text x="140" y="194" font-size="14" fill="#a3e635" text-anchor="middle">clamp_to&lt;int&gt;</text>
-<text x="140" y="214" font-size="13" fill="#e5e7eb" text-anchor="middle">clamp_to(5, 0, 3)</text>
-<rect x="280" y="170" width="200" height="56" rx="8" fill="#1f2937" stroke="#a3e635" stroke-width="2"/>
-<text x="380" y="194" font-size="14" fill="#a3e635" text-anchor="middle">clamp_to&lt;double&gt;</text>
-<text x="380" y="214" font-size="13" fill="#e5e7eb" text-anchor="middle">clamp_to(0.5, 0.0, 1.0)</text>
-<rect x="520" y="170" width="200" height="56" rx="8" fill="none" stroke="#f97316" stroke-width="2" stroke-dasharray="5 4"/>
-<text x="620" y="194" font-size="14" fill="#f97316" text-anchor="middle">clamp_to(5, 0.0, 3.0)</text>
-<text x="620" y="214" font-size="13" fill="#e5e7eb" text-anchor="middle">error: int vs double</text>
-<text x="20" y="262" font-size="16" font-weight="bold" fill="#e5e7eb">constexpr: same code, evaluated when the arguments are constants</text>
-<rect x="40" y="280" width="320" height="56" rx="8" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
-<text x="200" y="304" font-size="14" fill="#38bdf8" text-anchor="middle">compile time</text>
-<text x="200" y="324" font-size="13" fill="#e5e7eb" text-anchor="middle">static_assert(make_squares&lt;6&gt;()[5] == 25)</text>
-<rect x="400" y="280" width="320" height="56" rx="8" fill="#1f2937" stroke="#f97316" stroke-width="2"/>
-<text x="560" y="304" font-size="14" fill="#f97316" text-anchor="middle">run time</text>
-<text x="560" y="324" font-size="13" fill="#e5e7eb" text-anchor="middle">clamp_to(read_sensor(), lo, hi)</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="Inter, sans-serif">
+<title>One template, many functions; constexpr at compile or run time</title>
+<desc>Left: the template clamp_to is a stencil that yields clamp_to&lt;int&gt; and clamp_to&lt;double&gt;, and is stopped by a static_assert for std::string. Right: what the compiler evaluates (constexpr values, static_assert) against what the running program evaluates.</desc>
+<defs><marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="500" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" font-weight="bold" fill="#e9e7e3">One template, many functions; constexpr at compile or run time</text>
+<rect x="32" y="64" width="430" height="404" rx="10" fill="#22252a"/>
+<rect x="486" y="64" width="382" height="404" rx="10" fill="#22252a"/>
+<text x="52" y="96" font-size="17" font-weight="bold" fill="#e9e7e3">Template = stencil, one function per type</text>
+<rect x="52" y="150" width="130" height="250" rx="8" fill="#2a2d33" stroke="#a7adb5" stroke-width="2"/>
+<text x="117" y="196" font-size="15" font-weight="600" text-anchor="middle" fill="#e9e7e3">template</text>
+<text x="117" y="226" font-size="15" font-weight="600" text-anchor="middle" fill="#e9e7e3">&lt;class T&gt;</text>
+<text x="117" y="256" font-size="15" text-anchor="middle" fill="#e9e7e3">T clamp_to</text>
+<text x="117" y="286" font-size="15" text-anchor="middle" fill="#e9e7e3">(T x, T lo,</text>
+<text x="117" y="316" font-size="15" text-anchor="middle" fill="#e9e7e3">T hi)</text>
+<rect x="232" y="118" width="210" height="92" rx="8" fill="#17181b" stroke="#86abe2" stroke-width="2"/>
+<text x="244" y="142" font-size="14" fill="#a7adb5">clamp_to(5, 0, 3)</text>
+<text x="244" y="170" font-size="15" font-weight="600" fill="#86abe2">clamp_to&lt;int&gt;</text>
+<text x="244" y="196" font-size="14" fill="#e9e7e3">compiled for int</text>
+<line x1="182" y1="275" x2="230" y2="164" stroke="#a7adb5" stroke-width="2" marker-end="url(#b1)"/>
+<rect x="232" y="228" width="210" height="92" rx="8" fill="#17181b" stroke="#6fc693" stroke-width="2"/>
+<text x="244" y="252" font-size="14" fill="#a7adb5">clamp_to(0.5, 0.0, 1.0)</text>
+<text x="244" y="280" font-size="15" font-weight="600" fill="#6fc693">clamp_to&lt;double&gt;</text>
+<text x="244" y="306" font-size="14" fill="#e9e7e3">compiled for double</text>
+<line x1="182" y1="275" x2="230" y2="274" stroke="#a7adb5" stroke-width="2" marker-end="url(#b1)"/>
+<rect x="232" y="338" width="210" height="92" rx="8" fill="#17181b" stroke="#e58a80" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="244" y="362" font-size="14" fill="#a7adb5">clamp_to(name, a, b)</text>
+<text x="244" y="390" font-size="15" font-weight="600" fill="#e58a80">T = std::string</text>
+<text x="244" y="416" font-size="14" fill="#e9e7e3">static_assert stops the build</text>
+<line x1="182" y1="275" x2="230" y2="384" stroke="#a7adb5" stroke-width="2" marker-end="url(#b1)"/>
+<text x="506" y="96" font-size="17" font-weight="bold" fill="#e9e7e3">constexpr: who evaluates?</text>
+<rect x="506" y="118" width="342" height="150" rx="8" fill="#1f3b37" stroke="#6cc6ba" stroke-width="2"/>
+<text x="522" y="146" font-size="15" font-weight="600" fill="#6cc6ba">Compile time: the compiler</text>
+<text x="522" y="176" font-size="14" fill="#e9e7e3">constexpr int a = 4 * 2;   // 8</text>
+<text x="522" y="202" font-size="14" fill="#e9e7e3">std::array&lt;int, a&gt; arr;   // size 8</text>
+<text x="522" y="228" font-size="14" fill="#e9e7e3">static_assert(sq[5] == 25);</text>
+<text x="522" y="254" font-size="14" fill="#a7adb5">the value sits in the binary</text>
+<rect x="506" y="288" width="342" height="150" rx="8" fill="#4a3a26" stroke="#e0904f" stroke-width="2"/>
+<text x="522" y="316" font-size="15" font-weight="600" fill="#e0904f">Run time: the program</text>
+<text x="522" y="346" font-size="14" fill="#e9e7e3">int n = read_from_sensor();</text>
+<text x="522" y="372" font-size="14" fill="#e9e7e3">const int c = n * 2;   // unknown before</text>
+<text x="522" y="398" font-size="14" fill="#e9e7e3">clamp_to(n, 0, 3);   // runs normally</text>
+<text x="522" y="424" font-size="14" fill="#a7adb5">the same constexpr function runs here</text>
 </svg>

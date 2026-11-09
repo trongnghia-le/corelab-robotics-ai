@@ -321,6 +321,87 @@
         "q6"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Ridge regression with design singular values d = (4, 1, 0.25), true rotated coordinates gamma = (1, 1, 1) and noise sigma = 1. Using the SVD formulas, what is the expected squared parameter error (bias^2 + variance) at lambda = 1? Give a number with 2 decimals.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "Per coordinate the error is (lambda^2 gamma^2 + sigma^2 d^2)/(d^2 + lambda)^2. With lambda = 1: d=4: (1+16)/289 = 0.0588; d=1: (1+1)/4 = 0.5; d=0.25: (1+0.0625)/1.0625^2 = 0.9412. Sum = 1.5000 (bias^2 1.1393 + variance 0.3607). For comparison lambda = 0 gives 17.0625.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "bias-variance",
+        "regularization-ridge"
+      ],
+      "skillLabel": "Ridge bias and variance by singular value",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Ten candidate models all have the same true risk 0.10. Each one's cross-validation estimate has independent noise with standard deviation 0.02. You pick the model with the lowest CV score. What is the expected CV score of the winner? (E[max of 10 standard normals] = 1.539.)",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "0.100, because all true risks are equal and CV is unbiased for each model",
+        "0.084, because the best of ten is one standard deviation below the mean",
+        "0.069, because the winner is on average 1.54 standard deviations below 0.10",
+        "0.131, because choosing among many models inflates the error"
+      ],
+      "answer": "2",
+      "explanation": "Each CV estimate is 0.10 + 0.02 Z_j. The winner's score is 0.10 + 0.02 min Z_j, and E[min Z_j] = -E[max Z_j] = -1.539 for K = 10. So the expected winner score is 0.10 - 0.0308 = 0.069: unbiased for each model, but biased low for the selected one. Nested cross-validation or an untouched test set removes this optimism.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "cv-leakage",
+        "overfitting-diagnosis"
+      ],
+      "skillLabel": "Selection bias of the best CV score",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        },
+        {
+          "label": "Review: verification",
+          "href": "/lessons/ML03#verification"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "For least squares with a fixed design matrix of rank p, noise variance sigma^2 and the truth inside the model, derive the expected training MSE and the expected MSE on fresh responses at the same inputs, and state what each tells you about choosing the degree.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Writes the residual as (I - H) epsilon with H the projection onto the column space, tr H = p, and gets E training MSE = sigma^2 (1 - p/n).",
+        "Writes fresh-response error as n sigma^2 plus E||A beta - y_hat||^2 = sigma^2 tr H (cross term vanishes by independence), giving sigma^2 (1 + p/n).",
+        "Concludes optimism is 2 sigma^2 p / n, so training error is biased low and grows more misleading with p/n; states the conditions (truth in the model, same inputs)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "bias-variance",
+        "overfitting-diagnosis"
+      ],
+      "skillLabel": "Optimism of training error",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML03#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

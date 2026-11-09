@@ -67,7 +67,7 @@
    "explanation": "Chỉ các object immutable (hashable)."
   },
   "b10": {
-   "prompt": "a = [[1, 2], [3, 4]]; b = a.copy(); a[0][0] = 99. b[0][0] là bao nhiêu?",
+   "prompt": "a = [[5, 6], [7, 8]]; b = a.copy(); a[1][0] = 0. b[1][0] là bao nhiêu?",
    "explanation": "List bên trong được dùng chung."
   },
   "b11": {
@@ -86,6 +86,30 @@
     "Dùng id() hoặc is để so sánh identity.",
     "Giải thích == so sánh giá trị nên các hàng bằng nhau nhưng khác object sẽ bị đánh dấu sai.",
     "Nhắc đến một test có cả grid bị aliasing và grid sạch."
+   ]
+  },
+  "c1": {
+   "prompt": "Trong thân class: xs = [1, 2]; k = 3; zs = [x * k for x in xs]. Điều gì xảy ra trên Python 3.11?",
+   "options": [
+    "NameError cho k, vì phạm vi comprehension không thấy tên cấp class; chỉ iterable ngoài cùng xs được đọc trong phạm vi class",
+    "NameError cho xs, vì comprehension không đọc được tên cấp class nào",
+    "Chạy được và cho [3, 6], vì biến class thấy được trong các phạm vi lồng nhau",
+    "Chạy được nhưng cho [1, 2], vì k được tra như mặc định toàn cục bằng 1"
+   ],
+   "explanation": "Iterable ngoài cùng bên trái (xs) được đánh giá trong phạm vi class bao ngoài, nên tìm thấy xs. Biểu thức phần tử x * k chạy trong hàm comprehension ngầm, và tên của khối class không thấy được từ các phạm vi lồng nhau (Execution model, phân giải tên), nên k ném NameError: name 'k' is not defined. Cách sửa: dựng danh sách bên ngoài class, hoặc lặp trên các cặp như itertools.product để giá trị đến qua iterable ngoài cùng bên trái."
+  },
+  "c2": {
+   "prompt": "def fib(n, memo={}): calls += 1; if n < 2: return n; if n not in memo: memo[n] = fib(n-1) + fib(n-2); return memo[n] (calls đếm mọi lần gọi; các lời gọi đệ quy không truyền memo). Lần gọi đầu fib(20) thực hiện bao nhiêu lời gọi? Cho một số.",
+   "explanation": "Các lời gọi đệ quy dùng dict mặc định dùng chung. Gọi T(n) là số lời gọi của fib(n) khi memo còn trống. T(2) = 3 (fib(2), fib(1), fib(0)). Với n >= 3, fib(n) gọi fib(n-1), tốn T(n-1) và điền memo cho mọi chỉ số nhỏ hơn từ 2, rồi gọi fib(n-2), đã có trong memo (hoặc là trường hợp cơ sở) và tốn đúng 1 lời gọi: T(n) = 1 + T(n-1) + 1 = T(n-1) + 2. Vậy T(n) = 2n - 1 và T(20) = 39 (xác nhận bằng cách chạy code trên Python 3.11.9). Lần gọi fib(20) thứ hai tốn 1 lời gọi vì memo còn trong fib.__defaults__, và phiên bản không memo tốn 21891 lời gọi."
+  },
+  "c3": {
+   "prompt": "Với a = [7, 8] và s = [a, a], d[0] is d[1] và d[0] is a bằng bao nhiêu với d = copy.deepcopy(s)? Giải thích memo tạo ra kết quả này thế nào, vì sao list tự tham chiếu x = [1]; x.append(x) không làm deepcopy lặp vô hạn, và làm sao để hai lời gọi deepcopy riêng dùng chung một bản sao của a.",
+   "explanation": "Chấm theo rubric. Đáp án mẫu: d[0] is d[1] là True và d[0] is a là False. deepcopy giữ một memo ánh xạ id(original) sang bản sao của nó trong lời gọi hiện tại; lần đầu gặp a nó sao chép và ghi lại bản sao, lần thứ hai nó tìm thấy a trong memo và trả về cùng bản sao, nên mẫu aliasing của s được tái tạo trong khi bản thân a bị nhân bản. Với x, nó đăng ký list mới vào memo trước khi sao chép các phần tử, nên khi gặp lại x bên trong chính nó thì trả về list mới: kết quả y thỏa y is not x và y[1] is y. Memo chỉ sống một lời gọi; để chia sẻ bản sao giữa các lời gọi hãy truyền cùng một dict, ví dụ m = {}; c1 = copy.deepcopy(t1, m); c2 = copy.deepcopy(t2, m), sau đó c1[0] is c2[0].",
+   "rubric": [
+    "Nêu d[0] is d[1] là True và d[0] is a là False.",
+    "Giải thích memo là ánh xạ từ id(original) sang bản sao, được tra trước khi sao chép và tái sử dụng ở lần gặp thứ hai.",
+    "Giải thích bản sao được đăng ký trước khi đi xuống, nên chu trình ánh xạ về list mới: y is not x và y[1] is y.",
+    "Nói memo chỉ tồn tại trong một lời gọi và cho thấy việc truyền một dict memo dùng chung cho hai lời gọi."
    ]
   }
  }

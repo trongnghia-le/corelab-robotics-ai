@@ -81,6 +81,24 @@
     "Test mũ hoặc sin với dạng đóng (xu hướng sai số theo sigma).",
     "Test Jacobian bằng không hoặc ánh xạ tuyến tính (hiệp phương sai chéo và công thức cập nhật)."
    ]
+  },
+  "c1": {
+   "prompt": "Tuyến tính hóa thống kê của g = sin với x ~ N(1, 0.36) (sigma = 0.6). Theo đồng nhất thức Stein, độ dốc tuyến tính tốt nhất là A = E[cos x] = exp(-sigma^2/2) cos(mu). Phương sai tuyến tính hóa thống kê A^2 sigma^2 là bao nhiêu (4 chữ số thập phân)?",
+   "explanation": "A = e^{-0.18} cos 1 = 0.8353 * 0.5403 = 0.4513, nên A^2 sigma^2 = 0.2037 * 0.36 = 0.0733. Độ dốc EKF cos 1 = 0.5403 sẽ cho 0.1051, và phương sai chính xác là 0.1073: đường thẳng khớp không thể vượt phương sai thật (Cauchy-Schwarz) và ở đây thấp hơn 32%."
+  },
+  "c2": {
+   "prompt": "Trong biến đổi unscented có scale với n = 1, phương sai UT của g(x) = x^2 là 4 mu^2 sigma^2 + (alpha^2 kappa + beta) sigma^4. Lựa chọn tham số nào làm nó chính xác với MỌI alpha?",
+   "options": [
+    "kappa = 2, beta = 0",
+    "kappa = 0, beta = 0",
+    "kappa = 0, beta = 2",
+    "kappa = 1, beta = 1"
+   ],
+   "explanation": "Phương sai chính xác là 4 mu^2 sigma^2 + 2 sigma^4, nên alpha^2 kappa + beta phải bằng 2 với mọi alpha. Điều này đòi hỏi kappa = 0 và beta = 2. Chọn kappa = 2, beta = 0 chỉ chính xác khi alpha = 1 (quy tắc không scale); kappa = 0, beta = 0 cho hệ số sigma^4 bằng 0 (phương sai EKF); kappa = 1, beta = 1 cho alpha^2 + 1, chỉ chính xác tại alpha = 1."
+  },
+  "c3": {
+   "prompt": "Hai cảm biến góc tại (0,0) và (4,0) m, độ lệch chuẩn nhiễu 0.05 rad. Tiên nghiệm N((2,2), I) m. Giá trị đọc 0.80 và 2.30 rad. Thực hiện cập nhật EKF chung (cả hai Jacobian tại trung bình tiên nghiệm). Tọa độ y hậu nghiệm là bao nhiêu (4 chữ số thập phân)?",
+   "explanation": "Hàng Jacobian của góc (-dy, dx)/r^2: H1 = (-0.25, 0.25), H2 = (-0.25, -0.25), góc dự đoán pi/4 = 0.7854 và 3 pi/4 = 2.3562. Innovation 0.0146 và -0.0562. H P H^T = diag(0.125, 0.125) nên S = diag(0.1275). Độ dịch trung bình = tổng H_j^T nu_j / 0.1275 = (-0.0286, 0.0286) + (0.1102, 0.1102) = (0.0816, 0.1388), nên y = 2.1388 (x = 2.0816), độ lệch chuẩn hậu nghiệm 0.14 m mỗi trục."
   }
  }
 }

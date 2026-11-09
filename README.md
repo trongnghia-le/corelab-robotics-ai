@@ -9,36 +9,35 @@
 [![Node.js 24+](https://img.shields.io/badge/Node.js-24%2B-43853d?logo=node.js&logoColor=white)](package.json)
 [![Next.js](https://img.shields.io/badge/Next.js-App_Router-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
-[![Code: MIT](https://img.shields.io/badge/Code-MIT-f97316)](LICENSE)
+[![Code: MIT](https://img.shields.io/badge/Code-MIT-d98a52)](LICENSE)
 [![Content: CC BY 4.0](https://img.shields.io/badge/Content-CC_BY_4.0-64748b)](LICENSE-CONTENT)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-a3e635)](CONTRIBUTING.md)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-68c08b)](CONTRIBUTING.md)
 
-[**Quick start**](#-quick-start) · [**Features**](#-what-you-get) · [**Curriculum**](#-the-curriculum) · [**How to study**](#-how-to-study-with-corelab) · [**User guide**](docs/guide.md) · [**Contributing**](CONTRIBUTING.md)
+[**Quick start**](#-quick-start) · [**Study desk**](#-study-desk-notes-exercises-and-code-beside-the-lesson) · [**Features**](#-what-you-get) · [**Curriculum**](#-the-curriculum) · [**How to study**](#-how-to-study-with-corelab) · [**User guide**](docs/guide.md) · [**Contributing**](CONTRIBUTING.md)
 
 <br/>
 
-<img src="docs/images/hero-lab.png" alt="CoreLab Robotics & AI lab: learn robotics and AI from first principles, with paths for robot motion, computer vision, machine learning and reinforcement learning" width="100%"/>
+<img src="docs/images/hero.png" alt="CoreLab dashboard: the recommended next topic with its reason, a robot-arm concept illustration and progress counters, in the dark theme" width="100%"/>
 
 </div>
 
 <br/>
 
-CoreLab is a **free, local-first learning workspace** that takes you from vectors and Python to Kalman filters, inverse kinematics, computer vision and reinforcement learning. All of it is arranged on a prerequisite map, so you always know what to learn next. Each topic follows the same loop: **watch → understand → derive → implement → verify → review.** Your progress lives on your computer. There are no accounts, no subscriptions and no cloud.
+CoreLab is a **free, local-first learning workspace** that takes you from vectors and Python to Kalman filters, inverse kinematics, embedded firmware, computer vision and reinforcement learning, and ends with a graduation robot project. Everything sits on a prerequisite map, so you always know what to learn next. Each topic follows the same loop: **watch → understand → derive → implement → verify → review.** Your progress lives on your computer: no accounts, no subscriptions, no cloud.
 
 > **Progress is measured by what you can independently explain, implement and verify — not by how many videos you watch.**
 
 ## ✨ Why CoreLab?
 
-- 🗺️ **A real roadmap, not a playlist.** A 190-topic prerequisite graph covers mathematics, programming, ML, robotics, hardware and embedded systems, vision, RL, embodied AI and research methods. It explains why each next step is recommended.
-- 📖 **Complete lessons for every topic.** Each one has intuition, derivation, a fully worked example, a reference implementation, failure modes, trade-offs and further reading. Mathematics renders with KaTeX.
-- ✍️ **Practice that builds real skill.** Every lesson has 10–12 graded exercises with worked answers, including problems adapted from well-known textbooks and courses. There are also interactive diagnostics and a targeted practice bank that finds your weak skills.
-- 🔌 **Hardware, not just theory.** A 12-topic Hardware & Embedded track covers sensors, motors and drivers, power and batteries, buses, then Arduino/ESP32 and MicroPython firmware: interrupts, I²C sensors, closed-loop motor control and a serial/micro-ROS link to ROS 2. Every lab runs without buying parts, with optional free [Wokwi](https://wokwi.com) simulator projects.
-- 🎓 **A graduation capstone.** Nine milestones build one robot that uses everything: a simulated mobile manipulator that takes a text command, localises, navigates, finds an object with its camera, grasps it and delivers it, with firmware-in-the-loop, learned skills, a safety supervisor and a reproducible report.
-- 🧪 **Labs you actually run.** Every topic has a hands-on lab with starter code, runnable tests and expected output. You code it yourself, on your own machine.
-- 🎬 **Curated videos for every topic.** There are 309 videos from 3Blue1Brown, MIT OpenCourseWare, Stanford, Steve Brunton, Cyrill Stachniss, CppCon and others. The player loads only when you click: no autoplay, with an original-source link.
-- 🖼️ **182 original diagrams.** Purpose-drawn figures explain the idea: feedback loops, Kalman updates, capture points, PPO clipping, friction cones and more.
-- 🇻🇳 **English or Vietnamese.** One click switches the whole interface — lessons, exercises, quizzes and practice — between English and Vietnamese. Code and math stay identical.
-- ⏱️ **Honest time plans.** Every lesson is split into four study sessions (Learn, Practice, Build, Review) with realistic time estimates, tick-off progress, and answers that stay hidden until you ask for them.
+- 🗺️ **A real roadmap, not a playlist.** A 190-topic prerequisite graph covers mathematics, programming, ML, robotics, hardware and embedded systems, vision, RL, embodied AI and research methods, and explains why each next step is recommended.
+- 📖 **Complete lessons for every topic.** Intuition, derivation, a fully worked example, a reference implementation, failure modes, trade-offs and further reading, with KaTeX math and an original figure.
+- ✍️ **Practice that builds real skill.** 10–12 graded exercises with worked answers per lesson, including problems adapted from well-known textbooks and courses, plus interactive diagnostics and a practice bank that targets your weak skills.
+- 🗒️ **A study desk beside every lesson.** A resizable panel docked next to the lesson (or its own window) with Markdown notes and a formula palette, every exercise with a box for your working, and a code editor that runs Python and C++ on your machine.
+- 🔌 **Hardware, not just theory.** Sensors, motors and drivers, power, buses, then Arduino/ESP32 and MicroPython firmware up to a micro-ROS link to ROS 2. No parts needed: optional free [Wokwi](https://wokwi.com) simulator projects.
+- 🎓 **A graduation capstone.** Nine milestones build one simulated mobile manipulator that takes a text command, localises, navigates, grasps and delivers, with firmware-in-the-loop, learned skills, a safety supervisor and a reproducible report.
+- 🎬 **Curated videos for every topic.** 309 videos from 3Blue1Brown, MIT OpenCourseWare, Stanford, Steve Brunton, Cyrill Stachniss, CppCon and others. Nothing autoplays; every video links to its source.
+- 🇻🇳 **English or Vietnamese, light or dark.** One click switches the whole interface and every lesson, exercise and quiz between English and Vietnamese; another switches between a calm dark theme and a light one.
+- ⚡ **Opens like an app.** One command builds once, then CoreLab opens in its own window in under a second.
 - 🔒 **Yours.** Local SQLite, exportable backups, no analytics, no AI API keys. Copying context to an AI tutor is optional and manual, with a preview first.
 
 ## 🚀 Quick start
@@ -49,10 +48,10 @@ You need **Node.js 24+** and Git. Python 3 is used by most labs; a C++17 compile
 git clone https://github.com/trongnghia-le/corelab-robotics-ai.git
 cd corelab-robotics-ai
 npm ci
-npm run dev
+npm run app      # builds once (~30 s), then opens CoreLab in its own window
 ```
 
-Open **http://127.0.0.1:3000**. The local database is created automatically. Click **VI** in the top bar for Vietnamese.
+Click **VI** in the top bar for Vietnamese and the ☀ / ☾ button for the light or dark theme. The local database is created automatically.
 
 Most labs need only the Python standard library. The optional **Library track** in each lab uses real tools; install the ones you need:
 
@@ -62,39 +61,27 @@ python3 -m pip install numpy scipy matplotlib scikit-learn torch opencv-python g
 
 ### Open CoreLab like an app (no terminal each time)
 
-`npm run dev` recompiles pages as you open them. For daily study, use the one-click launcher instead:
-
 ```bash
-npm run app           # first time: builds once (~30 s), then opens CoreLab
-npm run app:install   # Linux: adds CoreLab to the app menu
+npm run app           # open CoreLab (starts the background server if needed)
+npm run app:install   # Linux: add CoreLab to the app menu
+npm run app:stop      # stop the background server
 ```
 
 1. **Linux (GNOME, KDE, ...):** after `npm run app:install`, press the Super key, type **CoreLab** and click it. Right-click the icon and choose **Add to Favorites** to pin it to the dock.
-2. **macOS / Windows:** run `npm run app`. It opens in your browser; in Chrome or Edge choose **⋮ → Cast, save and share → Install page as app** to get a desktop/Start-menu icon. Clicking that icon works while the server is running; run `npm run app` again after a restart.
+2. **macOS / Windows:** run `npm run app`. It opens in your browser; in Chrome or Edge choose **⋮ → Cast, save and share → Install page as app** for a desktop/Start-menu icon. Run `npm run app` again after a restart.
 
-How it works: the launcher keeps a light production server running in the background on **http://127.0.0.1:3210** and opens two standalone windows side by side (Chrome, Chromium, Brave or Edge if installed): the lesson on the left and the study desk on the right (`CORELAB_DESK=0` opens the lesson only). Later launches take under a second, it rebuilds by itself whenever the code changes (for example after a `git pull`), and it shares the same progress database as `npm run dev`. Stop the background server with `npm run app:stop`; set `CORELAB_APP_PORT` to use another port. If something goes wrong, check `.local/app.log`.
+The launcher keeps a light production server on **http://127.0.0.1:3210** and opens CoreLab in an app window (Chrome, Chromium, Brave or Edge if installed); `CORELAB_DESK=1` also opens the study desk as a second window beside it. Later launches take under a second, it rebuilds by itself whenever the code changes (for example after a `git pull`), and it shares the same progress database as `npm run dev`. Set `CORELAB_APP_PORT` for another port; if something goes wrong, check `.local/app.log`.
 
-### Study desk: notes, exercises and code beside the lesson
+<details>
+<summary><b>Other modes, and Windows / macOS / Linux notes</b></summary>
 
-Click **Desk** in the top bar (or let the launcher open it) to get a second window that follows the lesson you have open:
-
-- **Notes**: Markdown with math preview, autosaved per topic.
-- **Exercises**: every numbered exercise with a box for your working, a done tick and a hidden answer you open when ready.
-- **Code**: a CodeMirror editor. **Load lab code** puts the lesson's starter and tests in one `lab.py` (or `lab.cpp`); **Run** (Ctrl+Enter) runs it with your own Python 3 or C/C++ compiler, with a 20-second limit.
-
-Everything is saved as plain files in `.local/desk/<TOPIC>/`, so you can also open them in VS Code. Code runs on your machine with your rights, exactly like running it in a terminal; the desk only accepts requests from CoreLab's own pages.
-
-Other modes:
+<br/>
 
 ```bash
+npm run dev                  # development server on http://127.0.0.1:3000
 npm run build && npm start   # production mode
 npm run dev:v2               # also enable the objective-based Extra practice lab at /objectives
 ```
-
-<details>
-<summary><b>Windows, macOS and Linux notes</b></summary>
-
-<br/>
 
 | System             | Install once                                                                                                                                                           | Terminal                                                                                       |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
@@ -102,11 +89,47 @@ npm run dev:v2               # also enable the objective-based Extra practice la
 | **macOS**          | Node.js 24+ (matching Apple Silicon/Intel), Git and optional Python 3.                                                                                                 | Terminal. Check `node --version` first.                                                        |
 | **Linux / Ubuntu** | Node.js 24+ from the official instructions (distribution packages are often older); `sudo apt install git python3`.                                                    | Any terminal. Check the Node version before `npm ci`.                                          |
 
-Use another port with `npm run dev -- --port 3001` and stop the server with **Ctrl+C**. After `npm ci`, lessons, equations, diagrams, quizzes and notes work offline; videos and external links need a connection.
+After `npm ci`, lessons, equations, diagrams, quizzes and notes work offline; videos and external links need a connection.
 
 **Local use only.** CoreLab has no authentication and binds to loopback. Don't expose the server to a network or host it as a public multi-user service.
 
 </details>
+
+## 🗒️ Study desk: notes, exercises and code beside the lesson
+
+Click **Desk** in the top bar or press **Ctrl+\\** to dock the desk on the right of the page; drag its left edge to resize it (double-click resets the width). On a narrow screen it slides up from the bottom. The ↗ button moves it to its own window, for a second monitor. The desk follows the lesson you have open; pin it to stay on one topic.
+
+<p align="center">
+<img src="docs/images/desk-docked.png" alt="The study desk docked on the right of the Kalman filtering lesson: a Markdown note with the formula palette beside the lesson text" width="900"/>
+</p>
+
+<table>
+<tr>
+<td width="33%" valign="top">
+
+**Notes with a formula palette.** Write, Split or Preview. Seven groups of LaTeX snippets (basic, Greek, calculus, linear algebra, probability, layout & logic, robotics) plus the equations of the current lesson, a formula-card template, and Ctrl+M for inline math.
+
+<img src="docs/images/desk-notes.png" alt="Study desk notes in split view: the linear-algebra formula palette, a Kalman note in Markdown and its rendered preview"/>
+
+</td>
+<td width="33%" valign="top">
+
+**Every exercise, with room to work.** A box for your working under each exercise, a done tick and a counter, and the worked answer hidden until you open it.
+
+<img src="docs/images/desk-exercises.png" alt="Study desk exercises tab: exercise 1 of the Kalman lesson with typed working and the opened answer"/>
+
+</td>
+<td width="33%" valign="top">
+
+**Code that runs.** A CodeMirror editor; **Load lab code** puts the lesson's starter and tests in one `lab.py` or `lab.cpp`, and **Run** (Ctrl+Enter) uses your own Python 3 or C/C++ compiler with a time limit.
+
+<img src="docs/images/desk-code.png" alt="Study desk code tab: a short Kalman update in Python and its run output, exit 0 in 0.02 seconds"/>
+
+</td>
+</tr>
+</table>
+
+Everything is saved as plain files in `.local/desk/<TOPIC>/`, so you can also open them in VS Code. Code runs on your machine with your rights, exactly like in a terminal; the desk only accepts requests from CoreLab's own pages.
 
 ## 🧭 What you get
 
@@ -114,20 +137,20 @@ Use another port with `npm run dev -- --port 3001` and stop the server with **Ct
 <tr>
 <td width="50%" valign="top">
 
-### Your next step, explained
+### Ten subjects, one map
 
-The dashboard recommends one next topic and says why, and it counts the topics you have mastered, the ones you have practised and the reviews that are due.
+The dashboard recommends your next step and why, counts what you have mastered and practised, and opens each subject from its own card.
 
-<img src="docs/images/dashboard.png" alt="Dashboard with the recommended next topic and progress counters"/>
+<img src="docs/images/domains.png" alt="Dashboard subject cards for mathematics, programming, machine learning and robotics with their topic counts"/>
 
 </td>
 <td width="50%" valign="top">
 
-### A map of 190 connected topics
+### A graph of 190 connected topics
 
-Search the map or filter it by domain or status. You can also switch to an interactive graph to see how the prerequisites connect.
+Search or filter the roadmap, or switch to the graph: every subject has its own colour, and hovering a topic highlights its prerequisites.
 
-<img src="docs/images/roadmap-graph.png" alt="Interactive prerequisite graph of the mathematics topics"/>
+<img src="docs/images/roadmap-graph.png" alt="Prerequisite graph of all 190 topics coloured by subject, with a legend of the ten subjects"/>
 
 </td>
 </tr>
@@ -136,7 +159,7 @@ Search the map or filter it by domain or status. You can also switch to an inter
 
 ### Four study sessions per lesson
 
-Each lesson is split into Learn → Practice → Build → Review, and every session shows a realistic time estimate. You tick sessions off as you finish them, and a progress bar tracks how far you are.
+Learn → Practice → Build → Review, each with a realistic time estimate and a tick-off progress bar.
 
 <img src="docs/images/lesson-sessions.png" alt="Kalman filtering lesson with the Learn, Practice, Build and Review session stepper and progress bar"/>
 
@@ -145,9 +168,9 @@ Each lesson is split into Learn → Practice → Build → Review, and every ses
 
 ### Original diagrams and rendered math
 
-Each lesson has a long-form text with rendered math and a figure drawn for its idea. Shown here: the Kalman update.
+Long-form text with rendered math and a figure drawn for the idea. Shown here: the Kalman update.
 
-<img src="docs/images/lesson-figure.png" alt="Kalman filtering lesson showing the prior, measurement and posterior Gaussian figure"/>
+<img src="docs/images/lesson-figure.png" alt="Kalman filtering figure with the prior, measurement and posterior Gaussians"/>
 
 </td>
 </tr>
@@ -156,24 +179,18 @@ Each lesson has a long-form text with rendered math and a figure drawn for its i
 
 ### Hands-on labs with tests
 
-Each lab gives you:
+A goal, setup and tasks; starter code with a clear contract; runnable tests and the expected output; an extension challenge; and a **Library track** that redoes the lab with real tools.
 
-- a goal, setup and tasks;
-- starter code with a clear contract;
-- runnable tests and the expected output;
-- an extension challenge;
-- a **Library track** that redoes the lab with real tools.
-
-<img src="docs/images/lesson-lab.png" alt="Lab starter code for a Kalman filter with syntax highlighting and a copy button"/>
+<img src="docs/images/lesson-lab.png" alt="Reference implementation of the scalar Kalman update with syntax highlighting and a copy button"/>
 
 </td>
 <td width="50%" valign="top">
 
 ### Curated video, on your terms
 
-Each topic has one to three verified videos. A video loads only when you ask for it, nothing autoplays, and every video links to its original source.
+One to three verified videos per topic. A video loads only when you ask for it and links to its original source.
 
-<img src="docs/images/lesson-video.png" alt="Recommended video panel with three 3Blue1Brown linear algebra videos"/>
+<img src="docs/images/lesson-video.png" alt="Recommended video panel for the linear algebra lesson"/>
 
 </td>
 </tr>
@@ -182,7 +199,7 @@ Each topic has one to three verified videos. A video loads only when you ask for
 
 ### Check what you know
 
-The quizzes mix concept, calculation and open questions, and they point you to the prerequisites. The detailed C/M/I/T tracking is still there, folded under **Details**.
+Quizzes mix concept, calculation and open questions and point you to the prerequisites. The detailed C/M/I/T tracking is folded under **Details**.
 
 <img src="docs/images/assessment.png" alt="Kalman filtering check page with suggested prerequisites and mastery rules"/>
 
@@ -197,13 +214,33 @@ The **EN/VI** switch translates the interface and every lesson, exercise and qui
 
 </td>
 </tr>
+<tr>
+<td width="50%" valign="top">
+
+### A calm dark theme…
+
+Graphite surfaces, a muted orange accent and subject colours that stay readable without glare.
+
+<img src="docs/images/capstone.png" alt="Capstone milestone CAP02 in the dark theme: about 28 hours over four sessions, with its prerequisites"/>
+
+</td>
+<td width="50%" valign="top">
+
+### …or a light one
+
+The ☀ / ☾ button switches every page, the study desk follows, and figures adapt to the light background.
+
+<img src="docs/images/light-lesson.png" alt="Kalman lesson figure in the light theme"/>
+
+</td>
+</tr>
 </table>
 
 <div align="center">
 
 **182 original teaching diagrams across the curriculum**
 
-<img src="docs/images/figure-gallery.png" alt="Gallery of lesson figures: PID loop, Kalman update, capture point, SARSA vs Q-learning, LQR, friction-cone grasp, PPO clipping, C++ encapsulation" width="100%"/>
+<img src="docs/images/figure-gallery.png" alt="Gallery of lesson figures: PID loop with anti-windup, Kalman update, capture point, PPO clipping, LQR and Riccati iteration, friction-cone grasp, motor drivers and H-bridge, quadrature encoder interrupts" width="100%"/>
 
 </div>
 
@@ -240,17 +277,21 @@ flowchart LR
 | Programming                    |      30 | Python, NumPy, testing, modern C++ (RAII, templates, concurrency), Git, Linux, Docker        |
 | Machine Learning               |      12 | Regression, classification, neural networks, backpropagation, training and evaluation        |
 | Robotics                       |      42 | Frames, kinematics, inverse kinematics, dynamics, PID/LQR/MPC, Kalman filters, MuJoCo, ROS 2 |
+| Hardware & Embedded            |      12 | Sensors, motors and drivers, batteries and safety, buses, Arduino/ESP32 firmware, micro-ROS  |
 | Computer Vision                |      20 | Camera models, calibration, features, CNNs, detection, tracking, visual odometry & SLAM      |
 | Reinforcement & Robot Learning |      24 | MDPs, TD learning, Q-learning, policy gradients, PPO, offline RL, imitation, sim-to-real     |
 | Embodied & Cognitive Robotics  |      15 | Task & motion planning, world models, diffusion policies, vision-language-action models      |
-| Hardware & Embedded            |      12 | Sensors, motors and drivers, batteries and safety, buses, Arduino/ESP32 firmware, micro-ROS  |
 | Scientific Research            |      10 | Experimental design, reproducibility, ablations, reading and writing papers                  |
 | Capstone                       |       9 | One robot, nine milestones: firmware, localisation, navigation, grasping, RL, language, eval |
 | **Total**                      | **190** | **Every topic has a full lesson, a diagnostic, a practice bank, a lab and video**            |
 
 **Beginner path:** `M01 → M02 → PY01 → M03` (notation, vectors, Python, matrices). From there, follow the dashboard. Prerequisites are suggestions, never locks.
 
-**Hardware path:** `HW01 → HW02 → HW06 → HW04 → HW03 → HW05` for the overview, then `HW07 → HW12` for embedded programming. The overview half needs no coding and can run alongside mathematics.
+### 🔌 Hardware & Embedded
+
+<img src="docs/images/hardware-graph.png" alt="Hardware & Embedded graph: HW01 to HW12 in green, with C++ fundamentals, PID control and ROS 2 fundamentals as prerequisites from other subjects" width="100%"/>
+
+**Path:** `HW01 → HW02 → HW06 → HW04 → HW03 → HW05` for the overview (what each part is, how to choose it, what the datasheet numbers mean), then `HW07 → HW12` for embedded programming: GPIO/ADC/PWM, interrupts and encoders, I²C/SPI sensors, closed-loop motor control, a CRC-checked serial link and micro-ROS, and bring-up and debugging. The overview half needs no coding and can run alongside mathematics. Labs run in Python with no parts; each programming topic also has a Wokwi simulator project, and an optional cheap starter kit if you want real hardware.
 
 ### 🎓 Graduation capstone: CoreBot Tidy
 
@@ -290,9 +331,9 @@ Each milestone is a lesson whose lab is the milestone brief, with a pytest accep
 
 1. **Start** from the dashboard recommendation or a learning path, and check the prerequisites.
 2. **Check what you know** first. Say honestly how much help you used, from _No help (A0)_ to _Saw the solution (A3)_.
-3. **Learn session.** Watch and explore, predicting before you press play or move a slider.
+3. **Learn session.** Watch and explore, predicting before you press play or move a slider. Keep notes and formulas in the study desk.
 4. **Derive.** Rebuild the key equation on a blank page and explain every term.
-5. **Practice and Build sessions.** Do the exercises before opening the answers, then implement the lab from scratch until the tests pass. Treat copied or AI-written code as assisted practice.
+5. **Practice and Build sessions.** Work each exercise in the desk before opening its answer, then implement the lab from scratch until the tests pass. Treat copied or AI-written code as assisted practice.
 6. **Verify.** Use hand calculations, boundaries and deliberately broken cases, then re-take the diagnostic.
 7. **Fix your weaknesses** in **Practice → My Weaknesses**, which targets the exact skills you missed.
 8. **Review** on a 1/3/7/21-day schedule and reconstruct the result from memory.
@@ -300,11 +341,11 @@ Each milestone is a lesson whose lab is the milestone brief, with a pytest accep
 **Use ChatGPT (or any assistant) as a Socratic tutor:** choose **Copy Learning Context**, check the preview, and paste it yourself. Ask it to _"ask one question at a time and give the smallest hint I need."_ There's no API connection or automatic sync. See the [guide](docs/guide.md#chatgpt-project-workflow-no-api).
 
 <details>
-<summary><b>How mastery is measured</b></summary>
+<summary><b>How mastery and the next step are decided</b></summary>
 
 <br/>
 
-Reading, watching and clicking never count as mastery. A full independent (A0) diagnostic needs **≥ 80 %** with every critical item correct. Implementation evidence needs a supported fixed contract. Open answers are rubric-guided and stay unverified. Read the [assessment policy](docs/guide.md#assessment-and-mastery) for the details.
+Reading, watching, ticking sessions and practising never count as mastery on their own. A topic is **passed** when you take its diagnostic with no help (A0), score **≥ 80 %** on the automatically checked questions and get every critical question right; open answers are rubric-guided and stay unverified. Concept (C), math (M), implementation (I, from a supported fixed lab contract) and retention (T, two A0 passes at least 7 days apart) are tracked separately. The dashboard only recommends topics whose prerequisites are passed, ranks due reviews, weak skills and foundations first, and schedules reviews after 1, 3, 7 and 21 days. Read the [assessment policy](docs/guide.md#assessment-and-mastery) for the details.
 
 </details>
 
@@ -323,13 +364,14 @@ These kits are numerical and replay-based. Parts that need ROS 2, a physics engi
 
 ## 🛠️ Tech stack
 
-| Layer   | Technology                                                                 |
-| ------- | -------------------------------------------------------------------------- |
-| App     | Next.js App Router, React, strict TypeScript                               |
-| UI      | Tailwind CSS, Lucide icons, React Flow graph, Dark+ syntax highlighting    |
-| Content | Markdown + GFM, KaTeX math, original SVG figures, versioned JSON contracts |
-| Storage | SQLite via Node's built-in `node:sqlite`, Zod validation                   |
-| Quality | Vitest, Playwright, content validators, Python lab fixtures                |
+| Layer   | Technology                                                                                   |
+| ------- | -------------------------------------------------------------------------------------------- |
+| App     | Next.js App Router, React, strict TypeScript                                                 |
+| UI      | Tailwind CSS, Lucide icons, React Flow graph, CodeMirror 6, Dark+ syntax highlighting        |
+| Themes  | Dark-first CSS; the light theme is generated from it with PostCSS (`npm run theme`)          |
+| Content | Markdown + GFM, KaTeX math, original SVG figures, versioned JSON contracts                   |
+| Storage | SQLite via Node's built-in `node:sqlite`, Zod validation; desk files in `.local/desk/`       |
+| Quality | Vitest, Playwright, content and translation validators, Python lab fixtures, CI on 3 systems |
 
 ```bash
 npm run check                    # lint, types, content validation, tests, build
@@ -347,7 +389,7 @@ npm run test:e2e                 # browser tests on an isolated database
 
 ## 🤝 Contributing
 
-Corrections, new exercises, better diagrams, accessibility fixes and translations are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md); the [user and maintainer guide](docs/guide.md) covers architecture, data and troubleshooting.
+Corrections, new exercises, better diagrams, accessibility fixes and translations are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md); the [user and maintainer guide](docs/guide.md) covers architecture, data and troubleshooting. Styles live in `app/globals.css`; run `npm run theme` after editing it to regenerate `app/theme.css`.
 
 If CoreLab helps you learn, **a ⭐ on GitHub helps others find it.**
 

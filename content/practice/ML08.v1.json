@@ -331,6 +331,78 @@
         "q1"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "N=50 images, each with D=10,000 pixels, are centred (mean subtracted). At most how many eigenvalues of the 10,000×10,000 covariance matrix can be non-zero? (integer)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "49",
+      "tolerance": 0,
+      "explanation": "The centred data matrix X (D×N) has rank at most N−1=49 because its columns sum to zero. The covariance S=XXᵀ/N has the same rank, so at most 49 non-zero eigenvalues; they equal the non-zero eigenvalues of the 50×50 matrix XᵀX/N.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "Rank of PCA with few points",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Power iteration on a covariance matrix with eigenvalues 5 and 4.5 (ratio 0.9) starts at 45 degrees to the top eigenvector (tan θ0 = 1). Roughly how many steps until tan θ ≤ 0.001? (decimal, tolerance 0.6)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "65.6",
+      "tolerance": 0.6,
+      "explanation": "tan θk = (λ2/λ1)^k tan θ0 = 0.9^k. 0.9^k ≤ 10⁻³ gives k ≥ ln(1000)/ln(1/0.9)=6.908/0.10536=65.6, so about 66 steps. A small eigengap makes the method slow.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "pca-variance"
+      ],
+      "skillLabel": "Power iteration convergence",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "You run PCA on two features, height in cm (variance 100) and weight in kg (variance 4), correlation 0.75, without standardising. PC1 is almost exactly the height axis. You change height to metres and rerun. What happens?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "PC1 stays the same, because rotating or rescaling an axis never changes the eigenvectors.",
+        "PC1 becomes almost the weight axis, because the rescaled height has far smaller variance.",
+        "PC1 stays on height but its explained variance changes, because eigenvectors are unit-free.",
+        "PC1 becomes (1,1)/√2 automatically, because PCA standardises internally."
+      ],
+      "answer": "1",
+      "explanation": "PCA depends on the units: height in metres has variance 0.01, so the weight feature (variance 4) now dominates and PC1 becomes almost the weight axis. After standardisation PC1 is (1,1)/√2 in both unit systems. Fit the standardisation on training data only.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "pca-variance",
+        "feature-quality"
+      ],
+      "skillLabel": "Scale dependence of PCA",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML08#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

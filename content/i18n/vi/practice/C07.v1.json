@@ -1,8 +1,8 @@
 {
  "questions": {
   "b1": {
-   "prompt": "Tiên nghiệm N(0, 9), cảm biến R = 1. Phương sai hậu nghiệm (3 chữ số thập phân)?",
-   "explanation": "P+ = P-R/(P-+R) = 0.9."
+   "prompt": "Tiên nghiệm N(0, 5), cảm biến R = 2. Phương sai hậu nghiệm (3 chữ số thập phân)?",
+   "explanation": "P+ = P-R/(P-+R) = 10/7 = 1.4286."
   },
   "b2": {
    "prompt": "Trung bình tiên nghiệm 3, P- = 0.5, R = 1.5, z = 5. Trung bình hậu nghiệm (3 chữ số thập phân)?",
@@ -80,6 +80,29 @@
     "Cập nhật và dự đoán tính tay (bắt lỗi dấu và chuyển vị).",
     "Tính đối xứng/xác định dương của P và sự khớp với dạng thông tin.",
     "NIS trên dữ liệu mô phỏng với R đúng và sai (bắt các vấn đề nhất quán)."
+   ]
+  },
+  "c1": {
+   "prompt": "Cập nhật vô hướng với phương sai tiên nghiệm P⁻ = 2.1 và phương sai cảm biến R = 0.9, nhưng bộ lọc dùng hệ số bị chỉnh lệch K = 0.5 thay vì hệ số tối ưu. Phương sai thật của sai số hậu nghiệm là bao nhiêu? (3 chữ số thập phân)",
+   "explanation": "Với mọi hệ số, sai số là (1−K)e⁻ + Kv với các số hạng độc lập, nên P(K) = (1−K)²P⁻ + K²R = 0.25·2.1 + 0.25·0.9 = 0.525 + 0.225 = 0.75. Dạng ngắn (1−K)P⁻ = 1.05 sai ở đây (nó bằng P(K) chỉ với K tối ưu = 2.1/3.0 = 0.7, khi cả hai cho 0.63). Kiểm tra với P(K) = P(K*) + (K − K*)²S = 0.63 + 0.04·3 = 0.75, vì S = P⁻ + R = 3."
+  },
+  "c2": {
+   "prompt": "Một bộ lọc bước ngẫu nhiên vô hướng có NIS trung bình 4.4 trong một lần chạy dài, và các innovation liên tiếp có tự tương quan độ trễ 1 bằng −0.30. Việc chỉnh sai nào phù hợp nhất với điều này?",
+   "options": [
+    "Q_f quá nhỏ: bộ lọc trễ so với trạng thái",
+    "R_f quá nhỏ: bộ lọc quá hăng và đuổi theo nhiễu cảm biến",
+    "R_f quá lớn: bộ lọc quá thận trọng",
+    "Q_f quá lớn: bộ lọc tin cảm biến quá nhiều"
+   ],
+   "explanation": "NIS trung bình cao hơn 1 nhiều nghĩa là bộ lọc quá tự tin (innovation lớn hơn S dự đoán), điều này loại hai lựa chọn có nhiễu quá lớn (R_f hoặc Q_f quá lớn cho NIS dưới 1: 0.17 và 0.08 với Q = 0.3, R = 1.2 thật dùng ở đây). Giữa hai trường hợp quá tự tin, dấu của tự tương quan độ trễ 1 tách được chúng: hệ số quá cao (R_f quá nhỏ) hiệu chỉnh quá đà và làm các innovation liên tiếp đổi dấu luân phiên, cho tương quan âm (ở đây NIS 4.42, ρ₁ = −0.30 với R_f = 0.12 và Q_f = 0.3); hệ số quá thấp (Q_f quá nhỏ) làm bộ lọc trễ so với trạng thái, để lại các chuỗi dài innovation cùng dấu và tương quan dương (NIS 3.47, ρ₁ = +0.68 với Q_f = 0.003). Bộ lọc đúng cho NIS 1 và ρ₁ = 0."
+  },
+  "c3": {
+   "prompt": "Một bộ lọc Kalman với F = I và Q = 0 xử lý các hàng hồi quy H_k = (1, t_k) với phương sai đo R và tiên nghiệm N(m₀, P₀). Hãy chỉ ra nó tính gì sau k hàng, nó liên hệ thế nào với nghiệm bình phương tối thiểu trong M04 (bình phương tối thiểu), và điều gì thay đổi khi Q > 0.",
+   "explanation": "Dạng thông tin: với F = I và Q = 0 mỗi hàng cộng H_kᵀH_k/R vào độ chính xác và H_kᵀy_k/R vào vector thông tin, nên P_k⁻¹ = P₀⁻¹ + Σ H_iᵀH_i/R và m_k = P_k(P₀⁻¹m₀ + Σ H_iᵀy_i/R) (nghiệm ridge). Phép cập nhật Kalman cho cùng các số: P₊ = (I − KH)P và P₊Hᵀ = KR, nên P₊(P⁻¹m + Hᵀy/R) = m + K(y − Hm). Với tiên nghiệm rất yếu (P₀ = 10⁶ I), ba hàng (0,2), (1,1), (3,5) cho m = (1.142857, 1.142857) và P ≈ [[5/7, −2/7],[−2/7, 3/14]], tức (AᵀA)⁻¹Aᵀy và R(AᵀA)⁻¹ từ M04 (bình phương tối thiểu); với P₀ = 100 I ước lượng là (1.1380, 1.1437), bị co nhẹ. Nếu Q > 0, bước dự đoán cộng Q vào P trước mỗi lần cập nhật, nên hệ số vẫn dương và dữ liệu cũ bị quên: bộ lọc bám theo θ biến thiên theo thời gian thay vì tái tạo phép khớp theo lô.",
+   "rubric": [
+    "Thông tin cộng lại: độ chính xác hậu nghiệm là P_k⁻¹ = P₀⁻¹ + Σ H_iᵀH_i/R và vector thông tin P_k⁻¹m_k = P₀⁻¹m₀ + Σ H_iᵀy_i/R, chính là nghiệm bình phương tối thiểu ridge (có chính quy hóa); phép cập nhật Kalman với S = H P Hᵀ + R và K = P Hᵀ/S tái tạo nó (qua P₊Hᵀ = K R và P₊P⁻¹ = I − KH).",
+    "Tiên nghiệm không thông tin P₀⁻¹ → 0 cho m_k = (AᵀA)⁻¹Aᵀy, các phương trình chuẩn tắc (ở đây (8/7, 8/7) cho dữ liệu (0,2),(1,1),(3,5)) và P_k = R(AᵀA)⁻¹; một tiên nghiệm hữu hạn co ước lượng về m₀.",
+    "Q > 0 cộng hiệp phương sai mỗi bước (P⁻ = P + Q), nên các hàng cũ bị giảm trọng số (quên theo hàm mũ) và hệ số không về không; khi đó bộ lọc bám theo θ trôi và không còn là nghiệm bình phương tối thiểu theo lô."
    ]
   }
  }

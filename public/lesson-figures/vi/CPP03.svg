@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="Inter, sans-serif">
+<title>Move chuyển quyền sở hữu: Buffer b = std::move(a)</title>
+<desc>Sơ đồ bộ nhớ: trước khi move, a trỏ tới khối heap A chứa 0,1,2; sau khi move, b trỏ tới A còn a giữ con trỏ null; khi hết scope ~b giải phóng A đúng một lần còn ~a không giải phóng gì.</desc>
+<defs><marker id="ahCPP03vi86abe2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9 z" fill="#86abe2"/></marker><marker id="ahCPP03vie0904f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9 z" fill="#e0904f"/></marker></defs>
+<rect width="900" height="440" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Move chuyển quyền sở hữu: Buffer b = std::move(a)</text>
+<text x="32" y="92" font-size="17" fill="#86abe2" text-anchor="start" font-weight="bold">Trước</text>
+<rect x="32" y="124" width="220" height="60" rx="8" fill="#22252a" stroke="#e9e7e3" stroke-width="2"/>
+<text x="142" y="150" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">a</text>
+<text x="142" y="172" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">data_ = A, size_ = 3</text>
+<rect x="300" y="124" width="220" height="60" rx="8" fill="none" stroke="#a7adb5" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="410" y="160" font-size="15" fill="#a7adb5" text-anchor="middle">b (chưa tạo)</text>
+<rect x="640" y="124" width="228" height="60" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="754" y="150" font-size="15" fill="#6fc693" text-anchor="middle" font-weight="600">khối heap A</text>
+<text x="754" y="172" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">[0.0, 1.0, 2.0]</text>
+<path d="M142,124 V108 H754 V122" fill="none" stroke="#86abe2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ahCPP03vi86abe2)"/>
+<text x="448" y="100" font-size="14" fill="#86abe2" text-anchor="middle">sở hữu</text>
+<text x="32" y="222" font-size="17" fill="#e0904f" text-anchor="start" font-weight="bold">Sau khi move: hai phép ghi con trỏ, O(1)</text>
+<rect x="32" y="244" width="220" height="60" rx="8" fill="#22252a" stroke="#e58a80" stroke-width="2"/>
+<text x="142" y="270" font-size="15" fill="#e58a80" text-anchor="middle" font-weight="600">a (đã bị move)</text>
+<text x="142" y="292" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">data_ = nullptr, size_ = 0</text>
+<rect x="300" y="244" width="220" height="60" rx="8" fill="#22252a" stroke="#e0904f" stroke-width="2"/>
+<text x="410" y="270" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="600">b</text>
+<text x="410" y="292" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">data_ = A, size_ = 3</text>
+<rect x="640" y="244" width="228" height="60" rx="8" fill="#22252a" stroke="#6fc693" stroke-width="2"/>
+<text x="754" y="270" font-size="15" fill="#6fc693" text-anchor="middle" font-weight="600">khối heap A</text>
+<text x="754" y="292" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">[0.0, 1.0, 2.0]</text>
+<line x1="520" y1="274" x2="638" y2="274" stroke="#e0904f" stroke-width="2" stroke-linecap="round" marker-end="url(#ahCPP03vie0904f)"/>
+<text x="580" y="262" font-size="14" fill="#e0904f" text-anchor="middle">sở hữu</text>
+<text x="142" y="326" font-size="14" fill="#e58a80" text-anchor="middle">không sở hữu gì</text>
+<rect x="32" y="350" width="836" height="58" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="48" y="376" font-size="15" fill="#e9e7e3" text-anchor="start">Hết scope (thứ tự ngược): ~b chạy delete[] A đúng một lần; ~a chạy delete[] nullptr, một no-op hợp lệ.</text>
+<text x="48" y="397" font-size="14" fill="#a7adb5" text-anchor="start">Nếu không đặt a.data_ = nullptr, cả hai destructor đều giải phóng A: double free.</text>
+</svg>

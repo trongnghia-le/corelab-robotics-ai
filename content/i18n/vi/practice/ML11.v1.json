@@ -75,6 +75,24 @@
     "Các baseline (Gaussian đơn, bộ sinh bị collapse) và nhiều seed kèm độ trải.",
     "Nêu quy tắc quyết định và một điều kiện bác bỏ (ví dụ thứ hạng đổi trên một cách chia dữ liệu thứ hai)."
    ]
+  },
+  "c1": {
+   "prompt": "Một encoder cho ra q = N(mu=1, sigma^2=0.5) cho mã một chiều có prior là N(0, 4). KL(q || prior) là bao nhiêu nat? (số thập phân, sai số cho phép 0.002)",
+   "explanation": "Với q = N(mu, sigma^2) và prior N(0, s^2): KL = 1/2 [ (sigma^2 + mu^2)/s^2 - 1 - ln(sigma^2/s^2) ]. Ở đây (0.5 + 1)/4 = 0.375 và ln(0.5/4) = ln 0.125 = -2.0794, nên KL = 1/2 [0.375 - 1 + 2.0794] = 0.7272 nat."
+  },
+  "c2": {
+   "prompt": "Một mixture hai chiều có các thành phần với hai tọa độ độc lập, trọng số (0.3, 0.7), trung bình (0, 0) và (3, 2), mọi phương sai bằng 1. Cho x_a = 0, trọng số posterior của thành phần 1 trong phân phối có điều kiện p(x_b | x_a) là bao nhiêu? (số thập phân, sai số cho phép 0.001)",
+   "explanation": "Trọng số có điều kiện là gamma_k = w_k N(x_a; mu_ka, 1) / sum_j w_j N(x_a; mu_ja, 1). Tại x_a = 0: thành phần 1 cho 0.3 * N(0;0,1) = 0.3 * 0.39894 = 0.11968; thành phần 2 cho 0.7 * N(0;3,1) = 0.7 * 0.004432 = 0.003102. Vậy gamma_1 = 0.11968 / 0.12278 = 0.9747. Trọng số prior 0.3 bị bằng chứng từ x_a lấn át."
+  },
+  "c3": {
+   "prompt": "Vì sao hàm mục tiêu maximum-likelihood của Gaussian mixture có thể không bị chặn trên?",
+   "options": [
+    "EM không đảm bảo làm tăng likelihood nên có thể phân kỳ",
+    "Một thành phần đặt đúng tại một điểm dữ liệu có thể co phương sai về 0, làm mật độ tại điểm đó tiến tới vô cùng trong khi các điểm khác vẫn được các thành phần khác giải thích",
+    "Các trọng số trộn có thể vượt quá một khi có nhiều thành phần",
+    "Log của tổng các mật độ không xác định khi các responsibility nhỏ"
+   ],
+   "explanation": "Với mu_j = x_n, mật độ của thành phần tại x_n là w_j (2 pi sigma_j^2)^(-1/2), tiến tới vô cùng khi sigma_j^2 -> 0, trong khi các điểm dữ liệu khác vẫn được giải thích bởi các thành phần khác với mật độ bị chặn, nên tổng log-likelihood phân kỳ (Bishop, PRML, mục 9.2.1). Một Gaussian đơn không làm được điều này vì co phương sai sẽ đẩy mật độ của các điểm khác về 0. EM không làm giảm likelihood, và các trọng số vẫn nằm trong [0,1]. Cách khắc phục: sàn phương sai (variance floor), prior, hoặc khởi động lại thành phần bị sụp."
   }
  }
 }

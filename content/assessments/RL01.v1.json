@@ -18,32 +18,32 @@
     },
     {
       "id": "q2",
-      "prompt": "An episode gives reward 1 at the first step, then reward 2 at the second step, then terminates. With discount γ = 0.5, what is the discounted return from the start?",
+      "prompt": "The discounted return is G = r₁ + γ·r₂ + γ²·r₃ + … An episode gives reward 1 at the first step, reward 2 at the second step, then terminates. With discount γ = 0.5, what is G from the start?",
       "kind": "number",
       "answer": "2",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "G = r₁ + γ·r₂ = 1 + 0.5 × 2 = 1 + 1 = 2. There are no later rewards after termination.",
       "tolerance": 1e-05
     },
     {
       "id": "q3",
-      "prompt": "A state transitions to itself forever and pays reward 1 at every step. With discount γ = 0.5, what is its discounted value?",
+      "prompt": "A state transitions to itself forever and pays reward 1 at every step. With discount γ = 0.5 and V = r₁ + γ·r₂ + γ²·r₃ + …, what is the value V of this state?",
       "kind": "number",
       "answer": "2",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "V = 1 + γ + γ² + … is a geometric series equal to 1 / (1 − γ) = 1 / (1 − 0.5) = 2. Equivalently V = 1 + γ·V, so V = 1 / (1 − γ) = 2.",
       "tolerance": 1e-05
     },
     {
       "id": "q4",
-      "prompt": "In an episodic MDP, a terminal state has no future reward after you enter it. What value should be stored for the terminal state itself?",
+      "prompt": "In an episodic MDP, entering a terminal state ends the episode, so no further reward can be collected from it. What value V(terminal) should be stored for the terminal state itself?",
       "kind": "number",
       "answer": "0",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "The value is the expected discounted future reward from that state. After entering the terminal state nothing more is collected, so V(terminal) = 0. Bootstrapped targets then use r + γ·0 on the final step.",
       "tolerance": 1e-05
     },
     {

@@ -18,32 +18,32 @@
     },
     {
       "id": "q2",
-      "prompt": "How many owners can a unique_ptr represent at a time?",
+      "prompt": "In C++, how many owners can a single std::unique_ptr represent at one time for the object it manages?",
       "kind": "number",
       "answer": "1",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "unique_ptr models exclusive ownership: exactly one owner at a time, so the answer is 1. It cannot be copied, only moved.",
       "tolerance": 1e-05
     },
     {
       "id": "q3",
-      "prompt": "After moving unique_ptr a to b, how many owning pointers remain?",
+      "prompt": "Two std::unique_ptr a and b exist; a owns an object and b is empty. After b = std::move(a), how many unique_ptr objects own the object?",
       "kind": "number",
       "answer": "1",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "Moving transfers ownership: b now owns the object and a becomes null. Before 1 owner, after 1 owner, so the answer is 1.",
       "tolerance": 1e-05
     },
     {
       "id": "q4",
-      "prompt": "A vector has size 3. Number of valid elements?",
+      "prompt": "A std::vector has size() == 3. How many of its elements are valid (constructed and accessible)?",
       "kind": "number",
       "answer": "3",
       "dimension": "M",
       "critical": false,
-      "explanation": "Substitute the given values and preserve the order of operations.",
+      "explanation": "size() is the number of valid elements, so there are 3 (indices 0, 1, 2). Spare capacity beyond size() holds no valid elements.",
       "tolerance": 1e-05
     },
     {

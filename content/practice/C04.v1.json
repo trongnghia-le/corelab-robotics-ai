@@ -390,6 +390,92 @@
         "q4"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ],
+      "id": "c1",
+      "prompt": "Double integrator p' = v, v' = u, starting at rest at the origin. The minimum input energy (integral of u^2) needed to reach p = 1, v = 0 at t = 2 s is x^T Wr(2)^-1 x with Wr(t) = [[t^3/3, t^2/2],[t^2/2, t]]. Compute it (two decimals).",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "controllability"
+      ],
+      "skillLabel": "Minimum-energy transfer",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Minimum-energy transfer",
+          "href": "/lessons/C04#theory-and-derivation"
+        }
+      ],
+      "answer": "1.5",
+      "tolerance": 0.01,
+      "explanation": "det Wr = t^4/12, so Wr^-1 = (12/t^4)[[t, -t^2/2],[-t^2/2, t^3/3]]. For x = (1, 0), E = (12/t^4) * t = 12/t^3 = 12/8 = 1.5. The optimal input is u(tau) = (6/t^3)(t - 2 tau); integrating u^2 over [0, 2] gives the same 1.5."
+    },
+    {
+      "dimension": "M",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ],
+      "id": "c2",
+      "prompt": "Two-tank cascade x1' = -x1 + u, x2' = x1 - 2 x2 with the pump on tank 1. Its controllability Gramian is Wr = [[1/2, 1/6],[1/6, 1/12]]. What is the minimum energy to bring the state from empty to tank 2 at level 1 and tank 1 at level 0?",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "controllability"
+      ],
+      "skillLabel": "Minimum-energy transfer",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: Gramians",
+          "href": "/lessons/C04#theory-and-derivation"
+        }
+      ],
+      "answer": "36",
+      "tolerance": 0.1,
+      "explanation": "E = x^T Wr^-1 x with x = (0, 1) is the (2,2) entry of Wr^-1. det Wr = 1/24 - 1/36 = 1/72, so Wr^-1 = 72 [[1/12, -1/6],[-1/6, 1/2]] and the (2,2) entry is 36. Tank 2 is reached only through tank 1 and drains faster, so it costs six times more than tank 1 (E = 6)."
+    },
+    {
+      "dimension": "C",
+      "critical": false,
+      "relatedPrerequisites": [
+        "C02",
+        "M04",
+        "M06"
+      ],
+      "id": "c3",
+      "prompt": "A plant has A = diag(1, -2), B = [1, 1]^T and C = [0, 1]. Which statement is correct?",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "mode-meaning"
+      ],
+      "skillLabel": "Hidden modes",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: Hidden modes",
+          "href": "/lessons/C04#theory-and-derivation"
+        }
+      ],
+      "options": [
+        "It is unobservable and the output is identically zero for every input",
+        "G(s) = 1/(s+2) looks stable, but the unstable mode at +1 is hidden: x1 grows like e^t while y stays blind to it",
+        "It is uncontrollable, because B has two equal entries",
+        "The pole at +1 can be removed by an observer built from y"
+      ],
+      "answer": "1",
+      "explanation": "The controllability matrix [[1,1],[1,-2]] has rank 2 (controllable); the observability matrix [[0,1],[0,-2]] has rank 1. The transfer function is C(sI-A)^-1 B = 1/(s+2): only the stable controllable-observable part survives. With u = 0 and x(0) = (1,0) the output is identically 0 while x1 = e^t. The mode is controllable (so stabilizable by state feedback) but not detectable, so no estimator based on y can see or correct it."
     }
   ]
 }

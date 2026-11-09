@@ -75,6 +75,24 @@
     "Nhận ra rằng phương sai ước lượng từ 5 mẫu là bất định, có nguy cơ quá tự tin.",
     "Đề xuất posterior Student-t hoặc normal-inverse-gamma hoặc một phép kiểm tra độ bền vững tường minh."
    ]
+  },
+  "c1": {
+   "prompt": "Value iteration là phép co gamma trong chuẩn sup với gamma=0.9 và sai số ban đầu 20. Dùng cận tiên nghiệm, cần bao nhiêu lượt quét để đảm bảo sai số tối đa 0.01 (số nguyên)?",
+   "explanation": "Cần 20*0.9^k <= 0.01, nên k >= ln(0.01/20)/ln(0.9) = -7.601/-0.10536 = 72.1, vậy 73."
+  },
+  "c2": {
+   "prompt": "Prior N(0,4) cho một khoảng cách, phương sai nhiễu 1, các quan sát 1.0, 1.4 và 0.7. Trung bình posterior (3 chữ số thập phân)?",
+   "explanation": "Độ chính xác 1/4+3 = 13/4; trung bình = (4/13)(0/4 + 3.1/1) = 12.4/13 = 0.954. Cập nhật tuần tự cho cùng kết quả: 0.8, 1.067, 0.954."
+  },
+  "c3": {
+   "prompt": "p = 0.5 N(-3,1) + 0.5 N(3,1). Gaussian q = N(m, s^2) nào cực tiểu hóa KL(p || q)?",
+   "options": [
+    "m = 3, s^2 = 1 (một mode)",
+    "m = 0, s^2 = 10 (khớp trung bình và phương sai của p)",
+    "m = 0, s^2 = 1 (đặt giữa, phương sai đơn vị)",
+    "m = 0, s^2 = 9 (chỉ độ tán của hai trung bình)"
+   ],
+   "explanation": "Cực tiểu hóa KL(p||q) trên họ Gaussian khớp trung bình và phương sai của p. Trung bình là 0 và theo phương sai toàn phần Var = 1 (trong) + 9 (giữa) = 10. Mode đơn m=3, s^2=1 xấp xỉ là nghiệm của KL(q||p) ngược, vốn tìm mode."
   }
  }
 }

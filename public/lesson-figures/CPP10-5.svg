@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="Inter, sans-serif">
+<title>Case 2: a three-way lock cycle and the ordered fix</title>
+<desc>Left: with the naive order T1 locks m0 then m2, T2 locks m2 then m1, T3 locks m1 then m0; each holds its first lock and waits for the next, closing a cycle. Right: sorting each pair by index makes every acquisition go up in rank, so no cycle can close.</desc>
+<defs><marker id="are" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="520" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Case 2: a three-way lock cycle and the ordered fix</text>
+<rect x="32" y="68" width="404" height="420" rx="8" fill="#22252a" stroke="none" stroke-width="1.5"/>
+<rect x="464" y="68" width="404" height="420" rx="8" fill="#22252a" stroke="none" stroke-width="1.5"/>
+<text x="48" y="96" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Naive: source first</text>
+<text x="480" y="96" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Ranked: lower index first</text>
+<circle cx="234" cy="170" r="26" fill="#17181b" stroke="#86abe2" stroke-width="2.5"/>
+<text x="234" y="175" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">T1</text>
+<circle cx="364" cy="372" r="26" fill="#17181b" stroke="#6fc693" stroke-width="2.5"/>
+<text x="364" y="377" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">T2</text>
+<circle cx="104" cy="372" r="26" fill="#17181b" stroke="#ae9ce6" stroke-width="2.5"/>
+<text x="104" y="377" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">T3</text>
+<line x1="250.235" y1="195.227" x2="346.682" y2="345.091" stroke="#e58a80" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#are)" stroke-linecap="round"/>
+<text x="364" y="250" font-size="14" fill="#e58a80" text-anchor="start">waits m2 (T2 holds)</text>
+<line x1="334" y1="372" x2="136" y2="372" stroke="#e58a80" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#are)" stroke-linecap="round"/>
+<text x="234" y="412" font-size="14" fill="#e58a80" text-anchor="middle">waits m1 (T3 holds)</text>
+<line x1="120.235" y1="346.773" x2="216.682" y2="196.909" stroke="#e58a80" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#are)" stroke-linecap="round"/>
+<text x="52" y="250" font-size="14" fill="#e58a80" text-anchor="start">waits m0 (T1 holds)</text>
+<text x="48" y="452" font-size="14" fill="#a7adb5" text-anchor="start">T1: m0, m2   T2: m2, m1   T3: m1, m0</text>
+<text x="48" y="474" font-size="15" fill="#e58a80" text-anchor="start" font-weight="600">27 reachable states, 1 deadlocked</text>
+<rect x="506" y="132" width="68" height="40" rx="6" fill="none" stroke="#e0c169" stroke-width="2"/>
+<text x="540" y="158" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">m0</text>
+<text x="540" y="196" font-size="14" fill="#a7adb5" text-anchor="middle">rank 0</text>
+<rect x="626" y="132" width="68" height="40" rx="6" fill="none" stroke="#e0c169" stroke-width="2"/>
+<text x="660" y="158" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">m1</text>
+<text x="660" y="196" font-size="14" fill="#a7adb5" text-anchor="middle">rank 1</text>
+<rect x="746" y="132" width="68" height="40" rx="6" fill="none" stroke="#e0c169" stroke-width="2"/>
+<text x="780" y="158" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">m2</text>
+<text x="780" y="196" font-size="14" fill="#a7adb5" text-anchor="middle">rank 2</text>
+<line x1="540" y1="200" x2="540" y2="380" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<line x1="660" y1="200" x2="660" y2="380" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<line x1="780" y1="200" x2="780" y2="380" stroke="#2c3036" stroke-width="1" stroke-linecap="round"/>
+<line x1="574" y1="262" x2="746" y2="262" stroke="#86abe2" stroke-width="2.5" marker-end="url(#are)" stroke-linecap="round"/>
+<text x="660" y="252" font-size="14" fill="#86abe2" text-anchor="middle">T1: m0 then m2</text>
+<line x1="694" y1="312" x2="746" y2="312" stroke="#6fc693" stroke-width="2.5" marker-end="url(#are)" stroke-linecap="round"/>
+<text x="720" y="302" font-size="14" fill="#6fc693" text-anchor="middle">T2: m1 then m2</text>
+<line x1="574" y1="362" x2="626" y2="362" stroke="#ae9ce6" stroke-width="2.5" marker-end="url(#are)" stroke-linecap="round"/>
+<text x="600" y="352" font-size="14" fill="#ae9ce6" text-anchor="middle">T3: m0 then m1</text>
+<text x="480" y="420" font-size="14" fill="#a7adb5" text-anchor="start">every wait goes to a higher rank: no cycle</text>
+<text x="480" y="474" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">24 reachable states, 0 deadlocked</text>
+</svg>

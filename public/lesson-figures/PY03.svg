@@ -1,6 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" font-family="Inter, Arial, sans-serif">
-<rect width="720" height="400" fill="#111827" rx="12"/>
-<text x="360" y="28" fill="#e5e7eb" font-size="18" font-weight="bold" text-anchor="middle">Names point to objects: [[0]*3]*3 versus a comprehension</text>
-<text x="170" y="64" fill="#f97316" font-size="15" font-weight="bold" text-anchor="middle">grid = [[0]*3] * 3</text>
-<text x="550" y="64" fill="#a3e635" font-size="15" font-weight="bold" text-anchor="middle">grid = [[0]*3 for _ in range(3)]</text>
-<rect x="30" y="90" width="70" height="150" rx="6" fill="#1f2937" stroke="#e5e7eb" stroke-width="1.5"/><text x="65" y="122" fill="#e5e7eb" font-size="13" text-anchor="middle">grid[0]</text><path d="M100,118 L200,165" stroke="#f97316" stroke-width="2" fill="none"/><circle cx="100" cy="118" r="4" fill="#f97316"/><text x="65" y="167" fill="#e5e7eb" font-size="13" text-anchor="middle">grid[1]</text><path d="M100,163 L200,165" stroke="#f97316" stroke-width="2" fill="none"/><circle cx="100" cy="163" r="4" fill="#f97316"/><text x="65" y="212" fill="#e5e7eb" font-size="13" text-anchor="middle">grid[2]</text><path d="M100,208 L200,165" stroke="#f97316" stroke-width="2" fill="none"/><circle cx="100" cy="208" r="4" fill="#f97316"/><rect x="200" y="140" width="150" height="50" rx="6" fill="#7c2d12" stroke="#f97316" stroke-width="1.5"/><text x="275" y="170" fill="#e5e7eb" font-size="14" text-anchor="middle">[0, 7, 0]  one list</text><text x="170" y="270" fill="#e5e7eb" font-size="13" text-anchor="middle">grid[1][1] = 7 changes every row</text><text x="170" y="290" fill="#f97316" font-size="13" text-anchor="middle">id(grid[0]) == id(grid[1]) == id(grid[2])</text><rect x="400" y="90" width="70" height="150" rx="6" fill="#1f2937" stroke="#e5e7eb" stroke-width="1.5"/><text x="435" y="122" fill="#e5e7eb" font-size="13" text-anchor="middle">grid[0]</text><path d="M470,118 L540,122" stroke="#a3e635" stroke-width="2" fill="none"/><circle cx="470" cy="118" r="4" fill="#a3e635"/><rect x="540" y="100" width="150" height="40" rx="6" fill="#365314" stroke="#a3e635" stroke-width="1.5"/><text x="615" y="125" fill="#e5e7eb" font-size="14" text-anchor="middle">[0, 0, 0]</text><text x="435" y="167" fill="#e5e7eb" font-size="13" text-anchor="middle">grid[1]</text><path d="M470,163 L540,167" stroke="#a3e635" stroke-width="2" fill="none"/><circle cx="470" cy="163" r="4" fill="#a3e635"/><rect x="540" y="145" width="150" height="40" rx="6" fill="#365314" stroke="#a3e635" stroke-width="1.5"/><text x="615" y="170" fill="#e5e7eb" font-size="14" text-anchor="middle">[0, 7, 0]</text><text x="435" y="212" fill="#e5e7eb" font-size="13" text-anchor="middle">grid[2]</text><path d="M470,208 L540,212" stroke="#a3e635" stroke-width="2" fill="none"/><circle cx="470" cy="208" r="4" fill="#a3e635"/><rect x="540" y="190" width="150" height="40" rx="6" fill="#365314" stroke="#a3e635" stroke-width="1.5"/><text x="615" y="215" fill="#e5e7eb" font-size="14" text-anchor="middle">[0, 0, 0]</text><text x="550" y="270" fill="#e5e7eb" font-size="13" text-anchor="middle">grid[1][1] = 7 changes one row only</text><text x="550" y="290" fill="#a3e635" font-size="13" text-anchor="middle">three distinct ids</text><rect x="40" y="318" width="640" height="62" rx="8" fill="#1f2937"/><text x="360" y="342" fill="#e5e7eb" font-size="14" text-anchor="middle">Multiplying a list repeats the reference, not the object. Assignment never copies.</text><text x="360" y="364" fill="#e5e7eb" font-size="13" text-anchor="middle">Test with `a is b` and `id(a)`; copy nested data with copy.deepcopy or a comprehension.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="Inter, sans-serif">
+<title>Names are tags on objects: repetition vs comprehension</title>
+<desc>Left: grid = [[0]*3]*3 holds three references to one list, so grid[1][1]=7 shows in every row. Right: a comprehension builds three distinct lists, so only row 1 changes.</desc>
+<defs><marker id="ahP3a6fc693" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="#6fc693"/></marker><marker id="ahP3ae0904f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="#e0904f"/></marker></defs>
+<rect width="900" height="500" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">Names are tags on objects: repetition vs comprehension</text>
+<rect x="32" y="72" width="406" height="350" rx="6" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="48" y="102" font-size="17" fill="#e0904f" text-anchor="start" font-weight="bold">grid = [[0]*3] * 3</text>
+<rect x="462" y="72" width="406" height="350" rx="6" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="478" y="102" font-size="17" fill="#6fc693" text-anchor="start" font-weight="bold">grid = [[0]*3 for _ in range(3)]</text>
+<rect x="56" y="140" width="84" height="34" rx="6" fill="#22252a" stroke="#e0904f" stroke-width="1.5"/>
+<text x="98" y="162" font-size="15" fill="#e9e7e3" text-anchor="middle">grid[0]</text>
+<rect x="486" y="140" width="84" height="34" rx="6" fill="#22252a" stroke="#6fc693" stroke-width="1.5"/>
+<text x="528" y="162" font-size="15" fill="#e9e7e3" text-anchor="middle">grid[0]</text>
+<line x1="140" y1="157" x2="264" y2="188" stroke="#e0904f" stroke-width="2" marker-end="url(#ahP3ae0904f)" stroke-linecap="round"/>
+<line x1="570" y1="157" x2="638" y2="157" stroke="#6fc693" stroke-width="2" marker-end="url(#ahP3a6fc693)" stroke-linecap="round"/>
+<rect x="56" y="200" width="84" height="34" rx="6" fill="#22252a" stroke="#e0904f" stroke-width="1.5"/>
+<text x="98" y="222" font-size="15" fill="#e9e7e3" text-anchor="middle">grid[1]</text>
+<rect x="486" y="200" width="84" height="34" rx="6" fill="#22252a" stroke="#6fc693" stroke-width="1.5"/>
+<text x="528" y="222" font-size="15" fill="#e9e7e3" text-anchor="middle">grid[1]</text>
+<line x1="140" y1="217" x2="264" y2="206" stroke="#e0904f" stroke-width="2" marker-end="url(#ahP3ae0904f)" stroke-linecap="round"/>
+<line x1="570" y1="217" x2="638" y2="217" stroke="#6fc693" stroke-width="2" marker-end="url(#ahP3a6fc693)" stroke-linecap="round"/>
+<rect x="56" y="260" width="84" height="34" rx="6" fill="#22252a" stroke="#e0904f" stroke-width="1.5"/>
+<text x="98" y="282" font-size="15" fill="#e9e7e3" text-anchor="middle">grid[2]</text>
+<rect x="486" y="260" width="84" height="34" rx="6" fill="#22252a" stroke="#6fc693" stroke-width="1.5"/>
+<text x="528" y="282" font-size="15" fill="#e9e7e3" text-anchor="middle">grid[2]</text>
+<line x1="140" y1="277" x2="264" y2="224" stroke="#e0904f" stroke-width="2" marker-end="url(#ahP3ae0904f)" stroke-linecap="round"/>
+<line x1="570" y1="277" x2="638" y2="277" stroke="#6fc693" stroke-width="2" marker-end="url(#ahP3a6fc693)" stroke-linecap="round"/>
+<rect x="266" y="176" width="150" height="64" rx="6" fill="#3a2a1e" stroke="#e0904f" stroke-width="2"/>
+<text x="341" y="214" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">[0, 7, 0]</text>
+<rect x="640" y="140" width="200" height="34" rx="6" fill="#1f3329" stroke="#6fc693" stroke-width="2"/>
+<text x="740" y="162" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">[0, 0, 0]</text>
+<rect x="640" y="200" width="200" height="34" rx="6" fill="#1f3329" stroke="#6fc693" stroke-width="2"/>
+<text x="740" y="222" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">[0, 7, 0]</text>
+<rect x="640" y="260" width="200" height="34" rx="6" fill="#1f3329" stroke="#6fc693" stroke-width="2"/>
+<text x="740" y="282" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">[0, 0, 0]</text>
+<text x="341" y="306" font-size="14" fill="#a7adb5" text-anchor="middle">one list object, three tags</text>
+<text x="740" y="324" font-size="14" fill="#a7adb5" text-anchor="middle">three distinct list objects</text>
+<text x="48" y="350" font-size="14" fill="#a7adb5" text-anchor="start">id(grid[0]) == id(grid[1]) == id(grid[2])</text>
+<text x="478" y="350" font-size="14" fill="#a7adb5" text-anchor="start">three different id values</text>
+<text x="48" y="376" font-size="14" fill="#a7adb5" text-anchor="start">len({id(r) for r in grid}) = 1</text>
+<text x="478" y="376" font-size="14" fill="#a7adb5" text-anchor="start">len({id(r) for r in grid}) = 3</text>
+<text x="48" y="406" font-size="15" fill="#e0904f" text-anchor="start" font-weight="600">after grid[1][1] = 7: every row shows 7</text>
+<text x="478" y="406" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">after grid[1][1] = 7: only row 1 shows 7</text>
+<text x="32" y="456" font-size="15" fill="#e9e7e3" text-anchor="start">Repetition copies the reference, not the object; assignment never copies.</text>
+<text x="32" y="482" font-size="14" fill="#a7adb5" text-anchor="start">Test with a is b and id(a); build nested data with a comprehension or copy.deepcopy.</text>
+</svg>

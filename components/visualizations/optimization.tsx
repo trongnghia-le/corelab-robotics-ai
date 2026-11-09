@@ -88,7 +88,7 @@ export function GradientDescent() {
           series={[
             {
               label: "J(xₖ)",
-              color: "#f97316",
+              color: "#d98a52",
               points: history.map((x, k) => [k, quadratic(x)] as Vec2),
             },
           ]}
@@ -158,7 +158,7 @@ export function PID() {
           series={[
             {
               label: "reference",
-              color: "#7ea7d8",
+              color: "#94a9c2",
               points: [
                 [0, 1],
                 [16, 1],
@@ -166,7 +166,7 @@ export function PID() {
             },
             {
               label: "output y",
-              color: "#f97316",
+              color: "#d98a52",
               points: response.map((p) => [p.t, p.y]),
             },
           ]}

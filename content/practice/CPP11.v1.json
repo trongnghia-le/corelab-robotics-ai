@@ -126,13 +126,13 @@
     },
     {
       "id": "b5",
-      "prompt": "cond(A) = 1e4. Using digits lost ~ log10 of the condition number the solver sees, how many accurate digits (of 16) do the normal equations keep? Give an integer.",
+      "prompt": "cond(A) = 1e5. Using digits lost ~ log10 of the condition number the solver sees, how many accurate digits (of 16) do the normal equations keep? Give an integer.",
       "kind": "number",
       "dimension": "M",
       "critical": false,
-      "answer": "8",
+      "answer": "6",
       "tolerance": 0.5,
-      "explanation": "cond(A^T A) = 1e8, so about 16-8 = 8 digits remain.",
+      "explanation": "cond(A^T A) = 1e10, so about 16-10 = 6 digits remain.",
       "knowledgeType": "procedure",
       "skillTags": [
         "normal-equations-conditioning"
@@ -325,6 +325,81 @@
         "q6"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Richardson iteration x <- x - mu*A^T(Ax - b) with mu = 1/sigma_max^2 contracts the error by at most (1 - 1/kappa^2) per step. For kappa = 20, how many iterations are needed to reduce the error by a factor of 1000 (tolerance 1e-3)? Give the smallest integer bound from ln(tol)/ln(1 - 1/kappa^2).",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "2760",
+      "tolerance": 1,
+      "explanation": "rho = 1 - 1/400 = 0.9975. k >= ln(1e-3)/ln(0.9975) = -6.9078/-0.0025031 = 2759.65, so 2760 iterations (about kappa^2 ln(1000) = 2763).",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "normal-equations-conditioning"
+      ],
+      "skillLabel": "Iteration count and condition number",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A fit has a very small residual compared with the data, ||r||/||b|| = 1e-9. Why is computing ||r||^2 as ||b||^2 - ||Q^T b||^2 a bad idea in double precision?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Q^T b needs A^T A, which is too costly to form",
+        "The two terms nearly cancel and the digits vanish",
+        "The identity only holds for square A",
+        "QR loses orthogonality when the residual is small"
+      ],
+      "answer": "1",
+      "explanation": "The identity is exact, but both terms are large and almost equal when the fit is good. Each has absolute error about eps*||b||^2, so the relative error of the difference is about eps*||b||^2/||r||^2 = 1.1e-16 * 1e18 = 110, i.e. all digits (even the sign) are lost. Compute the residual vector b - A x_hat and take its norm instead.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "least-squares-solution"
+      ],
+      "skillLabel": "Cancellation in the residual identity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A calibration problem has m = 10^6 rows, n = 8 columns and estimated condition number kappa(A) = 10^4. You need 6 correct digits and the code runs on a small embedded CPU. Choose between Cholesky on the normal equations and Householder QR, and justify the choice with cost and accuracy estimates, including a fallback.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Accuracy: normal equations lose about 2*log10(kappa) = 8 digits of the 16, leaving about 8, and the estimate kappa^2*eps = 1e8*1.1e-16 = 1.1e-8 meets 6 digits only with margin of a factor 10 to 100; QR loses about 4 digits, leaving about 12.",
+        "Cost: Gram is m n^2 + n^3/3 = 6.4e7 flops against QR 2 m n^2 - 2n^3/3 = 1.28e8, a factor of 2; the Gram matrix can also be accumulated while streaming rows without storing A.",
+        "Decision with fallback: either choice is defensible; justify with the margin, check kappa at run time (SVD of the 8x8 R or G), switch to QR (or SVD with truncation) if kappa grows or Cholesky reports a non-positive pivot."
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded.",
+      "knowledgeType": "design",
+      "skillTags": [
+        "solver-selection",
+        "normal-equations-conditioning"
+      ],
+      "skillLabel": "Solver choice under cost and accuracy constraints",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP11#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

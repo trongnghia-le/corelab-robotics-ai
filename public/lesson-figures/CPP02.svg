@@ -1,38 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="Inter, Arial, sans-serif" font-size="14">
-<rect width="720" height="360" fill="#111827" rx="12"/>
-<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5e7eb"/></marker>
-<marker id="o" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#f97316"/></marker></defs>
-<g fill="#e5e7eb">
-<text x="24" y="34" font-size="15" font-weight="bold">push_back past capacity moves the storage</text>
-<text x="24" y="70" fill="#a3e635">1. before: size 3, capacity 3</text>
-<text x="24" y="170" fill="#f97316">2. after: elements moved to a new block</text>
-<text x="24" y="154" font-size="13">p = &amp;v[0]</text>
-<text x="24" y="262" fill="#f97316">p still holds the old address: dangling</text>
-<text x="400" y="34" font-size="15" font-weight="bold">unique_ptr: one owner, moved not copied</text>
-<text x="420" y="84">a</text><text x="420" y="164">b</text>
-
-<text x="400" y="244" fill="#a3e635">auto b = std::move(a);</text>
-<text x="400" y="268">a == nullptr, b owns the object</text>
-<text x="400" y="292">auto c = b;   // compile error</text>
-<text x="400" y="316" fill="#f97316">at scope end: owner destroys object</text>
-</g>
-<g fill="none" stroke-width="2">
-<rect x="24" y="84" width="60" height="34" stroke="#38bdf8"/><rect x="84" y="84" width="60" height="34" stroke="#38bdf8"/><rect x="144" y="84" width="60" height="34" stroke="#38bdf8"/>
-<rect x="24" y="184" width="60" height="34" stroke="#f97316" stroke-dasharray="5 4"/><rect x="84" y="184" width="60" height="34" stroke="#f97316" stroke-dasharray="5 4"/><rect x="144" y="184" width="60" height="34" stroke="#f97316" stroke-dasharray="5 4"/>
-<rect x="260" y="84" width="40" height="34" stroke="#a3e635"/><rect x="300" y="84" width="40" height="34" stroke="#a3e635"/><rect x="340" y="84" width="40" height="34" stroke="#a3e635"/>
-<rect x="260" y="214" width="1" height="1" stroke="none"/>
-<rect x="440" y="64" width="60" height="30" stroke="#38bdf8"/><rect x="440" y="144" width="60" height="30" stroke="#a3e635"/>
-<rect x="525" y="144" width="120" height="30" stroke="#a3e635"/>
-</g>
-<g fill="#e5e7eb" font-size="13" text-anchor="middle">
-<text x="54" y="106">2</text><text x="114" y="106">4</text><text x="174" y="106">6</text>
-<text x="54" y="206">freed</text><text x="114" y="206">freed</text><text x="174" y="206">freed</text>
-<text x="280" y="106">2</text><text x="320" y="106">4</text><text x="360" y="106">6</text>
-<text x="470" y="84">null</text><text x="585" y="164">Tracked(7)</text>
-</g>
-<text x="206" y="82" fill="#a3e635" font-size="13">push_back</text>
-<text x="258" y="144" fill="#a3e635" font-size="13">new block (cap 6)</text>
-<g stroke="#e5e7eb" stroke-width="2" fill="none"><line x1="54" y1="140" x2="54" y2="122" marker-end="url(#a)"/><line x1="208" y1="101" x2="252" y2="101" marker-end="url(#a)"/></g>
-<g stroke="#f97316" stroke-width="2" fill="none"><line x1="54" y1="244" x2="54" y2="224" marker-end="url(#o)" stroke-dasharray="4 3"/></g>
-<g stroke="#e5e7eb" stroke-width="2" fill="none"><line x1="500" y1="159" x2="520" y2="159" marker-end="url(#a)"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="Inter, sans-serif">
+<title>Two ways a handle goes bad, and one way to hand over</title>
+<desc>Left: a pointer into a vector dangles after the fifth push_back reallocates; right: a unique_ptr hands its object to another unique_ptr.</desc>
+<rect width="900" height="440" rx="14" fill="#17181b"/>
+<defs><marker id="c02-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" font-weight="700">Two ways a handle goes bad, and one way to hand over</text>
+<rect x="32" y="72" width="520" height="336" rx="10" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<rect x="576" y="72" width="292" height="336" rx="10" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="52" y="104" font-size="17" fill="#e9e7e3" font-weight="700">vector&lt;int&gt; v: push_back past the capacity</text>
+<text x="596" y="104" font-size="17" fill="#e9e7e3" font-weight="700">unique_ptr: ownership moves</text>
+<text x="60" y="140" font-size="14" fill="#a7adb5">before: size 4, capacity 4</text>
+<rect x="60" y="150" width="34" height="36" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="77" y="174" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">0</text>
+<rect x="94" y="150" width="34" height="36" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="111" y="174" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">1</text>
+<rect x="128" y="150" width="34" height="36" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="145" y="174" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">2</text>
+<rect x="162" y="150" width="34" height="36" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="179" y="174" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">3</text>
+<line x1="77" y1="226" x2="77" y2="192" stroke="#86abe2" stroke-width="2" marker-end="url(#c02-arr)"/>
+<text x="77" y="248" font-size="15" fill="#86abe2" font-weight="600" text-anchor="middle">p = &amp;v[0]</text>
+<text x="60" y="290" font-size="14" fill="#a7adb5">after the 5th push_back: size 5, capacity 8</text>
+<rect x="60" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="77" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">0</text>
+<rect x="94" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="111" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">1</text>
+<rect x="128" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="145" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">2</text>
+<rect x="162" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="179" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">3</text>
+<rect x="196" y="300" width="34" height="36" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="213" y="324" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">4</text>
+<rect x="230" y="300" width="34" height="36" rx="0" fill="none" stroke="#3d4148" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="264" y="300" width="34" height="36" rx="0" fill="none" stroke="#3d4148" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="298" y="300" width="34" height="36" rx="0" fill="none" stroke="#3d4148" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="372" y="300" width="34" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 3"/>
+<rect x="406" y="300" width="34" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 3"/>
+<rect x="440" y="300" width="34" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 3"/>
+<rect x="474" y="300" width="34" height="36" rx="0" fill="none" stroke="#e58a80" stroke-width="2" stroke-dasharray="5 3"/>
+<text x="404" y="358" font-size="14" fill="#e58a80">old block, freed</text>
+<line x1="389" y1="392" x2="389" y2="340" stroke="#e58a80" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#c02-arr)"/>
+<text x="398" y="390" font-size="15" fill="#e58a80" font-weight="600">p now dangles</text>
+<text x="596" y="140" font-size="14" fill="#a7adb5">before</text>
+<rect x="596" y="154" width="64" height="34" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="628" y="177" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">a</text>
+<rect x="776" y="154" width="76" height="34" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="814" y="177" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">object</text>
+<line x1="660" y1="171" x2="772" y2="171" stroke="#86abe2" stroke-width="2" marker-end="url(#c02-arr)"/>
+<rect x="596" y="204" width="64" height="34" rx="0" fill="none" stroke="#ae9ce6" stroke-width="2"/>
+<text x="628" y="227" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">b</text>
+<text x="676" y="227" font-size="15" fill="#a7adb5">nullptr</text>
+<text x="596" y="290" font-size="14" fill="#a7adb5">after auto b = std::move(a);</text>
+<rect x="596" y="304" width="64" height="34" rx="0" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="628" y="327" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">a</text>
+<text x="676" y="327" font-size="15" fill="#a7adb5">nullptr</text>
+<rect x="596" y="354" width="64" height="34" rx="0" fill="none" stroke="#ae9ce6" stroke-width="2"/>
+<text x="628" y="377" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">b</text>
+<rect x="776" y="354" width="76" height="34" rx="0" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="814" y="377" font-size="15" fill="#e9e7e3" font-weight="600" text-anchor="middle">object</text>
+<line x1="660" y1="371" x2="772" y2="371" stroke="#ae9ce6" stroke-width="2" marker-end="url(#c02-arr)"/>
 </svg>

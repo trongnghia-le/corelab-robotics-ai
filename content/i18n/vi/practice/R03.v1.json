@@ -11,8 +11,8 @@
    "explanation": "Một phép quay phải thỏa R^T R = I và det R = +1. Ma trận có các hàng (1,0,0),(0,1,0),(0,0,-1) là phép phản chiếu (det -1); ma trận có các hàng (2,0,0),(0,0.5,0),(0,0,1) có det 1 nhưng kéo giãn; ma trận có các hàng (1,1,0),(0,1,0),(0,0,1) là phép trượt (shear), có các cột không trực chuẩn."
   },
   "f2": {
-   "prompt": "Một ma trận quay xoay 60 độ quanh một trục nào đó. Vết (trace) của nó là bao nhiêu? Cho 2 chữ số thập phân.",
-   "explanation": "tr R = 1 + 2 cos(theta) = 1 + 2(0.5) = 2."
+   "prompt": "Một ma trận quay xoay 80 độ quanh một trục nào đó. Vết (trace) của nó là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "tr R = 1 + 2 cos(theta) = 1 + 2 cos 80° = 1 + 2(0.1736) = 1.347."
   },
   "f3": {
    "prompt": "T1 quay 90 độ quanh z và tịnh tiến (0, 3). T2 là phép tịnh tiến thuần (1, 0). Trong tích T1*T2, thành phần y của tịnh tiến là bao nhiêu? Cho 1 chữ số thập phân.",
@@ -47,8 +47,8 @@
    "explanation": "Các phép quay 3D quanh các trục khác nhau nói chung không giao hoán; các phép quay cùng trục thì có."
   },
   "f8": {
-   "prompt": "Một ma trận quay có vết bằng 0. Góc quay của nó là bao nhiêu độ? Cho một số nguyên.",
-   "explanation": "cos(theta) = (0-1)/2 = -1/2, nên theta = 120 độ."
+   "prompt": "Một ma trận quay có vết bằng -0.5. Góc quay của nó là bao nhiêu độ? Cho 1 chữ số thập phân.",
+   "explanation": "cos(theta) = (-0.5-1)/2 = -0.75, nên theta = arccos(-0.75) = 138.59 độ."
   },
   "f9": {
    "prompt": "Một ma trận quay 3x3 có 9 phần tử. Một phép quay 3D có bao nhiêu tham số độc lập?",
@@ -81,6 +81,24 @@
     "Kiểm thử với một tư thế tính tay (ví dụ một phép quay thuần 90 độ) và so sánh độ lớn phần dư với nhiễu hiệu chuẩn để tách lỗi gán nhãn khỏi lỗi hiệu chuẩn"
    ],
    "explanation": "Theo rubric: hãy đối chiếu câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động."
+  },
+  "c1": {
+   "prompt": "Khoảng cách Frobenius bình phương ||A - R||^2 từ A = diag(3, 1, -0.4) đến phép quay thực sự R gần nhất là bao nhiêu? Cho 2 chữ số thập phân.",
+   "explanation": "A = U S V^T với U = I, S = diag(3, 1, 0.4), V^T = diag(1, 1, -1), nên det A < 0 và UV^T có det -1. Phép quay gần nhất là U diag(1,1,-1) V^T = I. Khoảng cách là ||A||^2 + 3 - 2(s1 + s2 - s3) = 10.16 + 3 - 2(3 + 1 - 0.4) = 5.96, khớp với ||A - I||^2 = 4 + 0 + 1.96."
+  },
+  "c2": {
+   "prompt": "T_AB quay 90 độ quanh z và tịnh tiến (1, 2, 0). T_BC quay 90 độ quanh x và tịnh tiến (0, 0, 3). Một điểm có tọa độ (1, 0, 2) trong khung C. Tìm tọa độ của nó trong khung A và cho tổng x + y + z. Cho 1 chữ số thập phân.",
+   "explanation": "Trong B: Rx(90)(1,0,2) = (1, -2, 0) và cộng (0,0,3) cho (1, -2, 3). Trong A: Rz(90)(1,-2,3) = (2, 1, 3) và cộng (1,2,0) cho (3, 3, 3), nên tổng là 9.0. Áp dụng các phép biến đổi sai thứ tự cho (1, -2, 6) với tổng 5, cho thấy vì sao quy tắc chỉ số T_AB T_BC x_C quan trọng."
+  },
+  "c3": {
+   "prompt": "Một ma trận quay R có vết bằng -1. Phát biểu nào về tọa độ trục-góc (tọa độ mũ) của nó là đúng?",
+   "options": [
+    "Góc bằng 0 và trục không xác định",
+    "Góc bằng pi và trục là (R - R^T)/(2 sin theta), được xác định tốt",
+    "R không thể là phép quay, vì phép quay có vết ít nhất bằng 0",
+    "Góc bằng pi, R đối xứng với R = 2 w w^T - I, và cả w và -w đều là trục hợp lệ"
+   ],
+   "explanation": "tr R = 1 + 2 cos(theta) = -1 cho cos(theta) = -1, nên theta = pi (phép quay có vết từ -1 đến 3, nên -1 được phép). Rodrigues với sin(pi) = 0 cho R = I + 2[w]^2 = 2 w w^T - I, đối xứng, nên (R - R^T)/(2 sin theta) là 0/0 và không cho được trục. Trục được đọc từ các phần tử đường chéo và ngoài đường chéo, và w và -w cho cùng R."
   }
  }
 }

@@ -353,6 +353,78 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A detector has sensitivity 0.9 and specificity 0.98. Using the positive likelihood ratio in odds form, what is its precision at a deployment prevalence of 2% (decimal, tolerance 0.002)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.4787",
+      "tolerance": 0.002,
+      "explanation": "LR+=0.9/(1−0.98)=45. Pre-test odds=0.02/0.98=0.020408; post-test odds=45·0.020408=0.9184; precision=0.9184/1.9184=0.4787.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "likelihood-ratio"
+      ],
+      "skillLabel": "Likelihood ratios and prevalence",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A forecaster has reliability 0.012 and resolution 0.045 on a test set whose base rate is 20%. What is the Brier score (decimal, tolerance 0.0005)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.127",
+      "tolerance": 0.0005,
+      "explanation": "Murphy: BS=reliability−resolution+uncertainty. Uncertainty=0.2·0.8=0.16. BS=0.012−0.045+0.16=0.127. Below 0.16 means it beats the constant base-rate forecast.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "brier-decomposition"
+      ],
+      "skillLabel": "Brier score decomposition",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "You fit a Platt (sigmoid) calibrator on the same samples that trained an over-fitted classifier, then report its calibration. What is the most likely result?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The calibrator corrects the over-confidence, because the sigmoid has two free parameters.",
+        "The calibrated probabilities are biased towards 0.5, which is safe on new data.",
+        "The calibrator learns little correction, so new-data probabilities remain too close to 0 and 1.",
+        "Calibration error is unaffected, because calibration does not depend on which samples are used."
+      ],
+      "answer": "2",
+      "explanation": "On its own training data an over-fitted classifier looks almost perfect, so the calibrator learns that its scores are already near 0 and 1 and does little correction. On new data the probabilities stay too extreme. Fit calibrators on independent data (scikit-learn §1.16.2).",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "calibration",
+        "held-out-evaluation"
+      ],
+      "skillLabel": "Fitting a calibrator on independent data",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/ML07#theory-and-derivation"
+        }
+      ]
     }
   ]
 }

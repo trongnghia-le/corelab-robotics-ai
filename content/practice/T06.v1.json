@@ -347,6 +347,82 @@
         "q7"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A Dockerfile has two independent rebuild steps in this order: step A costs 100 s and changes in 2% of commits, step B costs 10 s and changes in 50% of commits. A step is rebuilt if it or any earlier step changed. What is the expected build time per commit in seconds? (tolerance 0.1)",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "7.1",
+      "tolerance": 0.1,
+      "explanation": "Step A is rebuilt with probability 0.02, costing 100 x 0.02 = 2 s. Step B is rebuilt if A or B changed: 1 - (0.98)(0.5) = 0.51, costing 10 x 0.51 = 5.1 s. Total 2 + 5.1 = 7.1 s. For comparison, the order B, A gives 10 x 0.5 + 100 x (1 - 0.5 x 0.98) = 5 + 51 = 56 s, which agrees with the exchange rule: c(1-q)/q is 4900 for A and 10 for B, so A should come first.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "build-cache"
+      ],
+      "skillLabel": "Build cache and instruction order",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Images X = A|B|C and Y = A|B'|C are built, where layer C is a byte-identical changeset in both but B and B' differ. Using the OCI ChainID definition, which statement is correct?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The two C layers share one stored copy, because their DiffIDs are equal and a layer store is keyed by DiffID.",
+        "Only layer A is shared by ChainID; the two C layers have equal DiffIDs but different ChainIDs, so a ChainID-keyed store holds them separately.",
+        "No layer at all is shared, because the ChainID of the base layer A also changes when B' replaces B above it, so the whole stack differs.",
+        "The two C layers are shared, because ChainID(C) is defined as the digest of its DiffID alone and ignores the layers beneath."
+      ],
+      "answer": "1",
+      "explanation": "ChainID(A) = DiffID(A) is the same in both images. ChainID(A|B) = Digest(ChainID(A) + ' ' + DiffID(B)) differs from ChainID(A|B') because the DiffIDs differ, and ChainID(A|B|C) = Digest(ChainID(A|B) + ' ' + DiffID(C)) inherits that difference even though DiffID(C) is the same. So A is shared and the C layers are not. Option 0 confuses DiffID (changeset identity) with ChainID (identity of the resulting filesystem); option 2 forgets that a hash chain depends only on layers below; option 3 describes the single-layer base case only.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "images-layers"
+      ],
+      "skillLabel": "Image layers and their identity",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A Dockerfile does COPY dataset.tar /data/ (2 GB), then RUN tar -xf /data/dataset.tar -C /data (6 GB extracted), then RUN rm /data/dataset.tar. Compute the image size added by these three instructions, explain why the last one does not help, and give two ways to fix it.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Size is 2 + 6 + ~0 = 8 GB: layers are immutable changesets, and the rm layer holds only a whiteout (.wh.dataset.tar) of about zero bytes, so the 2 GB tarball stays in the earlier layer.",
+        "The deleted file is still pushed, pulled and readable by anyone who extracts that layer; the whiteout only hides it when layers are stacked.",
+        "Fix 1: never put the tarball in a layer, for example RUN curl ... | tar -x in one instruction, or create and delete within a single RUN (size then 6 GB).",
+        "Fix 2: keep the dataset out of the image and supply it at run time through a read-only bind mount or volume, which also removes the 6 GB from the image entirely."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "images-layers",
+        "container-persistence"
+      ],
+      "skillLabel": "Image layers and their identity",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/T06#theory-and-derivation"
+        }
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }
   ]
 }

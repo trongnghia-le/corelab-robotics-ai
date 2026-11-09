@@ -1,29 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="380" fill="#111827" rx="12"/>
-<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Least squares = projection</text>
-<polygon points="40,300 300,300 340,230 80,230" fill="#1f2937" stroke="#38bdf8" stroke-width="2"/>
-<text x="60" y="320" font-size="13" fill="#38bdf8">column space of A</text>
-<circle cx="200" cy="265" r="4" fill="#a3e635"/>
-<text x="210" y="285" font-size="13" fill="#a3e635">A x (best fit)</text>
-<circle cx="200" cy="110" r="4" fill="#f97316"/>
-<text x="212" y="108" font-size="14" fill="#f97316">b</text>
-<line x1="200" y1="114" x2="200" y2="261" stroke="#f97316" stroke-width="2" stroke-dasharray="5 4"/>
-<text x="120" y="190" font-size="13" fill="#f97316">r = b - A x</text>
-<path d="M200 252 H212 V263" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
-<text x="20" y="352" font-size="13" fill="#e5e7eb">r is perpendicular to the columns: A^T r = 0</text>
-<line x1="395" y1="20" x2="395" y2="360" stroke="#374151" stroke-width="2"/>
-<text x="420" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Error vs degree (log scale)</text>
-<line x1="440" y1="320" x2="740" y2="320" stroke="#e5e7eb" stroke-width="2"/>
-<line x1="440" y1="320" x2="440" y2="50" stroke="#e5e7eb" stroke-width="2"/>
-<g font-size="13" fill="#e5e7eb">
-<g text-anchor="end"><text x="430" y="324">1e-15</text><text x="430" y="240">1e-10</text><text x="430" y="155">1e-5</text><text x="430" y="71">1</text></g>
-<text x="440" y="340" text-anchor="middle">3</text><text x="515" y="340" text-anchor="middle">6</text><text x="590" y="340" text-anchor="middle">9</text><text x="665" y="340" text-anchor="middle">12</text>
-<text x="590" y="362" text-anchor="middle">polynomial degree</text>
-</g>
-<polyline points="440,268 515,196 590,122 665,57" fill="none" stroke="#f97316" stroke-width="3"/>
-<polyline points="440,310 515,275 590,246 665,193" fill="none" stroke="#a3e635" stroke-width="3"/>
-<g fill="#f97316"><circle cx="440" cy="268" r="4"/><circle cx="515" cy="196" r="4"/><circle cx="590" cy="122" r="4"/><circle cx="665" cy="57" r="4"/></g>
-<g fill="#a3e635"><circle cx="440" cy="310" r="4"/><circle cx="515" cy="275" r="4"/><circle cx="590" cy="246" r="4"/><circle cx="665" cy="193" r="4"/></g>
-<text x="450" y="74" font-size="13" fill="#f97316">normal eq: cond^2 x 1e-16</text>
-<text x="450" y="94" font-size="13" fill="#a3e635">QR: cond x 1e-16</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="Inter, sans-serif">
+<title>Least squares is a shadow; the normal equations square the error</title>
+<desc>Left: b above the column space of A, its shadow A x-hat in the plane and the perpendicular residual r. Right: measured coefficient error against condition number on log-log axes for QR and the normal equations, with the lines kappa times epsilon and kappa squared times epsilon.</desc>
+<defs><marker id="a1ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="500" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" font-weight="bold" fill="#e9e7e3">Least squares is a shadow; the normal equations square the error</text>
+<rect x="32" y="64" width="410" height="404" rx="10" fill="#22252a"/>
+<rect x="466" y="64" width="402" height="404" rx="10" fill="#22252a"/>
+<text x="52" y="96" font-size="17" font-weight="bold" fill="#e9e7e3">Geometry: Aᵀ r = 0</text>
+<text x="490" y="96" font-size="17" font-weight="bold" fill="#e9e7e3">Measured error, degrees 3, 6, 9, 12</text>
+<polygon points="70.0,380.0 330.0,380.0 410.0,300.0 150.0,300.0" fill="#2c3036" stroke="#3d4148" stroke-width="1.5" stroke-linejoin="round"/>
+<line x1="150.0" y1="350.0" x2="250.0" y2="350.0" stroke="#86abe2" stroke-width="2.5" marker-end="url(#a1ar)"/>
+<line x1="150.0" y1="350.0" x2="196.0" y2="318.0" stroke="#ae9ce6" stroke-width="2.5" marker-end="url(#a1ar)"/>
+<text x="256" y="356" font-size="15" fill="#86abe2">a₁</text>
+<text x="184" y="312" font-size="15" fill="#ae9ce6">a₂</text>
+<line x1="150.0" y1="350.0" x2="268.0" y2="336.0" stroke="#6fc693" stroke-width="2.5" stroke-dasharray="6 4"/>
+<line x1="268.0" y1="336.0" x2="268.0" y2="170.0" stroke="#e08db5" stroke-width="2.5"/>
+<circle cx="268.0" cy="336.0" r="6" fill="#6fc693"/>
+<circle cx="268.0" cy="170.0" r="6" fill="#e0904f"/>
+<polyline points="254.0,336.0 254.0,322.0 268.0,322.0" fill="none" stroke="#e9e7e3" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="282" y="175" font-size="15" font-weight="600" fill="#e0904f">b</text>
+<text x="282" y="282" font-size="15" fill="#6fc693">Ax̂ = QQᵀb</text>
+<text x="282" y="222" font-size="15" fill="#e08db5">r = b − Ax̂</text>
+<text x="88" y="372" font-size="14" fill="#a7adb5">col(A)</text>
+<text x="52" y="440" font-size="15" fill="#e9e7e3">Right angle: Aᵀ r = 0</text>
+<line x1="571.0" y1="150.0" x2="571.0" y2="390.0" stroke="#3d4148" stroke-width="1"/>
+<text x="571" y="412" font-size="14" text-anchor="middle" fill="#a7adb5">1e2</text>
+<line x1="648.0" y1="150.0" x2="648.0" y2="390.0" stroke="#3d4148" stroke-width="1"/>
+<text x="648" y="412" font-size="14" text-anchor="middle" fill="#a7adb5">1e4</text>
+<line x1="725.0" y1="150.0" x2="725.0" y2="390.0" stroke="#3d4148" stroke-width="1"/>
+<text x="725" y="412" font-size="14" text-anchor="middle" fill="#a7adb5">1e6</text>
+<line x1="802.0" y1="150.0" x2="802.0" y2="390.0" stroke="#3d4148" stroke-width="1"/>
+<text x="802" y="412" font-size="14" text-anchor="middle" fill="#a7adb5">1e8</text>
+<line x1="552.0" y1="377.0" x2="840.0" y2="377.0" stroke="#3d4148" stroke-width="1"/>
+<text x="542" y="382" font-size="14" text-anchor="end" fill="#a7adb5">1e-15</text>
+<line x1="552.0" y1="310.0" x2="840.0" y2="310.0" stroke="#3d4148" stroke-width="1"/>
+<text x="542" y="315" font-size="14" text-anchor="end" fill="#a7adb5">1e-10</text>
+<line x1="552.0" y1="243.0" x2="840.0" y2="243.0" stroke="#3d4148" stroke-width="1"/>
+<text x="542" y="248" font-size="14" text-anchor="end" fill="#a7adb5">1e-5</text>
+<line x1="552.0" y1="177.0" x2="840.0" y2="177.0" stroke="#3d4148" stroke-width="1"/>
+<text x="542" y="182" font-size="14" text-anchor="end" fill="#a7adb5">1</text>
+<line x1="552.0" y1="390.0" x2="840.0" y2="390.0" stroke="#a7adb5" stroke-width="1.5"/>
+<line x1="552.0" y1="150.0" x2="552.0" y2="390.0" stroke="#a7adb5" stroke-width="1.5"/>
+<text x="696" y="434" font-size="15" text-anchor="middle" fill="#e9e7e3">condition number κ(A)</text>
+<text x="500" y="138" font-size="15" fill="#e9e7e3">error ‖ĉ − c‖</text>
+<polyline points="552.0,369.0 840.0,269.0" fill="none" stroke="#86abe2" stroke-width="2" stroke-linejoin="round" stroke-dasharray="7 5"/>
+<polyline points="552.0,349.0 839.0,150.0" fill="none" stroke="#e0904f" stroke-width="2" stroke-linejoin="round" stroke-dasharray="7 5"/>
+<circle cx="574.0" cy="369.0" r="5" fill="#86abe2"/>
+<polygon points="574.0,329.0 581.0,336.0 574.0,343.0 567.0,336.0" fill="#e0904f" stroke="#e0904f" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="660.0" cy="341.0" r="5" fill="#86abe2"/>
+<polygon points="660.0,272.0 667.0,279.0 660.0,286.0 653.0,279.0" fill="#e0904f" stroke="#e0904f" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="746.0" cy="318.0" r="5" fill="#86abe2"/>
+<polygon points="746.0,214.0 753.0,221.0 746.0,228.0 739.0,221.0" fill="#e0904f" stroke="#e0904f" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="834.0" cy="276.0" r="5" fill="#86abe2"/>
+<polygon points="834.0,162.0 841.0,169.0 834.0,176.0 827.0,169.0" fill="#e0904f" stroke="#e0904f" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="574.0,369.0 660.0,341.0 746.0,318.0 834.0,276.0" fill="none" stroke="#86abe2" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="574.0,336.0 660.0,279.0 746.0,221.0 834.0,169.0" fill="none" stroke="#e0904f" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="758" y="338" font-size="14" fill="#86abe2">2.5e-11</text>
+<text x="732" y="213" font-size="14" text-anchor="end" fill="#e0904f">4.9e-4</text>
+<circle cx="567.0" cy="155.0" r="5" fill="#86abe2"/>
+<text x="581" y="160" font-size="14" fill="#a7adb5">QR; dashed: κ·ε</text>
+<polygon points="567.0,180.0 574.0,187.0 567.0,194.0 560.0,187.0" fill="#e0904f" stroke="#e0904f" stroke-width="2" stroke-linejoin="round"/>
+<text x="581" y="192" font-size="14" fill="#a7adb5">normal eq.; dashed: κ²·ε</text>
+<text x="490" y="456" font-size="14" fill="#a7adb5">ε = 1.1e-16; data: table in the theory section</text>
 </svg>

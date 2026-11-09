@@ -76,6 +76,24 @@
     "Đề cập vùng hút/bão hòa hoặc sai số mô hình là yếu tố quyết định.",
     "Nêu kiểm chứng: mô phỏng với sai số tham số, giới hạn momen, kiểm tra dấu Lyapunov hoặc lấy mẫu."
    ]
+  },
+  "c1": {
+   "prompt": "Con lắc ngược, g/l = 9.81, được tuyến tính hóa phản hồi với k1 = 20 (cực -4, -5) và giới hạn mô-men a_max = 15. Bắt đầu từ trạng thái nghỉ tại góc theta0, giá trị lệnh đầu tiên có độ lớn (g/l) sin(theta0) + k1 theta0. theta0 lớn nhất (rad, 3 chữ số thập phân) để lệnh không bão hòa?",
+   "explanation": "Giải 9.81 sin(t) + 20 t = 15. Vế trái tăng, nên chia đôi cho t = 0.5104 rad (29.2 độ). Lưu ý riêng trọng lực (9.81) không bao giờ vượt 15: hạn chế đến từ gain k1. k1 lớn hơn sẽ làm thu nhỏ vùng mà thiết kế tuyến tính dựa trên các cực còn hợp lệ."
+  },
+  "c2": {
+   "prompt": "x1' = x2 - x1^3, x2' = -x1 - x2^3 với V = x1^2 + x2^2 và x(0) = (2, 0). Dùng V-dot <= -V^2, cận trên được đảm bảo cho V(100) là bao nhiêu (4 chữ số thập phân)?",
+   "explanation": "V-dot = -2(x1^4 + x2^4) và x1^4 + x2^4 >= V^2/2, nên V-dot <= -V^2. Khi đó d(1/V)/dt >= 1, nên 1/V(t) >= 1/V0 + t và V(t) <= V0/(1 + V0 t). Với V0 = 4 và t = 100: 4/401 = 0.00998, tức 0.0100 đến bốn chữ số thập phân. (Cận dưới tương ứng V0/(1 + 2 V0 t) cho thấy sự suy giảm chỉ là đại số, nên gốc không ổn định mũ.)"
+  },
+  "c3": {
+   "prompt": "Một khớp đơn được điều khiển bằng computed torque với số hạng trọng lực chính xác nhưng ước lượng quán tính M~ = alpha M (alpha = 0.8). So với trường hợp mô hình chính xác, sai số bám e = theta_d - theta thay đổi thế nào?",
+   "options": [
+    "Các cực sai số không đổi và chỉ xuất hiện một độ lệch không đổi, có độ lớn chỉ do sai lệch quán tính quyết định",
+    "Các gain bị nhân với alpha, và gia tốc mong muốn cưỡng bức sai số qua hệ số (1 - alpha)",
+    "Vòng mất ổn định với mọi alpha < 1 vì phép triệt tiêu số hạng quán tính không còn chính xác",
+    "Các gain bị nhân với 1/alpha và sai số bị cưỡng bức bởi vận tốc mong muốn và tích phân sai số vị trí"
+   ],
+   "explanation": "Động lực thật cho theta'' = alpha (theta_d'' + Kp e + Kd e'). Với theta'' = theta_d'' - e'' ta được e'' + alpha Kd e' + alpha Kp e = (1 - alpha) theta_d''. Với alpha > 0 vòng vẫn ổn định (các cực của s^2 + alpha Kd s + alpha Kp), gain hiệu dụng bị nhân với alpha, và sai số được dẫn động bởi gia tốc mong muốn, bằng không với điểm đặt không đổi và lớn với chuyển động nhanh."
   }
  }
 }

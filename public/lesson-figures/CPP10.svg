@@ -1,32 +1,62 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="Inter, Arial, sans-serif">
-<rect width="760" height="380" fill="#111827" rx="12"/>
-<text x="20" y="30" font-size="16" font-weight="bold" fill="#e5e7eb">Bounded blocking queue</text>
-<rect x="20" y="60" width="110" height="60" rx="8" fill="none" stroke="#38bdf8" stroke-width="2"/>
-<text x="75" y="86" font-size="14" fill="#38bdf8" text-anchor="middle">producer</text>
-<text x="75" y="106" font-size="13" fill="#e5e7eb" text-anchor="middle">push(x)</text>
-<rect x="170" y="50" width="200" height="80" rx="8" fill="#1f2937" stroke="#e5e7eb" stroke-width="2"/>
-<g stroke="#e5e7eb" stroke-width="1.5" fill="none"><rect x="185" y="72" width="36" height="32"/><rect x="221" y="72" width="36" height="32"/><rect x="257" y="72" width="36" height="32"/><rect x="293" y="72" width="36" height="32"/></g>
-<text x="203" y="94" font-size="13" fill="#a3e635" text-anchor="middle">1</text><text x="239" y="94" font-size="13" fill="#a3e635" text-anchor="middle">2</text><text x="275" y="94" font-size="13" fill="#a3e635" text-anchor="middle">3</text>
-<text x="270" y="146" font-size="13" fill="#e5e7eb" text-anchor="middle">capacity 4, mutex m_ guards all</text>
-<rect x="410" y="60" width="110" height="60" rx="8" fill="none" stroke="#f97316" stroke-width="2"/>
-<text x="465" y="86" font-size="14" fill="#f97316" text-anchor="middle">consumer</text>
-<text x="465" y="106" font-size="13" fill="#e5e7eb" text-anchor="middle">pop()</text>
-<path d="M130 90 H168 M370 90 H408" stroke="#e5e7eb" stroke-width="2"/>
-<text x="75" y="156" font-size="13" fill="#38bdf8" text-anchor="middle">waits on not_full</text>
-<text x="465" y="156" font-size="13" fill="#f97316" text-anchor="middle">waits on not_empty</text>
-<text x="560" y="86" font-size="13" fill="#e5e7eb">close(): notify_all,</text>
-<text x="560" y="106" font-size="13" fill="#e5e7eb">pop drains then nullopt</text>
-<line x1="20" y1="185" x2="740" y2="185" stroke="#374151" stroke-width="2"/>
-<text x="20" y="215" font-size="16" font-weight="bold" fill="#e5e7eb">Data race: lost update with ++counter</text>
-<text x="20" y="245" font-size="14" fill="#38bdf8">Thread A</text>
-<text x="20" y="300" font-size="14" fill="#f97316">Thread B</text>
-<g font-size="13" fill="#e5e7eb" text-anchor="middle">
-<rect x="120" y="228" width="120" height="26" rx="4" fill="#1f2937" stroke="#38bdf8"/><text x="180" y="246">load 5</text>
-<rect x="250" y="228" width="120" height="26" rx="4" fill="#1f2937" stroke="#38bdf8"/><text x="310" y="246">add: 6</text>
-<rect x="380" y="228" width="120" height="26" rx="4" fill="#1f2937" stroke="#38bdf8"/><text x="440" y="246">store 6</text>
-<rect x="185" y="283" width="120" height="26" rx="4" fill="#1f2937" stroke="#f97316"/><text x="245" y="301">load 5</text>
-<rect x="315" y="283" width="120" height="26" rx="4" fill="#1f2937" stroke="#f97316"/><text x="375" y="301">add: 6</text>
-<rect x="445" y="283" width="120" height="26" rx="4" fill="#1f2937" stroke="#f97316"/><text x="505" y="301">store 6</text>
-</g>
-<text x="20" y="345" font-size="14" fill="#e5e7eb">Two increments, final value 6 instead of 7. Fixes: std::atomic, mutex, or per-thread counters.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" font-family="Inter, sans-serif">
+<title>One mutex, two conditions, and the lost update it prevents</title>
+<desc>Left: a producer and a consumer share a bounded queue of capacity 4 guarded by one mutex m_, with the condition variables not_full and not_empty. Right: two unsynchronized increments both load 5 and both store 6, so one update is lost.</desc>
+<defs><marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a7adb5"/></marker></defs>
+<rect width="900" height="540" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">One mutex, two conditions, and the lost update it prevents</text>
+<rect x="32" y="68" width="410" height="430" rx="8" fill="#22252a" stroke="none" stroke-width="1.5"/>
+<rect x="466" y="68" width="410" height="430" rx="8" fill="#22252a" stroke="none" stroke-width="1.5"/>
+<text x="48" y="96" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Bounded queue, capacity K = 4</text>
+<rect x="48" y="170" width="84" height="56" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="90" y="204" font-size="15" fill="#86abe2" text-anchor="middle" font-weight="600">producer</text>
+<rect x="160" y="170" width="152" height="56" rx="0" fill="none" stroke="#e9e7e3" stroke-width="2"/>
+<rect x="162" y="172" width="34" height="52" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<text x="179" y="204" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">1</text>
+<rect x="200" y="172" width="34" height="52" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<text x="217" y="204" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">2</text>
+<rect x="238" y="172" width="34" height="52" rx="0" fill="#4a321c" stroke="#e0904f" stroke-width="1.5"/>
+<text x="255" y="204" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">3</text>
+<rect x="276" y="172" width="34" height="52" rx="0" fill="none" stroke="#3d4148" stroke-width="1.5"/>
+<rect x="340" y="170" width="86" height="56" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="383" y="204" font-size="15" fill="#6fc693" text-anchor="middle" font-weight="600">consumer</text>
+<line x1="132" y1="198" x2="158" y2="198" stroke="#a7adb5" stroke-width="2" marker-end="url(#ara)" stroke-linecap="round"/>
+<line x1="314" y1="198" x2="338" y2="198" stroke="#a7adb5" stroke-width="2" marker-end="url(#ara)" stroke-linecap="round"/>
+<text x="134" y="162" font-size="14" fill="#a7adb5" text-anchor="start">push(x)</text>
+<text x="340" y="162" font-size="14" fill="#a7adb5" text-anchor="start">pop()</text>
+<rect x="148" y="244" width="176" height="34" rx="6" fill="none" stroke="#e0c169" stroke-width="2"/>
+<text x="236" y="266" font-size="15" fill="#e0c169" text-anchor="middle" font-weight="600">mutex m_ guards all</text>
+<line x1="236" y1="228" x2="236" y2="242" stroke="#e0c169" stroke-width="2" stroke-linecap="round"/>
+<rect x="48" y="316" width="182" height="64" rx="6" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="60" y="342" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600">not_full</text>
+<text x="60" y="366" font-size="14" fill="#a7adb5" text-anchor="start">producer sleeps if size = K</text>
+<rect x="246" y="316" width="182" height="64" rx="6" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="258" y="342" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">not_empty</text>
+<text x="258" y="366" font-size="14" fill="#a7adb5" text-anchor="start">consumer sleeps if size = 0</text>
+<text x="48" y="414" font-size="14" fill="#a7adb5" text-anchor="start">close(): sets closed, notify_all on both;</text>
+<text x="48" y="436" font-size="14" fill="#a7adb5" text-anchor="start">pop drains the items, then returns nullopt</text>
+<text x="48" y="470" font-size="14" fill="#a7adb5" text-anchor="start">predicate checked under the lock, in a loop</text>
+<text x="482" y="96" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Two unsynchronized increments</text>
+<text x="482" y="150" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600">thread A</text>
+<text x="482" y="236" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">thread B</text>
+<rect x="582" y="132" width="86" height="40" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="625" y="158" font-size="15" fill="#e9e7e3" text-anchor="middle">load 5</text>
+<rect x="676" y="132" width="86" height="40" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="719" y="158" font-size="15" fill="#e9e7e3" text-anchor="middle">add: 6</text>
+<rect x="770" y="132" width="86" height="40" rx="6" fill="none" stroke="#86abe2" stroke-width="2"/>
+<text x="813" y="158" font-size="15" fill="#e9e7e3" text-anchor="middle">store 6</text>
+<rect x="582" y="218" width="86" height="40" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="625" y="244" font-size="15" fill="#e9e7e3" text-anchor="middle">load 5</text>
+<rect x="676" y="218" width="86" height="40" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="719" y="244" font-size="15" fill="#e9e7e3" text-anchor="middle">add: 6</text>
+<rect x="770" y="218" width="86" height="40" rx="6" fill="none" stroke="#6fc693" stroke-width="2"/>
+<text x="813" y="244" font-size="15" fill="#e9e7e3" text-anchor="middle">store 6</text>
+<text x="482" y="306" font-size="15" fill="#e9e7e3" text-anchor="start" font-weight="600">counter in memory</text>
+<rect x="582" y="320" width="86" height="40" rx="0" fill="none" stroke="#3d4148" stroke-width="1.5"/>
+<text x="625" y="346" font-size="15" fill="#e9e7e3" text-anchor="middle" font-weight="600">5</text>
+<rect x="770" y="320" width="86" height="40" rx="0" fill="none" stroke="#e58a80" stroke-width="2"/>
+<text x="813" y="346" font-size="15" fill="#e58a80" text-anchor="middle" font-weight="600">6</text>
+<line x1="672" y1="340" x2="766" y2="340" stroke="#a7adb5" stroke-width="1.5" marker-end="url(#ara)" stroke-linecap="round"/>
+<text x="482" y="392" font-size="15" fill="#e9e7e3" text-anchor="start">Both loaded 5 before either stored.</text>
+<text x="482" y="418" font-size="15" fill="#e9e7e3" text-anchor="start">Two increments, final value 6, not 7:</text>
+<text x="482" y="444" font-size="15" fill="#e58a80" text-anchor="start" font-weight="600">one update is lost (undefined behavior).</text>
 </svg>

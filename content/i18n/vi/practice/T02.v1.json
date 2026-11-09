@@ -87,6 +87,30 @@
     "git bisect run ./check.sh và đọc commit xấu đầu tiên được báo cáo.",
     "git bisect reset để quay về branch ban đầu."
    ]
+  },
+  "c1": {
+   "prompt": "Một lịch sử có 5,000 commit tuyến tính; commit 1 đã biết là good và commit 5,000 là bad. Số lần chạy test tối đa mà git bisect cần để tìm commit xấu đầu tiên là bao nhiêu? (số nguyên, sai số cho phép 0.5)",
+   "explanation": "Commit xấu đầu tiên là một trong các commit 2..5000, tức 4,999 ứng viên. Mỗi phép thử có/không nhiều nhất chia đôi tập ứng viên, nên trường hợp xấu nhất là ceil(log2 4999). Vì 2^12 = 4096 < 4999 <= 8192 = 2^13, đáp án là 13. Dùng 5,000 hay 4,999 ứng viên cho cùng kết quả; dùng log2(5000) không làm tròn lên (12.3) hoặc chỉ đếm lũy thừa 4096 cho 12, là quá ít."
+  },
+  "c2": {
+   "prompt": "Một thư mục chứa thư mục con tên a và file tên a.txt. Trong tree object của thư mục đó, entry nào được lưu trước và vì sao?",
+   "options": [
+    "a trước, vì thứ tự chữ cái thông thường đặt tên ngắn hơn trước",
+    "a trước, vì tree liệt kê mọi thư mục trước mọi file",
+    "a.txt trước, vì các entry được sắp như thể tên thư mục kết thúc bằng dấu gạch chéo và '.' đứng trước '/'",
+    "Thứ tự là thứ tự các file được thêm vào index"
+   ],
+   "explanation": "Git sắp các entry của tree theo tên, coi tên thư mục như có '/' ở cuối. So 'a.txt' với 'a/' khác biệt đầu tiên là '.' (0x2e) so với '/' (0x2f), nên a.txt đứng trước. Điều này quan trọng vì id tree là hash của các byte đã tuần tự hóa: thứ tự khác cho id khác. Thứ tự chữ cái thông thường và 'thư mục trước' là các giả định sai phổ biến."
+  },
+  "c3": {
+   "prompt": "File làm việc chứa v5, index chứa v4 và HEAD (commit c3) chứa v3. Bạn chạy git reset --mixed HEAD~1, với c2 chứa v2. Sau đó file ở HEAD, index và file làm việc là gì?",
+   "options": [
+    "HEAD v2, index v4, làm việc v5",
+    "HEAD v2, index v2, làm việc v2",
+    "HEAD v3, index v3, làm việc v5",
+    "HEAD v2, index v2, làm việc v5"
+   ],
+   "explanation": "reset có ba bước: dời HEAD (và branch của nó), rồi làm index khớp HEAD mới (mixed dừng ở đây), rồi, chỉ với --hard, làm working directory khớp. Vậy HEAD thành c2 (v2), index thành v2 (v4 đã staged bị bỏ), và file làm việc vẫn là v5. Lựa chọn 1 mô tả --soft, lựa chọn 2 mô tả --hard."
   }
  }
 }

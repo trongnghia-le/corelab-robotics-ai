@@ -80,6 +80,24 @@
     "Merge 2: (ab,ab) xuất hiện 2 lần (không chồng lấp, từ trái sang phải) cho abab ab.",
     "Phép merge thứ ba gộp (abab, ab) một lần, cho một token ababab; dừng khi không còn cặp nào lặp lại hoặc đạt ngân sách từ vựng."
    ]
+  },
+  "c1": {
+   "prompt": "Softmax trên bốn điểm số (8, 0, 0, 0) cho các trọng số a. Đạo hàm da_1/ds_1 = a_1(1 - a_1) tại các điểm số này là bao nhiêu? (số thập phân, sai số cho phép 0.0001)",
+   "explanation": "da_1/ds_1 = a_1(1-a_1). Với điểm số (8,0,0,0): a_1 = e^8/(e^8+3) = 2980.958/2983.958 = 0.998995, nên a_1(1-a_1) = 0.998995*0.001005 = 0.001004. Với điểm số (1,0,0,0) cùng đại lượng này là 0.2494, lớn hơn khoảng 248 lần: bão hòa (saturation) là lý do các head d_k lớn không chia tỉ lệ huấn luyện chậm."
+  },
+  "c2": {
+   "prompt": "Trong rotary position embedding 2D, query ở vị trí m được quay một góc m*theta và key ở vị trí n được quay n*theta trước khi lấy tích vô hướng. Với nội dung query và key cố định, điểm số phụ thuộc vào đâu?",
+   "options": [
+    "tổng m + n, vì hai góc quay cộng lại",
+    "m và n riêng rẽ: dịch cả hai vị trí đi 5 thì điểm số đổi",
+    "chỉ hiệu n - m: dịch cả hai vị trí đi 5 thì không đổi",
+    "chỉ m, vì chỉ query mang thông tin vị trí"
+   ],
+   "explanation": "(R(m*theta)q)^T (R(n*theta)k) = q^T R(-m*theta) R(n*theta) k = q^T R((n-m)*theta) k, vì phép quay là trực giao (chuyển vị = nghịch đảo) và hợp thành bằng cách cộng góc. Vậy điểm số phụ thuộc vào các vị trí chỉ qua n - m. Encoding sin cộng thêm vào không cho kết quả này một cách chính xác, vì W_Q W_K^T nằm giữa các số hạng nội dung và vị trí."
+  },
+  "c3": {
+   "prompt": "Với một lớp transformer cơ sở có d_model=512 và d_ff=2048, số phép nhân-cộng cho mỗi token không phụ thuộc độ dài chuỗi là 4*d_model^2 + 2*d_model*d_ff, còn điểm số attention thêm 2*n*d_model cho mỗi token. Ở độ dài chuỗi n nào hai phần này bằng nhau? (số nguyên, sai số cho phép 1)",
+   "explanation": "Phần tuyến tính: 4*512^2 + 2*512*2048 = 1,048,576 + 2,097,152 = 3,145,728. Phần attention: 2*n*512 = 1024 n. Đặt 1024 n = 3,145,728 cho n = 3072 (tương đương n* = 2*d_model + d_ff). Dưới độ dài này, các phép chiếu và FFN chiếm ưu thế; trên đó, số hạng attention bậc hai chiếm ưu thế."
   }
  }
 }

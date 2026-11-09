@@ -151,13 +151,13 @@
     },
     {
       "id": "b6",
-      "prompt": "P controller, kp = 2, dt = 0.1, target 1, start 0, no limits. Using q += kp*(target-q)*dt, what is q after 5 steps? Give 4 decimals.",
+      "prompt": "P controller, kp = 3, dt = 0.05, target 2, start 0.5, no limits. Using q += kp*(target-q)*dt, what is q after 6 steps? Give 4 decimals.",
       "kind": "number",
       "dimension": "M",
       "critical": false,
-      "answer": "0.6723199999999999",
+      "answer": "1.4342757265625001",
       "tolerance": 0.0005,
-      "explanation": "The error shrinks by 0.8 each step, so q5 = 1 - 0.8^5 = 0.67232.",
+      "explanation": "The error 2 - q is multiplied by 1 - kp*dt = 0.85 each step, so q6 = 2 - 1.5 * 0.85^6 = 2 - 1.5 * 0.377150 = 1.43428.",
       "knowledgeType": "procedure",
       "skillTags": [
         "interface-dispatch"
@@ -327,6 +327,84 @@
       "equivalentTo": [
         "q3",
         "q4"
+      ],
+      "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "Base::Base() calls the virtual function name(), and Derived overrides name() to return a member that Derived initialises. What is called when a Derived object is constructed?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Derived::name(), reading the member before it is initialised",
+        "It does not compile: virtual calls are forbidden in constructors",
+        "Whichever is found first by the linker",
+        "Base::name(): the dynamic type is Base while Base() runs"
+      ],
+      "answer": "3",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "interface-dispatch"
+      ],
+      "skillLabel": "Virtual call inside a constructor",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        }
+      ],
+      "explanation": "During a constructor (or destructor) the dynamic type is the class whose constructor is running, so the final overrider of that class is chosen: Base::name(). This protects the program from calling a Derived function that would read Derived members which do not exist yet. Option 0 is what other languages do; option 1 is wrong because the code compiles (it only becomes undefined if the function selected is pure and unimplemented)."
+    },
+    {
+      "id": "c2",
+      "prompt": "A grid of 372 calls (q' = 0.1k for k = -15..15, dt = 0.1j for j = 1..12, from q = 0, limits +-1.5) is applied to a joint with vmax = 2 and to a subclass with vmax = 0.8. The base accepts 274 of them. How many calls does the base accept that the subclass rejects? Integer.",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "148",
+      "tolerance": 0.5,
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "interface-dispatch",
+        "class-invariants"
+      ],
+      "skillLabel": "Counting precondition strengthening",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        }
+      ],
+      "explanation": "A call is accepted when 0.1|k| / (0.1 j) = |k|/j <= vmax, i.e. |k| <= vmax * j (the range check always passes). For vmax = 2 the enumeration gives 274 accepted calls; for vmax = 0.8 (5|k| <= 4j) it gives 126, all of which the base also accepts. So 274 - 126 = 148 calls are legal for the base and rejected by the subclass: a stricter precondition, which violates substitutability."
+    },
+    {
+      "id": "c3",
+      "prompt": "Design a polymorphic clone for a Shape hierarchy that returns an owning smart pointer and detects a derived class that forgot to override the cloning function. Explain why the public function cannot simply be a covariant virtual returning unique_ptr, and what the check costs.",
+      "kind": "short",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Public non-virtual std::unique_ptr<Shape> clone() const that calls a private (or protected) pure virtual Shape* do_clone() const and wraps the result in a unique_ptr.",
+        "Explains that covariant return types only work for raw pointers/references, not for unique_ptr<Derived> vs unique_ptr<Base>, so a smart-pointer clone cannot be virtual with covariance.",
+        "Compares typeid(*result) with typeid(*this) (or similar) and aborts/asserts on mismatch, catching a subclass that inherited an intermediate class's do_clone and would silently slice.",
+        "Notes that pure virtual forces only the first concrete class to implement do_clone, so the runtime check is still needed; the cost is one typeid comparison per clone (acceptable, can be limited to debug builds).",
+        "Mentions that copy operations of the base are protected/deleted so slicing by value is not possible (C.67/C.130)."
+      ],
+      "knowledgeType": "design",
+      "skillTags": [
+        "interface-dispatch",
+        "encapsulation-gate"
+      ],
+      "skillLabel": "Polymorphic clone design",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review: theory and derivation",
+          "href": "/lessons/CPP04#theory-and-derivation"
+        }
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
     }

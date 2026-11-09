@@ -32,7 +32,10 @@ test("study desk keeps notes, exercise answers and runs code", async ({
   await notes.press("End");
   await page.getByRole("tab", { name: "From this lesson" }).click();
   await page.locator(".math-items.is-lesson .math-item").first().click();
-  await expect(notes).toHaveValue(/^Kalman: \$\^\{\\top\}\$ \$.+=.+\$$/);
+  // A lesson formula is appended inline ($…$) or as a display block ($$…$$).
+  await expect(notes).toHaveValue(
+    /^Kalman: \$\^\{\\top\}\$(?: \$[^\n]+=[^\n]+\$|\n\n\$\$\n[^\n]+=[^\n]+\n\$\$\n?)$/,
+  );
   await expect(page.locator(".desk-preview .katex").first()).toBeVisible();
   await expect(page.locator(".desk-preview .katex-error")).toHaveCount(0);
 
@@ -84,4 +87,64 @@ test("desk API refuses requests that do not come from CoreLab", async ({
     data: { op: "write", topic: "M02", file: "x.py", content: "" },
   });
   expect(noHeader.status()).toBe(400);
+});
+
+test("desk docks beside the lesson, resizes and follows navigation", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto("/lessons/M02");
+  await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+  const toggle = page.locator(".topbar .desk-open");
+  await toggle.click();
+  const panel = page.getByRole("complementary", { name: "Study desk" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByLabel("Topic")).toHaveValue("M02");
+  // The lesson column shrinks so nothing hides under the panel.
+  const shell = await page.locator(".main-shell").boundingBox();
+  const box = await panel.boundingBox();
+  expect(shell!.x + shell!.width).toBeLessThanOrEqual(box!.x + 1);
+
+  // Drag the left edge to widen the desk; the width is remembered.
+  const edge = page.locator(".desk-resizer");
+  const e = (await edge.boundingBox())!;
+  await page.mouse.move(e.x + 4, e.y + 200);
+  await page.mouse.down();
+  await page.mouse.move(e.x - 196, e.y + 200, { steps: 5 });
+  await page.mouse.up();
+  const wider = (await panel.boundingBox())!.width;
+  expect(wider).toBeGreaterThan(box!.width + 150);
+
+  // Notes typed in the docked desk autosave.
+  await panel.getByLabel("Notes", { exact: true }).fill("docked note");
+  await expect(panel.getByText("Saved", { exact: true })).toBeVisible();
+
+  // Moving to another lesson keeps the desk open and switches its topic.
+  await page.goto("/lessons/HW05");
+  await expect(panel).toBeVisible();
+  await expect(panel.getByLabel("Topic")).toHaveValue("HW05");
+  expect(Math.abs((await panel.boundingBox())!.width - wider)).toBeLessThan(2);
+
+  // Ctrl+\ hides and shows it.
+  await page.keyboard.press("Control+Backslash");
+  await expect(panel).toBeHidden();
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await page.keyboard.press("Control+Backslash");
+  await expect(panel).toBeVisible();
+  await panel.getByRole("button", { name: "Close the desk" }).click();
+  await expect(panel).toBeHidden();
+
+  // Narrow screens: a bottom sheet instead of a column.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await toggle.click();
+  const sheet = (await panel.boundingBox())!;
+  expect(sheet.width).toBeGreaterThan(380);
+  expect(sheet.y).toBeGreaterThan(200);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - window.innerWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+  expect(errors).toEqual([]);
 });

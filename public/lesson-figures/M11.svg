@@ -1,18 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="Inter, Arial, sans-serif">
-<rect width="720" height="380" fill="#111827" rx="12"/>
-<text x="360" y="30" fill="#e5e7eb" font-size="18" font-weight="bold" text-anchor="middle">Ill-conditioning: nearly parallel constraints amplify tiny changes</text>
-<path d="M70,114.0 L670,234.0" stroke="#a3e635" stroke-width="3" fill="none"/>
-<path d="M70,103.2 L670,259.2" stroke="#38bdf8" stroke-width="3" fill="none"/>
-<path d="M70,95.2 L670,251.2" stroke="#f97316" stroke-width="3" fill="none" stroke-dasharray="8 5"/>
-<circle cx="250" cy="150.0" r="7" fill="#e5e7eb"/><circle cx="383" cy="176.60000000000002" r="7" fill="#e5e7eb"/>
-<text x="250" y="110.0" fill="#e5e7eb" font-size="14" text-anchor="middle">solution x</text>
-<text x="313" y="242.60000000000002" fill="#e5e7eb" font-size="14">solution x' after change δ</text>
-<path d="M256,164.0 L377,190.60000000000002" stroke="#e5e7eb" stroke-width="2" fill="none"/>
-<text x="230" y="200.0" fill="#e5e7eb" font-size="14" text-anchor="middle">moves by ≈ κ·δ</text>
-<rect x="60" y="270" width="600" height="92" rx="8" fill="#1f2937"/>
-<text x="80" y="294" fill="#a3e635" font-size="14">green: row 1   </text>
-<text x="200" y="294" fill="#38bdf8" font-size="14">blue: row 2 with exact b</text>
-<text x="400" y="294" fill="#f97316" font-size="14">dashed orange: row 2 after a tiny δ in b</text>
-<text x="360" y="320" fill="#e5e7eb" font-size="14" text-anchor="middle">Small residual does not imply small error: ‖x − x'‖/‖x‖ ≤ κ(A) · ‖r‖/‖b‖</text>
-<text x="360" y="344" fill="#e5e7eb" font-size="13" text-anchor="middle">Angle exaggerated. For A = [[1,1],[1,1.0001]], κ ≈ 4·10⁴.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" font-family="Inter, sans-serif">
+<title>A tiny change in the data, a large change in the answer</title>
+<desc>Left, to scale: the lines x+y=2 and x+1.5y=2.5 meet at (1,1); raising the second right-hand side by 0.1 moves the intersection to (0.8,1.2). Right: for the lesson&#x27;s 2x2 system the relative data change and residual are 3.54e-5, the relative error is 1 and the bound kappa times residual is 1.41.</desc>
+<defs><marker id="M11arr-e0904f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="#e0904f"/></marker><marker id="M11arr-e9e7e3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="#e9e7e3"/></marker></defs>
+<rect width="900" height="540" rx="14" fill="#17181b"/>
+<text x="32" y="44" font-size="22" fill="#e9e7e3" text-anchor="start" font-weight="bold">A tiny change in the data, a large change in the answer</text>
+<rect x="32" y="64" width="404" height="448" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="48" y="94" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Two lines, drawn to scale (gap 0.5)</text>
+<line x1="72" y1="160" x2="282" y2="370" stroke="#6fc693" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="72" y1="210" x2="282" y2="350" stroke="#86abe2" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="72" y1="190" x2="282" y2="330" stroke="#e0904f" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 5"/>
+<line x1="72" y1="430" x2="290" y2="430" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="72" y1="430" x2="72" y2="152" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="72" y1="430" x2="72" y2="436" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="72" y="454" font-size="14" fill="#a7adb5" text-anchor="middle">0.5</text>
+<line x1="222" y1="430" x2="222" y2="436" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="222" y="454" font-size="14" fill="#a7adb5" text-anchor="middle">1.0</text>
+<line x1="66" y1="430" x2="72" y2="430" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="62" y="435" font-size="14" fill="#a7adb5" text-anchor="end">0.6</text>
+<line x1="66" y1="310" x2="72" y2="310" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="62" y="315" font-size="14" fill="#a7adb5" text-anchor="end">1.0</text>
+<line x1="66" y1="190" x2="72" y2="190" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="62" y="195" font-size="14" fill="#a7adb5" text-anchor="end">1.4</text>
+<text x="296" y="435" font-size="15" fill="#a7adb5" text-anchor="start">x</text>
+<text x="72" y="142" font-size="15" fill="#a7adb5" text-anchor="middle">y</text>
+<text x="292" y="335" font-size="15" fill="#e0904f" text-anchor="start" font-weight="600">x + 1.5y = 2.6</text>
+<text x="292" y="355" font-size="15" fill="#86abe2" text-anchor="start" font-weight="600">x + 1.5y = 2.5</text>
+<text x="292" y="375" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">x + y = 2</text>
+<line x1="217" y1="305" x2="167" y2="255" stroke="#e9e7e3" stroke-width="2" stroke-linecap="round" marker-end="url(#M11arr-e9e7e3)"/>
+<circle cx="222" cy="310" r="6" fill="#e9e7e3"/>
+<circle cx="162" cy="250" r="6" fill="#e0904f"/>
+<text x="214" y="336" font-size="15" fill="#e9e7e3" text-anchor="end" font-weight="600">x = (1, 1)</text>
+<text x="174" y="234" font-size="15" fill="#e0904f" text-anchor="start" font-weight="600">x′ = (0.8, 1.2)</text>
+<text x="180" y="300" font-size="15" fill="#e9e7e3" text-anchor="end">moves 0.28</text>
+<text x="48" y="486" font-size="14" fill="#a7adb5" text-anchor="start">Gap 0.5: κ₂ = 10.4.</text>
+<text x="48" y="504" font-size="14" fill="#a7adb5" text-anchor="start">The lesson uses gap 10⁻⁴: κ₂ = 40 002.</text>
+<rect x="460" y="64" width="408" height="448" rx="8" fill="#22252a" stroke="#3d4148" stroke-width="1.5"/>
+<text x="476" y="94" font-size="17" fill="#e9e7e3" text-anchor="start" font-weight="bold">Lesson numbers, logarithmic axis</text>
+<line x1="484" y1="420" x2="844" y2="420" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="484" y1="420" x2="484" y2="426" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="484" y="444" font-size="14" fill="#a7adb5" text-anchor="middle">10⁻⁶</text>
+<line x1="535.429" y1="420" x2="535.429" y2="426" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="586.857" y1="420" x2="586.857" y2="426" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="586.857" y="444" font-size="14" fill="#a7adb5" text-anchor="middle">10⁻⁴</text>
+<line x1="638.286" y1="420" x2="638.286" y2="426" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="689.714" y1="420" x2="689.714" y2="426" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="689.714" y="444" font-size="14" fill="#a7adb5" text-anchor="middle">10⁻²</text>
+<line x1="741.143" y1="420" x2="741.143" y2="426" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="792.571" y1="420" x2="792.571" y2="426" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="792.571" y="444" font-size="14" fill="#a7adb5" text-anchor="middle">1</text>
+<line x1="844" y1="420" x2="844" y2="426" stroke="#a7adb5" stroke-width="1.5" stroke-linecap="round"/>
+<text x="664" y="466" font-size="15" fill="#a7adb5" text-anchor="middle">relative size</text>
+<text x="484" y="150" font-size="15" fill="#e9e7e3" text-anchor="start" font-weight="600">data change = residual</text>
+<rect x="484" y="162" width="79.663" height="26" rx="3" fill="#6fc693" fill-opacity="0.85"/>
+<text x="571.663" y="181" font-size="15" fill="#6fc693" text-anchor="start" font-weight="600">3.54×10⁻⁵</text>
+<text x="484" y="250" font-size="15" fill="#e9e7e3" text-anchor="start" font-weight="600">relative error of x̂</text>
+<rect x="484" y="262" width="308.571" height="26" rx="3" fill="#e58a80" fill-opacity="0.85"/>
+<text x="784.571" y="281" font-size="15" fill="#17181b" text-anchor="end" font-weight="600">1</text>
+<text x="484" y="350" font-size="15" fill="#e9e7e3" text-anchor="start" font-weight="600">κ · residual (bound)</text>
+<rect x="484" y="362" width="316.309" height="26" rx="3" fill="#ae9ce6" fill-opacity="0.85"/>
+<text x="792.309" y="381" font-size="15" fill="#17181b" text-anchor="end" font-weight="600">1.41</text>
+<text x="678.117" y="214" font-size="15" fill="#e0904f" text-anchor="middle" font-weight="600">amplified 2.83×10⁴ ×</text>
+<line x1="567.663" y1="226" x2="788.571" y2="226" stroke="#e0904f" stroke-width="2" stroke-linecap="round" marker-end="url(#M11arr-e0904f)"/>
+<text x="476" y="486" font-size="14" fill="#a7adb5" text-anchor="start">x̂ = (0, 2) solves the perturbed</text>
+<text x="476" y="504" font-size="14" fill="#a7adb5" text-anchor="start">system, not the original one</text>
 </svg>

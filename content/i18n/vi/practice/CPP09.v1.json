@@ -1,7 +1,7 @@
 {
  "questions": {
   "b1": {
-   "prompt": "Bố cục nào giảm thiểu lưu lượng bộ nhớ khi một vòng lặp chỉ đọc field z của 10^6 điểm {x, y, z, intensity}?",
+   "prompt": "Bố cục nào giảm thiểu lưu lượng bộ nhớ khi một vòng lặp chỉ đọc field gz của 2x10^5 mẫu IMU {t, ax, ay, az, gx, gy, gz}, mỗi field là một float 4 byte?",
    "options": [
     "Một std::map khóa theo chỉ số của mỗi điểm",
     "Một danh sách liên kết giữ một node cho mỗi điểm",
@@ -11,14 +11,14 @@
    "explanation": "SoA chỉ truyền field cần thiết; AoS kéo các field khác qua cache."
   },
   "b2": {
-   "prompt": "Một ma trận double 4096x4096 theo hàng được cộng theo từng cột. So với theo từng hàng, điều gì được kỳ vọng?",
+   "prompt": "Một ma trận double 2048x2048 theo hàng được cộng theo từng cột. So với theo từng hàng, điều gì được kỳ vọng?",
    "options": [
     "Nhanh hơn, vì các cột ngắn hơn các hàng",
     "Tốc độ giống hệt, vì cả hai thứ tự đều có tổng công việc O(n^2)",
     "Chậm hơn nhiều, vì mọi truy cập chạm một cache line khác",
     "Nhanh hơn, vì tổng theo cột vector hóa tốt hơn tổng theo hàng"
    ],
-   "explanation": "Stride 32 KB giữa các truy cập liên tiếp lãng phí 7/8 mỗi line được nạp và phá vỡ prefetching."
+   "explanation": "Stride 16 KB giữa các truy cập liên tiếp lãng phí 7/8 mỗi line được nạp và phá vỡ prefetching."
   },
   "b3": {
    "prompt": "Một đồ thị thời gian theo n trên trục log-log là một đường thẳng với độ dốc khoảng 1 cho n nhỏ và bẻ cong lên ở n lớn hơn. Nguyên nhân nhiều khả năng nhất?",
@@ -81,6 +81,29 @@
     "Tính ln x và ln y, rồi slope = sum((lx-mx)(ly-my))/sum((lx-mx)^2).",
     "Kiểm tra các giá trị dương, ít nhất hai kích thước khác nhau (tốt nhất là bốn trở lên).",
     "Kiểm tra các điểm thẳng trên đồ thị log-log và không có ranh giới cache nào bị vượt qua trong khoảng được khớp."
+   ]
+  },
+  "c1": {
+   "prompt": "Một cache dữ liệu 64 KiB, 8-way, line 64 byte. Một cột của ma trận double row-major có 512 hàng được đọc lặp đi lặp lại. Độ rộng hàng N (double) nào khiến cả 512 line của cột rơi vào một tập cache duy nhất?",
+   "options": [
+    "N = 2000",
+    "N = 2056",
+    "N = 2048",
+    "N = 1536"
+   ],
+   "explanation": "Cache có 65536/(8*64)=128 tập. Hàng r bắt đầu ở byte 8Nr nên tập của nó là floor(8Nr/64) mod 128. Với N=2048 bước hàng là 256 line và 256 mod 128 = 0, nên mọi hàng ánh xạ vào cùng một tập chỉ có 8 way: cột bị thrashing. N=2056 có bước 257 line (bước 1) và trải ra cả 128 tập; N=2000 (250 line, bước 122, gcd 2) dùng 64 tập; N=1536 (192 line, bước 64) dùng 2 tập, tệ nhưng không phải một tập duy nhất."
+  },
+  "c2": {
+   "prompt": "Mô hình thông lượng: latency DRAM L = 120 ns, bandwidth đỉnh 12 byte/ns, line 64 byte, tối đa M = 8 lần nạp cache line đang bay. Một chương trình duyệt k = 6 danh sách liên kết xáo trộn độc lập đồng bộ từng bước. Thời gian mỗi node là bao nhiêu ns?",
+   "explanation": "Thời gian mỗi line = max(L/min(k,M), 64/bandwidth) = max(120/min(6,8), 64/12) = max(20; 5,33) = 20 ns. Vòng lặp vẫn bị chặn bởi latency: k=6 nhỏ hơn cả M=8 lẫn điểm bão hòa L*bandwidth/64 = 22,5 line."
+  },
+  "c3": {
+   "prompt": "Một hàm là O(n) nhưng thời gian đo ở n = 2^8 ... 2^20 double cho số mũ khớp 1,3 trên cả khoảng và 1,00 trên bốn kích thước đầu, đều nằm trong L1. Giải thích sự khác biệt và mô tả cách bạn thiết kế dải kích thước và những gì bạn sẽ báo cáo.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Chi phí mỗi phần tử là hàm bậc thang của working set (L1, L2, L3, DRAM), nên đường log-log là đường gãy khúc có các điểm uốn; một đường thẳng khớp qua các điểm uốn cho số mũ trên 1 ngay cả với vòng lặp O(n).",
+    "Chỉ khớp trong một chế độ (không có ranh giới cache trong khoảng, ít nhất bốn kích thước), và chỉ ngoại suy trong chế độ đó; số mũ cục bộ qua một ranh giới có thể là 2 hoặc hơn.",
+    "Quét kích thước ở cả hai phía của mỗi dung lượng cache (từ lscpu), báo cáo ns mỗi phần tử và median của các lần chạy tối ưu lặp lại, và ghi máy cùng ranh giới các chế độ cạnh mỗi độ dốc."
    ]
   }
  }

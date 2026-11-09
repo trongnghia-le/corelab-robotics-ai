@@ -45,12 +45,12 @@
       ],
       "id": "f2",
       "kind": "number",
-      "prompt": "A rotation matrix turns by 60 degrees about some axis. What is its trace? Give 2 decimals.",
+      "prompt": "A rotation matrix turns by 80 degrees about some axis. What is its trace? Give 2 decimals.",
       "dimension": "M",
       "critical": false,
-      "answer": "2.0",
+      "answer": "1.35",
       "tolerance": 0.01,
-      "explanation": "tr R = 1 + 2 cos(theta) = 1 + 2(0.5) = 2."
+      "explanation": "tr R = 1 + 2 cos(theta) = 1 + 2 cos 80° = 1 + 2(0.1736) = 1.347."
     },
     {
       "knowledgeType": "procedure",
@@ -187,12 +187,12 @@
       ],
       "id": "f8",
       "kind": "number",
-      "prompt": "A rotation matrix has trace 0. What is its rotation angle in degrees? Give an integer.",
+      "prompt": "A rotation matrix has trace -0.5. What is its rotation angle in degrees? Give 1 decimal.",
       "dimension": "M",
       "critical": false,
-      "answer": "120",
+      "answer": "138.6",
       "tolerance": 0.1,
-      "explanation": "cos(theta) = (0-1)/2 = -1/2, so theta = 120 degrees."
+      "explanation": "cos(theta) = (-0.5-1)/2 = -0.75, so theta = arccos(-0.75) = 138.59 degrees."
     },
     {
       "knowledgeType": "concept",
@@ -292,6 +292,77 @@
         "Tests with a hand-computed pose (for example a pure 90 degree rotation) and compares residual size to the calibration noise to separate a labelling error from calibration error"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nearest-rotation"
+      ],
+      "skillLabel": "Distance to the nearest rotation",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "What is the squared Frobenius distance ||A - R||^2 from A = diag(3, 1, -0.4) to the nearest proper rotation R? Give 2 decimals.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "5.96",
+      "tolerance": 0.01,
+      "explanation": "A = U S V^T with U = I, S = diag(3, 1, 0.4), V^T = diag(1, 1, -1), so det A < 0 and UV^T has det -1. The nearest rotation is U diag(1,1,-1) V^T = I. The distance is ||A||^2 + 3 - 2(s1 + s2 - s3) = 10.16 + 3 - 2(3 + 1 - 0.4) = 5.96, which matches ||A - I||^2 = 4 + 0 + 1.96."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "frame-composition"
+      ],
+      "skillLabel": "Composing a two-link transform chain",
+      "mistakeCategory": "procedural",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "T_AB rotates 90 degrees about z and translates by (1, 2, 0). T_BC rotates 90 degrees about x and translates by (0, 0, 3). A point has coordinates (1, 0, 2) in frame C. Find its coordinates in frame A and give the sum x + y + z. Give 1 decimal.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "9.0",
+      "tolerance": 0.01,
+      "explanation": "In B: Rx(90)(1,0,2) = (1, -2, 0) and adding (0,0,3) gives (1, -2, 3). In A: Rz(90)(1,-2,3) = (2, 1, 3) and adding (1,2,0) gives (3, 3, 3), so the sum is 9.0. Applying the transforms in the wrong order gives (1, -2, 6) with sum 5, which shows why the subscript rule T_AB T_BC x_C matters."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "rotation-logarithm"
+      ],
+      "skillLabel": "Axis-angle of a half-turn",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/R03#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "A rotation matrix R has trace -1. Which statement about its axis-angle (exponential) coordinates is correct?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "The angle is 0 and the axis is undefined",
+        "The angle is pi and the axis is (R - R^T)/(2 sin theta), which is well defined",
+        "R cannot be a rotation, because a rotation has trace at least 0",
+        "The angle is pi, R is symmetric with R = 2 w w^T - I, and both w and -w are valid axes"
+      ],
+      "answer": "3",
+      "explanation": "tr R = 1 + 2 cos(theta) = -1 gives cos(theta) = -1, so theta = pi (a rotation has trace between -1 and 3, so -1 is allowed). Rodrigues with sin(pi) = 0 gives R = I + 2[w]^2 = 2 w w^T - I, which is symmetric, so (R - R^T)/(2 sin theta) is 0/0 and cannot give the axis. The axis is read from the diagonal and off-diagonal entries, and w and -w give the same R."
     }
   ]
 }

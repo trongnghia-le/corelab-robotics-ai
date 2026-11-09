@@ -401,6 +401,94 @@
         "Mentions that complementarity constraints still hold for each foot."
       ],
       "explanation": "Rubric-guided practice, not automatically verified."
+    },
+    {
+      "id": "c1",
+      "prompt": "A uniform ladder leans on a wall. Floor friction mu_f = 0.4 and wall friction mu_w = 0.3. Using tan(theta_min) = (1 - mu_f*mu_w)/(2*mu_f) from force and moment balance with both friction cones, what is the smallest angle with the floor (degrees, two decimals) at which it can stand?",
+      "kind": "number",
+      "dimension": "M",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "ladder-friction-equilibrium"
+      ],
+      "skillLabel": "Equilibrium with two friction cones",
+      "mistakeCategory": "mathematical",
+      "answer": "47.73",
+      "tolerance": 0.05,
+      "explanation": "Unknowns f1, N1, N2, f2 with 3 balance equations (f1 = N2, N1 + f2 = mg, N2 tan(theta) + f2 = mg/2). Cone conditions f1 <= mu_f N1 and |f2| <= mu_w N2 are compatible iff 1 <= mu_f (2 tan(theta) + mu_w). So tan(theta) = (1 - 0.12)/0.8 = 1.1 and theta = arctan(1.1) = 47.73 degrees. A frictionless wall would need 51.34 degrees, so wall friction helps.",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: Equilibrium with two friction cones",
+          "href": "/lessons/R08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R07"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "A grasp planner replaces the circular friction cone with an inscribed regular pyramid of k = 8 edges. In the worst tangential direction, what fraction of the true available friction does it still allow?",
+      "kind": "choice",
+      "dimension": "M",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "friction-cone-polyhedral"
+      ],
+      "skillLabel": "Polyhedral friction cone",
+      "mistakeCategory": "mathematical",
+      "options": [
+        "1/cos(pi/8), about 1.082 (it overestimates)",
+        "8 edges give exactly one eighth, 0.125",
+        "cos(pi/8), about 0.924",
+        "cos(pi/4), about 0.707"
+      ],
+      "answer": "2",
+      "explanation": "The inscribed polygon has its vertices on the circle of radius mu f_n. Halfway between two vertices the edge is at distance mu f_n cos(pi/k) from the centre, so the worst-case fraction is cos(pi/8) = 0.924. 1/cos(pi/8) is the overshoot of a circumscribed polygon, and cos(pi/4) = 0.707 is the k = 4 value of MR Figure 12.18(c).",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: Polyhedral friction cone",
+          "href": "/lessons/R08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R07"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "A 2 kg horizontal rod (length 1 m, centre of mass at 0.5 m) rests on one frictional support under x = 0.2 m. A second frictionless support is added. Which placement can balance gravity with both normal forces non-negative?",
+      "kind": "choice",
+      "dimension": "C",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "complementarity-sign"
+      ],
+      "skillLabel": "Unilateral supports and sign conditions",
+      "mistakeCategory": "conceptual",
+      "options": [
+        "From below at x = 0.35 m, between the first support and the centre of mass",
+        "From above at x = 0.0 m, on the far side of the first support",
+        "From above at x = 0.8 m, beyond the centre of mass",
+        "From below at x = 0.0 m, on the far side of the first support"
+      ],
+      "answer": "1",
+      "explanation": "Moments about x = 0.2: a contact at b with sign s (+1 from below, -1 from above) needs N2 = mg(0.3)/(s(b-0.2)) >= 0 and N1 = mg - s N2 >= 0. From above, b must be < 0.2, and then N1 = mg + N2 > 0: x = 0.0 gives N2 = 29.43 N, N1 = 49.05 N. From below you need b >= 0.5 (x = 0.35 gives N1 = -19.62 N, a pull; x = 0.0 gives N2 < 0). From above at 0.8 gives N2 < 0.",
+      "critical": false,
+      "remediationRefs": [
+        {
+          "label": "Review: Unilateral supports and sign conditions",
+          "href": "/lessons/R08#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "R01",
+        "R07"
+      ]
     }
   ]
 }

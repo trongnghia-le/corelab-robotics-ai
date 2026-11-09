@@ -23,10 +23,12 @@
       "kind": "choice",
       "prompt": "For u,v in R³, which statement about u·v is correct?",
       "options": [
+        "It is a three-dimensional displacement.",
+        "It is a vector perpendicular to both u and v.",
         "It is a scalar sum of three pairwise products.",
-        "It is a three-dimensional displacement."
+        "It is a 3x3 matrix holding every pairwise product u_i v_j."
       ],
-      "answer": "0",
+      "answer": "2",
       "dimension": "C",
       "critical": true,
       "explanation": "A dot product contracts the coordinate index and returns one scalar.",
@@ -55,9 +57,11 @@
       "prompt": "If two nonzero vectors are perpendicular, what is their dot product?",
       "options": [
         "The product of their lengths, which is the largest value possible.",
-        "Zero; orthogonality removes the component along the other vector."
+        "Negative, because perpendicular vectors point in opposite senses along each axis.",
+        "Zero; orthogonality removes the component along the other vector.",
+        "Undefined, because the angle formula divides by cos(pi/2)."
       ],
-      "answer": "1",
+      "answer": "2",
       "dimension": "C",
       "critical": true,
       "explanation": "u·v=‖u‖‖v‖cos(π/2)=0.",
@@ -172,6 +176,124 @@
         "Give a reference result, boundary tests, and a mutation that your tests reject.",
         "Record source version and exact commands; import a supported report separately."
       ]
+    },
+    {
+      "id": "m02-c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "nearest-point-projection"
+      ],
+      "skillLabel": "Nearest point on a line",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Line through a=(0,1,2) and b=(4,4,2). Find the distance (in metres) from x=(6,6,5) to the infinite line.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "3.03",
+      "tolerance": 0.01,
+      "explanation": "d=b-a=(4,3,0), x-a=(6,5,3). theta=(x-a).d/d.d=39/25=1.56 (beyond b, but the line is infinite), p=a+1.56d=(6.24,5.68,2), x-p=(-0.24,0.32,3). Distance = sqrt(0.0576+0.1024+9)=sqrt(9.16)=3.027. Check: (x-p).d=-0.96+0.96=0."
+    },
+    {
+      "id": "m02-c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "dot-product-concept"
+      ],
+      "skillLabel": "Sign of the dot product and the norm of a sum",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A rover drives a=(2,3) m and then b=(-5,1) m. How does the straight-line distance ||a+b|| compare with sqrt(||a||^2+||b||^2), and what does it say about the corner?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "They are equal because a+b is the hypotenuse of the two legs",
+        "||a+b|| = 5 is less than sqrt(39) = 6.24, so the corner is obtuse because a.b = -7 < 0",
+        "||a+b|| = 5 is less than sqrt(39), so the corner is acute because the distance shrinks",
+        "||a+b|| = 7.2 exceeds sqrt(39), so the corner is acute because a.b > 0"
+      ],
+      "answer": "1",
+      "explanation": "||a+b||^2 = ||a||^2 + 2 a.b + ||b||^2, so the sign of a.b decides. a.b = -10 + 3 = -7 < 0, so ||a+b||^2 = 39 - 14 = 25 and ||a+b|| = 5 < sqrt(39). A negative dot product means an obtuse angle (112.4 degrees). The legs are not orthogonal, so the Pythagorean equality does not apply."
+    },
+    {
+      "id": "m02-c3",
+      "kind": "short",
+      "knowledgeType": "design",
+      "skillTags": [
+        "design-decisions"
+      ],
+      "skillLabel": "Distance versus angle matching",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A retrieval system stores unnormalised sensor feature vectors z_i and ranks them against a query x. Compare ranking by Euclidean distance with ranking by angle. Give a 2-D example where they disagree, state when they agree, and say what you would do to make the decision robust.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Gives a valid example, e.g. x=(3,0), z1=(2,2) is nearer in distance (2.24 against 9.22) but z2=(12,-2) is nearer in angle (9.46 degrees against 45 degrees).",
+        "States that if all z_i have unit norm, the two rankings coincide, with the reason ||x-z||^2 = ||x||^2 + 1 - 2||x||cos(theta).",
+        "Chooses based on whether gain/magnitude is meaningful: normalise (or use angle) for pattern matching, keep distance when magnitude matters; mentions zero-norm vectors."
+      ],
+      "explanation": "Open engineering judgment; rubric-guided. Distance is magnitude-sensitive while angle is scale-invariant; for unit vectors the squared distance is a decreasing function of the cosine, so both rankings agree."
+    },
+    {
+      "id": "m02-c4",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "angle-between-vectors"
+      ],
+      "skillLabel": "Angle between two vectors",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M02#theory-and-derivation"
+        }
+      ],
+      "prompt": "Two force vectors act on a joint: a=(2,-1,2) N and b=(1,2,2) N. Find the angle between them in degrees.",
+      "dimension": "M",
+      "critical": false,
+      "answer": "63.6",
+      "tolerance": 0.1,
+      "explanation": "a.b = 2 - 2 + 4 = 4. ||a|| = sqrt(4+1+4) = 3 and ||b|| = sqrt(1+4+4) = 3. cos(theta) = 4/9 = 0.4444, so theta = arccos(0.4444) = 63.61 degrees (acute, as a.b > 0)."
+    },
+    {
+      "id": "m02-c5",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "norm-rms-units"
+      ],
+      "skillLabel": "Norm, RMS and units",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M02#theory-and-derivation"
+        }
+      ],
+      "prompt": "A wheel-speed controller logs tracking errors e=(0.2,-0.4,0.4,-0.2) m/s over four samples. Compute the RMS error in m/s, using rms(e) = ||e|| / sqrt(n).",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.316",
+      "tolerance": 0.002,
+      "explanation": "||e||^2 = 0.04 + 0.16 + 0.16 + 0.04 = 0.40, so ||e|| = 0.6325 m/s. With n = 4, rms = 0.6325/2 = 0.3162 m/s. The unit is the unit of the entries (m/s); the plain norm 0.6325 would grow with the number of samples, the RMS does not."
     }
   ]
 }

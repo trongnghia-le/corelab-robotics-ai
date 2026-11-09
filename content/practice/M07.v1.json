@@ -295,6 +295,77 @@
         "Estimates k from the slope of ln(T − T_room) versus time, noting noise and ambient assumptions."
       ],
       "explanation": "Open question; check your answer against the rubric."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "euler-global-error"
+      ],
+      "skillLabel": "Global error of explicit Euler",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "id": "c1",
+      "kind": "number",
+      "prompt": "Explicit Euler is applied to x′ = −x, x(0)=1, on [0,1] with h = 0.02. Using the leading term of the global error, e_N ≈ −(h/2)·T·e^(−T), what is |e_N|? Give it multiplied by 1000 (three decimals).",
+      "answer": "3.679",
+      "tolerance": 0.01,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "x_N=(1−h)^N = exp(N ln(1−h)) = exp(−T − Nh²/2 − …) = e^(−T)(1 − hT/2 + O(h²)), so e_N ≈ −(h/2)T e^(−T). With h=0.02, T=1: 0.01×0.367879 = 0.003679, i.e. 3.679 after multiplying by 1000. The error is proportional to h (global first order), unlike the O(h²) local error of one step."
+    },
+    {
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "stability-function"
+      ],
+      "skillLabel": "Stability function of an explicit Runge–Kutta method",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "id": "c2",
+      "kind": "number",
+      "prompt": "Classical RK4 is applied to x′ = −1000x with h = 0.01, so z = hλ = −10. Its amplification per step is R(z)=1+z+z²/2+z³/6+z⁴/24. Compute R(−10) (nearest integer).",
+      "answer": "291",
+      "tolerance": 0.5,
+      "dimension": "M",
+      "critical": false,
+      "explanation": "R(−10) = 1 − 10 + 50 − 1000/6 + 10000/24 = 1 − 10 + 50 − 166.667 + 416.667 = 291. Since |R| > 1, the numerical solution of a decaying equation grows about 291 times per step: fourth-order accuracy does not enlarge the stability region (real limit about −2.785)."
+    },
+    {
+      "knowledgeType": "concept",
+      "skillTags": [
+        "stiff-method-choice"
+      ],
+      "skillLabel": "Choosing an integrator for a stiff system",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/M07#theory-and-derivation"
+        }
+      ],
+      "id": "c3",
+      "kind": "choice",
+      "prompt": "A simulation has a fast stable mode (rate 1000 s⁻¹) and slow dynamics of interest, run with h = 0.01 s. Which statement is correct?",
+      "options": [
+        "Backward Euler is stable here (factor 1/11), at some cost in accuracy.",
+        "RK4 is stable here because its fourth-order accuracy makes the step error negligible.",
+        "Tightening the tolerance of an explicit solver lets h = 0.01 s become stable.",
+        "Semi-implicit Euler fixes the instability because it conserves energy for any step size."
+      ],
+      "answer": "0",
+      "dimension": "C",
+      "critical": false,
+      "explanation": "With z = hλ = −10, explicit Euler (|1+z|=9) and RK4 (R=291) are outside their stability regions and blow up whatever their order. Backward Euler has R=1/(1−z)=1/11 and is stable for every h on a decaying mode (A-stability), at the cost of first-order accuracy and some numerical damping, so it is the natural choice (or a stiff solver such as Radau/BDF). Reducing the tolerance does not change the stability limit of an explicit method, and symplectic Euler is for conservative oscillators, not for stiff decay."
     }
   ]
 }

@@ -377,6 +377,90 @@
       "equivalentTo": [
         "q3"
       ]
+    },
+    {
+      "id": "c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "condition-number"
+      ],
+      "skillLabel": "Condition number with respect to the matrix",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "prompt": "Fix x=(1,1)^T and let g(A)=Ax with A=[[1,2],[3,4]]. Perturbations of A are measured in the Frobenius norm, outputs in the 2-norm. Give the relative condition number of g at A (3 decimals).",
+      "answer": "1.017",
+      "tolerance": 0.001,
+      "explanation": "g is linear in A, and ||dA x||_2 <= ||dA||_F ||x||_2 with equality for dA = u x^T/||x||. So kappa_g = ||A||_F ||x||_2 / ||Ax||_2. Here ||A||_F = sqrt(30) = 5.4772, ||x||_2 = sqrt(2) = 1.4142, Ax = (3,7) so ||Ax||_2 = sqrt(58) = 7.6158. kappa_g = 5.4772*1.4142/7.6158 = 1.0171.",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "float-rounding"
+      ],
+      "skillLabel": "Summation error growth",
+      "mistakeCategory": "conceptual",
+      "dimension": "C",
+      "prompt": "You add n = 2^20 positive float32 numbers. Compared with a plain sequential loop, pairwise (divide-and-conquer) summation changes the worst-case bound on the error relative to sum|x_i| from",
+      "options": [
+        "about (n-1)u to about u, independent of n, because errors cancel at random",
+        "about (n-1)u to about log2(n) u, since each term is added only log2(n) times",
+        "about n u to about sqrt(n) u, because the partial sums are halved",
+        "about log2(n) u to about (n-1)u, because the recursion adds extra roundings"
+      ],
+      "answer": "1",
+      "explanation": "In the sequential loop an early term is rounded in each of n-1 additions, giving (n-1)u sum|x_i|. In the pairwise tree with n = 2^m every term passes through exactly m = log2 n additions (induction: combining two halves adds one factor 1+delta), so the bound is log2(n) u sum|x_i|, here 20u instead of about 10^6 u. The worst-case bound does not rely on random cancellation, and the tree has fewer, not more, roundings per term.",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#theory-and-derivation"
+        }
+      ],
+      "critical": false
+    },
+    {
+      "id": "c3",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "cancellation",
+        "stable-algorithm"
+      ],
+      "skillLabel": "Stable reformulation of a difference",
+      "mistakeCategory": "mathematical",
+      "dimension": "M",
+      "prompt": "Use a stable identity to evaluate cot(0.3) - cot(0.3 + 1e-12). Give the answer in units of 1e-12 (4 decimals), i.e. the number D with value = D x 1e-12.",
+      "answer": "11.4505",
+      "tolerance": 0.001,
+      "explanation": "cot x - cot(x+y) = sin(y) / (sin x sin(x+y)), since cos x sin(x+y) - cos(x+y) sin x = sin(y). With x = 0.3 and y = 1e-12, sin(x+y) equals sin(x) to 12 digits and sin^2(0.3) = 0.087332, so the value is 1e-12/0.087332 = 1.14505e-11 = 11.4505 x 1e-12. (The naive subtraction gives 1.14500e-11, relative error 5e-5.)",
+      "relatedPrerequisites": [
+        "M03",
+        "M05"
+      ],
+      "remediationRefs": [
+        {
+          "label": "Review the worked reasoning",
+          "href": "/lessons/M11#theory-and-derivation"
+        }
+      ],
+      "critical": false
     }
   ]
 }

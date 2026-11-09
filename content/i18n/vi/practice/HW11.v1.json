@@ -38,7 +38,7 @@
       "prompt": "Parser đang gom một frame thì một byte 0x7E trần đến. Nó nên làm gì?",
       "options": [
         "Coi là dữ liệu payload và tiếp tục chờ đủ LEN byte.",
-        "Reset vi điều khiển vì đường truyền hỏng.",
+        "Reset toàn bộ vi điều khiển, vì một byte 0x7E đơn lẻ chứng tỏ đường truyền đã hỏng.",
         "Kiểm tra CRC của frame dở và gửi phản hồi lỗi.",
         "Đếm một frame bị cắt, bỏ các byte dở và bắt đầu một frame mới."
       ],
@@ -82,7 +82,7 @@
         "micro-ROS cần MCU 32 bit với hàng chục kilobyte RAM cho stack rcl/rclc và bộ đệm message.",
         "micro-ROS chỉ chạy qua Wi-Fi mà Uno không có.",
         "Uno không tạo được PWM.",
-        "micro-ROS yêu cầu Linux trên MCU."
+        "micro-ROS cần một hệ điều hành Linux đầy đủ trên vi điều khiển, mà chỉ ESP32 mới chạy được."
       ],
       "explanation": "Tài liệu Vulcanexus nêu mục tiêu chính là MCU 32 bit tầm trung với hàng chục kilobyte RAM. micro-ROS cũng chạy qua cổng nối tiếp nên không cần Wi-Fi, và chạy trên RTOS hoặc Arduino cho các board được hỗ trợ."
     },
@@ -101,7 +101,7 @@
       "options": [
         "Adapter USB-serial phổ thông với giao thức văn bản.",
         "Wi-Fi UDP tới từng động cơ.",
-        "micro-ROS qua USB với topic DDS nằm trong vòng lặp.",
+        "micro-ROS qua USB với các topic DDS nằm bên trong vòng lặp 500 Hz.",
         "Driver CAN hoặc EtherCAT với chu kỳ có giới hạn."
       ],
       "explanation": "Adapter USB-serial gom dữ liệu và không có độ trễ giới hạn, Wi-Fi không tất định, và DDS trong vòng lặp 500 Hz thêm jitter. CAN hoặc EtherCAT cho định thời có giới hạn."

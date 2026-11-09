@@ -5,13 +5,13 @@
   "questions": [
     {
       "id": "b1",
-      "prompt": "Prior N(0, 9), sensor R = 1. Posterior variance (3 decimals)?",
+      "prompt": "Prior N(0, 5), sensor R = 2. Posterior variance (3 decimals)?",
       "kind": "number",
       "dimension": "M",
       "critical": false,
-      "answer": "0.9",
+      "answer": "1.428571",
       "tolerance": 0.001,
-      "explanation": "P+ = P-R/(P-+R) = 0.9.",
+      "explanation": "P+ = P-R/(P-+R) = 10/7 = 1.4286.",
       "knowledgeType": "procedure",
       "skillTags": [
         "kalman-gain"
@@ -391,6 +391,96 @@
         "q6"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "kind": "number",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "kalman-gain"
+      ],
+      "skillLabel": "True covariance for a detuned gain",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "prompt": "Scalar update with prior variance P⁻ = 2.1 and sensor variance R = 0.9, but the filter uses a detuned gain K = 0.5 instead of the optimal one. What is the true variance of the posterior error? (3 decimals)",
+      "dimension": "M",
+      "critical": false,
+      "answer": "0.75",
+      "tolerance": 0.001,
+      "explanation": "For any gain the error is (1−K)e⁻ + Kv with independent terms, so P(K) = (1−K)²P⁻ + K²R = 0.25·2.1 + 0.25·0.9 = 0.525 + 0.225 = 0.75. The short form (1−K)P⁻ = 1.05 is wrong here (it equals P(K) only for the optimal K = 2.1/3.0 = 0.7, where both give 0.63). Check with P(K) = P(K*) + (K − K*)²S = 0.63 + 0.04·3 = 0.75, since S = P⁻ + R = 3."
+    },
+    {
+      "id": "c2",
+      "kind": "choice",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "consistency"
+      ],
+      "skillLabel": "Diagnosing a mistuned filter from NIS and innovation correlation",
+      "mistakeCategory": "method_selection",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "prompt": "A scalar random-walk filter has mean NIS 4.4 over a long run, and consecutive innovations have lag-1 autocorrelation −0.30. Which mistuning is most consistent with this?",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "Q_f too small: the filter lags the state",
+        "R_f too small: the filter is over-eager and chases the sensor noise",
+        "R_f too large: the filter is too cautious",
+        "Q_f too large: the filter trusts the sensor too much"
+      ],
+      "answer": "1",
+      "explanation": "A mean NIS far above 1 means the filter is overconfident (innovations larger than S predicts), which excludes the two options with too-large noise (R_f or Q_f too large give NIS below 1: 0.17 and 0.08 for the true Q = 0.3, R = 1.2 used here). Between the two overconfident cases the sign of the lag-1 autocorrelation separates them: a gain that is too high (R_f too small) overshoots and alternates the sign of successive innovations, giving a negative correlation (here NIS 4.42, ρ₁ = −0.30 for R_f = 0.12 with Q_f = 0.3); a gain that is too low (Q_f too small) lags the state, leaving long runs of same-signed innovations and a positive correlation (NIS 3.47, ρ₁ = +0.68 for Q_f = 0.003). The correct filter gives NIS 1 and ρ₁ = 0."
+    },
+    {
+      "id": "c3",
+      "kind": "short",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "kalman-gain",
+        "gaussian-belief"
+      ],
+      "skillLabel": "Kalman filter as recursive least squares",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C07#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C06",
+        "M09",
+        "M03"
+      ],
+      "prompt": "A Kalman filter with F = I and Q = 0 processes the regression rows H_k = (1, t_k) with measurement variance R and prior N(m₀, P₀). Show what it computes after k rows, how it relates to the least-squares solution of M04 (least squares), and what changes when Q > 0.",
+      "dimension": "T",
+      "critical": false,
+      "rubric": [
+        "Information adds: the posterior precision is P_k⁻¹ = P₀⁻¹ + Σ H_iᵀH_i/R and the information vector P_k⁻¹m_k = P₀⁻¹m₀ + Σ H_iᵀy_i/R, which is the ridge (regularised) least-squares solution; the Kalman update with S = H P Hᵀ + R and K = P Hᵀ/S reproduces it (via P₊H ᵀ = K R and P₊P⁻¹ = I − KH).",
+        "Uninformative prior P₀⁻¹ → 0 gives m_k = (AᵀA)⁻¹Aᵀy, the normal equations (here (8/7, 8/7) for the data (0,2),(1,1),(3,5)) and P_k = R(AᵀA)⁻¹; a finite prior shrinks the estimate toward m₀.",
+        "Q > 0 adds covariance every step (P⁻ = P + Q), so old rows are down-weighted (exponential forgetting) and the gain does not go to zero; the filter then tracks a drifting θ and is no longer the batch least-squares solution."
+      ],
+      "explanation": "Information form: for F = I and Q = 0 each row adds H_kᵀH_k/R to the precision and H_kᵀy_k/R to the information vector, so P_k⁻¹ = P₀⁻¹ + Σ H_iᵀH_i/R and m_k = P_k(P₀⁻¹m₀ + Σ H_iᵀy_i/R) (the ridge solution). The Kalman update gives the same numbers: P₊ = (I − KH)P and P₊Hᵀ = KR, so P₊(P⁻¹m + Hᵀy/R) = m + K(y − Hm). With a very weak prior (P₀ = 10⁶ I) the three rows (0,2), (1,1), (3,5) give m = (1.142857, 1.142857) and P ≈ [[5/7, −2/7],[−2/7, 3/14]], i.e. (AᵀA)⁻¹Aᵀy and R(AᵀA)⁻¹ from M04 (least squares); with P₀ = 100 I the estimate is (1.1380, 1.1437), slightly shrunk. If Q > 0 the prediction step adds Q to P before every update, so the gain stays positive and old data are forgotten: the filter follows a time-varying θ instead of reproducing the batch fit."
     }
   ]
 }

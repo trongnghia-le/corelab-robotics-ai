@@ -79,6 +79,24 @@
     "Báo cáo confusion matrix, precision, recall, chi phí và baseline lớp đa số trên tập test một lần.",
     "Liệt kê các ca lỗi và nêu một điều kiện sẽ bác bỏ kết luận."
    ]
+  },
+  "c1": {
+   "prompt": "Một detector có độ nhạy 0.9 và độ đặc hiệu 0.98. Dùng tỉ số khả năng dương (positive likelihood ratio) ở dạng odds, precision của nó ở prevalence triển khai 2% là bao nhiêu (số thập phân, sai số cho phép 0.002)?",
+   "explanation": "LR+=0.9/(1−0.98)=45. Odds trước kiểm tra=0.02/0.98=0.020408; odds sau kiểm tra=45·0.020408=0.9184; precision=0.9184/1.9184=0.4787."
+  },
+  "c2": {
+   "prompt": "Một bộ dự báo có reliability 0.012 và resolution 0.045 trên tập kiểm tra có tỉ lệ nền (base rate) 20%. Brier score là bao nhiêu (số thập phân, sai số cho phép 0.0005)?",
+   "explanation": "Murphy: BS=reliability−resolution+uncertainty. Uncertainty=0.2·0.8=0.16. BS=0.012−0.045+0.16=0.127. Thấp hơn 0.16 nghĩa là tốt hơn dự báo hằng số bằng base rate."
+  },
+  "c3": {
+   "prompt": "Bạn khớp một calibrator Platt (sigmoid) trên chính các mẫu đã huấn luyện một bộ phân loại bị overfit, rồi báo cáo độ hiệu chuẩn. Kết quả khả dĩ nhất là gì?",
+   "options": [
+    "Calibrator sửa được sự quá tự tin, vì sigmoid có hai tham số tự do.",
+    "Các xác suất đã hiệu chuẩn bị lệch về 0.5, điều này an toàn trên dữ liệu mới.",
+    "Calibrator học được rất ít chỉnh sửa, nên xác suất trên dữ liệu mới vẫn quá gần 0 và 1.",
+    "Sai số hiệu chuẩn không bị ảnh hưởng, vì hiệu chuẩn không phụ thuộc vào mẫu nào được dùng."
+   ],
+   "explanation": "Trên chính dữ liệu huấn luyện, bộ phân loại overfit trông gần như hoàn hảo, nên calibrator học rằng điểm số đã gần 0 và 1 và gần như không chỉnh gì. Trên dữ liệu mới xác suất vẫn quá cực đoan. Hãy khớp calibrator trên dữ liệu độc lập (scikit-learn §1.16.2)."
   }
  }
 }

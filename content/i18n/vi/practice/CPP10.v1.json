@@ -49,8 +49,8 @@
    "explanation": "Sinh ra 60, tiêu thụ 50 trong đợt, tồn đọng 10."
   },
   "b7": {
-   "prompt": "Lượng tồn đọng là 40 phần tử và consumer xử lý 160 phần tử/s không có đầu vào mới. Mất bao nhiêu giây để xả? Cho một số với 2 chữ số thập phân.",
-   "explanation": "40 / 160 = 0.25 s."
+   "prompt": "Lượng tồn đọng là 48 phần tử và consumer xử lý 160 phần tử/s không có đầu vào mới. Mất bao nhiêu giây để xả? Cho một số với 2 chữ số thập phân.",
+   "explanation": "48 / 160 = 0.30 s."
   },
   "b8": {
    "prompt": "Bốn thread mỗi thread chạy 3 push và 3 pop trên một hàng đợi mà các consumer dùng predicate. Sau khi mọi thread join, size() phải là bao nhiêu nếu mỗi push được ghép với một pop? Số nguyên.",
@@ -81,6 +81,29 @@
     "Mailbox ghi đè giá trị cũ, nên bộ điều khiển luôn đọc dữ liệu mới nhất và producer không bao giờ bị chặn.",
     "Hàng đợi bảo toàn mọi phần tử nhưng có rủi ro dữ liệu cũ và back-pressure; cần cho logging, không cho điều khiển.",
     "Nêu một hợp đồng: một mutex, set ghi đè, get copy giá trị (và có thể một phiên bản/timestamp)."
+   ]
+  },
+  "c1": {
+   "prompt": "Một producer chạy data = 42; ready.store(true, S); một consumer quay vòng trên ready.load(L) rồi đọc data. Cặp (S, L) nào làm việc đọc data đúng, luôn thấy 42 và không có data race?",
+   "options": [
+    "S = relaxed, L = relaxed",
+    "S = relaxed, L = acquire",
+    "S = release, L = acquire",
+    "S = release, L = relaxed"
+   ],
+   "explanation": "Một release store synchronizes-with một acquire load đọc đúng giá trị nó ghi, nên data = 42 happens-before việc đọc data. Với store relaxed hoặc load relaxed thì không có cạnh synchronizes-with: phép ghi và phép đọc data là hai truy cập xung đột không có thứ tự, tức data race, dù một bài test trên x86 không bao giờ thất bại. Release store cần một acquire load (hoặc mạnh hơn) ở phía bên kia, và acquire load cần một release store (hoặc mạnh hơn)."
+  },
+  "c2": {
+   "prompt": "Hai thread, mỗi thread chạy ba bước nạp, cộng 1, lưu trên một số nguyên dùng chung bắt đầu ở 0 (mỗi thread giữ giá trị đã nạp trong một thanh ghi riêng). Trong mọi xen kẽ giữ thứ tự bước của từng thread, có bao nhiêu xen kẽ kết thúc với số nguyên dùng chung bằng 1?",
+   "explanation": "Có C(6,3)=20 xen kẽ. Giá trị cuối là 2 chỉ khi lần nạp của một thread đến sau lần lưu của thread kia, điều này chỉ xảy ra khi một thread chạy cả ba bước trước khi thread kia bắt đầu: 2 xen kẽ. 20 - 2 = 18 xen kẽ còn lại kết thúc bằng 1 (cả hai nạp 0, hoặc lần lưu sau ghi đè bằng giá trị tính từ một lần nạp cũ)."
+  },
+  "c3": {
+   "prompt": "Một hàng đợi dung lượng 1 dùng một condition variable cho cả 'không đầy' và 'không rỗng' và gọi notify_one sau mỗi thay đổi. Hãy chỉ ra một lịch với hai producer và hai consumer khiến mọi thread bị chặn trong khi hàng đợi đang chứa một phần tử, và nêu hai cách sửa cùng chi phí của chúng.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Lịch: hàng đợi đầy, producer P1 và P2 đang chờ; C1 pop và notify_one đánh thức P1; trước khi P1 chạy, C2 thấy hàng đợi rỗng và chờ; P1 push và notify_one đánh thức P2 thay vì C2; P2 thấy đầy và ngủ lại; C2 ngủ với hàng đợi không rỗng và không ai thông báo.",
+    "Cách 1: notify_all với vòng lặp predicate; đúng, nhưng đánh thức mọi waiter (thundering herd, O(waiters) lần thức mỗi thao tác).",
+    "Cách 2: một condition variable cho mỗi predicate (not_full, not_empty) với notify_one trên cái đúng; mỗi thông báo đều hữu ích. Nêu bất biến mà mỗi thao tác khôi phục trước khi mở khóa."
    ]
   }
  }

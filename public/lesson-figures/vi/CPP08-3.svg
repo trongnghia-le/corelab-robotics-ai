@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="Inter, sans-serif">
+<title>Chỗ AddressSanitizer không nhìn thấy</title>
+<desc>Hai khối heap có phần đệm bị poison, và một struct không có đệm giữa các thành viên.</desc>
+<rect width="900" height="470" rx="14" fill="#17181b"/>
+<defs><marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#a7adb5"/></marker></defs>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#e9e7e3">Chỗ AddressSanitizer không nhìn thấy</text>
+<text x="32" y="82" font-size="17" font-weight="700" fill="#e9e7e3">A. Hai khối malloc(32), cách nhau 48 byte</text>
+<rect x="32.0" y="104" width="275.2" height="44" rx="3" fill="#2b3a31" stroke="#6fc693" stroke-width="1.5"/>
+<text x="169.6" y="132" font-size="15" fill="#e9e7e3" text-anchor="middle">p: 32 B</text>
+<rect x="307.2" y="104" width="137.6" height="44" rx="3" fill="#3a2b2b" stroke="#e58a80" stroke-width="1.5"/>
+<text x="376.0" y="132" font-size="15" fill="#e9e7e3" text-anchor="middle">poison</text>
+<rect x="444.79999999999995" y="104" width="275.2" height="44" rx="3" fill="#2b3a31" stroke="#6fc693" stroke-width="1.5"/>
+<text x="582.4" y="132" font-size="15" fill="#e9e7e3" text-anchor="middle">q: 32 B</text>
+<rect x="720.0" y="104" width="137.6" height="44" rx="3" fill="#3a2b2b" stroke="#e58a80" stroke-width="1.5"/>
+<text x="788.8" y="132" font-size="15" fill="#e9e7e3" text-anchor="middle">poison</text>
+<line x1="311.2" y1="190" x2="311.2" y2="154" stroke="#e58a80" stroke-width="2.5" marker-end="url(#ahg)"/>
+<line x1="448.79999999999995" y1="190" x2="448.79999999999995" y2="154" stroke="#e0c169" stroke-width="2.5" marker-end="url(#ahg)"/>
+<text x="311.2" y="212" font-size="15" font-weight="600" fill="#e58a80">p[32]: poison, có báo lỗi</text>
+<text x="454.79999999999995" y="238" font-size="15" font-weight="600" fill="#e0c169">p[48] là q[0]: hợp lệ, im lặng</text>
+<text x="32" y="296" font-size="17" font-weight="700" fill="#e9e7e3">B. struct S { int buf[4]; int limit; }  (một đối tượng, không có redzone bên trong)</text>
+<rect x="32" y="318" width="70" height="44" rx="3" fill="#2b3a31" stroke="#6fc693" stroke-width="1.5"/>
+<text x="67.0" y="346" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="monospace">buf[0]</text>
+<rect x="102" y="318" width="70" height="44" rx="3" fill="#2b3a31" stroke="#6fc693" stroke-width="1.5"/>
+<text x="137.0" y="346" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="monospace">buf[1]</text>
+<rect x="172" y="318" width="70" height="44" rx="3" fill="#2b3a31" stroke="#6fc693" stroke-width="1.5"/>
+<text x="207.0" y="346" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="monospace">buf[2]</text>
+<rect x="242" y="318" width="70" height="44" rx="3" fill="#2b3a31" stroke="#6fc693" stroke-width="1.5"/>
+<text x="277.0" y="346" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="monospace">buf[3]</text>
+<rect x="312" y="318" width="90" height="44" rx="3" fill="#2b3a31" stroke="#e0c169" stroke-width="2"/>
+<text x="357.0" y="346" font-size="15" fill="#e9e7e3" text-anchor="middle" font-family="monospace">limit</text>
+<line x1="318" y1="402" x2="318" y2="366" stroke="#e58a80" stroke-width="2.5" marker-end="url(#ahg)"/>
+<text x="330" y="420" font-size="15" font-weight="600" fill="#e58a80">buf[4] ghi vào limit: mọi byte hợp lệ, ASan im lặng</text>
+<text x="32" y="452" font-size="14" fill="#a7adb5">UBSan -fsanitize=bounds biết mảng có 4 phần tử và báo chỉ số 4; hardware watchpoint trên limit tìm ra dòng ghi.</text>
+</svg>

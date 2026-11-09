@@ -82,6 +82,29 @@
     "Phân tầng được thực thi qua đồ thị phụ thuộc và ngăn chu trình; PRIVATE che giấu chi tiết nội bộ.",
     "Cái giá: nhiều CMake hơn để bảo trì, configure chậm hơn và một đồ thị cần hiểu."
    ]
+  },
+  "c1": {
+   "prompt": "libP.a có p1.o (định nghĩa fp1, cần fq1) và p2.o (định nghĩa fp2, cần fq2). libQ.a có q1.o (định nghĩa fq1, cần fp2) và q2.o (định nghĩa fq2). main.o cần fp1. Dòng link nào ngắn nhất trong các dòng sau link thành công với GNU linker?",
+   "options": [
+    "main.o -lP -lQ",
+    "main.o -lQ -lP",
+    "main.o -lP -lQ -lP",
+    "main.o -lP -lQ -lP -lQ"
+   ],
+   "explanation": "Mỗi archive được quét một lần cho mỗi lần xuất hiện, theo thứ tự. -lP -lQ: p1.o rồi q1.o được trích, fp2 vẫn chưa định nghĩa. -lQ -lP: khi quét libQ chưa có gì đang chờ, và fq1 vẫn chưa định nghĩa sau p1.o. -lP -lQ -lP: lượt quét libP thứ hai trích p2.o cần fq2, nhưng libQ không được quét lại. Chỉ -lP -lQ -lP -lQ trích q2.o và không còn gì chưa định nghĩa."
+  },
+  "c2": {
+   "prompt": "Một header được sinh ra được include bởi 25 trong 40 source. Mỗi lượt biên dịch mất 3 s và Ninja chạy 8 job song song. Bộ sinh ghi lại header với nội dung khác. Bỏ qua thời gian link và giả sử các đợt đủ 8 job, thời gian biên dịch thực của lần build lại là bao nhiêu giây? Cho một số nguyên.",
+   "explanation": "Cả 25 source phụ thuộc đều lỗi thời, nên 25 lượt biên dịch chạy. Với 8 job song song đó là ceil(25/8) = 4 đợt x 3 s = 12 s. (Với restat = 1 và header không đổi thì đáp án là 0 lượt biên dịch.)"
+  },
+  "c3": {
+   "prompt": "Static library A link B ở dạng PRIVATE, và B export include directory của nó ở dạng PUBLIC. File thực thi m link A và giờ cần một header của B. Giải thích (1) vì sao libB.a đã nằm trên dòng link của m nhưng include directory của B không nằm trên dòng biên dịch của m, và (2) thay đổi tối thiểu đúng đắn cùng sai lầm thiết kế cần tránh.",
+   "explanation": "Chấm theo rubric: hãy so sánh câu trả lời của bạn với từng ý trong rubric; câu hỏi này không được chấm tự động.",
+   "rubric": [
+    "Với A static, CMake ghi phụ thuộc private vào interface của A dưới dạng $<LINK_ONLY:B>: B được link (các object của A tham chiếu tới nó) nhưng không usage requirement lúc biên dịch nào của B được truyền đi.",
+    "Thay đổi đúng: target_link_libraries(m PRIVATE B) để m khai báo phụ thuộc thật của chính nó và nhận include directory của B.",
+    "Sai lầm cần tránh: đổi A thành PUBLIC B chỉ để rò rỉ đường dẫn include, khiến mọi consumer của A phụ thuộc B và để lộ một chi tiết cài đặt."
+   ]
   }
  }
 }

@@ -81,6 +81,24 @@
     "Tính giá trị dual và khoảng cách đối ngẫu.",
     "Nhắc đến phép thử nhiễu khả thi hoặc kiểm tra độ nhạy."
    ]
+  },
+  "c1": {
+   "prompt": "Cực tiểu hóa ||Ax - b||^2 với A = [[1,0],[0,1],[1,1]], b = (1,2,3) và ràng buộc x1 - x2 = h. Tại h = 0.5, chi phí tối ưu tăng bao nhiêu khi h tăng một đơn vị (dp*/dh, 2 chữ số thập phân)?",
+   "explanation": "Tham số hóa x = (h,0) + t(1,1). Nghiệm không ràng buộc là x=(1,2) với residual bằng 0, có x1 - x2 = -1, nên residual của nghiệm có ràng buộc tỉ lệ với (h+1): p*(h) = (h+1)^2/2. Khi đó dp*/dh = h+1 = 1.5 tại h = 0.5. Tương đương, multiplier KKT là nu* = -1.5 và dp*/dh = -nu*. Kiểm tra: x* = (1.75,1.25), chi phí 1.125 = 1.5^2/2."
+  },
+  "c2": {
+   "prompt": "Xét min exp(-x) với ràng buộc x^2/y <= 0 trên miền y > 0. Phát biểu nào đúng?",
+   "options": [
+    "Strong duality đúng vì bài toán lồi, nên d* = p* = 1",
+    "Bài toán không bị chặn dưới, vì exp(-x) chỉ tiến về 0 khi x tăng",
+    "p* = 1 nhưng tối ưu dual là d* = 0, vì điều kiện Slater không đúng: không điểm nào có x^2/y < 0",
+    "p* = 0, đạt trong giới hạn y -> vô cùng, nên không có duality gap"
+   ],
+   "explanation": "Ràng buộc ép x = 0, nên p* = exp(0) = 1. Hàm dual là inf theo x, y>0 của exp(-x) + lambda x^2/y = 0 với lambda >= 0 (lấy x lớn và y lớn hơn nhiều), nên d* = 0 và gap bằng 1. Chỉ lồi thì chưa đủ: điều kiện Slater cần một điểm khả thi chặt, mà x^2/y < 0 là không thể. Hàm mục tiêu bị chặn dưới bởi 0 và mọi giá trị khả thi đều là exp(0) = 1."
+  },
+  "c3": {
+   "prompt": "Cực tiểu hóa x^2 + 1 với (x-3)(x-6) <= u. Multiplier tại u = 0 là lambda* = 2 và p*(0) = 10. Tính giá trị tối ưu chính xác p*(1) (3 chữ số thập phân); ước lượng bậc nhất là 8.",
+   "explanation": "Ràng buộc x^2 - 9x + 18 <= 1 cho x >= (9 - sqrt(9+4))/2 = (9 - 3.60555)/2 = 2.69722, không âm, nên điểm tối ưu nằm ở x khả thi nhỏ nhất này: p*(1) = 2.69722^2 + 1 = 8.2750. Bất đẳng thức toàn cục p*(u) >= p*(0) - lambda* u = 8 đúng; giá trị chính xác nằm trên nó vì p*(u) lồi và phẳng dần khi nới ràng buộc."
   }
  }
 }

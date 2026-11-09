@@ -26,7 +26,7 @@ const en = {
   "shell.workspaceSub": "Robotics & AI learning",
   "shell.captionLearn": "YOUR LEARNING FLOW",
   "shell.captionMore": "MORE",
-  "shell.localTitle": "Local-first. Yours.",
+  "shell.localTitle": "Local · no cloud",
   "shell.localBody": "Your data stays on your machine. No cloud, no API.",
   "shell.crumb": "Workspace",
   "shell.local": "Local workspace",
@@ -105,21 +105,6 @@ const en = {
   "topic.prevLesson": "Previous lesson in the library",
   "topic.nextLesson": "Next lesson in the library",
   "topic.buildsOn": "Topics that build on this foundation",
-  // notebook
-  "notebook.title": "Research notebook",
-  "notebook.intro":
-    "Record reasoning, experimental results, and open questions. Self-assessments remain separate from verified competence.",
-  "notebook.type": "Entry type",
-  "notebook.note": "Note",
-  "notebook.difficulty": "Knowledge debt · difficulty",
-  "notebook.practice": "Practice results",
-  "notebook.self": "Self-assessment · provisional",
-  "notebook.time": "Time (minutes)",
-  "notebook.level": "Self-assessed level",
-  "notebook.placeholder":
-    "What did I try? Which results can I not explain yet?",
-  "notebook.save": "Save entry",
-  "notebook.saved": "Notebook entry saved locally.",
   // assessment
   "assist.label": "How much help did you use?",
   "assist.A0": "No help (A0)",
@@ -155,7 +140,7 @@ const en = {
   "assess.submit": "Submit and save answers",
   "assess.none": "No check available for this topic yet",
   "assess.noneNote":
-    "Record notes and self-study results in the notebook. They remain unverified.",
+    "Keep notes and self-study results in the study desk. They remain unverified.",
   "assess.result": "Result · {score}%",
   "assess.passed": "Passed with no help (A0)",
   "assess.passedHelp": "Passed with help · practice only",
@@ -324,9 +309,11 @@ const en = {
   "dom.Hardware & Embedded":
     "Sensors, motors, power and the firmware that runs them.",
   "dom.Capstone": "One robot that uses everything you learned.",
+  "shell.collapseSidebar": "Collapse the sidebar",
+  "shell.expandSidebar": "Expand the sidebar",
   "shell.desk": "Desk",
   "shell.deskHint":
-    "Open the study desk beside this window: notes, exercises and code",
+    "Show the study desk beside the lesson: notes, exercises and code (Ctrl+\\)",
   // practice & tools
   "practice.eyebrow": "IMPLEMENT → VERIFY → TRANSFER",
   "practice.title": "Implement independently. Verify your work.",
@@ -373,7 +360,7 @@ const vi: Dict = {
   "shell.workspaceSub": "Học Robotics & AI",
   "shell.captionLearn": "LỘ TRÌNH HỌC CỦA BẠN",
   "shell.captionMore": "THÊM",
-  "shell.localTitle": "Chạy cục bộ. Của bạn.",
+  "shell.localTitle": "Cục bộ · không cloud",
   "shell.localBody": "Dữ liệu nằm trên máy của bạn. Không cloud, không API.",
   "shell.crumb": "Không gian học",
   "shell.local": "Không gian cục bộ",
@@ -450,20 +437,6 @@ const vi: Dict = {
   "topic.prevLesson": "Bài trước trong thư viện",
   "topic.nextLesson": "Bài tiếp theo trong thư viện",
   "topic.buildsOn": "Các chủ đề xây dựng trên nền tảng này",
-  "notebook.title": "Sổ ghi chép nghiên cứu",
-  "notebook.intro":
-    "Ghi lại lập luận, kết quả thí nghiệm và các câu hỏi còn mở. Tự đánh giá luôn tách biệt với năng lực đã được kiểm chứng.",
-  "notebook.type": "Loại ghi chú",
-  "notebook.note": "Ghi chú",
-  "notebook.difficulty": "Chỗ còn vướng · khó khăn",
-  "notebook.practice": "Kết quả luyện tập",
-  "notebook.self": "Tự đánh giá · tạm thời",
-  "notebook.time": "Thời gian (phút)",
-  "notebook.level": "Mức tự đánh giá",
-  "notebook.placeholder":
-    "Mình đã thử gì? Kết quả nào mình chưa giải thích được?",
-  "notebook.save": "Lưu ghi chú",
-  "notebook.saved": "Đã lưu ghi chú trên máy.",
   "assist.label": "Bạn đã dùng bao nhiêu trợ giúp?",
   "assist.A0": "Không trợ giúp (A0)",
   "assist.A1": "Đã dùng gợi ý (A1)",
@@ -498,7 +471,7 @@ const vi: Dict = {
   "assess.submit": "Nộp và lưu câu trả lời",
   "assess.none": "Chủ đề này chưa có bài kiểm tra",
   "assess.noneNote":
-    "Hãy ghi chú và kết quả tự học vào sổ ghi chép. Chúng chưa được kiểm chứng.",
+    "Hãy ghi chú và kết quả tự học trong bàn học. Chúng chưa được kiểm chứng.",
   "assess.result": "Kết quả · {score}%",
   "assess.passed": "Đạt khi không trợ giúp (A0)",
   "assess.passedHelp": "Đạt khi có trợ giúp · chỉ tính là luyện tập",
@@ -665,8 +638,11 @@ const vi: Dict = {
   "dom.Hardware & Embedded":
     "Cảm biến, động cơ, nguồn điện và firmware điều khiển chúng.",
   "dom.Capstone": "Một robot vận dụng mọi điều bạn đã học.",
+  "shell.collapseSidebar": "Thu gọn thanh bên",
+  "shell.expandSidebar": "Mở rộng thanh bên",
   "shell.desk": "Bàn học",
-  "shell.deskHint": "Mở bàn học bên cạnh cửa sổ này: ghi chú, bài tập và code",
+  "shell.deskHint":
+    "Hiện bàn học bên cạnh bài học: ghi chú, bài tập và code (Ctrl+\\)",
   "practice.eyebrow": "CÀI ĐẶT → KIỂM CHỨNG → VẬN DỤNG",
   "practice.title": "Tự cài đặt. Tự kiểm chứng.",
   "practice.desc":

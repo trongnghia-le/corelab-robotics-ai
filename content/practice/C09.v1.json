@@ -378,6 +378,89 @@
         "q1"
       ],
       "explanation": "Rubric-guided: compare your answer with each rubric point; this question is not automatically graded."
+    },
+    {
+      "id": "c1",
+      "prompt": "A notch at 50 rad/s is implemented with Tustin's method (no prewarping) at T = 0.03 s. At what frequency (rad/s, 2 decimals) does the digital filter actually have its notch?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "42.90",
+      "tolerance": 0.05,
+      "explanation": "Tustin evaluates the analogue filter at (2/T) tan(wT/2), so an analogue feature at wP appears at w = (2/T) arctan(wP T/2) = (2/0.03) arctan(0.75) = 66.667 x 0.6435 = 42.90 rad/s, 14% low. Prewarping at that frequency would fix this one frequency only.",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "sampling-choice"
+      ],
+      "skillLabel": "Sampling, Tustin warping and aliasing",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
+    },
+    {
+      "id": "c2",
+      "prompt": "Plant y' = -5 y + 20 u, ZOH at T = 0.05 s, law u = -K y with one sample of delay. Largest stable K (3 decimals)?",
+      "kind": "number",
+      "dimension": "M",
+      "critical": false,
+      "answer": "1.130",
+      "tolerance": 0.003,
+      "explanation": "Ad = e^{-0.25} = 0.77880 and Bd = (20/5)(1 - Ad) = 0.88480. With one sample of delay y_{k+1} = Ad y_k - Bd K y_{k-1}, so z^2 - Ad z + Bd K = 0. For K > 0 the Jury conditions 1 - Ad + Bd K > 0 and 1 + Ad + Bd K > 0 always hold, and |Bd K| < 1 gives K < 1/Bd = 1.130. (Without the delay the limit would be (1 + Ad)/Bd = 2.010.)",
+      "knowledgeType": "procedure",
+      "skillTags": [
+        "delay-stability"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "mathematical",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#worked-example"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
+    },
+    {
+      "id": "c3",
+      "prompt": "Integrator y' = u with u = -K y. The command computed from the sample y_k reaches the plant 0.2 T after the sample (the old command is held until then). What is the largest stable K*T?",
+      "kind": "choice",
+      "dimension": "C",
+      "critical": false,
+      "options": [
+        "2.000, the same as with no latency, because the hold has not changed",
+        "3.333, larger than with no latency",
+        "1.000, the one-sample-delay value, because any latency counts as a full sample",
+        "5.000, because less than half the command is delayed"
+      ],
+      "answer": "1",
+      "explanation": "y_{k+1} = y_k + 0.2 T u_{k-1} + 0.8 T u_k. With x = K T: z^2 - (1 - 0.8x) z + 0.2x = 0. Jury: |0.2x| < 1 gives x < 5; 1 + a1 + a0 = x > 0; 1 - a1 + a0 = 2 - x + 0.4x > 0 gives x < 2/0.6 = 3.333. The tighter bound is 3.333. A fractional latency below T/4 raises the limit above 2 in this model, but the worst case over all latencies in [0, T] is 1.",
+      "knowledgeType": "concept",
+      "skillTags": [
+        "delay-stability"
+      ],
+      "skillLabel": "Stability limits with delay",
+      "mistakeCategory": "conceptual",
+      "remediationRefs": [
+        {
+          "label": "Review the lesson section",
+          "href": "/lessons/C09#theory-and-derivation"
+        }
+      ],
+      "relatedPrerequisites": [
+        "C03",
+        "M11"
+      ]
     }
   ]
 }
