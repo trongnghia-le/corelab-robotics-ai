@@ -6,6 +6,9 @@
 
 **193 topics · 2,405 exercises · 391 fully worked solutions · 92 interactive 2D/3D explorations · 386 original figures · 3,967 quiz questions · 318 curated videos · 1 graduation capstone**
 
+🇻🇳 _Học Robotics & AI từ nền tảng: miễn phí, chạy ngay trên máy bạn, giao diện và bài học có tiếng Việt._
+
+[![GitHub stars](https://img.shields.io/github/stars/trongnghia-le/corelab-robotics-ai?style=social)](https://github.com/trongnghia-le/corelab-robotics-ai/stargazers)
 [![Node.js 24+](https://img.shields.io/badge/Node.js-24%2B-43853d?logo=node.js&logoColor=white)](package.json)
 [![Next.js](https://img.shields.io/badge/Next.js-App_Router-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
@@ -17,7 +20,9 @@
 
 <br/>
 
-<img src="docs/images/hero.png" alt="CoreLab dashboard in the dark theme: the recommended next topic, and a constellation of the ten subjects converging on a robot" width="100%"/>
+<img src="docs/images/demo.gif" alt="A short tour of CoreLab: the dashboard, the 193-topic roadmap, a lesson with an interactive 3D gradient-descent block whose path changes with the step size, a worked solution opening, the interface switching to Vietnamese, and the study desk docked beside the lesson" width="100%"/>
+
+<sub>Dashboard → roadmap → lesson → interactive 3D block → worked solution → Vietnamese → study desk</sub>
 
 </div>
 
@@ -38,6 +43,13 @@ CoreLab is a **free, local-first learning workspace** that takes you from vector
 - 🎓 **A graduation capstone.** Nine milestones build one simulated mobile manipulator that takes a text command, localises, navigates, grasps and delivers.
 - 🇻🇳 **English or Vietnamese, light or dark.** One click switches the interface and every lesson, exercise, quiz and figure; another switches the theme.
 - 🔒 **Yours.** Local SQLite, exportable backups, no analytics, no AI API keys.
+
+## 🎯 Who is it for?
+
+- **Students** in mechatronics, electronics, automation or computer science who want the maths behind robots to finally click.
+- **Self-learners and career switchers** who need a clear order of topics instead of scattered tutorials.
+- **Software engineers moving into robotics or AI**, who want derivations and tested implementations rather than black boxes.
+- **Teachers and club mentors** looking for free, openly licensed lessons, exercises and figures to reuse.
 
 ## 🚀 Quick start
 
